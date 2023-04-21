@@ -1,0 +1,9 @@
+*.o
+/main
+/act.dat
+/best.gen.dat
+/body.dat
+/curv.dat
+/fitness.dat
+/phenotype.dat
+/seed.dat
