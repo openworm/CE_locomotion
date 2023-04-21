@@ -100,9 +100,8 @@ for t in range(1,tmax,int(tmax/num)):
 
 axs[3, 0].set_aspect('equal')
 
-plt.legend()
 
-plt.savefig("ExampleActivity.png", bbox_inches="tight")
+plt.savefig("ExampleActivity.png", bbox_inches="tight", dpi=300)
 
 plt.show()
 
