@@ -2,7 +2,7 @@
 
 This repository contains all the classes necessary to evolve a neuromechanical model of C. elegans to produce forward and backward locomotion. 
 
-We are using this to better understand how the same neural circuit can produce multiple behaviors (i.e., forward and backward) and moulate between them through command neurons.
+We are using this to better understand how the same neural circuit can produce multiple behaviors (i.e., forward and backward) and modulate between them through command neurons.
 
 Work in collaboration with Dr. Erick Olivares and Prof. Randall Beer.
 
@@ -25,6 +25,15 @@ $ python viz.py
 $ Mathematica viz.nb
 ```
 
-![Screenshot of the animation of the simulated worm's body in Mathematica](https://github.com/edizquierdo/CE_locomotion/blob/main/viz.png?raw=true)
+![Screenshot of the animation of the simulated worm's body in Mathematica](https://github.com/openworm/CE_locomotion/blob/main/viz.png?raw=true)
 
-Optional. You can also visualize the dynamic neural and muscle activity by plotting "muscles.dat" and "neural.dat".
+
+
+5. Visualize the dynamic neural and muscle activity:
+```
+$ python load_data.py
+```
+![Activity in neurons, muscles and stretch receptors](https://github.com/openworm/CE_locomotion/blob/main/ExampleActivity.png?raw=true)
+
+
+
