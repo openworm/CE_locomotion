@@ -255,8 +255,12 @@ int main (int argc, const char* argv[])
 {
     std::cout << std::setprecision(10);
     long randomseed = static_cast<long>(time(NULL));
-    if (argc == 2)
+    int pop_size = 96;
+
+    if (argc > 1)
         randomseed += atoi(argv[1]);
+    if (argc > 2)
+        pop_size = atoi(argv[2]);
 
     TSearch s(VectSize);
 
@@ -272,7 +276,7 @@ int main (int argc, const char* argv[])
     s.SetSearchResultsDisplayFunction(ResultsDisplay);
     s.SetSelectionMode(RANK_BASED);               //{FITNESS_PROPORTIONATE,RANK_BASED}
     s.SetReproductionMode(GENETIC_ALGORITHM);	    // {HILL_CLIMBING, GENETIC_ALGORITHM}
-    s.SetPopulationSize(96);
+    s.SetPopulationSize(pop_size);
     s.SetMaxGenerations(10);
     s.SetMutationVariance(0.05);                   // For 71 parameters, an estimated avg change of 0.25 for weights (mapped to 15).
     s.SetCrossoverProbability(0.5);
