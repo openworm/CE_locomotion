@@ -266,9 +266,6 @@ int main (int argc, const char* argv[])
     if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
     if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
     }
-    cout <<  "randseed " << randomseed << " pop size " << pop_size << " duration " << Duration << endl;
-
-
     TSearch s(VectSize);
 
     // save the seed to a file
@@ -277,7 +274,7 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    std::cout << "Running evaluation with seed " << randomseed << "...\n";
+    std::cout << "Running evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
 
     // configure the search
     s.SetRandomSeed(randomseed);

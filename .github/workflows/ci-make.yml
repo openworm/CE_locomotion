@@ -19,8 +19,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: make
+    - name: Test makefile
       run: make
+
+    - name: Test Python script
+      run: python run_main.py -p 4
       
     - name: list generated files
       run: |
