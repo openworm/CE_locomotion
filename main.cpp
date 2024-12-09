@@ -18,7 +18,7 @@ int skip_steps = 10;
 using namespace std;
 
 // Integration parameters
-const int Duration = 24;
+int Duration = 24;
 const double Transient = 8.0;
 const double StepSize = 0.005;
 const int N_curvs = 23;
@@ -255,8 +255,19 @@ int main (int argc, const char* argv[])
 {
     std::cout << std::setprecision(10);
     long randomseed = static_cast<long>(time(NULL));
-    if (argc == 2)
-        randomseed += atoi(argv[1]);
+    int pop_size = 96;
+    
+    const bool is_even = ((argc-1) % 2) == 0; //todo: check even
+
+    for (int arg = 1; arg<argc; arg+=2)
+    { 
+    using namespace std::literals;  
+    if (argv[arg]=="-r"s) randomseed += atoi(argv[arg+1]);
+    if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
+    if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
+    }
+    cout <<  "randseed " << randomseed << " pop size " << pop_size << " duration " << Duration << endl;
+
 
     TSearch s(VectSize);
 
@@ -272,7 +283,7 @@ int main (int argc, const char* argv[])
     s.SetSearchResultsDisplayFunction(ResultsDisplay);
     s.SetSelectionMode(RANK_BASED);               //{FITNESS_PROPORTIONATE,RANK_BASED}
     s.SetReproductionMode(GENETIC_ALGORITHM);	    // {HILL_CLIMBING, GENETIC_ALGORITHM}
-    s.SetPopulationSize(96);
+    s.SetPopulationSize(pop_size);
     s.SetMaxGenerations(10);
     s.SetMutationVariance(0.05);                   // For 71 parameters, an estimated avg change of 0.25 for weights (mapped to 15).
     s.SetCrossoverProbability(0.5);

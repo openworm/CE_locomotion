@@ -76,6 +76,8 @@ axs[3, 1].imshow(curv_data_less_time, aspect='auto')
 body_data = np.loadtxt('body.dat').T
 
 tmax = 1520
+if tmax >= body_data.shape[1]:
+   tmax = body_data.shape[1]
 num = 60.
 
 axs[3,0].set_title('2D worm motion', fontsize=title_font_size)
