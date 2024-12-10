@@ -11,6 +11,7 @@
 #include "VectorMatrix.h"
 #include "Worm.h"
 #include <stdio.h>
+#include <string.h>
 
 #define PRINTTOFILE
 
@@ -261,10 +262,13 @@ int main (int argc, const char* argv[])
 
     for (int arg = 1; arg<argc; arg+=2)
     { 
-    using namespace std::literals;  
-    if (argv[arg]=="-r"s) randomseed += atoi(argv[arg+1]);
-    if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
-    if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
+    //using namespace std::literals; 
+    if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-p")==0) pop_size = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
+    //if (argv[arg]=="-r"s) randomseed += atoi(argv[arg+1]);
+    //if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
+    //if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
     }
     TSearch s(VectSize);
 
