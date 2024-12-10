@@ -266,9 +266,6 @@ int main (int argc, const char* argv[])
     if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
     if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
     }
-    cout <<  "randseed " << randomseed << " pop size " << pop_size << " duration " << Duration << endl;
-
-
     TSearch s(VectSize);
 
     // save the seed to a file
@@ -276,6 +273,8 @@ int main (int argc, const char* argv[])
     seedfile.open ("seed.dat");
     seedfile << randomseed << endl;
     seedfile.close();
+
+    std::cout << "Running evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
 
     // configure the search
     s.SetRandomSeed(randomseed);
@@ -296,6 +295,8 @@ int main (int argc, const char* argv[])
   #ifdef PRINTTOFILE
       ofstream evolfile;
       evolfile.open("fitness.dat");
+
+      std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
       cout.rdbuf(evolfile.rdbuf());
   #endif
     // Code to run simulation:
@@ -304,8 +305,11 @@ int main (int argc, const char* argv[])
     s.ExecuteSearch();
 
     #ifdef PRINTTOFILE
+        std::cout.rdbuf(coutbuf); //reset to standard output again
         evolfile.close();
     #endif
+
+    std::cout << "Finished, now rerunning simulation with the best fit...\n";
 
     RandomState rs;
     long seed = static_cast<long>(time(NULL));
@@ -316,5 +320,6 @@ int main (int argc, const char* argv[])
     Best >> best;
     save_traces(best, rs);
 
+    std::cout << "Finished final run\n" << endl;
     return 0;
 }
