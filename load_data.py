@@ -6,6 +6,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import random
+import helper_funcs as hf
 
 N_muscles = 24;               # Number of muscles alongside the body
 N_units = 10;                 # Number of neural units in VNC
@@ -20,7 +21,7 @@ title_font_size = 10
 
 ###  Worm neuron/muscle activation
 
-act_data = np.loadtxt('act.dat').T
+act_data = np.loadtxt(hf.rename_file('act.dat')).T
 
 offset=1
 
@@ -64,7 +65,7 @@ axs[2, 1].xaxis.set_ticklabels([])
 
 ###  Worm body curvature
 
-curv_data = np.loadtxt('curv.dat')
+curv_data = np.loadtxt(hf.rename_file('curv.dat'))
 curv_data_less_time = curv_data.T[1:,:]
 
 axs[3, 1].set_title('Body curvature', fontsize=title_font_size)
@@ -73,7 +74,7 @@ axs[3, 1].imshow(curv_data_less_time, aspect='auto')
 ###  Body position
 
 
-body_data = np.loadtxt('body.dat').T
+body_data = np.loadtxt(hf.rename_file('body.dat')).T
 
 tmax = 1520
 if tmax >= body_data.shape[1]:
@@ -103,7 +104,7 @@ for t in range(1,tmax,int(tmax/num)):
 axs[3, 0].set_aspect('equal')
 
 
-plt.savefig("ExampleActivity.png", bbox_inches="tight", dpi=300)
+plt.savefig(hf.rename_file("ExampleActivity.png"), bbox_inches="tight", dpi=300)
 
 plt.show()
 

@@ -270,16 +270,18 @@ int main (int argc, const char* argv[])
     
     if (argc==2) randomseed += atoi(argv[1]);
 
+    bool do_evol = 1;
 
     if (argc>2){
        
     const bool is_even = ((argc-1) % 2) == 0; //todo: check even
     
     bool seed_flag = 1;
-
+    
     for (int arg = 1; arg<argc; arg+=2)
     { 
-    //if (strcmp(argv[arg],"--doevol")==0) {do_evol = atoi(argv[arg+1]);}
+    if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--folder")==0) dir_name = argv[arg+1];
     if (seed_flag){ 
     if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
@@ -291,7 +293,7 @@ int main (int argc, const char* argv[])
 
     }
 
-    bool do_evol;
+   /*  bool do_evol;
     cout << "Do you want to perform an evolutionary search (E) or run a simulation (S) ";
     string ans;
     while(true){
@@ -299,12 +301,13 @@ int main (int argc, const char* argv[])
     if (ans == "E" || ans == "e") {do_evol = 1;break;} 
     if (ans == "S" || ans == "s") {do_evol = 0;break;}
     cout << "Try again ";
-    };
+    }; */
 
     InitializeBodyConstants();
 
     if (do_evol){
 
+/* 
     std::cout << "Directory name to save genotype data, leave blank for current directory: ";
     getline(cin,dir_name);
     //TODO: check for directory name safety, length
@@ -312,7 +315,7 @@ int main (int argc, const char* argv[])
         //cerr << "Error :  " << strerror(errno) << endl;
         std::cout << "Folder exists. Try again or leave blank for current directory: ";
         getline(cin,dir_name);
-    }
+    } */
 
   
 
@@ -363,14 +366,14 @@ int main (int argc, const char* argv[])
         evolfile.close();
     #endif
 
-    std::cout << "Finished, now rerunning simulation with the best fit...\n";
+    std::cout << "Finished, now saving the best fit...\n";
     
     }
     
     else
     {
 
-    std::cout << "Directory name for saved genotype data, leave blank for current directory: ";
+    /* std::cout << "Directory name for saved genotype data, leave blank for current directory: ";
     getline(cin,dir_name);
     //TODO: check for directory name safety, length
     struct stat st;
@@ -378,7 +381,7 @@ int main (int argc, const char* argv[])
         //cerr << "Error :  " << strerror(errno) << endl;
         std::cout << "Folder does not exist, try again or leave blank for current directory: ";
         getline(cin,dir_name);
-    }
+    } */
 
     RandomState rs;
     long seed = static_cast<long>(time(NULL));
@@ -389,7 +392,7 @@ int main (int argc, const char* argv[])
     Best >> best;
     save_traces(best, rs);
 
-    std::cout << "Finished final run\n" << endl;
+    std::cout << "Finished run, saving data\n" << endl;
 
     }
 
