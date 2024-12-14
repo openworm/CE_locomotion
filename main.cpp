@@ -12,6 +12,8 @@
 #include "Worm.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+
 
 #define PRINTTOFILE
 
@@ -163,20 +165,28 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs){
   // return fitnessBackward;
 }
 
+string dir_name = "";
+string rename_file(const string & file_name){
+  if (dir_name != "") return dir_name + "/" + file_name;
+  return file_name;
+}
+
+
+
 // ------------------------------------
 // Plotting
 // ------------------------------------
 double save_traces(TVector<double> &v, RandomState &rs){
-    ofstream curvfile("curv.dat");
-    ofstream bodyfile("body.dat");
-    ofstream actfile("act.dat");
+    ofstream curvfile(rename_file("curv.dat"));
+    ofstream bodyfile(rename_file("body.dat"));
+    ofstream actfile(rename_file("act.dat"));
     // Genotype-Phenotype Mapping
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(v, phenotype);
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
     Worm w(phenotype, 1);
-    ofstream phenfile("phenotype.dat");
+    ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
 
     w.InitializeState(rs);
@@ -243,7 +253,7 @@ void ResultsDisplay(TSearch &s)
     TVector<double> bestVector;
     ofstream BestIndividualFile;
     bestVector = s.BestIndividual();
-    BestIndividualFile.open("best.gen.dat");
+    BestIndividualFile.open(rename_file("best.gen.dat"));
     BestIndividualFile << setprecision(32);
     BestIndividualFile << bestVector << endl;
     BestIndividualFile.close();
@@ -258,23 +268,60 @@ int main (int argc, const char* argv[])
     long randomseed = static_cast<long>(time(NULL));
     int pop_size = 96;
     
+    if (argc==2) randomseed += atoi(argv[1]);
+
+
+    if (argc>2){
+       
     const bool is_even = ((argc-1) % 2) == 0; //todo: check even
+    
+    bool seed_flag = 1;
 
     for (int arg = 1; arg<argc; arg+=2)
     { 
-    //using namespace std::literals; 
+    //if (strcmp(argv[arg],"--doevol")==0) {do_evol = atoi(argv[arg+1]);}
+    if (seed_flag){ 
+    if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
+    seed_flag = 0;
+    }
     if (strcmp(argv[arg],"-p")==0) pop_size = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
-    //if (argv[arg]=="-r"s) randomseed += atoi(argv[arg+1]);
-    //if (argv[arg]=="-p"s) pop_size = atoi(argv[arg+1]);
-    //if (argv[arg]=="-d"s) Duration = atoi(argv[arg+1]);
     }
+
+    }
+
+    bool do_evol;
+    cout << "Do you want to perform an evolutionary search (E) or run a simulation (S) ";
+    string ans;
+    while(true){
+    getline(cin,ans);
+    if (ans == "E" || ans == "e") {do_evol = 1;break;} 
+    if (ans == "S" || ans == "s") {do_evol = 0;break;}
+    cout << "Try again ";
+    };
+
+    InitializeBodyConstants();
+
+    if (do_evol){
+
+    std::cout << "Directory name to save genotype data, leave blank for current directory: ";
+    getline(cin,dir_name);
+    //TODO: check for directory name safety, length
+    while (dir_name != "" && mkdir(dir_name.c_str(), 0777) != 0){
+        //cerr << "Error :  " << strerror(errno) << endl;
+        std::cout << "Folder exists. Try again or leave blank for current directory: ";
+        getline(cin,dir_name);
+    }
+
+  
+
     TSearch s(VectSize);
 
     // save the seed to a file
+
     ofstream seedfile;
-    seedfile.open ("seed.dat");
+    seedfile.open (rename_file("seed.dat"));
     seedfile << randomseed << endl;
     seedfile.close();
 
@@ -296,15 +343,18 @@ int main (int argc, const char* argv[])
     s.SetSearchConstraint(1);
     s.SetReEvaluationFlag(0);
   // redirect standard output to a file
+
+     
   #ifdef PRINTTOFILE
       ofstream evolfile;
-      evolfile.open("fitness.dat");
+      evolfile.open (rename_file("fitness.dat"));
+      
 
       std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
       cout.rdbuf(evolfile.rdbuf());
   #endif
     // Code to run simulation:
-    InitializeBodyConstants();
+    
     s.SetEvaluationFunction(EvaluationFunction);
     s.ExecuteSearch();
 
@@ -314,16 +364,34 @@ int main (int argc, const char* argv[])
     #endif
 
     std::cout << "Finished, now rerunning simulation with the best fit...\n";
+    
+    }
+    
+    else
+    {
+
+    std::cout << "Directory name for saved genotype data, leave blank for current directory: ";
+    getline(cin,dir_name);
+    //TODO: check for directory name safety, length
+    struct stat st;
+    while (dir_name != "" && stat(dir_name.c_str(), &st) != 0){
+        //cerr << "Error :  " << strerror(errno) << endl;
+        std::cout << "Folder does not exist, try again or leave blank for current directory: ";
+        getline(cin,dir_name);
+    }
 
     RandomState rs;
     long seed = static_cast<long>(time(NULL));
     rs.SetRandomSeed(seed);
     ifstream Best;
-    Best.open("best.gen.dat");
+    Best.open(rename_file("best.gen.dat"));
     TVector<double> best(1, VectSize);
     Best >> best;
     save_traces(best, rs);
 
     std::cout << "Finished final run\n" << endl;
+
+    }
+
     return 0;
 }
