@@ -328,7 +328,8 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    std::cout << "Running evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    cout << "Ran evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    //cout.flush()
 
     // configure the search
     s.SetRandomSeed(randomseed);
@@ -366,12 +367,10 @@ int main (int argc, const char* argv[])
         evolfile.close();
     #endif
 
-    std::cout << "Finished, now saving the best fit...\n";
+    cout << "Finished, now saving the best fit...\n";
     
     }
     
-    else
-    {
 
     /* std::cout << "Directory name for saved genotype data, leave blank for current directory: ";
     getline(cin,dir_name);
@@ -392,9 +391,9 @@ int main (int argc, const char* argv[])
     Best >> best;
     save_traces(best, rs);
 
-    std::cout << "Finished run, saving data\n" << endl;
+    cout << "Finished run, saving data\n" << endl;
 
-    }
+    
 
     return 0;
 }

@@ -7,7 +7,7 @@ import helper_funcs as hf
 def make_directory(directory_name):
     try:
         os.mkdir(directory_name)
-        print(f"Directory '{directory_name}' created successfully.")
+        print(f"Directory '{directory_name}' created successfully. Running search.")
         return True
     except FileExistsError:
         print(f"Directory '{directory_name}' already exists.")
@@ -28,25 +28,32 @@ def run_cpp_program():
     parser.add_argument("-r", "--rand_seed", type=int, nargs='?', default=42)
     parser.add_argument('-p', "--pop_size", type=int, nargs='?', default=96)
     parser.add_argument('-d', "--duration", type=int, nargs='?', default=24)
+    parser.add_argument('--simsep', action='store_true')
+
+    args=parser.parse_args()
+    folder_name = ''
+    do_evol = 1
     
-    while True:
-        do_evol_str = input("Do you want to perform an evolutionary search (E) or run a simulation (S)? ")
-        if do_evol_str == "E":
-           do_evol = 1
-           while True:
-               folder_name = input("Please enter the name of a folder to store data: ")
-               if make_directory(folder_name): break
-           break
-        if do_evol_str == "S":
-           do_evol = 0
-           while True:
-               folder_name = str(input("Please enter the name of a folder to read data: "))
-               if os.path.isdir(folder_name): break
-               print("Folder does not exist.")
-           break
+    if args.simsep:
+        while True:
+            do_evol_str = input("Do you want to perform an evolutionary search (E) or run a simulation (S)? ")
+            if do_evol_str == "E":
+                do_evol = 1
+                while True:
+                    folder_name = input("Please enter the name of a folder to store data: ")
+                    if make_directory(folder_name): break
+                break
+            if do_evol_str == "S":
+                do_evol = 0
+                while True:
+                    folder_name = str(input("Please enter the name of a folder to read data: "))
+                    if os.path.isdir(folder_name): break
+                    print("Folder does not exist.")
+                print('Running simulation.')        
+                break
        
       
-    args=parser.parse_args()
+    
     if args.Rand_seed is not None:
         cmd = ['./main', '-R', str(args.Rand_seed)]
     else:    
@@ -73,7 +80,7 @@ def run_cpp_program():
         print("Error:") 
         print(result.stderr)
 
-    if not do_evol:
+    if args.simsep:
        hf.dir_name = folder_name
        import load_data    
     
