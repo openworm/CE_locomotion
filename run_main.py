@@ -51,7 +51,8 @@ def run_cpp_program():
                     print("Folder does not exist.")
                 print('Running simulation.')        
                 break
-       
+    else:
+        print('Running without "--simsep" argument for directory creation.')   
       
     
     if args.Rand_seed is not None:
