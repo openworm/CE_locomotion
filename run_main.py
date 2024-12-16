@@ -3,7 +3,7 @@ import argparse
 import os
 import sys
 import helper_funcs as hf
-from pyneuroml.utils.cli import build_namespace
+#from pyneuroml.utils.cli import build_namespace
 
 DEFAULTS = {
     "popSize": 96,
