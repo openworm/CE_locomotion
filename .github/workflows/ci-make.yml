@@ -25,6 +25,11 @@ jobs:
     - name: Test makefile
       run: make
 
+    - name: Test directly running main program
+      run: |
+        ./main
+        ls -alth
+
     - name: Test Python script
       run: python run_main.py -p 4
       
