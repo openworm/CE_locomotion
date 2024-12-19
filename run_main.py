@@ -181,7 +181,8 @@ def run(a = None, **kwargs):
     if folder_name!='':
     #if args.simsep or args.evolve_folder or args.sim_folder:
        hf.dir_name = folder_name
-       import load_data    
+       from load_data import reload_single_run
+       reload_single_run(show_plot=False)
     
 if __name__ == "__main__": 
     run_main() 
