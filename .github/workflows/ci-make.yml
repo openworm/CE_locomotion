@@ -31,7 +31,9 @@ jobs:
         ls -alth
 
     - name: Test Python script
-      run: python run_main.py -R 1234 -p 96 --doEvol --folderName exampleRun2
+      run: |
+        pip install numpy matplotlib
+        python run_main.py -R 1234 -p 96 --doEvol --folderName exampleRun2
       
     - name: list generated files
       run: |
