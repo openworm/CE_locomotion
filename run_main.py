@@ -104,10 +104,25 @@ def run_main(args=None):
         args = process_args()
     run(a=args)
 
-def run(a = None, **kwargs):
-    #a = build_namespace(DEFAULTS, a, **kwargs)
-    
 
+def build_namespace(DEFAULTS={}, a=None, **kwargs):
+    if a is None:
+        a = argparse.Namespace()
+
+    # Add arguments passed in by keyword.
+    for key, value in kwargs.items():
+        setattr(a, key, value)
+
+    # Add defaults for arguments not provided.
+    for key, value in DEFAULTS.items():
+        if not hasattr(a, key):
+            setattr(a, key, value)
+
+    return a
+
+def run(a = None, **kwargs):
+    a = build_namespace(DEFAULTS, a, **kwargs)
+    
     
     """     parser=argparse.ArgumentParser(description="argument parser")
 
