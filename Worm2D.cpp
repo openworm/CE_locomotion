@@ -2,10 +2,11 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 #include "Worm2D.h"
 #include "Mainvars.h"
-
+#include <functional>
+#include <vector>
 
 using std::istringstream;
 using std::string;
