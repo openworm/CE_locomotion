@@ -4,6 +4,7 @@
 #include <string>
 #include <bits/stdc++.h>
 #include "Worm2D.h"
+#include "Mainvars.h"
 
 
 using std::istringstream;
@@ -171,10 +172,21 @@ istream& readNSysFromFile(istream& is, NervousSystem& c)
     return is;
 }
 
+ostream& writeMuscSysToFile(ostream& os, Muscles& m)
+{   
+    os << setprecision(32);
+    os << "T_muscle: " << m.T_muscle << endl;
+    os << "Nmuscles: " << m.Nmuscles << endl;
+    return os;
+}
+
+
 ostream& writeWSysToFile(ostream& os, Worm& w)
 {   
     
     os << setprecision(32);
+
+    os << "Worm parameters" << endl;
     {
     vector<string> names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     vector<double> vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
@@ -204,3 +216,71 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     return os;
 
 }    
+
+ostream& writeGlobalParsToFile(ostream& os)
+{   
+    os << setprecision(32);
+    os << "Worm global parameters" << endl;
+
+    os << "N_muscles: " << N_muscles << endl;
+    os << "N_units: " << N_units << endl;
+    os << "N_neuronsperunit: " << N_neuronsperunit << endl;
+    os << "N_stretchrec: " << N_stretchrec << endl;
+    os << "T_muscle: " << T_muscle << endl;
+    os << "NmusclePerNU: " << NmusclePerNU << endl << endl;
+
+    os << "Name conventions" << endl;
+    vector<string> names = {"DA","DB","DD","VD","VA","VB","Head","Tail"};
+    vector<int> vals = {DA,DB,DD,VD,VA,VB,Head,Tail};
+    for (int i=0; i<names.size(); i++)
+    {
+    os << names[i] + ": " << vals[i] << endl;
+    }
+
+    os << "Algorithm global parameters" << endl << endl;
+    os << "skip_steps: " << skip_steps << endl;
+    os <<  "Transient: " << Transient << endl; 
+    os <<  "StepSize: " << StepSize << endl;
+    os <<  "N_curvs: " << N_curvs << endl;
+    os <<  "AvgSpeed: " << AvgSpeed << endl;
+    os <<  "BBCfit: " <<  BBCfit << endl;
+
+
+    return os;
+}
+
+  /* 
+
+int skip_steps = 10;
+using namespace std;
+
+// Integration parameters
+int Duration = 24;
+const double Transient = 8.0;
+const double StepSize = 0.005;
+const int N_curvs = 23;
+
+// Fitness traj
+const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
+const double    BBCfit = AvgSpeed*Duration;
+
+// Genotype -> Phenotype Mapping Ranges
+const double    BiasRange               = 16.0; //15.0;
+const double    SCRange                 = 16.0; //15.0;
+const double    CSRange                 = 16.0; //15.0;
+const double    ESRange                 = 2.0;
+const double    SRmax                   = 200.0;
+const double    NMJmax                  = 0.8; //1.2;
+const double    NMJmin                  = 0.0;
+
+const int SR_A = 1;
+const int SR_B = 2;
+
+// Size of genotype
+int	VectSize = 17;  */
+
+
+
+
+
+

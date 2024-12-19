@@ -11,6 +11,7 @@
 #include "VectorMatrix.h"
 //#include "Worm.h"
 #include "Worm2D.h"
+#include "Mainvars.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -193,39 +194,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.DumpParams(phenfile);
     phenfile.close();
     }
-    {
-    ifstream wormPheno; 
-    wormPheno.open(rename_file("phenotype.dat"));
-    setParamsFromDump(wormPheno, w);
-    wormPheno.close();
-    }
-    {
-    ofstream phenfile(rename_file("phenotype2.dat"));
-    w.DumpParams(phenfile);
-    phenfile.close();
-    }
-    {
-    ofstream nv_file(rename_file("nv.dat"));
-    nv_file << w.n;
-    nv_file.close();
-    }
-    {
-    ofstream nv_file(rename_file("w_verb.dat"));
-    writeNSysToFile(nv_file, w.n);
-    writeWSysToFile(nv_file, w);
-    nv_file.close();
-    }
-
-    {
-    ifstream nv_file(rename_file("nv.dat"));
-    nv_file >> w.n;
-    nv_file.close(); 
-    }
-    {
-    ofstream nv_file(rename_file("nv2.dat"));
-    nv_file << w.n;
-    nv_file.close();
-    }
+    
 
     w.InitializeState(rs);
     w.sr.SR_A_gain = 0.0;
@@ -273,7 +242,46 @@ double save_traces(TVector<double> &v, RandomState &rs){
      }
 
 
-    
+    {
+    ifstream wormPheno; 
+    wormPheno.open(rename_file("phenotype.dat"));
+    setParamsFromDump(wormPheno, w);
+    wormPheno.close();
+    }
+    {
+    ofstream phenfile(rename_file("phenotype2.dat"));
+    w.DumpParams(phenfile);
+    phenfile.close();
+    }
+    {
+    ofstream nv_file(rename_file("nv.dat"));
+    nv_file << w.n;
+    nv_file.close();
+    }
+
+    {
+    ofstream nv_file(rename_file("w_verb.dat"));
+    writeNSysToFile(nv_file, w.n);
+    nv_file << endl;
+    writeWSysToFile(nv_file, w);
+    nv_file << endl;
+    writeMuscSysToFile(nv_file, w.m);
+    nv_file << endl;
+    writeGlobalParsToFile(nv_file);
+    nv_file.close();
+    }
+
+    {
+    ifstream nv_file(rename_file("nv.dat"));
+    nv_file >> w.n;
+    nv_file.close(); 
+    }
+    {
+    ofstream nv_file(rename_file("nv2.dat"));
+    nv_file << w.n;
+    nv_file.close();
+    }
+
     bodyfile.close();
     curvfile.close();
     actfile.close();
