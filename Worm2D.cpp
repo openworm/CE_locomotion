@@ -12,6 +12,9 @@
 using std::istringstream;
 using std::string;
 using std::cout;
+using std::function;
+using std::vector;
+
 
 
 void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
