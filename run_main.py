@@ -114,9 +114,26 @@ def run_main(args=None):
         args = process_args()
     run(a=args)
 
+
+def build_namespace(DEFAULTS={}, a=None, **kwargs):
+    if a is None:
+        a = argparse.Namespace()
+
+    # Add arguments passed in by keyword.
+    for key, value in kwargs.items():
+        setattr(a, key, value)
+
+    # Add defaults for arguments not provided.
+    for key, value in DEFAULTS.items():
+        if not hasattr(a, key):
+            setattr(a, key, value)
+
+    return a
+
 def run(a = None, **kwargs):
-    #a = build_namespace(DEFAULTS, a, **kwargs)
+    a = build_namespace(DEFAULTS, a, **kwargs)
     
+
     folder_name = ''
     do_evol = 1
     
@@ -177,7 +194,8 @@ def run(a = None, **kwargs):
     if folder_name!='':
     #if args.simsep or args.evolve_folder or args.sim_folder:
        hf.dir_name = folder_name
-       import load_data    
+       from load_data import reload_single_run
+       reload_single_run(show_plot=False)
     
 if __name__ == "__main__": 
     run_main() 

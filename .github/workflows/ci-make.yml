@@ -25,8 +25,19 @@ jobs:
     - name: Test makefile
       run: make
 
-    - name: Test Python script
-      run: python run_main.py -p 4
+    - name: Test directly running main program
+      run: |
+        ./main
+        ls -alth
+
+    - name: Test Python command line script
+      run: |
+        pip install numpy matplotlib
+        python run_main.py -R 1234 -p 96 --doEvol --folderName exampleRun2
+
+    - name: Test Python script access
+      run: |
+        python test.py
       
     - name: list generated files
       run: |
