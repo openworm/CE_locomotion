@@ -96,7 +96,8 @@ def reload_single_run(show_plot=True):
             x= body_data[i*3+1][t]
             y=body_data[i*3+2][t]
             y1=body_data[i*3+2][t]
-            print("%s + Plotting %i at t=%s (%s,%s), %s"%('\n' if i==point_start else '', i, t,x,y, color))
+            if i == 1:
+                print("%s + Plotting %i at t=%s (%s,%s), %s"%('\n' if i==point_start else '', i, t,x,y, color))
 
             axs[3, 0].plot([x],[y],'.',color=color,markersize=3 if t==1 else 0.4)
 

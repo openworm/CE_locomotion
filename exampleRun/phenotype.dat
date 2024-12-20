@@ -23,10 +23,10 @@ Self conns:
  VA: 9.91599
  VB: 10.7052
 Interneuron propierties: 
- AVA active state: 3.00862e-314
+ AVA active state: 3.04467e-314
  AVB active state: 0
  AVA inactive state: 0
- AVB inactive state: 3.00862e-314
+ AVB inactive state: 3.04467e-314
 Chem Conns: 
 
  DA->VD: 8.25796
