@@ -38,6 +38,11 @@ jobs:
     - name: Test Python script access
       run: |
         python test.py
+
+    - name: Test using OMV
+      run: |
+        pip install OSBModelValidation
+        omv all -V 
       
     - name: list generated files
       run: |
