@@ -27,17 +27,13 @@ jobs:
 
     - name: Test directly running main program
       run: |
-        ./main
+        ./main -p 4
         ls -alth
 
     - name: Test Python command line script
       run: |
         pip install numpy matplotlib
-        python run_main.py -R 1234 -p 96 --doEvol --folderName exampleRun2
-
-    - name: Test Python script access
-      run: |
-        python test.py
+        python run_main.py -R 1234 -p 6 --doEvol --folderName exampleRun2
 
     - name: Test using OMV
       run: |

@@ -1,0 +1,54 @@
+Time-constants: 
+
+ DA: 1
+ DB: 1
+ DD: 1
+ VD: 1
+ VA: 1
+ VB: 1
+Biases: 
+
+ DA: 3.23831
+ DB: 4.43074
+ DD: -2.36289
+ VD: -2.36289
+ VA: 3.23831
+ VB: 4.43074
+Self conns: 
+
+ DA: -2.52831
+ DB: -5.43157
+ DD: 0.434178
+ VD: 0.434178
+ VA: -2.52831
+ VB: -5.43157
+Interneuron propierties: 
+ AVA active state: 0
+ AVB active state: 0
+ AVA inactive state: 0
+ AVB inactive state: 0
+Chem Conns: 
+
+ DA->VD: 1.68843
+ DB->VD: 5.03893
+ VD->VA: -14.672
+ VD->VB: -1.11008
+ VA->DD: 1.68843
+ VA->VD: 0
+ VB->DD: 5.03893
+ VB->VD: 0
+Gap Juncs: 
+ DD-DD+1: 1.62688
+ VB-VB+1: 0.111894
+ VD-VD+1: 1.62688
+Stretch Receptors Gains: 
+ A-class SR: 0
+ B-class SR: 0
+NMJ weights: 
+
+ DA: 0.239427
+ DB: 0.414587
+ DD: -0.388876
+ VD: -0.388876
+ VA: 0.239427
+ VB: 0.414587
