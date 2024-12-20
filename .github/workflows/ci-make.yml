@@ -39,6 +39,7 @@ jobs:
       run: |
         pip install OSBModelValidation
         omv all -V 
+        git diff exampleRun/phenotype.dat 
       
     - name: list generated files
       run: |
