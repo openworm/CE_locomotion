@@ -1,5 +1,3 @@
-from run_main import run, run_main
+from run_main import run
 
-#run_main()
-
-run(popSize=96,RandSeed=1234,folderName='exampleRun',doEvol=True)
+run(popSize=96, RandSeed=1233, folderName='exampleRun', doEvol=True, overwrite=True)
