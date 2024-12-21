@@ -1,4 +1,4 @@
-
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -14,7 +14,6 @@ using std::string;
 using std::cout;
 using std::function;
 using std::vector;
-
 
 
 void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
@@ -81,8 +80,6 @@ ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
    return ifs;
 
 }
-
-#include <iomanip>
 
 ostream& writeNSysToFile(ostream& os, NervousSystem& c)
 {
@@ -242,17 +239,165 @@ ostream& writeGlobalParsToFile(ostream& os)
     os << names[i] + ": " << vals[i] << endl;
     }
 
-    os << "Algorithm global parameters" << endl << endl;
+    os << endl;
+    os << "Integration parameters" << endl;
     os << "skip_steps: " << skip_steps << endl;
     os <<  "Transient: " << Transient << endl; 
     os <<  "StepSize: " << StepSize << endl;
     os <<  "N_curvs: " << N_curvs << endl;
+
+    os << endl;
+    os << "Fitness traj" << endl;
     os <<  "AvgSpeed: " << AvgSpeed << endl;
     os <<  "BBCfit: " <<  BBCfit << endl;
 
+    os << endl;
+    os <<  "Genotype -> Phenotype Mapping Ranges" << endl;
+    os <<  "BiasRange: " << BiasRange << endl;
+    os <<  "SCRange: " << SCRange << endl;
+    os <<  "CSRange: " << CSRange  << endl;
+    os <<  "ESRange: "  << ESRange << endl;
+    os <<  "SRmax: "  << SRmax << endl;
+    os <<  "NMJmax: "  << NMJmax << endl;
+    os <<  "NMJmin: "  << NMJmin << endl;
 
+    os << endl;
+    os << "Stretch receptor parameters" << endl;
+    os << "SR_A :" << SR_A << endl;
+    os << "SR_B :" << SR_B << endl;
+ 
+    os << endl;
+    os << "Size of genotype" << endl;
+    os << "Vectsize :" << VectSize << endl;
+
+    
     return os;
 }
+
+
+
+
+template<class T>
+ostream& writeVectorFormat(ostream& os, 
+const vector<string> & names, const vector<T> & vals, 
+const vector<int> & messages_inds, const vector<string> & messages)
+{
+    int mess_ind = 0;
+    os << setprecision(32);
+    for (int i=0;i<names.size(); i++) {
+        if (messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
+        os << names[i] + ": " << vals[i] << endl;
+        }
+
+return os;        
+        
+}    
+
+template<class T>
+ostream& writeVectorFormat(ostream& os, 
+const vector<string> & names, const vector<T> & vals)
+{
+    os << setprecision(32);
+    for (int i=0;i<names.size(); i++) {
+        os << names[i] + ": " << vals[i] << endl;
+        }
+
+return os;        
+        
+}    
+struct intString
+{
+int ind;
+string std;
+};
+
+ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s)
+{   
+    
+    os << setprecision(32);
+    const vector<string> names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
+    const vector<double> vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
+    const vector<string> messages = {"Number of stretch receptor, equal to number of units",
+                                "Number of segments in the body",
+                                "Number of segments sensed by each stretch receptor"};
+    const vector<int> messages_inds = {0,1,2}; //must be ordered
+ 
+    os << "StretchReceptor parameters" << endl;
+    writeVectorFormat<double>(os,names,vals,messages_inds,messages);
+    
+return os;
+}
+
+ostream& writeBodySysToFile(ostream& os, WormBody& b)
+{   
+{
+const vector<string> names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
+"C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L_fact", "kappa_D_fact", 
+"kappa_M0_fact", "beta_L_fact", "beta_D_fact", "beta_M0_fact", "delta_M"};
+
+const vector<double> vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
+C_water_par_total, C_water_perp_total, kappa_L_fact, kappa_D_fact, kappa_M0_fact, beta_L_fact, 
+beta_D_fact, beta_M0_fact, delta_M};
+
+vector<int> messages_inds(vals.size());
+for (int i=0;i<messages_inds.size();i++) messages_inds[i]=i;
+
+const vector<string> messages = {    
+"Normalized medium drag coefficient (0 = water, 1 = agar)",
+"Length of worm in m",
+"Minor radius of prolate ellipse body in m",
+"Total tangential drag coefficient for agar in kg/s",
+"Total rod normal drag coefficient in agar in kg/s",
+"Total rod tangential drag coefficient for water in kg/s",
+"Total rod normal drag coefficient for water in kg/s",
+"Lateral spring constant in kg/s",
+"Diagonal spring constant in kg/s",
+"Baseline active muscle spring constant in kg/s",
+"Lateral passive damping constant in s",
+"Diagonal passive damping constant in s",
+"Baseline active damping constant in s",
+"Rest muscle length scaling constant"
+
+};
+
+os << "Worm Body parameters" << endl;
+writeVectorFormat<double>(os,names,vals,messages_inds,messages);
+}
+
+const vector<string> names = {"N_segments"};
+const vector<int> vals = {N_segments};
+const vector<string> messages = {  
+"Number of segments"
+};
+const vector<int> messages_inds  = {0};
+writeVectorFormat<int>(os,names,vals,messages_inds,messages);
+
+return os;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*    os << "NSR: " << s.NSR << endl;
+    os << "NSR: " << s.NSR << endl;
+ 
+double NSR; // Number of stretch receptor, equal to number of units
+    double NSEGS; // Number of segments in the body (50)
+    double NSEGSSR; // Number of segments sensed by each stretch receptor
+    
+    double SR_A_gain;
+    double SR_B_gain; */
+
+
 
   /* 
 

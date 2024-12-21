@@ -167,9 +167,9 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs){
   // return fitnessBackward;
 }
 
-string dir_name = "";
+string output_dir_name = "";
 string rename_file(const string & file_name){
-  if (dir_name != "") return dir_name + "/" + file_name;
+  if (output_dir_name != "") return output_dir_name + "/" + file_name;
   return file_name;
 }
 
@@ -268,6 +268,10 @@ double save_traces(TVector<double> &v, RandomState &rs){
     writeMuscSysToFile(nv_file, w.m);
     nv_file << endl;
     writeGlobalParsToFile(nv_file);
+    nv_file << endl;
+    writeStretchSysToFile(nv_file, w.sr);
+    nv_file << endl;
+    writeBodySysToFile(nv_file, w.b);
     nv_file.close();
     }
 
@@ -335,9 +339,9 @@ int main (int argc, const char* argv[])
     { 
     if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"--folder")==0) {
-      dir_name = argv[arg+1];
+      output_dir_name = argv[arg+1];
       struct stat sb;
-      if (stat(dir_name.c_str(), &sb) != 0) 
+      if (stat(output_dir_name.c_str(), &sb) != 0) 
       {cout << "Directory doesn't exist." << endl;return 0;}
     }
     if (seed_flag){ 
