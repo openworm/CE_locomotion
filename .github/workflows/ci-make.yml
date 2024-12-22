@@ -25,8 +25,21 @@ jobs:
     - name: Test makefile
       run: make
 
-    - name: Test Python script
-      run: python run_main.py -p 4
+    - name: Test directly running main program
+      run: |
+        ./main -p 4
+        ls -alth
+
+    - name: Test Python command line script
+      run: |
+        pip install numpy matplotlib
+        python run_main.py -R 1234 -p 6 --doEvol --folderName exampleRun2
+
+    - name: Test using OMV
+      run: |
+        pip install OSBModelValidation
+        omv all -V 
+        git diff exampleRun/phenotype.dat 
       
     - name: list generated files
       run: |
