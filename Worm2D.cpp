@@ -4,9 +4,13 @@
 #include <string>
 #include <functional>
 #include <vector>
+#include <nlohmann/json.hpp>
 //#include <bits/stdc++.h>
 #include "Worm2D.h"
 #include "Mainvars.h"
+
+
+using json = nlohmann::json;
 
 
 using std::istringstream;
@@ -275,6 +279,24 @@ ostream& writeGlobalParsToFile(ostream& os)
 }
 
 
+template <class T>
+struct Params {
+vector<string> names;
+vector<T> vals;
+vector<int> messages_inds;
+vector<string> messages;
+};
+
+template<class T>
+void appendToJson(json & j, const Params<T> & par)
+{
+    int mess_ind = 0;
+    for (int i=0;i<par.names.size(); i++) {
+        if (par.messages_inds[mess_ind]==i) {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
+        j[par.names[i]]["value"] = par.vals[i];
+        }
+               
+}
 
 
 template<class T>
@@ -291,7 +313,8 @@ const vector<int> & messages_inds, const vector<string> & messages)
 
 return os;        
         
-}    
+}
+
 
 template<class T>
 ostream& writeVectorFormat(ostream& os, 
@@ -328,21 +351,24 @@ ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s)
 return os;
 }
 
-ostream& writeBodySysToFile(ostream& os, WormBody& b)
-{   
+
+
+void getBodyParams(Params<double> & par, WormBody& b)
 {
-const vector<string> names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
+
+par.names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
 "C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L_fact", "kappa_D_fact", 
 "kappa_M0_fact", "beta_L_fact", "beta_D_fact", "beta_M0_fact", "delta_M"};
 
-const vector<double> vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
+par.vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
 C_water_par_total, C_water_perp_total, kappa_L_fact, kappa_D_fact, kappa_M0_fact, beta_L_fact, 
 beta_D_fact, beta_M0_fact, delta_M};
 
-vector<int> messages_inds(vals.size());
-for (int i=0;i<messages_inds.size();i++) messages_inds[i]=i;
+par.messages_inds.resize(par.vals.size());
 
-const vector<string> messages = {    
+for (int i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
+
+par.messages = {    
 "Normalized medium drag coefficient (0 = water, 1 = agar)",
 "Length of worm in m",
 "Minor radius of prolate ellipse body in m",
@@ -360,9 +386,30 @@ const vector<string> messages = {
 
 };
 
-os << "Worm Body parameters" << endl;
-writeVectorFormat<double>(os,names,vals,messages_inds,messages);
 }
+
+
+
+void writeParsToJson(Worm & w)
+{
+Params<double> par;    
+getBodyParams(par,w.b);
+json j;
+appendToJson<double>(j["body params"],par);
+
+
+ofstream json_out(rename_file("worm_data.json"));
+json_out << std::setw(4) << j << std::endl;
+}
+
+
+ostream& writeBodySysToFile(ostream& os, WormBody& b)
+{   
+Params<double> par;    
+getBodyParams(par,b);
+
+os << "Worm Body parameters" << endl;
+writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
 
 const vector<string> names = {"N_segments"};
 const vector<int> vals = {N_segments};
@@ -375,8 +422,74 @@ writeVectorFormat<int>(os,names,vals,messages_inds,messages);
 return os;
 }
 
+string output_dir_name = "";
+string rename_file(const string & file_name){
+  if (output_dir_name != "") return output_dir_name + "/" + file_name;
+  return file_name;
+}
+
+void readJson(json j, ifstream & ifs)
+{
+ifs >> j;
+}
 
 
+void writeWormParams(Worm & w)
+{
+    {
+    ifstream wormPheno; 
+    wormPheno.open(rename_file("phenotype.dat"));
+    setParamsFromDump(wormPheno, w);
+    wormPheno.close();
+    }
+    {
+    ofstream phenfile(rename_file("phenotype2.dat"));
+    w.DumpParams(phenfile);
+    phenfile.close();
+    }
+    {
+    ofstream nv_file(rename_file("nv.dat"));
+    nv_file << w.n;
+    nv_file.close();
+    }
+
+    {
+    ofstream nv_file(rename_file("w_verb.dat"));
+    writeNSysToFile(nv_file, w.n);
+    nv_file << endl;
+    writeWSysToFile(nv_file, w);
+    nv_file << endl;
+    writeMuscSysToFile(nv_file, w.m);
+    nv_file << endl;
+    writeGlobalParsToFile(nv_file);
+    nv_file << endl;
+    writeStretchSysToFile(nv_file, w.sr);
+    nv_file << endl;
+    writeBodySysToFile(nv_file, w.b);
+    nv_file.close();
+    }
+   
+    {
+    ifstream nv_file(rename_file("nv.dat"));
+    nv_file >> w.n;
+    nv_file.close(); 
+    }
+
+   /*  {
+    ifstream nv_file(rename_file("nv.dat"));
+    readJson(nv_file);
+    nv_file.close(); 
+    }
+ */
+    {
+    ofstream nv_file(rename_file("nv2.dat"));
+    nv_file << w.n;
+    nv_file.close();
+    }
+
+    writeParsToJson(w);
+   
+}
 
 
 

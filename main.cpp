@@ -44,6 +44,9 @@ const double    NMJmin                  = 0.0;
 const int SR_A = 1;
 const int SR_B = 2;
 
+
+
+
 // Size of genotype
 int	VectSize = 17;
 
@@ -167,11 +170,7 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs){
   // return fitnessBackward;
 }
 
-string output_dir_name = "";
-string rename_file(const string & file_name){
-  if (output_dir_name != "") return output_dir_name + "/" + file_name;
-  return file_name;
-}
+
 
 
 
@@ -187,7 +186,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     GenPhenMapping(v, phenotype);
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
-    //Worm2D w(phenotype, 1);
+    
     Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
@@ -241,50 +240,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
          w.DumpActState(actfile, skip_steps);
      }
 
-
-    {
-    ifstream wormPheno; 
-    wormPheno.open(rename_file("phenotype.dat"));
-    setParamsFromDump(wormPheno, w);
-    wormPheno.close();
-    }
-    {
-    ofstream phenfile(rename_file("phenotype2.dat"));
-    w.DumpParams(phenfile);
-    phenfile.close();
-    }
-    {
-    ofstream nv_file(rename_file("nv.dat"));
-    nv_file << w.n;
-    nv_file.close();
-    }
-
-    {
-    ofstream nv_file(rename_file("w_verb.dat"));
-    writeNSysToFile(nv_file, w.n);
-    nv_file << endl;
-    writeWSysToFile(nv_file, w);
-    nv_file << endl;
-    writeMuscSysToFile(nv_file, w.m);
-    nv_file << endl;
-    writeGlobalParsToFile(nv_file);
-    nv_file << endl;
-    writeStretchSysToFile(nv_file, w.sr);
-    nv_file << endl;
-    writeBodySysToFile(nv_file, w.b);
-    nv_file.close();
-    }
-
-    {
-    ifstream nv_file(rename_file("nv.dat"));
-    nv_file >> w.n;
-    nv_file.close(); 
-    }
-    {
-    ofstream nv_file(rename_file("nv2.dat"));
-    nv_file << w.n;
-    nv_file.close();
-    }
+    writeWormParams(w);
 
     bodyfile.close();
     curvfile.close();
@@ -313,6 +269,7 @@ void ResultsDisplay(TSearch &s)
 
 
 
+
 // ------------------------------------
 // The main program
 // ------------------------------------
@@ -325,6 +282,7 @@ int main (int argc, const char* argv[])
     if (argc==2) randomseed += atoi(argv[1]);
 
     bool do_evol = 1;
+    
 
     if (argc>2){
        

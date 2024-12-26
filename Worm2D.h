@@ -11,6 +11,9 @@ ostream& writeGlobalParsToFile(ostream& os);
 ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s);
 ostream& writeBodySysToFile(ostream& os, WormBody& b);
 
+string rename_file(const string & file_name);
+void writeWormParams(Worm & w);
+
 
 //string output_dir_name = "";
 //string rename_file(const string & file_name);
