@@ -92,6 +92,106 @@ vector<int> messages_inds;
 vector<string> messages;
 };
 
+template <class T>
+struct ParamsHead : Params<T> {
+string head;
+};
+
+
+template<class T>
+vector<T> & append(vector<T> & v1, const vector<T> v2)
+{
+v1.insert(v1.end(), v2.begin(), v2.end());
+return v1;
+}    
+
+template<class T> 
+vector<T> getVector(TVector<T> & vec, int size)
+{ 
+vector<T> retvec;    
+for (int i = 1; i <= size; i++)
+        retvec.push_back(vec[i]);   
+return retvec;    
+}
+
+struct toFromWeight{
+    weightentry w;
+    int to;
+};
+
+void to_json(json & j, const weightentry & w)
+{
+  j = json{{"from", w.from}, {"weight", w.weight}};
+}
+
+void to_json(json & j, const toFromWeight & w)
+{
+  j = json{{"to", w.to}, {"from", w.w.from}, {"weight", w.w.weight}};
+}
+
+
+void appendToJson(json & j, const weightentry & w)
+{
+j["from"] = w.from;
+j["weight"] = w.weight;
+}
+
+template<class T>
+void appendToJson(json & j, const Params<T> & par)
+{
+    int mess_ind = 0;
+    for (int i=0;i<par.names.size(); i++) {
+        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
+        {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
+        j[par.names[i]]["value"] = par.vals[i];
+        }
+               
+}
+
+
+
+void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+{    
+    vector<toFromWeight> newvec;
+    for (int i=0; i<tot_size; i++){    
+        for (int j=0; j<sizes[i]; j++) { 
+            toFromWeight tv{vec[i][j], i};
+            newvec.push_back(tv);}        
+    }
+    j["value"] = newvec;
+}
+
+void appendNSToJson(json & j, NervousSystem& c)
+{
+    j["chemical weights"]["message"] = "chemical weights in sparse format";
+    appendMatrixToJson(j["chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
+    appendMatrixToJson(j["electrical weights"], c.electricalweights, c.NumChemicalConns, c.size);
+    j["electrical weights"]["message"] = "electrical weights in sparse format";
+}
+
+ParamsHead<int> getNervousSysParamsInt(NervousSystem& c)
+{
+ParamsHead<int> par;
+par.head = "Nervous system";
+par.names = {"size", "maxchemcons", "maxelecconns"};
+par.vals = {c.size, c.maxchemconns, c.maxelecconns};
+
+return par;
+}
+
+
+ParamsHead< vector<double> > getNervousSysParamsDouble(NervousSystem& c)
+{
+
+ParamsHead< vector<double> > par;
+par.head = "Nervous system";
+par.names = {"time constants", "biases", "gains"};
+par.vals = {getVector<double>(c.taus, c.size), 
+getVector<double>(c.biases, c.size), getVector<double>(c.gains, c.size)};
+return par;
+
+}
+
 
 ostream& writeNSysToFile(ostream& os, NervousSystem& c)
 {
@@ -186,6 +286,22 @@ istream& readNSysFromFile(istream& is, NervousSystem& c)
     return is;
 }
 
+Params<double> getMusclesParamsDouble(Muscles & m)
+{
+Params<double> par;
+par.names = {"T_muscle"};
+par.vals = {m.T_muscle};
+return par;
+}
+
+Params<int> getMusclesParamsInt(Muscles & m)
+{
+Params<int> par;
+par.names = {"Nmuscles"};
+par.vals = {m.Nmuscles};
+return par;
+}
+
 ostream& writeMuscSysToFile(ostream& os, Muscles& m)
 {   
     os << setprecision(32);
@@ -194,12 +310,6 @@ ostream& writeMuscSysToFile(ostream& os, Muscles& m)
     return os;
 }
 
-template<class T>
-vector<T> & append(vector<T> & v1, const vector<T> v2)
-{
-v1.insert(v1.end(), v2.begin(), v2.end());
-return v1;
-}    
 
 Params<double> getWormParams(Worm & w)
 {
@@ -252,6 +362,74 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     return os;
 
 }    
+
+
+vector<ParamsHead<double> > getGlobalParamsDouble()
+{
+vector<ParamsHead<double> > parvec;
+{ParamsHead<double> par;
+par.head = "Worm global parameters";
+par.names = {"T_muscle"};
+par.vals = {T_muscle};
+parvec.push_back(par);}
+{ParamsHead<double> par;
+par.head =  "Integration parameters";
+par.names =  {"Transient", "StepSize"};
+par.vals = {Transient, StepSize};
+parvec.push_back(par);}
+{ParamsHead<double> par;
+par.head =  "Fitness traj";
+par.names =  {"AvgSpeed", "BBCfit"};
+par.vals = {AvgSpeed, BBCfit};
+parvec.push_back(par);}
+{ParamsHead<double> par;
+par.head =  "Genotype -> Phenotype Mapping Ranges";
+par.names =  {"BiasRange", 
+     "SCRange", 
+     "CSRange", 
+     "ESRange",  
+      "SRmax",  
+      "NMJmax",  
+      "NMJmin"};  
+par.vals = {BiasRange, SCRange, CSRange, ESRange, SRmax, NMJmax, NMJmin}; 
+parvec.push_back(par);}
+
+return parvec;
+}
+
+vector<ParamsHead<int> > getGlobalParamsInt()
+{
+vector<ParamsHead<int> > parvec;
+{ParamsHead<int> par;
+par.head = "Worm global parameters";
+par.names = { "N_muscles", "N_units", "N_neuronsperunit", "N_stretchrec" "NmusclePerNU"};
+par.vals = {N_muscles, N_units, N_neuronsperunit, N_stretchrec, NmusclePerNU};
+parvec.push_back(par);}
+{ParamsHead<int> par;
+par.head = "Name conventions";
+par.names =  {"DA","DB","DD","VD","VA","VB","Head","Tail"};
+par.vals = {DA,DB,DD,VD,VA,VB,Head,Tail};
+parvec.push_back(par);}
+{ParamsHead<int> par;
+par.head =  "Integration parameters";
+par.names =  {"skip_steps", "N_curvs"};
+par.vals = {skip_steps, N_curvs};
+parvec.push_back(par);}
+{ParamsHead<int> par;
+par.head =  "Stretch receptor parameters";
+par.names =  {"SR_A", "SR_B"};
+par.vals = {SR_A, SR_B};
+parvec.push_back(par);}
+{ParamsHead<int> par;
+par.head =  "Worm global parameters";
+par.names =  {"Vectsize"};
+par.vals = {VectSize};
+par.messages = {"Size of genotype"};
+par.messages_inds = {0}; 
+parvec.push_back(par);}
+
+return parvec;
+}
 
 ostream& writeGlobalParsToFile(ostream& os)
 {   
@@ -311,18 +489,6 @@ ostream& writeGlobalParsToFile(ostream& os)
 
 
 
-template<class T>
-void appendToJson(json & j, const Params<T> & par)
-{
-    int mess_ind = 0;
-    for (int i=0;i<par.names.size(); i++) {
-        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
-        {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
-        j[par.names[i]]["value"] = par.vals[i];
-        }
-               
-}
-
 
 template<class T>
 ostream& writeVectorFormat(ostream& os, 
@@ -353,11 +519,7 @@ const vector<string> & names, const vector<T> & vals)
 return os;        
         
 }    
-struct intString
-{
-int ind;
-string std;
-};
+
 
 Params<double> getStretchReceptorParams(StretchReceptor& s)
 {
@@ -453,6 +615,31 @@ appendToJson<double>(j["stretch receptor"],par);
 Params<double> par = getWormParams(w);
 appendToJson<double>(j["worm"],par);
 }
+{
+Params<double> par =getMusclesParamsDouble(w.m);
+appendToJson<double>(j["muscle"],par);
+}
+{
+Params<int> par =getMusclesParamsInt(w.m);
+appendToJson<int>(j["muscle"],par);
+}
+
+{vector<ParamsHead<int> > parvec = getGlobalParamsInt();
+for (int i=0;i<parvec.size(); i++) {
+appendToJson<int>(j[parvec[i].head],parvec[i]);
+}}
+{vector<ParamsHead<double> > parvec = getGlobalParamsDouble();
+for (int i=0;i<parvec.size(); i++) {
+appendToJson<double>(j[parvec[i].head],parvec[i]);
+}}
+
+{ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
+appendToJson<vector<double> >(j[parvec.head],parvec);}
+
+ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
+appendToJson<int>(j[parvec.head],parvec);
+
+appendNSToJson(j["Nervous system"], w.n);
 
 ofstream json_out(rename_file("worm_data.json"));
 json_out << std::setw(4) << j << std::endl;
