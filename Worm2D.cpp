@@ -85,6 +85,15 @@ ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
 
 }
 
+template <class T>
+struct Params {
+vector<string> names;
+vector<T> vals;
+vector<int> messages_inds;
+vector<string> messages;
+};
+
+
 ostream& writeNSysToFile(ostream& os, NervousSystem& c)
 {
     // Set the precision
@@ -186,6 +195,28 @@ ostream& writeMuscSysToFile(ostream& os, Muscles& m)
     return os;
 }
 
+template<class T>
+vector<T> & append(vector<T> & v1, const vector<T> v2)
+{
+v1.insert(v1.end(), v2.begin(), v2.end());
+return v1;
+}    
+
+Params<double> getWormParams(Worm & w)
+{
+
+Params<double> par;
+par.names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
+par.vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
+append<string>(par.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
+append<string>(par.names,{"AVA_output", "AVB_output"});
+append<double>(par.vals,{w.AVA_act, w.AVA_inact, w.AVB_act, w.AVB_inact});
+append<double>(par.vals,{w.AVA_output, w.AVB_output});
+
+return par;
+
+}
+
 
 ostream& writeWSysToFile(ostream& os, Worm& w)
 {   
@@ -279,20 +310,15 @@ ostream& writeGlobalParsToFile(ostream& os)
 }
 
 
-template <class T>
-struct Params {
-vector<string> names;
-vector<T> vals;
-vector<int> messages_inds;
-vector<string> messages;
-};
+
 
 template<class T>
 void appendToJson(json & j, const Params<T> & par)
 {
     int mess_ind = 0;
     for (int i=0;i<par.names.size(); i++) {
-        if (par.messages_inds[mess_ind]==i) {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
+        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
+        {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
         j[par.names[i]]["value"] = par.vals[i];
         }
                
@@ -307,7 +333,7 @@ const vector<int> & messages_inds, const vector<string> & messages)
     int mess_ind = 0;
     os << setprecision(32);
     for (int i=0;i<names.size(); i++) {
-        if (messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
+        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
         os << names[i] + ": " << vals[i] << endl;
         }
 
@@ -334,27 +360,46 @@ int ind;
 string std;
 };
 
+Params<double> getStretchReceptorParams(StretchReceptor& s)
+{
+Params<double> par;
+par.names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
+par.vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
+par.messages = {"Number of stretch receptor, equal to number of units",
+                                "Number of segments in the body",
+                                "Number of segments sensed by each stretch receptor"};
+par.messages_inds = {0,1,2}; //must be ordered
+return par;
+}
+
+
 ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s)
 {   
     
     os << setprecision(32);
-    const vector<string> names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
-    const vector<double> vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
-    const vector<string> messages = {"Number of stretch receptor, equal to number of units",
-                                "Number of segments in the body",
-                                "Number of segments sensed by each stretch receptor"};
-    const vector<int> messages_inds = {0,1,2}; //must be ordered
+    Params<double> par = getStretchReceptorParams(s);
+    
  
     os << "StretchReceptor parameters" << endl;
-    writeVectorFormat<double>(os,names,vals,messages_inds,messages);
+    writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
     
 return os;
 }
 
-
-
-void getBodyParams(Params<double> & par, WormBody& b)
+Params<int> getBodyParamsInts(WormBody& b)
 {
+Params<int> par;
+par.names = {"N_segments"};
+par.vals = {N_segments};
+par.messages = {"Number of segments"};
+par.messages_inds  = {0};
+return par;
+}
+
+Params<double> getBodyParams(WormBody& b)
+{
+
+Params<double> par;
 
 par.names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
 "C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L_fact", "kappa_D_fact", 
@@ -386,17 +431,29 @@ par.messages = {
 
 };
 
+return par;
+
 }
 
 
 
 void writeParsToJson(Worm & w)
 {
-Params<double> par;    
-getBodyParams(par,w.b);
-json j;
-appendToJson<double>(j["body params"],par);
 
+json j;
+{Params<double> par = getBodyParams(w.b);
+appendToJson<double>(j["body"],par);}
+
+{Params<int> par = getBodyParamsInts(w.b);
+appendToJson<int>(j["body"],par);}
+
+{Params<double> par = getStretchReceptorParams(w.sr);
+appendToJson<double>(j["stretch receptor"],par);
+}
+{
+Params<double> par = getWormParams(w);
+appendToJson<double>(j["worm"],par);
+}
 
 ofstream json_out(rename_file("worm_data.json"));
 json_out << std::setw(4) << j << std::endl;
@@ -405,19 +462,15 @@ json_out << std::setw(4) << j << std::endl;
 
 ostream& writeBodySysToFile(ostream& os, WormBody& b)
 {   
-Params<double> par;    
-getBodyParams(par,b);
 
-os << "Worm Body parameters" << endl;
+os << "Worm Body parameters" << endl;    
+{Params<double> par = getBodyParams(b);
 writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
+}
 
-const vector<string> names = {"N_segments"};
-const vector<int> vals = {N_segments};
-const vector<string> messages = {  
-"Number of segments"
-};
-const vector<int> messages_inds  = {0};
-writeVectorFormat<int>(os,names,vals,messages_inds,messages);
+{Params<int> par = getBodyParamsInts(b);
+writeVectorFormat<int>(os,par.names,par.vals,par.messages_inds,par.messages);
+}
 
 return os;
 }
