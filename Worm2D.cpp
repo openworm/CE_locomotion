@@ -9,7 +9,6 @@
 #include "Worm2D.h"
 #include "Mainvars.h"
 
-
 using json = nlohmann::json;
 
 

@@ -7,7 +7,7 @@ TSearch.o: TSearch.cpp TSearch.h
 Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto Worm.cpp
 Worm2D.o: Worm2D.cpp Worm2D.h
-	g++ -c -O3 -std=c++11 -flto Worm2D.cpp	
+	g++ -c -O3 -I$(brew --prefix nlohmann-json)/include -std=c++11 -flto Worm2D.cpp	
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h
