@@ -22,9 +22,14 @@ jobs:
     - name: C++ info
       run: g++ -v
 
-    - name: Install json
+    - name: Install dependencies (Ubuntu)
       run: sudo apt-get install -y nlohmann-json3-dev
+      if: matrix.runs-on == 'ubuntu-latest'
       
+    - name: Install dependencies (macOS)
+      run: brew install nlohmann-json
+      if: matrix.runs-on == 'macos-latest'
+    
     - name: Test makefile
       run: make
 
