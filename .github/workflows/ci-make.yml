@@ -16,6 +16,7 @@ jobs:
 
     - name: make and run test
       run: |
+         pip install matplotlib
          ./test_all.sh 
          git diff
 
