@@ -15,6 +15,14 @@ int nn(int neuronNumber, int unitNumber)
 // The constructor
 Worm::Worm(TVector<double> &v,double output)
 {
+
+  // PG: Setting these to zero as they were not initialised before use!
+  // Note: the usage of these needs to be further investigated!
+  AVA_act = 0;
+  AVA_inact = 0;
+  AVB_act = 0;
+  AVB_inact = 0;
+
   // Muscles
   m.SetMuscleParams(N_muscles, T_muscle);
 
