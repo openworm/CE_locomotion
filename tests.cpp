@@ -27,6 +27,12 @@ int main (int argc, const char* argv[])
     assert(clip(0, -1, 1) == 0);
     assert(clip(0, 1, 1) == 1);
 
+    std::cout << MapSearchParameter(-1, 0, 10, -1.0e99, 1.0e99)  << std::endl;
+    
+    assert( MapSearchParameter(-1, 0, 10) == 0);
+    assert( MapSearchParameter(1, 0, 10) == 10);
+    assert( MapSearchParameter(1, 0, 10, -5,5) == 5);
+
     std::cout << "Done!"  << std::endl;
 
     return 0;
