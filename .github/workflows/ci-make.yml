@@ -35,9 +35,19 @@ jobs:
         pip install numpy matplotlib
         python run_main.py -R 1234 -p 6 --doEvol --folderName exampleRun2
 
-    - name: Test using OMV
+    - name: Test using OMV 1
       run: |
         pip install OSBModelValidation
+        omv all -V 
+        git diff exampleRun/phenotype.dat 
+
+    - name: Test using OMV 2
+      run: |
+        omv all -V 
+        git diff exampleRun/phenotype.dat 
+
+    - name: Test using OMV 3
+      run: |
         omv all -V 
         git diff exampleRun/phenotype.dat 
       
