@@ -254,7 +254,7 @@ void ResultsDisplay(TSearch &s)
 int main (int argc, const char* argv[])
 {
     std::cout << std::setprecision(10);
-    long randomseed = static_cast<long>(time(NULL));
+    long randomseed = 1233;  // Hard coded in this branch for testing!!
     if (argc == 2)
         randomseed += atoi(argv[1]);
 
@@ -297,7 +297,7 @@ int main (int argc, const char* argv[])
     #endif
 
     RandomState rs;
-    long seed = static_cast<long>(time(NULL));
+    long seed = 1233;  // Hard coded in this branch for testing!!
     rs.SetRandomSeed(seed);
     ifstream Best;
     Best.open("best.gen.dat");
