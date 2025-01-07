@@ -2,6 +2,10 @@
 set -ex
 
 make clean
+make tests
+
+./tests
+
 make
 
 rm -rf exampleRun
