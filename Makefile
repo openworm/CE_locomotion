@@ -17,4 +17,4 @@ Muscles.o: Muscles.cpp Muscles.h VectorMatrix.h random.h
 main.o: main.cpp Worm.h WormBody.h StretchReceptor.h Muscles.h TSearch.h
 	g++ -c -O3 -flto main.cpp
 clean:
-	rm *.o main
+	rm -f *.o main
