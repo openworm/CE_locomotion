@@ -82,7 +82,7 @@ public:
 
     // Neuromuscular junctions
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
-    double AVA_act, AVA_inact, AVB_act, AVB_inact;
+    double AVA_act=0, AVA_inact=0, AVB_act=0, AVB_inact=0;
     double AVA_output, AVB_output;
 
 };
