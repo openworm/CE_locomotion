@@ -139,9 +139,9 @@
             "message": "chemical weights in sparse format",
             "value": [
                 {
-                    "from": 67410837,
+                    "from": 0,
                     "to": 1,
-                    "weight": -0.033565581312608055
+                    "weight": 0.0
                 },
                 {
                     "from": 1,
@@ -149,9 +149,9 @@
                     "weight": -2.52831
                 },
                 {
-                    "from": 1200645920,
+                    "from": 1013999632,
                     "to": 2,
-                    "weight": 2.7151937166e-314
+                    "weight": 2.6229781977e-314
                 },
                 {
                     "from": 2,
@@ -834,9 +834,9 @@
             "message": "electrical weights in sparse format",
             "value": [
                 {
-                    "from": 1200648592,
+                    "from": 1014002304,
                     "to": 1,
-                    "weight": 2.715195029e-314
+                    "weight": 2.62297951e-314
                 },
                 {
                     "from": 0,
@@ -1725,26 +1725,33 @@
             "message": "Minor radius of prolate ellipse body in m",
             "value": 4e-05
         },
-        "beta_D_fact": {
-            "value": 3e-323
+        "beta_D": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
         },
-        "beta_L_fact": {
-            "value": 1.0609978957e-313
+        "beta_L": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
         },
-        "beta_M0_fact": {
-            "value": 4.61486433207275e+281
+        "beta_M0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
         },
         "delta_M": {
-            "value": 3.81264326861613e+257
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
         },
-        "kappa_D_fact": {
-            "value": 2.121995791e-314
+        "kappa_D": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
         },
-        "kappa_L_fact": {
-            "value": 0.0
+        "kappa_L": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
         },
-        "kappa_M0_fact": {
-            "value": 6.365987374e-314
+        "kappa_M0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
         }
     },
     "muscle": {
