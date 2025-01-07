@@ -12,7 +12,8 @@ DEFAULTS = {
     "RandSeed": 42,
     "randSeed": 42,
     "folderName": None,
-    "doEvol": False
+    "doEvol": False,
+    "overwrite": False
     }
 
 def process_args():
@@ -22,27 +23,45 @@ def process_args():
     """
     parser = argparse.ArgumentParser(
         description=(
-            "A script which can be run to execute Worm2D"
+            "A script for supplying arguments to execute Worm2D"
         )
-    )
-
-    parser.add_argument(
-        "--simsep", action="store_true", default=DEFAULTS["simsep"],
-        help=("If used, interactive mode is requested."),
     )
     
     parser.add_argument(
-        "--doEvol", action="store_true", default=DEFAULTS["doEvol"],
-        help=("If used evolutionary algorithm is executed."),
-    )
-
-    parser.add_argument(
+        "-f",
         "--folderName",
         type=str,
         metavar="<folder name>",
         default=DEFAULTS["folderName"],
-        help="Name of folder to store or process output.",
+        help=("Name of directory for output.\n" 
+              "If not supplied, both evolutionary algorithm and simulation of best worm are performed,\n"
+              "and results placed in current directory.") ,
+    )   
+
+    parser.add_argument(
+        "-o",
+        "--overwrite", 
+        action="store_true", 
+        default=DEFAULTS["overwrite"],
+        help=("Overwrite the contents of the specified simulation output directory.") ,
     )    
+
+    parser.add_argument(
+        "-E",
+        "--doEvol", action="store_true", default=DEFAULTS["doEvol"],
+        help=("If used and a directory name has also been supplied, the directory is created,"
+              "the evolutionary algorithm is executed, the best worm simulation performed,"
+              "and results are deposited in the directory."
+              "If not used but an existing directory name has been supplied, the simulation"
+              "in the directory is executed and results deposited in it.") 
+    )
+
+    parser.add_argument(
+        "-S",
+        "--simsep", action="store_true", default=DEFAULTS["simsep"],
+        help=("If used, user input of the directory name is interactively requested."),
+    )
+
 
     parser.add_argument(
         "-d",
@@ -50,7 +69,7 @@ def process_args():
         type=float,
         metavar="<duration>",
         default=DEFAULTS["duration"],
-        help="Duration of simulation in ms, default: %sms" % DEFAULTS["duration"],
+        help="Duration of simulation for evolution and best worm in ms, default: %sms" % DEFAULTS["duration"],
     )
 
     parser.add_argument(
@@ -68,7 +87,7 @@ def process_args():
         type=int,
         metavar="<Rand seed>",
         default=DEFAULTS["RandSeed"],
-        help="Absolute seed value, default: %s" % DEFAULTS["RandSeed"],
+        help="Absolute seed value for evolutionary algorithm, default: %s" % DEFAULTS["RandSeed"],
     )
     
     parser.add_argument(
@@ -77,21 +96,25 @@ def process_args():
         type=int,
         metavar="<rand seed>",
         default=DEFAULTS["randSeed"],
-        help="Relative seed value, default: %s" % DEFAULTS["randSeed"],
+        help="Seed value relative to system time for evolutionary algorithm, default: %s" % DEFAULTS["randSeed"],
     )
  
     return parser.parse_args()
 
 
 
-def make_directory(directory_name):
+def make_directory(directory_name, overwrite):
     try:
         os.mkdir(directory_name)
-        print(f"Directory '{directory_name}' created successfully. Running search.")
+        print(f"Directory '{directory_name}' created successfully.")
         return True
     except FileExistsError:
-        print(f"Directory '{directory_name}' already exists.")
-        return False
+        if overwrite:
+            print(f"Directory '{directory_name}' already exists and contents will be overwritten.")
+            return True
+        else:
+            print(f"Directory '{directory_name}' already exists.")
+            return False
     except PermissionError:
         print(f"Permission denied: Unable to create '{directory_name}'.")
         sys.exit(1)
@@ -104,22 +127,25 @@ def run_main(args=None):
         args = process_args()
     run(a=args)
 
+
+def build_namespace(DEFAULTS={}, a=None, **kwargs):
+    if a is None:
+        a = argparse.Namespace()
+
+    # Add arguments passed in by keyword.
+    for key, value in kwargs.items():
+        setattr(a, key, value)
+
+    # Add defaults for arguments not provided.
+    for key, value in DEFAULTS.items():
+        if not hasattr(a, key):
+            setattr(a, key, value)
+
+    return a
+
 def run(a = None, **kwargs):
-    #a = build_namespace(DEFAULTS, a, **kwargs)
+    a = build_namespace(DEFAULTS, a, **kwargs)
     
-
-    
-    """     parser=argparse.ArgumentParser(description="argument parser")
-
-    parser.add_argument("-R", "--Rand_seed", type=int, nargs='?', default=42)
-    parser.add_argument("-r", "--rand_seed", type=int, nargs='?', default=42)
-    parser.add_argument('-p', "--pop_size", type=int, nargs='?', default=96)
-    parser.add_argument('-d', "--duration", type=int, nargs='?', default=24)
-    parser.add_argument('--simsep', action='store_true')
-    parser.add_argument('-E', '--evolve_folder', type=str, nargs='?', default=None)
-    parser.add_argument('-S', '--sim_folder', type=str, nargs='?', default=None)
-
-    args=parser.parse_args() """
 
     folder_name = ''
     do_evol = 1
@@ -130,7 +156,7 @@ def run(a = None, **kwargs):
             if do_evol_str == "E":                    
                 while True:
                     folder_name = input("Please enter the name of a folder to store data: ")
-                    if make_directory(folder_name): break
+                    if make_directory(folder_name, a.overwrite): break
                 break
             if do_evol_str == "S":
                 do_evol = 0
@@ -143,7 +169,7 @@ def run(a = None, **kwargs):
     elif a.folderName:
         folder_name = a.folderName
         if a.doEvol:
-            if not make_directory(folder_name) : sys.exit(1)
+            if not make_directory(folder_name, a.overwrite) : sys.exit(1)
         else:
             do_evol = 0
             if not os.path.isdir(folder_name):
@@ -181,7 +207,8 @@ def run(a = None, **kwargs):
     if folder_name!='':
     #if args.simsep or args.evolve_folder or args.sim_folder:
        hf.dir_name = folder_name
-       import load_data    
+       from load_data import reload_single_run
+       reload_single_run(show_plot=False)
     
 if __name__ == "__main__": 
     run_main() 
