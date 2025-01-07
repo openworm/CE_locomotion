@@ -14,8 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: make
-      run: make
+    - name: make and run test
+      run: |
+         ./test_all.sh 
+         git diff
+
       
     - name: list generated files
       run: |
