@@ -18,7 +18,7 @@ void testNervousSystem()
     int N_neuronsperunit = 2;
     n.SetCircuitSize(N_units*N_neuronsperunit, 3, 2);
 
-    for (int i=0;i<n.size;i+=1)
+    for (int i=1;i<=n.size;i+=1)
     {
         n.SetNeuronBias(i,2);
         n.SetNeuronTimeConstant(i,10);
@@ -29,7 +29,7 @@ void testNervousSystem()
     n.SetChemicalSynapseWeight(0,1,1);
     n.SetChemicalSynapseWeight(1,2,1);
 
-    double Duration = 20;
+    double Duration = 0.02;
     const double StepSize = 0.005;
 
     ofstream state_file("test_output/test.state.dat");
@@ -41,7 +41,7 @@ void testNervousSystem()
         n.EulerStep(StepSize);
         state_file << t<< " ";
         output_file << t<< " ";
-        for (int i=0;i<n.size;i+=1)
+        for (int i=1;i<=n.size;i+=1)
         {
             double st = n.NeuronState(i);
             double ou = n.NeuronOutput(i);
