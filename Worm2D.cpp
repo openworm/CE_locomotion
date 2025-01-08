@@ -563,12 +563,12 @@ Params<double> getBodyParams(WormBody& b)
 Params<double> par;
 
 par.names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
-"C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L_fact", "kappa_D_fact", 
-"kappa_M0_fact", "beta_L_fact", "beta_D_fact", "beta_M0_fact", "delta_M"};
+"C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L", "kappa_D", 
+"kappa_M0", "beta_L", "beta_D", "beta_M0", "delta_M"};
 
 par.vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
-C_water_par_total, C_water_perp_total, kappa_L_fact, kappa_D_fact, kappa_M0_fact, beta_L_fact, 
-beta_D_fact, beta_M0_fact, delta_M};
+C_water_par_total, C_water_perp_total, kappa_L, kappa_D, kappa_M0, beta_L, 
+beta_D, beta_M0, delta_M};
 
 par.messages_inds.resize(par.vals.size());
 

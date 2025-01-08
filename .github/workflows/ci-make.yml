@@ -30,22 +30,39 @@ jobs:
       run: brew install nlohmann-json
       if: matrix.runs-on == 'macos-latest'
     
+    - name: Run C++ tests 
+      run: |
+          make tests
+          ./tests
+
     - name: Test makefile
       run: make
 
     - name: Test directly running main program
       run: |
-        ./main -p 4
+        ./main -p 6  # Note: small population of 6 for quick runtime
         ls -alth
 
     - name: Test Python command line script
       run: |
         pip install numpy matplotlib
-        python run_main.py -R 1234 -p 6 --doEvol --folderName exampleRun2
+        python run_main.py -R 1233 -p 6 --doEvol --folderName exampleRun2  # Note: small population of 6 for quick runtime
 
-    - name: Test using OMV
+    - name: Test using OMV 1
       run: |
         pip install OSBModelValidation
+        omv all -V 
+        git diff exampleRun/phenotype.dat 
+
+    - name: Test using OMV 2
+      run: |
+        # Running OMV multiple times to test whether run results are nondeterministic
+        omv all -V 
+        git diff exampleRun/phenotype.dat 
+
+    - name: Test using OMV 3
+      run: |
+        # Running OMV multiple times to test whether run results are nondeterministic
         omv all -V 
         git diff exampleRun/phenotype.dat 
       
