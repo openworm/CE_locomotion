@@ -110,7 +110,7 @@ vector<T> getVector(TVector<T> & vec, int size)
 { 
 vector<T> retvec;    
 for (int i = 1; i <= size; i++)
-        retvec.push_back(vec[i]);   
+        retvec.push_back(vec(i));   
 return retvec;    
 }
 
@@ -740,47 +740,6 @@ void writeWormParams(Worm & w)
 
 
 
- /*    os << "NSR: " << s.NSR << endl;
-    os << "NSR: " << s.NSR << endl;
- 
-double NSR; // Number of stretch receptor, equal to number of units
-    double NSEGS; // Number of segments in the body (50)
-    double NSEGSSR; // Number of segments sensed by each stretch receptor
-    
-    double SR_A_gain;
-    double SR_B_gain; */
-
-
-
-  /* 
-
-int skip_steps = 10;
-using namespace std;
-
-// Integration parameters
-int Duration = 24;
-const double Transient = 8.0;
-const double StepSize = 0.005;
-const int N_curvs = 23;
-
-// Fitness traj
-const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
-const double    BBCfit = AvgSpeed*Duration;
-
-// Genotype -> Phenotype Mapping Ranges
-const double    BiasRange               = 16.0; //15.0;
-const double    SCRange                 = 16.0; //15.0;
-const double    CSRange                 = 16.0; //15.0;
-const double    ESRange                 = 2.0;
-const double    SRmax                   = 200.0;
-const double    NMJmax                  = 0.8; //1.2;
-const double    NMJmin                  = 0.0;
-
-const int SR_A = 1;
-const int SR_B = 2;
-
-// Size of genotype
-int	VectSize = 17;  */
 
 
 

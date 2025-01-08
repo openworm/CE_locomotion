@@ -1,4 +1,5 @@
 #include "Worm.h"
+#include <vector>
 
 using namespace std;
 
@@ -13,17 +14,4 @@ ostream& writeBodySysToFile(ostream& os, WormBody& b);
 
 string rename_file(const string & file_name);
 void writeWormParams(Worm & w);
-
-
-//string output_dir_name = "";
-//string rename_file(const string & file_name);
-
-
-
-/* class Worm2D : public Worm {
-public:
-
-    Worm2D(TVector<double> &v, double output);
-    ifstream & setParamsFromDump(ifstream &ifs);
-
-}; */
+template<class T> vector<T> getVector(TVector<T> & vec, int size);
