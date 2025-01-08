@@ -22,6 +22,11 @@ jobs:
     - name: C++ info
       run: g++ -v
 
+    - name: Run C++ tests 
+      run: |
+          make tests
+          ./tests
+
     - name: Test makefile
       run: make
 
