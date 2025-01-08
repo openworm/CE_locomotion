@@ -15,3 +15,4 @@ ostream& writeBodySysToFile(ostream& os, WormBody& b);
 string rename_file(const string & file_name);
 void writeWormParams(Worm & w);
 template<class T> vector<T> getVector(TVector<T> & vec, int size);
+void writeParsToJson(Worm & );

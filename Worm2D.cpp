@@ -18,85 +18,40 @@ using std::cout;
 using std::function;
 using std::vector;
 
+//// write all worm paramters to json and txt file 
 
-void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (int i = 0; i < v.size(); i++) 
+void writeWormParams(Worm & w)
 {
+    writeParsToJson(w);
 
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-for (int j=0; j<num; j++) {a_stream >> str_value;}
-a_stream >> doub_value;
-calc(v[i],doub_value);
-
-}
-}
-
-void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<int> & v) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (int i = 0; i < v.size(); i++) {
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-a_stream >> str_value >> doub_value;
-calc(v[i],v[i],doub_value);
-}
-}
-
-//Worm2D::Worm2D(TVector<double> &v, double output):Worm(v,output){}
-
-
-ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
-
-   vector<int> v = {DA,DB,DD,VD,VA,VB}; 
-   string textInput;
+    {
+    ofstream nv_file(rename_file("w_verb.dat"));
+    writeNSysToFile(nv_file, w.n);
+    nv_file << endl;
+    writeWSysToFile(nv_file, w);
+    nv_file << endl;
+    writeMuscSysToFile(nv_file, w.m);
+    nv_file << endl;
+    writeGlobalParsToFile(nv_file);
+    nv_file << endl;
+    writeStretchSysToFile(nv_file, w.sr);
+    nv_file << endl;
+    writeBodySysToFile(nv_file, w.b);
+    nv_file.close();
+    }
    
-
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);
-   auto calc = bind(&NervousSystem::SetNeuronTimeConstant, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   { 
-   getline(ifs,textInput);  
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetNeuronBias, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetChemicalSynapseWeight, &(w.n), 
-   placeholders::_1, placeholders::_2, placeholders::_3);
-   invoke2(ifs,calc,v);
-   }
- 
-
-   return ifs;
-
+   
 }
 
-template <class T>
-struct Params {
-vector<string> names;
-vector<T> vals;
-vector<int> messages_inds;
-vector<string> messages;
-};
 
-template <class T>
-struct ParamsHead : Params<T> {
-string head;
-};
 
+//// helper functions
+
+string output_dir_name = "";
+string rename_file(const string & file_name){
+  if (output_dir_name != "") return output_dir_name + "/" + file_name;
+  return file_name;
+}
 
 template<class T>
 vector<T> & append(vector<T> & v1, const vector<T> v2)
@@ -114,60 +69,26 @@ for (int i = 1; i <= size; i++)
 return retvec;    
 }
 
-struct toFromWeight{
-    weightentry w;
-    int to;
+
+
+
+//// Params structure
+
+template <class T>
+struct Params {
+vector<string> names;
+vector<T> vals;
+vector<int> messages_inds;
+vector<string> messages;
 };
 
-void to_json(json & j, const weightentry & w)
-{
-  j = json{{"from", w.from}, {"weight", w.weight}};
-}
-
-void to_json(json & j, const toFromWeight & w)
-{
-  j = json{{"to", w.to}, {"from", w.w.from}, {"weight", w.w.weight}};
-}
-
-
-void appendToJson(json & j, const weightentry & w)
-{
-j["from"] = w.from;
-j["weight"] = w.weight;
-}
-
-template<class T>
-void appendToJson(json & j, const Params<T> & par)
-{
-    int mess_ind = 0;
-    for (int i=0;i<par.names.size(); i++) {
-        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
-        {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
-        j[par.names[i]]["value"] = par.vals[i];
-        }
-               
-}
+template <class T>
+struct ParamsHead : Params<T> {
+string head;
+};
 
 
 
-void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
-{    
-    vector<toFromWeight> newvec;
-    for (int i=0; i<tot_size; i++){    
-        for (int j=0; j<sizes[i]; j++) { 
-            toFromWeight tv{vec[i][j], i};
-            newvec.push_back(tv);}        
-    }
-    j["value"] = newvec;
-}
-
-void appendNSToJson(json & j, NervousSystem& c)
-{
-    j["chemical weights"]["message"] = "chemical weights in sparse format";
-    appendMatrixToJson(j["chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
-    appendMatrixToJson(j["electrical weights"], c.electricalweights, c.NumChemicalConns, c.size);
-    j["electrical weights"]["message"] = "electrical weights in sparse format";
-}
 
 ParamsHead<int> getNervousSysParamsInt(NervousSystem& c)
 {
@@ -193,99 +114,6 @@ return par;
 }
 
 
-ostream& writeNSysToFile(ostream& os, NervousSystem& c)
-{
-    // Set the precision
-    os << setprecision(32);
-    os << "size: " << c.size << endl;
-    os << "maxchemcons: " << c.maxchemconns << endl;
-    os << "maxelecconns: " <<  c.maxelecconns << endl << endl;
-    //os << "size, maxchemconns and maxelecconns" << endl;
-    // Write the size, maxchemconns and maxelecconns
-    //os << c.size << " " << c.maxchemconns << " " << c.maxelecconns << endl << endl;
-    // Write the time constants
-    os << "time constants: " << endl;
-    for (int i = 1; i <= c.size; i++)
-        os << c.taus[i] << " ";
-    os << endl << endl;
-    os << "biases: " << endl;
-    // Write the biases
-    for (int i = 1; i <= c.size; i++)
-        os << c.biases[i] << " ";
-    os << endl << endl;
-    // Write the gains
-    os << "gains: " << endl;
-    for (int i = 1; i <= c.size; i++)
-        os << c.gains[i] << " ";
-    os << endl << endl;
-    os << "chemical weights: " << endl;
-    // Write the chemical weights in sparse format (N from1 weight1 ... fromN weightN)
-    for (int i = 1; i <= c.size; i++) {
-        //cout << c.NumChemicalConns[i] << "  ";
-        os << c.NumChemicalConns[i] << "  "; //fixed
-        for (int j = 1; j <= c.NumChemicalConns[i]; j++)
-            os << c.chemicalweights[i][j].from << " " << c.chemicalweights[i][j].weight << "  ";
-        os << endl;
-    }
-    os << endl;
-    os << "electrical weights: " << endl;
-    // Write the electrical weights in sparse format (N from1 weight1 ... fromN weightN)
-    for (int i = 1; i <= c.size; i++) {
-        //cout << c.NumElectricalConns[i] << "  ";
-        os << c.NumElectricalConns[i] << "  "; //fixed 
-        for (int j = 1; j <= c.NumElectricalConns[i]; j++)
-            os << c.electricalweights[i][j].from << " " << c.electricalweights[i][j].weight << "  ";
-        os << endl;
-    }
-    // Return the ostream
-    return os;
-}
-
-
-istream& readNSysFromFile(istream& is, NervousSystem& c)
-{
-    // Read the sizes
-    int size;
-    is >> size;
-    int maxchemconns;
-    is >> maxchemconns;
-    int maxelecconns;
-    is >> maxelecconns;
-    c.SetCircuitSize(size, maxchemconns, maxelecconns);
-    // Read the time constants
-    for (int i = 1; i <= size; i++) {
-        is >> c.taus[i];
-        c.Rtaus[i] = 1/c.taus[i];
-    }
-    // Read the biases
-    for (int i = 1; i <= size; i++)
-        is >> c.biases[i];
-    // Read the gains
-    for (int i = 1; i <= size; i++)
-        is >> c.gains[i];
-    // Read the chemical weights
-    int n;
-    for (int i = 1; i <= size; i++) {
-        is >> n;
-        for (int j = 1; j <= n; j++) {
-            is >> c.chemicalweights[i][j].from;
-            is >> c.chemicalweights[i][j].weight;
-            c.NumChemicalConns[i]++;
-        }
-    }
-    // Read the electrical weights
-    for (int i = 1; i <= size; i++) {
-        is >> n;
-        for (int j = 1; j <= n; j++) {
-            is >> c.electricalweights[i][j].from;
-            is >> c.electricalweights[i][j].weight;
-            c.NumElectricalConns[i]++;
-        }
-    }
-    // Return the istream
-    return is;
-}
-
 Params<double> getMusclesParamsDouble(Muscles & m)
 {
 Params<double> par;
@@ -302,13 +130,6 @@ par.vals = {m.Nmuscles};
 return par;
 }
 
-ostream& writeMuscSysToFile(ostream& os, Muscles& m)
-{   
-    os << setprecision(32);
-    os << "T_muscle: " << m.T_muscle << endl;
-    os << "Nmuscles: " << m.Nmuscles << endl;
-    return os;
-}
 
 
 Params<double> getWormParams(Worm & w)
@@ -325,43 +146,6 @@ append<double>(par.vals,{w.AVA_output, w.AVB_output});
 return par;
 
 }
-
-
-ostream& writeWSysToFile(ostream& os, Worm& w)
-{   
-    
-    os << setprecision(32);
-
-    os << "Worm parameters" << endl;
-    {
-    vector<string> names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
-    vector<double> vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
-
-    for (int i=0; i<names.size(); i++)
-    {
-    os << names[i] + ": " << vals[i] << endl;
-    }}
-    os << endl;
-    {
-    vector<string> names = {"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"};
-    vector<double> vals = {w.AVA_act, w.AVA_inact, w.AVB_act, w.AVB_inact};
-
-    for (int i=0; i<names.size(); i++)
-    {
-    os << names[i] + ": " << vals[i] << endl;
-    }}
-    os << endl;
-    {
-    vector<string> names = {"AVA_output", "AVB_output"};
-    vector<double> vals = {w.AVA_output, w.AVB_output};
-
-    for (int i=0; i<names.size(); i++)
-    {
-    os << names[i] + ": " << vals[i] << endl;
-    }}
-    return os;
-
-}    
 
 
 vector<ParamsHead<double> > getGlobalParamsDouble()
@@ -431,6 +215,245 @@ parvec.push_back(par);}
 return parvec;
 }
 
+
+Params<double> getStretchReceptorParams(StretchReceptor& s)
+{
+Params<double> par;
+par.names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
+par.vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
+par.messages = {"Number of stretch receptor, equal to number of units",
+                                "Number of segments in the body",
+                                "Number of segments sensed by each stretch receptor"};
+par.messages_inds = {0,1,2}; //must be ordered
+return par;
+}
+
+
+Params<int> getBodyParamsInts(WormBody& b)
+{
+Params<int> par;
+par.names = {"N_segments"};
+par.vals = {N_segments};
+par.messages = {"Number of segments"};
+par.messages_inds  = {0};
+return par;
+}
+
+Params<double> getBodyParams(WormBody& b)
+{
+
+Params<double> par;
+
+par.names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
+"C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L", "kappa_D", 
+"kappa_M0", "beta_L", "beta_D", "beta_M0", "delta_M"};
+
+par.vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
+C_water_par_total, C_water_perp_total, kappa_L, kappa_D, kappa_M0, beta_L, 
+beta_D, beta_M0, delta_M};
+
+par.messages_inds.resize(par.vals.size());
+
+for (int i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
+
+par.messages = {    
+"Normalized medium drag coefficient (0 = water, 1 = agar)",
+"Length of worm in m",
+"Minor radius of prolate ellipse body in m",
+"Total tangential drag coefficient for agar in kg/s",
+"Total rod normal drag coefficient in agar in kg/s",
+"Total rod tangential drag coefficient for water in kg/s",
+"Total rod normal drag coefficient for water in kg/s",
+"Lateral spring constant in kg/s",
+"Diagonal spring constant in kg/s",
+"Baseline active muscle spring constant in kg/s",
+"Lateral passive damping constant in s",
+"Diagonal passive damping constant in s",
+"Baseline active damping constant in s",
+"Rest muscle length scaling constant"
+
+};
+
+return par;
+
+}
+
+//////// functions for writing json
+
+struct toFromWeight{
+    
+    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    weightentry w;
+    int to;
+};
+
+void to_json(json & j, const weightentry & w)
+{
+  j = json{{"from", w.from}, {"weight", w.weight}};
+}
+
+void to_json(json & j, const toFromWeight & w)
+{
+  j = json{{"to", w.to}, {"from", w.w.from}, {"weight", w.w.weight}};
+}
+
+
+
+template<class T>
+void appendToJson(json & j, const Params<T> & par)
+{
+    int mess_ind = 0;
+    for (int i=0;i<par.names.size(); i++) {
+        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
+        {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
+        j[par.names[i]]["value"] = par.vals[i];
+        }
+               
+}
+
+void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+{    
+    vector<toFromWeight> newvec;
+    for (int i=1; i<=tot_size; i++){    
+        for (int j=1; j<=sizes[i]; j++) { 
+            toFromWeight tv(vec[i][j], i);
+            newvec.push_back(tv);}        
+    }
+    j["value"] = newvec;
+
+}
+
+void appendNSToJson(json & j, NervousSystem& c)
+{
+    j["chemical weights"]["message"] = "chemical weights in sparse format";
+    appendMatrixToJson(j["chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
+    appendMatrixToJson(j["electrical weights"], c.electricalweights, c.NumElectricalConns, c.size);
+    j["electrical weights"]["message"] = "electrical weights in sparse format";
+}
+
+
+void writeParsToJson(Worm & w)
+{
+
+json j;
+{Params<double> par = getBodyParams(w.b);
+appendToJson<double>(j["body"],par);}
+
+{Params<int> par = getBodyParamsInts(w.b);
+appendToJson<int>(j["body"],par);}
+
+{Params<double> par = getStretchReceptorParams(w.sr);
+appendToJson<double>(j["stretch receptor"],par);
+}
+{
+Params<double> par = getWormParams(w);
+appendToJson<double>(j["worm"],par);
+}
+{
+Params<double> par =getMusclesParamsDouble(w.m);
+appendToJson<double>(j["muscle"],par);
+}
+{
+Params<int> par =getMusclesParamsInt(w.m);
+appendToJson<int>(j["muscle"],par);
+}
+
+{vector<ParamsHead<int> > parvec = getGlobalParamsInt();
+for (int i=0;i<parvec.size(); i++) {
+appendToJson<int>(j[parvec[i].head],parvec[i]);
+}}
+{vector<ParamsHead<double> > parvec = getGlobalParamsDouble();
+for (int i=0;i<parvec.size(); i++) {
+appendToJson<double>(j[parvec[i].head],parvec[i]);
+}}
+
+{ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
+appendToJson<vector<double> >(j[parvec.head],parvec);}
+
+ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
+appendToJson<int>(j[parvec.head],parvec);
+
+appendNSToJson(j["Nervous system"], w.n);
+
+ofstream json_out(rename_file("worm_data.json"));
+json_out << std::setw(4) << j << std::endl;
+}
+
+
+
+void readJson(json j, ifstream & ifs)
+{
+ifs >> j;
+}
+
+
+
+
+//////////// functions for writing text file
+
+
+
+template<class T>
+ostream& writeVectorFormat(ostream& os, 
+const vector<string> & names, const vector<T> & vals, 
+const vector<int> & messages_inds, const vector<string> & messages)
+{
+    int mess_ind = 0;
+    os << setprecision(32);
+    for (int i=0;i<names.size(); i++) {
+        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
+        os << names[i] + ": " << vals[i] << endl;
+        }
+
+return os;        
+        
+}
+
+
+template<class T>
+ostream& writeVectorFormat(ostream& os, 
+const vector<string> & names, const vector<T> & vals)
+{
+    os << setprecision(32);
+    for (int i=0;i<names.size(); i++) {
+        os << names[i] + ": " << vals[i] << endl;
+        }
+
+return os;        
+        
+}    
+
+
+ostream& writeBodySysToFile(ostream& os, WormBody& b)
+{   
+
+os << "Worm Body parameters" << endl;    
+{Params<double> par = getBodyParams(b);
+writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
+}
+
+{Params<int> par = getBodyParamsInts(b);
+writeVectorFormat<int>(os,par.names,par.vals,par.messages_inds,par.messages);
+}
+
+return os;
+}
+
+
+ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s)
+{   
+    
+    os << setprecision(32);
+    Params<double> par = getStretchReceptorParams(s);
+    
+ 
+    os << "StretchReceptor parameters" << endl;
+    writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
+    
+return os;
+}
+
+
 ostream& writeGlobalParsToFile(ostream& os)
 {   
     os << setprecision(32);
@@ -487,262 +510,207 @@ ostream& writeGlobalParsToFile(ostream& os)
 }
 
 
-
-
-
-template<class T>
-ostream& writeVectorFormat(ostream& os, 
-const vector<string> & names, const vector<T> & vals, 
-const vector<int> & messages_inds, const vector<string> & messages)
-{
-    int mess_ind = 0;
+ostream& writeWSysToFile(ostream& os, Worm& w)
+{   
+    
     os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
-        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
-        os << names[i] + ": " << vals[i] << endl;
-        }
 
-return os;        
-        
-}
+    os << "Worm parameters" << endl;
+    {
+    vector<string> names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
+    vector<double> vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
 
+    for (int i=0; i<names.size(); i++)
+    {
+    os << names[i] + ": " << vals[i] << endl;
+    }}
+    os << endl;
+    {
+    vector<string> names = {"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"};
+    vector<double> vals = {w.AVA_act, w.AVA_inact, w.AVB_act, w.AVB_inact};
 
-template<class T>
-ostream& writeVectorFormat(ostream& os, 
-const vector<string> & names, const vector<T> & vals)
-{
-    os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
-        os << names[i] + ": " << vals[i] << endl;
-        }
+    for (int i=0; i<names.size(); i++)
+    {
+    os << names[i] + ": " << vals[i] << endl;
+    }}
+    os << endl;
+    {
+    vector<string> names = {"AVA_output", "AVB_output"};
+    vector<double> vals = {w.AVA_output, w.AVB_output};
 
-return os;        
-        
+    for (int i=0; i<names.size(); i++)
+    {
+    os << names[i] + ": " << vals[i] << endl;
+    }}
+    return os;
+
 }    
 
-
-Params<double> getStretchReceptorParams(StretchReceptor& s)
-{
-Params<double> par;
-par.names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
-par.vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
-par.messages = {"Number of stretch receptor, equal to number of units",
-                                "Number of segments in the body",
-                                "Number of segments sensed by each stretch receptor"};
-par.messages_inds = {0,1,2}; //must be ordered
-return par;
-}
-
-
-ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s)
+ostream& writeMuscSysToFile(ostream& os, Muscles& m)
 {   
-    
     os << setprecision(32);
-    Params<double> par = getStretchReceptorParams(s);
-    
+    os << "T_muscle: " << m.T_muscle << endl;
+    os << "Nmuscles: " << m.Nmuscles << endl;
+    return os;
+}
+
+
+ostream& writeNSysToFile(ostream& os, NervousSystem& c)
+{
+    // Set the precision
+    os << setprecision(32);
+    os << "size: " << c.size << endl;
+    os << "maxchemcons: " << c.maxchemconns << endl;
+    os << "maxelecconns: " <<  c.maxelecconns << endl << endl;
+    //os << "size, maxchemconns and maxelecconns" << endl;
+    // Write the size, maxchemconns and maxelecconns
+    //os << c.size << " " << c.maxchemconns << " " << c.maxelecconns << endl << endl;
+    // Write the time constants
+    os << "time constants: " << endl;
+    for (int i = 1; i <= c.size; i++)
+        os << c.taus[i] << " ";
+    os << endl << endl;
+    os << "biases: " << endl;
+    // Write the biases
+    for (int i = 1; i <= c.size; i++)
+        os << c.biases[i] << " ";
+    os << endl << endl;
+    // Write the gains
+    os << "gains: " << endl;
+    for (int i = 1; i <= c.size; i++)
+        os << c.gains[i] << " ";
+    os << endl << endl;
+    os << "chemical weights: " << endl;
+    // Write the chemical weights in sparse format (N from1 weight1 ... fromN weightN)
+    for (int i = 1; i <= c.size; i++) {
+        //cout << c.NumChemicalConns[i] << "  ";
+        os << c.NumChemicalConns[i] << "  "; //fixed
+        for (int j = 1; j <= c.NumChemicalConns[i]; j++)
+            os << c.chemicalweights[i][j].from << " " << c.chemicalweights[i][j].weight << "  ";
+        os << endl;
+    }
+    os << endl;
+    os << "electrical weights: " << endl;
+    // Write the electrical weights in sparse format (N from1 weight1 ... fromN weightN)
+    for (int i = 1; i <= c.size; i++) {
+        //cout << c.NumElectricalConns[i] << "  ";
+        os << c.NumElectricalConns[i] << "  "; //fixed 
+        for (int j = 1; j <= c.NumElectricalConns[i]; j++)
+            os << c.electricalweights[i][j].from << " " << c.electricalweights[i][j].weight << "  ";
+        os << endl;
+    }
+    // Return the ostream
+    return os;
+}
+
+
+
+/// functions for reading text file, not used
+
+void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
+
+double doub_value;
+string textInput;
+string str_value;
+for (int i = 0; i < v.size(); i++) 
+{
+
+getline(ifs,textInput);
+istringstream a_stream(textInput);
+for (int j=0; j<num; j++) {a_stream >> str_value;}
+a_stream >> doub_value;
+calc(v[i],doub_value);
+
+}
+}
+
+void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<int> & v) {
+
+double doub_value;
+string textInput;
+string str_value;
+for (int i = 0; i < v.size(); i++) {
+
+getline(ifs,textInput);
+istringstream a_stream(textInput);
+a_stream >> str_value >> doub_value;
+calc(v[i],v[i],doub_value);
+}
+}
+
+
+ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
+
+   vector<int> v = {DA,DB,DD,VD,VA,VB}; 
+   string textInput;
+   
+
+   {
+   getline(ifs,textInput);
+   getline(ifs,textInput);
+   auto calc = bind(&NervousSystem::SetNeuronTimeConstant, &(w.n), placeholders::_1, placeholders::_2);
+   invoke(ifs,calc,v);
+   }
+   { 
+   getline(ifs,textInput);  
+   getline(ifs,textInput);   
+   auto calc = bind(&NervousSystem::SetNeuronBias, &(w.n), placeholders::_1, placeholders::_2);
+   invoke(ifs,calc,v);
+   }
+   {
+   getline(ifs,textInput);
+   getline(ifs,textInput);   
+   auto calc = bind(&NervousSystem::SetChemicalSynapseWeight, &(w.n), 
+   placeholders::_1, placeholders::_2, placeholders::_3);
+   invoke2(ifs,calc,v);
+   }
  
-    os << "StretchReceptor parameters" << endl;
-    writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
-    
-return os;
+
+   return ifs;
+
 }
 
-Params<int> getBodyParamsInts(WormBody& b)
+
+istream& readNSysFromFile(istream& is, NervousSystem& c)
 {
-Params<int> par;
-par.names = {"N_segments"};
-par.vals = {N_segments};
-par.messages = {"Number of segments"};
-par.messages_inds  = {0};
-return par;
-}
-
-Params<double> getBodyParams(WormBody& b)
-{
-
-Params<double> par;
-
-par.names = {"Medium", "L_worm", "R_min", "C_agar_par_total", 
-"C_agar_perp_total", "C_water_par_total", "C_water_perp_total", "kappa_L", "kappa_D", 
-"kappa_M0", "beta_L", "beta_D", "beta_M0", "delta_M"};
-
-par.vals = {Medium, L_worm, R_min, C_agar_par_total, C_agar_perp_total, 
-C_water_par_total, C_water_perp_total, kappa_L, kappa_D, kappa_M0, beta_L, 
-beta_D, beta_M0, delta_M};
-
-par.messages_inds.resize(par.vals.size());
-
-for (int i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
-
-par.messages = {    
-"Normalized medium drag coefficient (0 = water, 1 = agar)",
-"Length of worm in m",
-"Minor radius of prolate ellipse body in m",
-"Total tangential drag coefficient for agar in kg/s",
-"Total rod normal drag coefficient in agar in kg/s",
-"Total rod tangential drag coefficient for water in kg/s",
-"Total rod normal drag coefficient for water in kg/s",
-"Lateral spring constant in kg/s",
-"Diagonal spring constant in kg/s",
-"Baseline active muscle spring constant in kg/s",
-"Lateral passive damping constant in s",
-"Diagonal passive damping constant in s",
-"Baseline active damping constant in s",
-"Rest muscle length scaling constant"
-
-};
-
-return par;
-
-}
-
-
-
-void writeParsToJson(Worm & w)
-{
-
-json j;
-{Params<double> par = getBodyParams(w.b);
-appendToJson<double>(j["body"],par);}
-
-{Params<int> par = getBodyParamsInts(w.b);
-appendToJson<int>(j["body"],par);}
-
-{Params<double> par = getStretchReceptorParams(w.sr);
-appendToJson<double>(j["stretch receptor"],par);
-}
-{
-Params<double> par = getWormParams(w);
-appendToJson<double>(j["worm"],par);
-}
-{
-Params<double> par =getMusclesParamsDouble(w.m);
-appendToJson<double>(j["muscle"],par);
-}
-{
-Params<int> par =getMusclesParamsInt(w.m);
-appendToJson<int>(j["muscle"],par);
-}
-
-{vector<ParamsHead<int> > parvec = getGlobalParamsInt();
-for (int i=0;i<parvec.size(); i++) {
-appendToJson<int>(j[parvec[i].head],parvec[i]);
-}}
-{vector<ParamsHead<double> > parvec = getGlobalParamsDouble();
-for (int i=0;i<parvec.size(); i++) {
-appendToJson<double>(j[parvec[i].head],parvec[i]);
-}}
-
-{ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
-appendToJson<vector<double> >(j[parvec.head],parvec);}
-
-ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
-appendToJson<int>(j[parvec.head],parvec);
-
-appendNSToJson(j["Nervous system"], w.n);
-
-ofstream json_out(rename_file("worm_data.json"));
-json_out << std::setw(4) << j << std::endl;
-}
-
-
-ostream& writeBodySysToFile(ostream& os, WormBody& b)
-{   
-
-os << "Worm Body parameters" << endl;    
-{Params<double> par = getBodyParams(b);
-writeVectorFormat<double>(os,par.names,par.vals,par.messages_inds,par.messages);
-}
-
-{Params<int> par = getBodyParamsInts(b);
-writeVectorFormat<int>(os,par.names,par.vals,par.messages_inds,par.messages);
-}
-
-return os;
-}
-
-string output_dir_name = "";
-string rename_file(const string & file_name){
-  if (output_dir_name != "") return output_dir_name + "/" + file_name;
-  return file_name;
-}
-
-void readJson(json j, ifstream & ifs)
-{
-ifs >> j;
-}
-
-
-void writeWormParams(Worm & w)
-{
-    {
-    ifstream wormPheno; 
-    wormPheno.open(rename_file("phenotype.dat"));
-    setParamsFromDump(wormPheno, w);
-    wormPheno.close();
+    // Read the sizes
+    int size;
+    is >> size;
+    int maxchemconns;
+    is >> maxchemconns;
+    int maxelecconns;
+    is >> maxelecconns;
+    c.SetCircuitSize(size, maxchemconns, maxelecconns);
+    // Read the time constants
+    for (int i = 1; i <= size; i++) {
+        is >> c.taus[i];
+        c.Rtaus[i] = 1/c.taus[i];
     }
-    {
-    ofstream phenfile(rename_file("phenotype2.dat"));
-    w.DumpParams(phenfile);
-    phenfile.close();
+    // Read the biases
+    for (int i = 1; i <= size; i++)
+        is >> c.biases[i];
+    // Read the gains
+    for (int i = 1; i <= size; i++)
+        is >> c.gains[i];
+    // Read the chemical weights
+    int n;
+    for (int i = 1; i <= size; i++) {
+        is >> n;
+        for (int j = 1; j <= n; j++) {
+            is >> c.chemicalweights[i][j].from;
+            is >> c.chemicalweights[i][j].weight;
+            c.NumChemicalConns[i]++;
+        }
     }
-    {
-    ofstream nv_file(rename_file("nv.dat"));
-    nv_file << w.n;
-    nv_file.close();
+    // Read the electrical weights
+    for (int i = 1; i <= size; i++) {
+        is >> n;
+        for (int j = 1; j <= n; j++) {
+            is >> c.electricalweights[i][j].from;
+            is >> c.electricalweights[i][j].weight;
+            c.NumElectricalConns[i]++;
+        }
     }
-
-    {
-    ofstream nv_file(rename_file("w_verb.dat"));
-    writeNSysToFile(nv_file, w.n);
-    nv_file << endl;
-    writeWSysToFile(nv_file, w);
-    nv_file << endl;
-    writeMuscSysToFile(nv_file, w.m);
-    nv_file << endl;
-    writeGlobalParsToFile(nv_file);
-    nv_file << endl;
-    writeStretchSysToFile(nv_file, w.sr);
-    nv_file << endl;
-    writeBodySysToFile(nv_file, w.b);
-    nv_file.close();
-    }
-   
-    {
-    ifstream nv_file(rename_file("nv.dat"));
-    nv_file >> w.n;
-    nv_file.close(); 
-    }
-
-   /*  {
-    ifstream nv_file(rename_file("nv.dat"));
-    readJson(nv_file);
-    nv_file.close(); 
-    }
- */
-    {
-    ofstream nv_file(rename_file("nv2.dat"));
-    nv_file << w.n;
-    nv_file.close();
-    }
-
-
-    writeParsToJson(w);
-   
+    // Return the istream
+    return is;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
