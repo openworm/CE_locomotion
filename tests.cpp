@@ -20,12 +20,13 @@ void testNervousSystem()
 
     for (int i = 1; i <= n.size; i += 1)
     {
-        n.SetNeuronBias(i, 1);
+        n.SetNeuronBias(i, 0);
+        n.SetNeuronGain(i, 0);
         n.SetNeuronTimeConstant(i, 1);
     }
 
     n.SetChemicalSynapseWeight(1, 2, 1);
-    n.SetChemicalSynapseWeight(1, 3, .75);
+    //n.SetChemicalSynapseWeight(1, 3, .75);
 
     double Duration = 10;
     double StimDel = 2;
