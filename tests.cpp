@@ -9,10 +9,13 @@
 #include <cassert>
 #include "TSearch.h"
 #include "NervousSystem.cpp"
+#include "Worm2D.cpp"
 
-void testNervousSystem()
+extern string output_dir_name;
+
+void setUpNS(NervousSystem & n)
 {
-    NervousSystem n;
+
     std::cout << "Created simple Nervous System..." << std::endl;
     int N_units = 2;
     int N_neuronsperunit = 2;
@@ -27,6 +30,21 @@ void testNervousSystem()
 
     n.SetChemicalSynapseWeight(1, 2, 1);
     //n.SetChemicalSynapseWeight(1, 3, .75);
+
+}
+
+
+void testNervousSystem()
+{
+    NervousSystem n;
+    //setUpNS(n);
+    
+
+    output_dir_name = "exampleRun"; //fix this
+    ifstream NS_ifs(rename_file("worm_data.json"));
+    setNSFromJsonFile(NS_ifs, n);
+    NS_ifs.close();  
+
 
     double Duration = 10;
     double StimDel = 2;
