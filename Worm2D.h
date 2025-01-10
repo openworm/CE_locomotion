@@ -13,7 +13,7 @@ ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s);
 ostream& writeBodySysToFile(ostream& os, WormBody& b);
 ofstream& writeNSJson(ofstream & ofs, NervousSystem & n);
 //NervousSystem getNSFromJsonFile(ifstream & ifs);
-void getNSFromJsonFile(ifstream & ifs, NervousSystem & n);
+void setNSFromJsonFile(ifstream & ifs, NervousSystem & n);
 
 string rename_file(const string & file_name);
 void writeWormParams(Worm & w);

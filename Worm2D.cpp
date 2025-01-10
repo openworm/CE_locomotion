@@ -391,7 +391,7 @@ json getJsonFromFile(ifstream & ifs)
 }
 
 
-void getNSFromJsonFile(ifstream & ifs, NervousSystem & n)
+void setNSFromJsonFile(ifstream & ifs, NervousSystem & n)
 {
 
 json j = getJsonFromFile(ifs);

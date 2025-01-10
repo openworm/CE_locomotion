@@ -203,16 +203,11 @@ double save_traces(TVector<double> &v, RandomState &rs){
 
     writeWormParams(w);
 
-    {ofstream NS_ofs(rename_file("Nervous_system.json"));
-    writeNSJson(NS_ofs, w.n);
-    NS_ofs.close();}
+    
     ifstream NS_ifs(rename_file("worm_data.json"));
-    //setNSFromJsonFile(NS_ifs, w.n);
-    getNSFromJsonFile(NS_ifs, w.n);
+    setNSFromJsonFile(NS_ifs, w.n);
     NS_ifs.close();
-    ofstream NS_ofs(rename_file("Nervous_system_2.json"));
-    writeNSJson(NS_ofs, w.n);
-    NS_ofs.close();
+    
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);
