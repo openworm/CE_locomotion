@@ -65,11 +65,18 @@ vector<T> getVector(TVector<T> & vec, int size)
 { 
 vector<T> retvec;    
 for (int i = 1; i <= size; i++)
-        retvec.push_back(vec(i));   
+        retvec.push_back(vec[i]);   
 return retvec;    
 }
 
-
+template<class T> 
+TVector<T> getTVector(vector<T> & vec)
+{ 
+TVector<T> retvec;
+retvec.SetBounds(1,vec.size());    
+for (int i = 0; i < vec.size(); i++) retvec[i+1]=vec[i];
+return retvec;    
+}
 
 
 //// Params structure
@@ -110,9 +117,12 @@ return parH;
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
 {
 Params< vector<double> > par;
-par.names = {"time constants", "biases", "gains"};
+par.names = {"time constants", "biases", "gains", "outputs"};
 par.vals = {getVector<double>(c.taus, c.size), 
-getVector<double>(c.biases, c.size), getVector<double>(c.gains, c.size)};
+getVector<double>(c.biases, c.size), 
+getVector<double>(c.gains, c.size),
+getVector<double>(c.outputs, c.size)
+};
 return par;
 }
 
@@ -381,25 +391,37 @@ json getJsonFromFile(ifstream & ifs)
 }
 
 
-void setNSFromJsonFile(ifstream & ifs, NervousSystem & n)
+void getNSFromJsonFile(ifstream & ifs, NervousSystem & n)
 {
- 
-json j2 = getJsonFromFile(ifs);
-json j = j2["Nervous system"];
-auto biases = j["biases"]["value"].template get< vector<double> >();
-auto chem_weights = j["chemical weights"]["value"].template get< vector<toFromWeight> >();
-auto elec_weights = j["electrical weights"]["value"].template get< vector<toFromWeight> >();
-auto gains = j["gains"]["value"].template get< vector<double> >();
-auto time_consts = j["time constants"]["value"].template get< vector<double> >();
-auto maxchemcons = j["maxchemcons"]["value"].template get<int>();
-auto maxelecconns = j["maxelecconns"]["value"].template get<int>();
-auto size = j["size"]["value"].template get<int>(); 
+
+json j = getJsonFromFile(ifs);
+json jns = j["Nervous system"];
+auto outputs = jns["outputs"]["value"].template get< vector<double> >();
+auto biases = jns["biases"]["value"].template get< vector<double> >();
+auto chem_weights = jns["chemical weights"]["value"].template get< vector<toFromWeight> >();
+auto elec_weights = jns["electrical weights"]["value"].template get< vector<toFromWeight> >();
+auto gains = jns["gains"]["value"].template get< vector<double> >();
+auto time_consts = jns["time constants"]["value"].template get< vector<double> >();
+auto maxchemcons = jns["maxchemcons"]["value"].template get<int>();
+auto maxelecconns = jns["maxelecconns"]["value"].template get<int>();
+auto size = jns["size"]["value"].template get<int>(); 
+json jw = j["Worm global parameters"];
+
+auto N_units_val = jw["N_units"]["value"].template get<int>();
+auto N_neuronsperunit_val = jw["N_neuronsperunit"]["value"].template get<int>();
+
+n.SetCircuitSize(N_units_val*N_neuronsperunit_val, 3, 2);
+for (int i=0;i<biases.size();i++) n.SetNeuronBias(i+1, biases[i]);
+for (int i=0;i<time_consts.size();i++) n.SetNeuronTimeConstant(i+1, time_consts[i]);
+for (int i=0;i<outputs.size();i++) n.SetNeuronOutput(i+1, outputs[i]);
+
 
 for (int i=0;i<chem_weights.size();i++)
 n.SetChemicalSynapseWeight(chem_weights[i].w.from, chem_weights[i].to, chem_weights[i].w.weight);
 for (int i=0;i<elec_weights.size();i++)
 n.InternalSetElectricalSynapseWeight(elec_weights[i].w.from, elec_weights[i].to, elec_weights[i].w.weight);
 
+//return n;
 }
 
 

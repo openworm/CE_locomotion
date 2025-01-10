@@ -201,11 +201,14 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
 
+    writeWormParams(w);
+
     {ofstream NS_ofs(rename_file("Nervous_system.json"));
     writeNSJson(NS_ofs, w.n);
     NS_ofs.close();}
-    ifstream NS_ifs(rename_file("Nervous_system.json"));
-    setNSFromJsonFile(NS_ifs, w.n);
+    ifstream NS_ifs(rename_file("worm_data.json"));
+    //setNSFromJsonFile(NS_ifs, w.n);
+    getNSFromJsonFile(NS_ifs, w.n);
     NS_ifs.close();
     ofstream NS_ofs(rename_file("Nervous_system_2.json"));
     writeNSJson(NS_ofs, w.n);
@@ -250,8 +253,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
          w.DumpActState(actfile, skip_steps);
      }
 
-    writeWormParams(w);
-
+    
     bodyfile.close();
     curvfile.close();
     actfile.close();

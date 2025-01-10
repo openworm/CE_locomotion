@@ -206,7 +206,7 @@ NSEGS: 50
 Number of segments sensed by each stretch receptor
 NSEGSSR: 6
 SR_A_gain: 0
-SR_B_gain: 0
+SR_B_gain: 165.70021761925610803700692486018
 
 Worm Body parameters
 Normalized medium drag coefficient (0 = water, 1 = agar)
