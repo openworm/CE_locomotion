@@ -76,6 +76,7 @@ return retvec;
 
 template <class T>
 struct Params {
+Params(){}    
 vector<string> names;
 vector<T> vals;
 vector<int> messages_inds;
@@ -84,33 +85,43 @@ vector<string> messages;
 
 template <class T>
 struct ParamsHead : Params<T> {
+ParamsHead(string head_val, Params<T> par_val):Params<T>(par_val){head=head_val;}
+ParamsHead():Params<T>(){}
 string head;
 };
 
 
-
+Params<int> getNervousSysParamsIntNH(NervousSystem& c)
+{
+Params<int> par;    
+par.names = {"size", "maxchemcons", "maxelecconns"};
+par.vals = {c.size, c.maxchemconns, c.maxelecconns};
+return par;
+}
 
 ParamsHead<int> getNervousSysParamsInt(NervousSystem& c)
 {
-ParamsHead<int> par;
-par.head = "Nervous system";
-par.names = {"size", "maxchemcons", "maxelecconns"};
-par.vals = {c.size, c.maxchemconns, c.maxelecconns};
+Params<int> par = getNervousSysParamsIntNH(c);    
+ParamsHead<int> parH("Nervous system", par);
+return parH;
+}
 
+
+Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
+{
+Params< vector<double> > par;
+par.names = {"time constants", "biases", "gains"};
+par.vals = {getVector<double>(c.taus, c.size), 
+getVector<double>(c.biases, c.size), getVector<double>(c.gains, c.size)};
 return par;
 }
 
 
 ParamsHead< vector<double> > getNervousSysParamsDouble(NervousSystem& c)
 {
-
-ParamsHead< vector<double> > par;
-par.head = "Nervous system";
-par.names = {"time constants", "biases", "gains"};
-par.vals = {getVector<double>(c.taus, c.size), 
-getVector<double>(c.biases, c.size), getVector<double>(c.gains, c.size)};
-return par;
-
+Params< vector<double> > par = getNervousSysParamsDoubleNH(c);
+ParamsHead< vector<double> > parH("Nervous system",par);
+return parH;
 }
 
 
@@ -278,11 +289,12 @@ return par;
 
 }
 
-//////// functions for writing json
+//////// functions for reading and writing json
 
 struct toFromWeight{
     
     toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(){}
     weightentry w;
     int to;
 };
@@ -297,7 +309,12 @@ void to_json(json & j, const toFromWeight & w)
   j = json{{"to", w.to}, {"from", w.w.from}, {"weight", w.w.weight}};
 }
 
-
+void from_json(const json& j, toFromWeight & w) 
+{
+        j.at("to").get_to(w.to);
+        j.at("from").get_to(w.w.from);
+        j.at("weight").get_to(w.w.weight);
+}
 
 template<class T>
 void appendToJson(json & j, const Params<T> & par)
@@ -331,8 +348,62 @@ void appendNSToJson(json & j, NervousSystem& c)
     j["electrical weights"]["message"] = "electrical weights in sparse format";
 }
 
+json getNSJson(NervousSystem & n)
+{
+json j;
+string nsHead = "Nervous system";
 
-void writeParsToJson(Worm & w)
+{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(n);
+appendToJson<vector<double> >(j[nsHead],parvec);}
+
+Params<int> parvec = getNervousSysParamsIntNH(n);
+appendToJson<int>(j[nsHead],parvec);
+
+appendNSToJson(j[nsHead], n);
+
+return j;
+}
+
+ofstream & writeNSJson(ofstream & ofs, NervousSystem & n)
+{
+json j = getNSJson(n);
+ofs << std::setw(4) << j << std::endl;
+return ofs;
+}
+
+json getJsonFromFile(ifstream & ifs)
+{
+    //json j; 
+    return json::parse(ifs);
+    //ifs >> j;
+    //return j;
+
+}
+
+
+void setNSFromJsonFile(ifstream & ifs, NervousSystem & n)
+{
+ 
+json j2 = getJsonFromFile(ifs);
+json j = j2["Nervous system"];
+auto biases = j["biases"]["value"].template get< vector<double> >();
+auto chem_weights = j["chemical weights"]["value"].template get< vector<toFromWeight> >();
+auto elec_weights = j["electrical weights"]["value"].template get< vector<toFromWeight> >();
+auto gains = j["gains"]["value"].template get< vector<double> >();
+auto time_consts = j["time constants"]["value"].template get< vector<double> >();
+auto maxchemcons = j["maxchemcons"]["value"].template get<int>();
+auto maxelecconns = j["maxelecconns"]["value"].template get<int>();
+auto size = j["size"]["value"].template get<int>(); 
+
+for (int i=0;i<chem_weights.size();i++)
+n.SetChemicalSynapseWeight(chem_weights[i].w.from, chem_weights[i].to, chem_weights[i].w.weight);
+for (int i=0;i<elec_weights.size();i++)
+n.InternalSetElectricalSynapseWeight(elec_weights[i].w.from, elec_weights[i].to, elec_weights[i].w.weight);
+
+}
+
+
+void writeParsToJson(Worm & w, string file_name)
 {
 
 json j;
@@ -375,11 +446,15 @@ appendToJson<int>(j[parvec.head],parvec);
 
 appendNSToJson(j["Nervous system"], w.n);
 
-ofstream json_out(rename_file("worm_data.json"));
+ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;
+json_out.close();
 }
 
-
+void writeParsToJson(Worm & w)
+{
+writeParsToJson(w, "worm_data.json");
+}
 
 void readJson(json j, ifstream & ifs)
 {
