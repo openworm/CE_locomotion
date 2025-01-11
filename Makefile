@@ -18,9 +18,9 @@ Muscles.o: Muscles.cpp Muscles.h VectorMatrix.h random.h
 	g++ -c -O3 -flto Muscles.cpp
 main.o: main.cpp Worm.h WormBody.h StretchReceptor.h Muscles.h TSearch.h
 	g++ -c -O3 -flto main.cpp
-tests.o: tests.cpp NervousSystem.o random.o Worm2D.o
+tests.o: tests.cpp NervousSystem.cpp random.h Worm2D.cpp
 	g++ -c -O3 -flto tests.cpp
-tests: tests.o
-	g++ -pthread -o tests tests.o 
+tests: tests.o NervousSystem.o random.o Worm2D.o
+	g++ -pthread -o tests tests.o
 clean:
 	rm -f *.o main tests
