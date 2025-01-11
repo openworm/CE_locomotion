@@ -58,7 +58,7 @@ void testNervousSystem()
     for (double t = 0.0; t <= Duration; t += StepSize)
     {
 
-        std::cout << "Time: " << t << "" << std::endl;
+        //std::cout << "Time: " << t << "" << std::endl;
         if (t > StimDel && t < (StimDel + StimDur))
         {
             n.SetNeuronExternalInput(1, StimAmp);
@@ -74,7 +74,7 @@ void testNervousSystem()
         {
             double st = n.NeuronState(i);
             double ou = n.NeuronOutput(i);
-            std::cout << "  Neuron: " << i << ", state: " << st << ", output: " << ou << "" << std::endl;
+            //std::cout << "  Neuron: " << i << ", state: " << st << ", output: " << ou << "" << std::endl;
 
             state_file << st << " ";
             output_file << ou << " ";
