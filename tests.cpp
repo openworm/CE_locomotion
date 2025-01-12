@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <cassert>
 #include "TSearch.h"
-#include "NervousSystem.cpp"
-#include "Worm2D.cpp"
+#include "NervousSystem.h"
+#include "Worm2D.h"
+
+
 
 extern string output_dir_name;
 

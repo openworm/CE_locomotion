@@ -1,6 +1,8 @@
 #include "Worm.h"
 #include <vector>
 
+#pragma once
+
 using namespace std;
 
 ifstream & setParamsFromDump(ifstream &ifs, Worm &);
