@@ -194,20 +194,20 @@ double save_traces(TVector<double> &v, RandomState &rs){
     phenfile.close();
     }
     
-
     w.InitializeState(rs);
     w.sr.SR_A_gain = 0.0;
     w.sr.SR_B_gain = srb;
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
 
-    writeWormParams(w);
-
+    //writeWormParams(w);
+    writeParsToJson(w, "worm_data.json");
     
     ifstream NS_ifs(rename_file("worm_data.json"));
     setNSFromJsonFile(NS_ifs, w.n);
     NS_ifs.close();
     
+    writeParsToJson(w, "worm_data_2.json");
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);

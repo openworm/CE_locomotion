@@ -112,17 +112,58 @@ Params<int> par = getNervousSysParamsIntNH(c);
 ParamsHead<int> parH("Nervous system", par);
 return parH;
 }
+      
 
+Params< vector<int> > getNervousSysCellGroups(NervousSystem& c)
+{
+Params< vector<int> > par;
+par.names = {"cell group"};
+vector<int> group_names; 
+for (int i=0;i++;i<10){
+vector<int> vec1 = {1,2,3,4,5,6};
+group_names.insert(group_names.end(),vec1.begin(),vec1.end());
+}
+par.vals = {group_names};
+return par;
+}
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
 {
 Params< vector<double> > par;
-par.names = {"time constants", "biases", "gains", "outputs"};
-par.vals = {getVector<double>(c.taus, c.size), 
+par.names = {"taus", "biases", "gains", "outputs", "states", "paststates", "Rtaus", "externalinputs"};
+par.vals = {
+getVector<double>(c.taus, c.size), 
 getVector<double>(c.biases, c.size), 
 getVector<double>(c.gains, c.size),
-getVector<double>(c.outputs, c.size)
+getVector<double>(c.outputs, c.size),
+getVector<double>(c.states, c.size),
+getVector<double>(c.paststates, c.size),
+getVector<double>(c.Rtaus, c.size),
+getVector<double>(c.externalinputs, c.size),
 };
+return par;
+}
+
+Params< vector<int> > getNervousSysVecInt(NervousSystem& c)
+{
+Params< vector<int> > par;
+par.names = {"NumChemicalConns", "NumElectricalConns"};
+par.vals = {
+getVector<int>(c.NumChemicalConns, c.size), 
+getVector<int>(c.NumElectricalConns, c.size), 
+};
+return par;
+}
+
+
+Params< vector<string> > getNervousSysCellNames(NervousSystem& c)
+{
+Params< vector<string> > par;
+par.names = {"cell name"};
+vector<string> cell_names_all;
+vector<string> cell_names = {"DA", "DB", "DD", "VD", "VA", "VB"};
+for (int i=0;i<10;i++) cell_names_all.insert(cell_names_all.end(),cell_names.begin(),cell_names.end());
+par.vals = {cell_names_all};
 return par;
 }
 
@@ -366,8 +407,11 @@ string nsHead = "Nervous system";
 {Params<vector<double> > parvec = getNervousSysParamsDoubleNH(n);
 appendToJson<vector<double> >(j[nsHead],parvec);}
 
-Params<int> parvec = getNervousSysParamsIntNH(n);
-appendToJson<int>(j[nsHead],parvec);
+{Params<int> parvec = getNervousSysParamsIntNH(n);
+appendToJson<int>(j[nsHead],parvec);}
+
+{Params< vector<string> > parvec = getNervousSysCellNames(n);
+appendToJson<vector<string> >(j[nsHead],parvec);}
 
 appendNSToJson(j[nsHead], n);
 
@@ -401,7 +445,7 @@ auto biases = jns["biases"]["value"].template get< vector<double> >();
 auto chem_weights = jns["chemical weights"]["value"].template get< vector<toFromWeight> >();
 auto elec_weights = jns["electrical weights"]["value"].template get< vector<toFromWeight> >();
 auto gains = jns["gains"]["value"].template get< vector<double> >();
-auto time_consts = jns["time constants"]["value"].template get< vector<double> >();
+auto time_consts = jns["taus"]["value"].template get< vector<double> >();
 auto maxchemcons = jns["maxchemcons"]["value"].template get<int>();
 auto maxelecconns = jns["maxelecconns"]["value"].template get<int>();
 auto size = jns["size"]["value"].template get<int>(); 
@@ -460,13 +504,31 @@ for (int i=0;i<parvec.size(); i++) {
 appendToJson<double>(j[parvec[i].head],parvec[i]);
 }}
 
-{ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
+/* {ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
 appendToJson<vector<double> >(j[parvec.head],parvec);}
 
 ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
-appendToJson<int>(j[parvec.head],parvec);
+appendToJson<int>(j[parvec.head],parvec); */
 
-appendNSToJson(j["Nervous system"], w.n);
+string nsHead = "Nervous system";
+
+{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(w.n);
+appendToJson<vector<double> >(j[nsHead],parvec);}
+
+{Params<int> parvec = getNervousSysParamsIntNH(w.n);
+appendToJson<int>(j[nsHead],parvec);}
+
+{Params< vector<string> > parvec = getNervousSysCellNames(w.n);
+appendToJson<vector<string> >(j[nsHead],parvec);} 
+
+{Params< vector<int> > parvec = getNervousSysVecInt(w.n);
+appendToJson<vector<int> >(j[nsHead],parvec);}
+
+//{Params< vector<int> > parvec = getNervousSysCellGroups(w.n);
+//appendToJson<vector<int> >(j[nsHead],parvec);} 
+
+appendNSToJson(j[nsHead], w.n);
+
 
 ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;

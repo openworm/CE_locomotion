@@ -8,16 +8,11 @@
 #include <stdio.h>
 #include <cassert>
 #include "TSearch.h"
-#include "NervousSystem.h"
-#include "Worm2D.h"
+#include "NervousSystem.cpp"
 
-
-
-extern string output_dir_name;
-
-void setUpNS(NervousSystem & n)
+void testNervousSystem()
 {
-
+    NervousSystem n;
     std::cout << "Created simple Nervous System..." << std::endl;
     int N_units = 2;
     int N_neuronsperunit = 2;
@@ -33,21 +28,6 @@ void setUpNS(NervousSystem & n)
     n.SetChemicalSynapseWeight(1, 2, 1);
     //n.SetChemicalSynapseWeight(1, 3, .75);
 
-}
-
-
-void testNervousSystem()
-{
-    NervousSystem n;
-    //setUpNS(n);
-    
-
-    output_dir_name = "exampleRun"; //fix this
-    ifstream NS_ifs(rename_file("worm_data.json"));
-    setNSFromJsonFile(NS_ifs, n);
-    NS_ifs.close();  
-
-
     double Duration = 10;
     double StimDel = 2;
     double StimDur = 6;
@@ -60,7 +40,7 @@ void testNervousSystem()
     for (double t = 0.0; t <= Duration; t += StepSize)
     {
 
-        //std::cout << "Time: " << t << "" << std::endl;
+        std::cout << "Time: " << t << "" << std::endl;
         if (t > StimDel && t < (StimDel + StimDur))
         {
             n.SetNeuronExternalInput(1, StimAmp);
@@ -76,7 +56,7 @@ void testNervousSystem()
         {
             double st = n.NeuronState(i);
             double ou = n.NeuronOutput(i);
-            //std::cout << "  Neuron: " << i << ", state: " << st << ", output: " << ou << "" << std::endl;
+            std::cout << "  Neuron: " << i << ", state: " << st << ", output: " << ou << "" << std::endl;
 
             state_file << st << " ";
             output_file << ou << " ";
