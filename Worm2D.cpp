@@ -5,7 +5,6 @@
 #include <functional>
 #include <vector>
 #include <nlohmann/json.hpp>
-//#include <bits/stdc++.h>
 #include "Worm2D.h"
 #include "Mainvars.h"
 
@@ -117,10 +116,11 @@ return parH;
 Params< vector<int> > getNervousSysCellGroups(NervousSystem& c)
 {
 Params< vector<int> > par;
-par.names = {"cell group"};
+par.names = {"Cell group"};
 vector<int> group_names; 
 for (int i=0;i++;i<10){
-vector<int> vec1 = {1,2,3,4,5,6};
+vector<int> vec1;
+for (int j=0;j<6;j++) vec1.push_back(i);
 group_names.insert(group_names.end(),vec1.begin(),vec1.end());
 }
 par.vals = {group_names};
@@ -159,7 +159,7 @@ return par;
 Params< vector<string> > getNervousSysCellNames(NervousSystem& c)
 {
 Params< vector<string> > par;
-par.names = {"cell name"};
+par.names = {"Cell name"};
 vector<string> cell_names_all;
 vector<string> cell_names = {"DA", "DB", "DD", "VD", "VA", "VB"};
 for (int i=0;i<10;i++) cell_names_all.insert(cell_names_all.end(),cell_names.begin(),cell_names.end());
@@ -393,10 +393,10 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 void appendNSToJson(json & j, NervousSystem& c)
 {
-    j["chemical weights"]["message"] = "chemical weights in sparse format";
-    appendMatrixToJson(j["chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
-    appendMatrixToJson(j["electrical weights"], c.electricalweights, c.NumElectricalConns, c.size);
-    j["electrical weights"]["message"] = "electrical weights in sparse format";
+    j["Chemical weights"]["message"] = "chemical weights in sparse format";
+    appendMatrixToJson(j["Chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
+    appendMatrixToJson(j["Electrical weights"], c.electricalweights, c.NumElectricalConns, c.size);
+    j["Electrical weights"]["message"] = "electrical weights in sparse format";
 }
 
 json getNSJson(NervousSystem & n)
@@ -442,8 +442,8 @@ json j = getJsonFromFile(ifs);
 json jns = j["Nervous system"];
 auto outputs = jns["outputs"]["value"].template get< vector<double> >();
 auto biases = jns["biases"]["value"].template get< vector<double> >();
-auto chem_weights = jns["chemical weights"]["value"].template get< vector<toFromWeight> >();
-auto elec_weights = jns["electrical weights"]["value"].template get< vector<toFromWeight> >();
+auto chem_weights = jns["Chemical weights"]["value"].template get< vector<toFromWeight> >();
+auto elec_weights = jns["Electrical weights"]["value"].template get< vector<toFromWeight> >();
 auto gains = jns["gains"]["value"].template get< vector<double> >();
 auto time_consts = jns["taus"]["value"].template get< vector<double> >();
 auto maxchemcons = jns["maxchemcons"]["value"].template get<int>();
@@ -474,25 +474,25 @@ void writeParsToJson(Worm & w, string file_name)
 
 json j;
 {Params<double> par = getBodyParams(w.b);
-appendToJson<double>(j["body"],par);}
+appendToJson<double>(j["Body"],par);}
 
 {Params<int> par = getBodyParamsInts(w.b);
-appendToJson<int>(j["body"],par);}
+appendToJson<int>(j["Body"],par);}
 
 {Params<double> par = getStretchReceptorParams(w.sr);
-appendToJson<double>(j["stretch receptor"],par);
+appendToJson<double>(j["Stretch receptor"],par);
 }
 {
 Params<double> par = getWormParams(w);
-appendToJson<double>(j["worm"],par);
+appendToJson<double>(j["Worm"],par);
 }
 {
 Params<double> par =getMusclesParamsDouble(w.m);
-appendToJson<double>(j["muscle"],par);
+appendToJson<double>(j["Muscle"],par);
 }
 {
 Params<int> par =getMusclesParamsInt(w.m);
-appendToJson<int>(j["muscle"],par);
+appendToJson<int>(j["Muscle"],par);
 }
 
 {vector<ParamsHead<int> > parvec = getGlobalParamsInt();

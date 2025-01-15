@@ -18,7 +18,7 @@ void testNervousSystem()
 {
     NervousSystem n;
     
-    output_dir_name = "exampleRun_pop6"; //fix this
+    output_dir_name = "exampleRun"; //fix this for user directory name input
     ifstream NS_ifs(rename_file("worm_data.json"));
     setNSFromJsonFile(NS_ifs, n);
     NS_ifs.close();  
@@ -67,7 +67,7 @@ void testNervousSystem()
 int main(int argc, const char *argv[])
 {
 
-    // Many more tests should be added!
+    // Code to run simulation of optimized nervous system
 
     std::cout << "Test simulation of optimized nervous system..." << std::endl;
     
