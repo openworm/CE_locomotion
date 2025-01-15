@@ -85,6 +85,7 @@ struct toFromWeight{
     int to;
 };
 
+
 //// Params structure
 
 template <class T>
@@ -308,17 +309,35 @@ par.messages_inds = {0,1,2}; //must be ordered
 return par;
 }
 
-
-
-struct bodyToStretchReceptorProjection{
+struct stretchReceptorProjection{
 
     vector<toFromWeight> dorsalA, ventralA, dorsalB, ventralB;
 };
 
-
-bodyToStretchReceptorProjection getBodyToStretchReceptorProjection(StretchReceptor& s)
+stretchReceptorProjection getStretchToNSProjection()
 {
-bodyToStretchReceptorProjection bp;    
+stretchReceptorProjection bp;
+const double weight = 1.0;
+
+for (int i = 1; i <= N_units; i++){
+   
+    const int from = i;
+    {const int to = nn(DA,i);
+    bp.dorsalA.push_back(toFromWeight(weightentry{from,weight},to));}
+    {const int to = nn(VA,i);
+    bp.ventralA.push_back(toFromWeight(weightentry{from,weight},to));}
+    {const int to = nn(DB,i);
+    bp.dorsalB.push_back(toFromWeight(weightentry{from,weight},to));}
+    {const int to = nn(VB,i);
+    bp.ventralB.push_back(toFromWeight(weightentry{from,weight},to));}
+
+}
+return bp;
+}
+
+stretchReceptorProjection getBodyToStretchReceptorProjection(StretchReceptor& s)
+{
+stretchReceptorProjection bp;    
 
 const double weight = 1.0;
 {const int to = 1;
@@ -454,16 +473,30 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 void appendBodyStretchProjToJson(json & j, StretchReceptor& s)
 {
-bodyToStretchReceptorProjection bp = getBodyToStretchReceptorProjection(s);
+stretchReceptorProjection bp = getBodyToStretchReceptorProjection(s);
 j["dorsalA"]["value"] = bp.dorsalA;
 j["dorsalB"]["value"] = bp.dorsalB;
 j["ventralA"]["value"] = bp.ventralA;
 j["ventralB"]["value"] = bp.ventralB;
-j["dorsalA"]["message"] = "Projection from body to dorsalA stretch receptors";
-j["dorsalB"]["message"] = "Projection from body to dorsalB stretch receptors";
-j["ventralA"]["message"] = "Projection from body to ventralA stretch receptors";
-j["ventralB"]["message"] = "Projection from body to ventralB stretch receptors";
+j["dorsalA"]["message"] = "Projection from body to dorsalA (DA) stretch receptors";
+j["dorsalB"]["message"] = "Projection from body to dorsalB (DB) stretch receptors";
+j["ventralA"]["message"] = "Projection from body to ventralA (VA) stretch receptors";
+j["ventralB"]["message"] = "Projection from body to ventralB (VB) stretch receptors";
 }
+
+void appendStretchToNSProjToJson(json & j)
+{
+stretchReceptorProjection bp = getStretchToNSProjection();
+j["dorsalA"]["value"] = bp.dorsalA;
+j["dorsalB"]["value"] = bp.dorsalB;
+j["ventralA"]["value"] = bp.ventralA;
+j["ventralB"]["value"] = bp.ventralB;
+j["dorsalA"]["message"] = "Projection from SR to DA neurons";
+j["dorsalB"]["message"] = "Projection from SR to DB neurons";
+j["ventralA"]["message"] = "Projection from SR to VA neurons";
+j["ventralB"]["message"] = "Projection from SR to VB neurons";
+}
+
 
 void appendNSToJson(json & j, NervousSystem& c)
 {
@@ -602,6 +635,8 @@ appendToJson<vector<int> >(j[nsHead],parvec);}
 //appendToJson<vector<int> >(j[nsHead],parvec);} 
 
 appendNSToJson(j[nsHead], w.n);
+
+appendStretchToNSProjToJson(j[nsHead]);
 
 appendBodyStretchProjToJson(j["Stretch receptor"], w.sr);
 
