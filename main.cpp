@@ -203,10 +203,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     // save json data
     writeParsToJson(w, "worm_data.json");
     // reconstruct nervous system from json file to check validity
-    ifstream NS_ifs(rename_file("worm_data.json"));
-    setNSFromJsonFile(NS_ifs, w.n);
-    NS_ifs.close();
-    
+    testNervousSystemJson("worm_data.json", w.n); 
     
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){

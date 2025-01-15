@@ -22,3 +22,4 @@ void writeWormParams(Worm & w);
 template<class T> vector<T> getVector(TVector<T> & vec, int size);
 void writeParsToJson(Worm &, string);
 void writeParsToJson(Worm &);
+void testNervousSystemJson(string, NervousSystem &);

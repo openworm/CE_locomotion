@@ -53,7 +53,7 @@ string rename_file(const string & file_name){
 }
 
 template<class T>
-vector<T> & append(vector<T> & v1, const vector<T> v2)
+vector<T> & append(vector<T> & v1, const vector<T> & v2)
 {
 v1.insert(v1.end(), v2.begin(), v2.end());
 return v1;
@@ -77,6 +77,13 @@ for (int i = 0; i < vec.size(); i++) retvec[i+1]=vec[i];
 return retvec;    
 }
 
+struct toFromWeight{
+    
+    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(){}
+    weightentry w;
+    int to;
+};
 
 //// Params structure
 
@@ -126,6 +133,9 @@ group_names.insert(group_names.end(),vec1.begin(),vec1.end());
 par.vals = {group_names};
 return par;
 }
+
+
+
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
 {
@@ -217,6 +227,8 @@ vector<ParamsHead<double> > parvec;
 par.head = "Worm global parameters";
 par.names = {"T_muscle"};
 par.vals = {T_muscle};
+par.messages ={"Muscle time constant"};
+par.messages_inds = {0};
 parvec.push_back(par);}
 {ParamsHead<double> par;
 par.head =  "Integration parameters";
@@ -227,6 +239,8 @@ parvec.push_back(par);}
 par.head =  "Fitness traj";
 par.names =  {"AvgSpeed", "BBCfit"};
 par.vals = {AvgSpeed, BBCfit};
+par.messages ={"Average speed of the worm in meters per second", "AvgSpeed*Duration"};
+par.messages_inds = {0,1};
 parvec.push_back(par);}
 {ParamsHead<double> par;
 par.head =  "Genotype -> Phenotype Mapping Ranges";
@@ -248,8 +262,12 @@ vector<ParamsHead<int> > getGlobalParamsInt()
 vector<ParamsHead<int> > parvec;
 {ParamsHead<int> par;
 par.head = "Worm global parameters";
-par.names = { "N_muscles", "N_units", "N_neuronsperunit", "N_stretchrec" "NmusclePerNU"};
+par.names = { "N_muscles", "N_units", "N_neuronsperunit", "N_stretchrec", "NmusclePerNU"};
 par.vals = {N_muscles, N_units, N_neuronsperunit, N_stretchrec, NmusclePerNU};
+par.messages = {"Number of muscles alongside the body", 
+"Number of neural units in VNC", "Number of neurons in a VNC neural unit",  
+"Number of stretch receptors", "All the way down to 24, in groups of 3 per unit"};
+par.messages_inds = {0,1,2,3,4};
 parvec.push_back(par);}
 {ParamsHead<int> par;
 par.head = "Name conventions";
@@ -289,6 +307,55 @@ par.messages = {"Number of stretch receptor, equal to number of units",
 par.messages_inds = {0,1,2}; //must be ordered
 return par;
 }
+
+
+
+struct bodyToStretchReceptorProjection{
+
+    vector<toFromWeight> dorsalA, ventralA, dorsalB, ventralB;
+};
+
+
+bodyToStretchReceptorProjection getBodyToStretchReceptorProjection(StretchReceptor& s)
+{
+bodyToStretchReceptorProjection bp;    
+
+const double weight = 1.0;
+{const int to = 1;
+for (int j = 1; j <= s.NSEGSSR; j++){
+const int from = j;
+bp.dorsalA.push_back(toFromWeight(weightentry{from,weight},to));
+bp.ventralA.push_back(toFromWeight(weightentry{from,weight},to));
+}}
+
+for (int to = 2; to <= 10; to++){
+for (int j = 1; j <= s.NSEGSSR; j++)
+        {
+            const int from = j+(to-2)*4;
+            bp.dorsalA.push_back(toFromWeight(weightentry{from,weight},to));
+            bp.ventralA.push_back(toFromWeight(weightentry{from,weight},to));
+        }
+}
+
+for (int to = 1; to <= 9; to++){
+        for (int j = 1; j <= s.NSEGSSR; j++)
+        {
+            const int from = 12+j+(to-1)*4;
+            bp.dorsalB.push_back(toFromWeight(weightentry{from,weight},to));
+            bp.ventralB.push_back(toFromWeight(weightentry{from,weight},to));
+        }
+}
+
+{const int to = 10;
+for (int j = 1; j <= s.NSEGSSR; j++){
+const int from = j+44;
+bp.dorsalB.push_back(toFromWeight(weightentry{from,weight},to));
+bp.ventralB.push_back(toFromWeight(weightentry{from,weight},to));
+}}
+
+return bp;
+}
+
 
 
 Params<int> getBodyParamsInts(WormBody& b)
@@ -342,13 +409,7 @@ return par;
 
 //////// functions for reading and writing json
 
-struct toFromWeight{
-    
-    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
-    toFromWeight(){}
-    weightentry w;
-    int to;
-};
+
 
 void to_json(json & j, const weightentry & w)
 {
@@ -389,6 +450,19 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
     }
     j["value"] = newvec;
 
+}
+
+void appendBodyStretchProjToJson(json & j, StretchReceptor& s)
+{
+bodyToStretchReceptorProjection bp = getBodyToStretchReceptorProjection(s);
+j["dorsalA"]["value"] = bp.dorsalA;
+j["dorsalB"]["value"] = bp.dorsalB;
+j["ventralA"]["value"] = bp.ventralA;
+j["ventralB"]["value"] = bp.ventralB;
+j["dorsalA"]["message"] = "Projection from body to dorsalA stretch receptors";
+j["dorsalB"]["message"] = "Projection from body to dorsalB stretch receptors";
+j["ventralA"]["message"] = "Projection from body to ventralA stretch receptors";
+j["ventralB"]["message"] = "Projection from body to ventralB stretch receptors";
 }
 
 void appendNSToJson(json & j, NervousSystem& c)
@@ -529,6 +603,7 @@ appendToJson<vector<int> >(j[nsHead],parvec);}
 
 appendNSToJson(j[nsHead], w.n);
 
+appendBodyStretchProjToJson(j["Stretch receptor"], w.sr);
 
 ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;
@@ -545,8 +620,12 @@ void readJson(json j, ifstream & ifs)
 ifs >> j;
 }
 
-
-
+void testNervousSystemJson(string fileName, NervousSystem & n)
+{
+ifstream NS_ifs(rename_file(fileName));
+setNSFromJsonFile(NS_ifs, n);
+NS_ifs.close();
+}
 
 //////////// functions for writing text file
 
