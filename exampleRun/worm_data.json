@@ -25,7 +25,7 @@
             "value": 1.0
         },
         "N_segments": {
-            "message": "Number of segments",
+            "message": "Number of body segments on each side, dorsal and ventral",
             "value": 50
         },
         "R_min": {
@@ -94,6 +94,418 @@
             "value": 200.0
         }
     },
+    "HubToMuscle": {
+        "dorsal": {
+            "message": "Projection from dorsal hubs (10) to dorsal muscles (24)",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 5,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 6,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 7,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 8,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 8,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 9,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 9,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 10,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 11,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 11,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 12,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 12,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 13,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 13,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 14,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 14,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 15,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 15,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 16,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 16,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 17,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 17,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 18,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 18,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 19,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 19,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 20,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 21,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 21,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 22,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 23,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 24,
+                    "weight": 1.0
+                }
+            ]
+        },
+        "ventral": {
+            "message": "Projection from ventral hubs (10) to ventral muscles (24)",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 1.0
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 5,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 6,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 1.0
+                },
+                {
+                    "from": 2,
+                    "to": 7,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 8,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 8,
+                    "weight": 1.0
+                },
+                {
+                    "from": 3,
+                    "to": 9,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 9,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 10,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 1.0
+                },
+                {
+                    "from": 4,
+                    "to": 11,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 11,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 12,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 12,
+                    "weight": 1.0
+                },
+                {
+                    "from": 5,
+                    "to": 13,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 13,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 14,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 14,
+                    "weight": 1.0
+                },
+                {
+                    "from": 6,
+                    "to": 15,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 15,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 16,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 16,
+                    "weight": 1.0
+                },
+                {
+                    "from": 7,
+                    "to": 17,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 17,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 18,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 18,
+                    "weight": 1.0
+                },
+                {
+                    "from": 8,
+                    "to": 19,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 19,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 20,
+                    "weight": 1.0
+                },
+                {
+                    "from": 9,
+                    "to": 21,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 21,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 22,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 23,
+                    "weight": 1.0
+                },
+                {
+                    "from": 10,
+                    "to": 24,
+                    "weight": 1.0
+                }
+            ]
+        }
+    },
     "Integration parameters": {
         "N_curvs": {
             "value": 23
@@ -114,6 +526,1290 @@
         },
         "T_muscle": {
             "value": 0.1
+        }
+    },
+    "MuscleToBody": {
+        "dorsal": {
+            "message": "Projection from dorsal muscles to dorsal body segments",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 5,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 5,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 6,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 7,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 8,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 8,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 9,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 9,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 10,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 11,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 11,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 12,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 12,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 13,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 13,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 14,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 14,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 15,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 15,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 16,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 16,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 17,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 17,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 18,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 18,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 19,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 19,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 20,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 20,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 21,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 21,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 22,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 22,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 23,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 23,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 24,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 24,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 25,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 25,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 26,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 26,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 27,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 27,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 28,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 28,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 29,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 29,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 30,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 30,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 31,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 31,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 32,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 32,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 33,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 33,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 34,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 34,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 35,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 35,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 36,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 36,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 37,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 37,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 38,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 38,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 39,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 39,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 40,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 40,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 41,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 41,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 42,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 42,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 43,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 43,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 44,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 44,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 45,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 45,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 46,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 46,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 47,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 47,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 48,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 48,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 49,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 50,
+                    "weight": 0.5
+                }
+            ]
+        },
+        "ventral": {
+            "message": "Projection from ventral muscles to ventral body segments",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 0.5
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 5,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 5,
+                    "weight": 0.5
+                },
+                {
+                    "from": 2,
+                    "to": 6,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 7,
+                    "weight": 0.5
+                },
+                {
+                    "from": 3,
+                    "to": 8,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 8,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 9,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 9,
+                    "weight": 0.5
+                },
+                {
+                    "from": 4,
+                    "to": 10,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 11,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 11,
+                    "weight": 0.5
+                },
+                {
+                    "from": 5,
+                    "to": 12,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 12,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 13,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 13,
+                    "weight": 0.5
+                },
+                {
+                    "from": 6,
+                    "to": 14,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 14,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 15,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 15,
+                    "weight": 0.5
+                },
+                {
+                    "from": 7,
+                    "to": 16,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 16,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 17,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 17,
+                    "weight": 0.5
+                },
+                {
+                    "from": 8,
+                    "to": 18,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 18,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 19,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 19,
+                    "weight": 0.5
+                },
+                {
+                    "from": 9,
+                    "to": 20,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 20,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 21,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 21,
+                    "weight": 0.5
+                },
+                {
+                    "from": 10,
+                    "to": 22,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 22,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 23,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 23,
+                    "weight": 0.5
+                },
+                {
+                    "from": 11,
+                    "to": 24,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 24,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 25,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 25,
+                    "weight": 0.5
+                },
+                {
+                    "from": 12,
+                    "to": 26,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 26,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 27,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 27,
+                    "weight": 0.5
+                },
+                {
+                    "from": 13,
+                    "to": 28,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 28,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 29,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 29,
+                    "weight": 0.5
+                },
+                {
+                    "from": 14,
+                    "to": 30,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 30,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 31,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 31,
+                    "weight": 0.5
+                },
+                {
+                    "from": 15,
+                    "to": 32,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 32,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 33,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 33,
+                    "weight": 0.5
+                },
+                {
+                    "from": 16,
+                    "to": 34,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 34,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 35,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 35,
+                    "weight": 0.5
+                },
+                {
+                    "from": 17,
+                    "to": 36,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 36,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 37,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 37,
+                    "weight": 0.5
+                },
+                {
+                    "from": 18,
+                    "to": 38,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 38,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 39,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 39,
+                    "weight": 0.5
+                },
+                {
+                    "from": 19,
+                    "to": 40,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 40,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 41,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 41,
+                    "weight": 0.5
+                },
+                {
+                    "from": 20,
+                    "to": 42,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 42,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 43,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 43,
+                    "weight": 0.5
+                },
+                {
+                    "from": 21,
+                    "to": 44,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 44,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 45,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 45,
+                    "weight": 0.5
+                },
+                {
+                    "from": 22,
+                    "to": 46,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 46,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 47,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 47,
+                    "weight": 0.5
+                },
+                {
+                    "from": 23,
+                    "to": 48,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 48,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 49,
+                    "weight": 0.5
+                },
+                {
+                    "from": 24,
+                    "to": 50,
+                    "weight": 0.5
+                }
+            ]
+        }
+    },
+    "NSToMuscleHub": {
+        "dorsal": {
+            "message": "Projection from dorsal motorneurons to dorsal hubs with NMJ weights",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 3,
+                    "to": 1,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 7,
+                    "to": 2,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 8,
+                    "to": 2,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 9,
+                    "to": 2,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 13,
+                    "to": 3,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 14,
+                    "to": 3,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 15,
+                    "to": 3,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 19,
+                    "to": 4,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 20,
+                    "to": 4,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 21,
+                    "to": 4,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 25,
+                    "to": 5,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 26,
+                    "to": 5,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 27,
+                    "to": 5,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 31,
+                    "to": 6,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 32,
+                    "to": 6,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 33,
+                    "to": 6,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 37,
+                    "to": 7,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 38,
+                    "to": 7,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 39,
+                    "to": 7,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 43,
+                    "to": 8,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 44,
+                    "to": 8,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 45,
+                    "to": 8,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 49,
+                    "to": 9,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 50,
+                    "to": 9,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 51,
+                    "to": 9,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 55,
+                    "to": 10,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 56,
+                    "to": 10,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 57,
+                    "to": 10,
+                    "weight": -0.3888755563666353
+                }
+            ]
+        },
+        "ventral": {
+            "message": "Projection from ventral motorneurons to ventral hubs with NMJ weights",
+            "value": [
+                {
+                    "from": 5,
+                    "to": 1,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 6,
+                    "to": 1,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 4,
+                    "to": 1,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 11,
+                    "to": 2,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 12,
+                    "to": 2,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 10,
+                    "to": 2,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 17,
+                    "to": 3,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 18,
+                    "to": 3,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 16,
+                    "to": 3,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 23,
+                    "to": 4,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 24,
+                    "to": 4,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 22,
+                    "to": 4,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 29,
+                    "to": 5,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 30,
+                    "to": 5,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 28,
+                    "to": 5,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 35,
+                    "to": 6,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 36,
+                    "to": 6,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 34,
+                    "to": 6,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 41,
+                    "to": 7,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 42,
+                    "to": 7,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 40,
+                    "to": 7,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 47,
+                    "to": 8,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 48,
+                    "to": 8,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 46,
+                    "to": 8,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 53,
+                    "to": 9,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 54,
+                    "to": 9,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 52,
+                    "to": 9,
+                    "weight": -0.3888755563666353
+                },
+                {
+                    "from": 59,
+                    "to": 10,
+                    "weight": 0.2394267872076254
+                },
+                {
+                    "from": 60,
+                    "to": 10,
+                    "weight": 0.41458707070859624
+                },
+                {
+                    "from": 58,
+                    "to": 10,
+                    "weight": -0.3888755563666353
+                }
+            ]
         }
     },
     "Name conventions": {
@@ -2157,7 +3853,7 @@
             "value": 6.0
         },
         "NSR": {
-            "message": "Number of stretch receptor, equal to number of units",
+            "message": "Number of stretch receptor in DA, DB, VA and VB, equal to number of units",
             "value": 10.0
         },
         "SR_A_gain": {
@@ -2167,7 +3863,7 @@
             "value": 165.7002176192561
         },
         "dorsalA": {
-            "message": "Projection from body to dorsalA (DA) stretch receptors",
+            "message": "Projection from body segs to dorsalA (DA) stretch receptors",
             "value": [
                 {
                     "from": 1,
@@ -3435,23 +5131,23 @@
     },
     "Worm global parameters": {
         "N_muscles": {
-            "message": "Number of muscles alongside the body",
+            "message": "Number of muscles on each side of the body (ventral and dorsal)",
             "value": 24
         },
         "N_neuronsperunit": {
-            "message": "Number of neurons in a VNC neural unit",
+            "message": "Number of neurons in a neural unit",
             "value": 6
         },
         "N_stretchrec": {
-            "message": "Number of stretch receptors",
+            "message": "Number of stretch receptors in each of dorsal A, ventral A, dorsal B and ventral B",
             "value": 10
         },
         "N_units": {
-            "message": "Number of neural units in VNC",
+            "message": "Number of neural units",
             "value": 10
         },
         "NmusclePerNU": {
-            "message": "All the way down to 24, in groups of 3 per unit",
+            "message": "Number of muscles per neural unit on each side (dorsal and ventral)",
             "value": 4
         },
         "T_muscle": {

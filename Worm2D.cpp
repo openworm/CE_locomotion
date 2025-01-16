@@ -265,9 +265,10 @@ vector<ParamsHead<int> > parvec;
 par.head = "Worm global parameters";
 par.names = { "N_muscles", "N_units", "N_neuronsperunit", "N_stretchrec", "NmusclePerNU"};
 par.vals = {N_muscles, N_units, N_neuronsperunit, N_stretchrec, NmusclePerNU};
-par.messages = {"Number of muscles alongside the body", 
-"Number of neural units in VNC", "Number of neurons in a VNC neural unit",  
-"Number of stretch receptors", "All the way down to 24, in groups of 3 per unit"};
+par.messages = {"Number of muscles on each side of the body (ventral and dorsal)", 
+"Number of neural units", "Number of neurons in a neural unit",  
+"Number of stretch receptors in each of dorsal A, ventral A, dorsal B and ventral B", 
+"Number of muscles per neural unit on each side (dorsal and ventral)"};
 par.messages_inds = {0,1,2,3,4};
 parvec.push_back(par);}
 {ParamsHead<int> par;
@@ -302,7 +303,7 @@ Params<double> getStretchReceptorParams(StretchReceptor& s)
 Params<double> par;
 par.names = {"NSR", "NSEGS", "NSEGSSR", "SR_A_gain", "SR_B_gain"};
 par.vals = {s.NSR, s.NSEGS, s.NSEGSSR, s.SR_A_gain, s.SR_B_gain};
-par.messages = {"Number of stretch receptor, equal to number of units",
+par.messages = {"Number of stretch receptor in DA, DB, VA and VB, equal to number of units",
                                 "Number of segments in the body",
                                 "Number of segments sensed by each stretch receptor"};
 par.messages_inds = {0,1,2}; //must be ordered
@@ -319,6 +320,41 @@ struct VDProjection{
 
     vector<toFromWeight> dorsal, ventral;
 };
+
+VDProjection getMuscleToBodyProjection()
+{
+
+VDProjection bp;
+const double weight = 0.5;
+
+  {const int to = 1; 
+  bp.dorsal.push_back(toFromWeight(weightentry{1,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{1,weight},to));}
+  {const int to = 2; 
+  bp.dorsal.push_back(toFromWeight(weightentry{1,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{1,weight},to));}
+
+  //  All other segments receive force from two muscles
+  for (int i = 3; i <= N_segments-2; i++)
+  {
+    const int to = i;
+    const int mi = (int) ((i-1)/2);
+    bp.dorsal.push_back(toFromWeight(weightentry{mi,weight},to));
+    bp.ventral.push_back(toFromWeight(weightentry{mi,weight},to));
+    bp.dorsal.push_back(toFromWeight(weightentry{mi+1,weight},to));
+    bp.ventral.push_back(toFromWeight(weightentry{mi+1,weight},to));
+  }
+
+  //  Last two segments receive special treatment because they are only affected by a single muscle
+  {const int to = N_segments-1; 
+  bp.dorsal.push_back(toFromWeight(weightentry{N_muscles,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{N_muscles,weight},to));}
+  {const int to = N_segments;
+  bp.dorsal.push_back(toFromWeight(weightentry{N_muscles,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{N_muscles,weight},to));}
+
+return bp;
+}
 
 VDProjection getHubToMuscleProjection()
 {
@@ -469,7 +505,7 @@ Params<int> getBodyParamsInts(WormBody& b)
 Params<int> par;
 par.names = {"N_segments"};
 par.vals = {N_segments};
-par.messages = {"Number of segments"};
+par.messages = {"Number of body segments on each side, dorsal and ventral"};
 par.messages_inds  = {0};
 return par;
 }
@@ -558,14 +594,24 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 }
 
+void appendMuscleToBodyProjection(json & j){
+
+VDProjection bp = getMuscleToBodyProjection();
+j["dorsal"]["value"] = bp.dorsal;
+j["ventral"]["value"] = bp.ventral;
+j["dorsal"]["message"] = "Projection from dorsal muscles to dorsal body segments";
+j["ventral"]["message"] = "Projection from ventral muscles to ventral body segments";
+
+}
+
 
 void appendHubToMuscleProjection(json & j){
 
 VDProjection bp = getHubToMuscleProjection();
 j["dorsal"]["value"] = bp.dorsal;
 j["ventral"]["value"] = bp.ventral;
-j["dorsal"]["message"] = "Projection from dorsal hubs to dorsal muscles";
-j["ventral"]["message"] = "Projection from ventral hubs to ventral muscles";
+j["dorsal"]["message"] = "Projection from dorsal hubs (10) to dorsal muscles (24)";
+j["ventral"]["message"] = "Projection from ventral hubs (10) to ventral muscles (24)";
 
 }
 
@@ -574,8 +620,8 @@ void appendMuscleInputHubProjection(json & j, Worm & w){
 VDProjection bp = getMuscleInputHubProjection(w);
 j["dorsal"]["value"] = bp.dorsal;
 j["ventral"]["value"] = bp.ventral;
-j["dorsal"]["message"] = "Projection from dorsal motorneurons to dorsal hubs";
-j["ventral"]["message"] = "Projection from ventral motorneurons to ventral hubs";
+j["dorsal"]["message"] = "Projection from dorsal motorneurons to dorsal hubs with NMJ weights";
+j["ventral"]["message"] = "Projection from ventral motorneurons to ventral hubs with NMJ weights";
 }
 
 
@@ -750,6 +796,7 @@ appendBodyStretchProjToJson(j["Stretch receptor"], w.sr);
 
 appendMuscleInputHubProjection(j["NSToMuscleHub"],w);
 appendHubToMuscleProjection(j["HubToMuscle"]);
+appendMuscleToBodyProjection(j["MuscleToBody"]);
 
 ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;
