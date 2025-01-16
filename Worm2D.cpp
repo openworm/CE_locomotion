@@ -315,15 +315,69 @@ struct stretchReceptorProjection{
 };
 
 
-struct muscleInputHubProjection{
+struct VDProjection{
 
     vector<toFromWeight> dorsal, ventral;
 };
 
+VDProjection getHubToMuscleProjection()
+{
+VDProjection bp;
 
-muscleInputHubProjection getMuscleInputHubProjection(Worm & w){
+const double weight = 1.0;
+// muscles 1 to 3
+for (int mi=1; mi<=3; mi++){ 
+    const int to = mi;
+    const int from = 1;
+    bp.dorsal.push_back(toFromWeight(weightentry{from,weight},to));
+    bp.ventral.push_back(toFromWeight(weightentry{from,weight},to));
+  }
 
-muscleInputHubProjection bp;
+  {const int to = 4; // 4th muscle
+  bp.dorsal.push_back(toFromWeight(weightentry{1,weight},to));
+  bp.dorsal.push_back(toFromWeight(weightentry{2,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{1,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{2,weight},to));}
+
+  {const int to = 5; // 5th muscle
+  bp.dorsal.push_back(toFromWeight(weightentry{2,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{2,weight},to));}
+ 
+  int mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    const int to = mi;
+    bp.ventral.push_back(toFromWeight(weightentry{mt,weight},to));
+    bp.ventral.push_back(toFromWeight(weightentry{mt+1,weight},to));
+    bp.dorsal.push_back(toFromWeight(weightentry{mt,weight},to));
+    bp.dorsal.push_back(toFromWeight(weightentry{mt+1,weight},to));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  {const int to = 20; // 20th muscle
+  bp.dorsal.push_back(toFromWeight(weightentry{9,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{9,weight},to));}
+
+  {const int to = 21; // 21th muscle
+  bp.dorsal.push_back(toFromWeight(weightentry{9,weight},to));
+  bp.dorsal.push_back(toFromWeight(weightentry{10,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{9,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{10,weight},to));}
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+  const int to = mi; 
+  bp.dorsal.push_back(toFromWeight(weightentry{10,weight},to));
+  bp.ventral.push_back(toFromWeight(weightentry{10,weight},to));}
+
+return bp;
+}
+
+
+//projection from 60 NS neurons to 10 muscle hubs, here included NMJs as weights
+
+VDProjection getMuscleInputHubProjection(Worm & w){
+
+VDProjection bp;
 
 for (int i=1; i<=N_units; i++){
 
@@ -504,9 +558,20 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 }
 
+
+void appendHubToMuscleProjection(json & j){
+
+VDProjection bp = getHubToMuscleProjection();
+j["dorsal"]["value"] = bp.dorsal;
+j["ventral"]["value"] = bp.ventral;
+j["dorsal"]["message"] = "Projection from dorsal hubs to dorsal muscles";
+j["ventral"]["message"] = "Projection from ventral hubs to ventral muscles";
+
+}
+
 void appendMuscleInputHubProjection(json & j, Worm & w){
 
-muscleInputHubProjection bp = getMuscleInputHubProjection(w);
+VDProjection bp = getMuscleInputHubProjection(w);
 j["dorsal"]["value"] = bp.dorsal;
 j["ventral"]["value"] = bp.ventral;
 j["dorsal"]["message"] = "Projection from dorsal motorneurons to dorsal hubs";
@@ -683,7 +748,8 @@ appendStretchToNSProjToJson(j[nsHead]);
 
 appendBodyStretchProjToJson(j["Stretch receptor"], w.sr);
 
-appendMuscleInputHubProjection(j["Muscle"],w);
+appendMuscleInputHubProjection(j["NSToMuscleHub"],w);
+appendHubToMuscleProjection(j["HubToMuscle"]);
 
 ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;
