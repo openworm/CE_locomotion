@@ -314,6 +314,37 @@ struct stretchReceptorProjection{
     vector<toFromWeight> dorsalA, ventralA, dorsalB, ventralB;
 };
 
+
+struct muscleInputHubProjection{
+
+    vector<toFromWeight> dorsal, ventral;
+};
+
+
+muscleInputHubProjection getMuscleInputHubProjection(Worm & w){
+
+muscleInputHubProjection bp;
+
+for (int i=1; i<=N_units; i++){
+
+    const int to = i;
+    const vector<int> dorsal_list = {DA,DB,DD};
+    const vector<double> dorsal_list_NMJ = {w.NMJ_DA,w.NMJ_DB,w.NMJ_DD};
+    for (int j=0;j<dorsal_list.size();j++) 
+    bp.dorsal.push_back(toFromWeight(weightentry{nn(dorsal_list[j],i),dorsal_list_NMJ[j]},to));
+
+    const vector<int> ventral_list = {VA,VB,VD};
+    const vector<double> ventral_list_NMJ = {w.NMJ_VA,w.NMJ_VB,w.NMJ_VD};
+    for (int j=0;j<ventral_list.size();j++) 
+    bp.ventral.push_back(toFromWeight(weightentry{nn(ventral_list[j],i),ventral_list_NMJ[j]},to));    
+
+    }
+return bp;
+}
+
+
+//projection from 10 stretch receptors to 60 neurons
+
 stretchReceptorProjection getStretchToNSProjection()
 {
 stretchReceptorProjection bp;
@@ -334,6 +365,8 @@ for (int i = 1; i <= N_units; i++){
 }
 return bp;
 }
+
+//projection from 50 body segments to 10 stretch receptors
 
 stretchReceptorProjection getBodyToStretchReceptorProjection(StretchReceptor& s)
 {
@@ -471,6 +504,16 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 }
 
+void appendMuscleInputHubProjection(json & j, Worm & w){
+
+muscleInputHubProjection bp = getMuscleInputHubProjection(w);
+j["dorsal"]["value"] = bp.dorsal;
+j["ventral"]["value"] = bp.ventral;
+j["dorsal"]["message"] = "Projection from dorsal motorneurons to dorsal hubs";
+j["ventral"]["message"] = "Projection from ventral motorneurons to ventral hubs";
+}
+
+
 void appendBodyStretchProjToJson(json & j, StretchReceptor& s)
 {
 stretchReceptorProjection bp = getBodyToStretchReceptorProjection(s);
@@ -478,7 +521,7 @@ j["dorsalA"]["value"] = bp.dorsalA;
 j["dorsalB"]["value"] = bp.dorsalB;
 j["ventralA"]["value"] = bp.ventralA;
 j["ventralB"]["value"] = bp.ventralB;
-j["dorsalA"]["message"] = "Projection from body to dorsalA (DA) stretch receptors";
+j["dorsalA"]["message"] = "Projection from body segs to dorsalA (DA) stretch receptors";
 j["dorsalB"]["message"] = "Projection from body to dorsalB (DB) stretch receptors";
 j["ventralA"]["message"] = "Projection from body to ventralA (VA) stretch receptors";
 j["ventralB"]["message"] = "Projection from body to ventralB (VB) stretch receptors";
@@ -639,6 +682,8 @@ appendNSToJson(j[nsHead], w.n);
 appendStretchToNSProjToJson(j[nsHead]);
 
 appendBodyStretchProjToJson(j["Stretch receptor"], w.sr);
+
+appendMuscleInputHubProjection(j["Muscle"],w);
 
 ofstream json_out(rename_file(file_name));
 json_out << std::setw(4) << j << std::endl;
