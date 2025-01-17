@@ -17,9 +17,11 @@ from neuroml import (
     NeuroMLDocument,
     Population,
     PulseGenerator,
+    ElectricalProjection,
     SynapticConnection,
     Projection,
     ConnectionWD,
+    ElectricalConnectionInstanceW,
 )
 
 def get_projection_id(pre, post, synclass, syntype):
@@ -39,7 +41,7 @@ with open('../exampleRun/worm_data.json', 'r') as file:
 
 cell_num = network_json_data["Nervous system"]["size"]["value"]
 chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
-
+electrical_weights = network_json_data["Nervous system"]["Electrical weights"]["value"]
 
 nml_doc = NeuroMLDocument(id="Worm2D")
 
@@ -57,6 +59,7 @@ nml_doc.iaf_cells.append(IafCell0)
 syn0 = ExpOneSynapse(id="syn0", gbase="65nS", erev="0mV", tau_decay="3ms")
 nml_doc.exp_one_synapses.append(syn0)
 
+
 net = Network(id="IafNet")
 
 nml_doc.networks.append(net)
@@ -66,9 +69,17 @@ pop0 = Population(id="IafPop0", component=IafCell0.id, size=size0)
 
 net.populations.append(pop0)
 
-proj0 = Projection(id="Proj0",presynaptic_population=pop0.id,postsynaptic_population=pop0.id,
+proj0 = Projection(id="ChemicalProj",presynaptic_population=pop0.id,postsynaptic_population=pop0.id,
                    synapse=syn0.id,
                 )
+elProj0 = ElectricalProjection(
+                    id="ElectricalProj",
+                    presynaptic_population=pop0.id,
+                    postsynaptic_population=pop0.id,
+                )
+
+net.electrical_projections.append(elProj0)
+
 net.projections.append(proj0)
 
 
@@ -108,6 +119,33 @@ if make_connections:
                 )
 
         proj0.connection_wds.append(conn0)
+
+make_electric_connections = True
+if make_electric_connections:
+    for index, connection in enumerate(electrical_weights): 
+        pre_index = connection["from"] - 1 # zero indexing
+        post_index = connection["to"] - 1 # zero indexing
+        weight = connection["weight"]
+
+        pre_cell_id = get_cell_id_string(pop0.id, IafCell0.id, pre_index)
+        post_cell_id = get_cell_id_string(pop0.id, IafCell0.id, post_index)
+
+        
+        conn0 = ElectricalConnectionInstanceW(
+                    id=str(index),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    #synapse=syn_new.id,
+                    weight=weight,
+                )
+
+        elProj0.electrical_connection_instance_ws.append(conn0)
+    
+
+
+
+
+
 
 """ syn = SynapticConnection(
             from_="%s[%i]" % (pop0.id, pre),
