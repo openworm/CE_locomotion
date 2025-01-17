@@ -1,0 +1,211 @@
+<Lems>
+
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v1.3.12 (libNeuroML v0.6.5)
+
+     -->
+
+    <!-- Specify which component to run -->
+    <Target component="Simple" reportFile="report.txt"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+
+    <Include file="testnet.nml"/>
+
+    <Simulation id="Simple" length="1000.0ms" step="0.025ms" target="simplenet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        <Display id="DispPop__IafPop0" title="Membrane potentials of cells in IafPop0" timeScale="1ms" xmin="-100.0" xmax="1100.0" ymin="-90" ymax="50">
+            <Line id="IafPop0[0]: v" quantity="IafPop0[0]/v" scale="1mV" color="#d54f33" timeScale="1ms"/>
+            <Line id="IafPop0[1]: v" quantity="IafPop0[1]/v" scale="1mV" color="#0534e4" timeScale="1ms"/>
+            <Line id="IafPop0[2]: v" quantity="IafPop0[2]/v" scale="1mV" color="#98e752" timeScale="1ms"/>
+            <Line id="IafPop0[3]: v" quantity="IafPop0[3]/v" scale="1mV" color="#bca074" timeScale="1ms"/>
+            <Line id="IafPop0[4]: v" quantity="IafPop0[4]/v" scale="1mV" color="#632794" timeScale="1ms"/>
+            <Line id="IafPop0[5]: v" quantity="IafPop0[5]/v" scale="1mV" color="#8a5d88" timeScale="1ms"/>
+            <Line id="IafPop0[6]: v" quantity="IafPop0[6]/v" scale="1mV" color="#df5954" timeScale="1ms"/>
+            <Line id="IafPop0[7]: v" quantity="IafPop0[7]/v" scale="1mV" color="#52c8bf" timeScale="1ms"/>
+            <Line id="IafPop0[8]: v" quantity="IafPop0[8]/v" scale="1mV" color="#bf0239" timeScale="1ms"/>
+            <Line id="IafPop0[9]: v" quantity="IafPop0[9]/v" scale="1mV" color="#3f9fe8" timeScale="1ms"/>
+            <Line id="IafPop0[10]: v" quantity="IafPop0[10]/v" scale="1mV" color="#dda9d2" timeScale="1ms"/>
+            <Line id="IafPop0[11]: v" quantity="IafPop0[11]/v" scale="1mV" color="#85ad96" timeScale="1ms"/>
+            <Line id="IafPop0[12]: v" quantity="IafPop0[12]/v" scale="1mV" color="#59438f" timeScale="1ms"/>
+            <Line id="IafPop0[13]: v" quantity="IafPop0[13]/v" scale="1mV" color="#5fa56f" timeScale="1ms"/>
+            <Line id="IafPop0[14]: v" quantity="IafPop0[14]/v" scale="1mV" color="#b5b5a2" timeScale="1ms"/>
+            <Line id="IafPop0[15]: v" quantity="IafPop0[15]/v" scale="1mV" color="#2ebe19" timeScale="1ms"/>
+            <Line id="IafPop0[16]: v" quantity="IafPop0[16]/v" scale="1mV" color="#d30150" timeScale="1ms"/>
+            <Line id="IafPop0[17]: v" quantity="IafPop0[17]/v" scale="1mV" color="#55490a" timeScale="1ms"/>
+            <Line id="IafPop0[18]: v" quantity="IafPop0[18]/v" scale="1mV" color="#4bd9d0" timeScale="1ms"/>
+            <Line id="IafPop0[19]: v" quantity="IafPop0[19]/v" scale="1mV" color="#69535e" timeScale="1ms"/>
+            <Line id="IafPop0[20]: v" quantity="IafPop0[20]/v" scale="1mV" color="#27dae9" timeScale="1ms"/>
+            <Line id="IafPop0[21]: v" quantity="IafPop0[21]/v" scale="1mV" color="#6143ed" timeScale="1ms"/>
+            <Line id="IafPop0[22]: v" quantity="IafPop0[22]/v" scale="1mV" color="#aee102" timeScale="1ms"/>
+            <Line id="IafPop0[23]: v" quantity="IafPop0[23]/v" scale="1mV" color="#a4e245" timeScale="1ms"/>
+            <Line id="IafPop0[24]: v" quantity="IafPop0[24]/v" scale="1mV" color="#0c0af9" timeScale="1ms"/>
+            <Line id="IafPop0[25]: v" quantity="IafPop0[25]/v" scale="1mV" color="#eaece2" timeScale="1ms"/>
+            <Line id="IafPop0[26]: v" quantity="IafPop0[26]/v" scale="1mV" color="#add546" timeScale="1ms"/>
+            <Line id="IafPop0[27]: v" quantity="IafPop0[27]/v" scale="1mV" color="#0dc1e8" timeScale="1ms"/>
+            <Line id="IafPop0[28]: v" quantity="IafPop0[28]/v" scale="1mV" color="#d4b998" timeScale="1ms"/>
+            <Line id="IafPop0[29]: v" quantity="IafPop0[29]/v" scale="1mV" color="#01c4cd" timeScale="1ms"/>
+            <Line id="IafPop0[30]: v" quantity="IafPop0[30]/v" scale="1mV" color="#036aae" timeScale="1ms"/>
+            <Line id="IafPop0[31]: v" quantity="IafPop0[31]/v" scale="1mV" color="#53de83" timeScale="1ms"/>
+            <Line id="IafPop0[32]: v" quantity="IafPop0[32]/v" scale="1mV" color="#5b9557" timeScale="1ms"/>
+            <Line id="IafPop0[33]: v" quantity="IafPop0[33]/v" scale="1mV" color="#92b9f4" timeScale="1ms"/>
+            <Line id="IafPop0[34]: v" quantity="IafPop0[34]/v" scale="1mV" color="#32f19d" timeScale="1ms"/>
+            <Line id="IafPop0[35]: v" quantity="IafPop0[35]/v" scale="1mV" color="#d43d99" timeScale="1ms"/>
+            <Line id="IafPop0[36]: v" quantity="IafPop0[36]/v" scale="1mV" color="#36379e" timeScale="1ms"/>
+            <Line id="IafPop0[37]: v" quantity="IafPop0[37]/v" scale="1mV" color="#5d01b7" timeScale="1ms"/>
+            <Line id="IafPop0[38]: v" quantity="IafPop0[38]/v" scale="1mV" color="#c0004f" timeScale="1ms"/>
+            <Line id="IafPop0[39]: v" quantity="IafPop0[39]/v" scale="1mV" color="#771a1c" timeScale="1ms"/>
+            <Line id="IafPop0[40]: v" quantity="IafPop0[40]/v" scale="1mV" color="#a8e7b4" timeScale="1ms"/>
+            <Line id="IafPop0[41]: v" quantity="IafPop0[41]/v" scale="1mV" color="#149bc7" timeScale="1ms"/>
+            <Line id="IafPop0[42]: v" quantity="IafPop0[42]/v" scale="1mV" color="#76f116" timeScale="1ms"/>
+            <Line id="IafPop0[43]: v" quantity="IafPop0[43]/v" scale="1mV" color="#3d56b9" timeScale="1ms"/>
+            <Line id="IafPop0[44]: v" quantity="IafPop0[44]/v" scale="1mV" color="#ff9a67" timeScale="1ms"/>
+            <Line id="IafPop0[45]: v" quantity="IafPop0[45]/v" scale="1mV" color="#6ec96a" timeScale="1ms"/>
+            <Line id="IafPop0[46]: v" quantity="IafPop0[46]/v" scale="1mV" color="#5f24e5" timeScale="1ms"/>
+            <Line id="IafPop0[47]: v" quantity="IafPop0[47]/v" scale="1mV" color="#83f5a5" timeScale="1ms"/>
+            <Line id="IafPop0[48]: v" quantity="IafPop0[48]/v" scale="1mV" color="#de0aae" timeScale="1ms"/>
+            <Line id="IafPop0[49]: v" quantity="IafPop0[49]/v" scale="1mV" color="#427e32" timeScale="1ms"/>
+            <Line id="IafPop0[50]: v" quantity="IafPop0[50]/v" scale="1mV" color="#1544a0" timeScale="1ms"/>
+            <Line id="IafPop0[51]: v" quantity="IafPop0[51]/v" scale="1mV" color="#5409ee" timeScale="1ms"/>
+            <Line id="IafPop0[52]: v" quantity="IafPop0[52]/v" scale="1mV" color="#9a477d" timeScale="1ms"/>
+            <Line id="IafPop0[53]: v" quantity="IafPop0[53]/v" scale="1mV" color="#04ca61" timeScale="1ms"/>
+            <Line id="IafPop0[54]: v" quantity="IafPop0[54]/v" scale="1mV" color="#4cf083" timeScale="1ms"/>
+            <Line id="IafPop0[55]: v" quantity="IafPop0[55]/v" scale="1mV" color="#754e4b" timeScale="1ms"/>
+            <Line id="IafPop0[56]: v" quantity="IafPop0[56]/v" scale="1mV" color="#b30f75" timeScale="1ms"/>
+            <Line id="IafPop0[57]: v" quantity="IafPop0[57]/v" scale="1mV" color="#af1648" timeScale="1ms"/>
+            <Line id="IafPop0[58]: v" quantity="IafPop0[58]/v" scale="1mV" color="#505fca" timeScale="1ms"/>
+            <Line id="IafPop0[59]: v" quantity="IafPop0[59]/v" scale="1mV" color="#c5a380" timeScale="1ms"/>
+        </Display>
+
+        <OutputFile id="Volts_file__IafPop0" fileName="Simple.IafPop0.v.dat">
+            <OutputColumn id="v_IafPop0_0__v" quantity="IafPop0[0]/v"/>
+            <OutputColumn id="v_IafPop0_1__v" quantity="IafPop0[1]/v"/>
+            <OutputColumn id="v_IafPop0_2__v" quantity="IafPop0[2]/v"/>
+            <OutputColumn id="v_IafPop0_3__v" quantity="IafPop0[3]/v"/>
+            <OutputColumn id="v_IafPop0_4__v" quantity="IafPop0[4]/v"/>
+            <OutputColumn id="v_IafPop0_5__v" quantity="IafPop0[5]/v"/>
+            <OutputColumn id="v_IafPop0_6__v" quantity="IafPop0[6]/v"/>
+            <OutputColumn id="v_IafPop0_7__v" quantity="IafPop0[7]/v"/>
+            <OutputColumn id="v_IafPop0_8__v" quantity="IafPop0[8]/v"/>
+            <OutputColumn id="v_IafPop0_9__v" quantity="IafPop0[9]/v"/>
+            <OutputColumn id="v_IafPop0_10__v" quantity="IafPop0[10]/v"/>
+            <OutputColumn id="v_IafPop0_11__v" quantity="IafPop0[11]/v"/>
+            <OutputColumn id="v_IafPop0_12__v" quantity="IafPop0[12]/v"/>
+            <OutputColumn id="v_IafPop0_13__v" quantity="IafPop0[13]/v"/>
+            <OutputColumn id="v_IafPop0_14__v" quantity="IafPop0[14]/v"/>
+            <OutputColumn id="v_IafPop0_15__v" quantity="IafPop0[15]/v"/>
+            <OutputColumn id="v_IafPop0_16__v" quantity="IafPop0[16]/v"/>
+            <OutputColumn id="v_IafPop0_17__v" quantity="IafPop0[17]/v"/>
+            <OutputColumn id="v_IafPop0_18__v" quantity="IafPop0[18]/v"/>
+            <OutputColumn id="v_IafPop0_19__v" quantity="IafPop0[19]/v"/>
+            <OutputColumn id="v_IafPop0_20__v" quantity="IafPop0[20]/v"/>
+            <OutputColumn id="v_IafPop0_21__v" quantity="IafPop0[21]/v"/>
+            <OutputColumn id="v_IafPop0_22__v" quantity="IafPop0[22]/v"/>
+            <OutputColumn id="v_IafPop0_23__v" quantity="IafPop0[23]/v"/>
+            <OutputColumn id="v_IafPop0_24__v" quantity="IafPop0[24]/v"/>
+            <OutputColumn id="v_IafPop0_25__v" quantity="IafPop0[25]/v"/>
+            <OutputColumn id="v_IafPop0_26__v" quantity="IafPop0[26]/v"/>
+            <OutputColumn id="v_IafPop0_27__v" quantity="IafPop0[27]/v"/>
+            <OutputColumn id="v_IafPop0_28__v" quantity="IafPop0[28]/v"/>
+            <OutputColumn id="v_IafPop0_29__v" quantity="IafPop0[29]/v"/>
+            <OutputColumn id="v_IafPop0_30__v" quantity="IafPop0[30]/v"/>
+            <OutputColumn id="v_IafPop0_31__v" quantity="IafPop0[31]/v"/>
+            <OutputColumn id="v_IafPop0_32__v" quantity="IafPop0[32]/v"/>
+            <OutputColumn id="v_IafPop0_33__v" quantity="IafPop0[33]/v"/>
+            <OutputColumn id="v_IafPop0_34__v" quantity="IafPop0[34]/v"/>
+            <OutputColumn id="v_IafPop0_35__v" quantity="IafPop0[35]/v"/>
+            <OutputColumn id="v_IafPop0_36__v" quantity="IafPop0[36]/v"/>
+            <OutputColumn id="v_IafPop0_37__v" quantity="IafPop0[37]/v"/>
+            <OutputColumn id="v_IafPop0_38__v" quantity="IafPop0[38]/v"/>
+            <OutputColumn id="v_IafPop0_39__v" quantity="IafPop0[39]/v"/>
+            <OutputColumn id="v_IafPop0_40__v" quantity="IafPop0[40]/v"/>
+            <OutputColumn id="v_IafPop0_41__v" quantity="IafPop0[41]/v"/>
+            <OutputColumn id="v_IafPop0_42__v" quantity="IafPop0[42]/v"/>
+            <OutputColumn id="v_IafPop0_43__v" quantity="IafPop0[43]/v"/>
+            <OutputColumn id="v_IafPop0_44__v" quantity="IafPop0[44]/v"/>
+            <OutputColumn id="v_IafPop0_45__v" quantity="IafPop0[45]/v"/>
+            <OutputColumn id="v_IafPop0_46__v" quantity="IafPop0[46]/v"/>
+            <OutputColumn id="v_IafPop0_47__v" quantity="IafPop0[47]/v"/>
+            <OutputColumn id="v_IafPop0_48__v" quantity="IafPop0[48]/v"/>
+            <OutputColumn id="v_IafPop0_49__v" quantity="IafPop0[49]/v"/>
+            <OutputColumn id="v_IafPop0_50__v" quantity="IafPop0[50]/v"/>
+            <OutputColumn id="v_IafPop0_51__v" quantity="IafPop0[51]/v"/>
+            <OutputColumn id="v_IafPop0_52__v" quantity="IafPop0[52]/v"/>
+            <OutputColumn id="v_IafPop0_53__v" quantity="IafPop0[53]/v"/>
+            <OutputColumn id="v_IafPop0_54__v" quantity="IafPop0[54]/v"/>
+            <OutputColumn id="v_IafPop0_55__v" quantity="IafPop0[55]/v"/>
+            <OutputColumn id="v_IafPop0_56__v" quantity="IafPop0[56]/v"/>
+            <OutputColumn id="v_IafPop0_57__v" quantity="IafPop0[57]/v"/>
+            <OutputColumn id="v_IafPop0_58__v" quantity="IafPop0[58]/v"/>
+            <OutputColumn id="v_IafPop0_59__v" quantity="IafPop0[59]/v"/>
+        </OutputFile>
+
+        <EventOutputFile id="Spikes_file__IafPop0" fileName="Simple.IafPop0.spikes" format="ID_TIME">
+            <EventSelection id="0" select="IafPop0[0]" eventPort="spike"/>
+            <EventSelection id="1" select="IafPop0[1]" eventPort="spike"/>
+            <EventSelection id="2" select="IafPop0[2]" eventPort="spike"/>
+            <EventSelection id="3" select="IafPop0[3]" eventPort="spike"/>
+            <EventSelection id="4" select="IafPop0[4]" eventPort="spike"/>
+            <EventSelection id="5" select="IafPop0[5]" eventPort="spike"/>
+            <EventSelection id="6" select="IafPop0[6]" eventPort="spike"/>
+            <EventSelection id="7" select="IafPop0[7]" eventPort="spike"/>
+            <EventSelection id="8" select="IafPop0[8]" eventPort="spike"/>
+            <EventSelection id="9" select="IafPop0[9]" eventPort="spike"/>
+            <EventSelection id="10" select="IafPop0[10]" eventPort="spike"/>
+            <EventSelection id="11" select="IafPop0[11]" eventPort="spike"/>
+            <EventSelection id="12" select="IafPop0[12]" eventPort="spike"/>
+            <EventSelection id="13" select="IafPop0[13]" eventPort="spike"/>
+            <EventSelection id="14" select="IafPop0[14]" eventPort="spike"/>
+            <EventSelection id="15" select="IafPop0[15]" eventPort="spike"/>
+            <EventSelection id="16" select="IafPop0[16]" eventPort="spike"/>
+            <EventSelection id="17" select="IafPop0[17]" eventPort="spike"/>
+            <EventSelection id="18" select="IafPop0[18]" eventPort="spike"/>
+            <EventSelection id="19" select="IafPop0[19]" eventPort="spike"/>
+            <EventSelection id="20" select="IafPop0[20]" eventPort="spike"/>
+            <EventSelection id="21" select="IafPop0[21]" eventPort="spike"/>
+            <EventSelection id="22" select="IafPop0[22]" eventPort="spike"/>
+            <EventSelection id="23" select="IafPop0[23]" eventPort="spike"/>
+            <EventSelection id="24" select="IafPop0[24]" eventPort="spike"/>
+            <EventSelection id="25" select="IafPop0[25]" eventPort="spike"/>
+            <EventSelection id="26" select="IafPop0[26]" eventPort="spike"/>
+            <EventSelection id="27" select="IafPop0[27]" eventPort="spike"/>
+            <EventSelection id="28" select="IafPop0[28]" eventPort="spike"/>
+            <EventSelection id="29" select="IafPop0[29]" eventPort="spike"/>
+            <EventSelection id="30" select="IafPop0[30]" eventPort="spike"/>
+            <EventSelection id="31" select="IafPop0[31]" eventPort="spike"/>
+            <EventSelection id="32" select="IafPop0[32]" eventPort="spike"/>
+            <EventSelection id="33" select="IafPop0[33]" eventPort="spike"/>
+            <EventSelection id="34" select="IafPop0[34]" eventPort="spike"/>
+            <EventSelection id="35" select="IafPop0[35]" eventPort="spike"/>
+            <EventSelection id="36" select="IafPop0[36]" eventPort="spike"/>
+            <EventSelection id="37" select="IafPop0[37]" eventPort="spike"/>
+            <EventSelection id="38" select="IafPop0[38]" eventPort="spike"/>
+            <EventSelection id="39" select="IafPop0[39]" eventPort="spike"/>
+            <EventSelection id="40" select="IafPop0[40]" eventPort="spike"/>
+            <EventSelection id="41" select="IafPop0[41]" eventPort="spike"/>
+            <EventSelection id="42" select="IafPop0[42]" eventPort="spike"/>
+            <EventSelection id="43" select="IafPop0[43]" eventPort="spike"/>
+            <EventSelection id="44" select="IafPop0[44]" eventPort="spike"/>
+            <EventSelection id="45" select="IafPop0[45]" eventPort="spike"/>
+            <EventSelection id="46" select="IafPop0[46]" eventPort="spike"/>
+            <EventSelection id="47" select="IafPop0[47]" eventPort="spike"/>
+            <EventSelection id="48" select="IafPop0[48]" eventPort="spike"/>
+            <EventSelection id="49" select="IafPop0[49]" eventPort="spike"/>
+            <EventSelection id="50" select="IafPop0[50]" eventPort="spike"/>
+            <EventSelection id="51" select="IafPop0[51]" eventPort="spike"/>
+            <EventSelection id="52" select="IafPop0[52]" eventPort="spike"/>
+            <EventSelection id="53" select="IafPop0[53]" eventPort="spike"/>
+            <EventSelection id="54" select="IafPop0[54]" eventPort="spike"/>
+            <EventSelection id="55" select="IafPop0[55]" eventPort="spike"/>
+            <EventSelection id="56" select="IafPop0[56]" eventPort="spike"/>
+            <EventSelection id="57" select="IafPop0[57]" eventPort="spike"/>
+            <EventSelection id="58" select="IafPop0[58]" eventPort="spike"/>
+            <EventSelection id="59" select="IafPop0[59]" eventPort="spike"/>
+        </EventOutputFile>
+
+    </Simulation>
+
+</Lems>
