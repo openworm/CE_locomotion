@@ -117,7 +117,7 @@ if make_connections:
 net.synaptic_connections.append(syn) """
 
     
-nml_file = "tmp/testnet.nml"
+nml_file = "testnet.nml"
 writers.NeuroMLWriter.write(nml_doc, nml_file)
 
 

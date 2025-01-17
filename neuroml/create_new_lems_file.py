@@ -21,7 +21,7 @@ if __name__ == "__main__":
     sim_id = "HHSim"
     ls = LEMSSimulation(sim_id, 500, 0.05, "net1")
     #ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
-    ls.include_neuroml2_file("tmp/testnet.nml")
+    ls.include_neuroml2_file("testnet.nml")
 
     disp0 = "display0"
     ls.create_display(disp0, "Voltages", "-90", "50")
@@ -51,12 +51,12 @@ if __name__ == "__main__":
     #  Create the LEMS file with helper method
     sim_id = "Simple"
     #neuroml_file = "test_data/simplenet.nml"
-    neuroml_file = "tmp/testnet.nml"
+    neuroml_file = "testnet.nml"
     target = "simplenet"
     duration = 1000
     dt = 0.025
     lems_file_name = "LEMS_%s.xml" % sim_id
-    target_dir = "test_data"
+    target_dir = "."
 
     generate_lems_file_for_neuroml(
         sim_id,
