@@ -15,3 +15,5 @@
 /w_verb.dat
 /tests
 /test_output/*.dat
+/neuroml/*.dat
+/neuroml/report.txt

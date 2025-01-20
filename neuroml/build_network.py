@@ -1,6 +1,6 @@
 """
 
-Example to build a full spiking IaF network
+Example to build a full network
 through libNeuroML, save it as XML and validate it
 
 """
@@ -12,17 +12,19 @@ import neuroml.writers as writers
 from neuroml import (
     ExplicitInput,
     ExpOneSynapse,
-    IafCell,
     Network,
     NeuroMLDocument,
     Population,
     PulseGenerator,
     ElectricalProjection,
     SynapticConnection,
-    Projection,
-    ConnectionWD,
+    ContinuousProjection,
+    ContinuousConnectionInstanceW,
     ElectricalConnectionInstanceW,
+    IncludeType,
 )
+
+cells_have_3d_locations = False
 
 def get_projection_id(pre, post, synclass, syntype):
     proj_id = "NC_%s_%s_%s" % (pre, post, synclass)
@@ -33,7 +35,10 @@ def get_projection_id(pre, post, synclass, syntype):
     return proj_id
 
 def get_cell_id_string(pop_id, cell_id, cell_number):
-    return "../%s/%s/%s" % (pop_id, str(cell_number), cell_id)
+    if cells_have_3d_locations:
+        return "../%s/%s/%s" % (pop_id, str(cell_number), cell_id)
+    else:
+        return "../%s[%s]" % (pop_id, str(cell_number))
         
 
 with open('../exampleRun/worm_data.json', 'r') as file:
@@ -45,33 +50,28 @@ electrical_weights = network_json_data["Nervous system"]["Electrical weights"]["
 
 nml_doc = NeuroMLDocument(id="Worm2D")
 
-IafCell0 = IafCell(
-    id="iaf0",
-    C="1.0 nF",
-    thresh="-50mV",
-    reset="-65mV",
-    leak_conductance="10 nS",
-    leak_reversal="-65mV",
-)
-
-nml_doc.iaf_cells.append(IafCell0)
+nml_doc.includes.append(IncludeType(href='cell_syn_X.xml'))
 
 syn0 = ExpOneSynapse(id="syn0", gbase="65nS", erev="0mV", tau_decay="3ms")
 nml_doc.exp_one_synapses.append(syn0)
 
 
-net = Network(id="IafNet")
+net = Network(id="Worm2DNet")
 
 nml_doc.networks.append(net)
 
 size0 = cell_num
-pop0 = Population(id="IafPop0", component=IafCell0.id, size=size0)
+
+cell_comp = "GenericNeuronCellX"
+pop0 = Population(id="AllCells", component=cell_comp, size=size0)
 
 net.populations.append(pop0)
 
-proj0 = Projection(id="ChemicalProj",presynaptic_population=pop0.id,postsynaptic_population=pop0.id,
-                   synapse=syn0.id,
-                )
+proj0 = ContinuousProjection(id="ChemicalProj", \
+                    presynaptic_population=pop0.id,
+                    postsynaptic_population=pop0.id)
+net.continuous_projections.append(proj0)
+
 elProj0 = ElectricalProjection(
                     id="ElectricalProj",
                     presynaptic_population=pop0.id,
@@ -80,7 +80,6 @@ elProj0 = ElectricalProjection(
 
 net.electrical_projections.append(elProj0)
 
-net.projections.append(proj0)
 
 
 add_PG = False
@@ -107,18 +106,18 @@ if make_connections:
         post_index = connection["to"] - 1 # zero indexing
         weight = connection["weight"]
 
-        pre_cell_id = get_cell_id_string(pop0.id, IafCell0.id, pre_index)
-        post_cell_id = get_cell_id_string(pop0.id, IafCell0.id, post_index)
+        pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
+        post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
 
-        conn0 = ConnectionWD(
+        conn0 = ContinuousConnectionInstanceW(
                     id=str(index),
-                    pre_cell_id=pre_cell_id,
-                    post_cell_id=post_cell_id,
-                    weight=weight,
-                    delay="0ms",
-                )
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    pre_component='silentSyn',
+                    post_component='neuron_to_neuron_syn_x',
+                    weight=weight,)
 
-        proj0.connection_wds.append(conn0)
+        proj0.continuous_connection_instance_ws.append(conn0)
 
 make_electric_connections = True
 if make_electric_connections:
@@ -127,23 +126,20 @@ if make_electric_connections:
         post_index = connection["to"] - 1 # zero indexing
         weight = connection["weight"]
 
-        pre_cell_id = get_cell_id_string(pop0.id, IafCell0.id, pre_index)
-        post_cell_id = get_cell_id_string(pop0.id, IafCell0.id, post_index)
+        pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
+        post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
 
         
         conn0 = ElectricalConnectionInstanceW(
                     id=str(index),
                     pre_cell=pre_cell_id,
                     post_cell=post_cell_id,
-                    #synapse=syn_new.id,
+                    synapse='gapJunction0',
                     weight=weight,
                 )
 
         elProj0.electrical_connection_instance_ws.append(conn0)
     
-
-
-
 
 
 
@@ -166,4 +162,7 @@ print("Written network file to: " + nml_file)
 
 from neuroml.utils import validate_neuroml2
 
-validate_neuroml2(nml_file)
+try:
+    validate_neuroml2(nml_file)
+except:
+    print('Not valid, but this is expected as it contains a newly defined ComponentType (not part of the core NeuroML elements)')

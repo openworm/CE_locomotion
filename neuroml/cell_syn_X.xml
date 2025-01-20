@@ -1,0 +1,85 @@
+<Lems>
+
+
+    <ComponentType name="outputSynapse"
+                   extends="baseGradedSynapse"
+                   description="For Worm2D...">
+
+        <Property name="weight" dimension="none" defaultValue="1"/>
+
+        <Constant name="PAMP_SCALE" dimension="current" value="1pA"/>
+
+        <Exposure name="i" dimension="current"/>
+
+        <Requirement name="state" dimension="none"/>
+
+        <InstanceRequirement name="peer" type="outputSynapse"/>
+
+        <Dynamics>
+            <DerivedVariable name="outputpeer" dimension="none" select="peer/state"/>
+            <DerivedVariable name="i" exposure="i"  value="weight * outputpeer * PAMP_SCALE"/>
+        </Dynamics>
+    </ComponentType>
+
+<ComponentType name="cellX"
+    extends="baseCellMembPot"
+    description="...">
+    
+    <Parameter name="bias" dimension="none" description="..."/>
+    <Parameter name="gain" dimension="none" description="..."/>
+    <Parameter name="tau" dimension="time"/>
+
+    <!-- Initial Conditions -->
+    <Parameter name="state0" dimension="none"/>
+
+    <Attachments name="synapses" type="basePointCurrent"/>
+
+    <Constant name="MVOLT" dimension="voltage" value="1mV"/>
+    <Constant name="PAMP" dimension="current" value="1pA"/>
+
+    <!-- <Exposure name="v" dimension="none"/> --> <!-- Already exposed from baseCellMembPotDL -->
+    <Exposure name="iSyn" dimension="none"/>
+    <Exposure name="spiking" dimension="none"/>
+    <Exposure name="state" dimension="none"/>
+    <Exposure name="output" dimension="none"/>
+    
+    <Dynamics>
+        
+        <StateVariable name="spiking" dimension="none" exposure="spiking"/>
+        <StateVariable name="state" dimension="none" exposure="state"/>
+        
+        <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
+        <DerivedVariable name="output" dimension="none" exposure="output" value="1/(1 + exp(-1 * gain * (state+bias)))" />
+        <DerivedVariable name="v" dimension="voltage" exposure="v" value="state*MVOLT" />
+
+
+        <TimeDerivative variable="state" value="((0-state) + iSyn/PAMP)/(tau)"/>
+        
+        <OnStart>
+            <StateAssignment variable="state" value="state0"/>
+        </OnStart>
+
+        <OnCondition test="v .gt. 0 .and. spiking .lt. 0.5">
+            <StateAssignment variable="spiking" value="1"/>
+            <EventOut port="spike"/>
+        </OnCondition>
+
+        <OnCondition test="v .lt. 0">
+            <StateAssignment variable="spiking" value="0"/>
+        </OnCondition>
+    
+
+    </Dynamics>
+    
+</ComponentType>
+
+<cellX id="GenericNeuronCellX" bias="1" gain="1" state0="0" tau="1000ms"/>
+
+<silentSynapse id="silentSyn"/>
+<outputSynapse id="neuron_to_neuron_syn_x"/>
+
+<gapJunction id="gapJunction0" conductance="10pS"/>
+
+
+</Lems>
+    
