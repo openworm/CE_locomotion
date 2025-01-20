@@ -1,223 +1,223 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.1.xsd" id="Worm2D">
+    <include href="cell_syn_X.xml"/>
     <expOneSynapse id="syn0" gbase="65nS" erev="0mV" tauDecay="3ms"/>
-    <iafCell id="iaf0" leakReversal="-65mV" thresh="-50mV" reset="-65mV" C="1.0 nF" leakConductance="10 nS"/>
-    <network id="IafNet">
-        <population id="IafPop0" component="iaf0" size="60"/>
-        <projection id="ChemicalProj" presynapticPopulation="IafPop0" postsynapticPopulation="IafPop0" synapse="syn0">
-            <connectionWD id="0" preCellId="../IafPop0/0/iaf0" postCellId="../IafPop0/0/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="1" preCellId="../IafPop0/2/iaf0" postCellId="../IafPop0/0/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="2" preCellId="../IafPop0/1/iaf0" postCellId="../IafPop0/1/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="3" preCellId="../IafPop0/2/iaf0" postCellId="../IafPop0/1/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="4" preCellId="../IafPop0/2/iaf0" postCellId="../IafPop0/2/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="5" preCellId="../IafPop0/4/iaf0" postCellId="../IafPop0/2/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="6" preCellId="../IafPop0/5/iaf0" postCellId="../IafPop0/2/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="7" preCellId="../IafPop0/3/iaf0" postCellId="../IafPop0/3/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="8" preCellId="../IafPop0/0/iaf0" postCellId="../IafPop0/3/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="9" preCellId="../IafPop0/1/iaf0" postCellId="../IafPop0/3/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="10" preCellId="../IafPop0/4/iaf0" postCellId="../IafPop0/4/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="11" preCellId="../IafPop0/3/iaf0" postCellId="../IafPop0/4/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="12" preCellId="../IafPop0/5/iaf0" postCellId="../IafPop0/5/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="13" preCellId="../IafPop0/3/iaf0" postCellId="../IafPop0/5/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="14" preCellId="../IafPop0/6/iaf0" postCellId="../IafPop0/6/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="15" preCellId="../IafPop0/8/iaf0" postCellId="../IafPop0/6/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="16" preCellId="../IafPop0/7/iaf0" postCellId="../IafPop0/7/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="17" preCellId="../IafPop0/8/iaf0" postCellId="../IafPop0/7/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="18" preCellId="../IafPop0/8/iaf0" postCellId="../IafPop0/8/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="19" preCellId="../IafPop0/10/iaf0" postCellId="../IafPop0/8/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="20" preCellId="../IafPop0/11/iaf0" postCellId="../IafPop0/8/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="21" preCellId="../IafPop0/9/iaf0" postCellId="../IafPop0/9/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="22" preCellId="../IafPop0/6/iaf0" postCellId="../IafPop0/9/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="23" preCellId="../IafPop0/7/iaf0" postCellId="../IafPop0/9/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="24" preCellId="../IafPop0/10/iaf0" postCellId="../IafPop0/10/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="25" preCellId="../IafPop0/9/iaf0" postCellId="../IafPop0/10/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="26" preCellId="../IafPop0/11/iaf0" postCellId="../IafPop0/11/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="27" preCellId="../IafPop0/9/iaf0" postCellId="../IafPop0/11/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="28" preCellId="../IafPop0/12/iaf0" postCellId="../IafPop0/12/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="29" preCellId="../IafPop0/14/iaf0" postCellId="../IafPop0/12/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="30" preCellId="../IafPop0/13/iaf0" postCellId="../IafPop0/13/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="31" preCellId="../IafPop0/14/iaf0" postCellId="../IafPop0/13/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="32" preCellId="../IafPop0/14/iaf0" postCellId="../IafPop0/14/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="33" preCellId="../IafPop0/16/iaf0" postCellId="../IafPop0/14/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="34" preCellId="../IafPop0/17/iaf0" postCellId="../IafPop0/14/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="35" preCellId="../IafPop0/15/iaf0" postCellId="../IafPop0/15/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="36" preCellId="../IafPop0/12/iaf0" postCellId="../IafPop0/15/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="37" preCellId="../IafPop0/13/iaf0" postCellId="../IafPop0/15/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="38" preCellId="../IafPop0/16/iaf0" postCellId="../IafPop0/16/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="39" preCellId="../IafPop0/15/iaf0" postCellId="../IafPop0/16/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="40" preCellId="../IafPop0/17/iaf0" postCellId="../IafPop0/17/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="41" preCellId="../IafPop0/15/iaf0" postCellId="../IafPop0/17/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="42" preCellId="../IafPop0/18/iaf0" postCellId="../IafPop0/18/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="43" preCellId="../IafPop0/20/iaf0" postCellId="../IafPop0/18/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="44" preCellId="../IafPop0/19/iaf0" postCellId="../IafPop0/19/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="45" preCellId="../IafPop0/20/iaf0" postCellId="../IafPop0/19/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="46" preCellId="../IafPop0/20/iaf0" postCellId="../IafPop0/20/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="47" preCellId="../IafPop0/22/iaf0" postCellId="../IafPop0/20/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="48" preCellId="../IafPop0/23/iaf0" postCellId="../IafPop0/20/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="49" preCellId="../IafPop0/21/iaf0" postCellId="../IafPop0/21/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="50" preCellId="../IafPop0/18/iaf0" postCellId="../IafPop0/21/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="51" preCellId="../IafPop0/19/iaf0" postCellId="../IafPop0/21/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="52" preCellId="../IafPop0/22/iaf0" postCellId="../IafPop0/22/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="53" preCellId="../IafPop0/21/iaf0" postCellId="../IafPop0/22/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="54" preCellId="../IafPop0/23/iaf0" postCellId="../IafPop0/23/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="55" preCellId="../IafPop0/21/iaf0" postCellId="../IafPop0/23/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="56" preCellId="../IafPop0/24/iaf0" postCellId="../IafPop0/24/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="57" preCellId="../IafPop0/26/iaf0" postCellId="../IafPop0/24/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="58" preCellId="../IafPop0/25/iaf0" postCellId="../IafPop0/25/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="59" preCellId="../IafPop0/26/iaf0" postCellId="../IafPop0/25/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="60" preCellId="../IafPop0/26/iaf0" postCellId="../IafPop0/26/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="61" preCellId="../IafPop0/28/iaf0" postCellId="../IafPop0/26/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="62" preCellId="../IafPop0/29/iaf0" postCellId="../IafPop0/26/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="63" preCellId="../IafPop0/27/iaf0" postCellId="../IafPop0/27/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="64" preCellId="../IafPop0/24/iaf0" postCellId="../IafPop0/27/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="65" preCellId="../IafPop0/25/iaf0" postCellId="../IafPop0/27/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="66" preCellId="../IafPop0/28/iaf0" postCellId="../IafPop0/28/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="67" preCellId="../IafPop0/27/iaf0" postCellId="../IafPop0/28/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="68" preCellId="../IafPop0/29/iaf0" postCellId="../IafPop0/29/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="69" preCellId="../IafPop0/27/iaf0" postCellId="../IafPop0/29/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="70" preCellId="../IafPop0/30/iaf0" postCellId="../IafPop0/30/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="71" preCellId="../IafPop0/32/iaf0" postCellId="../IafPop0/30/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="72" preCellId="../IafPop0/31/iaf0" postCellId="../IafPop0/31/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="73" preCellId="../IafPop0/32/iaf0" postCellId="../IafPop0/31/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="74" preCellId="../IafPop0/32/iaf0" postCellId="../IafPop0/32/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="75" preCellId="../IafPop0/34/iaf0" postCellId="../IafPop0/32/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="76" preCellId="../IafPop0/35/iaf0" postCellId="../IafPop0/32/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="77" preCellId="../IafPop0/33/iaf0" postCellId="../IafPop0/33/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="78" preCellId="../IafPop0/30/iaf0" postCellId="../IafPop0/33/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="79" preCellId="../IafPop0/31/iaf0" postCellId="../IafPop0/33/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="80" preCellId="../IafPop0/34/iaf0" postCellId="../IafPop0/34/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="81" preCellId="../IafPop0/33/iaf0" postCellId="../IafPop0/34/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="82" preCellId="../IafPop0/35/iaf0" postCellId="../IafPop0/35/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="83" preCellId="../IafPop0/33/iaf0" postCellId="../IafPop0/35/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="84" preCellId="../IafPop0/36/iaf0" postCellId="../IafPop0/36/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="85" preCellId="../IafPop0/38/iaf0" postCellId="../IafPop0/36/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="86" preCellId="../IafPop0/37/iaf0" postCellId="../IafPop0/37/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="87" preCellId="../IafPop0/38/iaf0" postCellId="../IafPop0/37/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="88" preCellId="../IafPop0/38/iaf0" postCellId="../IafPop0/38/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="89" preCellId="../IafPop0/40/iaf0" postCellId="../IafPop0/38/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="90" preCellId="../IafPop0/41/iaf0" postCellId="../IafPop0/38/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="91" preCellId="../IafPop0/39/iaf0" postCellId="../IafPop0/39/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="92" preCellId="../IafPop0/36/iaf0" postCellId="../IafPop0/39/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="93" preCellId="../IafPop0/37/iaf0" postCellId="../IafPop0/39/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="94" preCellId="../IafPop0/40/iaf0" postCellId="../IafPop0/40/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="95" preCellId="../IafPop0/39/iaf0" postCellId="../IafPop0/40/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="96" preCellId="../IafPop0/41/iaf0" postCellId="../IafPop0/41/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="97" preCellId="../IafPop0/39/iaf0" postCellId="../IafPop0/41/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="98" preCellId="../IafPop0/42/iaf0" postCellId="../IafPop0/42/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="99" preCellId="../IafPop0/44/iaf0" postCellId="../IafPop0/42/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="100" preCellId="../IafPop0/43/iaf0" postCellId="../IafPop0/43/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="101" preCellId="../IafPop0/44/iaf0" postCellId="../IafPop0/43/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="102" preCellId="../IafPop0/44/iaf0" postCellId="../IafPop0/44/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="103" preCellId="../IafPop0/46/iaf0" postCellId="../IafPop0/44/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="104" preCellId="../IafPop0/47/iaf0" postCellId="../IafPop0/44/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="105" preCellId="../IafPop0/45/iaf0" postCellId="../IafPop0/45/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="106" preCellId="../IafPop0/42/iaf0" postCellId="../IafPop0/45/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="107" preCellId="../IafPop0/43/iaf0" postCellId="../IafPop0/45/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="108" preCellId="../IafPop0/46/iaf0" postCellId="../IafPop0/46/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="109" preCellId="../IafPop0/45/iaf0" postCellId="../IafPop0/46/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="110" preCellId="../IafPop0/47/iaf0" postCellId="../IafPop0/47/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="111" preCellId="../IafPop0/45/iaf0" postCellId="../IafPop0/47/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="112" preCellId="../IafPop0/48/iaf0" postCellId="../IafPop0/48/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="113" preCellId="../IafPop0/50/iaf0" postCellId="../IafPop0/48/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="114" preCellId="../IafPop0/49/iaf0" postCellId="../IafPop0/49/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="115" preCellId="../IafPop0/50/iaf0" postCellId="../IafPop0/49/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="116" preCellId="../IafPop0/50/iaf0" postCellId="../IafPop0/50/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="117" preCellId="../IafPop0/52/iaf0" postCellId="../IafPop0/50/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="118" preCellId="../IafPop0/53/iaf0" postCellId="../IafPop0/50/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="119" preCellId="../IafPop0/51/iaf0" postCellId="../IafPop0/51/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="120" preCellId="../IafPop0/48/iaf0" postCellId="../IafPop0/51/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="121" preCellId="../IafPop0/49/iaf0" postCellId="../IafPop0/51/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="122" preCellId="../IafPop0/52/iaf0" postCellId="../IafPop0/52/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="123" preCellId="../IafPop0/51/iaf0" postCellId="../IafPop0/52/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="124" preCellId="../IafPop0/53/iaf0" postCellId="../IafPop0/53/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="125" preCellId="../IafPop0/51/iaf0" postCellId="../IafPop0/53/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="126" preCellId="../IafPop0/54/iaf0" postCellId="../IafPop0/54/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="127" preCellId="../IafPop0/56/iaf0" postCellId="../IafPop0/54/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="128" preCellId="../IafPop0/55/iaf0" postCellId="../IafPop0/55/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="129" preCellId="../IafPop0/56/iaf0" postCellId="../IafPop0/55/iaf0" weight="-1.110075444163887" delay="0ms"/>
-            <connectionWD id="130" preCellId="../IafPop0/56/iaf0" postCellId="../IafPop0/56/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="131" preCellId="../IafPop0/58/iaf0" postCellId="../IafPop0/56/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="132" preCellId="../IafPop0/59/iaf0" postCellId="../IafPop0/56/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="133" preCellId="../IafPop0/57/iaf0" postCellId="../IafPop0/57/iaf0" weight="0.43417780432587" delay="0ms"/>
-            <connectionWD id="134" preCellId="../IafPop0/54/iaf0" postCellId="../IafPop0/57/iaf0" weight="1.688431247680192" delay="0ms"/>
-            <connectionWD id="135" preCellId="../IafPop0/55/iaf0" postCellId="../IafPop0/57/iaf0" weight="5.038926703654519" delay="0ms"/>
-            <connectionWD id="136" preCellId="../IafPop0/58/iaf0" postCellId="../IafPop0/58/iaf0" weight="-2.528311446261591" delay="0ms"/>
-            <connectionWD id="137" preCellId="../IafPop0/57/iaf0" postCellId="../IafPop0/58/iaf0" weight="-14.672044016483778" delay="0ms"/>
-            <connectionWD id="138" preCellId="../IafPop0/59/iaf0" postCellId="../IafPop0/59/iaf0" weight="-5.431573678563159" delay="0ms"/>
-            <connectionWD id="139" preCellId="../IafPop0/57/iaf0" postCellId="../IafPop0/59/iaf0" weight="-1.110075444163887" delay="0ms"/>
-        </projection>
-        <electricalProjection id="ElectricalProj" presynapticPopulation="IafPop0" postsynapticPopulation="IafPop0">
-            <electricalConnectionInstanceW id="0" preCell="../IafPop0/7/iaf0" postCell="../IafPop0/1/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="1" preCell="../IafPop0/8/iaf0" postCell="../IafPop0/2/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="2" preCell="../IafPop0/9/iaf0" postCell="../IafPop0/3/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="3" preCell="../IafPop0/11/iaf0" postCell="../IafPop0/5/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="4" preCell="../IafPop0/1/iaf0" postCell="../IafPop0/7/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="5" preCell="../IafPop0/13/iaf0" postCell="../IafPop0/7/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="6" preCell="../IafPop0/2/iaf0" postCell="../IafPop0/8/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="7" preCell="../IafPop0/14/iaf0" postCell="../IafPop0/8/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="8" preCell="../IafPop0/3/iaf0" postCell="../IafPop0/9/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="9" preCell="../IafPop0/15/iaf0" postCell="../IafPop0/9/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="10" preCell="../IafPop0/5/iaf0" postCell="../IafPop0/11/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="11" preCell="../IafPop0/17/iaf0" postCell="../IafPop0/11/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="12" preCell="../IafPop0/7/iaf0" postCell="../IafPop0/13/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="13" preCell="../IafPop0/19/iaf0" postCell="../IafPop0/13/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="14" preCell="../IafPop0/8/iaf0" postCell="../IafPop0/14/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="15" preCell="../IafPop0/20/iaf0" postCell="../IafPop0/14/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="16" preCell="../IafPop0/9/iaf0" postCell="../IafPop0/15/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="17" preCell="../IafPop0/21/iaf0" postCell="../IafPop0/15/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="18" preCell="../IafPop0/11/iaf0" postCell="../IafPop0/17/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="19" preCell="../IafPop0/23/iaf0" postCell="../IafPop0/17/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="20" preCell="../IafPop0/13/iaf0" postCell="../IafPop0/19/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="21" preCell="../IafPop0/25/iaf0" postCell="../IafPop0/19/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="22" preCell="../IafPop0/14/iaf0" postCell="../IafPop0/20/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="23" preCell="../IafPop0/26/iaf0" postCell="../IafPop0/20/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="24" preCell="../IafPop0/15/iaf0" postCell="../IafPop0/21/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="25" preCell="../IafPop0/27/iaf0" postCell="../IafPop0/21/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="26" preCell="../IafPop0/17/iaf0" postCell="../IafPop0/23/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="27" preCell="../IafPop0/29/iaf0" postCell="../IafPop0/23/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="28" preCell="../IafPop0/19/iaf0" postCell="../IafPop0/25/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="29" preCell="../IafPop0/31/iaf0" postCell="../IafPop0/25/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="30" preCell="../IafPop0/20/iaf0" postCell="../IafPop0/26/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="31" preCell="../IafPop0/32/iaf0" postCell="../IafPop0/26/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="32" preCell="../IafPop0/21/iaf0" postCell="../IafPop0/27/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="33" preCell="../IafPop0/33/iaf0" postCell="../IafPop0/27/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="34" preCell="../IafPop0/23/iaf0" postCell="../IafPop0/29/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="35" preCell="../IafPop0/35/iaf0" postCell="../IafPop0/29/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="36" preCell="../IafPop0/25/iaf0" postCell="../IafPop0/31/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="37" preCell="../IafPop0/37/iaf0" postCell="../IafPop0/31/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="38" preCell="../IafPop0/26/iaf0" postCell="../IafPop0/32/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="39" preCell="../IafPop0/38/iaf0" postCell="../IafPop0/32/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="40" preCell="../IafPop0/27/iaf0" postCell="../IafPop0/33/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="41" preCell="../IafPop0/39/iaf0" postCell="../IafPop0/33/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="42" preCell="../IafPop0/29/iaf0" postCell="../IafPop0/35/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="43" preCell="../IafPop0/41/iaf0" postCell="../IafPop0/35/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="44" preCell="../IafPop0/31/iaf0" postCell="../IafPop0/37/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="45" preCell="../IafPop0/43/iaf0" postCell="../IafPop0/37/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="46" preCell="../IafPop0/32/iaf0" postCell="../IafPop0/38/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="47" preCell="../IafPop0/44/iaf0" postCell="../IafPop0/38/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="48" preCell="../IafPop0/33/iaf0" postCell="../IafPop0/39/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="49" preCell="../IafPop0/45/iaf0" postCell="../IafPop0/39/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="50" preCell="../IafPop0/35/iaf0" postCell="../IafPop0/41/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="51" preCell="../IafPop0/47/iaf0" postCell="../IafPop0/41/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="52" preCell="../IafPop0/37/iaf0" postCell="../IafPop0/43/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="53" preCell="../IafPop0/49/iaf0" postCell="../IafPop0/43/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="54" preCell="../IafPop0/38/iaf0" postCell="../IafPop0/44/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="55" preCell="../IafPop0/50/iaf0" postCell="../IafPop0/44/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="56" preCell="../IafPop0/39/iaf0" postCell="../IafPop0/45/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="57" preCell="../IafPop0/51/iaf0" postCell="../IafPop0/45/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="58" preCell="../IafPop0/41/iaf0" postCell="../IafPop0/47/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="59" preCell="../IafPop0/53/iaf0" postCell="../IafPop0/47/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="60" preCell="../IafPop0/43/iaf0" postCell="../IafPop0/49/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="61" preCell="../IafPop0/55/iaf0" postCell="../IafPop0/49/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="62" preCell="../IafPop0/44/iaf0" postCell="../IafPop0/50/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="63" preCell="../IafPop0/56/iaf0" postCell="../IafPop0/50/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="64" preCell="../IafPop0/45/iaf0" postCell="../IafPop0/51/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="65" preCell="../IafPop0/57/iaf0" postCell="../IafPop0/51/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="66" preCell="../IafPop0/47/iaf0" postCell="../IafPop0/53/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="67" preCell="../IafPop0/59/iaf0" postCell="../IafPop0/53/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="68" preCell="../IafPop0/49/iaf0" postCell="../IafPop0/55/iaf0" weight="0.111893748558795"/>
-            <electricalConnectionInstanceW id="69" preCell="../IafPop0/50/iaf0" postCell="../IafPop0/56/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="70" preCell="../IafPop0/51/iaf0" postCell="../IafPop0/57/iaf0" weight="1.626882458649384"/>
-            <electricalConnectionInstanceW id="71" preCell="../IafPop0/53/iaf0" postCell="../IafPop0/59/iaf0" weight="0.111893748558795"/>
+    <network id="Worm2DNet">
+        <population id="AllCells" component="GenericNeuronCellX" size="60"/>
+        <electricalProjection id="ElectricalProj" presynapticPopulation="AllCells" postsynapticPopulation="AllCells">
+            <electricalConnectionInstanceW id="0" preCell="../AllCells[7]" postCell="../AllCells[1]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="1" preCell="../AllCells[8]" postCell="../AllCells[2]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="2" preCell="../AllCells[9]" postCell="../AllCells[3]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="3" preCell="../AllCells[11]" postCell="../AllCells[5]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="4" preCell="../AllCells[1]" postCell="../AllCells[7]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="5" preCell="../AllCells[13]" postCell="../AllCells[7]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="6" preCell="../AllCells[2]" postCell="../AllCells[8]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="7" preCell="../AllCells[14]" postCell="../AllCells[8]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="8" preCell="../AllCells[3]" postCell="../AllCells[9]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="9" preCell="../AllCells[15]" postCell="../AllCells[9]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="10" preCell="../AllCells[5]" postCell="../AllCells[11]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="11" preCell="../AllCells[17]" postCell="../AllCells[11]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="12" preCell="../AllCells[7]" postCell="../AllCells[13]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="13" preCell="../AllCells[19]" postCell="../AllCells[13]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="14" preCell="../AllCells[8]" postCell="../AllCells[14]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="15" preCell="../AllCells[20]" postCell="../AllCells[14]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="16" preCell="../AllCells[9]" postCell="../AllCells[15]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="17" preCell="../AllCells[21]" postCell="../AllCells[15]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="18" preCell="../AllCells[11]" postCell="../AllCells[17]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="19" preCell="../AllCells[23]" postCell="../AllCells[17]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="20" preCell="../AllCells[13]" postCell="../AllCells[19]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="21" preCell="../AllCells[25]" postCell="../AllCells[19]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="22" preCell="../AllCells[14]" postCell="../AllCells[20]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="23" preCell="../AllCells[26]" postCell="../AllCells[20]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="24" preCell="../AllCells[15]" postCell="../AllCells[21]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="25" preCell="../AllCells[27]" postCell="../AllCells[21]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="26" preCell="../AllCells[17]" postCell="../AllCells[23]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="27" preCell="../AllCells[29]" postCell="../AllCells[23]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="28" preCell="../AllCells[19]" postCell="../AllCells[25]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="29" preCell="../AllCells[31]" postCell="../AllCells[25]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="30" preCell="../AllCells[20]" postCell="../AllCells[26]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="31" preCell="../AllCells[32]" postCell="../AllCells[26]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="32" preCell="../AllCells[21]" postCell="../AllCells[27]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="33" preCell="../AllCells[33]" postCell="../AllCells[27]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="34" preCell="../AllCells[23]" postCell="../AllCells[29]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="35" preCell="../AllCells[35]" postCell="../AllCells[29]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="36" preCell="../AllCells[25]" postCell="../AllCells[31]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="37" preCell="../AllCells[37]" postCell="../AllCells[31]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="38" preCell="../AllCells[26]" postCell="../AllCells[32]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="39" preCell="../AllCells[38]" postCell="../AllCells[32]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="40" preCell="../AllCells[27]" postCell="../AllCells[33]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="41" preCell="../AllCells[39]" postCell="../AllCells[33]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="42" preCell="../AllCells[29]" postCell="../AllCells[35]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="43" preCell="../AllCells[41]" postCell="../AllCells[35]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="44" preCell="../AllCells[31]" postCell="../AllCells[37]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="45" preCell="../AllCells[43]" postCell="../AllCells[37]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="46" preCell="../AllCells[32]" postCell="../AllCells[38]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="47" preCell="../AllCells[44]" postCell="../AllCells[38]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="48" preCell="../AllCells[33]" postCell="../AllCells[39]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="49" preCell="../AllCells[45]" postCell="../AllCells[39]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="50" preCell="../AllCells[35]" postCell="../AllCells[41]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="51" preCell="../AllCells[47]" postCell="../AllCells[41]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="52" preCell="../AllCells[37]" postCell="../AllCells[43]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="53" preCell="../AllCells[49]" postCell="../AllCells[43]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="54" preCell="../AllCells[38]" postCell="../AllCells[44]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="55" preCell="../AllCells[50]" postCell="../AllCells[44]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="56" preCell="../AllCells[39]" postCell="../AllCells[45]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="57" preCell="../AllCells[51]" postCell="../AllCells[45]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="58" preCell="../AllCells[41]" postCell="../AllCells[47]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="59" preCell="../AllCells[53]" postCell="../AllCells[47]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="60" preCell="../AllCells[43]" postCell="../AllCells[49]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="61" preCell="../AllCells[55]" postCell="../AllCells[49]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="62" preCell="../AllCells[44]" postCell="../AllCells[50]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="63" preCell="../AllCells[56]" postCell="../AllCells[50]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="64" preCell="../AllCells[45]" postCell="../AllCells[51]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="65" preCell="../AllCells[57]" postCell="../AllCells[51]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="66" preCell="../AllCells[47]" postCell="../AllCells[53]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="67" preCell="../AllCells[59]" postCell="../AllCells[53]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="68" preCell="../AllCells[49]" postCell="../AllCells[55]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="69" preCell="../AllCells[50]" postCell="../AllCells[56]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="70" preCell="../AllCells[51]" postCell="../AllCells[57]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="71" preCell="../AllCells[53]" postCell="../AllCells[59]" synapse="gapJunction0" weight="0.111893748558795"/>
         </electricalProjection>
+        <continuousProjection id="ChemicalProj" presynapticPopulation="AllCells" postsynapticPopulation="AllCells">
+            <continuousConnectionInstanceW id="0" preCell="../AllCells[0]" postCell="../AllCells[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="1" preCell="../AllCells[2]" postCell="../AllCells[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="2" preCell="../AllCells[1]" postCell="../AllCells[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="3" preCell="../AllCells[2]" postCell="../AllCells[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="4" preCell="../AllCells[2]" postCell="../AllCells[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="5" preCell="../AllCells[4]" postCell="../AllCells[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="6" preCell="../AllCells[5]" postCell="../AllCells[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="7" preCell="../AllCells[3]" postCell="../AllCells[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="8" preCell="../AllCells[0]" postCell="../AllCells[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="9" preCell="../AllCells[1]" postCell="../AllCells[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="10" preCell="../AllCells[4]" postCell="../AllCells[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="11" preCell="../AllCells[3]" postCell="../AllCells[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="12" preCell="../AllCells[5]" postCell="../AllCells[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="13" preCell="../AllCells[3]" postCell="../AllCells[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="14" preCell="../AllCells[6]" postCell="../AllCells[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="15" preCell="../AllCells[8]" postCell="../AllCells[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="16" preCell="../AllCells[7]" postCell="../AllCells[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="17" preCell="../AllCells[8]" postCell="../AllCells[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="18" preCell="../AllCells[8]" postCell="../AllCells[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="19" preCell="../AllCells[10]" postCell="../AllCells[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="20" preCell="../AllCells[11]" postCell="../AllCells[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="21" preCell="../AllCells[9]" postCell="../AllCells[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="22" preCell="../AllCells[6]" postCell="../AllCells[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="23" preCell="../AllCells[7]" postCell="../AllCells[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="24" preCell="../AllCells[10]" postCell="../AllCells[10]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="25" preCell="../AllCells[9]" postCell="../AllCells[10]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="26" preCell="../AllCells[11]" postCell="../AllCells[11]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="27" preCell="../AllCells[9]" postCell="../AllCells[11]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="28" preCell="../AllCells[12]" postCell="../AllCells[12]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="29" preCell="../AllCells[14]" postCell="../AllCells[12]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="30" preCell="../AllCells[13]" postCell="../AllCells[13]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="31" preCell="../AllCells[14]" postCell="../AllCells[13]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="32" preCell="../AllCells[14]" postCell="../AllCells[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="33" preCell="../AllCells[16]" postCell="../AllCells[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="34" preCell="../AllCells[17]" postCell="../AllCells[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="35" preCell="../AllCells[15]" postCell="../AllCells[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="36" preCell="../AllCells[12]" postCell="../AllCells[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="37" preCell="../AllCells[13]" postCell="../AllCells[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="38" preCell="../AllCells[16]" postCell="../AllCells[16]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="39" preCell="../AllCells[15]" postCell="../AllCells[16]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="40" preCell="../AllCells[17]" postCell="../AllCells[17]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="41" preCell="../AllCells[15]" postCell="../AllCells[17]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="42" preCell="../AllCells[18]" postCell="../AllCells[18]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="43" preCell="../AllCells[20]" postCell="../AllCells[18]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="44" preCell="../AllCells[19]" postCell="../AllCells[19]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="45" preCell="../AllCells[20]" postCell="../AllCells[19]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="46" preCell="../AllCells[20]" postCell="../AllCells[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="47" preCell="../AllCells[22]" postCell="../AllCells[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="48" preCell="../AllCells[23]" postCell="../AllCells[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="49" preCell="../AllCells[21]" postCell="../AllCells[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="50" preCell="../AllCells[18]" postCell="../AllCells[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="51" preCell="../AllCells[19]" postCell="../AllCells[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="52" preCell="../AllCells[22]" postCell="../AllCells[22]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="53" preCell="../AllCells[21]" postCell="../AllCells[22]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="54" preCell="../AllCells[23]" postCell="../AllCells[23]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="55" preCell="../AllCells[21]" postCell="../AllCells[23]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="56" preCell="../AllCells[24]" postCell="../AllCells[24]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="57" preCell="../AllCells[26]" postCell="../AllCells[24]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="58" preCell="../AllCells[25]" postCell="../AllCells[25]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="59" preCell="../AllCells[26]" postCell="../AllCells[25]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="60" preCell="../AllCells[26]" postCell="../AllCells[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="61" preCell="../AllCells[28]" postCell="../AllCells[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="62" preCell="../AllCells[29]" postCell="../AllCells[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="63" preCell="../AllCells[27]" postCell="../AllCells[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="64" preCell="../AllCells[24]" postCell="../AllCells[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="65" preCell="../AllCells[25]" postCell="../AllCells[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="66" preCell="../AllCells[28]" postCell="../AllCells[28]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="67" preCell="../AllCells[27]" postCell="../AllCells[28]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="68" preCell="../AllCells[29]" postCell="../AllCells[29]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="69" preCell="../AllCells[27]" postCell="../AllCells[29]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="70" preCell="../AllCells[30]" postCell="../AllCells[30]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="71" preCell="../AllCells[32]" postCell="../AllCells[30]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="72" preCell="../AllCells[31]" postCell="../AllCells[31]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="73" preCell="../AllCells[32]" postCell="../AllCells[31]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="74" preCell="../AllCells[32]" postCell="../AllCells[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="75" preCell="../AllCells[34]" postCell="../AllCells[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="76" preCell="../AllCells[35]" postCell="../AllCells[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="77" preCell="../AllCells[33]" postCell="../AllCells[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="78" preCell="../AllCells[30]" postCell="../AllCells[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="79" preCell="../AllCells[31]" postCell="../AllCells[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="80" preCell="../AllCells[34]" postCell="../AllCells[34]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="81" preCell="../AllCells[33]" postCell="../AllCells[34]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="82" preCell="../AllCells[35]" postCell="../AllCells[35]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="83" preCell="../AllCells[33]" postCell="../AllCells[35]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="84" preCell="../AllCells[36]" postCell="../AllCells[36]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="85" preCell="../AllCells[38]" postCell="../AllCells[36]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="86" preCell="../AllCells[37]" postCell="../AllCells[37]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="87" preCell="../AllCells[38]" postCell="../AllCells[37]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="88" preCell="../AllCells[38]" postCell="../AllCells[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="89" preCell="../AllCells[40]" postCell="../AllCells[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="90" preCell="../AllCells[41]" postCell="../AllCells[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="91" preCell="../AllCells[39]" postCell="../AllCells[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="92" preCell="../AllCells[36]" postCell="../AllCells[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="93" preCell="../AllCells[37]" postCell="../AllCells[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="94" preCell="../AllCells[40]" postCell="../AllCells[40]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="95" preCell="../AllCells[39]" postCell="../AllCells[40]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="96" preCell="../AllCells[41]" postCell="../AllCells[41]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="97" preCell="../AllCells[39]" postCell="../AllCells[41]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="98" preCell="../AllCells[42]" postCell="../AllCells[42]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="99" preCell="../AllCells[44]" postCell="../AllCells[42]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="100" preCell="../AllCells[43]" postCell="../AllCells[43]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="101" preCell="../AllCells[44]" postCell="../AllCells[43]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="102" preCell="../AllCells[44]" postCell="../AllCells[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="103" preCell="../AllCells[46]" postCell="../AllCells[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="104" preCell="../AllCells[47]" postCell="../AllCells[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="105" preCell="../AllCells[45]" postCell="../AllCells[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="106" preCell="../AllCells[42]" postCell="../AllCells[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="107" preCell="../AllCells[43]" postCell="../AllCells[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="108" preCell="../AllCells[46]" postCell="../AllCells[46]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="109" preCell="../AllCells[45]" postCell="../AllCells[46]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="110" preCell="../AllCells[47]" postCell="../AllCells[47]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="111" preCell="../AllCells[45]" postCell="../AllCells[47]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="112" preCell="../AllCells[48]" postCell="../AllCells[48]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="113" preCell="../AllCells[50]" postCell="../AllCells[48]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="114" preCell="../AllCells[49]" postCell="../AllCells[49]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="115" preCell="../AllCells[50]" postCell="../AllCells[49]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="116" preCell="../AllCells[50]" postCell="../AllCells[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="117" preCell="../AllCells[52]" postCell="../AllCells[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="118" preCell="../AllCells[53]" postCell="../AllCells[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="119" preCell="../AllCells[51]" postCell="../AllCells[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="120" preCell="../AllCells[48]" postCell="../AllCells[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="121" preCell="../AllCells[49]" postCell="../AllCells[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="122" preCell="../AllCells[52]" postCell="../AllCells[52]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="123" preCell="../AllCells[51]" postCell="../AllCells[52]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="124" preCell="../AllCells[53]" postCell="../AllCells[53]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="125" preCell="../AllCells[51]" postCell="../AllCells[53]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="126" preCell="../AllCells[54]" postCell="../AllCells[54]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="127" preCell="../AllCells[56]" postCell="../AllCells[54]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="128" preCell="../AllCells[55]" postCell="../AllCells[55]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="129" preCell="../AllCells[56]" postCell="../AllCells[55]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="130" preCell="../AllCells[56]" postCell="../AllCells[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="131" preCell="../AllCells[58]" postCell="../AllCells[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="132" preCell="../AllCells[59]" postCell="../AllCells[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="133" preCell="../AllCells[57]" postCell="../AllCells[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="134" preCell="../AllCells[54]" postCell="../AllCells[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="135" preCell="../AllCells[55]" postCell="../AllCells[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="136" preCell="../AllCells[58]" postCell="../AllCells[58]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="137" preCell="../AllCells[57]" postCell="../AllCells[58]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="138" preCell="../AllCells[59]" postCell="../AllCells[59]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="139" preCell="../AllCells[57]" postCell="../AllCells[59]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+        </continuousProjection>
     </network>
 </neuroml>

@@ -18,24 +18,19 @@ if __name__ == "__main__":
     ############################################
     #  Create a LEMS file "manually"...
 
-    sim_id = "HHSim"
-    ls = LEMSSimulation(sim_id, 500, 0.05, "net1")
+    sim_id = "Worm2D"
+    ls = LEMSSimulation(sim_id, 500, 0.05, "Worm2DNet")
     #ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
-    ls.include_neuroml2_file("testnet.nml")
+    ls.include_neuroml2_file("testnet.nml", include_included=False)
 
     disp0 = "display0"
     ls.create_display(disp0, "Voltages", "-90", "50")
 
-    ls.add_line_to_display(disp0, "v", "hhpop[0]/v", "1mV", "#ffffff")
+    ls.add_line_to_display(disp0, "v", "AllCells[0]/v", "1mV", "#ffffff")
 
     of0 = "Volts_file"
     ls.create_output_file(of0, "%s.v.dat" % sim_id)
-    ls.add_column_to_output_file(of0, "v", "hhpop[0]/v")
-
-    eof0 = "Events_file"
-    ls.create_event_output_file(eof0, "%s.v.spikes" % sim_id, format="ID_TIME")
-
-    ls.add_selection_to_event_output_file(eof0, "0", "hhpop[0]", "spike")
+    ls.add_column_to_output_file(of0, "v", "AllCells[0]/v")
 
     ls.set_report_file("report.txt")
 
@@ -47,6 +42,7 @@ if __name__ == "__main__":
     ls.save_to_file()
     assert os.path.isfile("LEMS_%s.xml" % sim_id)
 
+    '''
     ############################################
     #  Create the LEMS file with helper method
     sim_id = "Simple"
@@ -79,7 +75,7 @@ if __name__ == "__main__":
         report_file_name="report.txt",
         copy_neuroml=True,
         verbose=True,
-    )
+    )'''
 
     if "-test" in sys.argv:
         neuroml_file = "test_data/HHCellNetwork.net.nml"
