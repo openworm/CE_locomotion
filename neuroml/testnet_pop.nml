@@ -1,0 +1,260 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.1.xsd" id="Worm2D">
+    <include href="cell_syn_X.xml"/>
+    <expOneSynapse id="syn0" gbase="65nS" erev="0mV" tauDecay="3ms"/>
+    <network id="Worm2DNet">
+        <population id="DA" component="GenericNeuronCellX" size="10"/>
+        <population id="DB" component="GenericNeuronCellX" size="10"/>
+        <population id="DD" component="GenericNeuronCellX" size="10"/>
+        <population id="VD" component="GenericNeuronCellX" size="10"/>
+        <population id="VA" component="GenericNeuronCellX" size="10"/>
+        <population id="VB" component="GenericNeuronCellX" size="10"/>
+        <electricalProjection id="NC_DB_DB_gapJunction0" presynapticPopulation="DB" postsynapticPopulation="DB">
+            <electricalConnectionInstanceW id="0" preCell="../DB[7]" postCell="../DB[1]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="4" preCell="../DB[1]" postCell="../DB[7]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="5" preCell="../DB[13]" postCell="../DB[7]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="12" preCell="../DB[7]" postCell="../DB[13]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="13" preCell="../DB[19]" postCell="../DB[13]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="20" preCell="../DB[13]" postCell="../DB[19]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="21" preCell="../DB[25]" postCell="../DB[19]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="28" preCell="../DB[19]" postCell="../DB[25]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="29" preCell="../DB[31]" postCell="../DB[25]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="36" preCell="../DB[25]" postCell="../DB[31]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="37" preCell="../DB[37]" postCell="../DB[31]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="44" preCell="../DB[31]" postCell="../DB[37]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="45" preCell="../DB[43]" postCell="../DB[37]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="52" preCell="../DB[37]" postCell="../DB[43]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="53" preCell="../DB[49]" postCell="../DB[43]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="60" preCell="../DB[43]" postCell="../DB[49]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="61" preCell="../DB[55]" postCell="../DB[49]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="68" preCell="../DB[49]" postCell="../DB[55]" synapse="gapJunction0" weight="0.111893748558795"/>
+        </electricalProjection>
+        <electricalProjection id="NC_DD_DD_gapJunction0" presynapticPopulation="DD" postsynapticPopulation="DD">
+            <electricalConnectionInstanceW id="1" preCell="../DD[8]" postCell="../DD[2]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="6" preCell="../DD[2]" postCell="../DD[8]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="7" preCell="../DD[14]" postCell="../DD[8]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="14" preCell="../DD[8]" postCell="../DD[14]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="15" preCell="../DD[20]" postCell="../DD[14]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="22" preCell="../DD[14]" postCell="../DD[20]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="23" preCell="../DD[26]" postCell="../DD[20]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="30" preCell="../DD[20]" postCell="../DD[26]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="31" preCell="../DD[32]" postCell="../DD[26]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="38" preCell="../DD[26]" postCell="../DD[32]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="39" preCell="../DD[38]" postCell="../DD[32]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="46" preCell="../DD[32]" postCell="../DD[38]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="47" preCell="../DD[44]" postCell="../DD[38]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="54" preCell="../DD[38]" postCell="../DD[44]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="55" preCell="../DD[50]" postCell="../DD[44]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="62" preCell="../DD[44]" postCell="../DD[50]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="63" preCell="../DD[56]" postCell="../DD[50]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="69" preCell="../DD[50]" postCell="../DD[56]" synapse="gapJunction0" weight="1.626882458649384"/>
+        </electricalProjection>
+        <electricalProjection id="NC_VD_VD_gapJunction0" presynapticPopulation="VD" postsynapticPopulation="VD">
+            <electricalConnectionInstanceW id="2" preCell="../VD[9]" postCell="../VD[3]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="8" preCell="../VD[3]" postCell="../VD[9]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="9" preCell="../VD[15]" postCell="../VD[9]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="16" preCell="../VD[9]" postCell="../VD[15]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="17" preCell="../VD[21]" postCell="../VD[15]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="24" preCell="../VD[15]" postCell="../VD[21]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="25" preCell="../VD[27]" postCell="../VD[21]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="32" preCell="../VD[21]" postCell="../VD[27]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="33" preCell="../VD[33]" postCell="../VD[27]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="40" preCell="../VD[27]" postCell="../VD[33]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="41" preCell="../VD[39]" postCell="../VD[33]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="48" preCell="../VD[33]" postCell="../VD[39]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="49" preCell="../VD[45]" postCell="../VD[39]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="56" preCell="../VD[39]" postCell="../VD[45]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="57" preCell="../VD[51]" postCell="../VD[45]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="64" preCell="../VD[45]" postCell="../VD[51]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="65" preCell="../VD[57]" postCell="../VD[51]" synapse="gapJunction0" weight="1.626882458649384"/>
+            <electricalConnectionInstanceW id="70" preCell="../VD[51]" postCell="../VD[57]" synapse="gapJunction0" weight="1.626882458649384"/>
+        </electricalProjection>
+        <electricalProjection id="NC_VB_VB_gapJunction0" presynapticPopulation="VB" postsynapticPopulation="VB">
+            <electricalConnectionInstanceW id="3" preCell="../VB[11]" postCell="../VB[5]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="10" preCell="../VB[5]" postCell="../VB[11]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="11" preCell="../VB[17]" postCell="../VB[11]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="18" preCell="../VB[11]" postCell="../VB[17]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="19" preCell="../VB[23]" postCell="../VB[17]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="26" preCell="../VB[17]" postCell="../VB[23]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="27" preCell="../VB[29]" postCell="../VB[23]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="34" preCell="../VB[23]" postCell="../VB[29]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="35" preCell="../VB[35]" postCell="../VB[29]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="42" preCell="../VB[29]" postCell="../VB[35]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="43" preCell="../VB[41]" postCell="../VB[35]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="50" preCell="../VB[35]" postCell="../VB[41]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="51" preCell="../VB[47]" postCell="../VB[41]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="58" preCell="../VB[41]" postCell="../VB[47]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="59" preCell="../VB[53]" postCell="../VB[47]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="66" preCell="../VB[47]" postCell="../VB[53]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="67" preCell="../VB[59]" postCell="../VB[53]" synapse="gapJunction0" weight="0.111893748558795"/>
+            <electricalConnectionInstanceW id="71" preCell="../VB[53]" postCell="../VB[59]" synapse="gapJunction0" weight="0.111893748558795"/>
+        </electricalProjection>
+        <continuousProjection id="NC_DA_DA_silentSyn" presynapticPopulation="DA" postsynapticPopulation="DA">
+            <continuousConnectionInstanceW id="0" preCell="../DA[0]" postCell="../DA[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="14" preCell="../DA[6]" postCell="../DA[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="28" preCell="../DA[12]" postCell="../DA[12]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="42" preCell="../DA[18]" postCell="../DA[18]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="56" preCell="../DA[24]" postCell="../DA[24]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="70" preCell="../DA[30]" postCell="../DA[30]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="84" preCell="../DA[36]" postCell="../DA[36]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="98" preCell="../DA[42]" postCell="../DA[42]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="112" preCell="../DA[48]" postCell="../DA[48]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="126" preCell="../DA[54]" postCell="../DA[54]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DD_DA_silentSyn" presynapticPopulation="DD" postsynapticPopulation="DA">
+            <continuousConnectionInstanceW id="1" preCell="../DD[2]" postCell="../DA[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="15" preCell="../DD[8]" postCell="../DA[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="29" preCell="../DD[14]" postCell="../DA[12]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="43" preCell="../DD[20]" postCell="../DA[18]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="57" preCell="../DD[26]" postCell="../DA[24]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="71" preCell="../DD[32]" postCell="../DA[30]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="85" preCell="../DD[38]" postCell="../DA[36]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="99" preCell="../DD[44]" postCell="../DA[42]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="113" preCell="../DD[50]" postCell="../DA[48]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="127" preCell="../DD[56]" postCell="../DA[54]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DB_DB_silentSyn" presynapticPopulation="DB" postsynapticPopulation="DB">
+            <continuousConnectionInstanceW id="2" preCell="../DB[1]" postCell="../DB[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="16" preCell="../DB[7]" postCell="../DB[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="30" preCell="../DB[13]" postCell="../DB[13]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="44" preCell="../DB[19]" postCell="../DB[19]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="58" preCell="../DB[25]" postCell="../DB[25]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="72" preCell="../DB[31]" postCell="../DB[31]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="86" preCell="../DB[37]" postCell="../DB[37]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="100" preCell="../DB[43]" postCell="../DB[43]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="114" preCell="../DB[49]" postCell="../DB[49]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="128" preCell="../DB[55]" postCell="../DB[55]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DD_DB_silentSyn" presynapticPopulation="DD" postsynapticPopulation="DB">
+            <continuousConnectionInstanceW id="3" preCell="../DD[2]" postCell="../DB[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="17" preCell="../DD[8]" postCell="../DB[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="31" preCell="../DD[14]" postCell="../DB[13]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="45" preCell="../DD[20]" postCell="../DB[19]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="59" preCell="../DD[26]" postCell="../DB[25]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="73" preCell="../DD[32]" postCell="../DB[31]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="87" preCell="../DD[38]" postCell="../DB[37]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="101" preCell="../DD[44]" postCell="../DB[43]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="115" preCell="../DD[50]" postCell="../DB[49]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="129" preCell="../DD[56]" postCell="../DB[55]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DD_DD_silentSyn" presynapticPopulation="DD" postsynapticPopulation="DD">
+            <continuousConnectionInstanceW id="4" preCell="../DD[2]" postCell="../DD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="18" preCell="../DD[8]" postCell="../DD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="32" preCell="../DD[14]" postCell="../DD[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="46" preCell="../DD[20]" postCell="../DD[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="60" preCell="../DD[26]" postCell="../DD[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="74" preCell="../DD[32]" postCell="../DD[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="88" preCell="../DD[38]" postCell="../DD[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="102" preCell="../DD[44]" postCell="../DD[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="116" preCell="../DD[50]" postCell="../DD[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="130" preCell="../DD[56]" postCell="../DD[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VA_DD_silentSyn" presynapticPopulation="VA" postsynapticPopulation="DD">
+            <continuousConnectionInstanceW id="5" preCell="../VA[4]" postCell="../DD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="19" preCell="../VA[10]" postCell="../DD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="33" preCell="../VA[16]" postCell="../DD[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="47" preCell="../VA[22]" postCell="../DD[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="61" preCell="../VA[28]" postCell="../DD[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="75" preCell="../VA[34]" postCell="../DD[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="89" preCell="../VA[40]" postCell="../DD[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="103" preCell="../VA[46]" postCell="../DD[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="117" preCell="../VA[52]" postCell="../DD[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="131" preCell="../VA[58]" postCell="../DD[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VB_DD_silentSyn" presynapticPopulation="VB" postsynapticPopulation="DD">
+            <continuousConnectionInstanceW id="6" preCell="../VB[5]" postCell="../DD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="20" preCell="../VB[11]" postCell="../DD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="34" preCell="../VB[17]" postCell="../DD[14]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="48" preCell="../VB[23]" postCell="../DD[20]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="62" preCell="../VB[29]" postCell="../DD[26]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="76" preCell="../VB[35]" postCell="../DD[32]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="90" preCell="../VB[41]" postCell="../DD[38]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="104" preCell="../VB[47]" postCell="../DD[44]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="118" preCell="../VB[53]" postCell="../DD[50]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="132" preCell="../VB[59]" postCell="../DD[56]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VD_VD_silentSyn" presynapticPopulation="VD" postsynapticPopulation="VD">
+            <continuousConnectionInstanceW id="7" preCell="../VD[3]" postCell="../VD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="21" preCell="../VD[9]" postCell="../VD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="35" preCell="../VD[15]" postCell="../VD[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="49" preCell="../VD[21]" postCell="../VD[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="63" preCell="../VD[27]" postCell="../VD[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="77" preCell="../VD[33]" postCell="../VD[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="91" preCell="../VD[39]" postCell="../VD[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="105" preCell="../VD[45]" postCell="../VD[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="119" preCell="../VD[51]" postCell="../VD[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+            <continuousConnectionInstanceW id="133" preCell="../VD[57]" postCell="../VD[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DA_VD_silentSyn" presynapticPopulation="DA" postsynapticPopulation="VD">
+            <continuousConnectionInstanceW id="8" preCell="../DA[0]" postCell="../VD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="22" preCell="../DA[6]" postCell="../VD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="36" preCell="../DA[12]" postCell="../VD[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="50" preCell="../DA[18]" postCell="../VD[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="64" preCell="../DA[24]" postCell="../VD[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="78" preCell="../DA[30]" postCell="../VD[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="92" preCell="../DA[36]" postCell="../VD[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="106" preCell="../DA[42]" postCell="../VD[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="120" preCell="../DA[48]" postCell="../VD[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="134" preCell="../DA[54]" postCell="../VD[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+        </continuousProjection>
+        <continuousProjection id="NC_DB_VD_silentSyn" presynapticPopulation="DB" postsynapticPopulation="VD">
+            <continuousConnectionInstanceW id="9" preCell="../DB[1]" postCell="../VD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="23" preCell="../DB[7]" postCell="../VD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="37" preCell="../DB[13]" postCell="../VD[15]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="51" preCell="../DB[19]" postCell="../VD[21]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="65" preCell="../DB[25]" postCell="../VD[27]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="79" preCell="../DB[31]" postCell="../VD[33]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="93" preCell="../DB[37]" postCell="../VD[39]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="107" preCell="../DB[43]" postCell="../VD[45]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="121" preCell="../DB[49]" postCell="../VD[51]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+            <continuousConnectionInstanceW id="135" preCell="../DB[55]" postCell="../VD[57]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VA_VA_silentSyn" presynapticPopulation="VA" postsynapticPopulation="VA">
+            <continuousConnectionInstanceW id="10" preCell="../VA[4]" postCell="../VA[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="24" preCell="../VA[10]" postCell="../VA[10]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="38" preCell="../VA[16]" postCell="../VA[16]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="52" preCell="../VA[22]" postCell="../VA[22]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="66" preCell="../VA[28]" postCell="../VA[28]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="80" preCell="../VA[34]" postCell="../VA[34]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="94" preCell="../VA[40]" postCell="../VA[40]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="108" preCell="../VA[46]" postCell="../VA[46]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="122" preCell="../VA[52]" postCell="../VA[52]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+            <continuousConnectionInstanceW id="136" preCell="../VA[58]" postCell="../VA[58]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-2.528311446261591"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VD_VA_silentSyn" presynapticPopulation="VD" postsynapticPopulation="VA">
+            <continuousConnectionInstanceW id="11" preCell="../VD[3]" postCell="../VA[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="25" preCell="../VD[9]" postCell="../VA[10]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="39" preCell="../VD[15]" postCell="../VA[16]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="53" preCell="../VD[21]" postCell="../VA[22]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="67" preCell="../VD[27]" postCell="../VA[28]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="81" preCell="../VD[33]" postCell="../VA[34]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="95" preCell="../VD[39]" postCell="../VA[40]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="109" preCell="../VD[45]" postCell="../VA[46]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="123" preCell="../VD[51]" postCell="../VA[52]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+            <continuousConnectionInstanceW id="137" preCell="../VD[57]" postCell="../VA[58]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-14.672044016483778"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VB_VB_silentSyn" presynapticPopulation="VB" postsynapticPopulation="VB">
+            <continuousConnectionInstanceW id="12" preCell="../VB[5]" postCell="../VB[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="26" preCell="../VB[11]" postCell="../VB[11]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="40" preCell="../VB[17]" postCell="../VB[17]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="54" preCell="../VB[23]" postCell="../VB[23]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="68" preCell="../VB[29]" postCell="../VB[29]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="82" preCell="../VB[35]" postCell="../VB[35]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="96" preCell="../VB[41]" postCell="../VB[41]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="110" preCell="../VB[47]" postCell="../VB[47]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="124" preCell="../VB[53]" postCell="../VB[53]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+            <continuousConnectionInstanceW id="138" preCell="../VB[59]" postCell="../VB[59]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-5.431573678563159"/>
+        </continuousProjection>
+        <continuousProjection id="NC_VD_VB_silentSyn" presynapticPopulation="VD" postsynapticPopulation="VB">
+            <continuousConnectionInstanceW id="13" preCell="../VD[3]" postCell="../VB[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="27" preCell="../VD[9]" postCell="../VB[11]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="41" preCell="../VD[15]" postCell="../VB[17]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="55" preCell="../VD[21]" postCell="../VB[23]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="69" preCell="../VD[27]" postCell="../VB[29]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="83" preCell="../VD[33]" postCell="../VB[35]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="97" preCell="../VD[39]" postCell="../VB[41]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="111" preCell="../VD[45]" postCell="../VB[47]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="125" preCell="../VD[51]" postCell="../VB[53]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+            <continuousConnectionInstanceW id="139" preCell="../VD[57]" postCell="../VB[59]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
+        </continuousProjection>
+    </network>
+</neuroml>
