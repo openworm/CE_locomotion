@@ -64,6 +64,34 @@ cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"][
 num_unit = network_json_data["Worm global parameters"]["N_units"]["value"]
 cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
 pop_names = cell_names[:cell_per_unit]
+pop_cell_names = ['cellX_' + val for val in  pop_names]
+cell_biases = network_json_data["Nervous system"]["biases"]["value"]
+pop_biases = cell_biases[:cell_per_unit]
+cell_gains = network_json_data["Nervous system"]["gains"]["value"]
+pop_gains = cell_gains[:cell_per_unit]
+cell_taus = network_json_data["Nervous system"]["taus"]["value"]
+pop_taus = cell_taus[:cell_per_unit]
+cell_states = network_json_data["Nervous system"]["states"]["value"]
+pop_states = cell_states[:cell_per_unit]
+
+
+#<cellX id="GenericNeuronCellX" bias="1" gain="1" state0="0" tau="1000ms"/>
+
+cellX_strings = []
+for ind, pop_name in enumerate(pop_cell_names):
+    output_string = '<cellX id="' + str(pop_name) + '" bias="' + str(pop_biases[ind]) + \
+    '" gain="' + str(pop_gains[ind]) + '" state0="' + str(pop_states[ind]) + '" tau="' \
+    + str(pop_taus[ind]) +'ms"/>'  
+    cellX_strings.append(output_string)   
+
+cellX_filename = "cell_syn_X_cells.xml"
+with open(cellX_filename, "w") as f:
+    f.write('<Lems>\n')
+    for val in cellX_strings:
+        f.write(val)
+        f.write("\n") 
+    f.write('</Lems>')     
+
 
 # generate population relative cell indices
 
@@ -72,7 +100,7 @@ rel_indices = getPopRelativeCellIndices(pop_names, cell_names)
 
 nml_doc = NeuroMLDocument(id="Worm2D")
 nml_doc.includes.append(IncludeType(href='cell_syn_X.xml'))
-
+nml_doc.includes.append(IncludeType(href=cellX_filename))
 
 syn0 = ExpOneSynapse(id="syn0", gbase="65nS", erev="0mV", tau_decay="3ms")
 nml_doc.exp_one_synapses.append(syn0)
