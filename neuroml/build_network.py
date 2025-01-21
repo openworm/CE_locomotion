@@ -104,7 +104,7 @@ nml_doc.networks.append(net)
 population_structures = ['one population', 'individual populations', 'cell specific populations']
 population_structure = population_structures[2]
 
-if population_structure == 'one population':
+if population_structure == 'one population': #all cells in a single population
 
     size0 = cell_num
     cell_comp = "GenericNeuronCellX"
@@ -122,8 +122,44 @@ if population_structure == 'one population':
                         postsynaptic_population=pop0.id,
                     )
     net.electrical_projections.append(elProj0)
+    
+    for index, connection in enumerate(chemical_weights): 
+        pre_index = connection["from"] - 1 # zero indexing
+        post_index = connection["to"] - 1 # zero indexing
+        weight = connection["weight"]
+        
+        pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
+        post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
 
-elif population_structure == 'cell specific populations':
+        conn0 = ContinuousConnectionInstanceW(
+                    id=str(index),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    pre_component='silentSyn',
+                    post_component='neuron_to_neuron_syn_x',
+                    weight=weight,)
+        
+        proj0.continuous_connection_instance_ws.append(conn0)
+
+    for index, connection in enumerate(electrical_weights): 
+        pre_index = connection["from"] - 1 # zero indexing
+        post_index = connection["to"] - 1 # zero indexing
+        weight = connection["weight"]
+
+        pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
+        post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
+
+        conn0 = ElectricalConnectionInstanceW(
+                    id=str(index),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    synapse='gapJunction0',
+                    weight=weight,)
+        
+        elProj0.electrical_connection_instance_ws.append(conn0)
+
+
+elif population_structure == 'cell specific populations': # cells divided into cell specific populations
 
     for ind, pop_cell_name in enumerate(pop_cell_names):
         cell_comp_loc=pop_cell_name
@@ -131,43 +167,104 @@ elif population_structure == 'cell specific populations':
         pop0 = Population(id='Pop' + pop_cell_name, component=cell_comp_loc, size=size0)
         net.populations.append(pop0)
 
+
+    conn_indices = []
     synclass='silentSyn'
     chemProjNames = []
     for connection in chemical_weights:
         pre_index = connection["from"] - 1 # zero indexing
         post_index = connection["to"] - 1 # zero indexing
-        pre_pop = 'Pop' + cell_names[pre_index]
-        post_pop = 'Pop' + cell_names[post_index]
+        weight = connection["weight"]
+
+        pre_cell = cell_names[pre_index]
+        post_cell = cell_names[post_index]
+        pre_pop = 'Pop' + pre_cell
+        post_pop = 'Pop' + post_cell
         chemProjName = get_projection_id(pre_pop, post_pop, synclass)
 
         if chemProjName not in chemProjNames:
             chemProjNames.append(chemProjName)
+            conn_indices.append(0)
             proj0 = ContinuousProjection(id=chemProjName, presynaptic_population=pre_pop, 
                                         postsynaptic_population=post_pop,)
             net.continuous_projections.append(proj0)
 
+        cpn_index = chemProjNames.index(chemProjName)
+        
+        if do_rel_indices:
+            pre_index = rel_indices[pre_index]
+            post_index = rel_indices[post_index]
+        
+        pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_index)
+        post_cell_id = get_cell_id_string(post_pop, post_cell, post_index)
+
+        conn0 = ContinuousConnectionInstanceW(
+                    id=str(conn_indices[cpn_index]),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    pre_component='silentSyn',
+                    post_component='neuron_to_neuron_syn_x',
+                    weight=weight,)
+        
+        conn_indices[cpn_index] += 1
+        net.continuous_projections[cpn_index].continuous_connection_instance_ws.append(conn0)
+    
+
+    conn_indices = []
     synclass='gapJunction0'
     elecProjNames = []
     for connection in electrical_weights:
         pre_index = connection["from"] - 1 # zero indexing
         post_index = connection["to"] - 1 # zero indexing
-        pre_pop = 'Pop' +  cell_names[pre_index]
-        post_pop = 'Pop' + cell_names[post_index]
+
+
+        pre_cell = cell_names[pre_index]
+        post_cell = cell_names[post_index]
+        pre_pop = 'Pop' + pre_cell
+        post_pop = 'Pop' + post_cell
         elecProjName = get_projection_id(pre_pop, post_pop, synclass)
 
         if elecProjName not in elecProjNames:
             elecProjNames.append(elecProjName)
+            conn_indices.append(0)
             proj0 = ElectricalProjection(id=elecProjName,presynaptic_population=pre_pop, 
                                          postsynaptic_population=post_pop,)
             net.electrical_projections.append(proj0)
 
+        epn_index = elecProjNames.index(elecProjName)
+        
+        if do_rel_indices:
+            pre_index = rel_indices[pre_index]
+            post_index = rel_indices[post_index]
+        
+        pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_index)
+        post_cell_id = get_cell_id_string(post_pop, post_cell, post_index)
 
+        conn0 = ElectricalConnectionInstanceW(
+                    id=str(conn_indices[epn_index]),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    synapse='gapJunction0',
+                    weight=weight,)
+        
+        conn_indices[epn_index] += 1
+        net.electrical_projections[epn_index].electrical_connection_instance_ws.append(conn0)
+
+elif population_structure == 'individual populations': #each cell its own population
+     
+    for ind, cell_name in enumerate(cell_names):
+
+        cell_index = rel_indices[ind]
+        cell_comp_loc=pop_cell_name
+        size0 = 1
+        pop0 = Population(id='Pop' + cell_name + str(cell_index), component=cell_name, size=size0)
+        net.populations.append(pop0)
+
+    
 else:
     print("Not implemented yet")
     import sys
     sys.exit(0)
-
-
 
 
 add_PG = False
@@ -187,104 +284,7 @@ if add_PG:
         net.explicit_inputs.append(exp_input)
 
 
-make_connections = True
-if make_connections:
-    synclass='silentSyn'
-    for index, connection in enumerate(chemical_weights): 
-        pre_index = connection["from"] - 1 # zero indexing
-        post_index = connection["to"] - 1 # zero indexing
-        weight = connection["weight"]
-        
-        if population_structure == 'one population':
 
-            pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
-            post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
-
-        elif population_structure == 'cell specific populations':
-
-            pre_cell = cell_names[pre_index]
-            pre_pop = 'Pop' + pre_cell
-            post_cell = cell_names[post_index]
-            post_pop = 'Pop' + post_cell
-            
-            if do_rel_indices:
-                pre_index = rel_indices[pre_index]
-                post_index = rel_indices[post_index]
-        
-            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_index)
-            post_cell_id = get_cell_id_string(post_pop, post_cell, post_index)
-
-
-        conn0 = ContinuousConnectionInstanceW(
-                    id=str(index),
-                    pre_cell=pre_cell_id,
-                    post_cell=post_cell_id,
-                    pre_component='silentSyn',
-                    post_component='neuron_to_neuron_syn_x',
-                    weight=weight,)
-        
-        if population_structure == 'one population':
-            proj0.continuous_connection_instance_ws.append(conn0)
-
-        elif population_structure == 'cell specific populations':
-            chemProjName = get_projection_id(pre_pop, post_pop, synclass)
-            net.continuous_projections[chemProjNames.index(chemProjName)].continuous_connection_instance_ws.append(conn0)
-
-
-make_electric_connections = True
-if make_electric_connections:
-    synclass='gapJunction0'
-    for index, connection in enumerate(electrical_weights): 
-        pre_index = connection["from"] - 1 # zero indexing
-        post_index = connection["to"] - 1 # zero indexing
-        weight = connection["weight"]
-
-        if population_structure == 'one population':
-
-            pre_cell_id = get_cell_id_string(pop0.id, pop0.component, pre_index)
-            post_cell_id = get_cell_id_string(pop0.id, pop0.component, post_index)
-
-        elif population_structure == 'cell specific populations':
-
-          
-            pre_cell = cell_names[pre_index]
-            pre_pop = 'Pop' + pre_cell
-            post_cell = cell_names[post_index]
-            post_pop = 'Pop' + post_cell
-
-            if do_rel_indices:
-                pre_index = rel_indices[pre_index]
-                post_index = rel_indices[post_index]
-            
-        
-            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_index)
-            post_cell_id = get_cell_id_string(post_pop, post_cell, post_index)
-        
-        conn0 = ElectricalConnectionInstanceW(
-                    id=str(index),
-                    pre_cell=pre_cell_id,
-                    post_cell=post_cell_id,
-                    synapse='gapJunction0',
-                    weight=weight,)
-        
-        if population_structure == 'one population':
-            elProj0.electrical_connection_instance_ws.append(conn0)
-
-        elif population_structure == 'cell specific populations':
-            elecProjName = get_projection_id(pre_pop, post_pop, synclass)
-            #proj0.continuous_connection_instance_ws.append(conn0)
-            net.electrical_projections[elecProjNames.index(elecProjName)].electrical_connection_instance_ws.append(conn0)
-
-
-
-""" syn = SynapticConnection(
-            from_="%s[%i]" % (pop0.id, pre),
-            synapse=syn0.id,
-            to="%s[%i]" % (pop0.id, post),
-        )
-net.synaptic_connections.append(syn) """
-
-    
 nml_file = "testnet.nml"
 writers.NeuroMLWriter.write(nml_doc, nml_file)
 
