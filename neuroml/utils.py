@@ -1,9 +1,34 @@
+import argparse
+import json
+
 from neuroml import (
     ElectricalProjection,
     ContinuousProjection,
     ContinuousConnectionInstanceW,
     ElectricalConnectionInstanceW,
 )
+
+DEFAULTS = {}
+
+def process_args():
+    pass
+
+def build_namespace(DEFAULTS={}, a=None, **kwargs):
+    if a is None:
+        a = argparse.Namespace()
+
+    # Add arguments passed in by keyword.
+    for key, value in kwargs.items():
+        setattr(a, key, value)
+
+    # Add defaults for arguments not provided.
+    for key, value in DEFAULTS.items():
+        if not hasattr(a, key):
+            setattr(a, key, value)
+
+    return a
+
+
 
 cells_have_3d_locations = False
 
@@ -14,6 +39,15 @@ def get_projection_id(pre, post, synclass, syntype = None):
        proj_id += '_GJ' """
 
     return proj_id
+
+def get_cell_id_string_full(population_structure, pop_id, cell_id, cell_number):
+    if population_structure == 'one population': 
+       return get_cell_id_string(pop_id, cell_id, cell_number)
+    if population_structure == 'cell specific populations':
+       return get_cell_id_string(pop_id, cell_id, cell_number)
+    if population_structure == 'individual populations':
+       return get_cell_id_string(pop_id, cell_id, 0)
+
 
 def get_cell_id_string(pop_id, cell_id, cell_number):
     if cells_have_3d_locations:
@@ -30,10 +64,39 @@ def getPopRelativeCellIndices(pop_names, cell_names):
             rel_names[val] = i
     return rel_names         
 
+def getPopNamesCellNames(network_json_data):
+    cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"]["value"]
+    cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
+    pop_cell_names = cell_names[:cell_per_unit]
+    return pop_cell_names, cell_names
+ 
+def getPopulationName(population_structure, name = None, ind = None):
+    if population_structure == 'one population': 
+        return "AllCells"
+    if population_structure == 'cell specific populations':
+        return 'Pop' + name
+    if population_structure == 'individual populations':
+        return 'Pop' + name + str(ind)
 
-def getProjectionName(population_structure, synclass, pop_cell_names = None, cell_names = None, 
+
+def getJsonFile(json_file):
+    with open(json_file, 'r') as file:
+         return json.load(file)
+
+
+def getProjectionNameOld(population_structure, synclass, pop_cell_names = None, cell_names = None, 
                       pre_index = None, post_index = None): #make projection name
 
+    if cell_names is not None:
+        pre_cell = cell_names[pre_index]
+        post_cell = cell_names[post_index]
+        if pop_cell_names is not None:
+            rel_indices = getPopRelativeCellIndices(pop_cell_names, cell_names)  
+            pre_rel_index = rel_indices[pre_index]
+            post_rel_index = rel_indices[post_index]
+    
+    pre_pop = getPopulationName(population_structure, name = pre_cell, ind = pre_rel_index)
+    post_pop = getPopulationName(population_structure, name = post_cell, ind = post_rel_index)
 
     if population_structure == 'cell specific populations':
         
@@ -94,11 +157,18 @@ def makeProjectionsConnections(net, weights, synclass, connection_type,
             #make projection name
             pre_cell = cell_names[pre_index]
             post_cell = cell_names[post_index]
+            pre_rel_index = rel_indices[pre_index]
+            post_rel_index = rel_indices[post_index]
 
-           
-            projName, pre_pop, post_pop = getProjectionName(population_structure, synclass, 
+
+            pre_pop = getPopulationName(population_structure, name = pre_cell, ind = pre_rel_index)
+            post_pop = getPopulationName(population_structure, name = post_cell, ind = post_rel_index)
+
+            projName = get_projection_id(pre_pop, post_pop, synclass)
+
+            """ projName, pre_pop, post_pop = getProjectionName(population_structure, synclass, 
                                                             pop_cell_names, cell_names, 
-                                                            pre_index, post_index) #make projection name
+                                                            pre_index, post_index) #make projection name """
             #add projection if new
             if projName not in projNames:
                 projNames.append(projName)
@@ -121,11 +191,10 @@ def makeProjectionsConnections(net, weights, synclass, connection_type,
             cpn_index = projNames.index(projName)
             
             #make cell id and add connection
-            pre_rel_index = rel_indices[pre_index]
-            post_rel_index = rel_indices[post_index]
             
-            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_rel_index)
-            post_cell_id = get_cell_id_string(post_pop, post_cell, post_rel_index)
+            
+            pre_cell_id = get_cell_id_string_full(population_structure, pre_pop, pre_cell, pre_rel_index)
+            post_cell_id = get_cell_id_string_full(population_structure, post_pop, post_cell, post_rel_index)
 
             if connection_type == 'continuous':
                 conn0 = ContinuousConnectionInstanceW(
@@ -149,5 +218,34 @@ def makeProjectionsConnections(net, weights, synclass, connection_type,
                 net.electrical_projections[cpn_index].electrical_connection_instance_ws.append(conn0)
 
             conn_indices[cpn_index] += 1
+
+
+def makeCellXml(network_json_data, cellX_filename):
+
+    cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"]["value"]
+    cell_biases = network_json_data["Nervous system"]["biases"]["value"]
+    pop_biases = cell_biases[:cell_per_unit]
+    cell_gains = network_json_data["Nervous system"]["gains"]["value"]
+    pop_gains = cell_gains[:cell_per_unit]
+    cell_taus = network_json_data["Nervous system"]["taus"]["value"]
+    pop_taus = cell_taus[:cell_per_unit]
+    cell_states = network_json_data["Nervous system"]["states"]["value"]
+    pop_states = cell_states[:cell_per_unit]
+    cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
+    pop_cell_names = cell_names[:cell_per_unit]
+
+    cellX_strings = []
+    for ind, pop_cell_name in enumerate(pop_cell_names):
+        output_string = '<cellX id="' + str(pop_cell_name) + '" bias="' + str(pop_biases[ind]) + \
+        '" gain="' + str(pop_gains[ind]) + '" state0="' + str(pop_states[ind]) + '" tau="' \
+        + str(pop_taus[ind]) +'ms"/>'  
+        cellX_strings.append(output_string)   
+
+    with open(cellX_filename, "w") as f:
+        f.write('<Lems>\n')
+        for val in cellX_strings:
+            f.write(val)
+            f.write("\n") 
+        f.write('</Lems>')     
 
 
