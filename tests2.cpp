@@ -25,9 +25,9 @@ void testNervousSystem()
 
 
     double Duration = 100;
-    double StimDel = 10;
-    double StimDur = 50;
-    double StimAmp = 1;
+    double StimDel = 30;
+    double StimDur = 30;
+    double StimAmp = 10;
     const double StepSize = 0.005;
 
     ofstream state_file("test_output_2/test.state.dat");
