@@ -50,6 +50,110 @@ def getPopRelativeCellIndices(pop_names, cell_names):
     return rel_names         
 
 
+def getProjectionName(population_structure, synclass, pre_index = None, post_index = None): #make projection name
+
+    
+    if population_structure == 'cell specific populations':
+       
+        pre_cell = cell_names[pre_index]
+        post_cell = cell_names[post_index]
+        pre_pop = 'Pop' + pre_cell
+        post_pop = 'Pop' + post_cell
+        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
+    
+    if population_structure == 'individual populations':
+    
+        # get cell unit number
+        pre_cell = cell_names[pre_index]
+        post_cell = cell_names[post_index]
+        pre_rel_index = rel_indices[pre_index]
+        post_rel_index = rel_indices[post_index]
+
+        #define projection name
+        pre_pop = 'Pop' + pre_cell + str(pre_rel_index)
+        post_pop = 'Pop' + post_cell + str(post_rel_index)
+
+        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
+    
+    if population_structure == 'one population':
+
+        pre_pop = "AllCells"
+        post_pop = "AllCells"
+        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
+    
+    print("Population strcture not implemented yet.")
+    exit()
+
+
+def makeProjectionsConnections(weights, synclass, connection_type, population_structure):
+
+        conn_indices = []
+        projNames = []
+        for connection in weights:
+            pre_index = connection["from"] - 1 # zero indexing
+            post_index = connection["to"] - 1 # zero indexing
+            weight = connection["weight"]
+            
+            #make projection name
+            pre_cell = cell_names[pre_index]
+            post_cell = cell_names[post_index]
+
+            projName, pre_pop, post_pop = getProjectionName(population_structure, 
+                                                            synclass, pre_index, post_index)
+
+            #add projection if new
+            if projName not in projNames:
+                projNames.append(projName)
+                conn_indices.append(0)
+
+                if connection_type == 'continuous':
+                    proj0 = ContinuousProjection(id=projName, presynaptic_population=pre_pop, 
+                                                postsynaptic_population=post_pop,)
+                    net.continuous_projections.append(proj0)
+
+                elif connection_type == 'electrical':    
+                    proj0 = ElectricalProjection(id=projName, presynaptic_population=pre_pop, 
+                                         postsynaptic_population=post_pop,)
+                    net.electrical_projections.append(proj0)
+
+                else:
+                    print('Incorrect connection type')
+                    exit(0)    
+
+            cpn_index = projNames.index(projName)
+            
+            #make cell id and add connection
+            pre_rel_index = rel_indices[pre_index]
+            post_rel_index = rel_indices[post_index]
+            
+            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_rel_index)
+            post_cell_id = get_cell_id_string(post_pop, post_cell, post_rel_index)
+
+            if connection_type == 'continuous':
+                conn0 = ContinuousConnectionInstanceW(
+                        id=str(conn_indices[cpn_index]),
+                        pre_cell=pre_cell_id,
+                        post_cell=post_cell_id,
+                        pre_component='silentSyn',
+                        post_component='neuron_to_neuron_syn_x',
+                        weight=weight,)
+            
+                net.continuous_projections[cpn_index].continuous_connection_instance_ws.append(conn0)
+
+            elif connection_type == 'electrical':   
+                conn0 = ElectricalConnectionInstanceW(
+                    id=str(conn_indices[cpn_index]),
+                    pre_cell=pre_cell_id,
+                    post_cell=post_cell_id,
+                    synapse='gapJunction0',
+                    weight=weight,)
+        
+                net.electrical_projections[cpn_index].electrical_connection_instance_ws.append(conn0)
+
+            conn_indices[cpn_index] += 1
+
+
+
 with open('../exampleRun/worm_data.json', 'r') as file:
          network_json_data = json.load(file)
 
@@ -99,7 +203,7 @@ net = Network(id="Worm2DNet")
 nml_doc.networks.append(net)
 
 population_structures = ['one population', 'individual populations', 'cell specific populations']
-population_structure = population_structures[2]
+population_structure = population_structures[0]
 
 if population_structure == 'one population': #all cells in a single population
 
@@ -108,15 +212,19 @@ if population_structure == 'one population': #all cells in a single population
     pop0 = Population(id="AllCells", component=cell_comp, size=size0)
     net.populations.append(pop0)
 
-    proj0 = ContinuousProjection(id="ChemicalProj", \
-                        presynaptic_population=pop0.id,
-                        postsynaptic_population=pop0.id)
+    projName, pre_pop, post_pop = getProjectionName(population_structure, 'silentSyn')
+
+    proj0 = ContinuousProjection(id=projName, \
+                        presynaptic_population=pre_pop,
+                        postsynaptic_population=post_pop)
     net.continuous_projections.append(proj0)
 
+    projName, pre_pop, post_pop = getProjectionName(population_structure, 'gapJunction0')
+
     elProj0 = ElectricalProjection(
-                        id="ElectricalProj",
-                        presynaptic_population=pop0.id,
-                        postsynaptic_population=pop0.id,
+                        id=projName,
+                        presynaptic_population=pre_pop,
+                        postsynaptic_population=post_pop,
                     )
     net.electrical_projections.append(elProj0)
     
@@ -164,77 +272,9 @@ elif population_structure == 'cell specific populations': # cells divided into c
         pop0 = Population(id='Pop' + pop_cell_name, component=cell_comp_loc, size=size0)
         net.populations.append(pop0)
 
-    
-    def makeProjectionsConnections(weights, synclass, connection_type):
 
-        conn_indices = []
-        projNames = []
-        for connection in weights:
-            pre_index = connection["from"] - 1 # zero indexing
-            post_index = connection["to"] - 1 # zero indexing
-            weight = connection["weight"]
-            
-            #make projection name
-            pre_cell = cell_names[pre_index]
-            post_cell = cell_names[post_index]
-            pre_pop = 'Pop' + pre_cell
-            post_pop = 'Pop' + post_cell
-            projName = get_projection_id(pre_pop, post_pop, synclass)
-
-            #add projection if new
-            if projName not in projNames:
-                projNames.append(projName)
-                conn_indices.append(0)
-
-                if connection_type == 'continuous':
-                    proj0 = ContinuousProjection(id=projName, presynaptic_population=pre_pop, 
-                                                postsynaptic_population=post_pop,)
-                    net.continuous_projections.append(proj0)
-
-                elif connection_type == 'electrical':    
-                    proj0 = ElectricalProjection(id=projName,presynaptic_population=pre_pop, 
-                                         postsynaptic_population=post_pop,)
-                    net.electrical_projections.append(proj0)
-
-                else:
-                    print('Incorrect connection type')
-                    exit(0)    
-
-            cpn_index = projNames.index(projName)
-            
-            #make cell id and add connection
-            pre_rel_index = rel_indices[pre_index]
-            post_rel_index = rel_indices[post_index]
-            
-            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_rel_index)
-            post_cell_id = get_cell_id_string(post_pop, post_cell, post_rel_index)
-
-            if connection_type == 'continuous':
-                conn0 = ContinuousConnectionInstanceW(
-                        id=str(conn_indices[cpn_index]),
-                        pre_cell=pre_cell_id,
-                        post_cell=post_cell_id,
-                        pre_component='silentSyn',
-                        post_component='neuron_to_neuron_syn_x',
-                        weight=weight,)
-            
-                net.continuous_projections[cpn_index].continuous_connection_instance_ws.append(conn0)
-
-            elif connection_type == 'electrical':   
-                conn0 = ElectricalConnectionInstanceW(
-                    id=str(conn_indices[cpn_index]),
-                    pre_cell=pre_cell_id,
-                    post_cell=post_cell_id,
-                    synapse='gapJunction0',
-                    weight=weight,)
-        
-                net.electrical_projections[cpn_index].electrical_connection_instance_ws.append(conn0)
-
-            conn_indices[cpn_index] += 1
-
-
-    makeProjectionsConnections(chemical_weights,'silentSyn','continuous')
-    makeProjectionsConnections(electrical_weights,'gapJunction0','electrical')
+    makeProjectionsConnections(chemical_weights,'silentSyn','continuous', population_structure)
+    makeProjectionsConnections(electrical_weights,'gapJunction0','electrical', population_structure)
 
 
 elif population_structure == 'individual populations': #each cell its own population
@@ -247,80 +287,8 @@ elif population_structure == 'individual populations': #each cell its own popula
         net.populations.append(pop0)
 
 
-    def makeProjectionsConnections(weights, synclass, connection_type):
-
-        conn_indices = []
-        projNames = []
-        for connection in weights:
-            pre_index = connection["from"] - 1 # zero indexing
-            post_index = connection["to"] - 1 # zero indexing
-            weight = connection["weight"]
-
-            # get cell name
-            pre_cell = cell_names[pre_index]
-            post_cell = cell_names[post_index]
-            
-            # get cell unit number
-            pre_rel_index = rel_indices[pre_index]
-            post_rel_index = rel_indices[post_index]
-
-            #define projection name
-            pre_pop = 'Pop' + pre_cell + str(pre_rel_index)
-            post_pop = 'Pop' + post_cell + str(post_rel_index)
-
-            projName = get_projection_id(pre_pop, post_pop, synclass)
-
-            #add projection if new 
-            if projName not in projNames:
-                projNames.append(projName)
-                conn_indices.append(0)
-
-                if connection_type == 'continuous':
-                    proj0 = ContinuousProjection(id=projName, presynaptic_population=pre_pop, 
-                                                postsynaptic_population=post_pop,)
-                    net.continuous_projections.append(proj0)
-
-                elif connection_type == 'electrical':    
-                    proj0 = ElectricalProjection(id=projName,presynaptic_population=pre_pop, 
-                                         postsynaptic_population=post_pop,)
-                    net.electrical_projections.append(proj0)
-
-                else:
-                    print('Incorrect connection type')
-                    exit(0)    
-            
-            # get projection index number
-            cpn_index = projNames.index(projName)
-            
-            #add connection in projection
-            pre_cell_id = get_cell_id_string(pre_pop, pre_cell, pre_rel_index)
-            post_cell_id = get_cell_id_string(post_pop, post_cell, post_rel_index)
-
-            if connection_type == 'continuous':
-                conn0 = ContinuousConnectionInstanceW(
-                        id=str(conn_indices[cpn_index]),
-                        pre_cell=pre_cell_id,
-                        post_cell=post_cell_id,
-                        pre_component='silentSyn',
-                        post_component='neuron_to_neuron_syn_x',
-                        weight=weight,)
-            
-                net.continuous_projections[cpn_index].continuous_connection_instance_ws.append(conn0)
-
-            elif connection_type == 'electrical':   
-                conn0 = ElectricalConnectionInstanceW(
-                    id=str(conn_indices[cpn_index]),
-                    pre_cell=pre_cell_id,
-                    post_cell=post_cell_id,
-                    synapse='gapJunction0',
-                    weight=weight,)
-        
-                net.electrical_projections[cpn_index].electrical_connection_instance_ws.append(conn0)
-
-            conn_indices[cpn_index] += 1
-
-    makeProjectionsConnections(chemical_weights,'silentSyn','continuous')
-    makeProjectionsConnections(electrical_weights,'gapJunction0','electrical')
+    makeProjectionsConnections(chemical_weights,'silentSyn','continuous', population_structure)
+    makeProjectionsConnections(electrical_weights,'gapJunction0','electrical', population_structure)
 
 else:
     print("Not implemented yet")
