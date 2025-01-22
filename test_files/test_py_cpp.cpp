@@ -12,12 +12,13 @@ void test()
 {
     std::cout << "Created aa test..." << std::endl;
 
+    PyObject *pName, *pModule, *pDict, *pFun, *pValue;
     //Py_Initialize();
 }
 int main(int argc, const char *argv[])
 {
 
-  //Py_Initialize();
+   // Py_Initialize();
 
     std::cout << "Running a number of tests..." << std::endl;
 
