@@ -14,7 +14,9 @@ void test()
     std::cout << "Created aa test..." << std::endl;
 
     PyObject *pName, *pModule, *pDict, *pFun, *pValue;
-    Py_Initialize();
+    //Py_Initialize();
+    //PyRun_SimpleString("print('It works...')");
+    //Py_Finalize();
 }
 int main(int argc, const char *argv[])
 {
