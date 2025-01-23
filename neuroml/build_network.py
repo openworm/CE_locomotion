@@ -55,17 +55,28 @@ def run(a = None, **kwargs):
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
 
-    
-    if population_structure == 'one population': #all cells in a single population
+    if population_structure == 'one population':  #all cells in a single population
+        
+        """ cell_num = network_json_data["Nervous system"]["size"]["value"]
+        size0 = cell_num
+        cell_comp = "GenericNeuronCellX"
+        pop0 = Population(id=utils.get_pop_id(population_structure), component=cell_comp, size=size0)
+        net.populations.append(pop0)
+
+        utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
+                                        population_structure, pop_cell_names, cell_names)
+        utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
+                                        population_structure, pop_cell_names, cell_names) """
+
         
         cell_num = network_json_data["Nervous system"]["size"]["value"]
         size0 = cell_num
         cell_comp = "GenericNeuronCellX"
-        pop0 = Population(id=utils.getPopulationName(population_structure), component=cell_comp, size=size0)
+        pop0 = Population(id=utils.get_pop_id(population_structure), component=cell_comp, size=size0)
         net.populations.append(pop0)
 
-        pre_pop = utils.getPopulationName(population_structure)
-        post_pop = utils.getPopulationName(population_structure)
+        pre_pop = utils.get_pop_id(population_structure)
+        post_pop = utils.get_pop_id(population_structure)
         projName = utils.get_projection_id(pre_pop, post_pop, 'silentSyn')
 
         proj0 = ContinuousProjection(id=projName, \
@@ -125,7 +136,7 @@ def run(a = None, **kwargs):
         for ind, pop_cell_name in enumerate(pop_cell_names):
             cell_comp_loc=pop_cell_name
             size0 = num_unit
-            pop0 = Population(id=utils.getPopulationName(population_structure, pop_cell_name), component=cell_comp_loc, size=size0)
+            pop0 = Population(id=utils.get_pop_id(population_structure, pop_cell_name), component=cell_comp_loc, size=size0)
             net.populations.append(pop0)
 
 
@@ -137,13 +148,13 @@ def run(a = None, **kwargs):
 
     elif population_structure == 'individual populations': #each cell its own population
         
-        rel_indices = utils.getPopRelativeCellIndices(pop_cell_names, cell_names)
+        rel_indices = utils.getPopRelativeCellIndices(cell_names, pop_cell_names)
 
         for ind, cell_name in enumerate(cell_names):
 
             cell_rel_index = rel_indices[ind]
             size0 = 1
-            pop0 = Population(id=utils.getPopulationName(population_structure, cell_name, cell_rel_index), component=cell_name, size=size0)
+            pop0 = Population(id=utils.get_pop_id(population_structure, cell_name, cell_rel_index), component=cell_name, size=size0)
             net.populations.append(pop0)
 
         utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
@@ -165,8 +176,8 @@ def run(a = None, **kwargs):
         for pre in range(0, size0):
             pg = PulseGenerator(
                 id="pulseGen_%i" % pre,
-                delay="0ms",
-                duration="100ms",
+                delay="200ms",
+                duration="10ms",
                 amplitude="%f nA" % (0.1 * random()),
             )
 

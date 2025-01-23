@@ -40,6 +40,8 @@ def get_projection_id(pre, post, synclass, syntype = None):
 
     return proj_id
 
+
+
 def get_cell_id_string_full(population_structure, pop_id, cell_id, cell_number):
     if population_structure == 'one population': 
        return get_cell_id_string(pop_id, cell_id, cell_number)
@@ -56,23 +58,40 @@ def get_cell_id_string(pop_id, cell_id, cell_number):
         return "../%s[%s]" % (pop_id, str(cell_number))
         
 
-def getPopRelativeCellIndices(pop_names, cell_names):
+def getPopRelativeCellIndices(cell_names, pop_names):
     rel_names = list(range(len(cell_names)))
     for pop_name in pop_names:
         indices = [i for i, val in enumerate(cell_names) if val == pop_name]
         for i, val in enumerate(indices):
             rel_names[val] = i
-    return rel_names         
+    return rel_names
+             
+def get_rel_index_list(population_structure, cell_names = None, pop_names = None):
+    if population_structure == 'one population':
+       return list(range(len(cell_names)))
+    if population_structure == 'individual populations':
+       return [0]
+    if population_structure == 'cell specific populations':
+        return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 def getPopNamesCellNames(network_json_data):
     cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"]["value"]
     cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
     pop_cell_names = cell_names[:cell_per_unit]
     return pop_cell_names, cell_names
- 
-def getPopulationName(population_structure, name = None, ind = None):
+
+def get_pop_id_list(population_structure, cell_names = None, pop_names = None):
     if population_structure == 'one population': 
-        return "AllCells"
+        return ['AllCells']
+    if population_structure == 'cell specific populations':
+        return ['Pop' + name for name in pop_names]
+    if population_structure == 'individual populations':
+        rel_inds = getPopRelativeCellIndices(cell_names, pop_names)
+        return ['Pop' + name + str(ind) for name, ind in zip(cell_names, rel_inds)]
+
+def get_pop_id(population_structure, name = None, ind = None):
+    if population_structure == 'one population': 
+        return 'AllCells'
     if population_structure == 'cell specific populations':
         return 'Pop' + name
     if population_structure == 'individual populations':
@@ -84,68 +103,10 @@ def getJsonFile(json_file):
          return json.load(file)
 
 
-def getProjectionNameOld(population_structure, synclass, pop_cell_names = None, cell_names = None, 
-                      pre_index = None, post_index = None): #make projection name
-
-    if cell_names is not None:
-        pre_cell = cell_names[pre_index]
-        post_cell = cell_names[post_index]
-        if pop_cell_names is not None:
-            rel_indices = getPopRelativeCellIndices(pop_cell_names, cell_names)  
-            pre_rel_index = rel_indices[pre_index]
-            post_rel_index = rel_indices[post_index]
-    
-    pre_pop = getPopulationName(population_structure, name = pre_cell, ind = pre_rel_index)
-    post_pop = getPopulationName(population_structure, name = post_cell, ind = post_rel_index)
-
-    if population_structure == 'cell specific populations':
-        
-        if cell_names is None:
-            print("Cell names not passed.")
-            exit()
-        pre_cell = cell_names[pre_index]
-        post_cell = cell_names[post_index]
-        pre_pop = 'Pop' + pre_cell
-        post_pop = 'Pop' + post_cell
-        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
-        
-    
-    if population_structure == 'individual populations':
-    
-        # get cell unit number
-        if cell_names is None:
-            print("Cell names not passed.")
-            exit()
-        if pop_cell_names is None:
-            print("Pop names not passed.")
-            exit()
-
-        rel_indices = getPopRelativeCellIndices(pop_cell_names, cell_names)
-        pre_cell = cell_names[pre_index]
-        post_cell = cell_names[post_index]
-        pre_rel_index = rel_indices[pre_index]
-        post_rel_index = rel_indices[post_index]
-
-        #define projection name
-        pre_pop = 'Pop' + pre_cell + str(pre_rel_index)
-        post_pop = 'Pop' + post_cell + str(post_rel_index)
-
-        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
-    
-    if population_structure == 'one population':
-
-        pre_pop = "AllCells"
-        post_pop = "AllCells"
-        return get_projection_id(pre_pop, post_pop, synclass), pre_pop, post_pop
-    
-    print("Population strcture not implemented yet.")
-    exit()
-
-
 def makeProjectionsConnections(net, weights, synclass, connection_type, 
                                population_structure, pop_cell_names, cell_names):
 
-        rel_indices = getPopRelativeCellIndices(pop_cell_names, cell_names)
+        rel_indices = getPopRelativeCellIndices(cell_names, pop_cell_names)
 
         conn_indices = []
         projNames = []
@@ -161,14 +122,11 @@ def makeProjectionsConnections(net, weights, synclass, connection_type,
             post_rel_index = rel_indices[post_index]
 
 
-            pre_pop = getPopulationName(population_structure, name = pre_cell, ind = pre_rel_index)
-            post_pop = getPopulationName(population_structure, name = post_cell, ind = post_rel_index)
+            pre_pop = get_pop_id(population_structure, name = pre_cell, ind = pre_rel_index)
+            post_pop = get_pop_id(population_structure, name = post_cell, ind = post_rel_index)
 
             projName = get_projection_id(pre_pop, post_pop, synclass)
 
-            """ projName, pre_pop, post_pop = getProjectionName(population_structure, synclass, 
-                                                            pop_cell_names, cell_names, 
-                                                            pre_index, post_index) #make projection name """
             #add projection if new
             if projName not in projNames:
                 projNames.append(projName)

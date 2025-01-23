@@ -1,6 +1,16 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.1.xsd" id="Worm2D">
     <include href="cell_syn_X.xml"/>
     <include href="cell_syn_X_cells.xml"/>
+    <pulseGenerator id="pulseGen_0" delay="200ms" duration="10ms" amplitude="0.080320 nA"/>
+    <pulseGenerator id="pulseGen_1" delay="200ms" duration="10ms" amplitude="0.025301 nA"/>
+    <pulseGenerator id="pulseGen_2" delay="200ms" duration="10ms" amplitude="0.069099 nA"/>
+    <pulseGenerator id="pulseGen_3" delay="200ms" duration="10ms" amplitude="0.031894 nA"/>
+    <pulseGenerator id="pulseGen_4" delay="200ms" duration="10ms" amplitude="0.029783 nA"/>
+    <pulseGenerator id="pulseGen_5" delay="200ms" duration="10ms" amplitude="0.088521 nA"/>
+    <pulseGenerator id="pulseGen_6" delay="200ms" duration="10ms" amplitude="0.003688 nA"/>
+    <pulseGenerator id="pulseGen_7" delay="200ms" duration="10ms" amplitude="0.061839 nA"/>
+    <pulseGenerator id="pulseGen_8" delay="200ms" duration="10ms" amplitude="0.091077 nA"/>
+    <pulseGenerator id="pulseGen_9" delay="200ms" duration="10ms" amplitude="0.037993 nA"/>
     <network id="Worm2DNet">
         <population id="PopDA" component="DA" size="10"/>
         <population id="PopDB" component="DB" size="10"/>
@@ -256,5 +266,15 @@
             <continuousConnectionInstanceW id="8" preCell="../PopVD[8]" postCell="../PopVB[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
             <continuousConnectionInstanceW id="9" preCell="../PopVD[9]" postCell="../PopVB[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
         </continuousProjection>
+        <explicitInput target="PopDA[0]" input="pulseGen_0"/>
+        <explicitInput target="PopDA[1]" input="pulseGen_1"/>
+        <explicitInput target="PopDA[2]" input="pulseGen_2"/>
+        <explicitInput target="PopDA[3]" input="pulseGen_3"/>
+        <explicitInput target="PopDA[4]" input="pulseGen_4"/>
+        <explicitInput target="PopDA[5]" input="pulseGen_5"/>
+        <explicitInput target="PopDA[6]" input="pulseGen_6"/>
+        <explicitInput target="PopDA[7]" input="pulseGen_7"/>
+        <explicitInput target="PopDA[8]" input="pulseGen_8"/>
+        <explicitInput target="PopDA[9]" input="pulseGen_9"/>
     </network>
 </neuroml>

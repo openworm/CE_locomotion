@@ -11,8 +11,13 @@ import sys
 import pprint
 
 import utils
+import matplotlib
+colour_list = list(matplotlib.colors.cnames.values())
+
 
 pp = pprint.PrettyPrinter(depth=6)
+
+
 
 
 def run_main(args=None):
@@ -24,10 +29,16 @@ def run(a = None, **kwargs):
     a = utils.build_namespace(utils.DEFAULTS, a, **kwargs)
 
     network_json_data = utils.getJsonFile(a.json_file)
-    pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
-    population_structure = a.population_structure
+    pop_names, cell_names = utils.getPopNamesCellNames(network_json_data)
 
-    cellId = utils.get_cell_id_string_full(population_structure, pop_cell_names[0], None, 0)
+    population_structure = a.population_structure
+    rel_indices = utils.get_rel_index_list(population_structure, cell_names, pop_names)
+    pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_names)
+
+    cell_ids = []
+    for pop_id in pop_id_list:
+        for rel_index in rel_indices:
+            cell_ids.append(utils.get_cell_id_string_full(population_structure, pop_id, None, rel_index))
    
     ############################################
     #  Create a LEMS file "manually"...
@@ -41,13 +52,18 @@ def run(a = None, **kwargs):
     ls.create_display(disp0, "Voltages", "-90", "50")
 
     #ls.add_line_to_display(disp0, "v", "AllCells[0]/v", "1mV", "#ffffff")
-    ls.add_line_to_display(disp0, "v", "PopDA[0]/v", "1mV", "#ffffff")
-
-
+    
+    
     of0 = "Volts_file"
     ls.create_output_file(of0, "%s.v.dat" % sim_id)
+    for cell_id, colour in zip(cell_ids[:10], colour_list):
+        cell_id_val = cell_id[3:]
+        ls.add_line_to_display(disp0, "v", cell_id_val + "/v", "1mV", colour)
+        ls.add_column_to_output_file(of0, "v", cell_id_val + "/v")
+
+    
     #ls.add_column_to_output_file(of0, "v", "AllCells[0]/v")
-    ls.add_column_to_output_file(of0, "v", "PopDA[0]/v")
+    #ls.add_column_to_output_file(of0, "v", "PopDA[0]/v")
 
     ls.set_report_file("report.txt")
 
