@@ -13,8 +13,8 @@ void test()
 {
     std::cout << "Created aa test..." << std::endl;
 
-    //PyObject *pName, *pModule, *pDict, *pFun, *pValue;
-    //Py_Initialize();
+    PyObject *pName, *pModule, *pDict, *pFun, *pValue;
+    Py_Initialize();
 }
 int main(int argc, const char *argv[])
 {
