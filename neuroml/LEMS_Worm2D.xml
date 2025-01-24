@@ -2,7 +2,7 @@
 
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v1.3.14 (libNeuroML v0.6.6)
+        This LEMS file has been automatically generated using PyNeuroML v1.3.12 (libNeuroML v0.6.5)
 
      -->
 
@@ -18,11 +18,29 @@
 
     <Simulation id="Worm2D" length="500.0ms" step="0.05ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         <Display id="display0" title="Voltages" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-90" ymax="50">
-            <Line id="v" quantity="AllCells[0]/v" scale="1mV" color="#ffffff" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[0]/v" scale="1mV" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[1]/v" scale="1mV" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[2]/v" scale="1mV" color="#00FFFF" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[3]/v" scale="1mV" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[4]/v" scale="1mV" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[5]/v" scale="1mV" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[6]/v" scale="1mV" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[7]/v" scale="1mV" color="#000000" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[8]/v" scale="1mV" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="v" quantity="PopDA[9]/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
         </Display>
 
         <OutputFile id="Volts_file" fileName="Worm2D.v.dat">
-            <OutputColumn id="v" quantity="AllCells[0]/v"/>
+            <OutputColumn id="v" quantity="PopDA[0]/v"/>
+            <OutputColumn id="v" quantity="PopDA[1]/v"/>
+            <OutputColumn id="v" quantity="PopDA[2]/v"/>
+            <OutputColumn id="v" quantity="PopDA[3]/v"/>
+            <OutputColumn id="v" quantity="PopDA[4]/v"/>
+            <OutputColumn id="v" quantity="PopDA[5]/v"/>
+            <OutputColumn id="v" quantity="PopDA[6]/v"/>
+            <OutputColumn id="v" quantity="PopDA[7]/v"/>
+            <OutputColumn id="v" quantity="PopDA[8]/v"/>
+            <OutputColumn id="v" quantity="PopDA[9]/v"/>
         </OutputFile>
 
     </Simulation>
