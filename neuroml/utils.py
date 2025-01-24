@@ -79,7 +79,7 @@ def getCellNames(network_json_data):
     
 def getPopNames(network_json_data):    
     cell_names = getCellNames(network_json_data)
-    return list(set(cell_names))
+    return sorted(list(set(cell_names)))
 
 
 def get_pop_id_list(population_structure, cell_names = None, pop_names = None):
@@ -205,7 +205,7 @@ def makeCellXml(network_json_data, cellX_filename):
     for ind, pop_cell_name in enumerate(pop_cell_names):
         output_string = '<cellX id="' + str(pop_cell_name) + '" bias="' + str(pop_biases[ind]) + \
         '" gain="' + str(pop_gains[ind]) + '" state0="' + str(pop_states[ind]) + '" tau="' \
-        + str(pop_taus[ind]) +'ms"/>'  
+        + str(pop_taus[ind]) +'s"/>'  
         cellX_strings.append(output_string)   
 
     with open(cellX_filename, "w") as f:

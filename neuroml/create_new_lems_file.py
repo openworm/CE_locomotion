@@ -49,23 +49,40 @@ def run(a = None, **kwargs):
     #  Create a LEMS file "manually"...
 
     sim_id = "Worm2D"
-    ls = LEMSSimulation(sim_id, 20, 0.005, "Worm2DNet")
+    ls = LEMSSimulation(sim_id, 20000, 5, "Worm2DNet")
     #ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
     ls.include_neuroml2_file("testnet.nml", include_included=False)
 
+    #ls.include_lems_file("cell_syn_X_cells.xml")
+
     disp0 = "display0"
-    ls.create_display(disp0, "Voltages", "-90", "50")
+    ls.create_display(disp0, "States", "-15", "10", timeScale= "1ms")
+
+    disp1 = "display1"
+    ls.create_display(disp1, "Outputs", "-.1", "1", timeScale= "1ms")
 
     #ls.add_line_to_display(disp0, "v", "AllCells[0]/v", "1mV", "#ffffff")
     
     
     cells_to_plot = 60
-    of0 = "Volts_file"
-    ls.create_output_file(of0, "%s.v.dat" % sim_id)
+    of0 = "states_file"
+    ls.create_output_file(of0, "%s.states.dat" % sim_id)
+    of1 = "outputs_file"
+    ls.create_output_file(of1, "%s.outputs.dat" % sim_id)
+
     for index, (cell_id, colour) in enumerate(zip(cell_ids[:cells_to_plot], colour_list)):
         cell_id_val = cell_id[3:]
-        ls.add_line_to_display(disp0, "v" + str(index), cell_id_val + "/v", "1mV", colour)
-        ls.add_column_to_output_file(of0, "v" + str(index), cell_id_val + "/v")
+
+        print('Displaying/saving cell %s'%cell_id_val)
+
+        if '0' in cell_id:  # only display first - all in pops are same...
+        
+            ls.add_line_to_display(disp0, cell_id_val.replace('Pop',''), cell_id_val + "/state", "1", colour, timeScale='1ms')
+            ls.add_column_to_output_file(of0, cell_id_val.replace('Pop',''), cell_id_val + "/state")
+            
+            ls.add_line_to_display(disp1, cell_id_val.replace('Pop',''), cell_id_val + "/output", "1", colour, timeScale='1ms')
+            ls.add_column_to_output_file(of1, cell_id_val.replace('Pop',''), cell_id_val + "/output")
+
 
     
     #ls.add_column_to_output_file(of0, "v", "AllCells[0]/v")
@@ -76,7 +93,7 @@ def run(a = None, **kwargs):
     print("Using information to generate LEMS: ")
     pp.pprint(ls.lems_info)
     print("\nLEMS: ")
-    print(ls.to_xml())
+    #print(ls.to_xml())
 
     ls.save_to_file()
     assert os.path.isfile("LEMS_%s.xml" % sim_id)

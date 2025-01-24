@@ -73,12 +73,11 @@
     
 </ComponentType>
 
-<cellX id="GenericNeuronCellX" bias="1" gain="1" state0="0" tau="1000ms"/>
 
 <silentSynapse id="silentSyn"/>
 <outputSynapse id="neuron_to_neuron_syn_x"/>
 
-<gapJunction id="gapJunction0" conductance="10pS"/>
+<gapJunction id="gapJunction0" conductance="0pS"/>
 
 
 </Lems>

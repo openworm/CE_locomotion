@@ -17,3 +17,4 @@
 /test_output/*.dat
 /neuroml/*.dat
 /neuroml/report.txt
+/neuroml/__pycache__

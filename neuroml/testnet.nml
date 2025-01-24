@@ -2,12 +2,12 @@
     <include href="cell_syn_X.xml"/>
     <include href="cell_syn_X_cells.xml"/>
     <network id="Worm2DNet">
-        <population id="PopDB" component="DB" size="10"/>
         <population id="PopDA" component="DA" size="10"/>
+        <population id="PopDB" component="DB" size="10"/>
+        <population id="PopDD" component="DD" size="10"/>
+        <population id="PopVA" component="VA" size="10"/>
         <population id="PopVB" component="VB" size="10"/>
         <population id="PopVD" component="VD" size="10"/>
-        <population id="PopVA" component="VA" size="10"/>
-        <population id="PopDD" component="DD" size="10"/>
         <electricalProjection id="NC_PopDB_PopDB_gapJunction0" presynapticPopulation="PopDB" postsynapticPopulation="PopDB">
             <electricalConnectionInstanceW id="0" preCell="../PopDB[1]" postCell="../PopDB[0]" synapse="gapJunction0" weight="0.111893748558795"/>
             <electricalConnectionInstanceW id="1" preCell="../PopDB[0]" postCell="../PopDB[1]" synapse="gapJunction0" weight="0.111893748558795"/>
