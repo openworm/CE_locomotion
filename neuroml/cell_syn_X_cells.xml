@@ -1,8 +1,8 @@
 <Lems>
 <cellX id="DA" bias="3.238306056851798" gain="1.0" state0="-5.435530634188018" tau="1.0ms"/>
 <cellX id="DB" bias="4.430742222193569" gain="1.0" state0="-6.627966799529788" tau="1.0ms"/>
-<cellX id="DD" bias="-2.3628925164111374" gain="1.0" state0="4.5601170937473565" tau="1.0ms"/>
 <cellX id="VD" bias="-2.3628925164111374" gain="1.0" state0="0.16566793907491828" tau="1.0ms"/>
-<cellX id="VA" bias="3.238306056851798" gain="1.0" state0="-1.0410814795155785" tau="1.0ms"/>
 <cellX id="VB" bias="4.430742222193569" gain="1.0" state0="-2.2335176448573493" tau="1.0ms"/>
+<cellX id="VA" bias="3.238306056851798" gain="1.0" state0="-1.0410814795155785" tau="1.0ms"/>
+<cellX id="DD" bias="-2.3628925164111374" gain="1.0" state0="4.5601170937473565" tau="1.0ms"/>
 </Lems>

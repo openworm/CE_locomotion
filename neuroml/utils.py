@@ -186,24 +186,37 @@ def makeProjectionsConnections(net, weights, synclass, connection_type,
 
             conn_indices[cpn_index] += 1
 
+def check_equal(list):
+    return all(i == list[0] for i in list)
+
+def getVals(pop_names, cell_names, vals):
+    
+    pop_vals = []
+    for pop_name in pop_names:
+        vals_list = [vals[i] for i, val in enumerate(cell_names) if val == pop_name]
+        if check_equal(vals_list):
+           pop_vals.append(vals_list[0])
+        else:
+           print("Not all equal")
+           exit()    
+    return pop_vals
 
 def makeCellXml(network_json_data, cellX_filename):
-
-    cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"]["value"]
-    cell_biases = network_json_data["Nervous system"]["biases"]["value"]
-    pop_biases = cell_biases[:cell_per_unit]
-    cell_gains = network_json_data["Nervous system"]["gains"]["value"]
-    pop_gains = cell_gains[:cell_per_unit]
-    cell_taus = network_json_data["Nervous system"]["taus"]["value"]
-    pop_taus = cell_taus[:cell_per_unit]
-    cell_states = network_json_data["Nervous system"]["states"]["value"]
-    pop_states = cell_states[:cell_per_unit]
+    
+    pop_names = getPopNames(network_json_data)
     cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
-    pop_cell_names = cell_names[:cell_per_unit]
+    cell_biases = network_json_data["Nervous system"]["biases"]["value"]
+    cell_gains = network_json_data["Nervous system"]["gains"]["value"]
+    cell_taus = network_json_data["Nervous system"]["taus"]["value"]
+    cell_states = network_json_data["Nervous system"]["states"]["value"]
+    pop_biases = getVals(pop_names, cell_names, cell_biases)
+    pop_gains = getVals(pop_names, cell_names, cell_gains)
+    pop_taus = getVals(pop_names, cell_names, cell_taus)
+    pop_states = getVals(pop_names, cell_names, cell_states)
 
     cellX_strings = []
-    for ind, pop_cell_name in enumerate(pop_cell_names):
-        output_string = '<cellX id="' + str(pop_cell_name) + '" bias="' + str(pop_biases[ind]) + \
+    for ind, pop_name in enumerate(pop_names):
+        output_string = '<cellX id="' + str(pop_name) + '" bias="' + str(pop_biases[ind]) + \
         '" gain="' + str(pop_gains[ind]) + '" state0="' + str(pop_states[ind]) + '" tau="' \
         + str(pop_taus[ind]) +'ms"/>'  
         cellX_strings.append(output_string)   
