@@ -9,7 +9,9 @@
 #include <math.h>
 #include "TSearch.h"
 #include "VectorMatrix.h"
-#include "Worm.h"
+//#include "Worm.h"
+#include "Worm2D.h"
+#include "Mainvars.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -41,6 +43,9 @@ const double    NMJmin                  = 0.0;
 
 const int SR_A = 1;
 const int SR_B = 2;
+
+
+
 
 // Size of genotype
 int	VectSize = 17;
@@ -165,11 +170,7 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs){
   // return fitnessBackward;
 }
 
-string dir_name = "";
-string rename_file(const string & file_name){
-  if (dir_name != "") return dir_name + "/" + file_name;
-  return file_name;
-}
+
 
 
 
@@ -185,15 +186,25 @@ double save_traces(TVector<double> &v, RandomState &rs){
     GenPhenMapping(v, phenotype);
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
+    
     Worm w(phenotype, 1);
+    {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
-
+    phenfile.close();
+    }
+    
     w.InitializeState(rs);
     w.sr.SR_A_gain = 0.0;
     w.sr.SR_B_gain = srb;
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
+
+    // save json data
+    writeParsToJson(w, "worm_data.json");
+    // reconstruct nervous system from json file to check validity
+    testNervousSystemJson("worm_data.json", w.n); 
+    
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);
@@ -234,6 +245,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
          w.DumpActState(actfile, skip_steps);
      }
 
+    
     bodyfile.close();
     curvfile.close();
     actfile.close();
@@ -259,6 +271,9 @@ void ResultsDisplay(TSearch &s)
     BestIndividualFile.close();
 }
 
+
+
+
 // ------------------------------------
 // The main program
 // ------------------------------------
@@ -271,17 +286,26 @@ int main (int argc, const char* argv[])
     if (argc==2) randomseed += atoi(argv[1]);
 
     bool do_evol = 1;
+    
 
     if (argc>2){
        
-    const bool is_even = ((argc-1) % 2) == 0; //todo: check even
+    if (((argc-1) % 2) != 0)
+     {cout << "The arguments are not configured correctly." << endl;return 0;}
+    
+
     
     bool seed_flag = 1;
     
     for (int arg = 1; arg<argc; arg+=2)
     { 
     if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"--folder")==0) dir_name = argv[arg+1];
+    if (strcmp(argv[arg],"--folder")==0) {
+      output_dir_name = argv[arg+1];
+      struct stat sb;
+      if (stat(output_dir_name.c_str(), &sb) != 0) 
+      {cout << "Directory doesn't exist." << endl;return 0;}
+    }
     if (seed_flag){ 
     if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
@@ -293,30 +317,10 @@ int main (int argc, const char* argv[])
 
     }
 
-   /*  bool do_evol;
-    cout << "Do you want to perform an evolutionary search (E) or run a simulation (S) ";
-    string ans;
-    while(true){
-    getline(cin,ans);
-    if (ans == "E" || ans == "e") {do_evol = 1;break;} 
-    if (ans == "S" || ans == "s") {do_evol = 0;break;}
-    cout << "Try again ";
-    }; */
 
     InitializeBodyConstants();
 
     if (do_evol){
-
-/* 
-    std::cout << "Directory name to save genotype data, leave blank for current directory: ";
-    getline(cin,dir_name);
-    //TODO: check for directory name safety, length
-    while (dir_name != "" && mkdir(dir_name.c_str(), 0777) != 0){
-        //cerr << "Error :  " << strerror(errno) << endl;
-        std::cout << "Folder exists. Try again or leave blank for current directory: ";
-        getline(cin,dir_name);
-    } */
-
   
 
     TSearch s(VectSize);
@@ -328,7 +332,7 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    cout << "Ran evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    cout << "Run evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
     //cout.flush()
 
     // configure the search
@@ -371,16 +375,6 @@ int main (int argc, const char* argv[])
     
     }
     
-
-    /* std::cout << "Directory name for saved genotype data, leave blank for current directory: ";
-    getline(cin,dir_name);
-    //TODO: check for directory name safety, length
-    struct stat st;
-    while (dir_name != "" && stat(dir_name.c_str(), &st) != 0){
-        //cerr << "Error :  " << strerror(errno) << endl;
-        std::cout << "Folder does not exist, try again or leave blank for current directory: ";
-        getline(cin,dir_name);
-    } */
 
     RandomState rs;
     long seed = static_cast<long>(time(NULL));

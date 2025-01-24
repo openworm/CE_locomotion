@@ -22,6 +22,14 @@ jobs:
     - name: C++ info
       run: g++ -v
 
+    - name: Install dependencies (Ubuntu)
+      run: sudo apt-get install -y nlohmann-json3-dev
+      if: matrix.runs-on == 'ubuntu-latest'
+      
+    - name: Install dependencies (macOS)
+      run: brew install nlohmann-json
+      if: matrix.runs-on == 'macos-latest'
+    
     - name: Run C++ tests 
       run: |
           make tests
@@ -40,23 +48,14 @@ jobs:
         pip install numpy matplotlib
         python run_main.py -R 1233 -p 6 --doEvol --folderName exampleRun2  # Note: small population of 6 for quick runtime
 
-    - name: Test using OMV 1
+    - name: Test using test_all.sh
       run: |
         pip install OSBModelValidation
-        omv all -V 
+        
+        ./test_all.sh 
+
         git diff exampleRun/phenotype.dat 
 
-    - name: Test using OMV 2
-      run: |
-        # Running OMV multiple times to test whether run results are nondeterministic
-        omv all -V 
-        git diff exampleRun/phenotype.dat 
-
-    - name: Test using OMV 3
-      run: |
-        # Running OMV multiple times to test whether run results are nondeterministic
-        omv all -V 
-        git diff exampleRun/phenotype.dat 
       
     - name: list generated files
       run: |

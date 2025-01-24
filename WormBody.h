@@ -34,19 +34,21 @@ using namespace std;
 
 const double Medium             = 1.0;                           // Normalized medium drag coefficient (0 = water, 1 = agar)
 const double L_worm             = 1.0e-3;                      // Length of worm in m
-const int    N_segments         = 50;                    //YYY      // Number of segments
+const int    N_segments         = 50;                          //YYY      // Number of segments
 const double R_min              = 40.0e-6;                     // Minor radius of prolate ellipse body in m
 const double C_agar_par_total   = 3.2e-3;                      // Total tangential drag coefficient for agar in kg/s
 const double C_agar_perp_total  = 128e-3;                      // Total rod normal drag coefficient in agar in kg/s
 const double C_water_par_total  = 3.3e-6;                      // Total rod tangential drag coefficient for water in kg/s
 const double C_water_perp_total = 5.2e-6;                      // Total rod normal drag coefficient for water in kg/s
+
 const double kappa_L            = (10.0e-3*N_segments)/24;     // Lateral spring constant in kg/s
 const double kappa_D            = 350*kappa_L;                 // Diagonal spring constant in kg/s
 const double kappa_M0           = 20*kappa_L;                  // Baseline active muscle spring constant in kg/s
 const double beta_L             = 0.025*kappa_L;               // Lateral passive damping constant in s
 const double beta_D             = 0.01*kappa_D;                // Diagonal passive damping constant in s
 const double beta_M0            = 100*beta_L;                  // Baseline active damping constant in s
-const double delta_M            = 0.65;                        // Rest muscle length scaling constant
+const double delta_M            = 0.65;                        // Rest muscle length scaling constant 
+
 
 
 // Derived constants
