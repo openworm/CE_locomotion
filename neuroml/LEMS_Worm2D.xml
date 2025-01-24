@@ -16,31 +16,131 @@
 
     <Include file="testnet.nml"/>
 
-    <Simulation id="Worm2D" length="500.0ms" step="0.05ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
-        <Display id="display0" title="Voltages" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-90" ymax="50">
-            <Line id="v" quantity="PopDA[0]/v" scale="1mV" color="#F0F8FF" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[1]/v" scale="1mV" color="#FAEBD7" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[2]/v" scale="1mV" color="#00FFFF" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[3]/v" scale="1mV" color="#7FFFD4" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[4]/v" scale="1mV" color="#F0FFFF" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[5]/v" scale="1mV" color="#F5F5DC" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[6]/v" scale="1mV" color="#FFE4C4" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[7]/v" scale="1mV" color="#000000" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[8]/v" scale="1mV" color="#FFEBCD" timeScale="1ms"/>
-            <Line id="v" quantity="PopDA[9]/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
+    <Simulation id="Worm2D" length="100.0ms" step="0.05ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        <Display id="display0" title="Voltages" timeScale="1ms" xmin="-10.0" xmax="110.00000000000001" ymin="-90" ymax="50">
+            <Line id="v0" quantity="PopVA[0]/v" scale="1mV" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="v1" quantity="PopVA[1]/v" scale="1mV" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="v2" quantity="PopVA[2]/v" scale="1mV" color="#00FFFF" timeScale="1ms"/>
+            <Line id="v3" quantity="PopVA[3]/v" scale="1mV" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="v4" quantity="PopVA[4]/v" scale="1mV" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="v5" quantity="PopVA[5]/v" scale="1mV" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="v6" quantity="PopVA[6]/v" scale="1mV" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="v7" quantity="PopVA[7]/v" scale="1mV" color="#000000" timeScale="1ms"/>
+            <Line id="v8" quantity="PopVA[8]/v" scale="1mV" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="v9" quantity="PopVA[9]/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
+            <Line id="v10" quantity="PopVB[0]/v" scale="1mV" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="v11" quantity="PopVB[1]/v" scale="1mV" color="#A52A2A" timeScale="1ms"/>
+            <Line id="v12" quantity="PopVB[2]/v" scale="1mV" color="#DEB887" timeScale="1ms"/>
+            <Line id="v13" quantity="PopVB[3]/v" scale="1mV" color="#5F9EA0" timeScale="1ms"/>
+            <Line id="v14" quantity="PopVB[4]/v" scale="1mV" color="#7FFF00" timeScale="1ms"/>
+            <Line id="v15" quantity="PopVB[5]/v" scale="1mV" color="#D2691E" timeScale="1ms"/>
+            <Line id="v16" quantity="PopVB[6]/v" scale="1mV" color="#FF7F50" timeScale="1ms"/>
+            <Line id="v17" quantity="PopVB[7]/v" scale="1mV" color="#6495ED" timeScale="1ms"/>
+            <Line id="v18" quantity="PopVB[8]/v" scale="1mV" color="#FFF8DC" timeScale="1ms"/>
+            <Line id="v19" quantity="PopVB[9]/v" scale="1mV" color="#DC143C" timeScale="1ms"/>
+            <Line id="v20" quantity="PopVD[0]/v" scale="1mV" color="#00FFFF" timeScale="1ms"/>
+            <Line id="v21" quantity="PopVD[1]/v" scale="1mV" color="#00008B" timeScale="1ms"/>
+            <Line id="v22" quantity="PopVD[2]/v" scale="1mV" color="#008B8B" timeScale="1ms"/>
+            <Line id="v23" quantity="PopVD[3]/v" scale="1mV" color="#B8860B" timeScale="1ms"/>
+            <Line id="v24" quantity="PopVD[4]/v" scale="1mV" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="v25" quantity="PopVD[5]/v" scale="1mV" color="#006400" timeScale="1ms"/>
+            <Line id="v26" quantity="PopVD[6]/v" scale="1mV" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="v27" quantity="PopVD[7]/v" scale="1mV" color="#BDB76B" timeScale="1ms"/>
+            <Line id="v28" quantity="PopVD[8]/v" scale="1mV" color="#8B008B" timeScale="1ms"/>
+            <Line id="v29" quantity="PopVD[9]/v" scale="1mV" color="#556B2F" timeScale="1ms"/>
+            <Line id="v30" quantity="PopDD[0]/v" scale="1mV" color="#FF8C00" timeScale="1ms"/>
+            <Line id="v31" quantity="PopDD[1]/v" scale="1mV" color="#9932CC" timeScale="1ms"/>
+            <Line id="v32" quantity="PopDD[2]/v" scale="1mV" color="#8B0000" timeScale="1ms"/>
+            <Line id="v33" quantity="PopDD[3]/v" scale="1mV" color="#E9967A" timeScale="1ms"/>
+            <Line id="v34" quantity="PopDD[4]/v" scale="1mV" color="#8FBC8F" timeScale="1ms"/>
+            <Line id="v35" quantity="PopDD[5]/v" scale="1mV" color="#483D8B" timeScale="1ms"/>
+            <Line id="v36" quantity="PopDD[6]/v" scale="1mV" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="v37" quantity="PopDD[7]/v" scale="1mV" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="v38" quantity="PopDD[8]/v" scale="1mV" color="#00CED1" timeScale="1ms"/>
+            <Line id="v39" quantity="PopDD[9]/v" scale="1mV" color="#9400D3" timeScale="1ms"/>
+            <Line id="v40" quantity="PopDA[0]/v" scale="1mV" color="#FF1493" timeScale="1ms"/>
+            <Line id="v41" quantity="PopDA[1]/v" scale="1mV" color="#00BFFF" timeScale="1ms"/>
+            <Line id="v42" quantity="PopDA[2]/v" scale="1mV" color="#696969" timeScale="1ms"/>
+            <Line id="v43" quantity="PopDA[3]/v" scale="1mV" color="#696969" timeScale="1ms"/>
+            <Line id="v44" quantity="PopDA[4]/v" scale="1mV" color="#1E90FF" timeScale="1ms"/>
+            <Line id="v45" quantity="PopDA[5]/v" scale="1mV" color="#B22222" timeScale="1ms"/>
+            <Line id="v46" quantity="PopDA[6]/v" scale="1mV" color="#FFFAF0" timeScale="1ms"/>
+            <Line id="v47" quantity="PopDA[7]/v" scale="1mV" color="#228B22" timeScale="1ms"/>
+            <Line id="v48" quantity="PopDA[8]/v" scale="1mV" color="#FF00FF" timeScale="1ms"/>
+            <Line id="v49" quantity="PopDA[9]/v" scale="1mV" color="#DCDCDC" timeScale="1ms"/>
+            <Line id="v50" quantity="PopDB[0]/v" scale="1mV" color="#F8F8FF" timeScale="1ms"/>
+            <Line id="v51" quantity="PopDB[1]/v" scale="1mV" color="#FFD700" timeScale="1ms"/>
+            <Line id="v52" quantity="PopDB[2]/v" scale="1mV" color="#DAA520" timeScale="1ms"/>
+            <Line id="v53" quantity="PopDB[3]/v" scale="1mV" color="#808080" timeScale="1ms"/>
+            <Line id="v54" quantity="PopDB[4]/v" scale="1mV" color="#008000" timeScale="1ms"/>
+            <Line id="v55" quantity="PopDB[5]/v" scale="1mV" color="#ADFF2F" timeScale="1ms"/>
+            <Line id="v56" quantity="PopDB[6]/v" scale="1mV" color="#808080" timeScale="1ms"/>
+            <Line id="v57" quantity="PopDB[7]/v" scale="1mV" color="#F0FFF0" timeScale="1ms"/>
+            <Line id="v58" quantity="PopDB[8]/v" scale="1mV" color="#FF69B4" timeScale="1ms"/>
+            <Line id="v59" quantity="PopDB[9]/v" scale="1mV" color="#CD5C5C" timeScale="1ms"/>
         </Display>
 
         <OutputFile id="Volts_file" fileName="Worm2D.v.dat">
-            <OutputColumn id="v" quantity="PopDA[0]/v"/>
-            <OutputColumn id="v" quantity="PopDA[1]/v"/>
-            <OutputColumn id="v" quantity="PopDA[2]/v"/>
-            <OutputColumn id="v" quantity="PopDA[3]/v"/>
-            <OutputColumn id="v" quantity="PopDA[4]/v"/>
-            <OutputColumn id="v" quantity="PopDA[5]/v"/>
-            <OutputColumn id="v" quantity="PopDA[6]/v"/>
-            <OutputColumn id="v" quantity="PopDA[7]/v"/>
-            <OutputColumn id="v" quantity="PopDA[8]/v"/>
-            <OutputColumn id="v" quantity="PopDA[9]/v"/>
+            <OutputColumn id="v0" quantity="PopVA[0]/v"/>
+            <OutputColumn id="v1" quantity="PopVA[1]/v"/>
+            <OutputColumn id="v2" quantity="PopVA[2]/v"/>
+            <OutputColumn id="v3" quantity="PopVA[3]/v"/>
+            <OutputColumn id="v4" quantity="PopVA[4]/v"/>
+            <OutputColumn id="v5" quantity="PopVA[5]/v"/>
+            <OutputColumn id="v6" quantity="PopVA[6]/v"/>
+            <OutputColumn id="v7" quantity="PopVA[7]/v"/>
+            <OutputColumn id="v8" quantity="PopVA[8]/v"/>
+            <OutputColumn id="v9" quantity="PopVA[9]/v"/>
+            <OutputColumn id="v10" quantity="PopVB[0]/v"/>
+            <OutputColumn id="v11" quantity="PopVB[1]/v"/>
+            <OutputColumn id="v12" quantity="PopVB[2]/v"/>
+            <OutputColumn id="v13" quantity="PopVB[3]/v"/>
+            <OutputColumn id="v14" quantity="PopVB[4]/v"/>
+            <OutputColumn id="v15" quantity="PopVB[5]/v"/>
+            <OutputColumn id="v16" quantity="PopVB[6]/v"/>
+            <OutputColumn id="v17" quantity="PopVB[7]/v"/>
+            <OutputColumn id="v18" quantity="PopVB[8]/v"/>
+            <OutputColumn id="v19" quantity="PopVB[9]/v"/>
+            <OutputColumn id="v20" quantity="PopVD[0]/v"/>
+            <OutputColumn id="v21" quantity="PopVD[1]/v"/>
+            <OutputColumn id="v22" quantity="PopVD[2]/v"/>
+            <OutputColumn id="v23" quantity="PopVD[3]/v"/>
+            <OutputColumn id="v24" quantity="PopVD[4]/v"/>
+            <OutputColumn id="v25" quantity="PopVD[5]/v"/>
+            <OutputColumn id="v26" quantity="PopVD[6]/v"/>
+            <OutputColumn id="v27" quantity="PopVD[7]/v"/>
+            <OutputColumn id="v28" quantity="PopVD[8]/v"/>
+            <OutputColumn id="v29" quantity="PopVD[9]/v"/>
+            <OutputColumn id="v30" quantity="PopDD[0]/v"/>
+            <OutputColumn id="v31" quantity="PopDD[1]/v"/>
+            <OutputColumn id="v32" quantity="PopDD[2]/v"/>
+            <OutputColumn id="v33" quantity="PopDD[3]/v"/>
+            <OutputColumn id="v34" quantity="PopDD[4]/v"/>
+            <OutputColumn id="v35" quantity="PopDD[5]/v"/>
+            <OutputColumn id="v36" quantity="PopDD[6]/v"/>
+            <OutputColumn id="v37" quantity="PopDD[7]/v"/>
+            <OutputColumn id="v38" quantity="PopDD[8]/v"/>
+            <OutputColumn id="v39" quantity="PopDD[9]/v"/>
+            <OutputColumn id="v40" quantity="PopDA[0]/v"/>
+            <OutputColumn id="v41" quantity="PopDA[1]/v"/>
+            <OutputColumn id="v42" quantity="PopDA[2]/v"/>
+            <OutputColumn id="v43" quantity="PopDA[3]/v"/>
+            <OutputColumn id="v44" quantity="PopDA[4]/v"/>
+            <OutputColumn id="v45" quantity="PopDA[5]/v"/>
+            <OutputColumn id="v46" quantity="PopDA[6]/v"/>
+            <OutputColumn id="v47" quantity="PopDA[7]/v"/>
+            <OutputColumn id="v48" quantity="PopDA[8]/v"/>
+            <OutputColumn id="v49" quantity="PopDA[9]/v"/>
+            <OutputColumn id="v50" quantity="PopDB[0]/v"/>
+            <OutputColumn id="v51" quantity="PopDB[1]/v"/>
+            <OutputColumn id="v52" quantity="PopDB[2]/v"/>
+            <OutputColumn id="v53" quantity="PopDB[3]/v"/>
+            <OutputColumn id="v54" quantity="PopDB[4]/v"/>
+            <OutputColumn id="v55" quantity="PopDB[5]/v"/>
+            <OutputColumn id="v56" quantity="PopDB[6]/v"/>
+            <OutputColumn id="v57" quantity="PopDB[7]/v"/>
+            <OutputColumn id="v58" quantity="PopDB[8]/v"/>
+            <OutputColumn id="v59" quantity="PopDB[9]/v"/>
         </OutputFile>
 
     </Simulation>
