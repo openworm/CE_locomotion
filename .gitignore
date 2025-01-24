@@ -18,3 +18,4 @@
 /neuroml/*.dat
 /neuroml/report.txt
 /neuroml/__pycache__
+/tests2

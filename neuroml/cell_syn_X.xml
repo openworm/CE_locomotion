@@ -77,7 +77,7 @@
 <silentSynapse id="silentSyn"/>
 <outputSynapse id="neuron_to_neuron_syn_x"/>
 
-<gapJunction id="gapJunction0" conductance="0pS"/>
+<gapJunction id="gapJunction0" conductance="1nS"/>
 
 
 </Lems>

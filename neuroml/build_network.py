@@ -178,7 +178,7 @@ def run(a = None, **kwargs):
 
     pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_cell_names)
     pop_id = 'PopDA'
-    add_PG = False
+    add_PG = True
     if add_PG:
         
         #pop_stim_ind = 0
@@ -187,10 +187,10 @@ def run(a = None, **kwargs):
         for pre in range(0, size0):
             pg = PulseGenerator(
                 id="pulseGen_%i" % pre,
-                delay="200ms",
-                duration="100ms",
+                delay="20s",
+                duration="10s",
                 #amplitude="%f nA" % 1,
-                amplitude="%f nA" % (0.1 * random()),
+                amplitude="%f pA" % (10),
             )
 
             nml_doc.pulse_generators.append(pg)

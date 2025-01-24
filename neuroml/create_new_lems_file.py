@@ -49,7 +49,7 @@ def run(a = None, **kwargs):
     #  Create a LEMS file "manually"...
 
     sim_id = "Worm2D"
-    ls = LEMSSimulation(sim_id, 20000, 5, "Worm2DNet")
+    ls = LEMSSimulation(sim_id, 50000, 5, "Worm2DNet")
     #ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
     ls.include_neuroml2_file("testnet.nml", include_included=False)
 
@@ -75,7 +75,8 @@ def run(a = None, **kwargs):
 
         print('Displaying/saving cell %s'%cell_id_val)
 
-        if '0' in cell_id:  # only display first - all in pops are same...
+        #if '0' in cell_id:  # only display first - all in pops are same...
+        if '[' in cell_id:  # display all...
         
             ls.add_line_to_display(disp0, cell_id_val.replace('Pop',''), cell_id_val + "/state", "1", colour, timeScale='1ms')
             ls.add_column_to_output_file(of0, cell_id_val.replace('Pop',''), cell_id_val + "/state")
