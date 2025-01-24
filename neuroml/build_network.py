@@ -41,7 +41,7 @@ def run(a = None, **kwargs):
     
     chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
     electrical_weights = network_json_data["Nervous system"]["Electrical weights"]["value"]
-    drop_self_connections = True
+    drop_self_connections = False
     if drop_self_connections:
        chemical_weights = utils.dropSelfConnections(chemical_weights)
     
