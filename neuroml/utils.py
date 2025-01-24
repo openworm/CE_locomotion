@@ -74,11 +74,13 @@ def get_rel_index_list(population_structure, cell_names = None, pop_names = None
     if population_structure == 'cell specific populations':
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
-def getPopNamesCellNames(network_json_data):
-    cell_per_unit = network_json_data["Worm global parameters"]["N_neuronsperunit"]["value"]
-    cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
-    pop_cell_names = cell_names[:cell_per_unit]
-    return pop_cell_names, cell_names
+def getCellNames(network_json_data):
+    return network_json_data["Nervous system"]["Cell name"]["value"]
+    
+def getPopNames(network_json_data):    
+    cell_names = getCellNames(network_json_data)
+    return list(set(cell_names))
+
 
 def get_pop_id_list(population_structure, cell_names = None, pop_names = None):
     if population_structure == 'one population': 
@@ -101,6 +103,13 @@ def get_pop_id(population_structure, name = None, ind = None):
 def getJsonFile(json_file):
     with open(json_file, 'r') as file:
          return json.load(file)
+
+def dropSelfConnections(weights):
+    new_weights = []
+    for connection in weights:
+        if connection["from"] != connection["to"]:
+           new_weights.append(connection) 
+    return new_weights
 
 
 def makeProjectionsConnections(net, weights, synclass, connection_type, 
