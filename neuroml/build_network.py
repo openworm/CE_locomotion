@@ -41,8 +41,14 @@ def run(a = None, **kwargs):
     
     chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
     electrical_weights = network_json_data["Nervous system"]["Electrical weights"]["value"]
-    pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
+    drop_self_connections = True
+    if drop_self_connections:
+       chemical_weights = utils.dropSelfConnections(chemical_weights)
+    
 
+    #pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
+    cell_names = utils.getCellNames(network_json_data)
+    pop_cell_names = utils.getPopNames(network_json_data)
 
     cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
@@ -51,7 +57,8 @@ def run(a = None, **kwargs):
     nml_doc.includes.append(IncludeType(href='cell_syn_X.xml'))
     nml_doc.includes.append(IncludeType(href=cellX_filename))
 
-
+    add_gapJunctions = True
+    add_continuousProjections = True
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
 
@@ -129,7 +136,6 @@ def run(a = None, **kwargs):
             
             elProj0.electrical_connection_instance_ws.append(conn0)
 
-
     elif population_structure == 'cell specific populations': # cells divided into cell specific populations
 
         num_unit = network_json_data["Worm global parameters"]["N_units"]["value"]
@@ -139,10 +145,11 @@ def run(a = None, **kwargs):
             pop0 = Population(id=utils.get_pop_id(population_structure, pop_cell_name), component=cell_comp_loc, size=size0)
             net.populations.append(pop0)
 
-
-        utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
+        if add_continuousProjections:
+            utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
                                         population_structure, pop_cell_names, cell_names)
-        utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
+        if add_gapJunctions:    
+            utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
                                         population_structure, pop_cell_names, cell_names)
 
 
@@ -157,9 +164,11 @@ def run(a = None, **kwargs):
             pop0 = Population(id=utils.get_pop_id(population_structure, cell_name, cell_rel_index), component=cell_name, size=size0)
             net.populations.append(pop0)
 
-        utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
+        if add_continuousProjections: 
+            utils.makeProjectionsConnections(net, chemical_weights,'silentSyn','continuous', 
                                         population_structure, pop_cell_names, cell_names)
-        utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
+        if add_gapJunctions:    
+            utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
                                         population_structure, pop_cell_names, cell_names)
         
 
@@ -167,23 +176,26 @@ def run(a = None, **kwargs):
         print("Not implemented yet")
         exit(0)
 
-
-    add_PG = True
+    pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_cell_names)
+    pop_id = 'PopDA'
+    add_PG = False
     if add_PG:
-        pop_stim_ind = 0
-        pop0 = net.populations[pop_stim_ind]
-        size0 = pop0.size
+        
+        #pop_stim_ind = 0
+        #pop0 = net.populations[pop_stim_ind]
+        size0 = 1 # pop0.size
         for pre in range(0, size0):
             pg = PulseGenerator(
                 id="pulseGen_%i" % pre,
                 delay="200ms",
-                duration="10ms",
+                duration="100ms",
+                #amplitude="%f nA" % 1,
                 amplitude="%f nA" % (0.1 * random()),
             )
 
             nml_doc.pulse_generators.append(pg)
 
-            exp_input = ExplicitInput(target="%s[%i]" % (pop0.id, pre), input=pg.id)
+            exp_input = ExplicitInput(target="%s[%i]" % (pop_id, pre), input=pg.id)
 
             net.explicit_inputs.append(exp_input)
 

@@ -24,9 +24,9 @@ void testNervousSystem()
     NS_ifs.close();  
 
 
-    double Duration = 100;
-    double StimDel = 10;
-    double StimDur = 50;
+    double Duration = 500;
+    double StimDel = 200;
+    double StimDur = 100;
     double StimAmp = 1;
     const double StepSize = 0.005;
 
