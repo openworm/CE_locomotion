@@ -1,4 +1,4 @@
-# Neuromechanical model of forward and backward locomotion in C. elegans 
+# Neuromechanical model of forward and backward locomotion in _C. elegans_
 
 A listing of the various publications and code releases related to this model of C. elegans forward and backward locomotion by Dr. Eduardo J. Izquiredo, Dr. Erick Olivares and Prof. Randall Beer.
 
