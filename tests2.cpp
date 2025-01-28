@@ -24,11 +24,11 @@ void testNervousSystem()
     NS_ifs.close();  
 
 
-    double Duration = 100;
-    double StimDel = 10;
-    double StimDur = 50;
-    double StimAmp = 1;
-    const double StepSize = 0.005;
+    double Duration = 50;
+    double StimDel = 20;
+    double StimDur = 10;
+    double StimAmp = 10;
+    const double StepSize = 0.001;
 
     ofstream state_file("test_output_2/test.state.dat");
     ofstream output_file("test_output_2/test.output.dat");

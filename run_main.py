@@ -1,9 +1,9 @@
-import subprocess 
+import subprocess
 import argparse
 import os
 import sys
 import helper_funcs as hf
-#from pyneuroml.utils.cli import build_namespace
+# from pyneuroml.utils.cli import build_namespace
 
 DEFAULTS = {
     "popSize": 96,
@@ -13,8 +13,9 @@ DEFAULTS = {
     "randSeed": 42,
     "folderName": None,
     "doEvol": False,
-    "overwrite": False
-    }
+    "overwrite": False,
+}
+
 
 def process_args():
     """Parse command-line arguments.
@@ -22,46 +23,51 @@ def process_args():
     :returns: None
     """
     parser = argparse.ArgumentParser(
-        description=(
-            "A script for supplying arguments to execute Worm2D"
-        )
+        description=("A script for supplying arguments to execute Worm2D")
     )
-    
+
     parser.add_argument(
         "-f",
         "--folderName",
         type=str,
         metavar="<folder name>",
         default=DEFAULTS["folderName"],
-        help=("Name of directory for output.\n" 
-              "If not supplied, both evolutionary algorithm and simulation of best worm are performed,\n"
-              "and results placed in current directory.") ,
-    )   
+        help=(
+            "Name of directory for output.\n"
+            "If not supplied, both evolutionary algorithm and simulation of best worm are performed,\n"
+            "and results placed in current directory."
+        ),
+    )
 
     parser.add_argument(
         "-o",
-        "--overwrite", 
-        action="store_true", 
+        "--overwrite",
+        action="store_true",
         default=DEFAULTS["overwrite"],
-        help=("Overwrite the contents of the specified simulation output directory.") ,
-    )    
+        help=("Overwrite the contents of the specified simulation output directory."),
+    )
 
     parser.add_argument(
         "-E",
-        "--doEvol", action="store_true", default=DEFAULTS["doEvol"],
-        help=("If used and a directory name has also been supplied, the directory is created,"
-              "the evolutionary algorithm is executed, the best worm simulation performed,"
-              "and results are deposited in the directory."
-              "If not used but an existing directory name has been supplied, the simulation"
-              "in the directory is executed and results deposited in it.") 
+        "--doEvol",
+        action="store_true",
+        default=DEFAULTS["doEvol"],
+        help=(
+            "If used and a directory name has also been supplied, the directory is created,"
+            "the evolutionary algorithm is executed, the best worm simulation performed,"
+            "and results are deposited in the directory."
+            "If not used but an existing directory name has been supplied, the simulation"
+            "in the directory is executed and results deposited in it."
+        ),
     )
 
     parser.add_argument(
         "-S",
-        "--simsep", action="store_true", default=DEFAULTS["simsep"],
+        "--simsep",
+        action="store_true",
+        default=DEFAULTS["simsep"],
         help=("If used, user input of the directory name is interactively requested."),
     )
-
 
     parser.add_argument(
         "-d",
@@ -69,7 +75,8 @@ def process_args():
         type=float,
         metavar="<duration>",
         default=DEFAULTS["duration"],
-        help="Duration of simulation for evolution and best worm in ms, default: %sms" % DEFAULTS["duration"],
+        help="Duration of simulation for evolution and best worm in ms, default: %sms"
+        % DEFAULTS["duration"],
     )
 
     parser.add_argument(
@@ -78,7 +85,8 @@ def process_args():
         type=int,
         metavar="<pop size>",
         default=DEFAULTS["popSize"],
-        help="Population size for evolutionary algorithm, default: %s" % DEFAULTS["popSize"],
+        help="Population size for evolutionary algorithm, default: %s"
+        % DEFAULTS["popSize"],
     )
 
     parser.add_argument(
@@ -87,20 +95,21 @@ def process_args():
         type=int,
         metavar="<Rand seed>",
         default=DEFAULTS["RandSeed"],
-        help="Absolute seed value for evolutionary algorithm, default: %s" % DEFAULTS["RandSeed"],
+        help="Absolute seed value for evolutionary algorithm, default: %s"
+        % DEFAULTS["RandSeed"],
     )
-    
+
     parser.add_argument(
         "-r",
         "--randSeed",
         type=int,
         metavar="<rand seed>",
         default=DEFAULTS["randSeed"],
-        help="Seed value relative to system time for evolutionary algorithm, default: %s" % DEFAULTS["randSeed"],
+        help="Seed value relative to system time for evolutionary algorithm, default: %s"
+        % DEFAULTS["randSeed"],
     )
- 
-    return parser.parse_args()
 
+    return parser.parse_args()
 
 
 def make_directory(directory_name, overwrite):
@@ -110,7 +119,9 @@ def make_directory(directory_name, overwrite):
         return True
     except FileExistsError:
         if overwrite:
-            print(f"Directory '{directory_name}' already exists and contents will be overwritten.")
+            print(
+                f"Directory '{directory_name}' already exists and contents will be overwritten."
+            )
             return True
         else:
             print(f"Directory '{directory_name}' already exists.")
@@ -121,6 +132,7 @@ def make_directory(directory_name, overwrite):
     except Exception as e:
         print(f"An error occurred: {e}")
         sys.exit(1)
+
 
 def run_main(args=None):
     if args is None:
@@ -143,72 +155,89 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
 
     return a
 
-def run(a = None, **kwargs):
-    a = build_namespace(DEFAULTS, a, **kwargs)
-    
 
-    folder_name = ''
+def run(a=None, **kwargs):
+    a = build_namespace(DEFAULTS, a, **kwargs)
+
+    folder_name = ""
     do_evol = 1
-    
+
     if a.simsep:
         while True:
-            do_evol_str = input("Do you want to perform an evolutionary search (E) or run a simulation (S)? ")
-            if do_evol_str == "E":                    
+            do_evol_str = input(
+                "Do you want to perform an evolutionary search (E) or run a simulation (S)? "
+            )
+            if do_evol_str == "E":
                 while True:
-                    folder_name = input("Please enter the name of a folder to store data: ")
-                    if make_directory(folder_name, a.overwrite): break
+                    folder_name = input(
+                        "Please enter the name of a folder to store data: "
+                    )
+                    if make_directory(folder_name, a.overwrite):
+                        break
                 break
             if do_evol_str == "S":
                 do_evol = 0
                 while True:
-                    folder_name = str(input("Please enter the name of a folder to read data: "))
-                    if os.path.isdir(folder_name): break
+                    folder_name = str(
+                        input("Please enter the name of a folder to read data: ")
+                    )
+                    if os.path.isdir(folder_name):
+                        break
                     print("Folder does not exist.")
-                print('Running simulation.')        
+                print("Running simulation.")
                 break
     elif a.folderName:
         folder_name = a.folderName
         if a.doEvol:
-            if not make_directory(folder_name, a.overwrite) : sys.exit(1)
+            if not make_directory(folder_name, a.overwrite):
+                sys.exit(1)
         else:
             do_evol = 0
             if not os.path.isdir(folder_name):
-               print(f"Directory '{folder_name}' does not exist.")
-               sys.exit(1)
+                print(f"Directory '{folder_name}' does not exist.")
+                sys.exit(1)
     else:
-        print('Running in default mode.')
+        print("Running in default mode.")
 
     if a.RandSeed is not None:
-        cmd = ['./main', '-R', str(a.RandSeed)]
-    else:    
-        cmd = ['./main', '-r', str(a.randSeed)]
-        
-    cmd += ['-p', str(a.popSize), 
-            '-d', str(a.duration),
-            '--doevol', str(do_evol),
-            '--folder', folder_name]
+        cmd = ["./main", "-R", str(a.RandSeed)]
+    else:
+        cmd = ["./main", "-r", str(a.randSeed)]
 
-    # Run the C++  
+    cmd += [
+        "-p",
+        str(a.popSize),
+        "-d",
+        str(a.duration),
+        "--doevol",
+        str(do_evol),
+        "--folder",
+        folder_name,
+    ]
+
+    # Run the C++
     result = subprocess.run(cmd, capture_output=True, text=True)
-    #result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    #output, errors = result.communicate()
-    
-    #p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    
-    #print(output)
+    # result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # output, errors = result.communicate()
 
-    if result.stdout: 
-       print(result.stdout)
-    
-    if result.stderr: 
-        print("Error:") 
+    # p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    # print(output)
+
+    if result.stdout:
+        print(result.stdout)
+
+    if result.stderr:
+        print("Error:")
         print(result.stderr)
-    
-    if folder_name!='':
-    #if args.simsep or args.evolve_folder or args.sim_folder:
-       hf.dir_name = folder_name
-       from load_data import reload_single_run
-       reload_single_run(show_plot=False)
-    
-if __name__ == "__main__": 
-    run_main() 
+
+    if folder_name != "":
+        # if args.simsep or args.evolve_folder or args.sim_folder:
+        hf.dir_name = folder_name
+        from load_data import reload_single_run
+
+        reload_single_run(show_plot=False)
+
+
+if __name__ == "__main__":
+    run_main()

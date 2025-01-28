@@ -18,3 +18,5 @@
 /neuroml/*.dat
 /neuroml/report.txt
 /test_files/test_py_cpp
+/neuroml/__pycache__
+/tests2

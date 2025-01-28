@@ -27,4 +27,4 @@ tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h
 tests2: tests2.o NervousSystem.o random.o Worm2D.o
 	g++ -pthread -o tests2 tests2.o NervousSystem.o random.o Worm2D.o	
 clean:
-	rm -f *.o main tests
+	rm -f *.o main tests tests2
