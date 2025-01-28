@@ -1,0 +1,17 @@
+target: LEMS_Worm2D.xml
+engine: jNeuroML
+
+mep: .test.w2d.mep
+experiments:
+  states:
+    observables:
+      spike times:
+        file: 
+          path: Worm2D.states.dat
+          columns: [0,1]
+          scaling: [1, 1]
+        spike detection: 
+          method: threshold
+          threshold: -5
+        tolerance: 0.00
+

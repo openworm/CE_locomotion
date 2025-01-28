@@ -1,0 +1,7 @@
+system: Test
+
+experiments:
+    states:
+        expected:
+            spike times: [20.83]
+

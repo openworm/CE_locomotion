@@ -150,16 +150,16 @@
             <continuousConnectionInstanceW id="9" preCell="../PopDD[9]" postCell="../PopDD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
         </continuousProjection>
         <continuousProjection id="NC_PopVA_PopDD_silentSyn" presynapticPopulation="PopVA" postsynapticPopulation="PopDD">
-            <continuousConnectionInstanceW id="0" preCell="../PopVA[0]" postCell="../PopDD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="1" preCell="../PopVA[1]" postCell="../PopDD[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="2" preCell="../PopVA[2]" postCell="../PopDD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="3" preCell="../PopVA[3]" postCell="../PopDD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="4" preCell="../PopVA[4]" postCell="../PopDD[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="5" preCell="../PopVA[5]" postCell="../PopDD[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="6" preCell="../PopVA[6]" postCell="../PopDD[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="7" preCell="../PopVA[7]" postCell="../PopDD[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="8" preCell="../PopVA[8]" postCell="../PopDD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="9" preCell="../PopVA[9]" postCell="../PopDD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="0" preCell="../PopVA[0]" postCell="../PopDD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="1" preCell="../PopVA[1]" postCell="../PopDD[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="2" preCell="../PopVA[2]" postCell="../PopDD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="3" preCell="../PopVA[3]" postCell="../PopDD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="4" preCell="../PopVA[4]" postCell="../PopDD[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="5" preCell="../PopVA[5]" postCell="../PopDD[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="6" preCell="../PopVA[6]" postCell="../PopDD[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="7" preCell="../PopVA[7]" postCell="../PopDD[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="8" preCell="../PopVA[8]" postCell="../PopDD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="9" preCell="../PopVA[9]" postCell="../PopDD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
         </continuousProjection>
         <continuousProjection id="NC_PopVB_PopDD_silentSyn" presynapticPopulation="PopVB" postsynapticPopulation="PopDD">
             <continuousConnectionInstanceW id="0" preCell="../PopVB[0]" postCell="../PopDD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
@@ -186,16 +186,16 @@
             <continuousConnectionInstanceW id="9" preCell="../PopVD[9]" postCell="../PopVD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="0.43417780432587"/>
         </continuousProjection>
         <continuousProjection id="NC_PopDA_PopVD_silentSyn" presynapticPopulation="PopDA" postsynapticPopulation="PopVD">
-            <continuousConnectionInstanceW id="0" preCell="../PopDA[0]" postCell="../PopVD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="1" preCell="../PopDA[1]" postCell="../PopVD[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="2" preCell="../PopDA[2]" postCell="../PopVD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="3" preCell="../PopDA[3]" postCell="../PopVD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="4" preCell="../PopDA[4]" postCell="../PopVD[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="5" preCell="../PopDA[5]" postCell="../PopVD[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="6" preCell="../PopDA[6]" postCell="../PopVD[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="7" preCell="../PopDA[7]" postCell="../PopVD[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="8" preCell="../PopDA[8]" postCell="../PopVD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
-            <continuousConnectionInstanceW id="9" preCell="../PopDA[9]" postCell="../PopVD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680192"/>
+            <continuousConnectionInstanceW id="0" preCell="../PopDA[0]" postCell="../PopVD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="1" preCell="../PopDA[1]" postCell="../PopVD[1]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="2" preCell="../PopDA[2]" postCell="../PopVD[2]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="3" preCell="../PopDA[3]" postCell="../PopVD[3]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="4" preCell="../PopDA[4]" postCell="../PopVD[4]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="5" preCell="../PopDA[5]" postCell="../PopVD[5]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="6" preCell="../PopDA[6]" postCell="../PopVD[6]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="7" preCell="../PopDA[7]" postCell="../PopVD[7]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="8" preCell="../PopDA[8]" postCell="../PopVD[8]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
+            <continuousConnectionInstanceW id="9" preCell="../PopDA[9]" postCell="../PopVD[9]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="1.688431247680193"/>
         </continuousProjection>
         <continuousProjection id="NC_PopDB_PopVD_silentSyn" presynapticPopulation="PopDB" postsynapticPopulation="PopVD">
             <continuousConnectionInstanceW id="0" preCell="../PopDB[0]" postCell="../PopVD[0]" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="5.038926703654519"/>
