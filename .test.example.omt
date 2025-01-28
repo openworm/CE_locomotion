@@ -2,7 +2,7 @@
 # See https://github.com/OpenSourceBrain/osb-model-validation for more details
  
 target: test.py
-engine: Brian2  # This installs Brainll, but all we really need is a Python environment to run the script in
+engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
 mep: .test.example.mep
 experiments:
   Test:

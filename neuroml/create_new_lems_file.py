@@ -53,7 +53,7 @@ def run(a=None, **kwargs):
     #  Create a LEMS file "manually"...
 
     sim_id = "Worm2D"
-    ls = LEMSSimulation(sim_id, 50000, 5, "Worm2DNet")
+    ls = LEMSSimulation(sim_id, 50000, 1, "Worm2DNet")
     # ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
     ls.include_neuroml2_file("testnet.nml", include_included=False)
 
