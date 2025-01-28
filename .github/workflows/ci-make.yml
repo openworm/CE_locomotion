@@ -56,6 +56,13 @@ jobs:
 
         git diff exampleRun/phenotype.dat 
 
+    - name: Test NeuroML
+      run: |
+        pip install pyNeuroML
+        cd neuroml
+        ./regenerate.sh 
+
+
       
     - name: list generated files
       run: |

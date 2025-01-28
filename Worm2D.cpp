@@ -126,7 +126,7 @@ Params< vector<int> > getNervousSysCellGroups(NervousSystem& c)
 Params< vector<int> > par;
 par.names = {"Cell group"};
 vector<int> group_names; 
-for (int i=0;i++;i<10){
+for (int i=0;i<10;i++){
 vector<int> vec1;
 for (int j=0;j<6;j++) vec1.push_back(i);
 group_names.insert(group_names.end(),vec1.begin(),vec1.end());
