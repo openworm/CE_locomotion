@@ -6,6 +6,7 @@ def print_(msg):
 class Worm2DNRNSimulation():
 
     def __init__(self):
+        self.tstop = 1
         return
 
     def set_timestep(self, dt):
@@ -16,7 +17,8 @@ class Worm2DNRNSimulation():
         
         try:
             import sys
-            print('Python path is: ', sys.path)
+            import sysconfig; 
+            sys.path.append(sysconfig.get_paths()["purelib"])
             from simulations.LEMS_Worm2D_nrn import NeuronSimulation
             import neuron
             self.h = neuron.h
@@ -35,4 +37,8 @@ class Worm2DNRNSimulation():
         print_("< Current NEURON time: %s ms"%self.h.t)
 
         values = [1,2,3]
-        return values    
+        return values
+
+if __name__ == "__main__":   
+    w = Worm2DNRNSimulation()
+    w.set_timestep(0.1)
