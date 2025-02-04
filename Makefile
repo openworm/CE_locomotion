@@ -33,8 +33,8 @@ tests.o: tests.cpp NervousSystem.o random.o
 tests: tests.o 
 	g++ -pthread -o tests tests.o 
 tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h
-	g++ -c -O3 -flto tests2.cpp
+	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) tests2.cpp
 tests2: tests2.o NervousSystem.o random.o Worm2D.o
-	g++ -pthread -o tests2 tests2.o NervousSystem.o random.o Worm2D.o	
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o Worm2D.o $(LIBS)	
 clean:
 	rm -f *.o main tests tests2
