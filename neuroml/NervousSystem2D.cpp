@@ -2,7 +2,7 @@
 //#include "owSignalSimulator.h"
 
 NervousSystem2D::NervousSystem2D(bool runNeuroML_):
-NervousSystem(),runNeuroML(runNeuroML_),doNeuroMLSim(0)
+NervousSystem(),runNeuroML(runNeuroML_),doNeuroMLSim(0),simulation(0)
 {}
 
 void NervousSystem2D::setSimulator(const std::string & simFileName, 
@@ -28,7 +28,8 @@ return NervousSystem::NeuronOutput(i);
 }
 
 void NervousSystem2D::EulerStep(double stepsize)
-{
+{    
+     
     if (doNeuroMLSim) {output_value = simulation->run(); return;}
     NervousSystem::EulerStep(stepsize);
     return;
@@ -40,4 +41,5 @@ void NervousSystem2D::EulerStep(double stepsize)
     if (runNeuroML) doNeuroMLSim = 1;
 } */
 
-NervousSystem2D::~NervousSystem2D(){if (simulation) delete simulation;}
+NervousSystem2D::~NervousSystem2D()
+{if (simulation) delete simulation;}
