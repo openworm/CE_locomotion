@@ -575,7 +575,7 @@ void appendToJson(json & j, const Params<T> & par)
 {
     size_t mess_ind = 0;
     for (size_t i=0;i<par.names.size(); i++) {
-        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
+        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==static_cast<int>(i)) 
         {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
         j[par.names[i]]["value"] = par.vals[i];
         }
@@ -832,7 +832,7 @@ const vector<int> & messages_inds, const vector<string> & messages)
     size_t mess_ind = 0;
     os << setprecision(32);
     for (size_t i=0;i<names.size(); i++) {
-        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
+        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==static_cast<int>(i)) {os << messages[mess_ind] << endl;mess_ind++;}
         os << names[i] + ": " << vals[i] << endl;
         }
 
