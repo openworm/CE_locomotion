@@ -29,7 +29,7 @@ return NervousSystem::NeuronOutput(i);
 
 void NervousSystem2D::EulerStep(double stepsize)
 {
-    if (doNeuroMLSim) {output_value = simulation->run();return;}
+    if (doNeuroMLSim) {output_value = simulation->run(); return;}
     NervousSystem::EulerStep(stepsize);
     return;
 }
