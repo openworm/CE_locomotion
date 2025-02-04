@@ -9,15 +9,15 @@
 #include "VectorMatrix.h"
 #include "random.h"
 #include "WormBody.h"
-//#include "neuroml/NervousSystem2D.h"
-#include "NervousSystem.h"
+#include "neuroml/NervousSystem2D.h"
+//#include "NervousSystem.h"
 #include "Muscles.h"
 #include "StretchReceptor.h"
 
 #include <cmath>
 
 #define PI 3.14159265
-#define NERVOUSSYSTEM NervousSystem
+#define NERVOUSSYSTEM NervousSystem2D
 
 // Stretch-Receptor Transdusction form
 // Altogether there are 8 forms this can take, depending on which of the first three are defined and then the second one.

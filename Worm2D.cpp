@@ -420,12 +420,12 @@ for (int i=1; i<=N_units; i++){
     const int to = i;
     const vector<int> dorsal_list = {DA,DB,DD};
     const vector<double> dorsal_list_NMJ = {w.NMJ_DA,w.NMJ_DB,w.NMJ_DD};
-    for (int j=0;j<dorsal_list.size();j++) 
+    for (size_t j=0;j<dorsal_list.size();j++) 
     bp.dorsal.push_back(toFromWeight(weightentry{nn(dorsal_list[j],i),dorsal_list_NMJ[j]},to));
 
     const vector<int> ventral_list = {VA,VB,VD};
     const vector<double> ventral_list_NMJ = {w.NMJ_VA,w.NMJ_VB,w.NMJ_VD};
-    for (int j=0;j<ventral_list.size();j++) 
+    for (size_t j=0;j<ventral_list.size();j++) 
     bp.ventral.push_back(toFromWeight(weightentry{nn(ventral_list[j],i),ventral_list_NMJ[j]},to));    
 
     }
@@ -525,7 +525,7 @@ beta_D, beta_M0, delta_M};
 
 par.messages_inds.resize(par.vals.size());
 
-for (int i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
+for (size_t i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
 
 par.messages = {    
 "Normalized medium drag coefficient (0 = water, 1 = agar)",
@@ -573,8 +573,8 @@ void from_json(const json& j, toFromWeight & w)
 template<class T>
 void appendToJson(json & j, const Params<T> & par)
 {
-    int mess_ind = 0;
-    for (int i=0;i<par.names.size(); i++) {
+    size_t mess_ind = 0;
+    for (size_t i=0;i<par.names.size(); i++) {
         if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
         {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
         j[par.names[i]]["value"] = par.vals[i];
@@ -716,14 +716,14 @@ auto N_units_val = jw["N_units"]["value"].template get<int>();
 auto N_neuronsperunit_val = jw["N_neuronsperunit"]["value"].template get<int>();
 
 n.SetCircuitSize(N_units_val*N_neuronsperunit_val, 3, 2);
-for (int i=0;i<biases.size();i++) n.SetNeuronBias(i+1, biases[i]);
-for (int i=0;i<time_consts.size();i++) n.SetNeuronTimeConstant(i+1, time_consts[i]);
-for (int i=0;i<outputs.size();i++) n.SetNeuronOutput(i+1, outputs[i]);
+for (size_t i=0;i<biases.size();i++) n.SetNeuronBias(i+1, biases[i]);
+for (size_t i=0;i<time_consts.size();i++) n.SetNeuronTimeConstant(i+1, time_consts[i]);
+for (size_t i=0;i<outputs.size();i++) n.SetNeuronOutput(i+1, outputs[i]);
 
 
-for (int i=0;i<chem_weights.size();i++)
+for (size_t i=0;i<chem_weights.size();i++)
 n.SetChemicalSynapseWeight(chem_weights[i].w.from, chem_weights[i].to, chem_weights[i].w.weight);
-for (int i=0;i<elec_weights.size();i++)
+for (size_t i=0;i<elec_weights.size();i++)
 n.InternalSetElectricalSynapseWeight(elec_weights[i].w.from, elec_weights[i].to, elec_weights[i].w.weight);
 
 //return n;
@@ -757,11 +757,11 @@ appendToJson<int>(j["Muscle"],par);
 }
 
 {vector<ParamsHead<int> > parvec = getGlobalParamsInt();
-for (int i=0;i<parvec.size(); i++) {
+for (size_t i=0;i<parvec.size(); i++) {
 appendToJson<int>(j[parvec[i].head],parvec[i]);
 }}
 {vector<ParamsHead<double> > parvec = getGlobalParamsDouble();
-for (int i=0;i<parvec.size(); i++) {
+for (size_t i=0;i<parvec.size(); i++) {
 appendToJson<double>(j[parvec[i].head],parvec[i]);
 }}
 
@@ -829,9 +829,9 @@ ostream& writeVectorFormat(ostream& os,
 const vector<string> & names, const vector<T> & vals, 
 const vector<int> & messages_inds, const vector<string> & messages)
 {
-    int mess_ind = 0;
+    size_t mess_ind = 0;
     os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
+    for (size_t i=0;i<names.size(); i++) {
         if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
         os << names[i] + ": " << vals[i] << endl;
         }
@@ -846,7 +846,7 @@ ostream& writeVectorFormat(ostream& os,
 const vector<string> & names, const vector<T> & vals)
 {
     os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
+    for (size_t i=0;i<names.size(); i++) {
         os << names[i] + ": " << vals[i] << endl;
         }
 
@@ -900,7 +900,7 @@ ostream& writeGlobalParsToFile(ostream& os)
     os << "Name conventions" << endl;
     vector<string> names = {"DA","DB","DD","VD","VA","VB","Head","Tail"};
     vector<int> vals = {DA,DB,DD,VD,VA,VB,Head,Tail};
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }
@@ -951,7 +951,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     vector<double> vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -960,7 +960,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"};
     vector<double> vals = {w.AVA_act, w.AVA_inact, w.AVB_act, w.AVB_inact};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -969,7 +969,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"AVA_output", "AVB_output"};
     vector<double> vals = {w.AVA_output, w.AVB_output};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -1043,7 +1043,7 @@ void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> &
 double doub_value;
 string textInput;
 string str_value;
-for (int i = 0; i < v.size(); i++) 
+for (size_t i = 0; i < v.size(); i++) 
 {
 
 getline(ifs,textInput);
@@ -1060,7 +1060,7 @@ void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<
 double doub_value;
 string textInput;
 string str_value;
-for (int i = 0; i < v.size(); i++) {
+for (size_t i = 0; i < v.size(); i++) {
 
 getline(ifs,textInput);
 istringstream a_stream(textInput);
