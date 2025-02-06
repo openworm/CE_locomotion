@@ -5,17 +5,26 @@ LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 
-
+ifeq ($(MAKE_JSON),1)
+CXXFLAGS += -DMAKE_JSON
+endif
+ifeq ($(MAKE_JSON),1)
 main: main.o Worm.o Worm2D.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o Worm2D.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+else
+main: main.o Worm.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+endif
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
+ifeq ($(MAKE_JSON),1)	
 Worm2D.o: Worm2D.cpp Worm2D.h
 	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) Worm2D.cpp	
+endif
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
 WormBody.o: WormBody.cpp WormBody.h
@@ -34,9 +43,11 @@ tests.o: tests.cpp NervousSystem.o random.o
 	g++ -c -O3 -flto tests.cpp
 tests: tests.o 
 	g++ -pthread -o tests tests.o 
-tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h
+ifeq ($(MAKE_JSON),1)	
+tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h utils.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) tests2.cpp
-tests2: tests2.o NervousSystem.o random.o Worm2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o Worm2D.o $(LIBS)	
+tests2: tests2.o NervousSystem.o random.o Worm2D.o utils.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o utils.o Worm2D.o $(LIBS)
+endif		
 clean:
 	rm -f *.o main tests tests2
