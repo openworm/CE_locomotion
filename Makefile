@@ -6,8 +6,8 @@ LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 
 
-main: main.o Worm.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o Worm2D.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o Worm.o Worm2D.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o Worm2D.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 TSearch.o: TSearch.cpp TSearch.h
@@ -16,6 +16,8 @@ Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 Worm2D.o: Worm2D.cpp Worm2D.h
 	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) Worm2D.cpp	
+utils.o: utils.cpp utils.h
+	g++ -c -O3 -flto utils.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h
