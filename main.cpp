@@ -14,7 +14,7 @@
 //#include "Worm.h"
 
 #ifdef MAKE_JSON
-#include "Worm2D.h"
+#include "jsonUtils.h"
 #else
 #include "Worm.h"
 #endif

@@ -9,8 +9,8 @@ ifeq ($(MAKE_JSON),1)
 CXXFLAGS += -DMAKE_JSON
 endif
 ifeq ($(MAKE_JSON),1)
-main: main.o Worm.o Worm2D.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o Worm2D.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o Worm.o jsonUtils.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 else
 main: main.o Worm.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
@@ -22,8 +22,8 @@ TSearch.o: TSearch.cpp TSearch.h
 Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 ifeq ($(MAKE_JSON),1)	
-Worm2D.o: Worm2D.cpp Worm2D.h
-	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) Worm2D.cpp	
+jsonUtils.o: jsonUtils.cpp jsonUtils.h
+	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 endif
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
@@ -44,10 +44,10 @@ tests.o: tests.cpp NervousSystem.o random.o
 tests: tests.o 
 	g++ -pthread -o tests tests.o 
 ifeq ($(MAKE_JSON),1)	
-tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h utils.h
+tests2.o: tests2.cpp NervousSystem.h random.h jsonUtils.h utils.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) tests2.cpp
-tests2: tests2.o NervousSystem.o random.o Worm2D.o utils.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o utils.o Worm2D.o $(LIBS)
+tests2: tests2.o NervousSystem.o random.o jsonUtils.o utils.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o utils.o jsonUtils.o $(LIBS)
 endif		
 clean:
 	rm -f *.o main tests tests2
