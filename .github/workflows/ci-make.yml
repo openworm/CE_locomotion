@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:        
-        runs-on: [ubuntu-latest, macos-latest ]
+        runs-on: [ubuntu-latest, macos-latest, macos-13 ]
         python-version: [ 3.9, "3.11" ]
 
     steps:
@@ -61,6 +61,11 @@ jobs:
         pip install pyNeuroML
         cd neuroml
         ./regenerate.sh 
+
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
 
 
       
