@@ -9,17 +9,17 @@ ifeq ($(MAKE_JSON),1)
 CXXFLAGS += -DMAKE_JSON
 endif
 ifeq ($(MAKE_JSON),1)
-main: main.o Worm.o jsonUtils.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o Worm.o jsonUtils.o utils.o WormBody.o NervousSystem.o NervousSystemBase.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystemBase.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 else
-main: main.o Worm.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o Worm.o utils.o WormBody.o NervousSystem.o NervousSystemBase.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystemBase.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 endif
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
-Worm.o: Worm.cpp Worm.h
+Worm.o: Worm.cpp Worm.h 
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 ifeq ($(MAKE_JSON),1)	
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
@@ -29,7 +29,9 @@ utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
-NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h
+NervousSystemBase.o: NervousSystemBase.cpp NervousSystemBase.h
+	g++ -c -O3 -flto NervousSystemBase.cpp
+NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h 
 	g++ -c -O3 -flto NervousSystem.cpp
 NervousSystem2D.o: neuroml/NervousSystem2D.cpp neuroml/NervousSystem2D.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/NervousSystem2D.cpp

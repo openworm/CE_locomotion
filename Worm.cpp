@@ -13,7 +13,8 @@ int nn(int neuronNumber, int unitNumber)
 }
 
 // The constructor
-Worm::Worm(TVector<double> &v,double output)
+template<class T>
+Worm<T>::Worm(TVector<double> &v,double output)
 {
 
   // PG: Setting these to zero as they were not initialised before use!
@@ -107,7 +108,8 @@ Worm::Worm(TVector<double> &v,double output)
   AVB_output = 0.0;
 }
 
-void Worm::InitializeState(RandomState &rs)
+template<class T>
+void Worm<T>::InitializeState(RandomState &rs)
 {
   t = 0.0;
   //n.RandomizeCircuitState(-1.0, 1.0, rs);
@@ -126,7 +128,8 @@ void Worm::InitializeState(RandomState &rs)
   m.InitializeMuscleState();
 }
 
-void Worm::Step(double StepSize, double output)
+template<class T>
+void Worm<T>::Step(double StepSize, double output)
 {
   int mi;
   int mt = 0;
@@ -251,7 +254,8 @@ void Worm::Step(double StepSize, double output)
   t += StepSize;
 }
 
-double Worm::CoMx()
+template<class T>
+double Worm<T>::CoMx()
 {
   double temp = 0.0;
   for (int i = 1; i <= N_rods; i++) {
@@ -260,7 +264,8 @@ double Worm::CoMx()
   return temp/N_rods;
 }
 
-double Worm::CoMy()
+template<class T>
+double Worm<T>::CoMy()
 {
   double temp = 0.0;
   for (int i = 1; i <= N_rods; i++) {
@@ -269,7 +274,8 @@ double Worm::CoMy()
   return temp/N_rods;
 }
 
-void Worm::Curvature(TVector<double> &c)
+template<class T>
+void Worm<T>::Curvature(TVector<double> &c)
 {
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
   int k=1;
@@ -298,7 +304,8 @@ void Worm::Curvature(TVector<double> &c)
   }
 }
 
-void Worm::AngleCurvature(TVector<double> &c)
+template<class T>
+void Worm<T>::AngleCurvature(TVector<double> &c)
 {
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
   int k=1;
@@ -325,14 +332,15 @@ void Worm::AngleCurvature(TVector<double> &c)
   }
 }
 
-double Worm::Orientation()
+template<class T>
+double Worm<T>::Orientation()
 {
   return atan2(b.Y(Head)-b.Y(Tail),b.X(Head)-b.X(Tail));
 }
 
 // Dump the state to OFS if SKIPS steps have been performed
-
-void Worm::DumpBodyState(ofstream &ofs, int skips)
+template<class T>
+void Worm<T>::DumpBodyState(ofstream &ofs, int skips)
 {
   static int tt = skips;
 
@@ -348,8 +356,8 @@ void Worm::DumpBodyState(ofstream &ofs, int skips)
     ofs << "\n";
   }
 }
-
-void Worm::DumpActState(ofstream &ofs, int skips)
+template<class T>
+void Worm<T>::DumpActState(ofstream &ofs, int skips)
 {
   static int tt = skips;
 
@@ -378,7 +386,8 @@ void Worm::DumpActState(ofstream &ofs, int skips)
   }
 }
 
-void Worm::DumpCurvature(ofstream &ofs, int skips)
+template<class T>
+void Worm<T>::DumpCurvature(ofstream &ofs, int skips)
 {
 
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
@@ -414,7 +423,8 @@ void Worm::DumpCurvature(ofstream &ofs, int skips)
   }
 }
 
-void Worm::DumpVoltage(ofstream &ofs, int skips)
+template<class T>
+void Worm<T>::DumpVoltage(ofstream &ofs, int skips)
 {
   static int tt = skips;
 
@@ -433,8 +443,8 @@ void Worm::DumpVoltage(ofstream &ofs, int skips)
 }
 
 
-
-void Worm::DumpParams(ofstream &ofs) {
+template<class T>
+void Worm<T>::DumpParams(ofstream &ofs) {
   ofs << "Time-constants: \n" <<
   "\n DA: " << n.NeuronTimeConstant(DA) <<
   "\n DB: " << n.NeuronTimeConstant(DB) <<

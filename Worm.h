@@ -13,6 +13,7 @@
 //#include "NervousSystem.h"
 #include "Muscles.h"
 #include "StretchReceptor.h"
+#include "NervousSystemBase.h"
 
 #include <cmath>
 
@@ -54,11 +55,12 @@ const int VB = 6;
 const int Head = 1;
 const int Tail = N_segments;
 
+template<class T>
 class Worm {
 public:
 
     Worm(TVector<double> &v, double output);
-
+    //Worm::Worm(TVector<double> &v,double output);
     void InitializeState(RandomState &rs);
     void HeadStep(double StepSize, double output);
     void Step(double StepSize, double output);
@@ -77,7 +79,7 @@ public:
 
     WormBody b;
     Muscles m;
-    NERVOUSSYSTEM n;
+    NervousSystemInt<T> n;
     StretchReceptor sr;
 
     double t; // Time
