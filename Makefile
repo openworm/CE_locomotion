@@ -9,11 +9,11 @@ ifeq ($(MAKE_JSON),1)
 CXXFLAGS += -DMAKE_JSON
 endif
 ifeq ($(MAKE_JSON),1)
-main: main.o jsonUtils.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o  Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 else
-main: main.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o utils.o  Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o  Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 endif
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
@@ -25,6 +25,8 @@ jsonUtils.o: jsonUtils.cpp jsonUtils.h
 endif
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
+Worm.o: Worm.cpp Worm.h
+	g++ -c -O3 -flto Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h

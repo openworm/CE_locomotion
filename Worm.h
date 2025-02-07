@@ -55,11 +55,12 @@ const int VB = 6;
 const int Head = 1;
 const int Tail = N_segments;
 
-int nn(int neuronNumber, int unitNumber)
-{
+int nn(int neuronNumber, int unitNumber);
+
+/* {
   return neuronNumber+((unitNumber-1)*N_neuronsperunit);
 }
-
+ */
 
 class wormForJson;
 
