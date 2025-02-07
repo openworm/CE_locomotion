@@ -45,6 +45,7 @@ jobs:
 
     - name: Test NeuroML
       run: |
+        pip install OSBModelValidation
         pip install pyNeuroML
         cd neuroml
         ./regenerate.sh 
@@ -63,7 +64,6 @@ jobs:
 
     - name: Test using test_all.sh
       run: |
-        pip install OSBModelValidation
         
         ./test_all.sh 
 
