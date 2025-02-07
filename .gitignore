@@ -15,3 +15,11 @@
 /w_verb.dat
 /tests
 /test_output/*.dat
+/neuroml/*.dat
+/neuroml/report.txt
+/test_files/test_py_cpp
+/neuroml/__pycache__
+/tests2
+/neuroml/*.mod
+/neuroml/arm64
+*_nrn.py

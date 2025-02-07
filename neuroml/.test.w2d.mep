@@ -1,0 +1,13 @@
+system: Test
+
+experiments:
+    state0:
+        expected:
+            spike times: [20.835]
+    state3:
+        expected:
+            spike times: [27.578]
+    state54:
+        expected:
+            spike times: [22.803]
+
