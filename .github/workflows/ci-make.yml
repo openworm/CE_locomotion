@@ -38,6 +38,19 @@ jobs:
     - name: Test makefile
       run: make
 
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
+
+    - name: Test NeuroML
+      run: |
+        pip install pyNeuroML
+        cd neuroml
+        ./regenerate.sh 
+
+        make clean all
+
     - name: Test directly running main program
       run: |
         ./main -p 6  # Note: small population of 6 for quick runtime
@@ -55,18 +68,6 @@ jobs:
         ./test_all.sh 
 
         git diff exampleRun/phenotype.dat 
-
-    - name: Test NeuroML
-      run: |
-        pip install pyNeuroML
-        cd neuroml
-        ./regenerate.sh 
-
-    - name: Test C++/Python interactions
-      run: |
-        cd test_files
-        ./test.sh 
-
 
       
     - name: list generated files
