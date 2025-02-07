@@ -28,7 +28,7 @@ struct toFromWeight{
     int to;
 };
 
-void writeWormParams(Worm & w)
+void writeWormParams(wormForJson & w)
 {
     writeParsToJson(w);
 
@@ -157,7 +157,7 @@ return par;
 
 
 
-Params<double> getWormParams(Worm & w)
+Params<double> getWormParams(wormForJson & w)
 {
 
 Params<double> par;
@@ -363,7 +363,7 @@ return bp;
 
 //projection from 60 NS neurons to 10 muscle hubs, here included NMJs as weights
 
-VDProjection getMuscleInputHubProjection(Worm & w){
+VDProjection getMuscleInputHubProjection(wormForJson & w){
 
 VDProjection bp;
 
@@ -567,7 +567,7 @@ j["ventral"]["message"] = "Projection from ventral hubs (10) to ventral muscles 
 
 }
 
-void appendMuscleInputHubProjection(json & j, Worm & w){
+void appendMuscleInputHubProjection(json & j, wormForJson & w){
 
 VDProjection bp = getMuscleInputHubProjection(w);
 j["dorsal"]["value"] = bp.dorsal;
@@ -682,7 +682,7 @@ n.InternalSetElectricalSynapseWeight(elec_weights[i].w.from, elec_weights[i].to,
 }
 
 
-void writeParsToJson(Worm & w, string file_name)
+void writeParsToJson(wormForJson & w, string file_name)
 {
 
 json j;
@@ -755,7 +755,7 @@ json_out << std::setw(4) << j << std::endl;
 json_out.close();
 }
 
-void writeParsToJson(Worm & w)
+void writeParsToJson(wormForJson & w)
 {
 writeParsToJson(w, "worm_data.json");
 }
@@ -893,7 +893,7 @@ ostream& writeGlobalParsToFile(ostream& os)
 }
 
 
-ostream& writeWSysToFile(ostream& os, Worm& w)
+ostream& writeWSysToFile(ostream& os, wormForJson & w)
 {   
     
     os << setprecision(32);

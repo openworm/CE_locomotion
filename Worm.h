@@ -55,6 +55,12 @@ const int VB = 6;
 const int Head = 1;
 const int Tail = N_segments;
 
+int nn(int neuronNumber, int unitNumber)
+{
+  return neuronNumber+((unitNumber-1)*N_neuronsperunit);
+}
+
+
 class wormForJson;
 
 template<class T =  NervousSystem>
@@ -75,8 +81,10 @@ public:
     
     operator wormForJson & () 
     {
-    if (typeid(T) == typeid(NervousSystem))
+    if (typeid(T) == typeid(NervousSystem)) //should check json interface is implemented
     return *this;
+    cout << "cannot generate Json" << endl;
+    exit(1);
     }
 
     double CoMx();
@@ -89,7 +97,7 @@ public:
     Muscles m;
     //NervousSystemInt<T> n;
     NervousSystemBase *n_ptr;
-    NervousSystemBase & n;
+    T & n;
     StretchReceptor sr;
 
     double t; // Time
@@ -103,15 +111,11 @@ public:
 
 class wormForJson : public Worm<NervousSystem> {};
 
-int nn(int neuronNumber, int unitNumber)
-{
-  return neuronNumber+((unitNumber-1)*N_neuronsperunit);
-}
 
 
 template<class T>
 Worm<T>::Worm(TVector<double> &v,double output):
-n_ptr(new T()),n(*n_ptr)
+n_ptr(new T()),n(* dynamic_cast<T*>(n_ptr))
 {
 
   // PG: Setting these to zero as they were not initialised before use!

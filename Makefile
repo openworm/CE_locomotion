@@ -20,7 +20,7 @@ random.o: random.cpp random.h VectorMatrix.h
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 ifeq ($(MAKE_JSON),1)	
-jsonUtils.o: jsonUtils.cpp jsonUtils.h Worm.h
+jsonUtils.o: jsonUtils.cpp jsonUtils.h
 	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 endif
 utils.o: utils.cpp utils.h

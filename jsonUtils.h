@@ -3,7 +3,7 @@
 #include <string>
 #include "utils.h"
 
-#pragma once
+//#pragma once
 
 using namespace std;
 
@@ -28,7 +28,7 @@ string head;
 ifstream & setParamsFromDump(ifstream &ifs, wormForJson &);
 ostream& writeNSysToFile(ostream& os, NervousSystem& c);
 istream& readNSysFromFile(istream& is, NervousSystem& c);
-ostream& writeWSysToFile(ostream& os, Worm& w);
+ostream& writeWSysToFile(ostream& os,  wormForJson &);
 ostream& writeMuscSysToFile(ostream& os, Muscles& m);
 ostream& writeGlobalParsToFile(ostream& os);
 ostream& writeStretchSysToFile(ostream& os, StretchReceptor& s);
@@ -38,10 +38,10 @@ ofstream& writeNSJson(ofstream & ofs, NervousSystem & n);
 void setNSFromJsonFile(ifstream & ifs, NervousSystem & n);
 
 
-void writeWormParams(Worm & w);
+void writeWormParams(wormForJson & w);
 
-void writeParsToJson(Worm &, string);
-void writeParsToJson(Worm &);
+void writeParsToJson(wormForJson &, string);
+void writeParsToJson(wormForJson &);
 void testNervousSystemJson(string, NervousSystem &);
 Params<int> getNervousSysParamsIntNH(NervousSystem& c);
 ParamsHead<int> getNervousSysParamsInt(NervousSystem& c);
@@ -52,7 +52,7 @@ Params< vector<string> > getNervousSysCellNames(NervousSystem& c);
 ParamsHead< vector<double> > getNervousSysParamsDouble(NervousSystem& c);
 Params<double> getMusclesParamsDouble(Muscles & m);
 Params<int> getMusclesParamsInt(Muscles & m);
-Params<double> getWormParams(Worm & w);
+Params<double> getWormParams(wormForJson & w);
 vector<ParamsHead<double> > getGlobalParamsDouble();
 vector<ParamsHead<int> > getGlobalParamsInt();
 Params<double> getStretchReceptorParams(StretchReceptor& s);
