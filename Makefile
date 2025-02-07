@@ -20,13 +20,13 @@ random.o: random.cpp random.h VectorMatrix.h
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 ifeq ($(MAKE_JSON),1)	
-jsonUtils.o: jsonUtils.cpp jsonUtils.h
+jsonUtils.o: jsonUtils.cpp jsonUtils.h Worm.h
 	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 endif
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
 Worm.o: Worm.cpp Worm.h
-	g++ -c -O3 -flto Worm.cpp
+	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h

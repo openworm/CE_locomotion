@@ -6,6 +6,7 @@
 //#pragma once
 
 using namespace std;
+using wormForJson = Worm<NervousSystem>;
 
 template <class T>
 struct Params {

@@ -212,6 +212,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     // save json data
     // reconstruct nervous system from json file to check validity
     #ifdef MAKE_JSON
+    cout << "making json" << endl;
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", w.n); 
     #endif

@@ -18,7 +18,7 @@
 #include <cmath>
 
 #define PI 3.14159265
-#define NERVOUSSYSTEM NervousSystem2D
+//#define NERVOUSSYSTEM NervousSystem2D
 
 // Stretch-Receptor Transdusction form
 // Altogether there are 8 forms this can take, depending on which of the first three are defined and then the second one.
@@ -57,12 +57,8 @@ const int Tail = N_segments;
 
 int nn(int neuronNumber, int unitNumber);
 
-/* {
-  return neuronNumber+((unitNumber-1)*N_neuronsperunit);
-}
- */
 
-class wormForJson;
+//class wormForJson;
 
 template<class T =  NervousSystem>
 class Worm {
@@ -80,13 +76,18 @@ public:
     void DumpParams(ofstream &ofs);
     void DumpCurvature(ofstream &ofs, int skips);
     
-    operator wormForJson & () 
+    /* operator wormForJson & () 
     {
     if (typeid(T) == typeid(NervousSystem)) //should check json interface is implemented
+    {
+        cout << "wormForJson" << endl;
     return *this;
+    }
     cout << "cannot generate Json" << endl;
     exit(1);
     }
+ */
+    ~Worm(){if (n_ptr!=nullptr) delete n_ptr;}
 
     double CoMx();
     double CoMy();
@@ -110,7 +111,7 @@ public:
 
 };
 
-class wormForJson : public Worm<NervousSystem> {};
+//class wormForJson : public Worm<NervousSystem> {};
 
 
 
