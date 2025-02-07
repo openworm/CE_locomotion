@@ -17,6 +17,7 @@
 // The constructor
 
 NervousSystem::NervousSystem(int newsize, int newmaxchemconns, int newmaxelecconns)
+//:NervousSystemInt<NervousSystem>()
 {
     SetCircuitSize(newsize, newmaxchemconns, newmaxelecconns);
 }

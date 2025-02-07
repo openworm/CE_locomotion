@@ -65,7 +65,6 @@ class Worm {
 public:
 
     Worm(TVector<double> &v, double output);
-    //Worm::Worm(TVector<double> &v,double output);
     void InitializeState(RandomState &rs);
     void HeadStep(double StepSize, double output);
     void Step(double StepSize, double output);
@@ -97,9 +96,10 @@ public:
 
     WormBody b;
     Muscles m;
-    //NervousSystemInt<T> n;
-    NervousSystemBase *n_ptr;
-    T & n;
+    NervousSystemInt<T> * n_ptr;
+    //NervousSystemBase *n_ptr;
+    NervousSystemInt<T> & n;
+    //T & n;
     StretchReceptor sr;
 
     double t; // Time
@@ -116,8 +116,9 @@ public:
 
 
 template<class T>
-Worm<T>::Worm(TVector<double> &v,double output):
-n_ptr(new T()),n(* dynamic_cast<T*>(n_ptr))
+Worm<T>::Worm(TVector<double> &v,double output)
+//:n_ptr(new T()),n(* dynamic_cast<T*>(n_ptr))
+:n_ptr(new T()),n(*n_ptr)
 {
 
   // PG: Setting these to zero as they were not initialised before use!

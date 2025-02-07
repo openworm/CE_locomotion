@@ -29,7 +29,7 @@ Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
-NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h
+NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemInt.h
 	g++ -c -O3 -flto NervousSystem.cpp
 NervousSystem2D.o: neuroml/NervousSystem2D.cpp neuroml/NervousSystem2D.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/NervousSystem2D.cpp

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <functional>
+//#include <functional>
 #include <vector>
 #include <nlohmann/json.hpp>
 #include "utils.h"
@@ -984,73 +984,6 @@ ostream& writeNSysToFile(ostream& os, NervousSystem& c)
     }
     // Return the ostream
     return os;
-}
-
-
-
-/// functions for reading text file, not used
-
-void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (size_t i = 0; i < v.size(); i++) 
-{
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-for (int j=0; j<num; j++) {a_stream >> str_value;}
-a_stream >> doub_value;
-calc(v[i],doub_value);
-
-}
-}
-
-void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<int> & v) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (size_t i = 0; i < v.size(); i++) {
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-a_stream >> str_value >> doub_value;
-calc(v[i],v[i],doub_value);
-}
-}
-
-
-ifstream & setParamsFromDump(ifstream &ifs, wormForJson & w) {
-
-   vector<int> v = {DA,DB,DD,VD,VA,VB}; 
-   string textInput;
-   
-
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);
-   auto calc = bind(&NervousSystem::SetNeuronTimeConstant, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   { 
-   getline(ifs,textInput);  
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetNeuronBias, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetChemicalSynapseWeight, &(w.n), 
-   placeholders::_1, placeholders::_2, placeholders::_3);
-   invoke2(ifs,calc,v);
-   }
- 
-
-   return ifs;
-
 }
 
 
