@@ -13,7 +13,7 @@ void test()
 {
     std::cout << "Created a test..." << std::endl;
 
-    PyObject *pName, *pModule, *pDict, *pFun, *pValue;
+    //PyObject *pName, *pModule, *pDict, *pFun, *pValue;
     Py_Initialize();
     PyRun_SimpleString("print('Printing a statement from Python...')");
     Py_Finalize();
