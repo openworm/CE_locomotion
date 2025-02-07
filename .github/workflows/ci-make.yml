@@ -28,7 +28,7 @@ jobs:
       
     - name: Install dependencies (macOS)
       run: brew install nlohmann-json
-      if: matrix.runs-on == 'macos-latest'
+      if: ${{ contains(matrix.runs-on, 'macos') }}
     
     - name: Run C++ tests 
       run: |
@@ -61,6 +61,11 @@ jobs:
         pip install pyNeuroML
         cd neuroml
         ./regenerate.sh 
+
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
 
 
       
