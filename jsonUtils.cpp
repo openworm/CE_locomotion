@@ -1022,7 +1022,7 @@ calc(v[i],v[i],doub_value);
 }
 
 
-ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
+ifstream & setParamsFromDump(ifstream &ifs, wormForJson & w) {
 
    vector<int> v = {DA,DB,DD,VD,VA,VB}; 
    string textInput;

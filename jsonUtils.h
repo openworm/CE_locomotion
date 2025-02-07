@@ -24,7 +24,8 @@ string head;
 };
 
 
-ifstream & setParamsFromDump(ifstream &ifs, Worm &);
+//ifstream & setParamsFromDump(ifstream &ifs, Worm<NervousSystem> &);
+ifstream & setParamsFromDump(ifstream &ifs, wormForJson &);
 ostream& writeNSysToFile(ostream& os, NervousSystem& c);
 istream& readNSysFromFile(istream& is, NervousSystem& c);
 ostream& writeWSysToFile(ostream& os, Worm& w);
