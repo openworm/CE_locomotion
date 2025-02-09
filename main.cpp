@@ -113,7 +113,8 @@ double Evaluation(TVector<double> &v, RandomState &rs, int direction){
     // Genotype-Phenotype Mapping
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(v, phenotype);
-    Worm<NERVOUS_SYSTEM> w(phenotype, 1);
+    //Worm<NERVOUS_SYSTEM> w(phenotype, 1);
+    Worm w(phenotype, 1);
     w.InitializeState(rs);
 
     if (direction == 1){
@@ -196,7 +197,8 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
     
-    Worm<NERVOUS_SYSTEM> w(phenotype, 1);
+    //Worm<NERVOUS_SYSTEM> w(phenotype, 1);
+    Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
