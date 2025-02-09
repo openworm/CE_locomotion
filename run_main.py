@@ -14,6 +14,7 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
+    "nervousSystemName" : None
 }
 
 
@@ -44,7 +45,7 @@ def process_args():
         "--nervousSystemName",
         type=str,
         metavar="<nervous system name>",
-        default=DEFAULTS["NervousSystem"],
+        default=DEFAULTS["nervousSystemName"],
         help=(
             "Name of nervous system class.\n"
         ),
@@ -170,6 +171,7 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
 
+    
     folder_name = ""
     do_evol = 1
 
@@ -209,6 +211,11 @@ def run(a=None, **kwargs):
                 sys.exit(1)
     else:
         print("Running in default mode.")
+    
+    if a.nervousSystemName:
+        nervous_system_name = a.nervousSystemName
+    else:
+        nervous_system_name = 'NervousSystem'
 
     if a.RandSeed is not None:
         cmd = ["./main", "-R", str(a.RandSeed)]
@@ -225,7 +232,7 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        a.nervousSystemName
+        nervous_system_name
     ]
 
     # Run the C++

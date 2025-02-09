@@ -17,8 +17,10 @@ int nn(int neuronNumber, int unitNumber)
 string nervousSystemName = "NervousSystem";
 NervousSystemBase* makeNervousSystem()
 {
-if (nervousSystemName=="NervousSystem") return new NervousSystem();
-{cout << "that nervous system is not implemented" << endl; exit(0);}
+if (strcmp(nervousSystemName.c_str(),"NervousSystem") == 0) return new NervousSystem();
+//if (nervousSystemName=="NervousSystem") return new NervousSystem();
+cout << "that nervous system is not implemented" << endl; 
+exit(0);
 }
 
 //template<class T>
