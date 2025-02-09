@@ -27,3 +27,4 @@ extern const int SR_B;
 extern int	VectSize;
 extern string output_dir_name;
 //extern int nn(int, int);
+extern string nervousSystemName;

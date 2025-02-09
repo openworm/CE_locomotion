@@ -326,6 +326,10 @@ int main (int argc, const char* argv[])
     }
     if (strcmp(argv[arg],"-p")==0) pop_size = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--nervous")==0) 
+    {
+      nervousSystemName = argv[arg+1];
+    }
     }
 
     }
@@ -345,7 +349,8 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    cout << "Run evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    cout << "Run evaluation with seed: " << randomseed << ", pop size: " 
+    << pop_size << ", duration: " << Duration << ", Nervous system name: " << nervousSystemName.c_str() << endl;
     //cout.flush()
 
     // configure the search

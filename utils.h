@@ -7,6 +7,7 @@ using std::vector;
 
 #pragma once
 
+//string output_dir_name = "";
 string rename_file(const string & file_name);
 
 template<class T>

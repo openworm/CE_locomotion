@@ -40,6 +40,17 @@ def process_args():
     )
 
     parser.add_argument(
+        "-n",
+        "--nervousSystemName",
+        type=str,
+        metavar="<nervous system name>",
+        default=DEFAULTS["NervousSystem"],
+        help=(
+            "Name of nervous system class.\n"
+        ),
+    )
+
+    parser.add_argument(
         "-o",
         "--overwrite",
         action="store_true",
@@ -213,6 +224,8 @@ def run(a=None, **kwargs):
         str(do_evol),
         "--folder",
         folder_name,
+        "--nervous",
+        a.nervousSystemName
     ]
 
     # Run the C++

@@ -8,16 +8,17 @@
 
 #include "Worm.h"
 
+
 int nn(int neuronNumber, int unitNumber)
 {
   return neuronNumber+((unitNumber-1)*N_neuronsperunit);
 }
 
+string nervousSystemName = "NervousSystem";
 NervousSystemBase* makeNervousSystem()
 {
-
-return new NervousSystem();
-
+if (nervousSystemName=="NervousSystem") return new NervousSystem();
+{cout << "that nervous system is not implemented" << endl; exit(0);}
 }
 
 //template<class T>
