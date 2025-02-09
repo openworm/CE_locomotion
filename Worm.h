@@ -88,6 +88,7 @@ public:
     }
  */
     ~Worm(){if (n_ptr!=nullptr) delete n_ptr;}
+    
 
     double CoMx();
     double CoMy();

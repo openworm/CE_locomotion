@@ -216,7 +216,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     #ifdef MAKE_JSON
     cout << "making json" << endl;
     writeParsToJson(w, "worm_data.json");
-    testNervousSystemJson("worm_data.json", w.n); 
+    testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
     #endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){

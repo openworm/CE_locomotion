@@ -34,7 +34,7 @@ void writeWormParams(wormForJson & w)
 
     {
     ofstream nv_file(rename_file("w_verb.dat"));
-    writeNSysToFile(nv_file, w.n);
+    writeNSysToFile(nv_file, static_cast<NervousSystem&>(*w.n_ptr));
     nv_file << endl;
     writeWSysToFile(nv_file, w);
     nv_file << endl;
@@ -717,30 +717,30 @@ for (size_t i=0;i<parvec.size(); i++) {
 appendToJson<double>(j[parvec[i].head],parvec[i]);
 }}
 
-/* {ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
+/* {ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<double> >(j[parvec.head],parvec);}
 
-ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
+ParamsHead<int> parvec = getNervousSysParamsInt(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<int>(j[parvec.head],parvec); */
 
 string nsHead = "Nervous system";
 
-{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(w.n);
+{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<double> >(j[nsHead],parvec);}
 
-{Params<int> parvec = getNervousSysParamsIntNH(w.n);
+{Params<int> parvec = getNervousSysParamsIntNH(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<int>(j[nsHead],parvec);}
 
-{Params< vector<string> > parvec = getNervousSysCellNames(w.n);
+{Params< vector<string> > parvec = getNervousSysCellNames(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<string> >(j[nsHead],parvec);} 
 
-{Params< vector<int> > parvec = getNervousSysVecInt(w.n);
+{Params< vector<int> > parvec = getNervousSysVecInt(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<int> >(j[nsHead],parvec);}
 
-//{Params< vector<int> > parvec = getNervousSysCellGroups(w.n);
+//{Params< vector<int> > parvec = getNervousSysCellGroups(static_cast<NervousSystem&>(*w.n_ptr));
 //appendToJson<vector<int> >(j[nsHead],parvec);} 
 
-appendNSToJson(j[nsHead], w.n);
+appendNSToJson(j[nsHead], static_cast<NervousSystem&>(*w.n_ptr));
 
 appendStretchToNSProjToJson(j[nsHead]);
 
@@ -987,71 +987,6 @@ ostream& writeNSysToFile(ostream& os, NervousSystem& c)
 }
 
 
-
-/// functions for reading text file, not used
-
-void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (size_t i = 0; i < v.size(); i++) 
-{
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-for (int j=0; j<num; j++) {a_stream >> str_value;}
-a_stream >> doub_value;
-calc(v[i],doub_value);
-
-}
-}
-
-void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<int> & v) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (size_t i = 0; i < v.size(); i++) {
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-a_stream >> str_value >> doub_value;
-calc(v[i],v[i],doub_value);
-}
-}
-
-
-ifstream & setParamsFromDump(ifstream &ifs, wormForJson & w) {
-
-   vector<int> v = {DA,DB,DD,VD,VA,VB}; 
-   string textInput;
-   
-
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);
-   auto calc = bind(&NervousSystem::SetNeuronTimeConstant, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   { 
-   getline(ifs,textInput);  
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetNeuronBias, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetChemicalSynapseWeight, &(w.n), 
-   placeholders::_1, placeholders::_2, placeholders::_3);
-   invoke2(ifs,calc,v);
-   }
- 
-
-   return ifs;
-
-}
 
 
 istream& readNSysFromFile(istream& is, NervousSystem& c)
