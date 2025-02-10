@@ -13,11 +13,11 @@
 #include "VectorMatrix.h"
 //#include "Worm.h"
 
-#ifdef MAKE_JSON
+//#ifdef MAKE_JSON
 #include "jsonUtils.h"
-#else
-#include "Worm.h"
-#endif
+//#else
+//#include "Worm.h"
+//#endif
 
 #include "Mainvars.h"
 #include <stdio.h>
@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include "utils.h"
 
-#define NERVOUS_SYSTEM NervousSystem
+//#define NERVOUS_SYSTEM NervousSystem
 #define PRINTTOFILE
 
 int skip_steps = 10;
@@ -213,11 +213,15 @@ double save_traces(TVector<double> &v, RandomState &rs){
 
     // save json data
     // reconstruct nervous system from json file to check validity
-    #ifdef MAKE_JSON
+    //#ifdef MAKE_JSON
+
+    if (checkNervousSystemForJson()){
     cout << "making json" << endl;
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
-    #endif
+    }
+
+    //#endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);

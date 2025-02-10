@@ -14,7 +14,7 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
-    "nervousSystemName" : None
+    "nervousSystemName" : 'NervousSystem'
 }
 
 
@@ -212,11 +212,6 @@ def run(a=None, **kwargs):
     else:
         print("Running in default mode.")
     
-    if a.nervousSystemName:
-        nervous_system_name = a.nervousSystemName
-    else:
-        nervous_system_name = 'NervousSystem'
-
     if a.RandSeed is not None:
         cmd = ["./main", "-R", str(a.RandSeed)]
     else:
@@ -232,7 +227,8 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        nervous_system_name
+        #nervous_system_name
+        a.nervousSystemName
     ]
 
     # Run the C++

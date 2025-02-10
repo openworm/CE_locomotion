@@ -15,10 +15,16 @@ int nn(int neuronNumber, int unitNumber)
 }
 
 string nervousSystemName = "NervousSystem";
+
+bool checkNervousSystemForJson(){
+return (strcmp(nervousSystemName.c_str(),"NervousSystem") == 0);
+}
+
 NervousSystemBase* makeNervousSystem()
 {
-if (strcmp(nervousSystemName.c_str(),"NervousSystem") == 0) return new NervousSystem();
-//if (nervousSystemName=="NervousSystem") return new NervousSystem();
+//if (checkNervousSystemForJson()) return new NervousSystemInt<NervousSystem>();  
+if (checkNervousSystemForJson()) return new NervousSystem();
+//if (checkNervousSystemForJson()) return new NervousSystemTest();
 cout << "that nervous system is not implemented" << endl; 
 exit(0);
 }

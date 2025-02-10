@@ -56,8 +56,12 @@ const int Head = 1;
 const int Tail = N_segments;
 
 //string nervousSystemName = "NervousSystem";
+
+
 int nn(int neuronNumber, int unitNumber);
 NervousSystemBase* makeNervousSystem();
+bool checkNervousSystemForJson();
+
 
 //class wormForJson;
 
