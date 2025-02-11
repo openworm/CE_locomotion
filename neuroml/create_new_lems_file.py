@@ -55,10 +55,10 @@ def run(a=None, **kwargs):
     sim_id = "Worm2D"
     ls = LEMSSimulation(sim_id, 50000, 1, "Worm2DNet")
     # ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
-    ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
 
     ls.include_lems_file("cell_syn_X.xml")
     ls.include_lems_file("cell_syn_X_cells.xml")
+    ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
 
     disp0 = "display0"
     ls.create_display(disp0, "States", "-15", "10", timeScale="1ms")

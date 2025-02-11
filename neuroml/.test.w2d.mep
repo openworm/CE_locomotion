@@ -3,10 +3,10 @@ system: Test
 experiments:
     state0:
         expected:
-            spike times: [20.835]
+            spike times: [20.836]
     state3:
         expected:
-            spike times: [27.578]
+            spike times: [27.579]
     state54:
         expected:
             spike times: [22.803]
