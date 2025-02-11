@@ -51,6 +51,9 @@ jobs:
     - name: Test using test_all.sh
       run: |
         pip install neuron
+        which neuron
+        export NEURON_HOME=$pythonLocation
+        env
         pip install OSBModelValidation
         
         ./test_all.sh 
