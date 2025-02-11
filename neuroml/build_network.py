@@ -51,8 +51,8 @@ def run(a=None, **kwargs):
     utils.makeCellXml(network_json_data, cellX_filename)
 
     nml_doc = NeuroMLDocument(id="Worm2D")
-    nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
-    nml_doc.includes.append(IncludeType(href=cellX_filename))
+    #nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
+    #nml_doc.includes.append(IncludeType(href=cellX_filename))
 
     add_gapJunctions = True
     add_continuousProjections = True
@@ -244,7 +244,7 @@ def run(a=None, **kwargs):
 
             net.explicit_inputs.append(exp_input)
 
-    nml_file = "testnet.nml"
+    nml_file = "Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
 
     print("Written network file to: " + nml_file)

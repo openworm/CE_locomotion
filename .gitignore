@@ -23,3 +23,5 @@
 /neuroml/*.mod
 /neuroml/arm64
 *_nrn.py
+/neuroml/*.gv
+/neuroml/Worm2DNet.gv.png

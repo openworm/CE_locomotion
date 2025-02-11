@@ -1,6 +1,4 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.1.xsd" id="Worm2D">
-    <include href="cell_syn_X.xml"/>
-    <include href="cell_syn_X_cells.xml"/>
     <pulseGenerator id="pulseGen_0" delay="20s" duration="10s" amplitude="10.000000 pA"/>
     <network id="Worm2DNet">
         <population id="PopDA" component="DA" size="10"/>
