@@ -55,7 +55,6 @@ const int VB = 6;
 const int Head = 1;
 const int Tail = N_segments;
 
-//string nervousSystemName = "NervousSystem";
 
 
 int nn(int neuronNumber, int unitNumber);
@@ -63,9 +62,6 @@ NervousSystemBase* makeNervousSystem();
 bool checkNervousSystemForJson();
 
 
-//class wormForJson;
-
-//template<class T =  NervousSystem>
 class Worm {
 public:
 
@@ -81,20 +77,8 @@ public:
     void DumpParams(ofstream &ofs);
     void DumpCurvature(ofstream &ofs, int skips);
     
-    /* operator wormForJson & () 
-    {
-    if (typeid(T) == typeid(NervousSystem)) //should check json interface is implemented
-    {
-        cout << "wormForJson" << endl;
-    return *this;
-    }
-    cout << "cannot generate Json" << endl;
-    exit(1);
-    }
- */
     ~Worm(){if (n_ptr!=nullptr) delete n_ptr;}
     
-
     double CoMx();
     double CoMy();
     void Curvature(TVector<double> &c);
@@ -103,9 +87,7 @@ public:
 
     WormBody b;
     Muscles m;
-    //NervousSystemInt<T> n;
     NervousSystemBase *n_ptr;
-    //T & n;
     StretchReceptor sr;
 
     double t; // Time

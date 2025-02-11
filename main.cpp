@@ -4,7 +4,7 @@
 // Eduardo Izquierdo
 // =============================================================
 
-//#define MAKE_JSON
+
 
 #include <iostream>
 #include <iomanip>
@@ -13,11 +13,7 @@
 #include "VectorMatrix.h"
 //#include "Worm.h"
 
-//#ifdef MAKE_JSON
 #include "jsonUtils.h"
-//#else
-//#include "Worm.h"
-//#endif
 
 #include "Mainvars.h"
 #include <stdio.h>
@@ -25,7 +21,7 @@
 #include <sys/stat.h>
 #include "utils.h"
 
-//#define NERVOUS_SYSTEM NervousSystem
+
 #define PRINTTOFILE
 
 int skip_steps = 10;
@@ -113,7 +109,6 @@ double Evaluation(TVector<double> &v, RandomState &rs, int direction){
     // Genotype-Phenotype Mapping
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(v, phenotype);
-    //Worm<NERVOUS_SYSTEM> w(phenotype, 1);
     Worm w(phenotype, 1);
     w.InitializeState(rs);
 
@@ -197,7 +192,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
     
-    //Worm<NERVOUS_SYSTEM> w(phenotype, 1);
+    
     Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
@@ -211,11 +206,12 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
 
+    
+
+    if (checkNervousSystemForJson()){
     // save json data
     // reconstruct nervous system from json file to check validity
     //#ifdef MAKE_JSON
-
-    if (checkNervousSystemForJson()){
     cout << "making json" << endl;
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
