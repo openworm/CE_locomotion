@@ -9,11 +9,11 @@
 #include "VectorMatrix.h"
 #include "random.h"
 #include "WormBody.h"
-#include "neuroml/NervousSystem2D.h"
-//#include "NervousSystem.h"
+#include "neuroml/c302NervousSystem.h"
+#include "NervousSystem.h"
 #include "Muscles.h"
 #include "StretchReceptor.h"
-#include "NervousSystemBase.h"
+//#include "NervousSystemBase.h"
 
 #include <cmath>
 

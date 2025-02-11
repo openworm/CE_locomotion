@@ -9,25 +9,20 @@ CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
 
-main.o: main.cpp NervousSystem2D.h
+main.o: main.cpp c302NervousSystem.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) main.cpp 
 	@echo ' '
 
-NervousSystem2D.o: NervousSystem2D.cpp owSignalSimulator.h
-	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) NervousSystem2D.cpp 
+c302NervousSystem.o: c302NervousSystem.cpp owSignalSimulator.h ../NervousSystemBase.h
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) c302NervousSystem.cpp 
 	@echo ' '
 
 owSignalSimulator.o: owSignalSimulator.cpp owSignalSimulator.h owINeuronSimulator.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) owSignalSimulator.cpp
 	@echo ' '
-NervousSystem.o: ../NervousSystem.cpp ../NervousSystem.h ../VectorMatrix.h ../random.h
-	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../NervousSystem.cpp
-	@echo ' '
-
-main: main.o NervousSystem2D.o owSignalSimulator.o NervousSystem.o
-
+main: main.o c302NervousSystem.o owSignalSimulator.o
 	@echo '  Linking... '
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o NervousSystem2D.o owSignalSimulator.o NervousSystem.o $(LIBS)
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o c302NervousSystem.o owSignalSimulator.o $(LIBS)
 
 all: main main.o
 

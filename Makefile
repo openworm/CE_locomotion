@@ -6,8 +6,8 @@ LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 
 
-main: main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o  Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+main: main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulator.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
 
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
@@ -25,8 +25,10 @@ WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h
 	g++ -c -O3 -flto NervousSystem.cpp
-NervousSystem2D.o: neuroml/NervousSystem2D.cpp neuroml/NervousSystem2D.h
-	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/NervousSystem2D.cpp
+owSignalSimulator.o: neuroml/owSignalSimulator.cpp neuroml/owSignalSimulator.h neuroml/owINeuronSimulator.h
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) neuroml/owSignalSimulator.cpp
+c302NervousSystem.o: neuroml/c302NervousSystem.cpp neuroml/c302NervousSystem.h NervousSystemBase.h neuroml/owSignalSimulator.h
+	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/c302NervousSystem.cpp
 StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
 	g++ -c -O3 -flto StretchReceptor.cpp
 Muscles.o: Muscles.cpp Muscles.h VectorMatrix.h random.h

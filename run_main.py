@@ -14,7 +14,7 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
-    "nervousSystemName" : 'NervousSystem'
+    "nervousSystemFileName" : 'NervousSystem'
 }
 
 
@@ -42,12 +42,13 @@ def process_args():
 
     parser.add_argument(
         "-n",
-        "--nervousSystemName",
+        "--nervousSystemFileName",
         type=str,
-        metavar="<nervous system name>",
-        default=DEFAULTS["nervousSystemName"],
+        metavar="<nervous system file name>",
+        default=DEFAULTS["nervousSystemFileName"],
         help=(
-            "Name of nervous system class.\n"
+            "Name of nervous system file name.\n" 
+            "If none entered the original worm simulation will be run.\n"
         ),
     )
 
@@ -227,8 +228,7 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        #nervous_system_name
-        a.nervousSystemName
+        a.nervousSystemFileName
     ]
 
     # Run the C++

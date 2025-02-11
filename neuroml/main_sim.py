@@ -26,13 +26,15 @@ class Worm2DNRNSimulation():
             #from simulations.LEMS_c302_nrn import NeuronSimulation
             import importlib  
             nsp = importlib.import_module("simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn")
+            #from LEMS_c302_nrn import NeuronSimulation
             #from NeuronSimulation_package import NeuronSimulation
             #from simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn import NeuronSimulation
             import neuron
             self.h = neuron.h
         except Exception as e:
             raise Exception('Python import error in Worm2DNRNSimulation: %s..'%e)
-
+        
+        #self.ns = NeuronSimulation(self.tstop, dt)
         self.ns = nsp.NeuronSimulation(self.tstop, dt)
         print_("Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."%(self.tstop,dt))
 
