@@ -59,6 +59,7 @@ jobs:
     - name: Test NeuroML
       run: |
         pip install pyNeuroML
+        pip install neuron
         cd neuroml
         ./regenerate.sh 
 
@@ -66,7 +67,6 @@ jobs:
       run: |
         cd test_files
         ./test.sh 
-
 
       
     - name: list generated files
