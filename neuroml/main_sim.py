@@ -22,10 +22,14 @@ class Worm2DNRNSimulation():
             import sys
             import sysconfig; 
             sys.path.append(sysconfig.get_paths()["purelib"])
+            print('sys path is : ', sys.path)
+            #sys.exit()
             #from simulations.LEMS_Worm2D_nrn import NeuronSimulation
             #from simulations.LEMS_c302_nrn import NeuronSimulation
             import importlib  
-            nsp = importlib.import_module("simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn")
+            nsp = importlib.import_module("simulations.C1_Muscles_2025-02-12_12-13-48.LEMS_c302_nrn")
+            #nsp = importlib.import_module("simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn")
+            #nsp = importlib.import_module("LEMS_c302_nrn")
             #from LEMS_c302_nrn import NeuronSimulation
             #from NeuronSimulation_package import NeuronSimulation
             #from simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn import NeuronSimulation
