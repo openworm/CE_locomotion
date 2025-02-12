@@ -6,7 +6,8 @@ int main (int argc, const char* argv[])
 {
 
 c302NervousSystem n("main_sim");
-return 0;
+//n.EulerStep(1);
+//return 0;
 
 //n.setSimulator("main_sim", "Worm2DNRNSimulation", 0.005);
 for (int i=0;i<10;i++){

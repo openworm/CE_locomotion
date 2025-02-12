@@ -23,7 +23,8 @@ return (strcmp(nervousSystemName.c_str(),"NervousSystem") == 0);
 NervousSystemBase* makeNervousSystem()
 {  
 if (checkNervousSystemForJson()) return new NervousSystem();
-return new c302NervousSystem(nervousSystemName);
+//return new c302NervousSystem(nervousSystemName);
+return new c302NervousSystem();
 //cout << "that nervous system is not implemented" << endl; 
 //exit(0);
 }

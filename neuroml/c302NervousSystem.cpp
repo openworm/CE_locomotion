@@ -7,6 +7,12 @@ simulation(nullptr)
 setSimulator(simFileName);
 }
 
+c302NervousSystem::c302NervousSystem():
+simulation(nullptr)
+{
+setSimulator();
+}
+
 void c302NervousSystem::setSimulator(const std::string & simFileName, 
 const std::string & simClassName, 
 float timeStep)
