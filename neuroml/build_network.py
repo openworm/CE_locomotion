@@ -17,9 +17,42 @@ from neuroml import (
     ContinuousConnectionInstanceW,
     ElectricalConnectionInstanceW,
     IncludeType,
+    Property,
+    Instance,
+    Location,
 )
 
 import utils
+
+colors = {
+    "DA": "1 0 0",
+    "DB": "1 0.5 0.5",
+    "DD": "1 0 1",
+    "VA": "1 1 0",
+    "VB": "1 0.5 0",
+    "VD": "1 0 0.5",
+}
+
+origins = {
+    "DA": [1, -1],
+    "DB": [1, 0],
+    "DD": [1, 1],
+    "VA": [-1, -1],
+    "VB": [-1, 0],
+    "VD": [-1, 1],
+}
+
+spacing = 0.2
+
+
+def append_pop_properties(pop):
+    pop.properties.append(Property("color", colors[pop.component]))
+    pop.type = "populationList"
+    for i in range(pop.size):
+        inst = Instance(i)
+        o = origins[pop.component]
+        inst.location = Location(o[0] * 100, o[1] * 100, i * 100)
+        pop.instances.append(inst)
 
 
 def run_main(args=None):
@@ -51,8 +84,8 @@ def run(a=None, **kwargs):
     utils.makeCellXml(network_json_data, cellX_filename)
 
     nml_doc = NeuroMLDocument(id="Worm2D")
-    #nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
-    #nml_doc.includes.append(IncludeType(href=cellX_filename))
+    # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
+    # nml_doc.includes.append(IncludeType(href=cellX_filename))
 
     add_gapJunctions = True
     add_continuousProjections = True
@@ -77,6 +110,9 @@ def run(a=None, **kwargs):
         pop0 = Population(
             id=utils.get_pop_id(population_structure), component=cell_comp, size=size0
         )
+
+        append_pop_properties(pop0)
+
         net.populations.append(pop0)
 
         pre_pop = utils.get_pop_id(population_structure)
@@ -156,6 +192,7 @@ def run(a=None, **kwargs):
                 component=cell_comp_loc,
                 size=size0,
             )
+            append_pop_properties(pop0)
             net.populations.append(pop0)
 
         if add_continuousProjections:
@@ -192,6 +229,7 @@ def run(a=None, **kwargs):
                 component=cell_name,
                 size=size0,
             )
+            append_pop_properties(pop0)
             net.populations.append(pop0)
 
         if add_continuousProjections:
@@ -240,7 +278,12 @@ def run(a=None, **kwargs):
 
             nml_doc.pulse_generators.append(pg)
 
-            exp_input = ExplicitInput(target="%s[%i]" % (pop_id, pre), input=pg.id)
+            exp_input = ExplicitInput(
+                target=utils.get_cell_id_string(pop_id, pop_id.replace("Pop", ""), pre)[
+                    3:
+                ],
+                input=pg.id,
+            )
 
             net.explicit_inputs.append(exp_input)
 

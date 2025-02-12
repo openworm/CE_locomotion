@@ -45,7 +45,7 @@ def run(a=None, **kwargs):
         for rel_index in rel_indices:
             cell_ids.append(
                 utils.get_cell_id_string_full(
-                    population_structure, pop_id, None, rel_index
+                    population_structure, pop_id, pop_id.replace("Pop", ""), rel_index
                 )
             )
 
@@ -82,30 +82,34 @@ def run(a=None, **kwargs):
         print("Displaying/saving cell %s" % cell_id_val)
 
         # if '0' in cell_id:  # only display first - all in pops are same...
-        if "[" in cell_id:  # display all...
-            ls.add_line_to_display(
-                disp0,
-                cell_id_val.replace("Pop", ""),
-                cell_id_val + "/state",
-                "1",
-                colour,
-                timeScale="1ms",
-            )
-            ls.add_column_to_output_file(
-                of0, cell_id_val.replace("Pop", ""), cell_id_val + "/state"
-            )
+        # if "[" in cell_id:  # display all...
+        ls.add_line_to_display(
+            disp0,
+            cell_id_val.replace("Pop", "").replace("/", "_"),
+            cell_id_val + "/state",
+            "1",
+            colour,
+            timeScale="1ms",
+        )
+        ls.add_column_to_output_file(
+            of0,
+            cell_id_val.replace("Pop", "").replace("/", "_"),
+            cell_id_val + "/state",
+        )
 
-            ls.add_line_to_display(
-                disp1,
-                cell_id_val.replace("Pop", ""),
-                cell_id_val + "/output",
-                "1",
-                colour,
-                timeScale="1ms",
-            )
-            ls.add_column_to_output_file(
-                of1, cell_id_val.replace("Pop", ""), cell_id_val + "/output"
-            )
+        ls.add_line_to_display(
+            disp1,
+            cell_id_val.replace("Pop", "").replace("/", "_"),
+            cell_id_val + "/output",
+            "1",
+            colour,
+            timeScale="1ms",
+        )
+        ls.add_column_to_output_file(
+            of1,
+            cell_id_val.replace("Pop", "").replace("/", "_"),
+            cell_id_val + "/output",
+        )
 
     # ls.add_column_to_output_file(of0, "v", "AllCells[0]/v")
     # ls.add_column_to_output_file(of0, "v", "PopDA[0]/v")
