@@ -1,5 +1,5 @@
 target: LEMS_Worm2D.xml
-engine: jNeuroML
+engine: jNeuroML_NEURON
 
 mep: .test.w2d.mep
 experiments:
@@ -13,7 +13,7 @@ experiments:
         spike detection: 
           method: threshold
           threshold: -5
-        tolerance: 9.597850081593455e-05
+        tolerance: 0.00
   state3:
     observables:
       spike times:
@@ -24,7 +24,7 @@ experiments:
         spike detection: 
           method: threshold
           threshold: -10.55
-        tolerance: 0.0007246639370991548
+        tolerance: 0.00
   state54:
     observables:
       spike times:
@@ -35,5 +35,5 @@ experiments:
         spike detection: 
           method: threshold
           threshold: 3.35
-        tolerance: 0.00043834655678770925
+        tolerance: 0.00
 

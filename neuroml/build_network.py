@@ -17,9 +17,44 @@ from neuroml import (
     ContinuousConnectionInstanceW,
     ElectricalConnectionInstanceW,
     IncludeType,
+    Property,
+    Instance,
+    Location,
+    InputW,
+    InputList,
 )
 
 import utils
+
+colors = {
+    "DA": ".82 .7 .43",
+    "DB": ".43 .69 .67",
+    "DD": ".24 .32 .62",
+    "VA": ".52 .33 .17",
+    "VB": ".17 .4 .37",
+    "VD": ".65 .78 .9",
+}
+
+origins = {
+    "DA": [1, -1],
+    "DB": [1, 0],
+    "DD": [1, 1],
+    "VA": [-1, -1],
+    "VB": [-1, 0],
+    "VD": [-1, 1],
+}
+
+spacing = 0.2
+
+
+def append_pop_properties(pop):
+    pop.properties.append(Property("color", colors[pop.component]))
+    pop.type = "populationList"
+    for i in range(pop.size):
+        inst = Instance(i)
+        o = origins[pop.component]
+        inst.location = Location(o[0] * 100, o[1] * 100, i * 100)
+        pop.instances.append(inst)
 
 
 def run_main(args=None):
@@ -51,8 +86,8 @@ def run(a=None, **kwargs):
     utils.makeCellXml(network_json_data, cellX_filename)
 
     nml_doc = NeuroMLDocument(id="Worm2D")
-    nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
-    nml_doc.includes.append(IncludeType(href=cellX_filename))
+    # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
+    # nml_doc.includes.append(IncludeType(href=cellX_filename))
 
     add_gapJunctions = True
     add_continuousProjections = True
@@ -77,6 +112,9 @@ def run(a=None, **kwargs):
         pop0 = Population(
             id=utils.get_pop_id(population_structure), component=cell_comp, size=size0
         )
+
+        append_pop_properties(pop0)
+
         net.populations.append(pop0)
 
         pre_pop = utils.get_pop_id(population_structure)
@@ -156,6 +194,7 @@ def run(a=None, **kwargs):
                 component=cell_comp_loc,
                 size=size0,
             )
+            append_pop_properties(pop0)
             net.populations.append(pop0)
 
         if add_continuousProjections:
@@ -192,6 +231,7 @@ def run(a=None, **kwargs):
                 component=cell_name,
                 size=size0,
             )
+            append_pop_properties(pop0)
             net.populations.append(pop0)
 
         if add_continuousProjections:
@@ -240,11 +280,44 @@ def run(a=None, **kwargs):
 
             nml_doc.pulse_generators.append(pg)
 
-            exp_input = ExplicitInput(target="%s[%i]" % (pop_id, pre), input=pg.id)
+            input_list = InputList(id="OneStim", component=pg.id, populations=pop_id)
 
-            net.explicit_inputs.append(exp_input)
+            net.input_lists.append(input_list)
 
-    nml_file = "testnet.nml"
+            input_w = InputW(
+                id=0,
+                target=utils.get_cell_id_string(pop_id, pop_id.replace("Pop", ""), pre),
+                destination="synapses",
+                weight=1,
+            )
+
+            input_list.input_ws.append(input_w)
+
+        pg_ext = PulseGenerator(
+            id="extStim",
+            delay="0s",
+            duration="10000s",
+            amplitude="1 pA",
+        )
+
+        nml_doc.pulse_generators.append(pg_ext)
+        for pop in net.populations:
+            input_list = InputList(
+                id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
+            )
+
+            net.input_lists.append(input_list)
+            for i in range(pop.size):
+                input_w = InputW(
+                    id=i,
+                    target=utils.get_cell_id_string(pop.id, pop.component, i),
+                    destination="synapses",
+                    weight=0,
+                )
+
+                input_list.input_ws.append(input_w)
+
+    nml_file = "Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
 
     print("Written network file to: " + nml_file)
