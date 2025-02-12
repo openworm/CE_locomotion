@@ -2,7 +2,7 @@
     <pulseGenerator id="pulseGen_0" delay="20s" duration="10s" amplitude="10.000000 pA"/>
     <network id="Worm2DNet">
         <population id="PopDA" component="DA" size="10" type="populationList">
-            <property tag="color" value="1 0 0"/>
+            <property tag="color" value=".82 .7 .43"/>
             <instance id="0">
                 <location x="100.0" y="-100.0" z="0.0"/>
             </instance>
@@ -35,7 +35,7 @@
             </instance>
         </population>
         <population id="PopDB" component="DB" size="10" type="populationList">
-            <property tag="color" value="1 0.5 0.5"/>
+            <property tag="color" value=".43 .69 .67"/>
             <instance id="0">
                 <location x="100.0" y="0.0" z="0.0"/>
             </instance>
@@ -68,7 +68,7 @@
             </instance>
         </population>
         <population id="PopDD" component="DD" size="10" type="populationList">
-            <property tag="color" value="1 0 1"/>
+            <property tag="color" value=".24 .32 .62"/>
             <instance id="0">
                 <location x="100.0" y="100.0" z="0.0"/>
             </instance>
@@ -101,7 +101,7 @@
             </instance>
         </population>
         <population id="PopVA" component="VA" size="10" type="populationList">
-            <property tag="color" value="1 1 0"/>
+            <property tag="color" value=".52 .33 .17"/>
             <instance id="0">
                 <location x="-100.0" y="-100.0" z="0.0"/>
             </instance>
@@ -134,7 +134,7 @@
             </instance>
         </population>
         <population id="PopVB" component="VB" size="10" type="populationList">
-            <property tag="color" value="1 0.5 0"/>
+            <property tag="color" value=".17 .4 .37"/>
             <instance id="0">
                 <location x="-100.0" y="0.0" z="0.0"/>
             </instance>
@@ -167,7 +167,7 @@
             </instance>
         </population>
         <population id="PopVD" component="VD" size="10" type="populationList">
-            <property tag="color" value="1 0 0.5"/>
+            <property tag="color" value=".65 .78 .9"/>
             <instance id="0">
                 <location x="-100.0" y="100.0" z="0.0"/>
             </instance>
@@ -447,6 +447,8 @@
             <continuousConnectionInstanceW id="8" preCell="../PopVD/8/VD" postCell="../PopVB/8/VB" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
             <continuousConnectionInstanceW id="9" preCell="../PopVD/9/VD" postCell="../PopVB/9/VB" preComponent="silentSyn" postComponent="neuron_to_neuron_syn_x" weight="-1.110075444163887"/>
         </continuousProjection>
-        <explicitInput target="PopDA/0/DA" input="pulseGen_0"/>
+        <inputList id="OneStim" population="PopDA" component="pulseGen_0">
+            <inputW id="0" target="../PopDA/0/DA" destination="synapses" weight="1.0"/>
+        </inputList>
     </network>
 </neuroml>
