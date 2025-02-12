@@ -293,6 +293,30 @@ def run(a=None, **kwargs):
 
             input_list.input_ws.append(input_w)
 
+        pg_ext = PulseGenerator(
+            id="extStim",
+            delay="0s",
+            duration="10000s",
+            amplitude="1 pA",
+        )
+
+        nml_doc.pulse_generators.append(pg_ext)
+        for pop in net.populations:
+            input_list = InputList(
+                id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
+            )
+
+            net.input_lists.append(input_list)
+            for i in range(pop.size):
+                input_w = InputW(
+                    id=i,
+                    target=utils.get_cell_id_string(pop.id, pop.component, i),
+                    destination="synapses",
+                    weight=0,
+                )
+
+                input_list.input_ws.append(input_w)
+
     nml_file = "Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
 
