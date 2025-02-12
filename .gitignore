@@ -20,3 +20,9 @@
 /test_files/test_py_cpp
 /neuroml/__pycache__
 /tests2
+/neuroml/*.mod
+/neuroml/arm64
+*_nrn.py
+/neuroml/*.gv
+/neuroml/Worm2DNet.gv.png
+/neuroml/x86_64
