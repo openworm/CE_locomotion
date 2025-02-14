@@ -25,10 +25,10 @@ WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
 NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h
 	g++ -c -O3 -flto NervousSystem.cpp
-owSignalSimulator.o: neuroml/owSignalSimulator.cpp neuroml/owSignalSimulator.h neuroml/owINeuronSimulator.h
-	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) neuroml/owSignalSimulator.cpp
-c302NervousSystem.o: neuroml/c302NervousSystem.cpp neuroml/c302NervousSystem.h NervousSystemBase.h neuroml/owSignalSimulator.h
-	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/c302NervousSystem.cpp
+owSignalSimulator.o: neuromlLocal/owSignalSimulator.cpp neuromlLocal/owSignalSimulator.h neuromlLocal/owINeuronSimulator.h
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) neuromlLocal/owSignalSimulator.cpp
+c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/c302NervousSystem.h NervousSystemBase.h neuromlLocal/owSignalSimulator.h
+	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuromlLocal/c302NervousSystem.cpp
 StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
 	g++ -c -O3 -flto StretchReceptor.cpp
 Muscles.o: Muscles.cpp Muscles.h VectorMatrix.h random.h

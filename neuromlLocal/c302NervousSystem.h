@@ -12,7 +12,8 @@ c302NervousSystem(const std::string & simFileName);
 c302NervousSystem();
 
 void setSimulator(
-const std::string & simFileName = "neuroml.main_sim", 
+const std::string & simFileName = "neuromlLocal.main_sim",
+//const std::string & simFileName = "main_sim",
 const std::string & simClassName = "Worm2DNRNSimulation", 
 float timeStep=0.005);
 

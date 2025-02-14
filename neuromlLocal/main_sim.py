@@ -28,18 +28,27 @@ class Worm2DNRNSimulation:
 
         import sys
         import sysconfig
-
+        import os
+        #sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
+        current = os.path.dirname(os.path.realpath(__file__))
+        sim_dir = "neuromlLocal"
+        sys.path.append(current) 
+        #sys.path.append(current + '/' + sim_dir)
         print("sys path is : ", sys.path)
-
+        #sys.exit()  
+        #run_dir = "./"
+        #sim_dir = "simulations/C1_Muscles_2025-02-12_12-13-48"
+        #sim_dir = "neuromlLocal"
+        #sim_dir = "./"
+        #run_dir = sim_dir
         run_dir = "./"
-        sim_dir = "simulations/C1_Muscles_2025-02-12_12-13-48"
         command = "nrnivmodl %s" % sim_dir
         # command = 'nrnivmodl .'
         announce("Compiling NMODL files for NEURON...")
+        
         try:
             from pyneuroml import pynml
-
             pynml.execute_command_in_dir_with_realtime_output(
                 command, run_dir, prefix="nrnivmodl >> "
             )
@@ -58,9 +67,10 @@ class Worm2DNRNSimulation:
             # from simulations.LEMS_c302_nrn import NeuronSimulation
             import importlib
 
-            nsp = importlib.import_module(
-                "simulations.C1_Muscles_2025-02-12_12-13-48.LEMS_c302_nrn"
-            )
+            #nsp = importlib.import_module("simulations.C1_Muscles_2025-02-12_12-13-48.LEMS_c302_nrn")
+            
+            nsp = importlib.import_module("LEMS_Worm2D_nrn")
+
             # nsp = importlib.import_module("simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn")
             # nsp = importlib.import_module("LEMS_c302_nrn")
             # from LEMS_c302_nrn import NeuronSimulation
@@ -76,6 +86,7 @@ class Worm2DNRNSimulation:
         # sys.exit()
         # self.ns = NeuronSimulation(self.tstop, dt)
         self.ns = nsp.NeuronSimulation(self.tstop, dt)
+        self.ns.sim_time = 10
         print_(
             "Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."
             % (self.tstop, dt)
@@ -88,76 +99,9 @@ class Worm2DNRNSimulation:
 
         print_("< Current NEURON time: %s ms" % self.h.t)
 
-        values = []
-        vars_read = []
-        for i in range(24):
-            var = "a_MDR%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
-            try:
-                val = getattr(self.h, var)[0].soma.cai
-            except AttributeError as e:
-                print(
-                    "Problem passing neuronal output of %s to muscle in Sibernetic: %s"
-                    % (var, e)
-                )
-                continue
-                val = 0
-            scaled_val = self._scale(val)
-            values.append(scaled_val)
-            vars_read.append(var)
-        for i in range(24):
-            var = "a_MVR%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
-            if i == 23:
-                var = "a_MVR23"
-            try:
-                val = getattr(self.h, var)[0].soma.cai
-            except AttributeError as e:
-                print(
-                    "Problem passing neuronal output of %s to muscle in Sibernetic: %s"
-                    % (var, e)
-                )
-                val = 0
-                continue
-            scaled_val = self._scale(val)
-            values.append(scaled_val)
-            vars_read.append(var)
-        for i in range(24):
-            var = "a_MVL%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
-            try:
-                val = getattr(self.h, var)[0].soma.cai
-            except AttributeError as e:
-                if var == "a_MVL24":
-                    extra = (
-                        "Note: not an issue as no muscle MVL24 in the real C. elegans"
-                    )
-                else:
-                    extra = ""
-                print(
-                    "Problem passing output of %s to muscle in Sibernetic: %s %s"
-                    % (var, e, extra)
-                )
-
-                val = 0
-                continue
-            scaled_val = self._scale(val)
-            values.append(scaled_val)
-            vars_read.append(var)
-        for i in range(24):
-            var = "a_MDL%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
-            try:
-                val = getattr(self.h, var)[0].soma.cai
-            except AttributeError as e:
-                print(
-                    "Problem passing neuronal output of %s to muscle in Sibernetic: %s"
-                    % (var, e)
-                )
-                val = 0
-                continue
-            scaled_val = self._scale(val)
-            values.append(scaled_val)
-            vars_read.append(var)
-
-        print(values[0], values[1], values[2])
-        # values = [6,7,8]
+        #values = []
+        
+        values = [6,7,8]
         return values
 
     def save_results(self):
