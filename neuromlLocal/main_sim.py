@@ -29,26 +29,28 @@ class Worm2DNRNSimulation:
         import sys
         import sysconfig
         import os
-        #sys.path.insert(0,sysconfig.get_paths()["purelib"])
+
+        # sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
         current = os.path.dirname(os.path.realpath(__file__))
         sim_dir = "neuromlLocal"
-        sys.path.append(current) 
-        #sys.path.append(current + '/' + sim_dir)
+        sys.path.append(current)
+        # sys.path.append(current + '/' + sim_dir)
         print("sys path is : ", sys.path)
-        #sys.exit()  
-        #run_dir = "./"
-        #sim_dir = "simulations/C1_Muscles_2025-02-12_12-13-48"
-        #sim_dir = "neuromlLocal"
-        #sim_dir = "./"
-        #run_dir = sim_dir
+        # sys.exit()
+        # run_dir = "./"
+        # sim_dir = "simulations/C1_Muscles_2025-02-12_12-13-48"
+        # sim_dir = "neuromlLocal"
+        # sim_dir = "./"
+        # run_dir = sim_dir
         run_dir = "./"
         command = "nrnivmodl %s" % sim_dir
         # command = 'nrnivmodl .'
         announce("Compiling NMODL files for NEURON...")
-        
+
         try:
             from pyneuroml import pynml
+
             pynml.execute_command_in_dir_with_realtime_output(
                 command, run_dir, prefix="nrnivmodl >> "
             )
@@ -67,8 +69,8 @@ class Worm2DNRNSimulation:
             # from simulations.LEMS_c302_nrn import NeuronSimulation
             import importlib
 
-            #nsp = importlib.import_module("simulations.C1_Muscles_2025-02-12_12-13-48.LEMS_c302_nrn")
-            
+            # nsp = importlib.import_module("simulations.C1_Muscles_2025-02-12_12-13-48.LEMS_c302_nrn")
+
             nsp = importlib.import_module("LEMS_Worm2D_nrn")
 
             # nsp = importlib.import_module("simulations.C1_Muscles_2025-02-04_14-04-08.LEMS_c302_nrn")
@@ -99,9 +101,9 @@ class Worm2DNRNSimulation:
 
         print_("< Current NEURON time: %s ms" % self.h.t)
 
-        #values = []
-        
-        values = [6,7,8]
+        # values = []
+
+        values = [6, 7, 8]
         return values
 
     def save_results(self):
@@ -122,5 +124,6 @@ class Worm2DNRNSimulation:
 if __name__ == "__main__":
     w = Worm2DNRNSimulation()
     w.set_timestep(0.005)
-    # for _ in range(0,10):
-    #   w.run()
+    for _ in range(0,10000):
+        w.run()
+    w.save_results()
