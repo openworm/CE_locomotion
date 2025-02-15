@@ -13,6 +13,9 @@ def announce(message):
     )
 
 
+
+
+
 class Worm2DNRNSimulation:
     max_ca = 4e-7
     max_ca_found = -1
@@ -33,17 +36,21 @@ class Worm2DNRNSimulation:
         # sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
         current = os.path.dirname(os.path.realpath(__file__))
-        sim_dir = "neuromlLocal"
-        sys.path.append(current)
+        #print(current)
+        #sys.exit()
+        sim_dir = current
+        #sim_dir = "neuromlLocal"
+        #sys.path.append(current)
         # sys.path.append(current + '/' + sim_dir)
         print("sys path is : ", sys.path)
         # sys.exit()
         # run_dir = "./"
         # sim_dir = "simulations/C1_Muscles_2025-02-12_12-13-48"
         # sim_dir = "neuromlLocal"
-        # sim_dir = "./"
+        #sim_dir = "./"
         # run_dir = sim_dir
-        run_dir = "./"
+        #run_dir = "./"
+        run_dir = sim_dir
         command = "nrnivmodl %s" % sim_dir
         # command = 'nrnivmodl .'
         announce("Compiling NMODL files for NEURON...")
@@ -102,8 +109,30 @@ class Worm2DNRNSimulation:
         print_("< Current NEURON time: %s ms" % self.h.t)
 
         # values = []
+        pop_list = ['m_DA_PopDA', 'm_DB_PopDB', 'm_DD_PopDD', 'm_VD_PopVD', 'm_VA_PopVA', 'm_VB_PopVB']
 
-        values = [6, 7, 8]
+        values = []
+        vars_read = []
+        for pop in pop_list:
+            for i in range(10):
+                #var = 'm_DB_PopDB'
+                #var = "a_MDR%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
+                try:
+                    #val = getattr(self.h, var)[0].soma.cai
+                    val = getattr(self.h, pop)[i].output
+                except AttributeError as e:
+                    print(
+                        "Problem passing neuronal output of %s to muscle in Sibernetic: %s"
+                        % (pop, e)
+                    )
+                    continue
+                    #val = 0
+                #scaled_val = self._scale(val)
+                values.append(val)
+                vars_read.append(pop + '_' + str(i))
+
+        #values = [6, 7, 8]
+        #print(values)
         return values
 
     def save_results(self):
@@ -120,10 +149,28 @@ class Worm2DNRNSimulation:
             )
         return scaled
 
+def listToStr(list_val):
+    out_str = ''
+    for val in list_val:
+        out_str = out_str + ' ' + str(val)
+    return out_str  
 
 if __name__ == "__main__":
     w = Worm2DNRNSimulation()
     w.set_timestep(0.005)
-    for _ in range(0,10000):
-        w.run()
+    #out_vals = []
+    #time_vals = []
+    fout = open('Worm2D.outputs-test.dat', 'w')
+    for i in range(0,10000):
+        out_str = str(i) + listToStr(w.run())
+        #time_vals.append(i)
+        #out_vals.append(w.run())
+        #f_outputs_file_f2.write(i)
+        #f_outputs_file_f2.write(w.run())
+        fout.write(out_str)
+        fout.write('\n')
+    #import numpy as np
+    #out_arr = np.array(out_vals)
+
+    fout.close()    
     w.save_results()
