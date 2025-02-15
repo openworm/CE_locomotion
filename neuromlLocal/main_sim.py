@@ -95,7 +95,7 @@ class Worm2DNRNSimulation:
         # sys.exit()
         # self.ns = NeuronSimulation(self.tstop, dt)
         self.ns = nsp.NeuronSimulation(self.tstop, dt)
-        self.ns.sim_time = 10
+        #self.ns.sim_time = 10
         print_(
             "Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."
             % (self.tstop, dt)
@@ -158,15 +158,12 @@ def listToStr(list_val):
 if __name__ == "__main__":
     w = Worm2DNRNSimulation()
     w.set_timestep(0.005)
+    w.ns.sim_time = 10
     #out_vals = []
     #time_vals = []
     fout = open('Worm2D.outputs-test.dat', 'w')
     for i in range(0,10000):
         out_str = str(i) + listToStr(w.run())
-        #time_vals.append(i)
-        #out_vals.append(w.run())
-        #f_outputs_file_f2.write(i)
-        #f_outputs_file_f2.write(w.run())
         fout.write(out_str)
         fout.write('\n')
     #import numpy as np

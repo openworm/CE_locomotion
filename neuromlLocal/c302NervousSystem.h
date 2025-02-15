@@ -1,6 +1,6 @@
 #include "../NervousSystemBase.h"
 #include "owSignalSimulator.h"
-
+#include "neuroml_utils.h"
 
 
 class c302NervousSystem : public NervousSystemBase
@@ -43,7 +43,8 @@ void EulerStep(double );
  double ElectricalSynapseWeight(int from, int to) {}
 // void InternalSetElectricalSynapseWeight(int from, int to, double value) {}
  void SetElectricalSynapseWeight(int n1, int n2, double value) {}
- 
+ const std::vector<float> & getOutputValues() const {return output_value;}
+ ostream & writeOutputValues(ostream & os) {return writeVector(os,output_value);}
 
 private:
 
