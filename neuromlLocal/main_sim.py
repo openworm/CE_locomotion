@@ -1,3 +1,6 @@
+
+
+
 def print_(msg):
     pre = "Python >> "
     print("%s %s" % (pre, msg.replace("\n", "\n" + pre)))
@@ -33,6 +36,8 @@ class Worm2DNRNSimulation:
         import sys
         import sysconfig
         import os
+
+        
 
         # sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
@@ -106,6 +111,18 @@ class Worm2DNRNSimulation:
             "Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."
             % (self.tstop, dt)
         )
+    
+    def set_neuron_input(self, i, weight):
+        stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
+        neurons_per_unit = 10
+        stim_pop_num = int(i / neurons_per_unit)
+        neuron_number = i % 10
+        if stim_pop_num < len(stim_pop_list):    
+           getattr(self.h, 'ExtStimPop' + stim_pop_list[stim_pop_num] + '_' + str(neuron_number)).weight = weight  
+           return
+        print('neuron number too large')
+        import sys
+        sys.exit()
 
     def set_input_weights(self, weight):
 
@@ -180,7 +197,8 @@ if __name__ == "__main__":
     for i in range(0,10000):
         out_str = str(i) + listToStr(w.run())
         if i==5000:
-           w.set_input_weights(1.0) 
+           #w.set_input_weights(1.0)
+           w.set_neuron_input(53, 1.0)
         fout.write(out_str)
         fout.write('\n')
     #import numpy as np

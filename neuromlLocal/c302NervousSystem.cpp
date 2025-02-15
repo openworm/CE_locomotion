@@ -17,12 +17,12 @@ void c302NervousSystem::setSimulator(const std::string & simFileName,
 const std::string & simClassName, 
 float timeStep)
 {   if (simulation!=nullptr) delete simulation;
-    simulation = new SignalSimulator(simFileName, simClassName, timeStep);
+    simulation = new SignalSimulatorForWorm2D(simFileName, simClassName, timeStep);
 }
 
 void c302NervousSystem::SetNeuronExternalInput(int i, double value)
 {
-return;
+simulation->setNeuronInput(i,value);
 }
 
 double c302NervousSystem::NeuronOutput(int i)

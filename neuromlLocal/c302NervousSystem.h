@@ -1,5 +1,5 @@
 #include "../NervousSystemBase.h"
-#include "owSignalSimulator.h"
+#include "owSignalSimulatorForWorm2D.h"
 #include "neuroml_utils.h"
 
 
@@ -48,7 +48,7 @@ void EulerStep(double );
 
 private:
 
-SignalSimulator *simulation;
+SignalSimulatorForWorm2D *simulation;
 std::vector<float> output_value;
 std::vector<float> input_value;
 
