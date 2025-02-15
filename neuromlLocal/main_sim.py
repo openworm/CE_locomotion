@@ -22,6 +22,7 @@ class Worm2DNRNSimulation:
 
     def __init__(self):
         self.tstop = 1
+        print("Worm2DNRNSimulation init called")
         return
 
     def set_timestep(self, dt):
@@ -95,11 +96,24 @@ class Worm2DNRNSimulation:
         # sys.exit()
         # self.ns = NeuronSimulation(self.tstop, dt)
         self.ns = nsp.NeuronSimulation(self.tstop, dt)
-        #self.ns.sim_time = 10
+        self.ns.sim_time = 10
+        
+        #self.h.OneStim_0.weight = 0.0
+        getattr(self.h, 'OneStim_0').weight = 0.0
+        
+
         print_(
             "Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."
             % (self.tstop, dt)
         )
+
+    def set_input_weights(self, weight):
+
+        stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
+        for stim_pop in stim_pop_list:
+            for i in range(10):
+                getattr(self.h, 'ExtStimPop' + stim_pop + '_' + str(i)).weight = weight
+        
 
     def run(self, skip_to_time=-1):
         print_("> Current NEURON time: %s ms" % self.h.t)
@@ -107,7 +121,7 @@ class Worm2DNRNSimulation:
         self.ns.advance()
 
         print_("< Current NEURON time: %s ms" % self.h.t)
-
+       
         # values = []
         pop_list = ['m_DA_PopDA', 'm_DB_PopDB', 'm_DD_PopDD', 'm_VD_PopVD', 'm_VA_PopVA', 'm_VB_PopVB']
 
@@ -158,12 +172,15 @@ def listToStr(list_val):
 if __name__ == "__main__":
     w = Worm2DNRNSimulation()
     w.set_timestep(0.005)
-    w.ns.sim_time = 10
+    w.set_input_weights(0.0)
+    #w.ns.sim_time = 10
     #out_vals = []
     #time_vals = []
     fout = open('Worm2D.outputs-test.dat', 'w')
     for i in range(0,10000):
         out_str = str(i) + listToStr(w.run())
+        if i==5000:
+           w.set_input_weights(1.0) 
         fout.write(out_str)
         fout.write('\n')
     #import numpy as np
