@@ -37,11 +37,10 @@ class Worm2DNRNSimulation:
         import sysconfig
         import os
 
-        
-
         # sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
-        current = os.path.dirname(os.path.realpath(__file__))
+        current = os.path.dirname(os.path.realpath(__file__)) #location of this file!
+        sys.path.append(current)
         #print(current)
         #sys.exit()
         sim_dir = current
@@ -55,8 +54,8 @@ class Worm2DNRNSimulation:
         # sim_dir = "neuromlLocal"
         #sim_dir = "./"
         # run_dir = sim_dir
-        #run_dir = "./"
-        run_dir = sim_dir
+        run_dir = "./"
+        #run_dir = sim_dir
         command = "nrnivmodl %s" % sim_dir
         # command = 'nrnivmodl .'
         announce("Compiling NMODL files for NEURON...")
