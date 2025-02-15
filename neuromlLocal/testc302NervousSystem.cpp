@@ -11,6 +11,7 @@ c302NervousSystem n("main_sim");
 
 ofstream fout("testc302NervousSystem-output.dat");
 for (int i=0;i<10000;i++){
+if (i==5000) n.SetNeuronExternalInput(53, 1);
 n.EulerStep(1);
 fout << i;
 n.writeOutputValues(fout);
