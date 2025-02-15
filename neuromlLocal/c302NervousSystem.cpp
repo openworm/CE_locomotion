@@ -22,7 +22,7 @@ float timeStep)
 
 void c302NervousSystem::SetNeuronExternalInput(int i, double value)
 {
-simulation->setNeuronInput(i,value);
+simulation->setNeuronInput(i-1,value);
 }
 
 double c302NervousSystem::NeuronOutput(int i)
