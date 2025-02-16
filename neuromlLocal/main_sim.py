@@ -16,7 +16,21 @@ def announce(message):
     )
 
 
+def get_pop_number(i):
+    stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
+    neurons_per_unit = 10
+    if (i>-0.5) & (i<len(stim_pop_list)*neurons_per_unit):        
+        stim_pop_num = int(i / neurons_per_unit)
+        neuron_number = int(i % 10)
+        return stim_pop_list[stim_pop_num], neuron_number
+    print('neuron number out of bounds')
+    import sys
+    sys.exit()
 
+def get_neuron_number(pop, i):
+    neurons_per_unit = 10
+    stim_pop_list = {'DA':0, 'DB':1, 'DD':2, 'VD':3, 'VA':4, 'VB':5}
+    return (stim_pop_list[pop]*neurons_per_unit) + i
 
 
 class Worm2DNRNSimulation:
@@ -111,19 +125,30 @@ class Worm2DNRNSimulation:
             % (self.tstop, dt)
         )
     
-    def set_neuron_input(self, i, weight):
-        stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
-        neurons_per_unit = 10
-        stim_pop_num = int(i / neurons_per_unit)
-        neuron_number = i % 10
-        if stim_pop_num < len(stim_pop_list):    
-           getattr(self.h, 'ExtStimPop' + stim_pop_list[stim_pop_num] + '_' + str(neuron_number)).weight = weight  
-           return
-        print('neuron number too large')
-        import sys
-        sys.exit()
 
-    def set_input_weights(self, weight):
+
+    def set_neuron_input(self, i, weight):
+        sp, nn = get_pop_number(i)   
+        getattr(self.h, 'ExtStimPop' + sp + '_' + str(nn)).weight = weight  
+        return
+        
+
+    def set_synaptic_weight(self, pre, post, weight):
+        pre_pop, pre_neuron_number = get_pop_number(pre)
+        post_pop, post_neuron_number = get_pop_number(post)
+        syn_str = 'syn_NC_Pop' + pre_pop + '_Pop' + post_pop + '_silentSyn_'
+        try:
+            getattr(self.h, syn_str + 'silentSyn_pre')[pre_neuron_number].weight = weight
+            getattr(self.h, syn_str + 'neuron_to_neuron_syn_x_post')[post_neuron_number].weight = weight
+        except AttributeError as e:
+            print(
+                "No such connection: %s " % e)
+                
+
+        #syn_NC_PopDD_PopDA_silentSyn_silentSyn_pre[4].weight 
+        #syn_NC_PopDD_PopDA_silentSyn_neuron_to_neuron_syn_x_post[4].weight
+
+    def set_neuron_inputs(self, weight):
 
         stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
         for stim_pop in stim_pop_list:
@@ -188,7 +213,7 @@ def listToStr(list_val):
 if __name__ == "__main__":
     w = Worm2DNRNSimulation()
     w.set_timestep(0.005)
-    w.set_input_weights(0.0)
+    w.set_neuron_inputs(0.0)
     #w.ns.sim_time = 10
     #out_vals = []
     #time_vals = []
@@ -196,8 +221,13 @@ if __name__ == "__main__":
     for i in range(0,10000):
         out_str = str(i) + listToStr(w.run())
         if i==5000:
+           pre_pop = 'DD'
+           post_pop = 'DA'
+           pre = get_neuron_number(pre_pop, 5)
+           post = get_neuron_number(post_pop, 5)
+           w.set_synaptic_weight(pre, post, 3)
            #w.set_input_weights(1.0)
-           w.set_neuron_input(53, 1.0)
+           #w.set_neuron_input(53, 1.0)
         fout.write(out_str)
         fout.write('\n')
     #import numpy as np

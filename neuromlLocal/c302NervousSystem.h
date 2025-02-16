@@ -1,10 +1,10 @@
 #include "../NervousSystemBase.h"
-#include "../NervousSystem.h"
+//#include "../NervousSystem.h"
 #include "owSignalSimulatorForWorm2D.h"
 #include "neuroml_utils.h"
 
 
-class c302NervousSystem : public NervousSystem
+class c302NervousSystem : public NervousSystemBase
 {
 
 public:
@@ -21,10 +21,11 @@ float timeStep=0.005);
 void SetNeuronExternalInput(int i, double value);
 double NeuronOutput(int i);
 void EulerStep(double );
+void SetChemicalSynapseWeight(int from, int to, double value);
 
 ~c302NervousSystem();
 
-/* // int CircuitSize(void)  {}
+// int CircuitSize(void)  {}
  void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) {}
  double NeuronState(int i) {}
 // void SetNeuronState(int i, double value) {}
@@ -38,10 +39,10 @@ void EulerStep(double );
  void SetNeuronTimeConstant(int i, double value) {}
 // double NeuronExternalInput(int i) {}
  double ChemicalSynapseWeight(int from, int to) {}
- void SetChemicalSynapseWeight(int from, int to, double value) {}
+ //void SetChemicalSynapseWeight(int from, int to, double value) {}
  double ElectricalSynapseWeight(int from, int to) {}
 // void InternalSetElectricalSynapseWeight(int from, int to, double value) {}
- void SetElectricalSynapseWeight(int n1, int n2, double value) {}  */
+ void SetElectricalSynapseWeight(int n1, int n2, double value) {} 
 
  const std::vector<float> & getOutputValues() const {return output_value;}
  ostream & writeOutputValues(ostream & os) {return writeVector(os,output_value);}
