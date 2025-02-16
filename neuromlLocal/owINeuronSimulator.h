@@ -51,7 +51,7 @@ protected:
 		Py_ssize_t size = PyList_Size(pValue);
 		//std::vector<float> test(musclesNum); //needs to change! 96 is hardcoded
 		std::vector<float> test((size_t) size);
-		printf("====\n");
+		//printf("====\n");
 		for (Py_ssize_t i = 0; i < size; i++) {
 			float value;
 			value = (float)PyFloat_AsDouble(PyList_GetItem(pValue, i));

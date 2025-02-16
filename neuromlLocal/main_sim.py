@@ -132,11 +132,11 @@ class Worm2DNRNSimulation:
         
 
     def run(self, skip_to_time=-1):
-        print_("> Current NEURON time: %s ms" % self.h.t)
+        #print_("> Current NEURON time: %s ms" % self.h.t)
 
         self.ns.advance()
 
-        print_("< Current NEURON time: %s ms" % self.h.t)
+        #print_("< Current NEURON time: %s ms" % self.h.t)
        
         # values = []
         pop_list = ['m_DA_PopDA', 'm_DB_PopDB', 'm_DD_PopDD', 'm_VD_PopVD', 'm_VA_PopVA', 'm_VB_PopVB']

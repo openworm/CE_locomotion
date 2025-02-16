@@ -28,3 +28,5 @@ extern int	VectSize;
 extern string output_dir_name;
 //extern int nn(int, int);
 extern string nervousSystemName;
+extern string nervousSystemNameForSim;
+extern string nervousSystemNameForEvol;

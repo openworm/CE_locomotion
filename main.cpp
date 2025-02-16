@@ -193,7 +193,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double srb = phenotype(SR_B);
     
     
-    Worm w(phenotype, 1);
+    {Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
@@ -216,7 +216,16 @@ double save_traces(TVector<double> &v, RandomState &rs){
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
     }
+    }
 
+    nervousSystemName = nervousSystemNameForSim;
+    Worm w(phenotype, 1);
+    w.InitializeState(rs);
+    w.sr.SR_A_gain = 0.0;
+    w.sr.SR_B_gain = srb;
+    w.AVA_output =  w.AVA_inact;
+    w.AVB_output =  w.AVB_act;
+    
     //#endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -296,6 +305,7 @@ int main (int argc, const char* argv[])
     long randomseed = static_cast<long>(time(NULL));
     int pop_size = 96;
     
+
     if (argc==2) randomseed += atoi(argv[1]);
 
     bool do_evol = 1;
@@ -328,17 +338,19 @@ int main (int argc, const char* argv[])
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"--nervous")==0) 
     {
-      nervousSystemName = argv[arg+1];
+      nervousSystemNameForSim = argv[arg+1];
     }
     }
 
     }
 
-
+    
     InitializeBodyConstants();
 
     if (do_evol){
-  
+
+    
+    nervousSystemName = nervousSystemNameForEvol;
 
     TSearch s(VectSize);
 

@@ -126,8 +126,9 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
       PyErr_Print();
     Py_DECREF(dt);
     Py_DECREF(pFuncName);
-    std::cout << "Python muscle signal generator class: " << simClassName
-              << " loaded!" << std::endl;
+    /* std::cout << "Python muscle signal generator class: " << simClassName
+              << " loaded!" << std::endl; */
+    printf("[debug] Python muscle signal generator class: \"%s\" loaded!\n",  simClassName.c_str());          
   } else {
     throw std::runtime_error("Python muscle signal generator class not "
                              "callable! Try: export "
