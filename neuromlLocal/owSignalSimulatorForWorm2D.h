@@ -3,7 +3,15 @@
 class SignalSimulatorForWorm2D: public SignalSimulator{
 public:
   SignalSimulatorForWorm2D(const std::string & simFileName, 
-  const std::string & simClassName, float timeStep):SignalSimulator(simFileName,simClassName,timeStep){}
+  const std::string & simClassName, float timeStep);
   void setNeuronInput(int i, double value);
   void SetChemicalSynapseWeight(int from, int to, double value);
+  
+  ~SignalSimulatorForWorm2D();
+
+private:
+
+  void oneValFunc(const std::string & simFileName, const int & i, const double & value);
+  void twoValFunc(const std::string & simFileName, const int & i, const int & j, const double & value);
+  //PyObject *pFuncNameSetNeuronInput, *pFuncNameSetSynapticWeight;
 };
