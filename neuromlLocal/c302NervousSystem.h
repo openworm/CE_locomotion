@@ -22,6 +22,7 @@ void SetNeuronExternalInput(int i, double value);
 double NeuronOutput(int i);
 void EulerStep(double );
 void SetChemicalSynapseWeight(int from, int to, double value);
+void SetNeuronBias(int i, double value);
 
 ~c302NervousSystem();
 
@@ -32,7 +33,7 @@ void SetChemicalSynapseWeight(int from, int to, double value);
  
  void SetNeuronOutput(int i, double value) {}
  double NeuronBias(int i) {}
- void SetNeuronBias(int i, double value) {}
+ //void SetNeuronBias(int i, double value) {}
 // double NeuronGain(int i) {}
  void SetNeuronGain(int i, double value) {}
  double NeuronTimeConstant(int i) {}

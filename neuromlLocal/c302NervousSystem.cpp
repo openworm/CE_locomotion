@@ -42,5 +42,13 @@ void c302NervousSystem::SetChemicalSynapseWeight(int from, int to, double value)
     simulation->SetChemicalSynapseWeight(from-1, to-1, value);
 }
 
+void c302NervousSystem::SetNeuronBias(int i, double value)
+{
+
+simulation->strValFunc("set_neuron_parameter", "bias", i-1, value);
+
+
+}
+
 c302NervousSystem::~c302NervousSystem()
 {if (simulation!=nullptr) delete simulation;}

@@ -128,8 +128,8 @@ class Worm2DNRNSimulation:
 
 
     def set_neuron_input(self, i, weight):
-        sp, nn = get_pop_number(i)   
-        getattr(self.h, 'ExtStimPop' + sp + '_' + str(nn)).weight = weight  
+        pop_name, nn = get_pop_number(i)   
+        getattr(self.h, 'ExtStimPop' + pop_name + '_' + str(nn)).weight = weight  
         return
         
 
@@ -155,6 +155,14 @@ class Worm2DNRNSimulation:
             for i in range(10):
                 getattr(self.h, 'ExtStimPop' + stim_pop + '_' + str(i)).weight = weight
         
+    def set_neuron_parameter(self, parameter, i, val):
+        pop_name, nn = get_pop_number(i)
+        pop_full_name = 'm_' + pop_name + '_Pop' + pop_name
+        try:
+            if parameter=='bias':
+                var = getattr(self.h, pop_full_name)[nn].bias = val
+        except AttributeError as e:
+            print("Problem setting neuron parameter: %s" % e)
 
     def run(self, skip_to_time=-1):
         #print_("> Current NEURON time: %s ms" % self.h.t)
