@@ -14,7 +14,8 @@ for (int i=0;i<10000;i++){
 if (i==3000) n.SetChemicalSynapseWeight(22, 2, 1);
 
 if (i==6000) n.SetNeuronExternalInput(53, 1);
-   
+
+if (i==7000) n.SetNeuronBias(55, 1);
 
 
 n.EulerStep(1);

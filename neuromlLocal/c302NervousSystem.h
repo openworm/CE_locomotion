@@ -35,9 +35,9 @@ void SetNeuronBias(int i, double value);
  double NeuronBias(int i) {}
  //void SetNeuronBias(int i, double value) {}
 // double NeuronGain(int i) {}
- void SetNeuronGain(int i, double value) {}
+ void SetNeuronGain(int i, double value);
  double NeuronTimeConstant(int i) {}
- void SetNeuronTimeConstant(int i, double value) {}
+ void SetNeuronTimeConstant(int i, double value);
 // double NeuronExternalInput(int i) {}
  double ChemicalSynapseWeight(int from, int to) {}
  //void SetChemicalSynapseWeight(int from, int to, double value) {}

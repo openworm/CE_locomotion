@@ -97,7 +97,7 @@ const int & i, const int & j, const double & value)
 
 
 
-
+/* 
 void SignalSimulatorForWorm2D::setNeuronInput(int i, double value)
 {
     //set_neuron_input(self, i, weight):
@@ -109,7 +109,7 @@ void SignalSimulatorForWorm2D::setNeuronInput(int i, double value)
 void SignalSimulatorForWorm2D::SetChemicalSynapseWeight(int from, int to, double value) 
 {
     return twoValFunc("set_synaptic_weight",from,to,value);
-}
+} */
 
 SignalSimulatorForWorm2D::~SignalSimulatorForWorm2D()
 {
