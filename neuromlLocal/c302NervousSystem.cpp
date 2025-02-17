@@ -56,5 +56,11 @@ void c302NervousSystem::SetNeuronTimeConstant(int i, double value)
     simulation->strValFunc("set_neuron_parameter", "tau", i-1, value);
 }
 
+double c302NervousSystem::NeuronBias(int i)
+{
+
+    return simulation->getValFunc("get_neuron_parameter", "bias", i-1);
+}
+
 c302NervousSystem::~c302NervousSystem()
 {if (simulation!=nullptr) delete simulation;}

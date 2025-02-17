@@ -154,18 +154,31 @@ class Worm2DNRNSimulation:
         for stim_pop in stim_pop_list:
             for i in range(10):
                 getattr(self.h, 'ExtStimPop' + stim_pop + '_' + str(i)).weight = weight
-        
+
+    def get_neuron_parameter(self, parameter, i):
+        pop_name, nn = get_pop_number(i)
+        pop_full_name = 'm_' + pop_name + '_Pop' + pop_name
+        try:
+            if parameter=='bias':
+                return getattr(self.h, pop_full_name)[nn].bias
+            elif parameter=='gain':
+                return getattr(self.h, pop_full_name)[nn].gain
+            elif parameter=='tau':
+                return getattr(self.h, pop_full_name)[nn].tau               
+        except AttributeError as e:
+            print("Problem setting neuron parameter: %s" % e)
+
     def set_neuron_parameter(self, parameter, i, val):
         pop_name, nn = get_pop_number(i)
         pop_full_name = 'm_' + pop_name + '_Pop' + pop_name
         try:
             if parameter=='bias':
-                var = getattr(self.h, pop_full_name)[nn].bias = val
+                getattr(self.h, pop_full_name)[nn].bias = val
             elif parameter=='gain':
-                var = getattr(self.h, pop_full_name)[nn].gain = val
+                getattr(self.h, pop_full_name)[nn].gain = val
             elif parameter=='tau':
-                var = getattr(self.h, pop_full_name)[nn].tau = val
-                var = getattr(self.h, pop_full_name)[nn].C = 1.0/val
+                getattr(self.h, pop_full_name)[nn].tau = val
+                getattr(self.h, pop_full_name)[nn].C = 1.0/val
         except AttributeError as e:
             print("Problem setting neuron parameter: %s" % e)
 
