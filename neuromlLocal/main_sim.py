@@ -161,6 +161,11 @@ class Worm2DNRNSimulation:
         try:
             if parameter=='bias':
                 var = getattr(self.h, pop_full_name)[nn].bias = val
+            elif parameter=='gain':
+                var = getattr(self.h, pop_full_name)[nn].gain = val
+            elif parameter=='tau':
+                var = getattr(self.h, pop_full_name)[nn].tau = val
+                var = getattr(self.h, pop_full_name)[nn].C = 1.0/val
         except AttributeError as e:
             print("Problem setting neuron parameter: %s" % e)
 

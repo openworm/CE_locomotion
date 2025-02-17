@@ -7,6 +7,24 @@ SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileNa
   //pFuncNameSetSynapticWeight(Py_BuildValue("s", "set_synaptic_weight"))
   {}
 
+double SignalSimulatorForWorm2D::getValFunc(const std::string & funcName, const int & i)
+{
+
+PyObject *py_i = Py_BuildValue("i", i); 
+PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
+
+//PyObject *pValue = PyObject_CallMethod(pInstance, const_cast<char *>(funcName), py_i, nullptr);
+PyObject *pValue = PyObject_CallMethodObjArgs(pInstance, pFuncName, py_i, nullptr);
+
+  if (PyErr_Occurred()) {
+      PyErr_Print();
+      throw std::runtime_error("Exception in simulator getValFunc (printed above)");
+  }
+
+  return (double) PyFloat_AsDouble(pValue);
+
+}
+
 
 void SignalSimulatorForWorm2D::oneValFunc(const std::string & funcName, const int & i, const double & value)
 {
