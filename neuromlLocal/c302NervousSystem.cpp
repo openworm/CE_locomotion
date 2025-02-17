@@ -56,11 +56,31 @@ void c302NervousSystem::SetNeuronTimeConstant(int i, double value)
     simulation->strValFunc("set_neuron_parameter", "tau", i-1, value);
 }
 
+double  c302NervousSystem::NeuronTimeConstant(int i)
+{
+
+    return simulation->getValFunc("get_neuron_parameter", "tau", i-1);
+}
+
 double c302NervousSystem::NeuronBias(int i)
 {
 
     return simulation->getValFunc("get_neuron_parameter", "bias", i-1);
 }
+
+double c302NervousSystem::NeuronState(int i)
+{
+
+    return simulation->getValFunc("get_neuron_parameter", "state", i-1);
+}
+double c302NervousSystem::ChemicalSynapseWeight(int from, int to)
+{
+
+return simulation->getTwoValFunc("get_synaptic_weight", from-1, to-1);
+
+}
+
+
 
 c302NervousSystem::~c302NervousSystem()
 {if (simulation!=nullptr) delete simulation;}

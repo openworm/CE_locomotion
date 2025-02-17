@@ -21,11 +21,38 @@ PyObject *pValue = PyObject_CallMethodObjArgs(pInstance, pFuncName, py_par, py_i
       PyErr_Print();
       throw std::runtime_error("Exception in simulator getValFunc (printed above)");
   }
+  
+  double pValue_doub =  (double) PyFloat_AsDouble(pValue);
 
-  return (double) PyFloat_AsDouble(pValue);
-
+  Py_DECREF(pFuncName);
+  Py_DECREF(py_i);
+  Py_DECREF(py_par);
+  Py_DECREF(pValue);
+  return pValue_doub;
 }
 
+double SignalSimulatorForWorm2D::getTwoValFunc(const std::string & funcName, const int & i, const int & j)
+{
+PyObject *py_i = Py_BuildValue("i", i); 
+PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
+PyObject *py_j = Py_BuildValue("i", j); 
+
+//PyObject *pValue = PyObject_CallMethod(pInstance, const_cast<char *>(funcName), py_i, nullptr);
+PyObject *pValue = PyObject_CallMethodObjArgs(pInstance, pFuncName, py_i, py_j, nullptr);
+
+  if (PyErr_Occurred()) {
+      PyErr_Print();
+      throw std::runtime_error("Exception in simulator getValFunc (printed above)");
+  }
+  
+  double pValue_doub =  (double) PyFloat_AsDouble(pValue);
+
+  Py_DECREF(pFuncName);
+  Py_DECREF(py_i);
+  Py_DECREF(py_j);
+  Py_DECREF(pValue);
+  return pValue_doub;
+}
 
 void SignalSimulatorForWorm2D::oneValFunc(const std::string & funcName, const int & i, const double & value)
 {

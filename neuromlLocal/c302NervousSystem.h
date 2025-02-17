@@ -26,12 +26,15 @@ void SetNeuronBias(int i, double value);
 double NeuronBias(int i);
 void SetNeuronGain(int i, double value);
 void SetNeuronTimeConstant(int i, double value);
+double NeuronTimeConstant(int i);
+double NeuronState(int i);
+double ChemicalSynapseWeight(int from, int to);
 
 ~c302NervousSystem();
 
 // int CircuitSize(void)  {}
  void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) {}
- double NeuronState(int i) {}
+ 
 // void SetNeuronState(int i, double value) {}
  
  void SetNeuronOutput(int i, double value) {}
@@ -39,10 +42,10 @@ void SetNeuronTimeConstant(int i, double value);
  //void SetNeuronBias(int i, double value) {}
 // double NeuronGain(int i) {}
  
- double NeuronTimeConstant(int i) {}
+ 
  
 // double NeuronExternalInput(int i) {}
- double ChemicalSynapseWeight(int from, int to) {}
+ 
  //void SetChemicalSynapseWeight(int from, int to, double value) {}
  double ElectricalSynapseWeight(int from, int to) {}
 // void InternalSetElectricalSynapseWeight(int from, int to, double value) {}

@@ -143,7 +143,16 @@ class Worm2DNRNSimulation:
         except AttributeError as e:
             print(
                 "No such connection: %s " % e)
-                
+            
+    def get_synaptic_weight(self, pre, post):
+        pre_pop, pre_neuron_number = get_pop_number(pre)
+        post_pop, post_neuron_number = get_pop_number(post)
+        syn_str = 'syn_NC_Pop' + pre_pop + '_Pop' + post_pop + '_silentSyn_'
+        try:
+            return getattr(self.h, syn_str + 'silentSyn_pre')[pre_neuron_number].weight
+            #getattr(self.h, syn_str + 'neuron_to_neuron_syn_x_post')[post_neuron_number].weight = weight
+        except AttributeError as e:
+            print("No such connection: %s " % e)            
 
         #syn_NC_PopDD_PopDA_silentSyn_silentSyn_pre[4].weight 
         #syn_NC_PopDD_PopDA_silentSyn_neuron_to_neuron_syn_x_post[4].weight
@@ -164,7 +173,9 @@ class Worm2DNRNSimulation:
             elif parameter=='gain':
                 return getattr(self.h, pop_full_name)[nn].gain
             elif parameter=='tau':
-                return getattr(self.h, pop_full_name)[nn].tau               
+                return getattr(self.h, pop_full_name)[nn].tau 
+            elif parameter=='state':
+                return getattr(self.h, pop_full_name)[nn].state               
         except AttributeError as e:
             print("Problem setting neuron parameter: %s" % e)
 
