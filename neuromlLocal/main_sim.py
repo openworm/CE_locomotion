@@ -131,8 +131,11 @@ class Worm2DNRNSimulation:
         pop_name, nn = get_pop_number(i)   
         getattr(self.h, 'ExtStimPop' + pop_name + '_' + str(nn)).weight = weight  
         return
-        
 
+    def set_gapJunction_weight(self, pre, post, weight):    
+        #syn_NC_PopVB_PopVB_gapJunction0_gapJunction0_A[8].weight
+        pass
+    
     def set_synaptic_weight(self, pre, post, weight):
         pre_pop, pre_neuron_number = get_pop_number(pre)
         post_pop, post_neuron_number = get_pop_number(post)

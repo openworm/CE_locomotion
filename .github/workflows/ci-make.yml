@@ -69,7 +69,7 @@ jobs:
     - name: Test NeuroML
       run: |
         pip install pyNeuroML
-        cd neuroml
+        cd neuromlLocal
         ./regenerate.sh 
 
     - name: Test C++/Python interactions
