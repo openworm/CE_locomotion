@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:        
-        runs-on: [ubuntu-latest, ubuntu-22.04, macos-latest ]
+        runs-on: [ubuntu-latest, ubuntu-22.04, macos-latest, macos-14, macos-13 ]
         python-version: [ "3.10", "3.12" ]
 
     steps:
@@ -44,7 +44,7 @@ jobs:
       run: |
         cd test_files
         ./test.sh 
-        
+
     - name: Test makefile
       run: make
 
