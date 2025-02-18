@@ -3,7 +3,7 @@ PYTHON_CONFIG ?= python3-config
 
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
+CXXFLAGS := $(shell $(PYTHON_CONFIG) --embed --cflags)
 
 
 main: info main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
