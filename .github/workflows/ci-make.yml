@@ -58,6 +58,7 @@ jobs:
     - name: Test NeuroML
       run: |
         cd neuroml
+        export NEURON_HOME=/home/runner/.local/bin/
         ./regenerate.sh 
 
         # make clean all # not yet...
@@ -74,7 +75,7 @@ jobs:
     - name: Test using test_all.sh
       run: |
         which nrniv
-        export NEURON_HOME=$pythonLocation
+        export NEURON_HOME=/home/runner/.local/bin/
         env
         
         ./test_all.sh 
