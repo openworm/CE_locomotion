@@ -30,6 +30,7 @@ jobs:
       if: ${{ contains(matrix.runs-on, 'macos') }}
       run: |
         brew install nlohmann-json python@3.12
+        brew unlink python@3.13 && brew link --force --overwrite python@3.12
         which python 
         python -V
     
