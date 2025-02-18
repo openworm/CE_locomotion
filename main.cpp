@@ -4,17 +4,26 @@
 // Eduardo Izquierdo
 // =============================================================
 
+//#define MAKE_JSON
+
 #include <iostream>
 #include <iomanip>
 #include <math.h>
 #include "TSearch.h"
 #include "VectorMatrix.h"
 //#include "Worm.h"
+
+#ifdef MAKE_JSON
 #include "Worm2D.h"
+#else
+#include "Worm.h"
+#endif
+
 #include "Mainvars.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include "utils.h"
 
 
 #define PRINTTOFILE
@@ -201,10 +210,11 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVB_output =  w.AVB_act;
 
     // save json data
-    writeParsToJson(w, "worm_data.json");
     // reconstruct nervous system from json file to check validity
+    #ifdef MAKE_JSON
+    writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", w.n); 
-    
+    #endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);

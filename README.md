@@ -1,6 +1,6 @@
-# Neuromechanical model of forward and backward locomotion in C. elegans 
+# Neuromechanical model of forward and backward locomotion in _C. elegans_
 
-This repository contains all the classes necessary to evolve a neuromechanical model of C. elegans to produce forward and backward locomotion. 
+This repository contains all the classes necessary to evolve a neuromechanical model of _C. elegans_ to produce forward and backward locomotion. 
 
 We are using this to better understand how the same neural circuit can produce multiple behaviors (i.e., forward and backward) and modulate between them through command neurons.
 
