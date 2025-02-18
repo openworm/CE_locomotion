@@ -44,7 +44,10 @@ jobs:
         pip install pyNeuroML
         pip install ruff
         pip install numpy matplotlib
-        pip install ruff
+        pip install neuron
+        env
+        echo "-----------------"
+        which nrniv
         
 
     - name: Test C++/Python interactions
