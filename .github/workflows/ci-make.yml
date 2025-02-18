@@ -27,8 +27,11 @@ jobs:
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
       
     - name: Install dependencies (macOS)
-      run: brew install nlohmann-json
       if: ${{ contains(matrix.runs-on, 'macos') }}
+      run: |
+        brew install nlohmann-json python@3.12
+        which python 
+        python -V
     
     - name: Run C++ tests 
       run: |
@@ -45,6 +48,8 @@ jobs:
         pip install ruff
         pip install numpy matplotlib
         pip install neuron
+        pip list
+        echo "-----------------"
         env
         echo "-----------------"
         which nrniv
@@ -88,6 +93,6 @@ jobs:
         cd test_files
         ./test.sh 
       
-    - name: list generated files
+    - name: List generated files
       run: |
           ls -alth
