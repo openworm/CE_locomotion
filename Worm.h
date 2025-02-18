@@ -9,15 +9,16 @@
 #include "VectorMatrix.h"
 #include "random.h"
 #include "WormBody.h"
-#include "neuroml/NervousSystem2D.h"
-//#include "NervousSystem.h"
+#include "neuromlLocal/c302NervousSystem.h"
+#include "NervousSystem.h"
 #include "Muscles.h"
 #include "StretchReceptor.h"
+//#include "NervousSystemBase.h"
 
 #include <cmath>
 
 #define PI 3.14159265
-#define NERVOUSSYSTEM NervousSystem2D
+//#define NERVOUSSYSTEM NervousSystem2D
 
 // Stretch-Receptor Transdusction form
 // Altogether there are 8 forms this can take, depending on which of the first three are defined and then the second one.
@@ -54,11 +55,18 @@ const int VB = 6;
 const int Head = 1;
 const int Tail = N_segments;
 
+
+
+int nn(int neuronNumber, int unitNumber);
+NervousSystemBase* makeNervousSystem();
+bool checkNervousSystemForJson();
+
+
 class Worm {
 public:
 
     Worm(TVector<double> &v, double output);
-
+    //Worm::Worm(TVector<double> &v,double output);
     void InitializeState(RandomState &rs);
     void HeadStep(double StepSize, double output);
     void Step(double StepSize, double output);
@@ -68,7 +76,9 @@ public:
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
     void DumpCurvature(ofstream &ofs, int skips);
-
+    
+    ~Worm(){if (n_ptr!=nullptr) delete n_ptr;}
+    
     double CoMx();
     double CoMy();
     void Curvature(TVector<double> &c);
@@ -77,7 +87,7 @@ public:
 
     WormBody b;
     Muscles m;
-    NERVOUSSYSTEM n;
+    NervousSystemBase *n_ptr;
     StretchReceptor sr;
 
     double t; // Time
@@ -88,3 +98,7 @@ public:
     double AVA_output, AVB_output;
 
 };
+
+//class wormForJson : public Worm<NervousSystem> {};
+
+

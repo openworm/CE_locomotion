@@ -5,34 +5,34 @@ LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 
-ifeq ($(MAKE_JSON),1)
-CXXFLAGS += -DMAKE_JSON
-endif
-ifeq ($(MAKE_JSON),1)
-main: main.o Worm.o Worm2D.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o Worm2D.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
-else
-main: main.o Worm.o utils.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o NervousSystem2D.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o utils.o Worm.o WormBody.o NervousSystem.o NervousSystem2D.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
-endif
+
+main: main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
-Worm.o: Worm.cpp Worm.h
-	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
-ifeq ($(MAKE_JSON),1)	
-Worm2D.o: Worm2D.cpp Worm2D.h
-	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) Worm2D.cpp	
-endif
+
+jsonUtils.o: jsonUtils.cpp jsonUtils.h Worm.h
+	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
+
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
+Worm.o: Worm.cpp Worm.h
+	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
-NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h
+NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h
 	g++ -c -O3 -flto NervousSystem.cpp
-NervousSystem2D.o: neuroml/NervousSystem2D.cpp neuroml/NervousSystem2D.h
-	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuroml/NervousSystem2D.cpp
+owSignalSimulatorForWorm2D.o: neuromlLocal/owSignalSimulatorForWorm2D.cpp neuromlLocal/owSignalSimulatorForWorm2D.h #neuromlLocal/owSignalSimulator.h 
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) neuromlLocal/owSignalSimulatorForWorm2D.cpp
+owSignalSimulator.o: neuromlLocal/owSignalSimulator.cpp neuromlLocal/owSignalSimulator.h #neuromlLocal/owINeuronSimulator.h
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) neuromlLocal/owSignalSimulator.cpp
+#c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/c302NervousSystem.h NervousSystemBase.h neuromlLocal/owSignalSimulator.h
+#	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuromlLocal/c302NervousSystem.cpp
+c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/owSignalSimulatorForWorm2D.h #NervousSystemBase.h
+	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) neuromlLocal/c302NervousSystem.cpp 	
 StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
 	g++ -c -O3 -flto StretchReceptor.cpp
 Muscles.o: Muscles.cpp Muscles.h VectorMatrix.h random.h
@@ -43,11 +43,11 @@ tests.o: tests.cpp NervousSystem.o random.o
 	g++ -c -O3 -flto tests.cpp
 tests: tests.o 
 	g++ -pthread -o tests tests.o 
-ifeq ($(MAKE_JSON),1)	
-tests2.o: tests2.cpp NervousSystem.h random.h Worm2D.h utils.h
+
+tests2.o: tests2.cpp NervousSystem.h random.h jsonUtils.h utils.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) tests2.cpp
-tests2: tests2.o NervousSystem.o random.o Worm2D.o utils.o
-	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o utils.o Worm2D.o $(LIBS)
-endif		
+tests2: tests2.o NervousSystem.o random.o jsonUtils.o utils.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o tests2 tests2.o NervousSystem.o random.o utils.o jsonUtils.o $(LIBS)
+
 clean:
 	rm -f *.o main tests tests2

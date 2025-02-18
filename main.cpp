@@ -4,7 +4,7 @@
 // Eduardo Izquierdo
 // =============================================================
 
-//#define MAKE_JSON
+
 
 #include <iostream>
 #include <iomanip>
@@ -13,11 +13,7 @@
 #include "VectorMatrix.h"
 //#include "Worm.h"
 
-#ifdef MAKE_JSON
-#include "Worm2D.h"
-#else
-#include "Worm.h"
-#endif
+#include "jsonUtils.h"
 
 #include "Mainvars.h"
 #include <stdio.h>
@@ -196,7 +192,8 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
     
-    Worm w(phenotype, 1);
+    
+    {Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
@@ -209,12 +206,27 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
 
+    
+
+    if (checkNervousSystemForJson()){
     // save json data
     // reconstruct nervous system from json file to check validity
-    #ifdef MAKE_JSON
+    //#ifdef MAKE_JSON
+    cout << "making json" << endl;
     writeParsToJson(w, "worm_data.json");
-    testNervousSystemJson("worm_data.json", w.n); 
-    #endif
+    testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
+    }
+    }
+
+    nervousSystemName = nervousSystemNameForSim;
+    Worm w(phenotype, 1);
+    w.InitializeState(rs);
+    w.sr.SR_A_gain = 0.0;
+    w.sr.SR_B_gain = srb;
+    w.AVA_output =  w.AVA_inact;
+    w.AVB_output =  w.AVB_act;
+    
+    //#endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);
@@ -293,6 +305,7 @@ int main (int argc, const char* argv[])
     long randomseed = static_cast<long>(time(NULL));
     int pop_size = 96;
     
+
     if (argc==2) randomseed += atoi(argv[1]);
 
     bool do_evol = 1;
@@ -323,15 +336,21 @@ int main (int argc, const char* argv[])
     }
     if (strcmp(argv[arg],"-p")==0) pop_size = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--nervous")==0) 
+    {
+      nervousSystemNameForSim = argv[arg+1];
+    }
     }
 
     }
 
-
+    
     InitializeBodyConstants();
 
     if (do_evol){
-  
+
+    
+    nervousSystemName = nervousSystemNameForEvol;
 
     TSearch s(VectSize);
 
@@ -342,7 +361,8 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    cout << "Run evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    cout << "Run evaluation with seed: " << randomseed << ", pop size: " 
+    << pop_size << ", duration: " << Duration << ", Nervous system name: " << nervousSystemName.c_str() << endl;
     //cout.flush()
 
     // configure the search

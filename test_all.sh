@@ -14,7 +14,7 @@ rm -rf test_output/*.dat
 ./tests
 
 
-make MAKE_JSON=1
+make
 
 if [ "$quick_test" == 0 ]; then
     rm -rf exampleRun
@@ -23,7 +23,7 @@ if [ "$quick_test" == 0 ]; then
     time omv all -V 
 fi
 
-make MAKE_JSON=1 tests2
+make tests2
 
 rm -rf test_output_2/*.dat
 ./tests2

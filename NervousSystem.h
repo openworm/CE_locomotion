@@ -9,6 +9,7 @@
 #include "random.h"
 #include <iostream>
 #include <math.h>
+#include "NervousSystemBase.h"
 
 #pragma once
 
@@ -36,7 +37,8 @@ inline double InverseSigmoid(double y)
 
 // The NervousSystem class declaration
 
-class NervousSystem {
+class NervousSystem : public NervousSystemBase {
+//class NervousSystem : public NervousSystemInt<NervousSystem> {
     public:
         // The constructor
         NervousSystem(int size = 0, int maxchemconns = -1, int maxelecconns = -1);

@@ -14,6 +14,7 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
+    "nervousSystemFileName" : 'NervousSystem'
 }
 
 
@@ -36,6 +37,18 @@ def process_args():
             "Name of directory for output.\n"
             "If not supplied, both evolutionary algorithm and simulation of best worm are performed,\n"
             "and results placed in current directory."
+        ),
+    )
+
+    parser.add_argument(
+        "-n",
+        "--nervousSystemFileName",
+        type=str,
+        metavar="<nervous system file name>",
+        default=DEFAULTS["nervousSystemFileName"],
+        help=(
+            "Name of nervous system file name.\n" 
+            "If none entered the original worm simulation will be run.\n"
         ),
     )
 
@@ -159,6 +172,7 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
 
+    
     folder_name = ""
     do_evol = 1
 
@@ -198,7 +212,7 @@ def run(a=None, **kwargs):
                 sys.exit(1)
     else:
         print("Running in default mode.")
-
+    
     if a.RandSeed is not None:
         cmd = ["./main", "-R", str(a.RandSeed)]
     else:
@@ -213,6 +227,8 @@ def run(a=None, **kwargs):
         str(do_evol),
         "--folder",
         folder_name,
+        "--nervous",
+        a.nervousSystemFileName
     ]
 
     # Run the C++

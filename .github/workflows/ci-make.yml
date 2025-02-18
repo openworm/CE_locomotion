@@ -59,7 +59,7 @@ jobs:
 
     - name: Test NeuroML
       run: |
-        cd neuroml
+        cd neuromlLocal
         ./regenerate.sh 
 
         # make clean all # not yet...

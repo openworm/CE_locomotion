@@ -9,7 +9,7 @@
 #include <cassert>
 #include "TSearch.h"
 #include "NervousSystem.h"
-#include "Worm2D.h"
+#include "jsonUtils.h"
 
 extern string output_dir_name;
 
