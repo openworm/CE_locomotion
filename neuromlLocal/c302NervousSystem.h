@@ -18,10 +18,14 @@ const std::string & simFileName = "neuromlLocal.main_sim",
 const std::string & simClassName = "Worm2DNRNSimulation", 
 float timeStep=0.005);
 
+//required for worm step
+
 void SetNeuronExternalInput(int i, double value);
 double NeuronOutput(int i);
 void EulerStep(double );
 
+
+//required for nervous system setup
 
 void SetChemicalSynapseWeight(int from, int to, double value);
 void SetNeuronBias(int i, double value);
@@ -57,6 +61,6 @@ private:
 
 SignalSimulatorForWorm2D *simulation;
 std::vector<float> output_value;
-std::vector<float> input_value;
+
 
 };
