@@ -21,6 +21,8 @@ float timeStep=0.005);
 void SetNeuronExternalInput(int i, double value);
 double NeuronOutput(int i);
 void EulerStep(double );
+
+
 void SetChemicalSynapseWeight(int from, int to, double value);
 void SetNeuronBias(int i, double value);
 double NeuronBias(int i);
@@ -30,26 +32,23 @@ double NeuronTimeConstant(int i);
 double NeuronState(int i);
 double ChemicalSynapseWeight(int from, int to);
 
+
+void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) {}
+void SetNeuronOutput(int i, double value) {}
+double ElectricalSynapseWeight(int from, int to) {}
+void SetElectricalSynapseWeight(int n1, int n2, double value) {} 
+
+
 ~c302NervousSystem();
 
 // int CircuitSize(void)  {}
- void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) {}
- 
 // void SetNeuronState(int i, double value) {}
- 
- void SetNeuronOutput(int i, double value) {}
- 
  //void SetNeuronBias(int i, double value) {}
 // double NeuronGain(int i) {}
- 
- 
- 
 // double NeuronExternalInput(int i) {}
- 
  //void SetChemicalSynapseWeight(int from, int to, double value) {}
- double ElectricalSynapseWeight(int from, int to) {}
 // void InternalSetElectricalSynapseWeight(int from, int to, double value) {}
- void SetElectricalSynapseWeight(int n1, int n2, double value) {} 
+ 
 
  const std::vector<float> & getOutputValues() const {return output_value;}
  ostream & writeOutputValues(ostream & os) {return writeVector(os,output_value);}

@@ -16,22 +16,20 @@ def announce(message):
     )
 
 
+
+
 def get_pop_number(i):
     stim_pop_list = ['DA', 'DB', 'DD', 'VD', 'VA', 'VB']
-    neurons_per_unit = 10
-    if (i>-0.5) & (i<len(stim_pop_list)*neurons_per_unit):        
-        stim_pop_num = int(i / neurons_per_unit)
-        neuron_number = int(i % 10)
-        return stim_pop_list[stim_pop_num], neuron_number
-    print('neuron number out of bounds')
-    import sys
-    sys.exit()
+    pop_num = int(i % 6)
+    neuron_num = int (i / 6)
+    return stim_pop_list[pop_num], neuron_num
+    
 
 def get_neuron_number(pop, i):
-    neurons_per_unit = 10
     stim_pop_list = {'DA':0, 'DB':1, 'DD':2, 'VD':3, 'VA':4, 'VB':5}
-    return (stim_pop_list[pop]*neurons_per_unit) + i
+    return stim_pop_list[pop]  + i*6
 
+#fout_weights = open('Worm2D.weights-test.dat', 'w')
 
 class Worm2DNRNSimulation:
     max_ca = 4e-7
@@ -129,7 +127,8 @@ class Worm2DNRNSimulation:
 
     def set_neuron_input(self, i, weight):
         pop_name, nn = get_pop_number(i)   
-        getattr(self.h, 'ExtStimPop' + pop_name + '_' + str(nn)).weight = weight  
+        getattr(self.h, 'ExtStimPop' + pop_name + '_' + str(nn)).weight = weight 
+        #fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
     def set_gapJunction_weight(self, pre, post, weight):    
@@ -208,17 +207,15 @@ class Worm2DNRNSimulation:
 
         values = []
         vars_read = []
-        for pop in pop_list:
-            for i in range(10):
-                #var = 'm_DB_PopDB'
-                #var = "a_MDR%s" % (i + 1 if i > 8 else ("0%i" % (i + 1)))
+        for i in range(10):
+            for pop in pop_list:
+            
                 try:
                     #val = getattr(self.h, var)[0].soma.cai
                     val = getattr(self.h, pop)[i].output
                 except AttributeError as e:
                     print(
-                        "Problem passing neuronal output of %s to muscle in Sibernetic: %s"
-                        % (pop, e)
+                        "Problem passing neuronal output of %s, %s" % (pop, e)
                     )
                     continue
                     #val = 0

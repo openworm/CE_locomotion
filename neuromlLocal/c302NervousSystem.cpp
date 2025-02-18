@@ -1,6 +1,8 @@
 #include "c302NervousSystem.h"
 //#include "owSignalSimulator.h"
 
+const bool skipCalc = 1;
+
 c302NervousSystem::c302NervousSystem(const std::string & simFileName):
 simulation(nullptr)
 {
@@ -22,7 +24,6 @@ float timeStep)
 
 void c302NervousSystem::SetNeuronExternalInput(int i, double value)
 {
-//simulation->setNeuronInput(i-1,value);
 simulation->oneValFunc("set_neuron_input",i-1,value);
 }
 
@@ -38,45 +39,49 @@ void c302NervousSystem::EulerStep(double stepsize)
 
 void c302NervousSystem::SetChemicalSynapseWeight(int from, int to, double value)
 {
+    if (skipCalc) return;
     simulation->twoValFunc("set_synaptic_weight",from-1,to-1,value);
 }
 
 void c302NervousSystem::SetNeuronBias(int i, double value)
 {
+    if (skipCalc) return;
     simulation->strValFunc("set_neuron_parameter", "bias", i-1, value);
 }
 
 void c302NervousSystem::SetNeuronGain(int i, double value)
-{
+{   
+    if (skipCalc) return;
     simulation->strValFunc("set_neuron_parameter", "gain", i-1, value);
 }
 
 void c302NervousSystem::SetNeuronTimeConstant(int i, double value)
-{
+{   
+    if (skipCalc) return;
     simulation->strValFunc("set_neuron_parameter", "tau", i-1, value);
 }
 
 double  c302NervousSystem::NeuronTimeConstant(int i)
 {
-
+    if (skipCalc) return 0;
     return simulation->getValFunc("get_neuron_parameter", "tau", i-1);
 }
 
 double c302NervousSystem::NeuronBias(int i)
 {
-
+    if (skipCalc) return 0;
     return simulation->getValFunc("get_neuron_parameter", "bias", i-1);
 }
 
 double c302NervousSystem::NeuronState(int i)
 {
-
+    if (skipCalc) return 0;
     return simulation->getValFunc("get_neuron_parameter", "state", i-1);
 }
 double c302NervousSystem::ChemicalSynapseWeight(int from, int to)
 {
-
-return simulation->getTwoValFunc("get_synaptic_weight", from-1, to-1);
+    if (skipCalc) return 0;
+    return simulation->getTwoValFunc("get_synaptic_weight", from-1, to-1);
 
 }
 
