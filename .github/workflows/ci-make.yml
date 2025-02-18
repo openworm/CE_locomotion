@@ -62,7 +62,7 @@ jobs:
         cd neuroml
         ./regenerate.sh 
 
-        make clean all
+        # make clean all # not yet...
 
     - name: Test directly running main program
       run: |
