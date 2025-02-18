@@ -43,6 +43,15 @@ jobs:
     - name: Test makefile
       run: make
 
+    - name: Install Python requirements
+      run: |
+        pip install OSBModelValidation
+        pip install pyNeuroML
+        pip install ruff
+        pip install numpy matplotlib
+        pip install ruff
+        
+
     - name: Test C++/Python interactions
       run: |
         cd test_files
@@ -50,8 +59,6 @@ jobs:
 
     - name: Test NeuroML
       run: |
-        pip install OSBModelValidation
-        pip install pyNeuroML
         cd neuroml
         ./regenerate.sh 
 
@@ -64,13 +71,10 @@ jobs:
 
     - name: Test Python command line script
       run: |
-        pip install numpy matplotlib
         python run_main.py -R 1233 -p 6 --doEvol --folderName exampleRun2  # Note: small population of 6 for quick runtime
 
     - name: Test using test_all.sh
       run: |
-        pip install neuron
-        pip install ruff
         which nrniv
         export NEURON_HOME=$pythonLocation
         env
