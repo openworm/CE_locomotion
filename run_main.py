@@ -14,7 +14,8 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
-    "nervousSystemFileName" : 'NervousSystem'
+    "nervousSystemFileName" : 'NervousSystem',
+    "inputFolderName": None,
 }
 
 
@@ -37,6 +38,18 @@ def process_args():
             "Name of directory for output.\n"
             "If not supplied, both evolutionary algorithm and simulation of best worm are performed,\n"
             "and results placed in current directory."
+        ),
+    )
+
+    parser.add_argument(
+        "-i",
+        "--inputFolderName",
+        type=str,
+        metavar="<input folder name>",
+        default=DEFAULTS["inputFolderName"],
+        help=(
+            "Name of directory to get phenotype from for simulation.\n"
+            "If not supplied phenotype folder will be the same as the folderName argument."
         ),
     )
 
@@ -212,7 +225,16 @@ def run(a=None, **kwargs):
                 sys.exit(1)
     else:
         print("Running in default mode.")
-    
+
+    if a.inputFolderName:
+        input_folder_name = a.inputFolderName
+        if not os.path.isdir(input_folder_name):
+            print(f"Directory '{input_folder_name}' for phenotype data does not exist.")
+            sys.exit(1)    
+    else:
+        input_folder_name = folder_name
+
+
     if a.RandSeed is not None:
         cmd = ["./main", "-R", str(a.RandSeed)]
     else:
@@ -228,7 +250,9 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        a.nervousSystemFileName
+        a.nervousSystemFileName,
+        "--inputfolder",
+        input_folder_name
     ]
 
     # Run the C++
