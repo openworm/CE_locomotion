@@ -9,7 +9,7 @@
 #include "random.h"
 #include <iostream>
 #include <math.h>
-#include "NervousSystemBase.h"
+#include "neuromlLocal/NervousSystemBase.h"
 
 #pragma once
 

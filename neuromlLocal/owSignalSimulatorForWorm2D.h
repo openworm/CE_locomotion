@@ -4,8 +4,11 @@ class SignalSimulatorForWorm2D: public SignalSimulator{
 public:
   SignalSimulatorForWorm2D(const std::string & simFileName, 
   const std::string & simClassName, float timeStep);
-  //void setNeuronInput(int i, double value);
-  //void SetChemicalSynapseWeight(int from, int to, double value);
+  SignalSimulatorForWorm2D(const std::string & simFileName, 
+  const std::string & simClassName, const std::string & simDirName, float timeStep);
+  const std::string & setUpSignalSimulator(const std::string & simDirName,
+  const std::string & simFileName);
+
   void strValFunc(const std::string & funcName, const std::string & parName,
   const int & i, const double & value);
 

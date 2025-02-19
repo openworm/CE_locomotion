@@ -1,4 +1,4 @@
-#include "../NervousSystemBase.h"
+#include "NervousSystemBase.h"
 //#include "../NervousSystem.h"
 #include "owSignalSimulatorForWorm2D.h"
 #include "neuroml_utils.h"
@@ -11,12 +11,18 @@ public:
 
 c302NervousSystem(const std::string & simFileName);
 c302NervousSystem();
+c302NervousSystem(const std::string & simFileName, 
+const std::string & simDirName);
 
-void setSimulator(
-const std::string & simFileName = "neuromlLocal.main_sim",
-//const std::string & simFileName = "main_sim",
+/* void setSimulator(
+const std::string & simFileName = "neuromlLocal.main_sim", 
 const std::string & simClassName = "Worm2DNRNSimulation", 
 float timeStep=0.005);
+void setSimulator(const std::string & simDirName,
+const std::string & simFileName = "neuromlLocal.main_sim", 
+const std::string & simClassName = "Worm2DNRNSimulation", 
+float timeStep=0.005); */
+
 
 //required for worm step
 

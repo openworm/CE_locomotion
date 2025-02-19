@@ -2,10 +2,27 @@
 
 SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName, 
   const std::string & simClassName, float timeStep):
-  SignalSimulator(simFileName,simClassName,timeStep)
-  //pFuncNameSetNeuronInput(Py_BuildValue("s", "set_neuron_input")),
-  //pFuncNameSetSynapticWeight(Py_BuildValue("s", "set_synaptic_weight"))
-  {}
+  SignalSimulator(simFileName,simClassName,timeStep){}
+
+SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName, 
+  const std::string & simClassName, const std::string & simDirName, float timeStep):
+  SignalSimulator(setUpSignalSimulator(simDirName, simFileName),simClassName,timeStep){}
+
+const std::string & SignalSimulatorForWorm2D::setUpSignalSimulator(const std::string & simDirName,
+const std::string & simFileName)
+  {
+    Py_Initialize();
+    if (strcmp(simDirName.c_str(), "parent")==0){
+    PyRun_SimpleString(
+      "import os, sys \n"
+      "sys.path.append('..') \n");
+    }
+    else
+    {
+     PyRun_SimpleString(("import os, sys\nsys.path.append('" +  simDirName + "')\n").c_str());
+    } 
+  return simFileName;
+  }
 
 double SignalSimulatorForWorm2D::getValFunc(const std::string & funcName, const std::string & parName,
 const int & i)
