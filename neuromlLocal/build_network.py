@@ -35,6 +35,15 @@ colors = {
     "VD": ".65 .78 .9",
 }
 
+exc_inh_type = {
+    "DA": "E",
+    "DB": "E",
+    "DD": "I",
+    "VA": "E",
+    "VB": "E",
+    "VD": "I",
+}
+
 origins = {
     "DA": [1, -1],
     "DB": [1, 0],
@@ -49,6 +58,7 @@ spacing = 0.2
 
 def append_pop_properties(pop):
     pop.properties.append(Property("color", colors[pop.component]))
+    pop.properties.append(Property("type", exc_inh_type[pop.component]))
     pop.type = "populationList"
     for i in range(pop.size):
         inst = Instance(i)
