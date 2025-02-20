@@ -15,7 +15,7 @@ DEFAULTS = {
     "doEvol": False,
     "overwrite": False,
     "nervousSystemFileName" : 'NervousSystem',
-    "inputFolderName": None,
+    "nmlOutputFolderName": None,
 }
 
 
@@ -43,13 +43,13 @@ def process_args():
 
     parser.add_argument(
         "-i",
-        "--inputFolderName",
+        "--nmlOutputFolderName",
         type=str,
-        metavar="<input folder name>",
-        default=DEFAULTS["inputFolderName"],
+        metavar="<nml outpul folder name>",
+        default=DEFAULTS["nmlOutputFolderName"],
         help=(
-            "Name of directory to get phenotype from for simulation.\n"
-            "If not supplied phenotype folder will be the same as the folderName argument."
+            "Name of directory for output from neuroml simulation.\n"
+            "If not supplied neuroml simulation will not be peformed."
         ),
     )
 
@@ -188,6 +188,7 @@ def run(a=None, **kwargs):
     
     folder_name = ""
     do_evol = 1
+    nml_folder_name = None
 
     if a.simsep:
         while True:
@@ -226,13 +227,10 @@ def run(a=None, **kwargs):
     else:
         print("Running in default mode.")
 
-    if a.inputFolderName:
-        input_folder_name = a.inputFolderName
-        if not os.path.isdir(input_folder_name):
-            print(f"Directory '{input_folder_name}' for phenotype data does not exist.")
-            sys.exit(1)    
-    else:
-        input_folder_name = folder_name
+    if a.nmlOutputFolderName:
+        nml_folder_name = a.nmlOutputFolderName
+        if not make_directory(nml_folder_name, True):
+            sys.exit(1)
 
 
     if a.RandSeed is not None:
@@ -251,9 +249,14 @@ def run(a=None, **kwargs):
         folder_name,
         "--nervous",
         a.nervousSystemFileName,
-        "--inputfolder",
-        input_folder_name
     ]
+
+    if nml_folder_name is not None:
+        cmd += [
+        "--nmlfolder",
+        nml_folder_name
+        ]
+
 
     # Run the C++
     result = subprocess.run(cmd, capture_output=True, text=True)
