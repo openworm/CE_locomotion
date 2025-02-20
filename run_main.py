@@ -14,7 +14,7 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
-    "nervousSystemFileName" : 'NervousSystem',
+    "nervousSystemName" : 'NervousSystem',
     "nmlOutputFolderName": None,
 }
 
@@ -55,13 +55,12 @@ def process_args():
 
     parser.add_argument(
         "-n",
-        "--nervousSystemFileName",
+        "--nervousSystemName",
         type=str,
-        metavar="<nervous system file name>",
-        default=DEFAULTS["nervousSystemFileName"],
+        metavar="<nervous system name>",
+        default=DEFAULTS["nervousSystemName"],
         help=(
-            "Name of nervous system file name.\n" 
-            "If none entered the original worm simulation will be run.\n"
+            "Name of nervous system for neuroml simulation" 
         ),
     )
 
@@ -248,7 +247,7 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        a.nervousSystemFileName,
+        a.nervousSystemName,
     ]
 
     if nml_folder_name is not None:

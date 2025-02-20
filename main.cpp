@@ -193,7 +193,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double srb = phenotype(SR_B);
     
     
-    {Worm w(phenotype, 1);
+    Worm w(phenotype, 1);
     {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
@@ -216,15 +216,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
     }
-    }
-
-    nervousSystemName = nervousSystemNameForSim;
-    Worm w(phenotype, 1);
-    w.InitializeState(rs);
-    w.sr.SR_A_gain = 0.0;
-    w.sr.SR_B_gain = srb;
-    w.AVA_output =  w.AVA_inact;
-    w.AVB_output =  w.AVB_act;
+    
     
     //#endif
 
@@ -304,7 +296,7 @@ int main (int argc, const char* argv[])
     std::cout << std::setprecision(10);
     long randomseed = static_cast<long>(time(NULL));
     int pop_size = 96;
-    
+    string nml_output_dir_name = "";
 
     if (argc==2) randomseed += atoi(argv[1]);
 
@@ -329,6 +321,12 @@ int main (int argc, const char* argv[])
       if (stat(output_dir_name.c_str(), &sb) != 0) 
       {cout << "Directory doesn't exist." << endl;return 0;}
     }
+    if (strcmp(argv[arg],"--nmlfolder")==0) {
+      nml_output_dir_name = argv[arg+1];
+      struct stat sb;
+      if (stat(nml_output_dir_name.c_str(), &sb) != 0) 
+      {cout << "Neuroml results directory doesn't exist." << endl;return 0;}
+    }
     if (seed_flag){ 
     if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
@@ -344,14 +342,13 @@ int main (int argc, const char* argv[])
 
     }
 
+    nervousSystemName = nervousSystemNameForEvol;
     
     InitializeBodyConstants();
 
     if (do_evol){
 
     
-    nervousSystemName = nervousSystemNameForEvol;
-
     TSearch s(VectSize);
 
     // save the seed to a file
@@ -414,8 +411,15 @@ int main (int argc, const char* argv[])
     TVector<double> best(1, VectSize);
     Best >> best;
     save_traces(best, rs);
-
     cout << "Finished run, saving data\n" << endl;
+
+    /* if (strcmp(nml_output_dir_name.c_str(), "")!=0){
+    nervousSystemName = nervousSystemNameForSim;
+    output_dir_name = nml_output_dir_name;
+    save_traces(best, rs);
+    cout << "Finished nml run, saving data\n" << endl;
+    } */
+   
 
     
 
