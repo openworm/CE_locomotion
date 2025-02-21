@@ -15,7 +15,7 @@ int nn(int neuronNumber, int unitNumber)
 }
 
 string nervousSystemName = "NervousSystem";
-string nervousSystemNameForSim = "NervousSystem";
+string nervousSystemNameForSim = "nmlNervousSystem";
 string nervousSystemNameForEvol = "NervousSystem";
 
 bool checkNervousSystemForJson(){
@@ -25,10 +25,9 @@ return (strcmp(nervousSystemName.c_str(),"NervousSystem") == 0);
 NervousSystemBase* makeNervousSystem()
 {  
 if (checkNervousSystemForJson()) return new NervousSystem();
-//return new c302NervousSystem(nervousSystemName);
-return new c302NervousSystem();
-//cout << "that nervous system is not implemented" << endl; 
-//exit(0);
+if (strcmp(nervousSystemName.c_str(),"nmlNervousSystem") == 0) return new c302NervousSystem();
+cout << "that nervous system is not implemented" << endl; 
+exit(0);
 }
 
 Worm::Worm(TVector<double> &v,double output):n_ptr(makeNervousSystem())

@@ -36,15 +36,13 @@ Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h
 	g++ -c -O3 -flto WormBody.cpp
-NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h NervousSystemBase.h
+NervousSystem.o: NervousSystem.cpp NervousSystem.h VectorMatrix.h random.h neuromlLocal/NervousSystemBase.h
 	g++ -c -O3 -flto NervousSystem.cpp
 owSignalSimulatorForWorm2D.o: neuromlLocal/owSignalSimulatorForWorm2D.cpp neuromlLocal/owSignalSimulatorForWorm2D.h #neuromlLocal/owSignalSimulator.h 
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) neuromlLocal/owSignalSimulatorForWorm2D.cpp
 owSignalSimulator.o: neuromlLocal/owSignalSimulator.cpp neuromlLocal/owSignalSimulator.h #neuromlLocal/owINeuronSimulator.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) neuromlLocal/owSignalSimulator.cpp
-#c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/c302NervousSystem.h NervousSystemBase.h neuromlLocal/owSignalSimulator.h
-#	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS)  neuromlLocal/c302NervousSystem.cpp
-c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/owSignalSimulatorForWorm2D.h #NervousSystemBase.h
+c302NervousSystem.o: neuromlLocal/c302NervousSystem.cpp neuromlLocal/owSignalSimulatorForWorm2D.h #neuromlLocal/NervousSystemBase.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) neuromlLocal/c302NervousSystem.cpp 	
 StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
 	g++ -c -O3 -flto StretchReceptor.cpp

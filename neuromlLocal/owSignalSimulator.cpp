@@ -54,6 +54,10 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
 
   // Initialize the Python interpreter
   Py_Initialize();
+  
+  /* PyRun_SimpleString(
+    "import os, sys \n"
+    "sys.path.append('..') \n"); */
 
   PyObject *pName;
   // Convert the file name to a Python string.

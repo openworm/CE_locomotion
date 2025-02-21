@@ -14,7 +14,8 @@ DEFAULTS = {
     "folderName": None,
     "doEvol": False,
     "overwrite": False,
-    "nervousSystemFileName" : 'NervousSystem'
+    "nervousSystemName" : 'NervousSystem',
+    "nmlOutputFolderName": None,
 }
 
 
@@ -41,14 +42,25 @@ def process_args():
     )
 
     parser.add_argument(
-        "-n",
-        "--nervousSystemFileName",
+        "-i",
+        "--nmlOutputFolderName",
         type=str,
-        metavar="<nervous system file name>",
-        default=DEFAULTS["nervousSystemFileName"],
+        metavar="<nml outpul folder name>",
+        default=DEFAULTS["nmlOutputFolderName"],
         help=(
-            "Name of nervous system file name.\n" 
-            "If none entered the original worm simulation will be run.\n"
+            "Name of directory for output from neuroml simulation.\n"
+            "If not supplied neuroml simulation will not be peformed."
+        ),
+    )
+
+    parser.add_argument(
+        "-n",
+        "--nervousSystemName",
+        type=str,
+        metavar="<nervous system name>",
+        default=DEFAULTS["nervousSystemName"],
+        help=(
+            "Name of nervous system for neuroml simulation" 
         ),
     )
 
@@ -175,6 +187,7 @@ def run(a=None, **kwargs):
     
     folder_name = ""
     do_evol = 1
+    nml_folder_name = None
 
     if a.simsep:
         while True:
@@ -212,7 +225,13 @@ def run(a=None, **kwargs):
                 sys.exit(1)
     else:
         print("Running in default mode.")
-    
+
+    if a.nmlOutputFolderName:
+        nml_folder_name = a.nmlOutputFolderName
+        if not make_directory(nml_folder_name, True):
+            sys.exit(1)
+
+
     if a.RandSeed is not None:
         cmd = ["./main", "-R", str(a.RandSeed)]
     else:
@@ -228,8 +247,15 @@ def run(a=None, **kwargs):
         "--folder",
         folder_name,
         "--nervous",
-        a.nervousSystemFileName
+        a.nervousSystemName,
     ]
+
+    if nml_folder_name is not None:
+        cmd += [
+        "--nmlfolder",
+        nml_folder_name
+        ]
+
 
     # Run the C++
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -251,8 +277,11 @@ def run(a=None, **kwargs):
         # if args.simsep or args.evolve_folder or args.sim_folder:
         hf.dir_name = folder_name
         from load_data import reload_single_run
-
         reload_single_run(show_plot=False)
+    if nml_folder_name is not None:
+        hf.dir_name = nml_folder_name
+        from load_data import reload_single_run
+        reload_single_run(show_plot=False)    
 
 
 if __name__ == "__main__":
