@@ -3,11 +3,24 @@ PYTHON_CONFIG ?= python3-config
 
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
+REMOVE=-arch arm64 -arch x86_64
+REPLACE=
+CXXFLAGS0 := $(shell $(PYTHON_CONFIG) --embed --cflags)
+CXXFLAGS := $(subst $(REMOVE),$(REPLACE),$(CXXFLAGS0))
 
 
-main: main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
+main: info main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o utils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
+
+
+info:
+	@echo ' '
+	@echo '  - Compiling with '
+	@echo '      CXXFLAGS: ' $(CXXFLAGS) 
+	@echo '      CXXFLAGS0: ' $(CXXFLAGS0) 
+	@echo '      LIBS: ' $(LIBS) 
+	@echo '      LDFLAGS: ' $(LDFLAGS) 
+	@echo ' '
 
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
@@ -39,7 +52,7 @@ main.o: main.cpp Worm.h WormBody.h StretchReceptor.h Muscles.h TSearch.h
 	g++ -c -O3 -flto $(CXXFLAGS) $(LDFLAGS) main.cpp
 tests.o: tests.cpp NervousSystem.o random.o
 	g++ -c -O3 -flto tests.cpp
-tests: tests.o 
+tests: info tests.o 
 	g++ -pthread -o tests tests.o 
 
 tests2.o: tests2.cpp NervousSystem.h random.h jsonUtils.h utils.h
