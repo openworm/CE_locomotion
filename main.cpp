@@ -207,7 +207,6 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVB_output =  w.AVB_act;
 
     
-
     if (checkNervousSystemForJson()){
     // save json data
     // reconstruct nervous system from json file to check validity
@@ -216,7 +215,6 @@ double save_traces(TVector<double> &v, RandomState &rs){
     writeParsToJson(w, "worm_data.json");
     testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
     }
-    
     
     //#endif
 

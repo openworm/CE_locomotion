@@ -250,11 +250,11 @@ def run(a=None, **kwargs):
         a.nervousSystemName,
     ]
 
-    if nml_folder_name is not None:
+    """ if nml_folder_name is not None:
         cmd += [
         "--nmlfolder",
         nml_folder_name
-        ]
+        ] """
 
 
     # Run the C++
