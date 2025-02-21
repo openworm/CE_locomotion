@@ -3,7 +3,10 @@ PYTHON_CONFIG ?= python3-config
 
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --embed --cflags)
+REMOVE=-arch arm64 -arch x86_64
+REPLACE=
+CXXFLAGS0 := $(shell $(PYTHON_CONFIG) --embed --cflags)
+CXXFLAGS := $(subst $(REMOVE),$(REPLACE),$(CXXFLAGS0))
 
 
 main: info main.o jsonUtils.o utils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
@@ -14,6 +17,7 @@ info:
 	@echo ' '
 	@echo '  - Compiling with '
 	@echo '      CXXFLAGS: ' $(CXXFLAGS) 
+	@echo '      CXXFLAGS0: ' $(CXXFLAGS0) 
 	@echo '      LIBS: ' $(LIBS) 
 	@echo '      LDFLAGS: ' $(LDFLAGS) 
 	@echo ' '
