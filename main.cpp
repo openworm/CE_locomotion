@@ -411,12 +411,12 @@ int main (int argc, const char* argv[])
     save_traces(best, rs);
     cout << "Finished run, saving data\n" << endl;
 
-    /* if (strcmp(nml_output_dir_name.c_str(), "")!=0){
+    if (strcmp(nml_output_dir_name.c_str(), "")!=0){
     nervousSystemName = nervousSystemNameForSim;
     output_dir_name = nml_output_dir_name;
     save_traces(best, rs);
     cout << "Finished nml run, saving data\n" << endl;
-    } */
+    }
    
 
     

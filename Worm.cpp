@@ -15,7 +15,7 @@ int nn(int neuronNumber, int unitNumber)
 }
 
 string nervousSystemName = "NervousSystem";
-string nervousSystemNameForSim = "NervousSystem";
+string nervousSystemNameForSim = "nmlNervousSystem";
 string nervousSystemNameForEvol = "NervousSystem";
 
 bool checkNervousSystemForJson(){
