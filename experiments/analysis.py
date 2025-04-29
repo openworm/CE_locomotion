@@ -25,17 +25,19 @@ wormPhenoPars["Net21"] = [
 
 wormPhenoPars["CE"] = ["NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"]
 
+
 def getCellIndices(cell_names, cell_name):
     return [i for i, val in enumerate(cell_names) if val == cell_name]
 
+
 def getCellNames(network_json_data):
     return network_json_data["Nervous system"]["Cell name"]["value"]
+
 
 def getCellNameRep(cell_names, cell_ind):
     cell_name = cell_names[cell_ind]
     indslist = getCellIndices(cell_names, cell_name)
     return cell_name, indslist.index(cell_ind)
-    
 
 
 def getNervousSystemVal(network_json_data, val):
@@ -86,7 +88,7 @@ def getWeightsDict(weights, cell_names):
     for weight in weights:
         name_from, ind_from = getCellNameRep(cell_names, weight["from"] - 1)
         name_to, ind_to = getCellNameRep(cell_names, weight["to"] - 1)
-        kk = name_from + name_to + str(ind_to-ind_from)
+        kk = name_from + name_to + str(ind_to - ind_from)
         if kk in new_weights:
             if new_weights[kk] != weight["weight"]:
                 print("Weights not equal!")
@@ -108,7 +110,7 @@ model_name = "Net21"
 path_list = []
 # outFolderBases = ["varyEvolSeeds", "varyEvolSeeds1", "varyEvolSeeds2", "varyEvolSeeds3"]
 outFolderBases = ["varyEvolSeedsNet21_4"]
-#outFolderBases = ["izq_runs_nets"]
+# outFolderBases = ["izq_runs_nets"]
 current = os.path.dirname(os.path.realpath(__file__))  # location of this file!
 for outFolderBase in outFolderBases:
     path = current + "/" + outFolderBase

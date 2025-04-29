@@ -61,8 +61,7 @@ def run(a=None, **kwargs):
 
     ls.include_lems_file("cell_syn_X.xml")
     ls.include_lems_file("cell_syn_X_cells.xml")
-    ls.include_neuroml2_file("Worm2D.net.nml", include_included=False
-    )
+    ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
 
     disp0 = "display0"
     ls.create_display(disp0, "States", "-15", "10", timeScale="1ms")
@@ -129,17 +128,16 @@ def run(a=None, **kwargs):
     ls.save_to_file(file_name)
     assert os.path.isfile(file_name)
 
-   
     pre_args = ""
     post_args = "-lems-graph"
     exit_on_fail = True
     run_jneuroml(
-                pre_args,
-                file_name,
-                post_args,
-                #max_memory=args.java_max_memory,
-                exit_on_fail=exit_on_fail,
-            )
+        pre_args,
+        file_name,
+        post_args,
+        # max_memory=args.java_max_memory,
+        exit_on_fail=exit_on_fail,
+    )
     """
     ############################################
     #  Create the LEMS file with helper method

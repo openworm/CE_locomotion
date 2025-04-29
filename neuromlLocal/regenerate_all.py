@@ -17,8 +17,12 @@ path = os.path.join(dir, "experiments/" + inputFolderBase)
 # path = current + "../experiments/" + inputFolderBase
 out_path = path
 dir_list = sorted(os.listdir(path))
-path_list += [path + "/" + dir for dir in dir_list if os.path.isdir(os.path.join(path, dir))]
-out_path_list += [out_path + "/" + dir for dir in dir_list if os.path.isdir(os.path.join(path, dir))]
+path_list += [
+    path + "/" + dir for dir in dir_list if os.path.isdir(os.path.join(path, dir))
+]
+out_path_list += [
+    out_path + "/" + dir for dir in dir_list if os.path.isdir(os.path.join(path, dir))
+]
 
 
 population_structures = [

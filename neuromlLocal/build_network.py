@@ -4,6 +4,7 @@ Example to build a full network
 through libNeuroML, save it as XML and validate it
 
 """
+
 import shutil
 import neuroml.writers as writers
 from neuroml import (
@@ -377,17 +378,26 @@ def run(a=None, **kwargs):
         print(
             "Not valid, but this is expected as it contains a newly defined ComponentType (not part of the core NeuroML elements)"
         )
-    
-    nml_level = 3
-    nml_engine = 'circo'
-    generate_nmlgraph(nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False)
-    shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
-    shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
 
-    handler = MatrixHandler(level=1, nl_network=None, show_already=False, save_figs_to_dir = output_folder_name)
+    nml_level = 3
+    nml_engine = "circo"
+    generate_nmlgraph(
+        nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
+    )
+    if output_folder_name != ".":
+        shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
+        shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
+
+    handler = MatrixHandler(
+        level=1,
+        nl_network=None,
+        show_already=False,
+        save_figs_to_dir=output_folder_name,
+    )
     currParser = NeuroMLXMLParser(handler)
     currParser.parse(nml_file)
     handler.finalise_document()
+
 
 if __name__ == "__main__":
     population_structures = [

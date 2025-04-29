@@ -1,13 +1,16 @@
 PYTHON_CONFIG ?= python3-config
 
 
-LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
-REMOVE=-arch arm64 -arch x86_64
-REPLACE=
-CXXFLAGS0 := $(shell $(PYTHON_CONFIG) --embed --cflags)
-CXXFLAGS := $(subst $(REMOVE),$(REPLACE),$(CXXFLAGS0))
+#LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
+#LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
+#REMOVE=-arch arm64 -arch x86_64
+#REPLACE=
+#CXXFLAGS0 := $(shell $(PYTHON_CONFIG) --embed --cflags)
+#CXXFLAGS := $(subst $(REMOVE),$(REPLACE),$(CXXFLAGS0))
 
+LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
+LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
+CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
 
 main: info main.o jsonUtils.o argUtils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o argUtils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
@@ -17,10 +20,11 @@ info:
 	@echo ' '
 	@echo '  - Compiling with '
 	@echo '      CXXFLAGS: ' $(CXXFLAGS) 
-	@echo '      CXXFLAGS0: ' $(CXXFLAGS0) 
 	@echo '      LIBS: ' $(LIBS) 
 	@echo '      LDFLAGS: ' $(LDFLAGS) 
 	@echo ' '
+
+
 
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
