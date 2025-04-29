@@ -32,7 +32,7 @@ jobs:
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
       
     - name: Install dependencies (macOS)
-      run: spack install nlohmann-json tree
+      run: vcpkg install nlohmann-json tree
       if: ${{ contains(matrix.runs-on, 'macos') }}
     
     - name: Run C++ tests 
