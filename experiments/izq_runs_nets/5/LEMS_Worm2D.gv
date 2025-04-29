@@ -1,0 +1,128 @@
+    # GraphViz compliant export for:Worm2DNet (Type: network)
+
+digraph Worm2D {
+fontsize=10;
+overlap=false;
+
+
+subgraph cluster_network {
+    style=filled;
+    color="#D6eeEA";
+    node [style=filled,color=white];
+    label = "Network to be simulated";
+
+    node [shape=rectangle]; Worm2DNet;
+    #    Population PopAS contains components of: Component(id=AS type=cellX) 
+    node [shape=ellipse,color="#cc194c",fontcolor="black"]; PopAS;    
+    Worm2DNet -> PopAS [len=1.00, arrowhead=diamond]
+
+    #    Population PopDA contains components of: Component(id=DA type=cellX) 
+    node [shape=ellipse,color="#d1b26d",fontcolor="black"]; PopDA;    
+    Worm2DNet -> PopDA [len=1.00, arrowhead=diamond]
+
+    #    Population PopDB contains components of: Component(id=DB type=cellX) 
+    node [shape=ellipse,color="#6dafaa",fontcolor="black"]; PopDB;    
+    Worm2DNet -> PopDB [len=1.00, arrowhead=diamond]
+
+    #    Population PopDD contains components of: Component(id=DD type=cellX) 
+    node [shape=ellipse,color="#3d519e",fontcolor="black"]; PopDD;    
+    Worm2DNet -> PopDD [len=1.00, arrowhead=diamond]
+
+    #    Population PopVA contains components of: Component(id=VA type=cellX) 
+    node [shape=ellipse,color="#84542b",fontcolor="black"]; PopVA;    
+    Worm2DNet -> PopVA [len=1.00, arrowhead=diamond]
+
+    #    Population PopVB contains components of: Component(id=VB type=cellX) 
+    node [shape=ellipse,color="#2b665e",fontcolor="white"]; PopVB;    
+    Worm2DNet -> PopVB [len=1.00, arrowhead=diamond]
+
+    #    Population PopVD contains components of: Component(id=VD type=cellX) 
+    node [shape=ellipse,color="#a5c6e5",fontcolor="black"]; PopVD;    
+    Worm2DNet -> PopVD [len=1.00, arrowhead=diamond]
+
+}
+
+subgraph cluster_comps {
+    style=filled;
+    color="#CCFFCC";
+    node [style=filled,color=white];
+    label = "Components";
+
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>AS (cellX)</td></tr><tr><td><font color="#666666">bias = -7.019595506811348, gain = 1, tau = 0.26205309165969526 s, <br/>state0 = 7.019595506811348, C = 2.6205309165969525E-10 F</font></td></tr></table>>]; "AS (cellX)";
+
+    "PopAS" -> "AS (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>DA (cellX)</td></tr><tr><td><font color="#666666">bias = 4.80271461822707, gain = 1, tau = 0.5507617718041095 s, <br/>state0 = -4.80271461822707, C = 5.507617718041094E-10 F</font></td></tr></table>>]; "DA (cellX)";
+
+    "PopDA" -> "DA (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>DB (cellX)</td></tr><tr><td><font color="#666666">bias = -4.294462036700749, gain = 1, tau = 0.580187187771118 s, <br/>state0 = 4.294462036700749, C = 5.80187187771118E-10 F</font></td></tr></table>>]; "DB (cellX)";
+
+    "PopDB" -> "DB (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>DD (cellX)</td></tr><tr><td><font color="#666666">bias = -9.445120449757178, gain = 1, tau = 0.19930053189233576 s, <br/>state0 = 9.445120449757178, C = 1.9930053189233577E-10 F</font></td></tr></table>>]; "DD (cellX)";
+
+    "PopDD" -> "DD (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>VA (cellX)</td></tr><tr><td><font color="#666666">bias = -11.824261184515265, gain = 1, tau = 0.3122657871636023 s, <br/>state0 = 11.824261184515265, C = 3.1226578716360234E-10 F</font></td></tr></table>>]; "VA (cellX)";
+
+    "PopVA" -> "VA (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>VB (cellX)</td></tr><tr><td><font color="#666666">bias = 0.8507247596737787, gain = 1, tau = 1.4123192280323498 s, <br/>state0 = -0.8507247596737787, C = 1.41231922803235E-9 F</font></td></tr></table>>]; "VB (cellX)";
+
+    "PopVB" -> "VB (cellX)" [label="7",len=1.00, arrowhead=diamond]
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>VD (cellX)</td></tr><tr><td><font color="#666666">bias = 8.6548640275513, gain = 1, tau = 0.9110180218943578 s, <br/>state0 = -8.6548640275513, C = 9.110180218943578E-10 F</font></td></tr></table>>]; "VD (cellX)";
+
+    "PopVD" -> "VD (cellX)" [label="7",len=1.00, arrowhead=diamond]
+}
+
+subgraph cluster_compTypes {
+    style=filled;
+    color="#D6E0EA";
+    node [style="rounded, filled",color=white];
+    label = "Component Types";
+    node [style="rounded, filled",color=white];
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    cellX -> baseCellMembPot [len=1.00, arrowhead=onormal]
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    baseCellMembPot -> baseSpikingCell [len=1.00, arrowhead=onormal]
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    baseSpikingCell -> baseCell [len=1.00, arrowhead=onormal]
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    baseCell -> baseStandalone [len=1.00, arrowhead=onormal]
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>cellX</td></tr><tr><td><font color="#669999">Params: bias, gain, tau (time), <br/>state0 </font></td></tr><tr><td><font color="#662211">Consts: COND_SCALE = 1.0E-9 S, MVOLT = 0.001 V, PAMP = 1.0E-12 A </font></td></tr><tr><td><font color="#FF9966">State vars: v (voltage), spiking </font></td></tr><tr><td><font color="#99CC00">iSyn = SUM OF: synapses[*]/i</font></td></tr><tr><td><font color="#99CC00">state = v/MVOLT</font></td></tr><tr><td><font color="#99CC00">output = 1/(1 + exp(-1 * gain * (state+bias)))</font></td></tr><tr><td><font color="#99CC00">iMemb = ((0-state)*PAMP + iSyn)</font></td></tr><tr><td><font color="#666633">v' = iMemb / C</font></td></tr><tr><td><font color="#996633">IF v .gt. 0 AND spiking .lt. 0.5 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 1)  <br/>AND (EVENT: spike)</font></td></tr><tr><td><font color="#996633">IF v .lt. 0 THEN </font></td></tr><tr><td><font color="#996633">(spiking = 0)</font></td></tr><tr><td><font color="#666666">Exposures: spiking, state, output, <br/>iSyn (current), iMemb (current), v (voltage) </font></td></tr></table>>]; cellX;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCellMembPot</td></tr><tr><td><font color="#666666">Exposures: v (voltage) </font></td></tr></table>>]; baseCellMembPot;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseSpikingCell</td></tr></table>>]; baseSpikingCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseCell</td></tr></table>>]; baseCell;
+    node [shape=box label=<<table border="0" cellborder="0"><tr><td>baseStandalone</td></tr></table>>]; baseStandalone;
+}
+
+    "AS (cellX)" -> cellX [len=1.00]
+    "DA (cellX)" -> cellX [len=1.00]
+    "DB (cellX)" -> cellX [len=1.00]
+    "DD (cellX)" -> cellX [len=1.00]
+    "VA (cellX)" -> cellX [len=1.00]
+    "VB (cellX)" -> cellX [len=1.00]
+    "VD (cellX)" -> cellX [len=1.00]
+}

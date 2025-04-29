@@ -9,6 +9,7 @@ from pyneuroml.lems import generate_lems_file_for_neuroml
 import os
 import sys
 import pprint
+from pyneuroml.runners import run_jneuroml
 
 import utils
 import matplotlib
@@ -124,9 +125,21 @@ def run(a=None, **kwargs):
     print("\nLEMS: ")
     # print(ls.to_xml())
 
-    ls.save_to_file(output_folder_name + "/LEMS_%s.xml" % sim_id)
-    assert os.path.isfile("LEMS_%s.xml" % sim_id)
+    file_name = output_folder_name + "/LEMS_%s.xml" % sim_id
+    ls.save_to_file(file_name)
+    assert os.path.isfile(file_name)
 
+   
+    pre_args = ""
+    post_args = "-lems-graph"
+    exit_on_fail = True
+    run_jneuroml(
+                pre_args,
+                file_name,
+                post_args,
+                #max_memory=args.java_max_memory,
+                exit_on_fail=exit_on_fail,
+            )
     """
     ############################################
     #  Create the LEMS file with helper method

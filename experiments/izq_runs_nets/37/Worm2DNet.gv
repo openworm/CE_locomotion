@@ -1,0 +1,66 @@
+digraph Worm2DNet {
+	node [color="#cc194c" fontcolor="#000000" shape=ellipse style=filled]
+	PopAS [label=<PopAS<br/><i>7 cells</i>>]
+	node [color="#d1b26d" fontcolor="#000000" shape=ellipse style=filled]
+	PopDA [label=<PopDA<br/><i>7 cells</i>>]
+	node [color="#6dafaa" fontcolor="#000000" shape=ellipse style=filled]
+	PopDB [label=<PopDB<br/><i>7 cells</i>>]
+	node [color="#3d519e" fontcolor="#000000" shape=ellipse style=filled]
+	PopDD [label=<PopDD<br/><i>7 cells</i>>]
+	node [color="#84542b" fontcolor="#000000" shape=ellipse style=filled]
+	PopVA [label=<PopVA<br/><i>7 cells</i>>]
+	node [color="#2b665e" fontcolor="#000000" shape=ellipse style=filled]
+	PopVB [label=<PopVB<br/><i>7 cells</i>>]
+	node [color="#a5c6e5" fontcolor="#000000" shape=ellipse style=filled]
+	PopVD [label=<PopVD<br/><i>7 cells</i>>]
+	edge [arrowhead=tee arrowsize=1 color="#84542b" fontcolor="#84542b" penwidth=1 style=dashed]
+	PopVA -> PopAS
+	edge [arrowhead=tee arrowsize=1 color="#cc194c" fontcolor="#cc194c" penwidth=1 style=dashed]
+	PopAS -> PopDA
+	edge [arrowhead=tee arrowsize=1 color="#a5c6e5" fontcolor="#a5c6e5" penwidth=1 style=dashed]
+	PopVD -> PopDD
+	edge [arrowhead=tee arrowsize=1 color="#3d519e" fontcolor="#3d519e" penwidth=1 style=dashed]
+	PopDD -> PopVD
+	edge [arrowhead=tee arrowsize=1 color="#6dafaa" fontcolor="#6dafaa" penwidth=1 style=dashed]
+	PopDB -> PopVB
+	edge [arrowhead=tee arrowsize=1 color="#d1b26d" fontcolor="#d1b26d" penwidth=1 style=dashed]
+	PopDA -> PopAS
+	edge [arrowhead=tee arrowsize=1 color="#2b665e" fontcolor="#2b665e" penwidth=1 style=dashed]
+	PopVB -> PopDB
+	edge [arrowhead=tee arrowsize=1 color="#cc194c" fontcolor="#cc194c" penwidth=1 style=dashed]
+	PopAS -> PopVA
+	edge [arrowhead=normal arrowsize=0.7192733859605751 color="#cc194c" fontcolor="#cc194c" penwidth=0.7192733859605751 style=solid]
+	PopAS -> PopAS
+	edge [arrowhead=normal arrowsize=1 color="#6dafaa" fontcolor="#6dafaa" penwidth=3.988773178104382 style=solid]
+	PopDB -> PopAS
+	edge [arrowhead=normal arrowsize=1 color="#d1b26d" fontcolor="#d1b26d" penwidth=2.7557189522872445 style=solid]
+	PopDA -> PopDA
+	edge [arrowhead=normal arrowsize=1 color="#cc194c" fontcolor="#cc194c" penwidth=3.8056123558409727 style=solid]
+	PopAS -> PopDA
+	edge [arrowhead=normal arrowsize=1 color="#6dafaa" fontcolor="#6dafaa" penwidth=2.6500769537250006 style=solid]
+	PopDB -> PopDB
+	edge [arrowhead=normal arrowsize=1 color="#d1b26d" fontcolor="#d1b26d" penwidth=4.114807330963175 style=solid]
+	PopDA -> PopDB
+	edge [arrowhead=normal arrowsize=0.7 color="#3d519e" fontcolor="#3d519e" penwidth=0.7 style=solid]
+	PopDD -> PopDD
+	edge [arrowhead=normal arrowsize=1 color="#d1b26d" fontcolor="#d1b26d" penwidth=4.161031319819983 style=solid]
+	PopDA -> PopDD
+	edge [arrowhead=normal arrowsize=0.9981946403020086 color="#2b665e" fontcolor="#2b665e" penwidth=0.9981946403020086 style=solid]
+	PopVB -> PopDD
+	edge [arrowhead=normal arrowsize=1 color="#84542b" fontcolor="#84542b" penwidth=1.9859622046095071 style=solid]
+	PopVA -> PopDD
+	edge [arrowhead=normal arrowsize=1 color="#a5c6e5" fontcolor="#a5c6e5" penwidth=1.1666386572488285 style=solid]
+	PopVD -> PopVD
+	edge [arrowhead=normal arrowsize=1 color="#cc194c" fontcolor="#cc194c" penwidth=4.2 style=solid]
+	PopAS -> PopVD
+	edge [arrowhead=normal arrowsize=1 color="#2b665e" fontcolor="#2b665e" penwidth=1.5715411007252855 style=solid]
+	PopVB -> PopVB
+	edge [arrowhead=normal arrowsize=1 color="#a5c6e5" fontcolor="#a5c6e5" penwidth=2.6481923331182804 style=solid]
+	PopVD -> PopVB
+	edge [arrowhead=normal arrowsize=1 color="#84542b" fontcolor="#84542b" penwidth=2.795555021079431 style=solid]
+	PopVA -> PopVA
+	edge [arrowhead=normal arrowsize=1 color="#a5c6e5" fontcolor="#a5c6e5" penwidth=3.0549229216403457 style=solid]
+	PopVD -> PopVA
+	edge [arrowhead=normal arrowsize=1 color="#6dafaa" fontcolor="#6dafaa" penwidth=1.5449528528850196 style=solid]
+	PopDB -> PopDD
+}

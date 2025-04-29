@@ -1,0 +1,2 @@
+23 looks okay. circuit AS-DA-DB is strongest as it should be. projection AS-VD is strongest
+as it should be.
