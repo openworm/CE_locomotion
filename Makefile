@@ -11,6 +11,10 @@ PYTHON_CONFIG ?= python3-config
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
+#LDFLAGS +="-L/opt/homebrew/lib"
+LDFLAGS += -L$(brew --prefix nlohmann-json)/lib
+#CXXFLAGS="-I/opt/homebrew/include"
+CXXFLAGS += -I$(brew --prefix nlohmann-json)/include
 
 main: info main.o jsonUtils.o argUtils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o argUtils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
@@ -32,7 +36,7 @@ TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	g++ -c -O3 -std=c++11 -I$(brew --prefix)/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
+	g++ -c -O3 -std=c++11   -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 
 argUtils.o: argUtils.cpp argUtils.h
 	g++ -c -O3 -std=c++11 -flto argUtils.cpp
