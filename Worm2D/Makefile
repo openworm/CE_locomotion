@@ -26,33 +26,33 @@ owSignalSimulatorForWorm2D.o: ../neuromlLocal/owSignalSimulatorForWorm2D.cpp ../
 random.o: ../random.cpp ../random.h #VectorMatrix.h
 	$(CC) -c -O3 -flto ../random.cpp
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	$(CC) -c -O3 -std=c++11   -flto jsonUtils.cpp	
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto jsonUtils.cpp	
 TSearch.o: ../TSearch.cpp ../TSearch.h
 	$(CC) -c -O3 -flto ../TSearch.cpp
 Worm2D.o: Worm2D.cpp Worm2D.h jsonUtils.h
-	$(CC) -c -O3 -std=c++11  -flto Worm2D.cpp
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm2D.cpp
 EvolutionRS18.o: EvolutionRS18.cpp EvolutionRS18.h 
-	$(CC) -c -O3 -std=c++11  -flto EvolutionRS18.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionRS18.cpp
 Simulation.o: Simulation.cpp Simulation.h 
-	$(CC) -c -O3 -std=c++11  -flto Simulation.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Simulation.cpp
 EvolutionCE.o: EvolutionCE.cpp EvolutionCE.h 
-	$(CC) -c -O3 -std=c++11  -flto EvolutionCE.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionCE.cpp
 Evolution21.o: Evolution21.cpp Evolution21.h 
-	$(CC) -c -O3 -std=c++11  -flto Evolution21.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution21.cpp
 Evolution.o: Evolution.cpp Evolution.h 
-	$(CC) -c -O3 -std=c++11  -flto Evolution.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution.cpp
 WormRS18.o: WormRS18.cpp WormRS18.h 
-	$(CC) -c -O3 -std=c++11  -flto WormRS18.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormRS18.cpp
 Worm2DCE.o: Worm2DCE.cpp Worm2DCE.h 
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -std=c++11  -flto Worm2DCE.cpp 
 WormCE.o: WormCE.cpp WormCE.h 
-	$(CC) -c -O3 -std=c++11  -flto WormCE.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormCE.cpp
 Worm2D21.o: Worm2D21.cpp Worm2D21.h 
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -std=c++11  -flto Worm2D21.cpp 
 Worm21.o: Worm21.cpp Worm21.h 
-	$(CC) -c -O3 -std=c++11  -flto Worm21.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm21.cpp
 Segment21.o: Segment21.cpp Segment21.h
-	$(CC) -c -O3 -std=c++11 -flto Segment21.cpp	
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Segment21.cpp	
 WormBody.o: ../WormBody.cpp ../WormBody.h
 	$(CC) -c -O3 -flto ../WormBody.cpp
 NervousSystem.o: ../NervousSystem.cpp ../NervousSystem.h #VectorMatrix.h random.h ../neuromlLocal/NervousSystemBase.h
@@ -64,6 +64,6 @@ StretchReceptorCE.o: StretchReceptorCE.cpp StretchReceptorCE.h
 Muscles.o: ../Muscles.cpp ../Muscles.h #VectorMatrix.h random.h
 	$(CC) -c -O3 -flto ../Muscles.cpp
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
-	$(CC) -c -O3 -std=c++11  -flto main.cpp
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 clean:
 	rm -f *.o main
