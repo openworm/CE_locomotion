@@ -28,15 +28,11 @@ jobs:
       run: g++ -v
 
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev tree
+      run: sudo apt-get install -y nlohmann-json3-dev tree python-lxml graphviz openjdk-11-jdk
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
-      
-    - name: Install dependencies (macOS)
-      run: vcpkg install nlohmann-json@3.11.3
-      if: ${{ contains(matrix.runs-on, 'macos') }}
 
     - name: Install dependencies (macOS)
-      run: brew install tree
+      run: brew install nlohmann-json tree
       if: ${{ contains(matrix.runs-on, 'macos') }}
     
     - name: Run C++ tests 

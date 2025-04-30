@@ -32,7 +32,7 @@ TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
+	g++ -c -O3 -std=c++11 -I$(brew --prefix nlohmann-json)/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 
 argUtils.o: argUtils.cpp argUtils.h
 	g++ -c -O3 -std=c++11 -flto argUtils.cpp

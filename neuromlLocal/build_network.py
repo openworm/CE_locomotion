@@ -384,7 +384,7 @@ def run(a=None, **kwargs):
     generate_nmlgraph(
         nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
     )
-    if output_folder_name != ".":
+    if not output_folder_name == ".":
         shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
 
