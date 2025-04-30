@@ -28,7 +28,7 @@ jobs:
       run: g++ -v
 
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev tree python-lxml graphviz openjdk-11-jdk
+      run: sudo apt-get install -y nlohmann-json3-dev tree graphviz openjdk-11-jdk
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
 
     - name: Install dependencies (macOS)

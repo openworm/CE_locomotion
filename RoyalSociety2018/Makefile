@@ -3,7 +3,7 @@ main: main.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSear
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	g++ -c -O3 -std=c++11 -I$(brew --prefix nlohmann-json)/include  -flto jsonUtils.cpp	
+	g++ -c -O3 -std=c++11 -I$(brew --prefix)/include  -flto jsonUtils.cpp	
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 argUtils.o: ../argUtils.cpp ../argUtils.h
