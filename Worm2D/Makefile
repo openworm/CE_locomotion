@@ -4,9 +4,12 @@ PYTHON_CONFIG ?= python3-config
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
-LDFLAGS += -L$(brew --prefix nlohmann-json)/lib
+#LDFLAGS += -L$(brew --prefix nlohmann-json)/lib
 #CXXFLAGS="-I/opt/homebrew/include"
-CXXFLAGS += -I$(brew --prefix nlohmann-json)/include
+#CXXFLAGS += -I$(brew --prefix nlohmann-json)/include
+LDFLAGS += "-L/opt/homebrew/lib"
+#LDFLAGS += "-L$(brew --prefix nlohmann-json)/lib"
+CXXFLAGS += "-I/opt/homebrew/include"
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
 main: main.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o WormCE.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o
