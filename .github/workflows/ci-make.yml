@@ -38,6 +38,14 @@ jobs:
     - name: Test makefile
       run: make
 
+    - name: Install Python requirements
+      run: |
+        pip install OSBModelValidation
+        pip install pyNeuroML
+        pip install numpy matplotlib
+        pip install ruff 
+        pip install neuron 
+
     - name: Test directly running main program
       run: |
         ./main -p 6  # Note: small population of 6 for quick runtime
