@@ -2,21 +2,81 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "main", "development" ]
+    branches: [ "main", "development", "experimental", "test*" ]
   pull_request:
-    branches: [ "main", "development" ]
+    branches: [ "main", "development", "experimental", "test*" ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:        
+        runs-on: [ubuntu-latest, ubuntu-22.04, macos-latest, macos-14 ]
+        python-version: [ "3.10", "3.12" ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: make
+    - name: Set up Python  ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version:  ${{ matrix.python-version }}
+
+    - name: C++ info
+      run: g++ -v
+
+    - name: Install dependencies (Ubuntu)
+      run: sudo apt-get install -y nlohmann-json3-dev tree
+      if: ${{ contains(matrix.runs-on, 'ubuntu') }}
+      
+    - name: Install dependencies (macOS)
+      run: brew install nlohmann-json tree
+      if: ${{ contains(matrix.runs-on, 'macos') }}
+    
+    - name: Run C++ tests 
+      run: |
+          make tests
+          ./tests
+
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
+
+    - name: Test makefile
       run: make
+
+    - name: Install Python requirements
+      run: |
+        pip install OSBModelValidation
+        pip install pyNeuroML
+        pip install numpy matplotlib
+        pip install ruff 
+        pip install neuron 
+
+    - name: Test directly running main program
+      run: |
+        ./main -p 6  # Note: small population of 6 for quick runtime
+        ls -alth
+
+    - name: Test Python command line script
+      run: |
+        python run_main.py -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
+
+    - name: Test using test_all.sh
+      run: |
+        which nrniv
+        export NEURON_HOME=$pythonLocation
+        env
+        
+        ./test_all.sh # also generated neuroml
+
+        git diff exampleRun/phenotype.dat 
+
       
     - name: list generated files
       run: |
           ls -alth
+          tree
