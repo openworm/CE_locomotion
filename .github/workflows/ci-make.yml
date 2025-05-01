@@ -80,3 +80,4 @@ jobs:
       run: |
           ls -alth
           tree
+          pip list
