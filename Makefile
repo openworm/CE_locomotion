@@ -28,7 +28,7 @@ TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 
 jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	g++ -c -O3 -std=c++11 -I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
+	g++ -c -O3 -std=c++11 -I/opt/homebrew/include  -flto $(CXXFLAGS) $(LDFLAGS) jsonUtils.cpp	
 
 utils.o: utils.cpp utils.h
 	g++ -c -O3 -flto utils.cpp
