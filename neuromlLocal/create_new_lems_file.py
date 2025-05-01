@@ -124,6 +124,8 @@ def run(a=None, **kwargs):
     print("\nLEMS: ")
     # print(ls.to_xml())
 
+    ls.save_to_file("LEMS_%s.xml" % sim_id)
+    assert os.path.isfile("LEMS_%s.xml" % sim_id)
     file_name = output_folder_name + "/LEMS_%s.xml" % sim_id
     ls.save_to_file(file_name)
     assert os.path.isfile(file_name)

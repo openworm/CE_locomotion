@@ -125,11 +125,14 @@ def run(a=None, **kwargs):
     cell_names = utils.getCellNames(network_json_data)
     pop_cell_names = utils.getPopNames(network_json_data)
 
-    cellX_filename = output_folder_name + "/cell_syn_X_cells.xml"
+    cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
 
     if not output_folder_name == ".":
         shutil.copyfile("cell_syn_X.xml", output_folder_name + "/cell_syn_X.xml")
+        shutil.copyfile(
+            "cell_syn_X_cells.xml", output_folder_name + "/cell_syn_X_cells.xml"
+        )
 
     nml_doc = NeuroMLDocument(id="Worm2D")
     # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
@@ -363,7 +366,7 @@ def run(a=None, **kwargs):
 
                 input_list.input_ws.append(input_w)
 
-    nml_file = output_folder_name + "/Worm2D.net.nml"
+    nml_file = "Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
 
     print("Written network file to: " + nml_file)
@@ -387,6 +390,7 @@ def run(a=None, **kwargs):
     if not output_folder_name == ".":
         shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
+        shutil.copyfile("Worm2D.net.nml", output_folder_name + "/Worm2D.net.nml")
 
     handler = MatrixHandler(
         level=1,
