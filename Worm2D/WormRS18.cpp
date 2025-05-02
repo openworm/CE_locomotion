@@ -188,7 +188,12 @@ rS18Macros(setMacros()),n(dynamic_cast<NervousSystem&>(*n_ptr))
 void Worm18::InitializeState(RandomState &rs)
 {
     
-    n.RandomizeCircuitState(-0.5, 0.5, rs);
+    //n.RandomizeCircuitState(-0.5, 0.5, rs);
+    for (int i = 1; i <= n.size-4; i++)
+        n.SetNeuronState(i, (i-0.5)/(n.size-4));
+    for (int i = 1; i <= 4; i++)
+        n.SetNeuronState(i + n.size-4, (i-0.5)/4);
+    //n.RandomizeCircuitState(0.5, 0.5, rs); //fix initial conditions
     //h.RandomizeCircuitState(-0.5, 0.5, rs);
     Worm2D::InitializeState(rs);
 }
