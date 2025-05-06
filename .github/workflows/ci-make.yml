@@ -41,10 +41,10 @@ jobs:
     - name: Install Python requirements
       run: |
         pip install OSBModelValidation
+        pip install NEURON==8.2.4 
         pip install pyNeuroML
         pip install numpy matplotlib
         pip install ruff 
-        pip install neuron 
 
     - name: Test directly running main program
       run: |
