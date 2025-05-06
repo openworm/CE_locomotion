@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+    
     - name: Set up Python  ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -50,11 +50,11 @@ jobs:
 
     - name: Install Python requirements
       run: |
+        pip install NEURON==8.2.6
         pip install OSBModelValidation
         pip install pyNeuroML
         pip install numpy matplotlib
         pip install ruff 
-        pip install neuron 
 
     - name: Test directly running main program
       run: |
@@ -80,3 +80,4 @@ jobs:
       run: |
           ls -alth
           tree
+          pip list
