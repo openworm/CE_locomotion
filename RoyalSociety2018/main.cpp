@@ -322,7 +322,8 @@ int main (int argc, const char* argv[])
 
     supArgs1.randomseed = randomseed;
     if (argc>2) if (!supArgs1.setArgs(argc,argv,randomseed)) return 0;
-    
+    InitializeBodyConstants();
+
     if (supArgs1.do_evol){
 
     TSearch s(VectSize);
@@ -363,7 +364,7 @@ if (supArgs1.printToFile)
 //#endif
 
     // Code to run simulation:
-    InitializeBodyConstants();
+    //InitializeBodyConstants();
 
 //#ifdef SEED
 if (supArgs1.evo_seed)
@@ -410,7 +411,7 @@ if (supArgs1.evo_seed)
     std::cout << std::setprecision(10);
 
     // Code to run simulation:
-    InitializeBodyConstants();
+    //InitializeBodyConstants();
 
     ifstream BestIndividualFile;
     TVector<double> bestVector(1, VectSize);
