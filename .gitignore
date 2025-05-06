@@ -7,3 +7,6 @@
 /fitness.dat
 /phenotype.dat
 /seed.dat
+build/
+out/
+.vs/

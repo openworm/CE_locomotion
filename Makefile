@@ -3,7 +3,7 @@ main: main.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSear
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
 TSearch.o: TSearch.cpp TSearch.h
-	g++ -c -O3 -flto TSearch.cpp
+	g++ -c -O3 -flto -DTHREADED_SEARCH TSearch.cpp
 Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h

@@ -2,8 +2,7 @@
 // "Evolutionary" search classes
 // *****************************
 
-// Uncomment the following line to enable multithreading
-#define THREADED_SEARCH
+// Define THREADED_SEARCH via Makefile or CMakeLists.txt
 #define THREAD_COUNT 16
 
 #pragma once

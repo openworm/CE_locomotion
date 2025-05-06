@@ -504,7 +504,10 @@ void *EvaluatePopulationRange(void *arg)
   TSearch *s = prs->search;
   for (int i = prs->start; i <= prs->end; i++)
     s->Perf[i] = s->EvaluateVector(s->Population[i], s->RandomStates[i]);
-  pthread_exit(NULL);
+#ifdef THREADED_SEARCH
+	pthread_exit(NULL);
+#endif
+  return NULL;
 }
 
 

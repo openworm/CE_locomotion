@@ -6,6 +6,19 @@ We are using this to better understand how the same neural circuit can produce m
 
 Work in collaboration with Dr. Erick Olivares and Prof. Randall Beer.
 
+## Dependencies
+
+```
+python -m venv openworm
+source openworm/Scripts/activate
+# or Windows
+# openworm\Scripts\activate.bat
+```
+Then install the dependencies using pip:
+```
+pip install -r .\requirements.txt
+```
+
 ## Instructions for use
 
 1. Compile using the Makefile: 
