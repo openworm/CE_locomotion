@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+    
     - name: Set up Python  ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -28,7 +28,7 @@ jobs:
       run: g++ -v
 
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev tree
+      run: sudo apt-get install -y nlohmann-json3-dev tree 
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
       
     - name: Install dependencies (macOS)
@@ -50,11 +50,11 @@ jobs:
 
     - name: Install Python requirements
       run: |
+        pip install NEURON==8.2.6
         pip install OSBModelValidation
         pip install pyNeuroML
         pip install numpy matplotlib
         pip install ruff 
-        pip install neuron 
 
     - name: Test directly running main program
       run: |
