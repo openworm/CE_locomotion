@@ -312,11 +312,9 @@ def reload_single_run(a=None, **kwargs):
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-
     filename = hf.rename_file("ExampleActivity.png")
     plt.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-
 
     import json
 
@@ -324,7 +322,7 @@ def reload_single_run(a=None, **kwargs):
         json.dump(wcon, json_file, indent=4, ensure_ascii=False)
 
     if a.showPlot:
-        print('Showing plot')
+        print("Showing plot")
         plt.show()
     plt.close()
 
