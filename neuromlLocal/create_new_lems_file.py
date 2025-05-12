@@ -9,7 +9,7 @@ from pyneuroml.lems import generate_lems_file_for_neuroml
 import os
 import sys
 import pprint
-from pyneuroml.runners import run_jneuroml
+from pyneuroml.runners import run_jneuroml, run_lems_with_jneuroml_neuron
 import shutil
 
 import utils
@@ -143,20 +143,28 @@ def run(a=None, **kwargs):
         exit_on_fail=exit_on_fail,
     )
     post_args = "-neuron"
+    post_args += " -nogui"
+    #post_args += " -compile"
+
     run_jneuroml(
         pre_args,
         file_name_1,
         post_args,
+        verbose=True,
+        report_jnml_output=True,
         # exec_in_dir = output_folder_name,
         # max_memory=args.java_max_memory,
         exit_on_fail=exit_on_fail,
     )
-    cur_wkd_dir = os.getcwd()
+    
+    #run_lems_with_jneuroml_neuron(file_name_1, only_generate_scripts = True)
+
+    """ cur_wkd_dir = os.getcwd()
     if not cur_wkd_dir == output_folder_name:
         shutil.copyfile(
             "LEMS_Worm2D_nrn.py", output_folder_name + "/LEMS_Worm2D_nrn.py"
         )
-
+ """
     """
     ############################################
     #  Create the LEMS file with helper method
