@@ -4,7 +4,7 @@ set -ex
 ./clean.sh 
 
 
-python regenerate.py exampleRun21W2D
+python regenerate.py ../exampleRun21W2D
 
 omv test -V .test.21w2d.nrn.omt
 omv test -V .test.21w2d.omt

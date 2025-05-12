@@ -10,6 +10,7 @@ import os
 import sys
 import pprint
 from pyneuroml.runners import run_jneuroml
+import shutil
 
 import utils
 import matplotlib
@@ -124,9 +125,10 @@ def run(a=None, **kwargs):
     print("\nLEMS: ")
     # print(ls.to_xml())
 
-    ls.save_to_file("LEMS_%s.xml" % sim_id)
-    assert os.path.isfile("LEMS_%s.xml" % sim_id)
-    file_name = output_folder_name + "/LEMS_%s.xml" % sim_id
+    file_name_1 = "LEMS_%s.xml" % sim_id
+    ls.save_to_file(file_name_1)
+    assert os.path.isfile(file_name_1)
+    file_name = output_folder_name + "/" + file_name_1
     ls.save_to_file(file_name)
     assert os.path.isfile(file_name)
 
@@ -140,6 +142,21 @@ def run(a=None, **kwargs):
         # max_memory=args.java_max_memory,
         exit_on_fail=exit_on_fail,
     )
+    post_args = "-neuron"
+    run_jneuroml(
+        pre_args,
+        file_name_1,
+        post_args,
+        # exec_in_dir = output_folder_name,
+        # max_memory=args.java_max_memory,
+        exit_on_fail=exit_on_fail,
+    )
+    cur_wkd_dir = os.getcwd()
+    if not cur_wkd_dir == output_folder_name:
+        shutil.copyfile(
+            "LEMS_Worm2D_nrn.py", output_folder_name + "/LEMS_Worm2D_nrn.py"
+        )
+
     """
     ############################################
     #  Create the LEMS file with helper method

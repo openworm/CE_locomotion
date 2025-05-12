@@ -24,7 +24,6 @@ out_path_list += [
     out_path + "/" + dir for dir in dir_list if os.path.isdir(os.path.join(path, dir))
 ]
 
-
 population_structures = [
     "one population",
     "individual populations",

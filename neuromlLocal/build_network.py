@@ -5,6 +5,7 @@ through libNeuroML, save it as XML and validate it
 
 """
 
+import os
 import shutil
 import neuroml.writers as writers
 from neuroml import (
@@ -125,14 +126,22 @@ def run(a=None, **kwargs):
     cell_names = utils.getCellNames(network_json_data)
     pop_cell_names = utils.getPopNames(network_json_data)
 
+    cur_wkd_dir = os.getcwd()
+    this_file_dir = os.path.dirname(
+        os.path.realpath(__file__)
+    )  # location of this file!
     cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
 
-    if not output_folder_name == ".":
-        shutil.copyfile("cell_syn_X.xml", output_folder_name + "/cell_syn_X.xml")
+    # copy from current working directory to neuromLocal and output folder
+    if not output_folder_name == this_file_dir:
         shutil.copyfile(
-            "cell_syn_X_cells.xml", output_folder_name + "/cell_syn_X_cells.xml"
+            this_file_dir + "/cell_syn_X.xml", output_folder_name + "/cell_syn_X.xml"
         )
+    if not cur_wkd_dir == this_file_dir:
+        shutil.copyfile(this_file_dir + "/cell_syn_X.xml", "cell_syn_X.xml")
+    if not output_folder_name == cur_wkd_dir:
+        shutil.copyfile(cellX_filename, output_folder_name + "/cell_syn_X_cells.xml")
 
     nml_doc = NeuroMLDocument(id="Worm2D")
     # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
@@ -387,7 +396,7 @@ def run(a=None, **kwargs):
     generate_nmlgraph(
         nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
     )
-    if not output_folder_name == ".":
+    if not output_folder_name == cur_wkd_dir:
         shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
         shutil.copyfile("Worm2D.net.nml", output_folder_name + "/Worm2D.net.nml")

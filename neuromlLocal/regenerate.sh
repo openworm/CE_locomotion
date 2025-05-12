@@ -5,13 +5,13 @@ set -ex
 
 ruff format *py
 
-python regenerate.py exampleRun
+python regenerate.py ../exampleRun
 
 #omv all -V 
 omv test -V .test.w2d.nrn.omt
 omv test -V .test.w2d.omt
 
-python regenerate.py exampleRunCEW2D
+python regenerate.py ../exampleRunCEW2D
 
 omv test -V .test.w2d.nrn.omt
 omv test -V .test.w2d.omt

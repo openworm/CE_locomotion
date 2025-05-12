@@ -49,6 +49,9 @@ if [ "$quick_test" == 0 ]; then
         echo "Running 2018 tests which only pass on Linux..."
         omv test -V .test.2018.omt
         omv test -V .test.2018W2D.omt
+    else
+        python test2018.py
+        python test2018W2D.py
     fi;
 
     omv test -V .test.example.omt
