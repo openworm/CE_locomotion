@@ -46,6 +46,9 @@ class Worm2D {
     virtual void DumpActState(ofstream &ofs, int skips) = 0;
     virtual void Step(double StepSize, double output) = 0;
     virtual void InitializeState(RandomState &rs) = 0;
+    virtual vector<doubIntParamsHead> getWormParams() = 0;
+
+
     void Step(double StepSize) {Step(StepSize,1);}
 
     void DumpVal(ofstream &ofs, int skips, double val);
@@ -59,8 +62,7 @@ class Worm2D {
     virtual void initForSimulation() =  0;
 
 
-    virtual vector<doubIntParamsHead> getWormParams() = 0;
-
+    
     double CoMx();
     double CoMy();
     void Curvature(TVector<double> &c);
@@ -74,6 +76,7 @@ class Worm2D {
     protected:
 
     virtual const vector<string> getCellNames() = 0;
+    
     //virtual void addExtraParsToJson(json & j) = 0;
     
     

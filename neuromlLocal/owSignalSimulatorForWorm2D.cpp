@@ -24,6 +24,34 @@ const std::string & simFileName)
   return simFileName;
   }
 
+std::vector<float> SignalSimulatorForWorm2D::vecValFunc(const std::string & funcName){
+  // Call a method of the class
+  // pValue = PyObject_CallMethod(pInstance, "rrun
+  // un", nullptr);
+
+  //std::cout << "sig sim run" << std::endl;
+  PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
+
+  //pValue = PyObject_CallMethod(pInstance, pFuncName, nullptr);
+  
+  PyObject *pValue = PyObject_CallMethodObjArgs(pInstance, pFuncName, nullptr);
+
+  if (PyErr_Occurred()) {
+      PyErr_Print();
+      throw std::runtime_error("Exception in simulator run (printed above)");
+  }
+  if (PyList_Check(pValue)) {
+    std::vector<float> value_array;
+    value_array = SignalSimulator::unpackPythonList(pValue);
+    return value_array;
+  } else {
+    std::vector<float> single_element_array(0);
+    single_element_array[0] = (float)PyFloat_AsDouble(pValue);
+    return single_element_array;
+  }
+}
+
+
 double SignalSimulatorForWorm2D::getValFunc(const std::string & funcName, const std::string & parName,
 const int & i)
 {

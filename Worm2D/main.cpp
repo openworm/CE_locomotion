@@ -13,6 +13,20 @@
 
 using json = nlohmann::json;
 
+void write_json(Evolution* er,  Worm2D* w, string filename)
+{
+    RandomState rs;
+    rs.SetRandomSeed(er->itsEvoPars().randomseed);
+    w->InitializeState(rs); 
+
+    ofstream json_out(er->rename_file(filename));
+    json j;
+    w->addParsToJson(j);
+    er->addParsToJson(j);
+    json_out << std::setw(4) << j << std::endl;
+    json_out.close();
+
+}
 
 
 int main (int argc, const char* argv[])
@@ -60,7 +74,7 @@ int main (int argc, const char* argv[])
 
     bool do_json = 1;
 
-    // write worm_data.json if ran an evolution
+    // write worm_data.json 
     if (do_json) {
 
         Worm2D* w = 0;
@@ -70,22 +84,24 @@ int main (int argc, const char* argv[])
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
 
+        //write_json(er,w, "worm_data_2.json");
 
         RandomState rs;
         rs.SetRandomSeed(er->itsEvoPars().randomseed);
         w->InitializeState(rs); 
 
-        ofstream nsdump(er->rename_file("NSdump.dat"));
-        nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
-        nsdump.close();
-
-
-        ofstream json_out(er->rename_file("worm_data.json"));    
+        ofstream json_out(er->rename_file("worm_data.json"));
+        //json_out << setprecision(32);
         json j;
         w->addParsToJson(j);
         er->addParsToJson(j);
         json_out << std::setw(4) << j << std::endl;
         json_out.close();
+
+        ofstream nsdump(er->rename_file("NSdump.dat"));
+        nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
+        nsdump.close();
+
         delete w;
         
     }
@@ -111,6 +127,8 @@ int main (int argc, const char* argv[])
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
 
+    //write_json(er,w, "worm_data_3.json");
+
     cout << "making simulation" << endl;
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -134,14 +152,28 @@ int main (int argc, const char* argv[])
 
     }
     else{
+       
+    Worm2D* w = 0; 
 
+    const bool makeWormFromJson = true;
+    if (makeWormFromJson){
     ifstream json_in(er->rename_file("worm_data.json"));
     json j;
     json_in >> j;
+    json_in.close();
 
-    Worm2D* w = 0;
     if (model_name == "CE") w = new Worm2DCE(j);
     if (model_name == "Net21") w = new Worm2D21(j);
+
+    }
+    else{
+    
+    if (model_name == "Net21") w = new Worm2D21(phenotype);
+
+    }
+
+
+    write_json(er,w, "worm_data_nml.json");
 
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -157,7 +189,7 @@ int main (int argc, const char* argv[])
     s1.runSimulation(*w);}
 
     delete w;
-    json_in.close();
+   
     }
 
     delete er;

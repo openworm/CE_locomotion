@@ -18,12 +18,15 @@ class c302ForW2D : virtual public NSForW2D
     double NeuronOutput(int i);
     void EulerStep(double );
     void SetPopStructure(const std::string & popStruct, int popSize);
-
+    double NeuronState(int i);
     virtual ~c302ForW2D(){if (simulation) delete simulation;}
 
     protected:
 
     SignalSimulatorForWorm2D *simulation = 0;
     std::vector<float> output_value;
+    std::vector<float> state_value;
+    bool newstep  = true;
+    bool newstep2  = true;
 
 };

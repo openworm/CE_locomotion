@@ -141,14 +141,21 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
   }
 }
 
-std::vector<float> SignalSimulator::run() {
+//std::vector<float> SignalSimulator::run() {
+void SignalSimulator::run() {
   // Call a method of the class
   // pValue = PyObject_CallMethod(pInstance, "rrun
   // un", nullptr);
 
   //std::cout << "sig sim run" << std::endl;
+  PyObject_CallMethod(pInstance, const_cast<char *>("run"), nullptr);
+  if (PyErr_Occurred()) {
+      PyErr_Print();
+      throw std::runtime_error("Exception in simulator run (printed above)");
+  }
+  return;
 
-  pValue = PyObject_CallMethod(pInstance, const_cast<char *>("run"), nullptr);
+ /*  pValue = PyObject_CallMethod(pInstance, const_cast<char *>("run"), nullptr);
   if (PyErr_Occurred()) {
       PyErr_Print();
       throw std::runtime_error("Exception in simulator run (printed above)");
@@ -161,7 +168,8 @@ std::vector<float> SignalSimulator::run() {
     std::vector<float> single_element_array(0);
     single_element_array[0] = (float)PyFloat_AsDouble(pValue);
     return single_element_array;
-  }
+  } */
+
 }
 
 SignalSimulator::~SignalSimulator() {

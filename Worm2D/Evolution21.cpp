@@ -351,12 +351,13 @@ void Evolution21::RunSimulation(Worm2D & w1, RandomState &rs){
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
-    ofstream bodyfile, actfile, curvfile, paramsfile, velfile;
+    ofstream bodyfile, actfile, curvfile, paramsfile, velfile, statefile;
 
     bodyfile.open(rename_file("body.dat"));
     actfile.open(rename_file("act.dat"));
     curvfile.open(rename_file("curv.dat"));
     paramsfile.open(rename_file("params.dat"));
+    statefile.open(rename_file("state.dat"));
     //velfile.open(rename_file("velocity.dat"));
 
     w.DumpParams(paramsfile);
@@ -368,22 +369,37 @@ void Evolution21::RunSimulation(Worm2D & w1, RandomState &rs){
     w.SetAVB(0.0);
     w.SetAVA(0.0);
     
+    if (Transient!=0){
     for (double t = 0.0; t <= Transient; t += StepSize){
         w.Step(StepSize);
     }    
 
     w.Step(StepSize); // determine sign of derivative
-
+    }
         
+    if (Duration!=0){
     // Time loop
     for (double t = 0.0; t <= Duration; t += StepSize) {
         // Step simulation
         w.Step(StepSize); 
 
     }
+}
         //double xt = w.CoMx();
         //double yt = w.CoMy();
    
+        
+     /*    if (Transient == 0)
+            {
+            w.DumpBodyState(bodyfile, skip_steps);
+            w.DumpActState(actfile, skip_steps);
+            w.DumpActStateState(statefile, skip_steps);
+            w.DumpCurvature(curvfile, skip_steps);
+
+            } */
+
+        
+
         for (double t = 0.0; t <= 60; t += StepSize){
             
            /*  double xtp = xt; 
@@ -395,11 +411,12 @@ void Evolution21::RunSimulation(Worm2D & w1, RandomState &rs){
             w.Step(StepSize);
             w.DumpBodyState(bodyfile, skip_steps);
             w.DumpActState(actfile, skip_steps);
+            w.DumpActStateState(statefile, skip_steps);
             w.DumpCurvature(curvfile, skip_steps);
             //w.DumpVal(velfile, skip_steps, vel);
         }
 
-        
+        statefile.close();
         bodyfile.close();
         actfile.close();
         curvfile.close();

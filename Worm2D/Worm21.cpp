@@ -136,7 +136,9 @@ n(dynamic_cast<NervousSystem&>(*n_ptr))
 void Worm21::InitializeState(RandomState &rs)
 {    
     Worm2D21::InitializeState(rs);
+    //n.RandomizeCircuitOutput(0.2, 0.8, rs); //fix this error?? adam (should be -0.5?)
     n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
+    //n.RandomizeCircuitOutput(0, 0, rs); //fix this error?? adam (should be -0.5?)
     //cout << "Worm21 init state" << endl;
     return;
 }

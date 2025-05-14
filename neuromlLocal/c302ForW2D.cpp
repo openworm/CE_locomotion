@@ -35,13 +35,29 @@ void c302ForW2D::SetNeuronExternalInput(int i, double value)
 simulation->oneValFunc("set_neuron_input",i-1,value);
 }
 
+
+double c302ForW2D::NeuronState(int i)
+{
+    if (newstep2){
+    state_value =  simulation->vecValFunc("get_states");
+    newstep2 = false;
+    }
+return state_value[i-1];
+}
+
 double c302ForW2D::NeuronOutput(int i)
 {
+    if (newstep){
+    output_value =  simulation->vecValFunc("get_output");
+    newstep = false;
+    }
 return output_value[i-1];
 }
 
 void c302ForW2D::EulerStep(double stepsize)
 {       
-    output_value = simulation->run();
+    simulation->run();
+    newstep=true;
+    newstep2=true;
 }
 

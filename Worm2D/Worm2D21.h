@@ -46,7 +46,8 @@ public:
     void DumpActState(ofstream &ofs, int skips);
     void DumpCurvature(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
-    
+    void DumpActStateState(ofstream &ofs, int skips);
+
     void SetAVA(double value) {AVA = value;};
     void SetAVB(double value) {AVB = value;};
     void initForSimulation();

@@ -36,6 +36,7 @@ plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"]
 defaults_base_celoc = {
     "popSize": 96,
     "duration": 24,
+    "transient": 8,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -45,6 +46,7 @@ defaults_base_celoc = {
 defaults_base_2018 = {
     "popSize": 96,
     "duration": 50,
+    "transient": 10,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -54,6 +56,7 @@ defaults_base_2018 = {
 defaults_base_2021 = {
     "popSize": 100,
     "duration": 40,
+    "transient": 10,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -64,6 +67,7 @@ defaults_base_2021 = {
 DEFAULTS = {
     "popSize": None,  # 96,
     "duration": None,  # 24,
+    "transient": None,
     "RandSeed": None,
     "outputFolderName": None,
     "doEvol": False,
@@ -214,6 +218,15 @@ def process_args():
         metavar="<duration>",
         default=DEFAULTS["duration"],
         help="Duration of simulation for evolution and best worm in ms.",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--transient",
+        type=float,
+        metavar="<transient>",
+        default=DEFAULTS["transient"],
+        help="Duration of transient for evolution and best worm in ms.",
     )
 
     parser.add_argument(
@@ -424,13 +437,20 @@ def run(a=None, **kwargs):
     defaults_base = defaults_bases[model_name]
     plot_format = model_name
 
-    evol_pars = ["Duration", "PopulationSize", "randomseed", "MaxGenerations"]
-    evol_args = [a.duration, a.popSize, a.RandSeed, a.maxGens]
+    evol_pars = [
+        "Duration",
+        "PopulationSize",
+        "randomseed",
+        "MaxGenerations",
+        "Transient",
+    ]
+    evol_args = [a.duration, a.popSize, a.RandSeed, a.maxGens, a.transient]
     evol_defaults = [
         defaults_base["duration"],
         defaults_base["popSize"],
         random_seed,
         defaults_base["maxGens"],
+        defaults_base["transient"],
     ]
 
     evol_data = {}
@@ -469,13 +489,14 @@ def run(a=None, **kwargs):
             do_nml = 0
 
     same_vals = True
-    sim_pars = ["doNML", "seed", "Duration", "doRandInit"]
-    sim_args = [do_nml, a.RandSeed, a.duration, do_randInit]
+    sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient"]
+    sim_args = [do_nml, a.RandSeed, a.duration, do_randInit, a.transient]
     sim_defaults = [
         defaults_base["doNML"],
         random_seed,
         defaults_base["duration"],
         defaults_base["doRandInit"],
+        defaults_base["transient"],
     ]
     for par, arg, default in zip(sim_pars, sim_args, sim_defaults):
         if not setDict(sim_data, par, arg, default):
@@ -510,8 +531,10 @@ def run(a=None, **kwargs):
     # cmd += ["-sr", str(sim_data["seed"])]
     cmd += ["-p", str(evol_data["PopulationSize"])]
     cmd += ["-d", str(evol_data["Duration"])]
+    cmd += ["-t", str(evol_data["Transient"])]
     cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
     cmd += ["-sd", str(sim_data["Duration"])]
+    cmd += ["-st", str(sim_data["Transient"])]
     cmd += ["--doevol", str(do_evol)]
 
     cmd += ["--dorandinit", str(sim_data["doRandInit"])]

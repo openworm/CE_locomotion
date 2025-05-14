@@ -206,23 +206,27 @@ class Worm2DNRNSimulation:
         except AttributeError as e:
             print("Problem setting neuron parameter: %s" % e)
 
-    def run(self, skip_to_time=-1):
-        # print_("> Current NEURON time: %s ms" % self.h.t)
+    def get_states(self):
+        values = []
+        vars_read = []
+        for i in range(self.pop_size):
+            for pop in self.pop_name_list:
+                try:
+                    # val = getattr(self.h, var)[0].soma.cai
+                    val = getattr(self.h, pop)[i].state
+                except AttributeError as e:
+                    print("Problem passing neuronal output of %s, %s" % (pop, e))
+                    continue
+                    # val = 0
+                # scaled_val = self._scale(val)
+                values.append(val)
+                vars_read.append(pop + "_" + str(i))
 
-        self.ns.advance()
+        # values = [6, 7, 8]
+        # print(values)
+        return values
 
-        # print_("< Current NEURON time: %s ms" % self.h.t)
-
-        # values = []
-        """ pop_list = [
-            "m_DA_PopDA",
-            "m_DB_PopDB",
-            "m_DD_PopDD",
-            "m_VD_PopVD",
-            "m_VA_PopVA",
-            "m_VB_PopVB",
-        ] """
-
+    def get_output(self):
         values = []
         vars_read = []
         for i in range(self.pop_size):
@@ -241,6 +245,25 @@ class Worm2DNRNSimulation:
         # values = [6, 7, 8]
         # print(values)
         return values
+
+    def run(self, skip_to_time=-1):
+        # print_("> Current NEURON time: %s ms" % self.h.t)
+
+        self.ns.advance()
+
+        # print_("< Current NEURON time: %s ms" % self.h.t)
+
+        # values = []
+        """ pop_list = [
+            "m_DA_PopDA",
+            "m_DB_PopDB",
+            "m_DD_PopDD",
+            "m_VD_PopVD",
+            "m_VA_PopVA",
+            "m_VB_PopVB",
+        ] """
+
+        # return self.get_output
 
     def save_results(self):
         print_("> Saving results at time: %s" % self.h.t)

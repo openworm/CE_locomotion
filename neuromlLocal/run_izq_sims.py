@@ -17,6 +17,9 @@ outFolderBase_nml = "../experiments/izq_runs_nets_nml"
 if not make_directory(outFolderBase_nml):
     sys.exit(1)
 
+duration = 40
+transient = 10
+
 
 path_list = []
 out_path_list = []
@@ -45,6 +48,8 @@ for input_folder, output_folder, output_folder_nml in zip(
         modelFolder="../Worm2D",
         doEvol=False,
         overwrite=True,
+        duration=duration,
+        transient=transient,
     )
     regenerate_run(output_folder)
     run(
@@ -55,4 +60,6 @@ for input_folder, output_folder, output_folder_nml in zip(
         doEvol=False,
         overwrite=True,
         doNML=True,
+        duration=duration,
+        transient=transient,
     )

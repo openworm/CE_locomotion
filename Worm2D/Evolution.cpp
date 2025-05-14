@@ -60,7 +60,8 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
     //if (strcmp(argv[arg], "--modelname")==0) model_name = argv[arg+1];
     if (strcmp(argv[arg],"-p")==0) ep1.PopulationSize = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) ep1.Duration = atoi(argv[arg+1]);
-  
+    if (strcmp(argv[arg],"-t")==0) ep1.Transient = atoi(argv[arg+1]);
+
     //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
     
     }

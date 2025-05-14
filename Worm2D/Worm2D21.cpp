@@ -230,6 +230,28 @@ void Worm2D21::DumpActState(ofstream &ofs, int skips)
     }
 }
 
+
+void Worm2D21::DumpActStateState(ofstream &ofs, int skips)
+{
+    static int tt = skips;
+    
+    if (++tt >= skips) {
+        tt = 0;
+        //time
+        ofs << t;
+
+        // Ventral Cord Motor Neurons
+        //ofs << "\nV: ";
+        for (int i = 1; i <= par1.N_units; i++) {
+            for (int j = 1; j <= par1.N_neuronsperunit; j++) {
+                ofs <<  " " << n_ptr->NeuronState(nn(j,i));
+            }
+        }
+        ofs << "\n";
+    }
+}
+
+
 void Worm2D21::DumpCurvature(ofstream &ofs, int skips)
 {
     
