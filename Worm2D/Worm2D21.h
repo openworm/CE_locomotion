@@ -64,7 +64,8 @@ public:
         appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     }
 
-
+    void setMuscleInput();
+    
     const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
         
     vector<doubIntParamsHead> getWormParams();

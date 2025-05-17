@@ -1,7 +1,7 @@
 {
     "doNML": 1,
-    "seed": 782330,
-    "Duration": 40,
+    "seed": 664678,
+    "Duration": 0,
     "doRandInit": 0,
-    "Transient": 10
+    "Transient": 0
 }

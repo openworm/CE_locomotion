@@ -47,6 +47,9 @@ class Worm2D {
     virtual void Step(double StepSize, double output) = 0;
     virtual void InitializeState(RandomState &rs) = 0;
     virtual vector<doubIntParamsHead> getWormParams() = 0;
+    virtual void addParsToJson(json & j) = 0;
+    virtual void DumpParams(ofstream &ofs) = 0;
+    virtual void initForSimulation() =  0;
 
 
     void Step(double StepSize) {Step(StepSize,1);}
@@ -54,13 +57,12 @@ class Worm2D {
     void DumpVal(ofstream &ofs, int skips, double val);
     void DumpBodyState(ofstream &ofs, int skips);
     void DumpCurvature(ofstream &ofs, int skips);
-    virtual void addParsToJson(json & j) = 0;
+    
     void writeJsonFile(ofstream & json_out);
-    virtual void DumpParams(ofstream &ofs) = 0;
+    
     double getVelocity();
     void DumpNSOrdered(ofstream &ofs, int skips);
-    virtual void initForSimulation() =  0;
-
+    
 
     
     double CoMx();
@@ -76,7 +78,7 @@ class Worm2D {
     protected:
 
     virtual const vector<string> getCellNames() = 0;
-    
+
     //virtual void addExtraParsToJson(json & j) = 0;
     
     

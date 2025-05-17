@@ -98,28 +98,14 @@ void Worm2D21::InitializeState(RandomState &rs)
     return;    
 }
 
-void Worm2D21::Step(double StepSize)
+void Worm2D21::setMuscleInput()
 {
+// Set input to Muscles
+    // Head: 4 muscles one neural unit  //////////////////////
+
     int mi;
     double dorsalInput, ventralInput;
-    
-    // Update Body
-    b.StepBody(StepSize);
-    
-    
-    // Update Nervous System
-    n_ptr->EulerStep(StepSize);
-    
-    // Interneuron input  //////////////////////
-    for (int i = 1; i <= par1.N_units; i++){
-        n_ptr->SetNeuronExternalInput(nn(DB, i), wAVB_DB * AVB);
-        n_ptr->SetNeuronExternalInput(nn(VB, i), wAVB_VB * AVB);
-        n_ptr->SetNeuronExternalInput(nn(DA, i), wAVA_DA * AVA);
-        n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
-    }
-    
-    // Set input to Muscles
-    // Head: 4 muscles one neural unit  //////////////////////
+
     mi = 1;
     dorsalInput  = NMJ_AS*n_ptr->NeuronOutput(nn(AS,mi)) + NMJ_DA*n_ptr->NeuronOutput(nn(DA,mi)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,mi)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,mi));
     ventralInput = NMJ_VD*n_ptr->NeuronOutput(nn(VD,mi)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,mi)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,mi));
@@ -148,6 +134,30 @@ void Worm2D21::Step(double StepSize)
         }
     }
     
+}
+
+void Worm2D21::Step(double StepSize)
+{
+    
+    
+    // Update Body
+    b.StepBody(StepSize);
+    
+    
+    // Update Nervous System
+    n_ptr->EulerStep(StepSize);
+    
+    // Interneuron input  //////////////////////
+    for (int i = 1; i <= par1.N_units; i++){
+        n_ptr->SetNeuronExternalInput(nn(DB, i), wAVB_DB * AVB);
+        n_ptr->SetNeuronExternalInput(nn(VB, i), wAVB_VB * AVB);
+        n_ptr->SetNeuronExternalInput(nn(DA, i), wAVA_DA * AVA);
+        n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
+    }
+    
+    setMuscleInput();
+
+
     // Update Muscle activation
     m.EulerStep(StepSize);
     
@@ -161,7 +171,7 @@ void Worm2D21::Step(double StepSize)
     //  All other segments receive force from two muscles
     for (int i = 3; i <= N_segments-2; i++)
     {
-        mi = (int) ((i-1)/2);
+        int mi = (int) ((i-1)/2);
         b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
         b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
     }
