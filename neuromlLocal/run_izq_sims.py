@@ -21,8 +21,8 @@ outFolderBase_nml = "../experiments/izq_runs_nets_nml"
 if not make_directory(outFolderBase_nml):
     sys.exit(1)
 
-duration = 0
-transient = 0
+duration = 40
+transient = 10
 
 
 path_list = []
