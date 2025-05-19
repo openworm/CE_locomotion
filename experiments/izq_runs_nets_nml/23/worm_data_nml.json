@@ -1,0 +1,1215 @@
+{
+    "Body": {
+        "C_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "C_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "C_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "C_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "L_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "Medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "N_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "R_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        },
+        "beta_D": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_L": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_M0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "delta_M": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_D": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_L": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_M0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        }
+    },
+    "Dorsal NMJ": {
+        "NumConns": {
+            "value": [
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Dorsal NMJ weights weights in sparse format",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 0.09150304715337693
+                },
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 0.18660408020270014
+                },
+                {
+                    "from": 3,
+                    "to": 1,
+                    "weight": 0.84
+                },
+                {
+                    "from": 4,
+                    "to": 1,
+                    "weight": -0.07153881859267722
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 0.09012529062399499
+                },
+                {
+                    "from": 2,
+                    "to": 2,
+                    "weight": 0.18379439246107074
+                },
+                {
+                    "from": 3,
+                    "to": 2,
+                    "weight": 0.8273521645378548
+                },
+                {
+                    "from": 4,
+                    "to": 2,
+                    "weight": -0.07046166239420526
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 0.08874753409461304
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 0.1809847047194413
+                },
+                {
+                    "from": 3,
+                    "to": 3,
+                    "weight": 0.8147043290757094
+                },
+                {
+                    "from": 4,
+                    "to": 3,
+                    "weight": -0.0693845061957333
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 0.08736977756523111
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 0.1781750169778119
+                },
+                {
+                    "from": 3,
+                    "to": 4,
+                    "weight": 0.8020564936135642
+                },
+                {
+                    "from": 4,
+                    "to": 4,
+                    "weight": -0.06830734999726136
+                },
+                {
+                    "from": 8,
+                    "to": 5,
+                    "weight": 0.08599202103584917
+                },
+                {
+                    "from": 9,
+                    "to": 5,
+                    "weight": 0.1753653292361825
+                },
+                {
+                    "from": 10,
+                    "to": 5,
+                    "weight": 0.789408658151419
+                },
+                {
+                    "from": 11,
+                    "to": 5,
+                    "weight": -0.06723019379878942
+                },
+                {
+                    "from": 8,
+                    "to": 6,
+                    "weight": 0.08461426450646724
+                },
+                {
+                    "from": 9,
+                    "to": 6,
+                    "weight": 0.1725556414945531
+                },
+                {
+                    "from": 10,
+                    "to": 6,
+                    "weight": 0.7767608226892738
+                },
+                {
+                    "from": 11,
+                    "to": 6,
+                    "weight": -0.06615303760031747
+                },
+                {
+                    "from": 8,
+                    "to": 7,
+                    "weight": 0.08323650797708529
+                },
+                {
+                    "from": 9,
+                    "to": 7,
+                    "weight": 0.16974595375292367
+                },
+                {
+                    "from": 10,
+                    "to": 7,
+                    "weight": 0.7641129872271285
+                },
+                {
+                    "from": 11,
+                    "to": 7,
+                    "weight": -0.06507588140184552
+                },
+                {
+                    "from": 15,
+                    "to": 8,
+                    "weight": 0.08185875144770335
+                },
+                {
+                    "from": 16,
+                    "to": 8,
+                    "weight": 0.16693626601129427
+                },
+                {
+                    "from": 17,
+                    "to": 8,
+                    "weight": 0.7514651517649834
+                },
+                {
+                    "from": 18,
+                    "to": 8,
+                    "weight": -0.06399872520337357
+                },
+                {
+                    "from": 15,
+                    "to": 9,
+                    "weight": 0.08048099491832142
+                },
+                {
+                    "from": 16,
+                    "to": 9,
+                    "weight": 0.16412657826966484
+                },
+                {
+                    "from": 17,
+                    "to": 9,
+                    "weight": 0.7388173163028381
+                },
+                {
+                    "from": 18,
+                    "to": 9,
+                    "weight": -0.06292156900490162
+                },
+                {
+                    "from": 15,
+                    "to": 10,
+                    "weight": 0.07910323838893948
+                },
+                {
+                    "from": 16,
+                    "to": 10,
+                    "weight": 0.16131689052803544
+                },
+                {
+                    "from": 17,
+                    "to": 10,
+                    "weight": 0.7261694808406929
+                },
+                {
+                    "from": 18,
+                    "to": 10,
+                    "weight": -0.06184441280642967
+                },
+                {
+                    "from": 22,
+                    "to": 11,
+                    "weight": 0.07772548185955755
+                },
+                {
+                    "from": 23,
+                    "to": 11,
+                    "weight": 0.15850720278640604
+                },
+                {
+                    "from": 24,
+                    "to": 11,
+                    "weight": 0.7135216453785477
+                },
+                {
+                    "from": 25,
+                    "to": 11,
+                    "weight": -0.060767256607957724
+                },
+                {
+                    "from": 22,
+                    "to": 12,
+                    "weight": 0.07634772533017561
+                },
+                {
+                    "from": 23,
+                    "to": 12,
+                    "weight": 0.15569751504477666
+                },
+                {
+                    "from": 24,
+                    "to": 12,
+                    "weight": 0.7008738099164025
+                },
+                {
+                    "from": 25,
+                    "to": 12,
+                    "weight": -0.05969010040948578
+                },
+                {
+                    "from": 22,
+                    "to": 13,
+                    "weight": 0.07496996880079368
+                },
+                {
+                    "from": 23,
+                    "to": 13,
+                    "weight": 0.15288782730314726
+                },
+                {
+                    "from": 24,
+                    "to": 13,
+                    "weight": 0.6882259744542573
+                },
+                {
+                    "from": 25,
+                    "to": 13,
+                    "weight": -0.05861294421101383
+                },
+                {
+                    "from": 29,
+                    "to": 14,
+                    "weight": 0.07359221227141173
+                },
+                {
+                    "from": 30,
+                    "to": 14,
+                    "weight": 0.15007813956151783
+                },
+                {
+                    "from": 31,
+                    "to": 14,
+                    "weight": 0.6755781389921119
+                },
+                {
+                    "from": 32,
+                    "to": 14,
+                    "weight": -0.057535788012541875
+                },
+                {
+                    "from": 29,
+                    "to": 15,
+                    "weight": 0.0722144557420298
+                },
+                {
+                    "from": 30,
+                    "to": 15,
+                    "weight": 0.14726845181988843
+                },
+                {
+                    "from": 31,
+                    "to": 15,
+                    "weight": 0.6629303035299668
+                },
+                {
+                    "from": 32,
+                    "to": 15,
+                    "weight": -0.05645863181406993
+                },
+                {
+                    "from": 29,
+                    "to": 16,
+                    "weight": 0.07083669921264785
+                },
+                {
+                    "from": 30,
+                    "to": 16,
+                    "weight": 0.144458764078259
+                },
+                {
+                    "from": 31,
+                    "to": 16,
+                    "weight": 0.6502824680678215
+                },
+                {
+                    "from": 32,
+                    "to": 16,
+                    "weight": -0.055381475615597975
+                },
+                {
+                    "from": 36,
+                    "to": 17,
+                    "weight": 0.06945894268326593
+                },
+                {
+                    "from": 37,
+                    "to": 17,
+                    "weight": 0.1416490763366296
+                },
+                {
+                    "from": 38,
+                    "to": 17,
+                    "weight": 0.6376346326056763
+                },
+                {
+                    "from": 39,
+                    "to": 17,
+                    "weight": -0.054304319417126025
+                },
+                {
+                    "from": 36,
+                    "to": 18,
+                    "weight": 0.06808118615388399
+                },
+                {
+                    "from": 37,
+                    "to": 18,
+                    "weight": 0.1388393885950002
+                },
+                {
+                    "from": 38,
+                    "to": 18,
+                    "weight": 0.6249867971435311
+                },
+                {
+                    "from": 39,
+                    "to": 18,
+                    "weight": -0.05322716321865408
+                },
+                {
+                    "from": 36,
+                    "to": 19,
+                    "weight": 0.06670342962450206
+                },
+                {
+                    "from": 37,
+                    "to": 19,
+                    "weight": 0.1360297008533708
+                },
+                {
+                    "from": 38,
+                    "to": 19,
+                    "weight": 0.6123389616813859
+                },
+                {
+                    "from": 39,
+                    "to": 19,
+                    "weight": -0.05215000702018214
+                },
+                {
+                    "from": 36,
+                    "to": 20,
+                    "weight": 0.06532567309512012
+                },
+                {
+                    "from": 37,
+                    "to": 20,
+                    "weight": 0.1332200131117414
+                },
+                {
+                    "from": 38,
+                    "to": 20,
+                    "weight": 0.5996911262192407
+                },
+                {
+                    "from": 39,
+                    "to": 20,
+                    "weight": -0.05107285082171019
+                },
+                {
+                    "from": 43,
+                    "to": 21,
+                    "weight": 0.06394791656573816
+                },
+                {
+                    "from": 44,
+                    "to": 21,
+                    "weight": 0.13041032537011193
+                },
+                {
+                    "from": 45,
+                    "to": 21,
+                    "weight": 0.5870432907570953
+                },
+                {
+                    "from": 46,
+                    "to": 21,
+                    "weight": -0.049995694623238225
+                },
+                {
+                    "from": 43,
+                    "to": 22,
+                    "weight": 0.06257016003635622
+                },
+                {
+                    "from": 44,
+                    "to": 22,
+                    "weight": 0.12760063762848253
+                },
+                {
+                    "from": 45,
+                    "to": 22,
+                    "weight": 0.5743954552949501
+                },
+                {
+                    "from": 46,
+                    "to": 22,
+                    "weight": -0.048918538424766275
+                },
+                {
+                    "from": 43,
+                    "to": 23,
+                    "weight": 0.061192403506974295
+                },
+                {
+                    "from": 44,
+                    "to": 23,
+                    "weight": 0.12479094988685314
+                },
+                {
+                    "from": 45,
+                    "to": 23,
+                    "weight": 0.561747619832805
+                },
+                {
+                    "from": 46,
+                    "to": 23,
+                    "weight": -0.04784138222629433
+                },
+                {
+                    "from": 43,
+                    "to": 24,
+                    "weight": 0.05981464697759236
+                },
+                {
+                    "from": 44,
+                    "to": 24,
+                    "weight": 0.12198126214522374
+                },
+                {
+                    "from": 45,
+                    "to": 24,
+                    "weight": 0.5490997843706598
+                },
+                {
+                    "from": 46,
+                    "to": 24,
+                    "weight": -0.04676422602782239
+                }
+            ]
+        }
+    },
+    "Evolutionary Optimization Parameters": {
+        "AvgSpeed": {
+            "value": 0.00022
+        },
+        "BBCfit": {
+            "value": 0.0088
+        },
+        "BiasRange": {
+            "value": 15.0
+        },
+        "CSRange": {
+            "value": 15.0
+        },
+        "CheckpointInterval": {
+            "value": 0
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 40.0
+        },
+        "ESRange": {
+            "value": 2.0
+        },
+        "ElitistFraction": {
+            "value": 0.04
+        },
+        "IIRange": {
+            "value": 15.0
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 2000
+        },
+        "MutationVariance": {
+            "value": 0.1
+        },
+        "NMJmax": {
+            "value": 1.2
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "OSCT": {
+            "value": 10.0
+        },
+        "PopulationSize": {
+            "value": 100
+        },
+        "ReEvaluationFlag": {
+            "value": 0
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "SCRange": {
+            "value": 15.0
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "StepSize": {
+            "value": 0.005
+        },
+        "TauMax": {
+            "value": 2.5
+        },
+        "TauMin": {
+            "value": 0.1
+        },
+        "Transient": {
+            "value": 10.0
+        },
+        "VectSize": {
+            "value": 44
+        },
+        "agarfreq": {
+            "value": 0.44
+        },
+        "randomseed": {
+            "value": 140766
+        },
+        "skip_steps": {
+            "value": 10
+        }
+    },
+    "Muscle": {
+        "Nmuscles": {
+            "value": 24
+        },
+        "T_muscle": {
+            "value": 0.1
+        }
+    },
+    "Nervous system": {
+        "Cell name": {
+            "value": [
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA",
+                "AS",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VB",
+                "VA"
+            ]
+        }
+    },
+    "Ventral NMJ": {
+        "NumConns": {
+            "value": [
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Ventral NMJ weights weights in sparse format",
+            "value": [
+                {
+                    "from": 5,
+                    "to": 1,
+                    "weight": -0.5560884765897632
+                },
+                {
+                    "from": 7,
+                    "to": 1,
+                    "weight": 0.20621115536219753
+                },
+                {
+                    "from": 6,
+                    "to": 1,
+                    "weight": 0.84
+                },
+                {
+                    "from": 5,
+                    "to": 2,
+                    "weight": -0.5477154818822605
+                },
+                {
+                    "from": 7,
+                    "to": 2,
+                    "weight": 0.20310624492948331
+                },
+                {
+                    "from": 6,
+                    "to": 2,
+                    "weight": 0.8273521645378548
+                },
+                {
+                    "from": 5,
+                    "to": 3,
+                    "weight": -0.5393424871747577
+                },
+                {
+                    "from": 7,
+                    "to": 3,
+                    "weight": 0.2000013344967691
+                },
+                {
+                    "from": 6,
+                    "to": 3,
+                    "weight": 0.8147043290757094
+                },
+                {
+                    "from": 5,
+                    "to": 4,
+                    "weight": -0.530969492467255
+                },
+                {
+                    "from": 7,
+                    "to": 4,
+                    "weight": 0.1968964240640549
+                },
+                {
+                    "from": 6,
+                    "to": 4,
+                    "weight": 0.8020564936135642
+                },
+                {
+                    "from": 12,
+                    "to": 5,
+                    "weight": -0.5225964977597523
+                },
+                {
+                    "from": 14,
+                    "to": 5,
+                    "weight": 0.19379151363134067
+                },
+                {
+                    "from": 13,
+                    "to": 5,
+                    "weight": 0.789408658151419
+                },
+                {
+                    "from": 12,
+                    "to": 6,
+                    "weight": -0.5142235030522495
+                },
+                {
+                    "from": 14,
+                    "to": 6,
+                    "weight": 0.1906866031986265
+                },
+                {
+                    "from": 13,
+                    "to": 6,
+                    "weight": 0.7767608226892738
+                },
+                {
+                    "from": 12,
+                    "to": 7,
+                    "weight": -0.5058505083447467
+                },
+                {
+                    "from": 14,
+                    "to": 7,
+                    "weight": 0.18758169276591224
+                },
+                {
+                    "from": 13,
+                    "to": 7,
+                    "weight": 0.7641129872271285
+                },
+                {
+                    "from": 19,
+                    "to": 8,
+                    "weight": -0.4974775136372439
+                },
+                {
+                    "from": 21,
+                    "to": 8,
+                    "weight": 0.18447678233319803
+                },
+                {
+                    "from": 20,
+                    "to": 8,
+                    "weight": 0.7514651517649834
+                },
+                {
+                    "from": 19,
+                    "to": 9,
+                    "weight": -0.4891045189297411
+                },
+                {
+                    "from": 21,
+                    "to": 9,
+                    "weight": 0.1813718719004838
+                },
+                {
+                    "from": 20,
+                    "to": 9,
+                    "weight": 0.7388173163028381
+                },
+                {
+                    "from": 19,
+                    "to": 10,
+                    "weight": -0.48073152422223836
+                },
+                {
+                    "from": 21,
+                    "to": 10,
+                    "weight": 0.17826696146776957
+                },
+                {
+                    "from": 20,
+                    "to": 10,
+                    "weight": 0.7261694808406929
+                },
+                {
+                    "from": 26,
+                    "to": 11,
+                    "weight": -0.4723585295147356
+                },
+                {
+                    "from": 28,
+                    "to": 11,
+                    "weight": 0.1751620510350554
+                },
+                {
+                    "from": 27,
+                    "to": 11,
+                    "weight": 0.7135216453785477
+                },
+                {
+                    "from": 26,
+                    "to": 12,
+                    "weight": -0.46398553480723287
+                },
+                {
+                    "from": 28,
+                    "to": 12,
+                    "weight": 0.17205714060234117
+                },
+                {
+                    "from": 27,
+                    "to": 12,
+                    "weight": 0.7008738099164025
+                },
+                {
+                    "from": 26,
+                    "to": 13,
+                    "weight": -0.4556125400997301
+                },
+                {
+                    "from": 28,
+                    "to": 13,
+                    "weight": 0.16895223016962696
+                },
+                {
+                    "from": 27,
+                    "to": 13,
+                    "weight": 0.6882259744542573
+                },
+                {
+                    "from": 33,
+                    "to": 14,
+                    "weight": -0.4472395453922273
+                },
+                {
+                    "from": 35,
+                    "to": 14,
+                    "weight": 0.16584731973691275
+                },
+                {
+                    "from": 34,
+                    "to": 14,
+                    "weight": 0.6755781389921119
+                },
+                {
+                    "from": 33,
+                    "to": 15,
+                    "weight": -0.4388665506847246
+                },
+                {
+                    "from": 35,
+                    "to": 15,
+                    "weight": 0.16274240930419853
+                },
+                {
+                    "from": 34,
+                    "to": 15,
+                    "weight": 0.6629303035299668
+                },
+                {
+                    "from": 33,
+                    "to": 16,
+                    "weight": -0.4304935559772217
+                },
+                {
+                    "from": 35,
+                    "to": 16,
+                    "weight": 0.1596374988714843
+                },
+                {
+                    "from": 34,
+                    "to": 16,
+                    "weight": 0.6502824680678215
+                },
+                {
+                    "from": 40,
+                    "to": 17,
+                    "weight": -0.422120561269719
+                },
+                {
+                    "from": 42,
+                    "to": 17,
+                    "weight": 0.15653258843877008
+                },
+                {
+                    "from": 41,
+                    "to": 17,
+                    "weight": 0.6376346326056763
+                },
+                {
+                    "from": 40,
+                    "to": 18,
+                    "weight": -0.4137475665622163
+                },
+                {
+                    "from": 42,
+                    "to": 18,
+                    "weight": 0.1534276780060559
+                },
+                {
+                    "from": 41,
+                    "to": 18,
+                    "weight": 0.6249867971435311
+                },
+                {
+                    "from": 40,
+                    "to": 19,
+                    "weight": -0.40537457185471354
+                },
+                {
+                    "from": 42,
+                    "to": 19,
+                    "weight": 0.15032276757334168
+                },
+                {
+                    "from": 41,
+                    "to": 19,
+                    "weight": 0.6123389616813859
+                },
+                {
+                    "from": 40,
+                    "to": 20,
+                    "weight": -0.39700157714721074
+                },
+                {
+                    "from": 42,
+                    "to": 20,
+                    "weight": 0.14721785714062746
+                },
+                {
+                    "from": 41,
+                    "to": 20,
+                    "weight": 0.5996911262192407
+                },
+                {
+                    "from": 47,
+                    "to": 21,
+                    "weight": -0.3886285824397079
+                },
+                {
+                    "from": 49,
+                    "to": 21,
+                    "weight": 0.1441129467079132
+                },
+                {
+                    "from": 48,
+                    "to": 21,
+                    "weight": 0.5870432907570953
+                },
+                {
+                    "from": 47,
+                    "to": 22,
+                    "weight": -0.38025558773220514
+                },
+                {
+                    "from": 49,
+                    "to": 22,
+                    "weight": 0.141008036275199
+                },
+                {
+                    "from": 48,
+                    "to": 22,
+                    "weight": 0.5743954552949501
+                },
+                {
+                    "from": 47,
+                    "to": 23,
+                    "weight": -0.3718825930247024
+                },
+                {
+                    "from": 49,
+                    "to": 23,
+                    "weight": 0.1379031258424848
+                },
+                {
+                    "from": 48,
+                    "to": 23,
+                    "weight": 0.561747619832805
+                },
+                {
+                    "from": 47,
+                    "to": 24,
+                    "weight": -0.36350959831719964
+                },
+                {
+                    "from": 49,
+                    "to": 24,
+                    "weight": 0.13479821540977058
+                },
+                {
+                    "from": 48,
+                    "to": 24,
+                    "weight": 0.5490997843706598
+                }
+            ]
+        }
+    },
+    "Worm": {
+        "AVA": {
+            "value": 0.0
+        },
+        "AVB": {
+            "value": 0.0
+        },
+        "NMJ_AS": {
+            "value": 0.13071863879053847
+        },
+        "NMJ_DA": {
+            "value": 0.26657725743242877
+        },
+        "NMJ_DB": {
+            "value": 1.2
+        },
+        "NMJ_DD": {
+            "value": -0.10219831227525317
+        },
+        "NMJ_Gain_Map": {
+            "value": 0.36136672748986365
+        },
+        "NMJ_VA": {
+            "value": 0.29458736480313935
+        },
+        "NMJ_VB": {
+            "value": 1.2
+        },
+        "NMJ_VD": {
+            "value": -0.7944121094139476
+        },
+        "N_muscles": {
+            "value": 24
+        },
+        "N_neuronsperunit": {
+            "value": 7
+        },
+        "N_size": {
+            "value": 49
+        },
+        "N_units": {
+            "value": 7
+        },
+        "NmusclePerNUA": {
+            "value": 3
+        },
+        "NmusclePerNUB": {
+            "value": 4
+        },
+        "T_muscle": {
+            "value": 0.1
+        },
+        "startingMuscleA": {
+            "value": 1
+        },
+        "startingMuscleB": {
+            "value": 13
+        },
+        "wAVA_DA": {
+            "value": 1.0
+        },
+        "wAVA_VA": {
+            "value": 1.0
+        },
+        "wAVB_DB": {
+            "value": 1.0
+        },
+        "wAVB_VB": {
+            "value": 1.0
+        }
+    }
+}

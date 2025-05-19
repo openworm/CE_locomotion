@@ -42,6 +42,8 @@ Worm2D21::Worm2D21(TVector<double> &v):Worm2D({7,24,0.1,7,49}
    {
        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
    }
+
+   setUpMuscleConn();
 }
 
 
@@ -81,12 +83,11 @@ for (int i=1; i<=par1.N_muscles; i++)
 {
     NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
 }
-
+    setUpMuscleConn();
 }
 
 void Worm2D21::initForSimulation()
 {
-
     SetAVB(0.0);
     SetAVA(0.0);
 }
@@ -140,6 +141,8 @@ vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double
         for (int i = 17 + 4*(mi-6); i < 17 + 4*(mi-5); i++)
             makeMuscleConnHelp(vec1, neurons, NMJ, mi, i);
     
+    cout << "made muscle con" << endl;
+            //exit(1);
     return vec1;
 
 }
@@ -201,7 +204,7 @@ void Worm2D21::Step(double StepSize)
         n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
     }
     
-    setMuscleInputOrig();
+    setMuscleInput();
 
 
     // Update Muscle activation

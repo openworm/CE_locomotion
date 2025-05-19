@@ -53,6 +53,7 @@ vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);
 void appendMuscleToJson(json & j, Muscles & m);
 void appendAllNSJson(json & j, NervousSystem & n);
+void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);

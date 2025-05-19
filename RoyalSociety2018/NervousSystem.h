@@ -9,13 +9,14 @@
 #include "random.h"
 #include <iostream>
 #include <math.h>
+#include "../utils.h"
 
 #pragma once
 
 
 // An entry in a sparse weight matrix
 
-struct weightentry {int from; double weight;};
+//struct weightentry {int from; double weight;};
 
 
 // The sigmoid function

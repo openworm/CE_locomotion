@@ -41,11 +41,13 @@ public:
     void DumpParams(ofstream &ofs);
     void initForSimulation(){}
     
-    private:
+    protected:
+
 
     void addParsToJson(json & j);
     const vector<string> getCellNames() ;
-  
+    vector<toFromWeight> makeVentralMuscleConn(){}
+    vector<toFromWeight> makeDorsalMuscleConn(){}
 
     //Params<double> getWormParams();
     //const vector<string> getHeadCellNames() 
@@ -53,8 +55,10 @@ public:
     
 
     vector<doubIntParamsHead> getWormParams();
-    
-  
+
+    friend class EvolutionRS18;
+
+    protected:
 
     NervousSystem & n;
     StretchReceptor18 sr;

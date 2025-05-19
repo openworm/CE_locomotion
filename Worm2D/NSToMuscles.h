@@ -1,7 +1,7 @@
-#include "VectorMatrix.h"
-#include "random.h"
-#include <iostream>
-#include <math.h>
+#include "../VectorMatrix.h"
+//#include "random.h"
+//#include <iostream>
+//#include <math.h>
 #include <vector>
 #include "../utils.h"
 

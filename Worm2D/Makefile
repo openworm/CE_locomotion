@@ -12,8 +12,8 @@ LDFLAGS += "-L/opt/homebrew/lib"
 CXXFLAGS += "-I/opt/homebrew/include"
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
-main: main.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o WormCE.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o WormCE.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
+main: main.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o WormCE.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o WormCE.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
 c302ForW2D.o: ../neuromlLocal/c302ForW2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.h  #../NervousSystemBase.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/c302ForW2D.cpp 
 	@echo ' '
@@ -41,6 +41,8 @@ Evolution21.o: Evolution21.cpp Evolution21.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution21.cpp
 Evolution.o: Evolution.cpp Evolution.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution.cpp
+NSToMuscles.o: NSToMuscles.cpp NSToMuscles.h 
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto NSToMuscles.cpp
 WormRS18.o: WormRS18.cpp WormRS18.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormRS18.cpp
 Worm2DCE.o: Worm2DCE.cpp Worm2DCE.h 

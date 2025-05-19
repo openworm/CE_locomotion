@@ -23,13 +23,6 @@ using std::vector;
 
 
 //// write all worm paramters to json and txt file 
-struct toFromWeight{
-    
-    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
-    toFromWeight(){}
-    weightentry w;
-    int to;
-};
 
 void writeWormParams(wormForJson & w)
 {

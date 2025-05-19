@@ -61,6 +61,46 @@
             "value": 0.41666666666666663
         }
     },
+    "Dorsal NMJ": {
+        "NumConns": {
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Dorsal NMJ weights weights in sparse format",
+            "value": []
+        }
+    },
     "Evolutionary Optimization Parameters": {
         "AvgSpeed": {
             "value": 0.0001
@@ -1964,6 +2004,46 @@
         },
         "SR_B_gain": {
             "value": 165.7002176192561
+        }
+    },
+    "Ventral NMJ": {
+        "NumConns": {
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Ventral NMJ weights weights in sparse format",
+            "value": []
         }
     },
     "Worm": {

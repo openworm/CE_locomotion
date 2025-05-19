@@ -5,6 +5,7 @@
 
 void Worm2D::setMuscleInput()
 {
+
     for (int i = 1; i<= vMuscConn.size; i++){
         double tot = 0;
     for (int j = 1; j <= vMuscConn.numConns(i); j++){
@@ -19,13 +20,19 @@ void Worm2D::setMuscleInput()
     }
     m.SetDorsalMuscleInput(i, tot);
     }
+    //cout << "setMuscInp" << endl;
+    //exit(1);
+}
 
+void Worm2D::setUpMuscleConn()
+{
+vMuscConn.setWeights(makeVentralMuscleConn());
+dMuscConn.setWeights(makeDorsalMuscleConn());
 }
 
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):par1(par1_),n_ptr(n_ptr_),
-vMuscConn(par1.N_muscles,makeVentralMuscleConn()),
-dMuscConn(par1.N_muscles,makeDorsalMuscleConn())
+vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
 {
     //cout << "Worm2D const" << endl;
     setUp();
@@ -286,7 +293,31 @@ void Worm2D::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
     
+    j["Ventral NMJ"]["weights"]["message"] = "Ventral NMJ weights weights in sparse format";
+    appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
+    j["Dorsal NMJ"]["weights"]["message"] = "Dorsal NMJ weights weights in sparse format";
+    appendMatrixToJson(j["Dorsal NMJ"]["weights"], dMuscConn.weights, dMuscConn.numConns, dMuscConn.size);
     
+    {Params<int> par;    
+    par.names = {"size", "maxcons"};
+    par.vals = {vMuscConn.size, vMuscConn.maxconns};
+    appendToJson<int>(j["Ventral NMJ"],par);}
+    {Params<int> par;    
+    par.names = {"size", "maxcons"};
+    par.vals = {dMuscConn.size, dMuscConn.maxconns};
+    appendToJson<int>(j["Dorsal NMJ"],par);}
+    
+    {Params< vector<int> > par;
+    par.names = {"NumConns"};
+    par.vals = {getVector<int>(vMuscConn.numConns, vMuscConn.size),};
+    appendToJson<vector<int> >(j["Ventral NMJ"],par);}
+
+    {Params< vector<int> > par;
+    par.names = {"NumConns"};
+    par.vals = {getVector<int>(dMuscConn.numConns, dMuscConn.size),};
+    appendToJson<vector<int> >(j["Dorsal NMJ"],par);}
+
+
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 

@@ -44,12 +44,9 @@ public:
     NervousSystem & n;
 
     protected:
-  
+    void addParsToJson(json & j);
     
-    void addParsToJson(json & j){
-        string nsHead = "Nervous system";
-        appendAllNSJson(j[nsHead], n);
-        Worm2D21::addParsToJson(j);}
+    
 
     
 };

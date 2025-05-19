@@ -10,14 +10,14 @@ from regenerate import run as regenerate_run
 
 inputFolderBase = "../experiments/izq_selected"
 outFolderBase = "../experiments/izq_runs_nets"
-#inputFolderBase = "../experiments/test_selected"
-#outFolderBase = "../experiments/test_nets"
+# inputFolderBase = "../experiments/test_selected"
+# outFolderBase = "../experiments/test_nets"
 
 # popSize = 10
 if not make_directory(outFolderBase):
     sys.exit(1)
 outFolderBase_nml = "../experiments/izq_runs_nets_nml"
-#outFolderBase_nml = "../experiments/test_nets_nml"
+# outFolderBase_nml = "../experiments/test_nets_nml"
 if not make_directory(outFolderBase_nml):
     sys.exit(1)
 

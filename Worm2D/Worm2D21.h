@@ -75,6 +75,10 @@ public:
         
     vector<doubIntParamsHead> getWormParams();
 
+    friend class Evolution21;
+    
+    protected:
+
     // Neuromuscular junctions
     double NMJ_AS, NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD;
     double NMJ_Gain_Map;

@@ -131,6 +131,8 @@ n(dynamic_cast<NervousSystem&>(*n_ptr))
     {
         NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
     }
+
+    setUpMuscleConn();
 }
 
 void Worm21::InitializeState(RandomState &rs)
@@ -147,3 +149,9 @@ void Worm21::DumpParams(ofstream &ofs)
 {   Worm2D21::DumpParams(ofs);
     ofs << "Biases: \n DB: " << n.NeuronBias(DB) << "\n VB/P: " << n.NeuronBias(VB) << " / " << n.NeuronBias(VB)  << "\n VDA/P: " << n.NeuronBias(VD) <<  " / " << n.NeuronBias(VD) << endl;
 }
+
+
+void Worm21::addParsToJson(json & j){
+        string nsHead = "Nervous system";
+        appendAllNSJson(j[nsHead], n);
+        Worm2D21::addParsToJson(j);}
