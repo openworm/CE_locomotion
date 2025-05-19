@@ -3,8 +3,29 @@
 
 //using json = nlohmann::json;
 
+void Worm2D::setMuscleInput()
+{
+    for (int i = 1; i<= vMuscConn.size; i++){
+        double tot = 0;
+    for (int j = 1; j <= vMuscConn.numConns(i); j++){
+        tot +=  vMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(vMuscConn.weights[i][j].from);
+    }
+    m.SetVentralMuscleInput(i, tot);
+    }
+    for (int i = 1; i<= dMuscConn.size; i++){
+        double tot = 0;
+    for (int j = 1; j <= dMuscConn.numConns(i); j++){
+        tot +=  dMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(dMuscConn.weights[i][j].from);
+    }
+    m.SetDorsalMuscleInput(i, tot);
+    }
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):par1(par1_),n_ptr(n_ptr_)
+}
+
+
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):par1(par1_),n_ptr(n_ptr_),
+vMuscConn(par1.N_muscles,makeVentralMuscleConn()),
+dMuscConn(par1.N_muscles,makeDorsalMuscleConn())
 {
     //cout << "Worm2D const" << endl;
     setUp();

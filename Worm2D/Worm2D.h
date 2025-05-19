@@ -8,6 +8,7 @@
 #include "jsonUtils.h"
 #include "../neuromlLocal/NSBaseForW2D.h"
 
+
 //using json = nlohmann::json;
 
 #define PI 3.14159265
@@ -80,13 +81,16 @@ class Worm2D {
     virtual const vector<string> getCellNames() = 0;
 
     //virtual void addExtraParsToJson(json & j) = 0;
-    
-    
+    virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
+    virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
+
+    void setMuscleInput();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     int nn(int neuronNumber, int unitNumber);
     void setUp();
     Muscles m;
     WormBody b;
+    NSToMuscles vMuscConn, dMuscConn;
     NSForW2D * const n_ptr;
     const wormIzqParams par1;
     double t; // Time

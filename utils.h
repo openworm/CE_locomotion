@@ -28,6 +28,18 @@ ParamsHead<double> parDoub;
 ParamsHead<long> parInt;
 };
 
+// An entry in a sparse weight matrix
+
+struct weightentry {int from; double weight;};
+
+
+struct toFromWeight{
+    
+    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(){}
+    weightentry w;
+    int to;
+};
 
 
 

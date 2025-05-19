@@ -98,7 +98,53 @@ void Worm2D21::InitializeState(RandomState &rs)
     return;    
 }
 
-void Worm2D21::setMuscleInput()
+void Worm2D21::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int mi, int to)
+{
+
+    for (int j = 0; j<neurons.size();j++){
+        double weight = NMJs[j]*NMJ_Gain(to); 
+        int from = nn(neurons[j],mi);
+        toFromWeight tv({from,weight},to);
+        vec1.push_back(tv);
+
+}
+}
+
+vector<toFromWeight> Worm2D21::makeDorsalMuscleConn()
+{
+vector<int> dorsalNeurons({AS,DA,DB,DD});
+vector<double> dorsalNMJ({NMJ_AS,NMJ_DA,NMJ_DB,NMJ_DD});
+return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+}
+
+vector<toFromWeight> Worm2D21::makeVentralMuscleConn()
+{
+vector<int> ventralNeurons({VD,VA,VB});
+vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
+return makeMuscleConn(ventralNeurons, ventralNMJ);
+}
+
+
+vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
+{
+    vector<toFromWeight> vec1;
+    int mi = 1;
+    for (int i = 1; i < 5; i++) makeMuscleConnHelp(vec1, neurons, NMJ, mi, i);
+        
+    for (int mi = 2; mi <= 5; mi++)
+        for (int i = 5 + 3*(mi-2); i < 5 + 3*(mi-1); i++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, mi, i);
+
+    for (int mi = 6; mi <= 7; mi++)
+        for (int i = 17 + 4*(mi-6); i < 17 + 4*(mi-5); i++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, mi, i);
+    
+    return vec1;
+
+}
+
+void Worm2D21::setMuscleInputOrig()
 {
 // Set input to Muscles
     // Head: 4 muscles one neural unit  //////////////////////
@@ -155,7 +201,7 @@ void Worm2D21::Step(double StepSize)
         n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
     }
     
-    setMuscleInput();
+    setMuscleInputOrig();
 
 
     // Update Muscle activation

@@ -10,13 +10,12 @@
 #include <iostream>
 #include <math.h>
 #include "neuromlLocal/NervousSystemBase.h"
+#include "utils.h"
 
 #pragma once
 
 
-// An entry in a sparse weight matrix
 
-struct weightentry {int from; double weight;};
 
 
 // The sigmoid function

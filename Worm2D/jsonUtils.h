@@ -6,6 +6,7 @@
 #include "../WormBody.h"
 #include "../NervousSystem.h"
 #include "../utils.h"
+#include "NSToMuscles.h"
 
 using json = nlohmann::json;
 using std::vector;

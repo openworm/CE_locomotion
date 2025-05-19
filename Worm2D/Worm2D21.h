@@ -64,8 +64,13 @@ public:
         appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     }
 
-    void setMuscleInput();
-    
+    void setMuscleInputOrig();
+    vector<toFromWeight> makeVentralMuscleConn();
+    vector<toFromWeight> makeDorsalMuscleConn();
+    void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int mi, int to);
+    vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
+
     const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
         
     vector<doubIntParamsHead> getWormParams();

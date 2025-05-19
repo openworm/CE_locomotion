@@ -12,8 +12,15 @@ NSToMuscles::NSToMuscles(int size_, int maxconns_):size(size_),maxconns(maxconns
     weights.SetBounds(1, size,1, maxconns);
 }
 
+NSToMuscles::NSToMuscles(int size_, const vector<toFromWeight> & vec1, int maxconns_):size(size_),maxconns(maxconns_)
+{
+    numConns.SetBounds(1,size);
+    for (int i = 1; i <= size; i++) numConns[i] = 0;
+    weights.SetBounds(1, size,1, maxconns);
+    setWeights(vec1);
+}
 
-double NSToMuscles::getWeight(int from, int to)
+double NSToMuscles::getWeight(int from, int to) 
 {
     for (int i = 1; i <= numConns(to); i++) {
         if (weights[to][i].from == from)
@@ -22,10 +29,14 @@ double NSToMuscles::getWeight(int from, int to)
     return 0.0;
 }
 
-void NSToMuscles::setWeights(vector<int> from, vector<int> to, vector<double> value)
+void NSToMuscles::setWeight(const toFromWeight & w)
 {
-    
+return setWeight(w.w.from, w.to, w.w.weight);
+}
 
+void NSToMuscles::setWeights(const vector<toFromWeight> & w)
+{
+for (int i = 0; i<w.size(); i++) setWeight(w[i].w.from, w[i].to, w[i].w.weight);
 }
 
 void NSToMuscles::setWeight(int from, int to, double value)
