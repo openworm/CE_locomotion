@@ -79,6 +79,8 @@ class Worm2D {
     protected:
 
     virtual const vector<string> getCellNames() = 0;
+    virtual const vector<string> getVMuscNames() = 0;
+    virtual const vector<string> getDMuscNames() = 0;
 
     //virtual void addExtraParsToJson(json & j) = 0;
     virtual vector<toFromWeight> makeVentralMuscleConn() = 0;

@@ -318,9 +318,9 @@ void Worm2D::addParsToJson(json & j)
     appendToJson<vector<int> >(j["Dorsal NMJ"],par);}
 
 
-    //string nsHead = "Nervous system";
-    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
-
+    
+    appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
+    appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    
     //addExtraParsToJson(j);
 }

@@ -46,6 +46,10 @@ colors = {
     "RMDD": ".43 .69 .67",
     "SMDV": ".24 .32 .62",
     "RMDV": ".52 .33 .17",
+    "MD1": ".82 .7 .43",
+    "MD2": ".43 .69 .67",
+    "MD3": ".24 .32 .62",
+    "MD4": ".52 .33 .17",
 }
 
 
@@ -66,6 +70,10 @@ exc_inh_type = {
     "RMDD": "I",
     "SMDV": "E",
     "RMDV": "I",
+    "MD1": "E",
+    "MD2": "E",
+    "MD3": "E",
+    "MD4": "E",
 }
 
 origins = {
@@ -84,6 +92,10 @@ origins = {
     "RMDD": [1, -1],
     "SMDV": [-1, -1],
     "RMDV": [-1, 1],
+    "MD1": [1, 1],
+    "MD2": [1, -1],
+    "MD3": [-1, -1],
+    "MD4": [-1, 1],
 }
 
 spacing = 0.2
@@ -118,6 +130,18 @@ def run(a=None, **kwargs):
     electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
         "value"
     ]
+
+    doMuscles = False
+    if doMuscles:
+        vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
+        dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
+        vNMJ_cellnames = network_json_data["Ventral NMJ"]["Cell name"]["value"]
+        dNMJ_cellnames = network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+        vNMJ_pop_cell_names = utils.getPopNamesCell(vNMJ_cellnames)
+        dNMJ_pop_cell_names = utils.getPopNamesCell(dNMJ_cellnames)
+        vNMJ_popSizes = utils.getPopSizes(vNMJ_cellnames, vNMJ_pop_cell_names)
+        dNMJ_popSizes = utils.getPopSizes(dNMJ_cellnames, dNMJ_pop_cell_names)
+
     drop_self_connections = False
     if drop_self_connections:
         chemical_weights = utils.dropSelfConnections(chemical_weights)
@@ -125,6 +149,7 @@ def run(a=None, **kwargs):
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
     cell_names = utils.getCellNames(network_json_data)
     pop_cell_names = utils.getPopNames(network_json_data)
+    popSizes = utils.getPopSizes(cell_names,pop_cell_names)
 
     cur_wkd_dir = os.getcwd()
     this_file_dir = os.path.dirname(
@@ -132,6 +157,8 @@ def run(a=None, **kwargs):
     )  # location of this file!
     cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
+    muscX_filename = "musc_X_cells.xml"
+    utils.makeMuscCellXml(network_json_data, muscX_filename)
 
     # copy from current working directory to neuromLocal and output folder
     if not output_folder_name == this_file_dir:
@@ -141,7 +168,9 @@ def run(a=None, **kwargs):
     if not cur_wkd_dir == this_file_dir:
         shutil.copyfile(this_file_dir + "/cell_syn_X.xml", "cell_syn_X.xml")
     if not output_folder_name == cur_wkd_dir:
-        shutil.copyfile(cellX_filename, output_folder_name + "/cell_syn_X_cells.xml")
+        shutil.copyfile(cellX_filename, output_folder_name + "/" + cellX_filename)
+        if doMuscles:
+            shutil.copyfile(muscX_filename, output_folder_name + "/" + muscX_filename)
 
     nml_doc = NeuroMLDocument(id="Worm2D")
     # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
@@ -243,10 +272,11 @@ def run(a=None, **kwargs):
     elif (
         population_structure == "cell specific populations"
     ):  # cells divided into cell specific populations
-        num_unit = network_json_data["Worm"]["N_units"]["value"]
+        #num_unit = network_json_data["Worm"]["N_units"]["value"]
         for ind, pop_cell_name in enumerate(pop_cell_names):
             cell_comp_loc = pop_cell_name
-            size0 = num_unit
+            #size0 = num_unit
+            size0 = popSizes[ind]
             pop0 = Population(
                 id=utils.get_pop_id(population_structure, pop_cell_name),
                 component=cell_comp_loc,
@@ -254,6 +284,20 @@ def run(a=None, **kwargs):
             )
             append_pop_properties(pop0)
             net.populations.append(pop0)
+
+        if doMuscles:
+            for ind, pop_cell_name in enumerate(dNMJ_pop_cell_names):
+                cell_comp_loc = pop_cell_name
+                #size0 = num_unit
+                size0 = dNMJ_popSizes[ind]
+                pop0 = Population(
+                    id=utils.get_pop_id(population_structure, pop_cell_name),
+                    component=cell_comp_loc,
+                    size=size0,
+                )
+                append_pop_properties(pop0)
+                net.populations.append(pop0)
+
 
         if add_continuousProjections:
             utils.makeProjectionsConnections(
@@ -265,6 +309,7 @@ def run(a=None, **kwargs):
                 pop_cell_names,
                 cell_names,
             )
+
         if add_gapJunctions:
             utils.makeProjectionsConnections(
                 net,
@@ -427,7 +472,7 @@ if __name__ == "__main__":
     parent_dir = Path(__file__).parent
     run(
         population_structure=population_structure,
-        json_file="../exampleRun/worm_data.json",
-        output_folder_name="../exampleRun",
+        json_file="exampleRun21W2D/worm_data.json",
+        output_folder="exampleRun21W2D",
         # json_file = parent_dir + "/exampleRun/worm_data.json"
     )

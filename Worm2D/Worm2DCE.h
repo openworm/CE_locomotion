@@ -84,7 +84,8 @@ class Worm2DCE: public  Worm2D{
 
     vector<toFromWeight> makeVentralMuscleConn(){}
     vector<toFromWeight> makeDorsalMuscleConn(){}
-
+    const vector<string> getVMuscNames(){}
+    const vector<string> getDMuscNames(){}
     
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE

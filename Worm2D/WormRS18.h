@@ -48,6 +48,8 @@ public:
     const vector<string> getCellNames() ;
     vector<toFromWeight> makeVentralMuscleConn(){}
     vector<toFromWeight> makeDorsalMuscleConn(){}
+    const vector<string> getVMuscNames(){}
+    const vector<string> getDMuscNames(){}
 
     //Params<double> getWormParams();
     //const vector<string> getHeadCellNames() 

@@ -72,6 +72,14 @@ public:
     vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
 
     const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
+
+    const vector<string> getVMuscNames() {return {"MV1","MV2","MV3","MV4", 
+        "MV1","MV2","MV3",  "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV4",
+    "MV1","MV2","MV3", "MV4"};}
+    const vector<string> getDMuscNames() {return {"MD1","MD2","MD3","MD4", 
+        "MD1","MD2","MD3",  "MD1","MD2","MD3", "MD1","MD2","MD3", "MD1","MD2","MD3", "MD1","MD2","MD3", "MD4",
+    "MD1","MD2","MD3", "MD4"};}
+    
         
     vector<doubIntParamsHead> getWormParams();
 

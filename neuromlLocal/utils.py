@@ -58,6 +58,11 @@ def get_cell_id_string(pop_id, cell_id, cell_number):
     else:
         return "../%s[%s]" % (pop_id, str(cell_number))
 
+def getPopSizes(cell_names, pop_names):
+    sizes = []
+    for pop_name in pop_names:
+        sizes.append(len([i for i, val in enumerate(cell_names) if val == pop_name]))
+    return sizes
 
 def getPopRelativeCellIndices(cell_names, pop_names):
     rel_names = list(range(len(cell_names)))
@@ -83,6 +88,9 @@ def getCellNames(network_json_data):
 
 def getPopNames(network_json_data):
     cell_names = getCellNames(network_json_data)
+    return sorted(list(set(cell_names)))
+
+def getPopNamesCell(cell_names):
     return sorted(list(set(cell_names)))
 
 
@@ -126,8 +134,16 @@ def makeProjectionsConnections(
     population_structure,
     pop_cell_names,
     cell_names,
+    post_pop_cell_names = None,
+    post_cell_names = None
 ):
+    if not post_pop_cell_names:
+        post_pop_cell_names = pop_cell_names
+    if not post_cell_names:
+        post_cell_names = cell_names
+
     rel_indices = getPopRelativeCellIndices(cell_names, pop_cell_names)
+    post_rel_indices = getPopRelativeCellIndices(post_cell_names, post_pop_cell_names)
 
     conn_indices = []
     projNames = []
@@ -138,9 +154,9 @@ def makeProjectionsConnections(
 
         # make projection name
         pre_cell = cell_names[pre_index]
-        post_cell = cell_names[post_index]
+        post_cell = post_cell_names[post_index]
         pre_rel_index = rel_indices[pre_index]
-        post_rel_index = rel_indices[post_index]
+        post_rel_index = post_rel_indices[post_index]
 
         pre_pop = get_pop_id(population_structure, name=pre_cell, ind=pre_rel_index)
         post_pop = get_pop_id(population_structure, name=post_cell, ind=post_rel_index)
@@ -258,6 +274,40 @@ def makeCellXml(network_json_data, cellX_filename):
             + str(pop_biases[ind])
             + '" gain="'
             + str(pop_gains[ind])
+            + '" state0="'
+            + str(pop_states[ind])
+            + '" tau="'
+            + str(pop_taus[ind])
+            + 's"/>'
+        )
+        cellX_strings.append(output_string)
+
+    with open(cellX_filename, "w") as f:
+        f.write("<Lems>\n")
+        for val in cellX_strings:
+            f.write(val)
+            f.write("\n")
+        f.write("</Lems>")
+
+
+def makeMuscCellXml(network_json_data, cellX_filename):
+    cell_names = network_json_data["Dorsal NMJ"]["Cell name"]["value"]   
+    pop_names = getPopNamesCell(cell_names)
+
+    print("generating MuscCellXml")
+   
+    cell_taus = [network_json_data["Worm"]["T_muscle"]["value"]]*len(cell_names)
+    cell_states = [0]*len(cell_names)
+    # print('taus')
+    pop_taus = getVals(pop_names, cell_names, cell_taus)
+    # print('states')
+    pop_states = getVals(pop_names, cell_names, cell_states)
+
+    cellX_strings = []
+    for ind, pop_cell_name in enumerate(pop_names):
+        output_string = (
+            '<muscX id="'
+            + str(pop_cell_name)
             + '" state0="'
             + str(pop_states[ind])
             + '" tau="'
