@@ -46,10 +46,10 @@ public:
 
     void addParsToJson(json & j);
     const vector<string> getCellNames() ;
-    vector<toFromWeight> makeVentralMuscleConn(){}
-    vector<toFromWeight> makeDorsalMuscleConn(){}
-    const vector<string> getVMuscNames(){}
-    const vector<string> getDMuscNames(){}
+    vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
+    vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}
+    const vector<string> getVMuscNames(){ return {"dum1"};}
+    const vector<string> getDMuscNames(){ return {"dum1"};}
 
     //Params<double> getWormParams();
     //const vector<string> getHeadCellNames() 

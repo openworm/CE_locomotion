@@ -30,6 +30,7 @@ from pyneuroml.modelgraphs import generate_nmlgraph
 from neuromllite.MatrixHandler import MatrixHandler
 from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
 
+
 colors = {
     "AS": ".80 .1 .30",
     "DA": ".82 .7 .43",
@@ -50,6 +51,10 @@ colors = {
     "MD2": ".43 .69 .67",
     "MD3": ".24 .32 .62",
     "MD4": ".52 .33 .17",
+    "MV1": ".82 .7 .43",
+    "MV2": ".43 .69 .67",
+    "MV3": ".24 .32 .62",
+    "MV4": ".52 .33 .17",
 }
 
 
@@ -74,6 +79,10 @@ exc_inh_type = {
     "MD2": "E",
     "MD3": "E",
     "MD4": "E",
+    "MV1": "E",
+    "MV2": "E",
+    "MV3": "E",
+    "MV4": "E",
 }
 
 origins = {
@@ -96,6 +105,10 @@ origins = {
     "MD2": [1, -1],
     "MD3": [-1, -1],
     "MD4": [-1, 1],
+    "MV1": [1, 1],
+    "MV2": [1, -1],
+    "MV3": [-1, -1],
+    "MV4": [-1, 1],
 }
 
 spacing = 0.2
@@ -131,7 +144,7 @@ def run(a=None, **kwargs):
         "value"
     ]
 
-    doMuscles = False
+    doMuscles = a.doMuscles
     if doMuscles:
         vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
         dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
@@ -149,7 +162,7 @@ def run(a=None, **kwargs):
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
     cell_names = utils.getCellNames(network_json_data)
     pop_cell_names = utils.getPopNames(network_json_data)
-    popSizes = utils.getPopSizes(cell_names,pop_cell_names)
+    popSizes = utils.getPopSizes(cell_names, pop_cell_names)
 
     cur_wkd_dir = os.getcwd()
     this_file_dir = os.path.dirname(
@@ -157,8 +170,10 @@ def run(a=None, **kwargs):
     )  # location of this file!
     cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
-    muscX_filename = "musc_X_cells.xml"
-    utils.makeMuscCellXml(network_json_data, muscX_filename)
+
+    if doMuscles:
+        muscX_filename = "musc_X_cells.xml"
+        utils.makeMuscCellXml(network_json_data, muscX_filename)
 
     # copy from current working directory to neuromLocal and output folder
     if not output_folder_name == this_file_dir:
@@ -167,6 +182,7 @@ def run(a=None, **kwargs):
         )
     if not cur_wkd_dir == this_file_dir:
         shutil.copyfile(this_file_dir + "/cell_syn_X.xml", "cell_syn_X.xml")
+
     if not output_folder_name == cur_wkd_dir:
         shutil.copyfile(cellX_filename, output_folder_name + "/" + cellX_filename)
         if doMuscles:
@@ -180,6 +196,9 @@ def run(a=None, **kwargs):
     add_continuousProjections = True
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
+
+    conn_indices = []
+    projNames = []
 
     if population_structure == "one population":  # all cells in a single population
         """ cell_num = network_json_data["Nervous system"]["size"]["value"]
@@ -272,10 +291,10 @@ def run(a=None, **kwargs):
     elif (
         population_structure == "cell specific populations"
     ):  # cells divided into cell specific populations
-        #num_unit = network_json_data["Worm"]["N_units"]["value"]
+        # num_unit = network_json_data["Worm"]["N_units"]["value"]
         for ind, pop_cell_name in enumerate(pop_cell_names):
             cell_comp_loc = pop_cell_name
-            #size0 = num_unit
+            # size0 = num_unit
             size0 = popSizes[ind]
             pop0 = Population(
                 id=utils.get_pop_id(population_structure, pop_cell_name),
@@ -286,18 +305,39 @@ def run(a=None, **kwargs):
             net.populations.append(pop0)
 
         if doMuscles:
-            for ind, pop_cell_name in enumerate(dNMJ_pop_cell_names):
-                cell_comp_loc = pop_cell_name
-                #size0 = num_unit
-                size0 = dNMJ_popSizes[ind]
-                pop0 = Population(
-                    id=utils.get_pop_id(population_structure, pop_cell_name),
-                    component=cell_comp_loc,
-                    size=size0,
-                )
-                append_pop_properties(pop0)
-                net.populations.append(pop0)
 
+            def addMuscles(
+                loc_pop_cell_names, loc_popSizes, loc_weights, loc_cellnames
+            ):
+                for ind, pop_cell_name in enumerate(loc_pop_cell_names):
+                    cell_comp_loc = pop_cell_name
+                    # size0 = num_unit
+                    size0 = loc_popSizes[ind]
+                    pop0 = Population(
+                        id=utils.get_pop_id(population_structure, pop_cell_name),
+                        component=cell_comp_loc,
+                        size=size0,
+                    )
+                    append_pop_properties(pop0)
+                    net.populations.append(pop0)
+
+                if add_continuousProjections:
+                    utils.makeProjectionsConnections(
+                        net,
+                        loc_weights,
+                        "silentSyn",
+                        "continuous",
+                        population_structure,
+                        pop_cell_names,
+                        cell_names,
+                        post_pop_cell_names=loc_pop_cell_names,
+                        post_cell_names=loc_cellnames,
+                        conn_indices=conn_indices,
+                        projNames=projNames,
+                    )
+
+            addMuscles(dNMJ_pop_cell_names, dNMJ_popSizes, dNMJ_weights, dNMJ_cellnames)
+            addMuscles(vNMJ_pop_cell_names, vNMJ_popSizes, vNMJ_weights, vNMJ_cellnames)
 
         if add_continuousProjections:
             utils.makeProjectionsConnections(
@@ -308,6 +348,8 @@ def run(a=None, **kwargs):
                 population_structure,
                 pop_cell_names,
                 cell_names,
+                conn_indices=conn_indices,
+                projNames=projNames,
             )
 
         if add_gapJunctions:
@@ -319,6 +361,8 @@ def run(a=None, **kwargs):
                 population_structure,
                 pop_cell_names,
                 cell_names,
+                # conn_indices = conn_indices,
+                # projNames = projNames
             )
 
     elif (
@@ -346,6 +390,8 @@ def run(a=None, **kwargs):
                 population_structure,
                 pop_cell_names,
                 cell_names,
+                conn_indices=conn_indices,
+                projNames=projNames,
             )
         if add_gapJunctions:
             utils.makeProjectionsConnections(
@@ -356,6 +402,8 @@ def run(a=None, **kwargs):
                 population_structure,
                 pop_cell_names,
                 cell_names,
+                conn_indices=conn_indices,
+                projNames=projNames,
             )
 
     else:
@@ -470,9 +518,10 @@ if __name__ == "__main__":
     from pathlib import Path
 
     parent_dir = Path(__file__).parent
-    run(
+    run_main(
         population_structure=population_structure,
-        json_file="exampleRun21W2D/worm_data.json",
-        output_folder="exampleRun21W2D",
-        # json_file = parent_dir + "/exampleRun/worm_data.json"
+        # json_file="exampleRun21W2D/worm_data.json",
+        # output_folder="exampleRun21W2D",
+        json_file=parent_dir + "/exampleRun21W2D/worm_data.json",
+        output_folder=parent_dir + "/exampleRun21W2D",
     )

@@ -8,11 +8,24 @@ from neuroml import (
     ElectricalConnectionInstanceW,
 )
 
-DEFAULTS = {}
+DEFAULTS = {
+    "doMuscles": False,
+}
 
 
 def process_args():
-    pass
+    parser = argparse.ArgumentParser(
+        description=("A script for building a NML network")
+    )
+
+    parser.add_argument(
+        "-m",
+        "--doMuscles",
+        action="store_true",
+        # metavar="<run NML>",
+        default=DEFAULTS["doMuscles"],
+        help=("Add Muscles to NML"),
+    )
 
 
 def build_namespace(DEFAULTS={}, a=None, **kwargs):
@@ -58,11 +71,13 @@ def get_cell_id_string(pop_id, cell_id, cell_number):
     else:
         return "../%s[%s]" % (pop_id, str(cell_number))
 
+
 def getPopSizes(cell_names, pop_names):
     sizes = []
     for pop_name in pop_names:
         sizes.append(len([i for i, val in enumerate(cell_names) if val == pop_name]))
     return sizes
+
 
 def getPopRelativeCellIndices(cell_names, pop_names):
     rel_names = list(range(len(cell_names)))
@@ -89,6 +104,7 @@ def getCellNames(network_json_data):
 def getPopNames(network_json_data):
     cell_names = getCellNames(network_json_data)
     return sorted(list(set(cell_names)))
+
 
 def getPopNamesCell(cell_names):
     return sorted(list(set(cell_names)))
@@ -134,19 +150,24 @@ def makeProjectionsConnections(
     population_structure,
     pop_cell_names,
     cell_names,
-    post_pop_cell_names = None,
-    post_cell_names = None
+    post_pop_cell_names=None,
+    post_cell_names=None,
+    conn_indices=None,
+    projNames=None,
 ):
     if not post_pop_cell_names:
         post_pop_cell_names = pop_cell_names
     if not post_cell_names:
         post_cell_names = cell_names
 
+    if conn_indices is None:
+        conn_indices = []
+    if projNames is None:
+        projNames = []
+
     rel_indices = getPopRelativeCellIndices(cell_names, pop_cell_names)
     post_rel_indices = getPopRelativeCellIndices(post_cell_names, post_pop_cell_names)
 
-    conn_indices = []
-    projNames = []
     for connection in weights:
         pre_index = connection["from"] - 1  # zero indexing
         post_index = connection["to"] - 1  # zero indexing
@@ -233,7 +254,9 @@ def check_equal(list):
     return all(i == list[0] for i in list)
 
 
-def getVals(pop_names, cell_names, vals, do_check_equal=True):
+def getVals(
+    pop_names, cell_names, vals, do_check_equal=True
+):  # if check_equal false use average
     pop_vals = []
     for pop_name in pop_names:
         vals_list = [vals[i] for i, val in enumerate(cell_names) if val == pop_name]
@@ -244,7 +267,7 @@ def getVals(pop_names, cell_names, vals, do_check_equal=True):
                 print("Not all equal")
                 exit()
         else:
-            pop_vals.append(vals_list[0])
+            pop_vals.append(sum(vals_list) / len(vals_list))
     return pop_vals
 
 
@@ -291,13 +314,16 @@ def makeCellXml(network_json_data, cellX_filename):
 
 
 def makeMuscCellXml(network_json_data, cellX_filename):
-    cell_names = network_json_data["Dorsal NMJ"]["Cell name"]["value"]   
+    cell_names = (
+        network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+        + network_json_data["Ventral NMJ"]["Cell name"]["value"]
+    )
     pop_names = getPopNamesCell(cell_names)
 
     print("generating MuscCellXml")
-   
-    cell_taus = [network_json_data["Worm"]["T_muscle"]["value"]]*len(cell_names)
-    cell_states = [0]*len(cell_names)
+
+    cell_taus = [network_json_data["Worm"]["T_muscle"]["value"]] * len(cell_names)
+    cell_states = [0] * len(cell_names)
     # print('taus')
     pop_taus = getVals(pop_names, cell_names, cell_taus)
     # print('states')

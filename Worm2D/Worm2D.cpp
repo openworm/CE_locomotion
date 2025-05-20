@@ -3,6 +3,14 @@
 
 //using json = nlohmann::json;
 
+vector<toFromWeight> dummyVec()
+{
+   toFromWeight tv({0,0},0);
+   vector<toFromWeight> vec1;
+    vec1.push_back(tv);
+    return vec1;
+}
+
 void Worm2D::setMuscleInput()
 {
 

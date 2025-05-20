@@ -62,7 +62,7 @@ def run(a=None, **kwargs):
 
     ls.include_lems_file("cell_syn_X.xml")
     ls.include_lems_file("cell_syn_X_cells.xml")
-    doMuscles = False
+    doMuscles = a.doMuscles
     if doMuscles:
         ls.include_lems_file("musc_X.xml")
         ls.include_lems_file("musc_X_cells.xml")

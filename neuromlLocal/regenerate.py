@@ -5,7 +5,7 @@ from build_network import run as build_network_run
 from create_new_lems_file import run as create_new_lems_run
 
 
-def run(output_folder):
+def run(output_folder, doMuscles=False):
     # current = os.path.dirname(os.path.realpath(__file__))
     json_file = output_folder + "/worm_data.json"
 
@@ -23,11 +23,13 @@ def run(output_folder):
         population_structure=population_structure,
         json_file=json_file,
         output_folder=output_folder,
+        doMuscles=doMuscles,
     )
     create_new_lems_run(
         population_structure=population_structure,
         json_file=json_file,
         output_folder=output_folder,
+        doMuscles=doMuscles,
     )
 
 

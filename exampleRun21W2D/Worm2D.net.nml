@@ -177,94 +177,6 @@
                 <location x="-100.0" y="100.0" z="600.0"/>
             </instance>
         </population>
-        <population id="PopMD1" component="MD1" size="7" type="populationList">
-            <property tag="color" value=".82 .7 .43"/>
-            <property tag="type" value="E"/>
-            <instance id="0">
-                <location x="100.0" y="100.0" z="0.0"/>
-            </instance>
-            <instance id="1">
-                <location x="100.0" y="100.0" z="100.0"/>
-            </instance>
-            <instance id="2">
-                <location x="100.0" y="100.0" z="200.0"/>
-            </instance>
-            <instance id="3">
-                <location x="100.0" y="100.0" z="300.0"/>
-            </instance>
-            <instance id="4">
-                <location x="100.0" y="100.0" z="400.0"/>
-            </instance>
-            <instance id="5">
-                <location x="100.0" y="100.0" z="500.0"/>
-            </instance>
-            <instance id="6">
-                <location x="100.0" y="100.0" z="600.0"/>
-            </instance>
-        </population>
-        <population id="PopMD2" component="MD2" size="7" type="populationList">
-            <property tag="color" value=".43 .69 .67"/>
-            <property tag="type" value="E"/>
-            <instance id="0">
-                <location x="100.0" y="-100.0" z="0.0"/>
-            </instance>
-            <instance id="1">
-                <location x="100.0" y="-100.0" z="100.0"/>
-            </instance>
-            <instance id="2">
-                <location x="100.0" y="-100.0" z="200.0"/>
-            </instance>
-            <instance id="3">
-                <location x="100.0" y="-100.0" z="300.0"/>
-            </instance>
-            <instance id="4">
-                <location x="100.0" y="-100.0" z="400.0"/>
-            </instance>
-            <instance id="5">
-                <location x="100.0" y="-100.0" z="500.0"/>
-            </instance>
-            <instance id="6">
-                <location x="100.0" y="-100.0" z="600.0"/>
-            </instance>
-        </population>
-        <population id="PopMD3" component="MD3" size="7" type="populationList">
-            <property tag="color" value=".24 .32 .62"/>
-            <property tag="type" value="E"/>
-            <instance id="0">
-                <location x="-100.0" y="-100.0" z="0.0"/>
-            </instance>
-            <instance id="1">
-                <location x="-100.0" y="-100.0" z="100.0"/>
-            </instance>
-            <instance id="2">
-                <location x="-100.0" y="-100.0" z="200.0"/>
-            </instance>
-            <instance id="3">
-                <location x="-100.0" y="-100.0" z="300.0"/>
-            </instance>
-            <instance id="4">
-                <location x="-100.0" y="-100.0" z="400.0"/>
-            </instance>
-            <instance id="5">
-                <location x="-100.0" y="-100.0" z="500.0"/>
-            </instance>
-            <instance id="6">
-                <location x="-100.0" y="-100.0" z="600.0"/>
-            </instance>
-        </population>
-        <population id="PopMD4" component="MD4" size="3" type="populationList">
-            <property tag="color" value=".52 .33 .17"/>
-            <property tag="type" value="E"/>
-            <instance id="0">
-                <location x="-100.0" y="100.0" z="0.0"/>
-            </instance>
-            <instance id="1">
-                <location x="-100.0" y="100.0" z="100.0"/>
-            </instance>
-            <instance id="2">
-                <location x="-100.0" y="100.0" z="200.0"/>
-            </instance>
-        </population>
         <electricalProjection id="NC_PopVA_PopAS_gapJunction0" presynapticPopulation="PopVA" postsynapticPopulation="PopAS">
             <electricalConnectionInstanceW id="0" preCell="../PopVA/1/VA" postCell="../PopAS/0/AS" synapse="gapJunction0" weight="1.328650002588697"/>
             <electricalConnectionInstanceW id="1" preCell="../PopVA/2/VA" postCell="../PopAS/1/AS" synapse="gapJunction0" weight="1.328650002588697"/>
@@ -554,38 +466,6 @@
             <inputW id="4" target="../PopVD/4/VD" destination="synapses" weight="0.0"/>
             <inputW id="5" target="../PopVD/5/VD" destination="synapses" weight="0.0"/>
             <inputW id="6" target="../PopVD/6/VD" destination="synapses" weight="0.0"/>
-        </inputList>
-        <inputList id="ExtStimPopMD1" population="PopMD1" component="extStim">
-            <inputW id="0" target="../PopMD1/0/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="1" target="../PopMD1/1/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="2" target="../PopMD1/2/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="3" target="../PopMD1/3/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="4" target="../PopMD1/4/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="5" target="../PopMD1/5/MD1" destination="synapses" weight="0.0"/>
-            <inputW id="6" target="../PopMD1/6/MD1" destination="synapses" weight="0.0"/>
-        </inputList>
-        <inputList id="ExtStimPopMD2" population="PopMD2" component="extStim">
-            <inputW id="0" target="../PopMD2/0/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="1" target="../PopMD2/1/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="2" target="../PopMD2/2/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="3" target="../PopMD2/3/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="4" target="../PopMD2/4/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="5" target="../PopMD2/5/MD2" destination="synapses" weight="0.0"/>
-            <inputW id="6" target="../PopMD2/6/MD2" destination="synapses" weight="0.0"/>
-        </inputList>
-        <inputList id="ExtStimPopMD3" population="PopMD3" component="extStim">
-            <inputW id="0" target="../PopMD3/0/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="1" target="../PopMD3/1/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="2" target="../PopMD3/2/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="3" target="../PopMD3/3/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="4" target="../PopMD3/4/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="5" target="../PopMD3/5/MD3" destination="synapses" weight="0.0"/>
-            <inputW id="6" target="../PopMD3/6/MD3" destination="synapses" weight="0.0"/>
-        </inputList>
-        <inputList id="ExtStimPopMD4" population="PopMD4" component="extStim">
-            <inputW id="0" target="../PopMD4/0/MD4" destination="synapses" weight="0.0"/>
-            <inputW id="1" target="../PopMD4/1/MD4" destination="synapses" weight="0.0"/>
-            <inputW id="2" target="../PopMD4/2/MD4" destination="synapses" weight="0.0"/>
         </inputList>
     </network>
 </neuroml>

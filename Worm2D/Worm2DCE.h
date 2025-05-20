@@ -81,12 +81,12 @@ class Worm2DCE: public  Worm2D{
     friend class EvolutionCE;
 
     protected:
+    vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
+    vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}
+    const vector<string> getVMuscNames(){ return {"dum1"};}
+    const vector<string> getDMuscNames(){ return {"dum1"};}
 
-    vector<toFromWeight> makeVentralMuscleConn(){}
-    vector<toFromWeight> makeDorsalMuscleConn(){}
-    const vector<string> getVMuscNames(){}
-    const vector<string> getDMuscNames(){}
-    
+   
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
     double AVA_output, AVB_output;

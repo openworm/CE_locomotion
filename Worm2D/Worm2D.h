@@ -35,7 +35,7 @@ struct wormIzqParams
 
 };
 
-
+vector<toFromWeight> dummyVec();
 
 class Worm2D {
     

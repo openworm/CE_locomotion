@@ -24,6 +24,7 @@ if not make_directory(outFolderBase_nml):
 duration = 40
 transient = 10
 
+doMuscles = True
 
 path_list = []
 out_path_list = []
@@ -55,7 +56,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
     )
-    regenerate_run(output_folder)
+    regenerate_run(output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml,
         inputFolderName=output_folder,

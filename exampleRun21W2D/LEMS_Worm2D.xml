@@ -16,8 +16,6 @@
 
     <Include file="cell_syn_X.xml"/>
     <Include file="cell_syn_X_cells.xml"/>
-    <Include file="musc_X.xml"/>
-    <Include file="musc_X_cells.xml"/>
     <Include file="Worm2D.net.nml"/>
 
     <Simulation id="Worm2D" length="50000.0ms" step="1.0ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
