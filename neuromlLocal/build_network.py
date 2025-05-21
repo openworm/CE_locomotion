@@ -47,14 +47,14 @@ colors = {
     "RMDD": ".43 .69 .67",
     "SMDV": ".24 .32 .62",
     "RMDV": ".52 .33 .17",
-    "MD1": ".82 .7 .43",
-    "MD2": ".43 .69 .67",
-    "MD3": ".24 .32 .62",
-    "MD4": ".52 .33 .17",
-    "MV1": ".82 .7 .43",
-    "MV2": ".43 .69 .67",
-    "MV3": ".24 .32 .62",
-    "MV4": ".52 .33 .17",
+    "MD1": ".2 .8 .1",
+    "MD2": ".2 .8 .1",
+    "MD3": ".2 .8 .1",
+    "MD4": ".2 .8 .1",
+    "MV1": ".9 .4 .1",
+    "MV2": ".9 .4 .1",
+    "MV3": ".9 .4 .1",
+    "MV4": ".9 .4 .1",
 }
 
 
@@ -111,12 +111,13 @@ origins = {
     "MV4": [-1, 1],
 }
 
-muscle_ids = [
-"MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
-]
+#muscle_ids = [
+#"MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
+#]
 
 
-
+muscle_group_sizes = [4,3,3,3,3,4,4]
+muscle_group_sizes = [1]*24
 
 spacing = 0.2
 
@@ -153,10 +154,21 @@ def run(a=None, **kwargs):
 
     doMuscles = a.doMuscles
     if doMuscles:
+        d_muscle_cell_names = []
+        v_muscle_cell_names = []
+        for muscle_group_size in muscle_group_sizes:
+            for i in range(muscle_group_size):
+                d_muscle_cell_names.append("MD" + str(i+1))
+                v_muscle_cell_names.append("MV" + str(i+1))
+
+        muscle_ids = sorted(list(set(d_muscle_cell_names + v_muscle_cell_names)))
+
+
         vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
         dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
-        vNMJ_cellnames = network_json_data["Ventral NMJ"]["Cell name"]["value"]
-        dNMJ_cellnames = network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+        vNMJ_cellnames = d_muscle_cell_names #network_json_data["Ventral NMJ"]["Cell name"]["value"]
+        dNMJ_cellnames = v_muscle_cell_names #network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+
         vNMJ_pop_cell_names = utils.getPopNamesCell(vNMJ_cellnames)
         dNMJ_pop_cell_names = utils.getPopNamesCell(dNMJ_cellnames)
         vNMJ_popSizes = utils.getPopSizes(vNMJ_cellnames, vNMJ_pop_cell_names)
