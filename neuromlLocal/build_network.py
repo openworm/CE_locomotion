@@ -111,6 +111,13 @@ origins = {
     "MV4": [-1, 1],
 }
 
+muscle_ids = [
+"MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
+]
+
+
+
+
 spacing = 0.2
 
 
@@ -453,20 +460,21 @@ def run(a=None, **kwargs):
 
     nml_doc.pulse_generators.append(pg_ext)
     for pop in net.populations:
-        input_list = InputList(
-            id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
-        )
-
-        net.input_lists.append(input_list)
-        for i in range(pop.size):
-            input_w = InputW(
-                id=i,
-                target=utils.get_cell_id_string(pop.id, pop.component, i),
-                destination="synapses",
-                weight=0,
+        if pop.id[3:] not in muscle_ids:
+            input_list = InputList(
+                id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
             )
 
-            input_list.input_ws.append(input_w)
+            net.input_lists.append(input_list)
+            for i in range(pop.size):
+                input_w = InputW(
+                    id=i,
+                    target=utils.get_cell_id_string(pop.id, pop.component, i),
+                    destination="synapses",
+                    weight=0,
+                )
+
+                input_list.input_ws.append(input_w)
 
     nml_file = "Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
