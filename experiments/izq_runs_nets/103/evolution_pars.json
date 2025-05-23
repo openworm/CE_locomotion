@@ -1,7 +1,7 @@
 {
     "Duration": 40,
     "PopulationSize": 100,
-    "randomseed": 356161,
+    "randomseed": 530541,
     "MaxGenerations": 2000,
     "Transient": 10
 }

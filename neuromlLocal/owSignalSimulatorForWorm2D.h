@@ -23,7 +23,7 @@ public:
   double getValFunc(const std::string & funcName, const std::string & parName, const int & i);
 
   void oneValFunc(const std::string & simFileName, const int & i, const double & value);
-
+  void oneValFunc(const std::string & funcName);
   void twoValFunc(const std::string & simFileName, const int & i, const int & j, const double & value);
   //PyObject *pFuncNameSetNeuronInput, *pFuncNameSetSynapticWeight;
 };

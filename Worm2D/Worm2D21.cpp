@@ -13,8 +13,10 @@
 //extern SuppliedArgs2021 supArgs1;
 
 
-Worm2D21::Worm2D21(TVector<double> &v):Worm2D({7,24,0.1,7,49}
-   , new c302ForW2D("AS DA DB DD VD VB VA",7))
+Worm2D21::Worm2D21(TVector<double> &v):Worm2D({7,24,0.1,7,49},
+    new c302ForW2D()
+   //new c302ForW2D("AS DA DB DD VD VB VA",7)
+   )
 {
    // Interneuron inputs (AVB)
    wAVB_DB = 1;
@@ -53,7 +55,9 @@ Worm2D21::Worm2D21(json & j):Worm2D(
       j["Worm"]["T_muscle"]["value"],
       j["Worm"]["N_units"]["value"],
       j["Nervous system"]["size"]["value"]
-    }, new c302ForW2D("AS DA DB DD VD VB VA",7))
+    }, //new c302ForW2D("AS DA DB DD VD VB VA",7)
+       new c302ForW2D()
+)
 {
 
 // Interneuron inputs (AVB)

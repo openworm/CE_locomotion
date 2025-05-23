@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 import json
 
-plot_formats = {}
+""" plot_formats = {}
 plot_formats["RS18"] = {}
 plot_formats["RS18"]["fig_titles"] = [
     "Stretch receptors",
@@ -30,7 +30,7 @@ plot_formats["Net21"]["fig_labels"] = ["Neu", "Mu"]
 plot_formats["CE"] = {}
 plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
 plot_formats["CE"]["data_sizes"] = [40, 60, 48]
-plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"]
+plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"] """
 
 
 defaults_base_celoc = {

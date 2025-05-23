@@ -124,6 +124,31 @@ void SignalSimulatorForWorm2D::oneValFunc(const std::string & funcName, const in
     return;
 }
 
+void SignalSimulatorForWorm2D::oneValFunc(const std::string & funcName)
+{
+  
+    PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
+
+    //pInstance = PyObject_CallMethod(pInstance, "set_timestep", "(f)", timeStep);
+
+    try {
+      PyObject_CallMethodObjArgs(pInstance, pFuncName, nullptr);
+      //PyObject_CallMethod(pInstance, const_cast<char *>("run"), nullptr);
+
+    } catch (const std::exception& ex)
+    {
+      std::cout << "Error: " << ex.what() << std::endl;
+    }
+
+    if (PyErr_Occurred()) PyErr_Print();
+    
+    Py_DECREF(pFuncName);
+   
+    return;
+}
+
+
+
 //set_neuron_parameter(self, parameter, i, val):
 
 

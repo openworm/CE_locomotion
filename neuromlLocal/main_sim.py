@@ -44,6 +44,26 @@ class Worm2DNRNSimulation:
         self.pop_dict = {value: index for index, value in enumerate(self.pop_list)}
         self.pop_name_list = ["m_" + val + "_Pop" + val for val in self.pop_list]
 
+    def set_up_j(self):
+        print("calling set_up_from_json")
+        file_name = 'cell_Ids.json'
+        import os
+        import json
+        if os.path.isfile(file_name):
+            with open(file_name) as f:
+                self.cellIdDict = json.load(f)
+        else:
+            import sys
+            print("cell_Ids.json not found")
+            sys.exit()
+        self.NSIds =  self.cellIdDict['Nervous System']
+        if "Ventral Muscles" in self.cellIdDict:
+            self.VMIds =  self.cellIdDict["Ventral Muscles"]
+        if "Dorsal Muscles" in self.cellIdDict:
+            self.DMIds =  self.cellIdDict["Dorsal Muscles"]
+        #was_set_up_from_json = True
+
+
     def get_neuron_number(self, pop, i):
         return self.pop_dict[pop] + i * self.pop_num
 
@@ -139,6 +159,13 @@ class Worm2DNRNSimulation:
         getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
+    
+    def set_neuron_input_j(self, i, weight):
+        #pop_name, nn = self.get_pop_number(i)
+        getattr(self.h, "ExtStim" + self.NSIds[i]['Pop'] + "_" + str(self.NSIds[i]['Ind'])).weight = weight
+        #getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
+        # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
+        return
 
     def set_gapJunction_weight(self, pre, post, weight):
         # syn_NC_PopVB_PopVB_gapJunction0_gapJunction0_A[8].weight
@@ -206,9 +233,23 @@ class Worm2DNRNSimulation:
         except AttributeError as e:
             print("Problem setting neuron parameter: %s" % e)
 
+    def get_states_j(self):
+        values = []
+        for id in self.NSIds:
+            try:
+                    # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id['NRN pop name'])[id['Ind']].state
+            except AttributeError as e:
+                    print("Problem passing neuronal output of %s, %s" % (id['Pop'], e))
+                    continue
+                    # val = 0
+                # scaled_val = self._scale(val)
+            values.append(val)
+        return values
+
     def get_states(self):
         values = []
-        vars_read = []
+        #vars_read = []
         for i in range(self.pop_size):
             for pop in self.pop_name_list:
                 try:
@@ -220,15 +261,29 @@ class Worm2DNRNSimulation:
                     # val = 0
                 # scaled_val = self._scale(val)
                 values.append(val)
-                vars_read.append(pop + "_" + str(i))
+                #vars_read.append(pop + "_" + str(i))
 
         # values = [6, 7, 8]
         # print(values)
         return values
-
-    def get_output(self):
+    
+    def get_outputs_j(self):
         values = []
-        vars_read = []
+        for id in self.NSIds:
+            try:
+                    # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id['NRN pop name'])[id['Ind']].output
+            except AttributeError as e:
+                    print("Problem passing neuronal output of %s, %s, %s" % (id['Pop'], id['Ind'], e))
+                    continue
+                    # val = 0
+                # scaled_val = self._scale(val)
+            values.append(val)
+        return values
+    
+    def get_outputs(self):
+        values = []
+        #vars_read = []
         for i in range(self.pop_size):
             for pop in self.pop_name_list:
                 try:
@@ -240,7 +295,7 @@ class Worm2DNRNSimulation:
                     # val = 0
                 # scaled_val = self._scale(val)
                 values.append(val)
-                vars_read.append(pop + "_" + str(i))
+                #vars_read.append(pop + "_" + str(i))
 
         # values = [6, 7, 8]
         # print(values)

@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 from neuroml import (
     ElectricalProjection,
@@ -141,6 +142,37 @@ def dropSelfConnections(weights):
             new_weights.append(connection)
     return new_weights
 
+def makeCellIdJson(population_structure, cell_names, file_name, json_ind_name):
+
+    pop_cell_names = getPopNamesCell(cell_names)
+    rel_indices = getPopRelativeCellIndices(cell_names, pop_cell_names)
+    #cellIds = []
+    cellIdsList = []
+    for ind, cell in enumerate(cell_names):
+        rel_index = rel_indices[ind]
+        pop = get_pop_id(population_structure, name=cell, ind=rel_index)
+        """  cellIds.append(get_cell_id_string_full(
+            population_structure, pop, cell, rel_index
+        )) """
+        nrn_pop_name = 'm_' + cell + '_Pop' + cell
+        cellIdsList.append(
+            {"CellId": get_cell_id_string_full(population_structure, pop, cell, rel_index),
+            "Pop": pop, "Cell": cell, "Ind" : rel_index, "NRN pop name" : nrn_pop_name}
+            )
+
+    if os.path.isfile(file_name):
+        with open(file_name) as f:
+            cellIdDict = json.load(f)
+    else:
+        cellIdDict = {}
+
+    cellIdDict[json_ind_name] =  cellIdsList
+    #cellIdDict[json_ind_name]["Ids"] = cellIds
+    #cellIdDict[json_ind_name]["List"] = cellIdsList
+
+    with open(file_name, "w", encoding="utf-8") as f:
+        json.dump(cellIdDict, f, ensure_ascii=False, indent=4)
+    
 
 def makeProjectionsConnections(
     net,
@@ -313,11 +345,8 @@ def makeCellXml(network_json_data, cellX_filename):
         f.write("</Lems>")
 
 
-def makeMuscCellXml(network_json_data, cellX_filename):
-    cell_names = (
-        network_json_data["Dorsal NMJ"]["Cell name"]["value"]
-        + network_json_data["Ventral NMJ"]["Cell name"]["value"]
-    )
+def makeMuscCellXml(network_json_data, cellX_filename, cell_names):
+    
     pop_names = getPopNamesCell(cell_names)
 
     print("generating MuscCellXml")
