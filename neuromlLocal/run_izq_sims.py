@@ -56,7 +56,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
     )
-    regenerate_run(output_folder, doMuscles=doMuscles)
+    regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml,
         inputFolderName=output_folder,

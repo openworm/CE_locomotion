@@ -500,7 +500,7 @@ def run(a=None, **kwargs):
 
     nml_doc.pulse_generators.append(pg_ext)
     for pop in net.populations:
-        if pop.id[3:] not in muscle_ids:
+        if not doMuscles or pop.id[3:] not in muscle_ids:
             input_list = InputList(
                 id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
             )

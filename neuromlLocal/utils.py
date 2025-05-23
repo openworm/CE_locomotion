@@ -11,10 +11,12 @@ from neuroml import (
 
 DEFAULTS = {
     "doMuscles": False,
+    "folder": None
 }
 
 
 def process_args():
+
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")
     )
@@ -23,10 +25,22 @@ def process_args():
         "-m",
         "--doMuscles",
         action="store_true",
-        # metavar="<run NML>",
+        #metavar="<include muscles>",
         default=DEFAULTS["doMuscles"],
         help=("Add Muscles to NML"),
     )
+
+
+    parser.add_argument(
+        "-f",
+        "--folder",
+        type=str,
+        metavar="<folder name>",
+        default=DEFAULTS["folder"],
+        help=("Required name of folder with worm.json for generation of nml files\n"),
+    )
+
+    return parser.parse_args()
 
 
 def build_namespace(DEFAULTS={}, a=None, **kwargs):
@@ -44,6 +58,28 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
 
     return a
 
+def getCellIdDicts():
+    print("calling set_up_from_json")
+    file_name = 'cell_Ids.json'
+    import os
+    import json
+    if os.path.isfile(file_name):
+        with open(file_name) as f:
+            cellIdDict = json.load(f)
+    else:
+        import sys
+        print("cell_Ids.json not found")
+        sys.exit()
+    NSIds =  cellIdDict['Nervous System']
+    if "Ventral Muscles" in cellIdDict:
+        VMIds =  cellIdDict["Ventral Muscles"]
+    else:
+        VMIds = None
+    if "Dorsal Muscles" in cellIdDict:
+        DMIds = cellIdDict["Dorsal Muscles"]
+    else:
+        DMIds = None
+    return NSIds, VMIds, DMIds
 
 cells_have_3d_locations = True
 

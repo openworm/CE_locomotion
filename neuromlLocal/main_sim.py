@@ -45,25 +45,9 @@ class Worm2DNRNSimulation:
         self.pop_name_list = ["m_" + val + "_Pop" + val for val in self.pop_list]
 
     def set_up_j(self):
-        print("calling set_up_from_json")
-        file_name = 'cell_Ids.json'
-        import os
-        import json
-        if os.path.isfile(file_name):
-            with open(file_name) as f:
-                self.cellIdDict = json.load(f)
-        else:
-            import sys
-            print("cell_Ids.json not found")
-            sys.exit()
-        self.NSIds =  self.cellIdDict['Nervous System']
-        if "Ventral Muscles" in self.cellIdDict:
-            self.VMIds =  self.cellIdDict["Ventral Muscles"]
-        if "Dorsal Muscles" in self.cellIdDict:
-            self.DMIds =  self.cellIdDict["Dorsal Muscles"]
-        #was_set_up_from_json = True
-
-
+        import utils
+        self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
+      
     def get_neuron_number(self, pop, i):
         return self.pop_dict[pop] + i * self.pop_num
 

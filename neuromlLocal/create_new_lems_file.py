@@ -30,28 +30,35 @@ def run_main(args=None):
 def run(a=None, **kwargs):
     a = utils.build_namespace(utils.DEFAULTS, a, **kwargs)
 
-    network_json_data = utils.getJsonFile(a.json_file)
+    NSIds, VMIds, DMIds = utils.getCellIdDicts()
+
+    #network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
 
-    cell_names = utils.getCellNames(network_json_data)
-    pop_names = utils.getPopNames(network_json_data)
 
-    population_structure = a.population_structure
-    rel_indices = utils.get_rel_index_list(population_structure, cell_names, pop_names)
-    pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_names)
+    #cell_names = utils.getCellNames(network_json_data)
+    #pop_names = utils.getPopNames(network_json_data)
+
+    #population_structure = a.population_structure
+    #rel_indices = utils.get_rel_index_list(population_structure, cell_names, pop_names)
+    #pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_names)
 
     cell_ids = []
+    
     """ pop_id = 'PopDA'
     for rel_index in rel_indices:
             cell_ids.append(utils.get_cell_id_string_full(population_structure, pop_id, None, rel_index)) """
 
-    for pop_id in pop_id_list:
+    for id in NSIds:
+        cell_ids.append(id['CellId'])
+
+    """ for pop_id in pop_id_list:
         for rel_index in rel_indices:
             cell_ids.append(
                 utils.get_cell_id_string_full(
                     population_structure, pop_id, pop_id.replace("Pop", ""), rel_index
                 )
-            )
+            ) """
 
     ############################################
     #  Create a LEMS file "manually"...
@@ -169,61 +176,7 @@ def run(a=None, **kwargs):
             "LEMS_Worm2D_nrn.py", output_folder_name + "/LEMS_Worm2D_nrn.py"
         )
 
-    """
-    ############################################
-    #  Create the LEMS file with helper method
-    sim_id = "Simple"
-    #neuroml_file = "test_data/simplenet.nml"
-    neuroml_file = "testnet.nml"
-    target = "simplenet"
-    duration = 1000
-    dt = 0.025
-    lems_file_name = "LEMS_%s.xml" % sim_id
-    target_dir = "."
-
-    generate_lems_file_for_neuroml(
-        sim_id,
-        neuroml_file,
-        target,
-        duration,
-        dt,
-        lems_file_name,
-        target_dir,
-        include_extra_files=[],
-        gen_plots_for_all_v=True,
-        plot_all_segments=False,
-        gen_plots_for_quantities={},  # Dict with displays vs lists of quantity paths
-        gen_plots_for_only_populations=[],  # List of populations, all pops if = []
-        gen_saves_for_all_v=True,
-        save_all_segments=False,
-        gen_saves_for_only_populations=[],  # List of populations, all pops if = []
-        gen_saves_for_quantities={},  # Dict with file names vs lists of quantity paths
-        gen_spike_saves_for_all_somas=True,
-        report_file_name="report.txt",
-        copy_neuroml=True,
-        verbose=True,
-    )"""
-
-    if "-test" in sys.argv:
-        neuroml_file = "test_data/HHCellNetwork.net.nml"
-        lems_file_name = "LEMS_%s2.xml" % sim_id
-        target = "HHCellNetwork"
-        target_dir = "test_data/tmp"
-        if not os.path.isdir(target_dir):
-            os.mkdir(target_dir)
-
-        generate_lems_file_for_neuroml(
-            sim_id,
-            neuroml_file,
-            target,
-            duration=10,
-            dt=0.01,
-            lems_file_name=lems_file_name,
-            target_dir=target_dir,
-            copy_neuroml=True,
-            verbose=True,
-        )
-
+   
 
 if __name__ == "__main__":
     population_structures = [
