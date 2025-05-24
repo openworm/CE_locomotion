@@ -38,9 +38,14 @@ vMuscConn.setWeights(makeVentralMuscleConn());
 dMuscConn.setWeights(makeDorsalMuscleConn());
 }
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_)
+:par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)
+{
+    
+}
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):par1(par1_),n_ptr(n_ptr_),
-vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
+m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
 {
     //cout << "Worm2D const" << endl;
     setUp();
@@ -53,16 +58,22 @@ void Worm2D::setUp()
     //InitializeState(rs);
 }
 
-
 void Worm2D::InitializeState(RandomState &rs)
 {
-    t = 0.0;
-    b.InitializeBodyState();
+    Worm2Dm::InitializeState(rs);
     m.InitializeMuscleState();
     return;
 }
 
-int Worm2D::nn(int neuronNumber, int unitNumber)
+
+void Worm2Dm::InitializeState(RandomState &rs)
+{
+    t = 0.0;
+    b.InitializeBodyState();
+    return;
+}
+
+int Worm2Dm::nn(int neuronNumber, int unitNumber)
 {
     return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
 }
@@ -97,7 +108,7 @@ int Worm2D::nn(int neuronNumber, int unitNumber)
 }
  */
 
-double Worm2D::CoMx()
+double Worm2Dm::CoMx()
 {
     double temp = 0.0;
     for (int i = 1; i <= N_rods; i++) {
@@ -106,7 +117,7 @@ double Worm2D::CoMx()
     return temp/N_rods;
 }
 
-double Worm2D::CoMy()
+double Worm2Dm::CoMy()
 {
     double temp = 0.0;
     for (int i = 1; i <= N_rods; i++) {
@@ -115,7 +126,7 @@ double Worm2D::CoMy()
     return temp/N_rods;
 }
 
-void Worm2D::Curvature(TVector<double> &c)
+void Worm2Dm::Curvature(TVector<double> &c)
 {
     double dx1,dy1,dx2,dy2,a,a1,a2,seg;
     int k=1;
@@ -144,12 +155,12 @@ void Worm2D::Curvature(TVector<double> &c)
     }
 }
 
-double Worm2D::Orientation()
+double Worm2Dm::Orientation()
 {
     return atan2(b.Y(Head)-b.Y(Tail),b.X(Head)-b.X(Tail));
 }
 
-void Worm2D::AngleCurvature(TVector<double> &c)
+void Worm2Dm::AngleCurvature(TVector<double> &c)
 {
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
   int k=1;
@@ -176,7 +187,7 @@ void Worm2D::AngleCurvature(TVector<double> &c)
   }
 }
 
-void Worm2D::DumpCurvature(ofstream &ofs, int skips)
+void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
 {
 
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
@@ -212,7 +223,7 @@ void Worm2D::DumpCurvature(ofstream &ofs, int skips)
   }
 }
 
-double Worm2D::getVelocity()
+double Worm2Dm::getVelocity()
 {
    static double xtp =  CoMx();
    static double ytp =  CoMy();
@@ -226,7 +237,7 @@ double Worm2D::getVelocity()
 
 }
 
-void Worm2D::DumpNSOrdered(ofstream &ofs, int skips)
+void Worm2Dm::DumpNSOrdered(ofstream &ofs, int skips)
 {
 
     //const int NSsize = dynamic_cast<NervousSystem&>(*n_ptr).size;
@@ -241,7 +252,7 @@ void Worm2D::DumpNSOrdered(ofstream &ofs, int skips)
 }
 
 
-void Worm2D::DumpVal(ofstream &ofs, int skips, double val)
+void Worm2Dm::DumpVal(ofstream &ofs, int skips, double val)
 {
     static int tt = skips;
 
@@ -254,7 +265,7 @@ void Worm2D::DumpVal(ofstream &ofs, int skips, double val)
     }
 }
 
-void Worm2D::DumpBodyState(ofstream &ofs, int skips)
+void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
 {
     static int tt = skips;
 
@@ -271,7 +282,7 @@ void Worm2D::DumpBodyState(ofstream &ofs, int skips)
     }
 }
 
-void Worm2D::writeJsonFile(ofstream & json_out)
+void Worm2Dm::writeJsonFile(ofstream & json_out)
 {
 
     json j;
@@ -283,16 +294,14 @@ void Worm2D::writeJsonFile(ofstream & json_out)
 
 }
 
-void Worm2D::addParsToJson(json & j)
+void Worm2Dm::addParsToJson(json & j)
 {  
-     // addwormIzqParams
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
     appendBodyToJson(j, b);
-    appendMuscleToJson(j,m);
-    
+
     vector<doubIntParamsHead> parvec = getWormParams();
     for (size_t i=0;i<parvec.size(); i++) {
         if (strcmp(parvec[i].parDoub.head.c_str(),"NULL")!=0)
@@ -300,7 +309,18 @@ void Worm2D::addParsToJson(json & j)
         if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
+}
+
+
+void Worm2D::addParsToJson(json & j)
+{  
+     // addwormIzqParams
+    Worm2Dm::addParsToJson(j);
+
+
+    appendMuscleToJson(j,m);
     
+   
     j["Ventral NMJ"]["weights"]["message"] = "Ventral NMJ weights weights in sparse format";
     appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
     j["Dorsal NMJ"]["weights"]["message"] = "Dorsal NMJ weights weights in sparse format";

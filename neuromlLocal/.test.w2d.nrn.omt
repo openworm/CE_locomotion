@@ -19,7 +19,7 @@ experiments:
       spike times:
         file: 
           path: Worm2D.states.dat
-          columns: [0,4]
+          columns: [0,19]
           scaling: [1, 1]
         spike detection: 
           method: threshold
@@ -30,7 +30,7 @@ experiments:
       spike times:
         file: 
           path: Worm2D.states.dat
-          columns: [0,55]
+          columns: [0,28]
           scaling: [1, 1]
         spike detection: 
           method: threshold

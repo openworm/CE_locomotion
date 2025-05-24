@@ -74,3 +74,5 @@ void c302ForW2D::EulerStep(double stepsize)
     newstep2=true;
 }
 
+double c302mForW2D::DorsalMuscleOutput(int muscle){}
+double c302mForW2D::VentralMuscleOutput(int muscle){}

@@ -7,9 +7,10 @@
 #include "VectorMatrix.h"
 #include "random.h"
 #include <cmath>
+#include "neuromlLocal/NSBaseForW2D.h"
 using namespace std;
 
-class Muscles {
+class Muscles : public muscForW2D{
 public:
 
     Muscles(int nmuscles = 24, double t_muscle = 0.1);

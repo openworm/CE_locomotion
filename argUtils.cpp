@@ -20,6 +20,7 @@ SuppliedArgs::SuppliedArgs()
   traceDuration = 24;
   doOrigNS = 1;
   max_gens = 10;
+  transient = 8;
 }
 
 
@@ -44,8 +45,8 @@ doubIntParamsHead SuppliedArgs::getParams()
 {
   doubIntParamsHead var1;
   var1.parInt.head = "Evolutionary Optimization Parameters";
-  var1.parInt.names = {"PopulationSize", "Duration", "randomseed", "MaxGenerations"};
-  var1.parInt.vals = {pop_size, traceDuration, randomseed, max_gens};
+  var1.parInt.names = {"PopulationSize", "Duration", "randomseed", "MaxGenerations", "Transient"};
+  var1.parInt.vals = {pop_size, traceDuration, randomseed, max_gens, transient};
   var1.parInt.messages ={"population size", 
     "optimization simulation duration", "seed", "maximum evolution generations"};
   var1.parInt.messages_inds = {0,1,2,3};

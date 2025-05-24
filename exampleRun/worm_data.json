@@ -74,6 +74,9 @@
             "message": "population size",
             "value": 96
         },
+        "Transient": {
+            "value": 8
+        },
         "randomseed": {
             "message": "seed",
             "value": 1233

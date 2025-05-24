@@ -46,8 +46,9 @@ class Worm2DNRNSimulation:
 
     def set_up_j(self):
         import utils
+
         self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
-      
+
     def get_neuron_number(self, pop, i):
         return self.pop_dict[pop] + i * self.pop_num
 
@@ -143,11 +144,13 @@ class Worm2DNRNSimulation:
         getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
-    
+
     def set_neuron_input_j(self, i, weight):
-        #pop_name, nn = self.get_pop_number(i)
-        getattr(self.h, "ExtStim" + self.NSIds[i]['Pop'] + "_" + str(self.NSIds[i]['Ind'])).weight = weight
-        #getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
+        # pop_name, nn = self.get_pop_number(i)
+        getattr(
+            self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
+        ).weight = weight
+        # getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
@@ -221,19 +224,19 @@ class Worm2DNRNSimulation:
         values = []
         for id in self.NSIds:
             try:
-                    # val = getattr(self.h, var)[0].soma.cai
-                val = getattr(self.h, id['NRN pop name'])[id['Ind']].state
+                # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
             except AttributeError as e:
-                    print("Problem passing neuronal output of %s, %s" % (id['Pop'], e))
-                    continue
-                    # val = 0
-                # scaled_val = self._scale(val)
+                print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
+                continue
+                # val = 0
+            # scaled_val = self._scale(val)
             values.append(val)
         return values
 
     def get_states(self):
         values = []
-        #vars_read = []
+        # vars_read = []
         for i in range(self.pop_size):
             for pop in self.pop_name_list:
                 try:
@@ -245,29 +248,32 @@ class Worm2DNRNSimulation:
                     # val = 0
                 # scaled_val = self._scale(val)
                 values.append(val)
-                #vars_read.append(pop + "_" + str(i))
+                # vars_read.append(pop + "_" + str(i))
 
         # values = [6, 7, 8]
         # print(values)
         return values
-    
+
     def get_outputs_j(self):
         values = []
         for id in self.NSIds:
             try:
-                    # val = getattr(self.h, var)[0].soma.cai
-                val = getattr(self.h, id['NRN pop name'])[id['Ind']].output
+                # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id["NRN pop name"])[id["Ind"]].output
             except AttributeError as e:
-                    print("Problem passing neuronal output of %s, %s, %s" % (id['Pop'], id['Ind'], e))
-                    continue
-                    # val = 0
-                # scaled_val = self._scale(val)
+                print(
+                    "Problem passing neuronal output of %s, %s, %s"
+                    % (id["Pop"], id["Ind"], e)
+                )
+                continue
+                # val = 0
+            # scaled_val = self._scale(val)
             values.append(val)
         return values
-    
+
     def get_outputs(self):
         values = []
-        #vars_read = []
+        # vars_read = []
         for i in range(self.pop_size):
             for pop in self.pop_name_list:
                 try:
@@ -279,7 +285,7 @@ class Worm2DNRNSimulation:
                     # val = 0
                 # scaled_val = self._scale(val)
                 values.append(val)
-                #vars_read.append(pop + "_" + str(i))
+                # vars_read.append(pop + "_" + str(i))
 
         # values = [6, 7, 8]
         # print(values)

@@ -5,9 +5,11 @@ Example to create some new LEMS files for running NML2 models
 """
 
 from pyneuroml.lems import LEMSSimulation
-from pyneuroml.lems import generate_lems_file_for_neuroml
+
+# from pyneuroml.lems import generate_lems_file_for_neuroml
 import os
-import sys
+
+# import sys
 import pprint
 from pyneuroml.runners import run_jneuroml  # ,run_lems_with_jneuroml_neuron
 import shutil
@@ -32,25 +34,24 @@ def run(a=None, **kwargs):
 
     NSIds, VMIds, DMIds = utils.getCellIdDicts()
 
-    #network_json_data = utils.getJsonFile(a.json_file)
+    # network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
 
+    # cell_names = utils.getCellNames(network_json_data)
+    # pop_names = utils.getPopNames(network_json_data)
 
-    #cell_names = utils.getCellNames(network_json_data)
-    #pop_names = utils.getPopNames(network_json_data)
-
-    #population_structure = a.population_structure
-    #rel_indices = utils.get_rel_index_list(population_structure, cell_names, pop_names)
-    #pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_names)
+    # population_structure = a.population_structure
+    # rel_indices = utils.get_rel_index_list(population_structure, cell_names, pop_names)
+    # pop_id_list = utils.get_pop_id_list(population_structure, cell_names, pop_names)
 
     cell_ids = []
-    
+
     """ pop_id = 'PopDA'
     for rel_index in rel_indices:
             cell_ids.append(utils.get_cell_id_string_full(population_structure, pop_id, None, rel_index)) """
 
     for id in NSIds:
-        cell_ids.append(id['CellId'])
+        cell_ids.append(id["CellId"])
 
     """ for pop_id in pop_id_list:
         for rel_index in rel_indices:
@@ -80,6 +81,38 @@ def run(a=None, **kwargs):
 
     disp1 = "display1"
     ls.create_display(disp1, "Outputs", "-.1", "1", timeScale="1ms")
+
+    def makeDisplay(Ids, file_str):
+        vm_ids = []
+        for id in Ids:
+            vm_ids.append(id["CellId"])
+        dispVM0 = "display0_" + file_str
+        ls.create_display(dispVM0, "States", "-15", "10", timeScale="1ms")
+        ofVM0 = "states_file_" + file_str
+        ls.create_output_file(ofVM0, "%s.states_" % sim_id + file_str + ".dat")
+
+        for index, (cell_id, colour) in enumerate(zip(vm_ids, colour_list)):
+            cell_id_val = cell_id[3:]
+            print("Displaying/saving cell %s" % cell_id_val)
+
+            ls.add_line_to_display(
+                dispVM0,
+                cell_id_val.replace("Pop", "").replace("/", "_"),
+                cell_id_val + "/state",
+                "1",
+                colour,
+                timeScale="1ms",
+            )
+            ls.add_column_to_output_file(
+                ofVM0,
+                cell_id_val.replace("Pop", "").replace("/", "_"),
+                cell_id_val + "/state",
+            )
+
+    if VMIds is not None:
+        makeDisplay(VMIds, "VM")
+    if DMIds is not None:
+        makeDisplay(DMIds, "DM")
 
     # ls.add_line_to_display(disp0, "v", "AllCells[0]/v", "1mV", "#ffffff")
 
@@ -176,7 +209,6 @@ def run(a=None, **kwargs):
             "LEMS_Worm2D_nrn.py", output_folder_name + "/LEMS_Worm2D_nrn.py"
         )
 
-   
 
 if __name__ == "__main__":
     population_structures = [

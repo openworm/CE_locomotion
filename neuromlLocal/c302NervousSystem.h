@@ -14,6 +14,7 @@ c302NervousSystem(const std::string & simFileName):c302ForW2D(simFileName){}
 c302NervousSystem():c302ForW2D(){}
 c302NervousSystem(const std::string & simFileName, const std::string & simDirName)
 :c302ForW2D(simFileName,simDirName){}
+c302NervousSystem(const std::string & popStruct, const int & popSize):c302ForW2D(popStruct,popSize){}
 
 //required for nervous system setup
 

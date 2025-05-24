@@ -111,22 +111,27 @@ origins = {
     "MV4": [-1, 1],
 }
 
-#muscle_ids = [
-#"MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
-#]
+# muscle_ids = [
+# "MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
+# ]
 
 
-muscle_group_sizes = [4,3,3,3,3,4,4]
-muscle_group_sizes = [1]*24
+muscle_group_sizes = [4, 3, 3, 3, 3, 4, 4]
+muscle_group_sizes = [1] * 24
 
 default_cells = {}
 default_cells["Net21"] = {}
 default_cells["CE"] = {}
 default_cells["RS18"] = {}
 
-default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VA", "VB", "VD"]*7
-default_cells["CE"]["names"] =  ["DA", "DB", "DD", "VA", "VB", "VD"]*10
-default_cells["RS18"]["names"] =  ["DB", "DD","VBA","VDA","VBP","VDP"]*6 + ["SMDD","RMDD","SMDV","RMDV"]
+default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VA", "VB", "VD"] * 7
+default_cells["CE"]["names"] = ["DA", "DB", "DD", "VA", "VB", "VD"] * 10
+default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + [
+    "SMDD",
+    "RMDD",
+    "SMDV",
+    "RMDV",
+]
 
 
 spacing = 0.2
@@ -168,16 +173,17 @@ def run(a=None, **kwargs):
         v_muscle_cell_names = []
         for muscle_group_size in muscle_group_sizes:
             for i in range(muscle_group_size):
-                d_muscle_cell_names.append("MD" + str(i+1))
-                v_muscle_cell_names.append("MV" + str(i+1))
+                d_muscle_cell_names.append("MD" + str(i + 1))
+                v_muscle_cell_names.append("MV" + str(i + 1))
 
         muscle_ids = sorted(list(set(d_muscle_cell_names + v_muscle_cell_names)))
 
-
         vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
         dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
-        vNMJ_cellnames = d_muscle_cell_names #network_json_data["Ventral NMJ"]["Cell name"]["value"]
-        dNMJ_cellnames = v_muscle_cell_names #network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+        vNMJ_cellnames = v_muscle_cell_names  # network_json_data["Ventral NMJ"]["Cell name"]["value"]
+        dNMJ_cellnames = (
+            d_muscle_cell_names  # network_json_data["Dorsal NMJ"]["Cell name"]["value"]
+        )
 
         vNMJ_pop_cell_names = utils.getPopNamesCell(vNMJ_cellnames)
         dNMJ_pop_cell_names = utils.getPopNamesCell(dNMJ_cellnames)
@@ -193,45 +199,60 @@ def run(a=None, **kwargs):
     pop_cell_names = utils.getPopNames(network_json_data)
     popSizes = utils.getPopSizes(cell_names, pop_cell_names)
 
-
-    
     cur_wkd_dir = os.getcwd()
     this_file_dir = os.path.dirname(
         os.path.realpath(__file__)
     )  # location of this file!
 
-    cell_Id_file_name = "cell_Ids.json"
-    utils.makeCellIdJson(population_structure, cell_names, cell_Id_file_name, 'Nervous System')
+    cell_Id_file_name = this_file_dir + "/cell_Ids.json"
+    utils.makeCellIdJson(
+        population_structure, cell_names, cell_Id_file_name, "Nervous System"
+    )
 
     if doMuscles:
-        utils.makeCellIdJson(population_structure, vNMJ_cellnames, cell_Id_file_name, 'Ventral Muscles')
-        utils.makeCellIdJson(population_structure, dNMJ_cellnames, cell_Id_file_name, 'Dorsal Muscles')
+        utils.makeCellIdJson(
+            population_structure,
+            vNMJ_cellnames,
+            cell_Id_file_name,
+            "Ventral Muscles",
+            apppendFile=True,
+        )
+        utils.makeCellIdJson(
+            population_structure,
+            dNMJ_cellnames,
+            cell_Id_file_name,
+            "Dorsal Muscles",
+            apppendFile=True,
+        )
 
     cellX_filename = "cell_syn_X_cells.xml"
     utils.makeCellXml(network_json_data, cellX_filename)
 
     if doMuscles:
         muscX_filename = "musc_X_cells.xml"
-        utils.makeMuscCellXml(network_json_data, muscX_filename, vNMJ_cellnames + dNMJ_cellnames)
+        utils.makeMuscCellXml(
+            network_json_data, muscX_filename, vNMJ_cellnames + dNMJ_cellnames
+        )
 
     # copy from current working directory to neuromLocal and output folder
     if not output_folder_name == this_file_dir:
+        shutil.copyfile(cell_Id_file_name, output_folder_name + "/cell_Ids.json")
         shutil.copyfile(
             this_file_dir + "/cell_syn_X.xml", output_folder_name + "/cell_syn_X.xml"
         )
         if doMuscles:
             shutil.copyfile(
-            this_file_dir + "/musc_X.xml", output_folder_name + "/musc_X.xml"
-        )
-            
+                this_file_dir + "/musc_X.xml", output_folder_name + "/musc_X.xml"
+            )
+
     if not cur_wkd_dir == this_file_dir:
+        shutil.copyfile(cell_Id_file_name, "cell_Ids.json")
         shutil.copyfile(this_file_dir + "/cell_syn_X.xml", "cell_syn_X.xml")
         if doMuscles:
             shutil.copyfile(this_file_dir + "/musc_X.xml", "musc_X.xml")
 
     if not output_folder_name == cur_wkd_dir:
         shutil.copyfile(cellX_filename, output_folder_name + "/" + cellX_filename)
-        shutil.copyfile(cell_Id_file_name, output_folder_name + "/" + cell_Id_file_name)
         if doMuscles:
             shutil.copyfile(muscX_filename, output_folder_name + "/" + muscX_filename)
 

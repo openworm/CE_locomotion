@@ -9,14 +9,10 @@ from neuroml import (
     ElectricalConnectionInstanceW,
 )
 
-DEFAULTS = {
-    "doMuscles": False,
-    "folder": None
-}
+DEFAULTS = {"doMuscles": False, "folder": None}
 
 
 def process_args():
-
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")
     )
@@ -25,11 +21,10 @@ def process_args():
         "-m",
         "--doMuscles",
         action="store_true",
-        #metavar="<include muscles>",
+        # metavar="<include muscles>",
         default=DEFAULTS["doMuscles"],
         help=("Add Muscles to NML"),
     )
-
 
     parser.add_argument(
         "-f",
@@ -58,21 +53,30 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
 
     return a
 
+
 def getCellIdDicts():
     print("calling set_up_from_json")
-    file_name = 'cell_Ids.json'
-    import os
+
     import json
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    cwd = os.getcwd()
+    print("file directory ", dir_path, " current directory ", cwd)
+
+    file_name = dir_path + "/cell_Ids.json"
+
     if os.path.isfile(file_name):
         with open(file_name) as f:
             cellIdDict = json.load(f)
     else:
         import sys
+
         print("cell_Ids.json not found")
+
         sys.exit()
-    NSIds =  cellIdDict['Nervous System']
+    NSIds = cellIdDict["Nervous System"]
     if "Ventral Muscles" in cellIdDict:
-        VMIds =  cellIdDict["Ventral Muscles"]
+        VMIds = cellIdDict["Ventral Muscles"]
     else:
         VMIds = None
     if "Dorsal Muscles" in cellIdDict:
@@ -80,6 +84,7 @@ def getCellIdDicts():
     else:
         DMIds = None
     return NSIds, VMIds, DMIds
+
 
 cells_have_3d_locations = True
 
@@ -178,11 +183,13 @@ def dropSelfConnections(weights):
             new_weights.append(connection)
     return new_weights
 
-def makeCellIdJson(population_structure, cell_names, file_name, json_ind_name):
 
+def makeCellIdJson(
+    population_structure, cell_names, file_name, json_ind_name, appendFile=False
+):
     pop_cell_names = getPopNamesCell(cell_names)
     rel_indices = getPopRelativeCellIndices(cell_names, pop_cell_names)
-    #cellIds = []
+    # cellIds = []
     cellIdsList = []
     for ind, cell in enumerate(cell_names):
         rel_index = rel_indices[ind]
@@ -190,25 +197,36 @@ def makeCellIdJson(population_structure, cell_names, file_name, json_ind_name):
         """  cellIds.append(get_cell_id_string_full(
             population_structure, pop, cell, rel_index
         )) """
-        nrn_pop_name = 'm_' + cell + '_Pop' + cell
+        nrn_pop_name = "m_" + cell + "_Pop" + cell
         cellIdsList.append(
-            {"CellId": get_cell_id_string_full(population_structure, pop, cell, rel_index),
-            "Pop": pop, "Cell": cell, "Ind" : rel_index, "NRN pop name" : nrn_pop_name}
-            )
+            {
+                "CellId": get_cell_id_string_full(
+                    population_structure, pop, cell, rel_index
+                ),
+                "Pop": pop,
+                "Cell": cell,
+                "Ind": rel_index,
+                "NRN pop name": nrn_pop_name,
+            }
+        )
 
-    if os.path.isfile(file_name):
+    if appendFile and os.path.isfile(file_name):
         with open(file_name) as f:
             cellIdDict = json.load(f)
     else:
         cellIdDict = {}
 
-    cellIdDict[json_ind_name] =  cellIdsList
-    #cellIdDict[json_ind_name]["Ids"] = cellIds
-    #cellIdDict[json_ind_name]["List"] = cellIdsList
+    cellIdDict[json_ind_name] = cellIdsList
+    # cellIdDict[json_ind_name]["Ids"] = cellIds
+    # cellIdDict[json_ind_name]["List"] = cellIdsList
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    cwd = os.getcwd()
+    print("making cellId.json, file directory ", dir_path, " current directory ", cwd)
 
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(cellIdDict, f, ensure_ascii=False, indent=4)
-    
+
 
 def makeProjectionsConnections(
     net,
@@ -382,7 +400,6 @@ def makeCellXml(network_json_data, cellX_filename):
 
 
 def makeMuscCellXml(network_json_data, cellX_filename, cell_names):
-    
     pop_names = getPopNamesCell(cell_names)
 
     print("generating MuscCellXml")

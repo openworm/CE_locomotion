@@ -37,12 +37,9 @@ struct wormIzqParams
 
 vector<toFromWeight> dummyVec();
 
-class Worm2D {
-    
+class Worm2Dm 
+{
     public:
-    //virtual void InitializeState(RandomState &rs) = 0;
-    //virtual void DumpBodyState(ofstream &ofs, int skips) = 0;
-    //virtual void DumpCurvature(ofstream &ofs, int skips) = 0;
 
     virtual void DumpActState(ofstream &ofs, int skips) = 0;
     virtual void Step(double StepSize, double output) = 0;
@@ -51,7 +48,6 @@ class Worm2D {
     virtual void addParsToJson(json & j) = 0;
     virtual void DumpParams(ofstream &ofs) = 0;
     virtual void initForSimulation() =  0;
-
 
     void Step(double StepSize) {Step(StepSize,1);}
 
@@ -64,17 +60,44 @@ class Worm2D {
     double getVelocity();
     void DumpNSOrdered(ofstream &ofs, int skips);
     
-
     
     double CoMx();
     double CoMy();
     void Curvature(TVector<double> &c);
     double Orientation();
     void AngleCurvature(TVector<double> &c);
-
-    virtual ~Worm2D(){if (n_ptr) delete n_ptr;}
     NSForW2D & itsNS(){return *n_ptr;}
 
+    protected:
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+    virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
+    muscForW2D * const m_ptr;
+    WormBody b;
+    const wormIzqParams par1;
+    double t; // Time
+    NSForW2D * const n_ptr;
+    int nn(int neuronNumber, int unitNumber);
+
+    const int Head = 1;
+    const int Tail = N_segments;
+
+};
+
+class Worm2D : public Worm2Dm
+{
+    
+    public:
+    //virtual void InitializeState(RandomState &rs) = 0;
+    //virtual void DumpBodyState(ofstream &ofs, int skips) = 0;
+    //virtual void DumpCurvature(ofstream &ofs, int skips) = 0;
+
+    
+    void addParsToJson(json & j);
+
+    //virtual ~Worm2D(){if (n_ptr) delete n_ptr;}
+    //NSForW2D & itsNS(){return *n_ptr;}
+
+    void InitializeState(RandomState &rs);
 
     protected:
 
@@ -89,17 +112,13 @@ class Worm2D {
 
     void setMuscleInput();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
-    int nn(int neuronNumber, int unitNumber);
+    
     void setUp();
-    Muscles m;
-    WormBody b;
+    Muscles & m;
+    
     NSToMuscles vMuscConn, dMuscConn;
-    NSForW2D * const n_ptr;
-    const wormIzqParams par1;
-    double t; // Time
-
-    const int Head = 1;
-    const int Tail = N_segments;
+    
+ 
 };
 
 

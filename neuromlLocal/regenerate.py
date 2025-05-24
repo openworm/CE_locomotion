@@ -5,6 +5,7 @@ import utils
 from build_network import run as build_network_run
 from create_new_lems_file import run as create_new_lems_run
 
+
 def run_main(args=None):
     if args is None:
         args = utils.process_args()
@@ -14,7 +15,7 @@ def run_main(args=None):
 def run(a=None, **kwargs):
     a = utils.build_namespace(utils.DEFAULTS, a, **kwargs)
 
-#def run(output_folder, doMuscles=False):
+    # def run(output_folder, doMuscles=False):
     # current = os.path.dirname(os.path.realpath(__file__))
 
     if a.folder is None:
@@ -48,5 +49,5 @@ def run(a=None, **kwargs):
 
 
 if __name__ == "__main__":
-    #folder = sys.argv[1]
+    # folder = sys.argv[1]
     run_main()

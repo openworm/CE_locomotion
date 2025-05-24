@@ -33,6 +33,7 @@ bool doOrigNS;
 long randomseed;
 int max_gens;
 string model_name;
+int transient;
 
 };
 class SuppliedArgs2018 : public SuppliedArgs
