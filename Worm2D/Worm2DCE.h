@@ -71,7 +71,7 @@ class Worm2DCE: public  Worm2D{
     void InitializeState(RandomState &rs);
     Worm2DCE(json & j);
     void addParsToJson(json & j);
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2D(par1_,n_ptr_){}
+   
     const vector<string> getCellNames() {return {"DA", "DB", "DD", "VD", "VA", "VB"};}
     vector<doubIntParamsHead> getWormParams();
     StretchReceptorCE sr;
@@ -81,6 +81,9 @@ class Worm2DCE: public  Worm2D{
     friend class EvolutionCE;
 
     protected:
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)
+    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0){}
+
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
     vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}
     const vector<string> getVMuscNames(){ return {"dum1"};}

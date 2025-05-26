@@ -10,24 +10,29 @@
 //#include "../argUtils.h"
 #include "../neuromlLocal/c302ForW2D.h"
 
-//extern SuppliedArgs2021 supArgs1;
 
-
-Worm2D21::Worm2D21(TVector<double> &v):Worm2D({7,24,0.1,7,49},
-    new c302ForW2D()
-   //new c302ForW2D("AS DA DB DD VD VB VA",7)
-   )
+Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
+       new c302ForW2D(), new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr)))
 {
-   // Interneuron inputs (AVB)
-   wAVB_DB = 1;
-   wAVB_VB = 1;
-   // Interneuron inputs (AVB)
-   wAVA_DA = 1;
-   wAVA_VA = 1;
-   
-   AVA = 0; 
-   AVB = 0; 
 
+// Interneuron inputs (AVB)
+wAVB_DB = 1;
+wAVB_VB = 1;
+// Interneuron inputs (AVB)
+wAVA_DA = 1;
+wAVA_VA = 1;
+
+//initialize these to zero, adam
+AVA = 0; 
+AVB = 0; 
+
+
+
+}
+Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},
+       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+{
+  
    // NMJ Weight
    NMJ_AS = v(32);
    NMJ_DA = v(33);
@@ -49,27 +54,11 @@ Worm2D21::Worm2D21(TVector<double> &v):Worm2D({7,24,0.1,7,49},
 }
 
 
-Worm2D21::Worm2D21(json & j):Worm2D(
-    {j["Worm"]["N_neuronsperunit"]["value"], 
-      j["Worm"]["N_muscles"]["value"], 
-      j["Worm"]["T_muscle"]["value"],
-      j["Worm"]["N_units"]["value"],
-      j["Nervous system"]["size"]["value"]
-    }, //new c302ForW2D("AS DA DB DD VD VB VA",7)
-       new c302ForW2D()
-)
+
+
+Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},
+       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
-
-// Interneuron inputs (AVB)
-wAVB_DB = 1;
-wAVB_VB = 1;
-// Interneuron inputs (AVB)
-wAVA_DA = 1;
-wAVA_VA = 1;
-
-//initialize these to zero, adam
-AVA = 0; 
-AVB = 0; 
 
 // NMJ Weight
 NMJ_AS = j["Worm"]["NMJ_AS"]["value"];
@@ -90,15 +79,23 @@ for (int i=1; i<=par1.N_muscles; i++)
     setUpMuscleConn();
 }
 
-void Worm2D21::initForSimulation()
+void Worm2D21m::initForSimulation()
 {
     SetAVB(0.0);
     SetAVA(0.0);
 }
 
+void Worm2D21m::InitializeState(RandomState &rs)
+{    
+    cout << "Worm2D21m init state" << endl;
+    Worm2Dm::InitializeState(rs);
+    return;    
+}
+
 void Worm2D21::InitializeState(RandomState &rs)
 {    
     cout << "Worm2D21 init state" << endl;
+    Worm2D21m::InitializeState(rs);
     Worm2D::InitializeState(rs);
     return;    
 }
@@ -216,24 +213,24 @@ void Worm2D21::Step(double StepSize)
     
     // Set input to Body
     //  First two segments receive special treatment because they are only affected by a single muscle
-    b.SetDorsalSegmentActivation(1, m.DorsalMuscleOutput(1)/2);
-    b.SetVentralSegmentActivation(1, m.VentralMuscleOutput(1)/2);
-    b.SetDorsalSegmentActivation(2, m.DorsalMuscleOutput(1)/2);
-    b.SetVentralSegmentActivation(2, m.VentralMuscleOutput(1)/2);
+    b.SetDorsalSegmentActivation(1, m_ptr->DorsalMuscleOutput(1)/2);
+    b.SetVentralSegmentActivation(1, m_ptr->VentralMuscleOutput(1)/2);
+    b.SetDorsalSegmentActivation(2, m_ptr->DorsalMuscleOutput(1)/2);
+    b.SetVentralSegmentActivation(2, m_ptr->VentralMuscleOutput(1)/2);
     
     //  All other segments receive force from two muscles
     for (int i = 3; i <= N_segments-2; i++)
     {
         int mi = (int) ((i-1)/2);
-        b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
-        b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
+        b.SetDorsalSegmentActivation(i, (m_ptr->DorsalMuscleOutput(mi) + m_ptr->DorsalMuscleOutput(mi+1))/2);
+        b.SetVentralSegmentActivation(i, (m_ptr->VentralMuscleOutput(mi) + m_ptr->VentralMuscleOutput(mi+1))/2);
     }
     
     //  Last two segments receive special treatment because they are only affected by a single muscle
-    b.SetDorsalSegmentActivation(N_segments-1, m.DorsalMuscleOutput(par1.N_muscles)/2);
-    b.SetVentralSegmentActivation(N_segments-1, m.VentralMuscleOutput(par1.N_muscles)/2);
-    b.SetDorsalSegmentActivation(N_segments, m.DorsalMuscleOutput(par1.N_muscles)/2);
-    b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
+    b.SetDorsalSegmentActivation(N_segments-1, m_ptr->DorsalMuscleOutput(par1.N_muscles)/2);
+    b.SetVentralSegmentActivation(N_segments-1, m_ptr->VentralMuscleOutput(par1.N_muscles)/2);
+    b.SetDorsalSegmentActivation(N_segments, m_ptr->DorsalMuscleOutput(par1.N_muscles)/2);
+    b.SetVentralSegmentActivation(N_segments, m_ptr->VentralMuscleOutput(par1.N_muscles)/2);
     
     // Time
     t += StepSize;
@@ -268,7 +265,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
 
 
 
-void Worm2D21::DumpActState(ofstream &ofs, int skips)
+void Worm2D21m::DumpActState(ofstream &ofs, int skips)
 {
     static int tt = skips;
     
@@ -287,14 +284,14 @@ void Worm2D21::DumpActState(ofstream &ofs, int skips)
         // Muscles
         //ofs << "\nM: ";
         for (int i = 1; i <= par1.N_muscles; i++) {
-            ofs <<  " " << m.DorsalMuscleOutput(i) << " " << m.VentralMuscleOutput(i);
+            ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
         }
         ofs << "\n";
     }
 }
 
 
-void Worm2D21::DumpActStateState(ofstream &ofs, int skips)
+void Worm2D21m::DumpActStateState(ofstream &ofs, int skips)
 {
     static int tt = skips;
     
@@ -315,7 +312,7 @@ void Worm2D21::DumpActStateState(ofstream &ofs, int skips)
 }
 
 
-void Worm2D21::DumpCurvature(ofstream &ofs, int skips)
+/* void Worm2D21::DumpCurvature(ofstream &ofs, int skips)
 {
     
     double dx1,dy1,dx2,dy2,a,a1,a2,seg;
@@ -349,7 +346,7 @@ void Worm2D21::DumpCurvature(ofstream &ofs, int skips)
         }
         ofs << "\n";
     }
-}
+} */
 
 
 void Worm2D21::DumpParams(ofstream &ofs){ofs << "Worm2D21 parameters" << endl;}

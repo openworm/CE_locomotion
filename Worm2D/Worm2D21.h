@@ -32,7 +32,28 @@ using namespace std;
 //const int Head = 1;
 //const int Tail = N_segments;
 
-class Worm2D21 : public Worm2D {
+class Worm2D21m : virtual public Worm2Dm {
+public:
+    
+    //Worm21(TVector<double> &v);
+   
+    Worm2D21m();
+    void SetAVA(double value) {AVA = value;};
+    void SetAVB(double value) {AVB = value;};
+    void initForSimulation();
+    void InitializeState(RandomState &rs);
+    void DumpActState(ofstream &ofs, int skips);
+    void DumpActStateState(ofstream &ofs, int skips);
+
+
+protected:
+    double wAVA_DA, wAVA_VA;
+    double wAVB_DB, wAVB_VB;
+    double AVA, AVB;
+
+};
+
+class Worm2D21 : public Worm2D21m, public Worm2D {
 public:
     
     //Worm21(TVector<double> &v);
@@ -43,21 +64,21 @@ public:
     void Step(double StepSize);
     void Step(double StepSize, double output){return Step(StepSize);}
    
-    void DumpActState(ofstream &ofs, int skips);
-    void DumpCurvature(ofstream &ofs, int skips);
+  
+    //void DumpCurvature(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
-    void DumpActStateState(ofstream &ofs, int skips);
-
-    void SetAVA(double value) {AVA = value;};
-    void SetAVB(double value) {AVB = value;};
-    void initForSimulation();
+    
+    
+    
     
     //NervousSystem & n;
 
     protected:
 
-    Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2D(par1_,n_ptr_){}
-    
+    Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_)
+    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0),Worm2D21m(){}
+
+
     void addParsToJson(json & j){
         Worm2D::addParsToJson(j);
         string nsHead = "Nervous system";
@@ -95,9 +116,6 @@ public:
     
     // Command neuron input
     
-    double wAVA_DA, wAVA_VA;
-    double wAVB_DB, wAVB_VB;
-    double AVA, AVB;
 
     const int startingMuscleA = 1;       // XXX
     const int NmusclePerNUA = 3;

@@ -11,13 +11,18 @@
 #include "../neuromlLocal/c302ForW2D.h"
 
  
-Worm2DCE::Worm2DCE(json & j):Worm2D(
+Worm2DCE::Worm2DCE(json & j):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  }, new c302ForW2D())
+  }, new c302ForW2D(), new Muscles),Worm2D({j["Worm"]["N_neuronsperunit"]["value"], 
+    j["Worm"]["N_muscles"]["value"], 
+    j["Worm"]["T_muscle"]["value"],
+    j["Worm"]["N_units"]["value"],
+    j["Nervous system"]["size"]["value"]
+  } ,0)
 {
   cout << "Worm2DCE const" << endl;
 

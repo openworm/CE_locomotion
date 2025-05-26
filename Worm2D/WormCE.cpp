@@ -21,8 +21,8 @@ return new c302NervousSystem();
  */
 
 
-WormCE::WormCE(TVector<double> &v,double output):Worm2DCE({6,24,0.1,10,60},
-new NervousSystem()),n(dynamic_cast<NervousSystem&>(*n_ptr))
+WormCE::WormCE(TVector<double> &v,double output):Worm2Dm({6,24,0.1,10,60},
+new NervousSystem(), new Muscles),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
 {
 
   // PG: Setting these to zero as they were not initialised before use!

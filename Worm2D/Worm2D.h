@@ -71,11 +71,12 @@ class Worm2Dm
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
+    NSForW2D * const n_ptr;
     muscForW2D * const m_ptr;
     WormBody b;
     const wormIzqParams par1;
     double t; // Time
-    NSForW2D * const n_ptr;
+    
     
 
     int nn(int neuronNumber, int unitNumber);
@@ -85,7 +86,7 @@ class Worm2Dm
 
 };
 
-class Worm2D : public Worm2Dm
+class Worm2D : virtual public Worm2Dm
 {
     
     public:

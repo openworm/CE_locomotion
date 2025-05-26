@@ -44,6 +44,7 @@ class c302ForW2D : virtual public NSForW2D
 class c302muscForW2D :  public muscForW2D
 {
 
+public:
 c302muscForW2D(c302ForW2D & c_);
 
 

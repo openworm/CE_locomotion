@@ -15,7 +15,8 @@
 
 
 // The constructor
-Worm21::Worm21(TVector<double> &v):Worm2D21({7,24,0.1,7,49},new NervousSystem()),
+Worm21::Worm21(TVector<double> &v)
+:Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles), Worm2D21(v),
 n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
     // Muscles
@@ -103,36 +104,7 @@ n(dynamic_cast<NervousSystem&>(*n_ptr))
 //            n.SetElectricalSynapseWeight(dd, ddNext, v(32));
         }
     }
-    
-    // Interneuron inputs (AVB)
-    wAVB_DB = 1;
-    wAVB_VB = 1;
-    // Interneuron inputs (AVB)
-    wAVA_DA = 1;
-    wAVA_VA = 1;
-
-    //initialize these to zero, adam
-    AVA = 0; 
-    AVB = 0; 
-    
-    // NMJ Weight
-    NMJ_AS = v(32);
-    NMJ_DA = v(33);
-    NMJ_DB = v(34);
-    NMJ_DD = v(35);
-    NMJ_VD = v(36);
-    NMJ_VB = v(37);
-    NMJ_VA = v(38);
-    
-    // NMJ Gain XXX
-    NMJ_Gain_Map = v(39);
-    NMJ_Gain.SetBounds(1, par1.N_muscles);
-    for (int i=1; i<=par1.N_muscles; i++)
-    {
-        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
-    }
-
-    setUpMuscleConn();
+   
 }
 
 void Worm21::InitializeState(RandomState &rs)
