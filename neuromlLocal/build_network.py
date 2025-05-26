@@ -215,14 +215,14 @@ def run(a=None, **kwargs):
             vNMJ_cellnames,
             cell_Id_file_name,
             "Ventral Muscles",
-            apppendFile=True,
+            appendFile=True,
         )
         utils.makeCellIdJson(
             population_structure,
             dNMJ_cellnames,
             cell_Id_file_name,
             "Dorsal Muscles",
-            apppendFile=True,
+            appendFile=True,
         )
 
     cellX_filename = "cell_syn_X_cells.xml"

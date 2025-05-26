@@ -12,7 +12,7 @@ virtual ~NSForW2D(){};
 
 };
 
-class muscForW2D 
+class muscForW2D
 {
     public:
     

@@ -346,176 +346,6 @@
     ],
     "Ventral Muscles": [
         {
-            "CellId": "../PopMD1/0/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 0,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/1/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 1,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/2/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 2,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/3/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 3,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/4/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 4,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/5/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 5,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/6/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 6,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/7/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 7,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/8/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 8,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/9/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 9,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/10/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 10,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/11/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 11,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/12/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 12,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/13/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 13,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/14/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 14,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/15/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 15,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/16/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 16,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/17/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 17,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/18/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 18,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/19/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 19,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/20/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 20,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/21/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 21,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/22/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 22,
-            "NRN pop name": "m_MD1_PopMD1"
-        },
-        {
-            "CellId": "../PopMD1/23/MD1",
-            "Pop": "PopMD1",
-            "Cell": "MD1",
-            "Ind": 23,
-            "NRN pop name": "m_MD1_PopMD1"
-        }
-    ],
-    "Dorsal Muscles": [
-        {
             "CellId": "../PopMV1/0/MV1",
             "Pop": "PopMV1",
             "Cell": "MV1",
@@ -682,6 +512,176 @@
             "Cell": "MV1",
             "Ind": 23,
             "NRN pop name": "m_MV1_PopMV1"
+        }
+    ],
+    "Dorsal Muscles": [
+        {
+            "CellId": "../PopMD1/0/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 0,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/1/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 1,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/2/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 2,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/3/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 3,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/4/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 4,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/5/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 5,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/6/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 6,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/7/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 7,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/8/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 8,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/9/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 9,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/10/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 10,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/11/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 11,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/12/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 12,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/13/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 13,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/14/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 14,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/15/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 15,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/16/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 16,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/17/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 17,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/18/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 18,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/19/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 19,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/20/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 20,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/21/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 21,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/22/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 22,
+            "NRN pop name": "m_MD1_PopMD1"
+        },
+        {
+            "CellId": "../PopMD1/23/MD1",
+            "Pop": "PopMD1",
+            "Cell": "MD1",
+            "Ind": 23,
+            "NRN pop name": "m_MD1_PopMD1"
         }
     ]
 }

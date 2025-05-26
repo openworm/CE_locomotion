@@ -74,5 +74,25 @@ void c302ForW2D::EulerStep(double stepsize)
     newstep2=true;
 }
 
-double c302mForW2D::DorsalMuscleOutput(int muscle){}
-double c302mForW2D::VentralMuscleOutput(int muscle){}
+
+c302muscForW2D::c302muscForW2D(c302ForW2D & c_):simulation(c_.getSimulator()),
+get_d_output_func("get_dorsal_musc_outputs"),get_v_output_func("get_ventral_musc_outputs")
+{}
+
+double c302muscForW2D::DorsalMuscleOutput(int muscle){
+
+if (d_newstep){
+    d_output_value =  simulation->vecValFunc(get_d_output_func);
+    d_newstep = false;
+    }
+return d_output_value[muscle-1];
+}
+
+double c302muscForW2D::VentralMuscleOutput(int muscle)
+{
+if (v_newstep){
+    v_output_value =  simulation->vecValFunc(get_v_output_func);
+    v_newstep = false;
+    }
+return v_output_value[muscle-1];
+}

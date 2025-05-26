@@ -5,6 +5,7 @@
 //#include "neuroml_utils.h"
 //#include "../random.h"
 #include <string>
+#include <memory>
 
 class c302ForW2D : virtual public NSForW2D
 {
@@ -20,8 +21,9 @@ class c302ForW2D : virtual public NSForW2D
     void EulerStep(double );
     
     double NeuronState(int i);
-    virtual ~c302ForW2D(){if (simulation) delete simulation;}
-
+    virtual ~c302ForW2D(){}
+    //virtual ~c302ForW2D(){if (simulation) delete simulation;}
+    std::shared_ptr<SignalSimulatorForWorm2D>  getSimulator(){return simulation;}
     
 
     void SetPopStructure(const std::string & popStruct, int popSize);
@@ -29,7 +31,8 @@ class c302ForW2D : virtual public NSForW2D
 
     protected:
     void SetPopStructure();
-    SignalSimulatorForWorm2D *simulation = 0;
+    const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
+    //SignalSimulatorForWorm2D *simulation = 0;
     std::vector<float> output_value;
     std::vector<float> state_value;
     bool newstep  = true;
@@ -38,12 +41,24 @@ class c302ForW2D : virtual public NSForW2D
 
 };
 
-class c302mForW2D :  public c302ForW2D, virtual public muscForW2D
+class c302muscForW2D :  public muscForW2D
 {
+
+c302muscForW2D(c302ForW2D & c_);
+
 
 double DorsalMuscleOutput(int muscle);
 double VentralMuscleOutput(int muscle);
+virtual ~c302muscForW2D(){}
 
+protected:
 
+const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
+//SignalSimulatorForWorm2D *simulation = 0;
+std::vector<float> v_output_value;
+std::vector<float> d_output_value;
 
+bool v_newstep  = true;
+bool d_newstep  = true;
+const std::string get_v_output_func, get_d_output_func;
 };

@@ -38,11 +38,9 @@ vMuscConn.setWeights(makeVentralMuscleConn());
 dMuscConn.setWeights(makeDorsalMuscleConn());
 }
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_)
-:par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)
-{
-    
-}
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_){}
+
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
 m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
@@ -78,35 +76,6 @@ int Worm2Dm::nn(int neuronNumber, int unitNumber)
     return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
 }
 
-
-//WormIzq::WormIzq(wormIzqParams par1_):Worm2D(par1_, new NervousSystem()),
-//n(dynamic_cast<NervousSystem&>(*n_ptr))
-//{}
-
-
-/* WormIzq::WormIzq(wormIzqParams par1_, const NervousSystemBase & n):par1(par1_),n_ptr(n.clone())
-{
-    setUp();
-} */
-
-/* void WormIzq::setUp()
-{
-    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
-}
- */
-
-/* int WormIzq::nn(int neuronNumber, int unitNumber)
-{
-    return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
-} */
-
-/* void WormIzq::InitializeState(RandomState &rs)
-{
-    t = 0.0;
-    b.InitializeBodyState();
-    m.InitializeMuscleState();
-}
- */
 
 double Worm2Dm::CoMx()
 {

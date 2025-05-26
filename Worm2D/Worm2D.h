@@ -76,6 +76,8 @@ class Worm2Dm
     const wormIzqParams par1;
     double t; // Time
     NSForW2D * const n_ptr;
+    
+
     int nn(int neuronNumber, int unitNumber);
 
     const int Head = 1;
@@ -98,6 +100,7 @@ class Worm2D : public Worm2Dm
     //NSForW2D & itsNS(){return *n_ptr;}
 
     void InitializeState(RandomState &rs);
+   
 
     protected:
 
@@ -115,7 +118,7 @@ class Worm2D : public Worm2Dm
     
     void setUp();
     Muscles & m;
-    
+   
     NSToMuscles vMuscConn, dMuscConn;
     
  
