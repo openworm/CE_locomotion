@@ -2617,12 +2617,6 @@
         }
     },
     "Worm": {
-        "AVA": {
-            "value": 0.0
-        },
-        "AVB": {
-            "value": 0.0
-        },
         "NMJ_AS": {
             "value": 0.045354840632245486
         },
@@ -2673,18 +2667,6 @@
         },
         "startingMuscleB": {
             "value": 13
-        },
-        "wAVA_DA": {
-            "value": 1.0
-        },
-        "wAVA_VA": {
-            "value": 1.0
-        },
-        "wAVB_DB": {
-            "value": 1.0
-        },
-        "wAVB_VB": {
-            "value": 1.0
         }
     }
 }

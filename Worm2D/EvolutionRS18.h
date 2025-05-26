@@ -20,7 +20,7 @@ class EvolutionRS18:public Evolution
     double EvaluationFunctionOrig(TVector<double> &v, RandomState &rs);
     double EvaluationFunctionNoOut(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
-    void RunSimulation(Worm2D &w1, RandomState &rs);
+    void RunSimulation(Worm2Dm &w1, RandomState &rs);
     void configure();
     
     protected:

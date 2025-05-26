@@ -147,7 +147,7 @@ void Evolution::configure()
 }
 
    
-void Evolution::RunStandardSimulation(Worm2D & w, RandomState &rs){
+void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
 
     
     //Worm2D21 & w = dynamic_cast<Worm2D21&>(w1);

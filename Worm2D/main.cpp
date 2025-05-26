@@ -13,7 +13,7 @@
 
 using json = nlohmann::json;
 
-void write_json(Evolution* er,  Worm2D* w, string filename)
+void write_json(Evolution* er,  Worm2Dm* w, string filename)
 {
     RandomState rs;
     rs.SetRandomSeed(er->itsEvoPars().randomseed);
@@ -118,7 +118,7 @@ int main (int argc, const char* argv[])
     
     //er->RunSimulation(bestVector, rs);
 
-    Worm2D* w = 0;
+    Worm2Dm* w = 0;
 
    
     cout << "making worm" << endl;
@@ -153,7 +153,7 @@ int main (int argc, const char* argv[])
     }
     else{
        
-    Worm2D* w = 0; 
+    Worm2Dm* w = 0; 
 
     const bool makeWormFromJson = true;
     if (makeWormFromJson){

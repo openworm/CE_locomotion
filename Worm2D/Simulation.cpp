@@ -2,7 +2,7 @@
 
 string Simulation::rename_file(string filename){return sp.directoryName + "/" + filename;}
 
-void Simulation::runSimulation(Worm2D & w)
+void Simulation::runSimulation(Worm2Dm & w)
 {
     cout << "running simulation sim" << endl;
 

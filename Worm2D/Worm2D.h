@@ -48,6 +48,9 @@ class Worm2Dm
     virtual void addParsToJson(json & j) = 0;
     virtual void DumpParams(ofstream &ofs) = 0;
     virtual void initForSimulation() =  0;
+    virtual void setMuscleInput(double StepSize) {return;}
+    virtual const vector<string> getCellNames() = 0;
+
 
     void Step(double StepSize) {Step(StepSize,1);}
 
@@ -67,10 +70,11 @@ class Worm2Dm
     double Orientation();
     void AngleCurvature(TVector<double> &c);
     NSForW2D & itsNS(){return *n_ptr;}
+    virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-    virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
+   
     NSForW2D * const n_ptr;
     muscForW2D * const m_ptr;
     WormBody b;
@@ -105,7 +109,7 @@ class Worm2D : virtual public Worm2Dm
 
     protected:
 
-    virtual const vector<string> getCellNames() = 0;
+    
     virtual const vector<string> getVMuscNames() = 0;
     virtual const vector<string> getDMuscNames() = 0;
 
@@ -114,7 +118,7 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
     void setUpMuscleConn();
 
-    void setMuscleInput();
+    void setMuscleInput(double StepSize);
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     
     void setUp();

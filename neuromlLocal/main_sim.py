@@ -234,6 +234,34 @@ class Worm2DNRNSimulation:
             values.append(val)
         return values
 
+    def get_dorsal_musc_states(self):
+        values = []
+        for id in self.DMIds:
+            try:
+                # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
+            except AttributeError as e:
+                print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
+                continue
+                # val = 0
+            # scaled_val = self._scale(val)
+            values.append(val)
+        return values
+
+    def get_ventral_musc_states(self):
+        values = []
+        for id in self.VMIds:
+            try:
+                # val = getattr(self.h, var)[0].soma.cai
+                val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
+            except AttributeError as e:
+                print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
+                continue
+                # val = 0
+            # scaled_val = self._scale(val)
+            values.append(val)
+        return values
+
     def get_states(self):
         values = []
         # vars_read = []

@@ -98,8 +98,8 @@ class Evolution
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) = 0;
-    virtual void RunSimulation(Worm2D & w, RandomState &rs) = 0;
-    void RunStandardSimulation(Worm2D & w, RandomState &rs);
+    virtual void RunSimulation(Worm2Dm & w, RandomState &rs) = 0;
+    void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
 
     void addParsToJson(json & j);
     

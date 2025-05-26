@@ -44,12 +44,30 @@ public:
     void InitializeState(RandomState &rs);
     void DumpActState(ofstream &ofs, int skips);
     void DumpActStateState(ofstream &ofs, int skips);
+    void DumpParams(ofstream &ofs);
 
+    void Step(double StepSize);
+    void Step(double StepSize, double output){return Step(StepSize);}
+    
 
 protected:
+    void addParsToJson(json & j);
+
+    
+    const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
+
+    vector<doubIntParamsHead> getWormParams();
     double wAVA_DA, wAVA_VA;
     double wAVB_DB, wAVB_VB;
     double AVA, AVB;
+
+    const int AS = 1;
+    const int DA = 2;
+    const int DB = 3;
+    const int DD = 4;
+    const int VD = 5;
+    const int VB = 6;
+    const int VA = 7;
 
 };
 
@@ -61,12 +79,11 @@ public:
     Worm2D21(json & j);
     
     void InitializeState(RandomState &rs);
-    void Step(double StepSize);
-    void Step(double StepSize, double output){return Step(StepSize);}
+   
    
   
     //void DumpCurvature(ofstream &ofs, int skips);
-    void DumpParams(ofstream &ofs);
+    
     
     
     
@@ -78,12 +95,9 @@ public:
     Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_)
     :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0),Worm2D21m(){}
 
+    void addParsToJson(json & j);
 
-    void addParsToJson(json & j){
-        Worm2D::addParsToJson(j);
-        string nsHead = "Nervous system";
-        appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
-    }
+    
 
     void setMuscleInputOrig();
     vector<toFromWeight> makeVentralMuscleConn();
@@ -92,7 +106,7 @@ public:
     vector<int> neurons, vector<double> NMJs, int mi, int to);
     vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
 
-    const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
+    
 
     const vector<string> getVMuscNames() {return {"MV1","MV2","MV3","MV4", 
         "MV1","MV2","MV3",  "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV4",
@@ -124,13 +138,7 @@ public:
     
     
     // Neuron name conventions
-    const int AS = 1;
-    const int DA = 2;
-    const int DB = 3;
-    const int DD = 4;
-    const int VD = 5;
-    const int VB = 6;
-    const int VA = 7;
+    
 
     
     //const int Head = 1;

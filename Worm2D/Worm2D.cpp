@@ -11,7 +11,7 @@ vector<toFromWeight> dummyVec()
     return vec1;
 }
 
-void Worm2D::setMuscleInput()
+void Worm2D::setMuscleInput(double StepSize)
 {
 
     for (int i = 1; i<= vMuscConn.size; i++){
@@ -28,6 +28,8 @@ void Worm2D::setMuscleInput()
     }
     m.SetDorsalMuscleInput(i, tot);
     }
+
+    m.EulerStep(StepSize);
     //cout << "setMuscInp" << endl;
     //exit(1);
 }
@@ -313,6 +315,14 @@ void Worm2D::addParsToJson(json & j)
     par.names = {"NumConns"};
     par.vals = {getVector<int>(dMuscConn.numConns, dMuscConn.size),};
     appendToJson<vector<int> >(j["Dorsal NMJ"],par);}
+    
+    vector<doubIntParamsHead> parvec = getWormParams();
+    for (size_t i=0;i<parvec.size(); i++) {
+        if (strcmp(parvec[i].parDoub.head.c_str(),"NULL")!=0)
+        appendToJson<double>(j[parvec[i].parDoub.head],parvec[i].parDoub);
+        if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
+        appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
+        }
 
 
     

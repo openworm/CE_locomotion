@@ -186,7 +186,7 @@ void Worm2D21::setMuscleInputOrig()
     
 }
 
-void Worm2D21::Step(double StepSize)
+void Worm2D21m::Step(double StepSize)
 {
     
     
@@ -205,11 +205,11 @@ void Worm2D21::Step(double StepSize)
         n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
     }
     
-    setMuscleInput();
+    setMuscleInput(StepSize);
 
 
     // Update Muscle activation
-    m.EulerStep(StepSize);
+    //m.EulerStep(StepSize);
     
     // Set input to Body
     //  First two segments receive special treatment because they are only affected by a single muscle
@@ -236,7 +236,15 @@ void Worm2D21::Step(double StepSize)
     t += StepSize;
 }
 
+vector<doubIntParamsHead> Worm2D21m::getWormParams(){
+    vector<doubIntParamsHead> parvec;
+    doubIntParamsHead var1;
 
+    var1.parDoub.head = "Worm";
+    var1.parDoub.names = {"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"};
+    var1.parDoub.vals = {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB};
+
+}
 
 
 vector<doubIntParamsHead> Worm2D21::getWormParams(){
@@ -248,9 +256,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
     var1.parDoub.names = {"NMJ_Gain_Map", "NMJ_AS", "NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     var1.parDoub.vals = {NMJ_Gain_Map, NMJ_AS, NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
 
-    append<string>(var1.parDoub.names,{"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"});
-    append<double>(var1.parDoub.vals, {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB});
-   
+ 
   
     var1.parInt.head = "Worm";
     var1.parInt.vals = {startingMuscleA,NmusclePerNUA, startingMuscleB, NmusclePerNUB};
@@ -348,5 +354,17 @@ void Worm2D21m::DumpActStateState(ofstream &ofs, int skips)
     }
 } */
 
+void Worm2D21::addParsToJson(json & j){
+        Worm2D21m::addParsToJson(j);
+        Worm2D::addParsToJson(j); 
+    }
 
-void Worm2D21::DumpParams(ofstream &ofs){ofs << "Worm2D21 parameters" << endl;}
+void Worm2D21m::addParsToJson(json & j){
+        Worm2Dm::addParsToJson(j);
+        string nsHead = "Nervous system";
+        appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+    }
+
+
+
+void Worm2D21m::DumpParams(ofstream &ofs){ofs << "Worm2D21m parameters" << endl;}

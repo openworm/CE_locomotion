@@ -17,7 +17,7 @@ c302ForW2D::c302ForW2D():
 set_neuron_input_func("set_neuron_input_j"), 
 get_states_func("get_states_j"), get_output_func("get_outputs_j"),
 simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlLocal",0.005))
-{SetPopStructure();}
+{SetPopStructure(); std::cout << "c302ForW2D" << std::endl;}
 
 c302ForW2D::c302ForW2D(const std::string & popStruct, const int & popSize):
 set_neuron_input_func("set_neuron_input"), 
@@ -76,8 +76,11 @@ void c302ForW2D::EulerStep(double stepsize)
 
 
 c302muscForW2D::c302muscForW2D(c302ForW2D & c_):simulation(c_.getSimulator()),
-get_d_output_func("get_dorsal_musc_outputs"),get_v_output_func("get_ventral_musc_outputs")
-{}
+get_d_output_func("get_dorsal_musc_states"),get_v_output_func("get_ventral_musc_states")
+{
+
+    std::cout << "c302muscForW2D" << std::endl;
+}
 
 double c302muscForW2D::DorsalMuscleOutput(int muscle){
 

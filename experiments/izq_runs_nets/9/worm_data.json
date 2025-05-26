@@ -699,7 +699,7 @@
             "value": 0.44
         },
         "randomseed": {
-            "value": 446866
+            "value": 130910
         },
         "skip_steps": {
             "value": 10
@@ -2617,12 +2617,6 @@
         }
     },
     "Worm": {
-        "AVA": {
-            "value": 0.0
-        },
-        "AVB": {
-            "value": 0.0
-        },
         "NMJ_AS": {
             "value": 0.0010966950403584752
         },
@@ -2673,18 +2667,6 @@
         },
         "startingMuscleB": {
             "value": 13
-        },
-        "wAVA_DA": {
-            "value": 1.0
-        },
-        "wAVA_VA": {
-            "value": 1.0
-        },
-        "wAVB_DB": {
-            "value": 1.0
-        },
-        "wAVB_VB": {
-            "value": 1.0
         }
     }
 }

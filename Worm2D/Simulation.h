@@ -23,7 +23,7 @@ public:
         nsfile.open(rename_file("sim_ns.dat"));
 
     }
-    void runSimulation(Worm2D & w);
+    void runSimulation(Worm2Dm & w);
 
 
     ~Simulation(){actfile.close(); curvfile.close(); 
