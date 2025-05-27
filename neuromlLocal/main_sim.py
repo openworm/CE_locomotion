@@ -1,7 +1,16 @@
 import sys
 import sysconfig
 import os
+import functools
 
+def rsetattr(obj, attr, val):
+    pre, _, post = attr.rpartition('.')
+    return setattr(rgetattr(obj, pre) if pre else obj, post, val)
+
+def rgetattr(obj, attr, *args):
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+    return functools.reduce(_getattr, [obj] + attr.split('.'))
 
 def print_(msg):
     pre = "Python >> "
@@ -147,10 +156,21 @@ class Worm2DNRNSimulation:
         return
 
     def set_neuron_input_j(self, i, weight):
+        #self.h.ExtStimPopAS_6.weight = weight
+        
+        setattr(getattr(self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])),
+                "weight", weight)
+
+
         # pop_name, nn = self.get_pop_number(i)
-        getattr(
+        """  getattr(
             self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
-        ).weight = weight
+        ).weight = weight """
+
+        #setattr(
+        #    self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]) + ".weight", weight)
+        
+        #).weight = weight
         # getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return

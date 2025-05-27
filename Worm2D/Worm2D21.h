@@ -93,17 +93,17 @@ public:
     protected:
 
     Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_)
-    :Worm2Dm(par1_, n_ptr_, new Muscles, false),Worm2D(par1_,0),Worm2D21m(){}
+    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0),Worm2D21m(){}
 
     void addParsToJson(json & j);
 
     
 
-    void setMuscleInputOrig();
+    void setMuscleInputOrig(double);
     vector<toFromWeight> makeVentralMuscleConn();
     vector<toFromWeight> makeDorsalMuscleConn();
-    void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to);
+    //void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    //vector<int> neurons, vector<double> NMJs, int mi, int to);
     vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
 
     

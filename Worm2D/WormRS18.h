@@ -43,11 +43,11 @@ public:
     
     protected:
 
-
+    //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     void addParsToJson(json & j);
     const vector<string> getCellNames() ;
-    vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
-    vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}
+    vector<toFromWeight> makeVentralMuscleConn();
+    vector<toFromWeight> makeDorsalMuscleConn();
     const vector<string> getVMuscNames(){ return {"dum1"};}
     const vector<string> getDMuscNames(){ return {"dum1"};}
 
@@ -55,6 +55,7 @@ public:
     //const vector<string> getHeadCellNames() 
     //{return {"SMDD", "RMDD", "SMDV", "RMDV"};}
     
+    void setMuscleInputOrig(double StepSize);
 
     vector<doubIntParamsHead> getWormParams();
 

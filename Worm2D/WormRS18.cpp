@@ -183,6 +183,8 @@ rS18Macros(setMacros()),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D({6,24,0.1
     {
         NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
     }
+
+     setUpMuscleConn();
 }
 
 void Worm18::InitializeState(RandomState &rs)
@@ -207,13 +209,118 @@ void Worm18::InitializeState(RandomState &rs)
     t += StepSize;
 } */
 
+
+vector<toFromWeight> Worm18::makeVentralMuscleConn()
+{
+    vector<toFromWeight> vec1;
+
+    {vector<int> neurons({SMDV, RMDV});
+    vector<double> NMJ({NMJ_SMDV, NMJ_RMDD});
+    for (int i = 1; i <= HeadMotorNeuronMuscles; i++)
+    makeMuscleConnHelp(vec1, neurons, NMJ, 1, i, NMJ_Gain);}
+
+    
+        vector<int> neuronsA({VDA, VBA});
+        vector<int> neuronsP({VDP, VBP});
+        vector<double> NMJA({NMJ_VDa, NMJ_VBa});
+        vector<double> NMJP({NMJ_VDp, NMJ_VBp});
+        vector<double> NMJA2({NMJ_VDa/2, NMJ_VBa/2});
+        vector<double> NMJP2({NMJ_VDp/2, NMJ_VBp/2});
+        for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
+        int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
+        int mt = (i-VNCMuscleStart)%NmusclePerNU;
+        switch(mt){
+            case 0:
+                makeMuscleConnHelp(vec1, neuronsA, NMJA, mi, i, NMJ_Gain);
+                //m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputA);
+                break;
+            case 1:
+                makeMuscleConnHelp(vec1, neuronsA, NMJA2, mi, i, NMJ_Gain);
+                makeMuscleConnHelp(vec1, neuronsP, NMJP2, mi, i, NMJ_Gain);
+                //m.SetVentralMuscleInput(i, NMJ_Gain(i)*((ventralHeadInputA + ventralHeadInputP)/2));
+                break;
+            case 2:
+                makeMuscleConnHelp(vec1, neuronsP, NMJP, mi, i, NMJ_Gain);
+                //m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputP);
+                break;
+        }
+
+    }
+    
+     return vec1;
+
+}
+
+vector<toFromWeight> Worm18::makeDorsalMuscleConn()
+{
+    vector<toFromWeight> vec1;
+
+    {vector<int> neurons({SMDD, RMDD});
+    vector<double> NMJ({NMJ_SMDD, NMJ_RMDV});
+    for (int i = 1; i <= HeadMotorNeuronMuscles; i++)
+    makeMuscleConnHelp(vec1, neurons, NMJ, 1, i, NMJ_Gain);}
+
+    {vector<int> neurons({DD,DB});
+    vector<double> NMJ({NMJ_DD, NMJ_DB});
+    for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
+        int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
+        makeMuscleConnHelp(vec1, neurons, NMJ, mi, i, NMJ_Gain);
+    }}
+
+
+    return vec1;
+}
+
+
+void Worm18::setMuscleInputOrig(double StepSize)
+{
+   double dorsalHeadInput, ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
+
+    dorsalHeadInput = NMJ_SMDD*n.NeuronOutput(SMDD) + NMJ_RMDV*n.NeuronOutput(RMDD);
+    ventralHeadInput = NMJ_SMDV*n.NeuronOutput(SMDV) + NMJ_RMDD*n.NeuronOutput(RMDV);
+
+    for (int i = 1; i <= HeadMotorNeuronMuscles; i++){
+        m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
+        m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInput);
+    }
+
+    // Set input to Muscles from Ventral Cord
+    //  Dorsal muscles (each motor neuron innervates three muscles, no overlap)
+
+    for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
+        int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
+        dorsalHeadInput = NMJ_DD*n.NeuronOutput(nn(DD,mi)) + NMJ_DB*n.NeuronOutput(nn(DB,mi));
+        m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
+        ventralHeadInputA = NMJ_VDa*n.NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n.NeuronOutput(nn(VBA,mi));
+        ventralHeadInputP = NMJ_VDp*n.NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n.NeuronOutput(nn(VBP,mi));
+        int mt = (i-VNCMuscleStart)%NmusclePerNU;
+        switch(mt){
+            case 0:
+                m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputA);
+                break;
+            case 1:
+                m.SetVentralMuscleInput(i, NMJ_Gain(i)*((ventralHeadInputA + ventralHeadInputP)/2));
+                break;
+            case 2:
+                m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputP);
+                break;
+        }
+    }
+
+    // Update Muscle activation
+    m.EulerStep(StepSize);
+
+
+
+}
+
+
 void Worm18::Step(double StepSize, double output)
 {
-    int mi;
-    int mt;
+   
     double ds, vs;
 
-    double dorsalHeadInput, ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
+ 
 
     // Update Body
     b.StepBody(StepSize);
@@ -258,38 +365,9 @@ if (rS18Macros.vncsr)
 
     // Set input to Muscles
     //  Input from the head circuit
-    dorsalHeadInput = NMJ_SMDD*n.NeuronOutput(SMDD) + NMJ_RMDV*n.NeuronOutput(RMDD);
-    ventralHeadInput = NMJ_SMDV*n.NeuronOutput(SMDV) + NMJ_RMDD*n.NeuronOutput(RMDV);
 
-    for (int i = 1; i <= HeadMotorNeuronMuscles; i++){
-        m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
-        m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInput);
-    }
-
-    // Set input to Muscles from Ventral Cord
-    //  Dorsal muscles (each motor neuron innervates three muscles, no overlap)
-    for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
-        mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
-        dorsalHeadInput = NMJ_DD*n.NeuronOutput(nn(DD,mi)) + NMJ_DB*n.NeuronOutput(nn(DB,mi));
-        m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
-        ventralHeadInputA = NMJ_VDa*n.NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n.NeuronOutput(nn(VBA,mi));
-        ventralHeadInputP = NMJ_VDp*n.NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n.NeuronOutput(nn(VBP,mi));
-        mt = (i-VNCMuscleStart)%NmusclePerNU;
-        switch(mt){
-            case 0:
-                m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputA);
-                break;
-            case 1:
-                m.SetVentralMuscleInput(i, NMJ_Gain(i)*((ventralHeadInputA + ventralHeadInputP)/2));
-                break;
-            case 2:
-                m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInputP);
-                break;
-        }
-    }
-
-    // Update Muscle activation
-    m.EulerStep(StepSize);
+    setMuscleInputOrig(StepSize);
+    //setMuscleInput(StepSize);
 
     // Set input to Body
     //  First two segments receive special treatment because they are only affected by a single muscle
@@ -301,7 +379,7 @@ if (rS18Macros.vncsr)
     //  All other segments receive force from two muscles
     for (int i = 3; i <= N_segments-2; i++)
     {
-        mi = (int) ((i-1)/2);
+        int mi = (int) ((i-1)/2);
         b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
         b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
     }

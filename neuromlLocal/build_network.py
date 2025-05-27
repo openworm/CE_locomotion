@@ -117,7 +117,7 @@ origins = {
 
 
 muscle_group_sizes = [4, 3, 3, 3, 3, 4, 4]
-muscle_group_sizes = [1] * 24
+#muscle_group_sizes = [1] * 24
 
 default_cells = {}
 default_cells["Net21"] = {}

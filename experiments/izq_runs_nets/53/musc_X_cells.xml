@@ -1,4 +1,10 @@
 <Lems>
 <muscX id="MD1" state0="0" tau="0.1s"/>
+<muscX id="MD2" state0="0" tau="0.1s"/>
+<muscX id="MD3" state0="0" tau="0.1s"/>
+<muscX id="MD4" state0="0" tau="0.1s"/>
 <muscX id="MV1" state0="0" tau="0.1s"/>
+<muscX id="MV2" state0="0" tau="0.1s"/>
+<muscX id="MV3" state0="0" tau="0.1s"/>
+<muscX id="MV4" state0="0" tau="0.1s"/>
 </Lems>
