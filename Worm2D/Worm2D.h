@@ -41,7 +41,9 @@ class Worm2Dm
 {
     public:
 
-    virtual void DumpActState(ofstream &ofs, int skips) = 0;
+    virtual void DumpActState(ofstream &ofs, int skips);
+    virtual void DumpActStateState(ofstream &ofs, int skips);
+
     virtual void Step(double StepSize, double output) = 0;
     virtual void InitializeState(RandomState &rs) = 0;
     virtual vector<doubIntParamsHead> getWormParams() = 0;
@@ -73,13 +75,15 @@ class Worm2Dm
     virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
 
     protected:
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-   
+
     NSForW2D * const n_ptr;
-    muscForW2D * const m_ptr;
+    muscForW2D * m_ptr;
     WormBody b;
     const wormIzqParams par1;
     double t; // Time
+    const bool muscForWDconst;
     
     
 
@@ -131,29 +135,3 @@ class Worm2D : virtual public Worm2Dm
 
 
 
-
-class WormIzq //: public Worm2D
-{
-public:
-   
-    
-    //void addParsToJson(json & j);
-    //void writeJsonFile(ofstream & json_out);
-    
-    
-    
-   // ~WormIzq(){if (n_ptr) delete n_ptr;}
-
-    NervousSystem & n;
-
-    protected:
-    //WormIzq(wormIzqParams par1);
-    WormIzq(NervousSystem & n_):n(n_){}
-
-    
-    private:
-   
-    
-    
-   
-};

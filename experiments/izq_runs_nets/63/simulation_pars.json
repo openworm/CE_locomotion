@@ -1,7 +1,8 @@
 {
     "doNML": 0,
-    "seed": 169256,
+    "seed": 810184,
     "Duration": 40,
     "doRandInit": 0,
-    "Transient": 10
+    "Transient": 10,
+    "doMuscSim": 0
 }

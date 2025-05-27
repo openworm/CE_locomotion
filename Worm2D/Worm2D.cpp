@@ -41,7 +41,10 @@ dMuscConn.setWeights(makeDorsalMuscleConn());
 }
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),muscForWDconst(false){}
+
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),muscForWDconst(mfwc){}
 
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
@@ -330,4 +333,50 @@ void Worm2D::addParsToJson(json & j)
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    
     //addExtraParsToJson(j);
+}
+
+void Worm2Dm::DumpActState(ofstream &ofs, int skips)
+{
+    static int tt = skips;
+    
+    if (++tt >= skips) {
+        tt = 0;
+        //time
+        ofs << t;
+
+        // Ventral Cord Motor Neurons
+        //ofs << "\nV: ";
+        for (int i = 1; i <= par1.N_units; i++) {
+            for (int j = 1; j <= par1.N_neuronsperunit; j++) {
+                ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
+            }
+        }
+        // Muscles
+        //ofs << "\nM: ";
+        for (int i = 1; i <= par1.N_muscles; i++) {
+            ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+        }
+        ofs << "\n";
+    }
+}
+
+
+void Worm2Dm::DumpActStateState(ofstream &ofs, int skips)
+{
+    static int tt = skips;
+    
+    if (++tt >= skips) {
+        tt = 0;
+        //time
+        ofs << t;
+
+        // Ventral Cord Motor Neurons
+        //ofs << "\nV: ";
+        for (int i = 1; i <= par1.N_units; i++) {
+            for (int j = 1; j <= par1.N_neuronsperunit; j++) {
+                ofs <<  " " << n_ptr->NeuronState(nn(j,i));
+            }
+        }
+        ofs << "\n";
+    }
 }

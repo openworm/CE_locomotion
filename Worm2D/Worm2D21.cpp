@@ -12,8 +12,12 @@
 
 
 Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr)))
+       new c302ForW2D(), 0 , true)
 {
+
+    cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
+    if (muscForWDconst) m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
+    cout << "2 Worm2D21m const "<< muscForWDconst << endl;
 
 // Interneuron inputs (AVB)
 wAVB_DB = 1;
@@ -237,12 +241,16 @@ void Worm2D21m::Step(double StepSize)
 }
 
 vector<doubIntParamsHead> Worm2D21m::getWormParams(){
+
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
 
     var1.parDoub.head = "Worm";
     var1.parDoub.names = {"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"};
     var1.parDoub.vals = {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB};
+
+    parvec.push_back(var1);
+    return parvec;
 
 }
 
@@ -256,7 +264,10 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
     var1.parDoub.names = {"NMJ_Gain_Map", "NMJ_AS", "NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     var1.parDoub.vals = {NMJ_Gain_Map, NMJ_AS, NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
 
- 
+
+    append<string>(var1.parDoub.names,{"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"});
+    append<double>(var1.parDoub.vals, {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB});
+   
   
     var1.parInt.head = "Worm";
     var1.parInt.vals = {startingMuscleA,NmusclePerNUA, startingMuscleB, NmusclePerNUB};
@@ -271,7 +282,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
 
 
 
-void Worm2D21m::DumpActState(ofstream &ofs, int skips)
+/* void Worm2D21m::DumpActState(ofstream &ofs, int skips)
 {
     static int tt = skips;
     
@@ -315,7 +326,7 @@ void Worm2D21m::DumpActStateState(ofstream &ofs, int skips)
         }
         ofs << "\n";
     }
-}
+} */
 
 
 /* void Worm2D21::DumpCurvature(ofstream &ofs, int skips)

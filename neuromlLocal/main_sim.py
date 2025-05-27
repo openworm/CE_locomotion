@@ -1,3 +1,8 @@
+import sys
+import sysconfig
+import os
+
+
 def print_(msg):
     pre = "Python >> "
     print("%s %s" % (pre, msg.replace("\n", "\n" + pre)))
@@ -61,10 +66,6 @@ class Worm2DNRNSimulation:
         print("Setting timestep to %s..." % dt)
 
         dt = float("{:0.1e}".format(dt)) * 1000.0  # memory issue fix
-
-        import sys
-        import sysconfig
-        import os
 
         # sys.path.insert(0,sysconfig.get_paths()["purelib"])
         sys.path.append(sysconfig.get_paths()["purelib"])
@@ -235,6 +236,9 @@ class Worm2DNRNSimulation:
         return values
 
     def get_dorsal_musc_states(self):
+        if self.DMIds is None:
+            print("DMIds not defined")
+            sys.exit()
         values = []
         for id in self.DMIds:
             try:
@@ -249,6 +253,9 @@ class Worm2DNRNSimulation:
         return values
 
     def get_ventral_musc_states(self):
+        if self.VMIds is None:
+            print("VMIds not defined")
+            sys.exit()
         values = []
         for id in self.VMIds:
             try:

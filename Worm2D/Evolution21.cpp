@@ -342,7 +342,7 @@ void Evolution21::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
     cout << "running evo21 sim" << endl;
   
-    Worm2D21 & w = dynamic_cast<Worm2D21&>(w1);
+    Worm2D21m & w = dynamic_cast<Worm2D21m&>(w1);
 
     const double & Duration = evoPars1.Duration;
     const int & VectSize = evoPars1.VectSize;

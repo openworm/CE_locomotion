@@ -84,6 +84,7 @@ int main (int argc, const char* argv[])
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
 
+        cout << "making json from main" << endl;
         //write_json(er,w, "worm_data_2.json");
 
         RandomState rs;
@@ -107,6 +108,7 @@ int main (int argc, const char* argv[])
     }
 
     bool do_nml =  atoi(getParameter(argc,argv,"--donml","0"));
+    bool do_musclesim = atoi(getParameter(argc,argv,"--domusc","0"));
 
     //run simulation with possibly different seed
     
@@ -118,7 +120,7 @@ int main (int argc, const char* argv[])
     
     //er->RunSimulation(bestVector, rs);
 
-    Worm2Dm* w = 0;
+    Worm2D* w = 0;
 
    
     cout << "making worm" << endl;
@@ -163,8 +165,14 @@ int main (int argc, const char* argv[])
     json_in.close();
 
     if (model_name == "CE") w = new Worm2DCE(j);
-    if (model_name == "Net21") w = new Worm2D21(j);
-
+    //if (model_name == "Net21") w = new Worm2D21(j);
+    
+    if (model_name == "Net21") {
+    if (do_musclesim)
+    w = new Worm2D21m();
+    else
+    w = new Worm2D21(j);
+    }
     }
     else{
     

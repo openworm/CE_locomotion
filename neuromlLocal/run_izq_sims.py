@@ -64,7 +64,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         modelFolder="../Worm2D",
         doEvol=False,
         overwrite=True,
-        doNML=True,
+        doMuscSim=doMuscles,
         duration=duration,
         transient=transient,
     )

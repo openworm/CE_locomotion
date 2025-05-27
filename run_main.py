@@ -41,6 +41,7 @@ defaults_base_celoc = {
     "doNML": 0,
     "doRandInit": 0,
     "maxGens": 10,
+    "doMuscSim": 0,
 }
 
 defaults_base_2018 = {
@@ -51,6 +52,7 @@ defaults_base_2018 = {
     "doNML": 0,
     "doRandInit": 0,
     "maxGens": 1000,
+    "doMuscSim": 0,
 }
 
 defaults_base_2021 = {
@@ -61,6 +63,7 @@ defaults_base_2021 = {
     "doNML": 0,
     "doRandInit": 0,
     "maxGens": 2000,
+    "doMuscSim": 0,
 }
 
 
@@ -73,6 +76,7 @@ DEFAULTS = {
     "doEvol": False,
     "overwrite": False,
     "doNML": None,
+    "doMuscSim": None,
     "doRandInit": None,
     "crandSeed": None,
     "inputFolderName": None,
@@ -173,7 +177,18 @@ def process_args():
         # metavar="<run NML>",
         default=DEFAULTS["doNML"],
         help=(
-            "Run the equivalent neuroML simulation instead of C++ simulation if True."
+            "Run the equivalent neuroML simulation without muscles instead of C++ simulation if True."
+        ),
+    )
+
+    parser.add_argument(
+        "-U",
+        "--doMuscSim",
+        action="store_true",
+        # metavar="<run NML>",
+        default=DEFAULTS["doMuscSim"],
+        help=(
+            "Run the equivalent neuroML muscle simulation with muscles instead of C++ simulation if True"
         ),
     )
 
@@ -488,15 +503,24 @@ def run(a=None, **kwargs):
         else:
             do_nml = 0
 
+    do_muscsim = None
+    if a.doMuscSim is not None:
+        if a.doMuscSim:
+            do_muscsim = 1
+            do_nml = 1
+        else:
+            do_muscsim = 0
+
     same_vals = True
-    sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient"]
-    sim_args = [do_nml, a.RandSeed, a.duration, do_randInit, a.transient]
+    sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient", "doMuscSim"]
+    sim_args = [do_nml, a.RandSeed, a.duration, do_randInit, a.transient, do_muscsim]
     sim_defaults = [
         defaults_base["doNML"],
         random_seed,
         defaults_base["duration"],
         defaults_base["doRandInit"],
         defaults_base["transient"],
+        defaults_base["doMuscSim"],
     ]
     for par, arg, default in zip(sim_pars, sim_args, sim_defaults):
         if not setDict(sim_data, par, arg, default):
@@ -541,6 +565,7 @@ def run(a=None, **kwargs):
     cmd += ["--donml", str(sim_data["doNML"])]
     cmd += ["--folder", str(a.outputFolderName)]
     cmd += ["--modelname", str(model_name)]
+    cmd += ["--domusc", str(sim_data["doMuscSim"])]
 
     # Run the C++
     if True:

@@ -3,5 +3,6 @@
     "seed": 95166,
     "Duration": 40,
     "doRandInit": 0,
-    "Transient": 10
+    "Transient": 10,
+    "doMuscSim": 0
 }
