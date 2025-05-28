@@ -25,5 +25,8 @@ extern const int SR_B;
 
 // Size of genotype
 extern int	VectSize;
-extern string output_dir_name;
-extern int nn(int, int);
+//extern string output_dir_name;
+//extern int nn(int, int);
+//extern string nervousSystemName;
+//extern string nervousSystemNameForSim;
+//extern string nervousSystemNameForEvol;

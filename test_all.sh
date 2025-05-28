@@ -13,14 +13,24 @@ make tests
 rm -rf test_output/*.dat
 ./tests
 
-
 make
 
-if [ "$quick_test" == 0 ]; then
-    rm -rf exampleRun
-    #time python run_main.py -R 1233 -p 96 --doEvol --folderName exampleRun
+ruff format *.py */*.py
+ruff check *.py */*.py
 
-    time omv all -V 
+if [ "$quick_test" == 0 ]; then
+
+    rm -rf exampleRun
+    rm -rf exampleRun_nml
+    
+    omv test -V .test.example.omt
+    
+    cd neuromlLocal
+    ./regenerate.sh # regenerated NML & runs omv all -V
+    cd ..
+    
+    omv test -V .test.nmlNS.omt
+    
 fi
 
 make tests2

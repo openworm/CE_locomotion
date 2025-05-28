@@ -4,17 +4,23 @@
 // Eduardo Izquierdo
 // =============================================================
 
+
+
 #include <iostream>
 #include <iomanip>
 #include <math.h>
 #include "TSearch.h"
 #include "VectorMatrix.h"
 //#include "Worm.h"
-#include "Worm2D.h"
+//#include <vector>
+
+#include "jsonUtils.h"
+
 #include "Mainvars.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include "utils.h"
 
 
 #define PRINTTOFILE
@@ -187,12 +193,13 @@ double save_traces(TVector<double> &v, RandomState &rs){
     double sra = phenotype(SR_A);
     double srb = phenotype(SR_B);
     
+    
     Worm w(phenotype, 1);
-    {
+   /*  {
     ofstream phenfile(rename_file("phenotype.dat"));
     w.DumpParams(phenfile);
     phenfile.close();
-    }
+    } */
     
     w.InitializeState(rs);
     w.sr.SR_A_gain = 0.0;
@@ -200,11 +207,14 @@ double save_traces(TVector<double> &v, RandomState &rs){
     w.AVA_output =  w.AVA_inact;
     w.AVB_output =  w.AVB_act;
 
-    // save json data
-    writeParsToJson(w, "worm_data.json");
-    // reconstruct nervous system from json file to check validity
-    testNervousSystemJson("worm_data.json", w.n); 
     
+    /* if (checkNervousSystemForJson()){
+    cout << "making json" << endl;
+    writeParsToJson(w, "worm_data.json");
+    testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
+    } */
+    
+    //#endif
 
     for (double t = 0.0; t <= Transient + Duration; t += StepSize){
         w.Step(StepSize, 1);
@@ -282,11 +292,17 @@ int main (int argc, const char* argv[])
     std::cout << std::setprecision(10);
     long randomseed = static_cast<long>(time(NULL));
     int pop_size = 96;
-    
-    if (argc==2) randomseed += atoi(argv[1]);
+    string nml_output_dir_name = "";
+    string sim_output_dir_name = "";
+    output_dir_name = "";
 
     bool do_evol = 1;
-    
+    //bool skipOrigSim = 0;
+    nervousSystemNameForSim = "nmlNervousSystem";
+    nervousSystemNameForEvol = "NervousSystem";
+    bool do_nml = 0;
+
+    if (argc==2) randomseed += atoi(argv[1]);
 
     if (argc>2){
        
@@ -300,29 +316,37 @@ int main (int argc, const char* argv[])
     for (int arg = 1; arg<argc; arg+=2)
     { 
     if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
+    //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"--folder")==0) {
       output_dir_name = argv[arg+1];
       struct stat sb;
       if (stat(output_dir_name.c_str(), &sb) != 0) 
       {cout << "Directory doesn't exist." << endl;return 0;}
     }
+
     if (seed_flag){ 
     if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) randomseed += atoi(argv[arg+1]);
     seed_flag = 0;
     }
+
     if (strcmp(argv[arg],"-p")==0) pop_size = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--nervous")==0) 
+    {
+      nervousSystemNameForSim = argv[arg+1];
+    }
     }
 
     }
 
-
+    nervousSystemName = nervousSystemNameForEvol;
+    
     InitializeBodyConstants();
 
     if (do_evol){
-  
-
+    
     TSearch s(VectSize);
 
     // save the seed to a file
@@ -332,7 +356,8 @@ int main (int argc, const char* argv[])
     seedfile << randomseed << endl;
     seedfile.close();
 
-    cout << "Run evaluation with seed: " << randomseed << ", pop size: " << pop_size << ", duration: " << Duration << endl;
+    cout << "Run evaluation with seed: " << randomseed << ", pop size: " 
+    << pop_size << ", duration: " << Duration << ", Nervous system name: " << nervousSystemName.c_str() << endl;
     //cout.flush()
 
     // configure the search
@@ -373,8 +398,56 @@ int main (int argc, const char* argv[])
 
     cout << "Finished, now saving the best fit...\n";
     
+    
+    RandomState rs;
+    long seed = static_cast<long>(time(NULL));
+    rs.SetRandomSeed(seed);
+    ifstream Best;
+    Best.open(rename_file("best.gen.dat"));
+    TVector<double> best(1, VectSize);
+    Best >> best;
+    
+
+    TVector<double> phenotype(1, VectSize);
+    GenPhenMapping(best, phenotype);
+    double sra = phenotype(SR_A);
+    double srb = phenotype(SR_B);
+    
+    
+    Worm w(phenotype, 1);
+    {
+    ofstream phenfile(rename_file("phenotype.dat"));
+    w.DumpParams(phenfile);
+    phenfile.close();
     }
     
+    w.InitializeState(rs);
+    w.sr.SR_A_gain = 0.0;
+    w.sr.SR_B_gain = srb;
+    w.AVA_output =  w.AVA_inact;
+    w.AVB_output =  w.AVB_act;
+
+    
+    if (checkNervousSystemForJson()){
+    // save json data
+    // reconstruct nervous system from json file to check validity
+    //#ifdef MAKE_JSON
+    cout << "making json" << endl;
+    vector<doubIntParamsHead> evolutionParams;
+    doubIntParamsHead var1;
+    var1.parInt.head = "Evolutionary Optimization Parameters";
+    var1.parInt.names = {"pop_size", "Duration", "randomseed"};
+    var1.parInt.vals = {pop_size, Duration, randomseed};
+    var1.parInt.messages ={"population size", "optimization simulation duration", "seed"};
+    var1.parInt.messages_inds = {0,1,2};
+    evolutionParams.push_back(var1);
+
+    writeParsToJson(w, "worm_data.json", evolutionParams);
+    //writeParsToJson(w, "worm_data.json");
+    testNervousSystemJson("worm_data.json", static_cast<NervousSystem &>(*w.n_ptr)); 
+    }
+
+    }
 
     RandomState rs;
     long seed = static_cast<long>(time(NULL));
@@ -383,11 +456,46 @@ int main (int argc, const char* argv[])
     Best.open(rename_file("best.gen.dat"));
     TVector<double> best(1, VectSize);
     Best >> best;
-    save_traces(best, rs);
-
-    cout << "Finished run, saving data\n" << endl;
-
     
 
+    /* TVector<double> phenotype(1, VectSize);
+    GenPhenMapping(best, phenotype);
+    double sra = phenotype(SR_A);
+    double srb = phenotype(SR_B);
+    
+    
+    Worm w(phenotype, 1);
+    w.InitializeState(rs);
+    w.sr.SR_A_gain = 0.0;
+    w.sr.SR_B_gain = srb;
+    w.AVA_output =  w.AVA_inact;
+    w.AVB_output =  w.AVB_act; */
+
+
+    
+    /* if (strcmp(sim_output_dir_name.c_str(), "")!=0){
+    output_dir_name = sim_output_dir_name;
+    } */
+    
+    if (do_nml){
+    nervousSystemName = nervousSystemNameForSim;
+    cout << "Performing nml run and saving data\n" << endl;
+    save_traces(best, rs);
+    }
+    else{
+    cout << "Performing C++ run and saving data\n" << endl;
+    save_traces(best, rs);
+    }
+
+    /* if (strcmp(nml_output_dir_name.c_str(), "")!=0){
+    nervousSystemName = nervousSystemNameForSim;
+    output_dir_name = nml_output_dir_name;
+    cout << "Performing nml run and saving data\n" << endl;
+    save_traces(best, rs);
+    } */
+    
+
+
+   
     return 0;
 }

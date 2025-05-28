@@ -5,8 +5,10 @@
 #include <functional>
 #include <vector>
 #include <nlohmann/json.hpp>
-#include "Worm2D.h"
+#include "utils.h"
+#include "jsonUtils.h"
 #include "Mainvars.h"
+
 
 using json = nlohmann::json;
 
@@ -18,14 +20,21 @@ using std::function;
 using std::vector;
 
 //// write all worm paramters to json and txt file 
+struct toFromWeight{
+    
+    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(){}
+    weightentry w;
+    int to;
+};
 
-void writeWormParams(Worm & w)
+void writeWormParams(wormForJson & w)
 {
     writeParsToJson(w);
 
     {
     ofstream nv_file(rename_file("w_verb.dat"));
-    writeNSysToFile(nv_file, w.n);
+    writeNSysToFile(nv_file, static_cast<NervousSystem&>(*w.n_ptr));
     nv_file << endl;
     writeWSysToFile(nv_file, w);
     nv_file << endl;
@@ -43,66 +52,9 @@ void writeWormParams(Worm & w)
 }
 
 
-
-//// helper functions
-
-string output_dir_name = "";
-string rename_file(const string & file_name){
-  if (output_dir_name != "") return output_dir_name + "/" + file_name;
-  return file_name;
-}
-
-template<class T>
-vector<T> & append(vector<T> & v1, const vector<T> & v2)
-{
-v1.insert(v1.end(), v2.begin(), v2.end());
-return v1;
-}    
-
-template<class T> 
-vector<T> getVector(TVector<T> & vec, int size)
-{ 
-vector<T> retvec;    
-for (int i = 1; i <= size; i++)
-        retvec.push_back(vec[i]);   
-return retvec;    
-}
-
-template<class T> 
-TVector<T> getTVector(vector<T> & vec)
-{ 
-TVector<T> retvec;
-retvec.SetBounds(1,vec.size());    
-for (int i = 0; i < vec.size(); i++) retvec[i+1]=vec[i];
-return retvec;    
-}
-
-struct toFromWeight{
-    
-    toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
-    toFromWeight(){}
-    weightentry w;
-    int to;
-};
-
-
 //// Params structure
 
-template <class T>
-struct Params {
-Params(){}    
-vector<string> names;
-vector<T> vals;
-vector<int> messages_inds;
-vector<string> messages;
-};
 
-template <class T>
-struct ParamsHead : Params<T> {
-ParamsHead(string head_val, Params<T> par_val):Params<T>(par_val){head=head_val;}
-ParamsHead():Params<T>(){}
-string head;
-};
 
 
 Params<int> getNervousSysParamsIntNH(NervousSystem& c)
@@ -205,7 +157,7 @@ return par;
 
 
 
-Params<double> getWormParams(Worm & w)
+Params<double> getWormParams(wormForJson & w)
 {
 
 Params<double> par;
@@ -411,7 +363,7 @@ return bp;
 
 //projection from 60 NS neurons to 10 muscle hubs, here included NMJs as weights
 
-VDProjection getMuscleInputHubProjection(Worm & w){
+VDProjection getMuscleInputHubProjection(wormForJson & w){
 
 VDProjection bp;
 
@@ -420,12 +372,12 @@ for (int i=1; i<=N_units; i++){
     const int to = i;
     const vector<int> dorsal_list = {DA,DB,DD};
     const vector<double> dorsal_list_NMJ = {w.NMJ_DA,w.NMJ_DB,w.NMJ_DD};
-    for (int j=0;j<dorsal_list.size();j++) 
+    for (size_t j=0;j<dorsal_list.size();j++) 
     bp.dorsal.push_back(toFromWeight(weightentry{nn(dorsal_list[j],i),dorsal_list_NMJ[j]},to));
 
     const vector<int> ventral_list = {VA,VB,VD};
     const vector<double> ventral_list_NMJ = {w.NMJ_VA,w.NMJ_VB,w.NMJ_VD};
-    for (int j=0;j<ventral_list.size();j++) 
+    for (size_t j=0;j<ventral_list.size();j++) 
     bp.ventral.push_back(toFromWeight(weightentry{nn(ventral_list[j],i),ventral_list_NMJ[j]},to));    
 
     }
@@ -525,7 +477,7 @@ beta_D, beta_M0, delta_M};
 
 par.messages_inds.resize(par.vals.size());
 
-for (int i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
+for (size_t i=0;i<par.messages_inds.size();i++) par.messages_inds[i]=i;
 
 par.messages = {    
 "Normalized medium drag coefficient (0 = water, 1 = agar)",
@@ -573,9 +525,9 @@ void from_json(const json& j, toFromWeight & w)
 template<class T>
 void appendToJson(json & j, const Params<T> & par)
 {
-    int mess_ind = 0;
-    for (int i=0;i<par.names.size(); i++) {
-        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==i) 
+    size_t mess_ind = 0;
+    for (size_t i=0;i<par.names.size(); i++) {
+        if (par.messages_inds.size()>mess_ind && par.messages_inds[mess_ind]==static_cast<int>(i)) 
         {j[par.names[i]]["message"] = par.messages[i];mess_ind++;}
         j[par.names[i]]["value"] = par.vals[i];
         }
@@ -615,7 +567,7 @@ j["ventral"]["message"] = "Projection from ventral hubs (10) to ventral muscles 
 
 }
 
-void appendMuscleInputHubProjection(json & j, Worm & w){
+void appendMuscleInputHubProjection(json & j, wormForJson & w){
 
 VDProjection bp = getMuscleInputHubProjection(w);
 j["dorsal"]["value"] = bp.dorsal;
@@ -716,24 +668,24 @@ auto N_units_val = jw["N_units"]["value"].template get<int>();
 auto N_neuronsperunit_val = jw["N_neuronsperunit"]["value"].template get<int>();
 
 n.SetCircuitSize(N_units_val*N_neuronsperunit_val, 3, 2);
-for (int i=0;i<biases.size();i++) n.SetNeuronBias(i+1, biases[i]);
-for (int i=0;i<time_consts.size();i++) n.SetNeuronTimeConstant(i+1, time_consts[i]);
-for (int i=0;i<outputs.size();i++) n.SetNeuronOutput(i+1, outputs[i]);
+for (size_t i=0;i<biases.size();i++) n.SetNeuronBias(i+1, biases[i]);
+for (size_t i=0;i<time_consts.size();i++) n.SetNeuronTimeConstant(i+1, time_consts[i]);
+for (size_t i=0;i<outputs.size();i++) n.SetNeuronOutput(i+1, outputs[i]);
 
 
-for (int i=0;i<chem_weights.size();i++)
+for (size_t i=0;i<chem_weights.size();i++)
 n.SetChemicalSynapseWeight(chem_weights[i].w.from, chem_weights[i].to, chem_weights[i].w.weight);
-for (int i=0;i<elec_weights.size();i++)
+for (size_t i=0;i<elec_weights.size();i++)
 n.InternalSetElectricalSynapseWeight(elec_weights[i].w.from, elec_weights[i].to, elec_weights[i].w.weight);
 
 //return n;
 }
 
 
-void writeParsToJson(Worm & w, string file_name)
+
+void writeParsToJson(json & j, wormForJson & w, string file_name)
 {
 
-json j;
 {Params<double> par = getBodyParams(w.b);
 appendToJson<double>(j["Body"],par);}
 
@@ -757,38 +709,38 @@ appendToJson<int>(j["Muscle"],par);
 }
 
 {vector<ParamsHead<int> > parvec = getGlobalParamsInt();
-for (int i=0;i<parvec.size(); i++) {
+for (size_t i=0;i<parvec.size(); i++) {
 appendToJson<int>(j[parvec[i].head],parvec[i]);
 }}
 {vector<ParamsHead<double> > parvec = getGlobalParamsDouble();
-for (int i=0;i<parvec.size(); i++) {
+for (size_t i=0;i<parvec.size(); i++) {
 appendToJson<double>(j[parvec[i].head],parvec[i]);
 }}
 
-/* {ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(w.n);
+/* {ParamsHead<vector<double> > parvec = getNervousSysParamsDouble(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<double> >(j[parvec.head],parvec);}
 
-ParamsHead<int> parvec = getNervousSysParamsInt(w.n);
+ParamsHead<int> parvec = getNervousSysParamsInt(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<int>(j[parvec.head],parvec); */
 
 string nsHead = "Nervous system";
 
-{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(w.n);
+{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<double> >(j[nsHead],parvec);}
 
-{Params<int> parvec = getNervousSysParamsIntNH(w.n);
+{Params<int> parvec = getNervousSysParamsIntNH(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<int>(j[nsHead],parvec);}
 
-{Params< vector<string> > parvec = getNervousSysCellNames(w.n);
+{Params< vector<string> > parvec = getNervousSysCellNames(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<string> >(j[nsHead],parvec);} 
 
-{Params< vector<int> > parvec = getNervousSysVecInt(w.n);
+{Params< vector<int> > parvec = getNervousSysVecInt(static_cast<NervousSystem&>(*w.n_ptr));
 appendToJson<vector<int> >(j[nsHead],parvec);}
 
-//{Params< vector<int> > parvec = getNervousSysCellGroups(w.n);
+//{Params< vector<int> > parvec = getNervousSysCellGroups(static_cast<NervousSystem&>(*w.n_ptr));
 //appendToJson<vector<int> >(j[nsHead],parvec);} 
 
-appendNSToJson(j[nsHead], w.n);
+appendNSToJson(j[nsHead], static_cast<NervousSystem&>(*w.n_ptr));
 
 appendStretchToNSProjToJson(j[nsHead]);
 
@@ -803,10 +755,31 @@ json_out << std::setw(4) << j << std::endl;
 json_out.close();
 }
 
-void writeParsToJson(Worm & w)
+void writeParsToJson(wormForJson & w)
 {
 writeParsToJson(w, "worm_data.json");
 }
+
+
+void writeParsToJson(wormForJson & w, string file_name)
+{
+json j;
+writeParsToJson(j,w,file_name);
+}
+
+void writeParsToJson(wormForJson & w, string file_name, vector<doubIntParamsHead> & parvec)
+{
+json j;
+
+for (size_t i=0;i<parvec.size(); i++) {
+if (strcmp(parvec[i].parDoub.head.c_str(),"NULL")!=0)
+appendToJson<double>(j[parvec[i].parDoub.head],parvec[i].parDoub);
+if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
+appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
+}
+writeParsToJson(j,w,file_name);
+}
+
 
 void readJson(json j, ifstream & ifs)
 {
@@ -829,10 +802,10 @@ ostream& writeVectorFormat(ostream& os,
 const vector<string> & names, const vector<T> & vals, 
 const vector<int> & messages_inds, const vector<string> & messages)
 {
-    int mess_ind = 0;
+    size_t mess_ind = 0;
     os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
-        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==i) {os << messages[mess_ind] << endl;mess_ind++;}
+    for (size_t i=0;i<names.size(); i++) {
+        if (messages_inds.size()>mess_ind && messages_inds[mess_ind]==static_cast<int>(i)) {os << messages[mess_ind] << endl;mess_ind++;}
         os << names[i] + ": " << vals[i] << endl;
         }
 
@@ -846,7 +819,7 @@ ostream& writeVectorFormat(ostream& os,
 const vector<string> & names, const vector<T> & vals)
 {
     os << setprecision(32);
-    for (int i=0;i<names.size(); i++) {
+    for (size_t i=0;i<names.size(); i++) {
         os << names[i] + ": " << vals[i] << endl;
         }
 
@@ -900,7 +873,7 @@ ostream& writeGlobalParsToFile(ostream& os)
     os << "Name conventions" << endl;
     vector<string> names = {"DA","DB","DD","VD","VA","VB","Head","Tail"};
     vector<int> vals = {DA,DB,DD,VD,VA,VB,Head,Tail};
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }
@@ -941,7 +914,7 @@ ostream& writeGlobalParsToFile(ostream& os)
 }
 
 
-ostream& writeWSysToFile(ostream& os, Worm& w)
+ostream& writeWSysToFile(ostream& os, wormForJson & w)
 {   
     
     os << setprecision(32);
@@ -951,7 +924,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     vector<double> vals = {w.NMJ_DA, w.NMJ_DB, w.NMJ_VD, w.NMJ_VB, w.NMJ_VA, w.NMJ_DD};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -960,7 +933,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"};
     vector<double> vals = {w.AVA_act, w.AVA_inact, w.AVB_act, w.AVB_inact};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -969,7 +942,7 @@ ostream& writeWSysToFile(ostream& os, Worm& w)
     vector<string> names = {"AVA_output", "AVB_output"};
     vector<double> vals = {w.AVA_output, w.AVB_output};
 
-    for (int i=0; i<names.size(); i++)
+    for (size_t i=0; i<names.size(); i++)
     {
     os << names[i] + ": " << vals[i] << endl;
     }}
@@ -1035,71 +1008,6 @@ ostream& writeNSysToFile(ostream& os, NervousSystem& c)
 }
 
 
-
-/// functions for reading text file, not used
-
-void invoke(ifstream &ifs, function<void(int, double)> calc, const vector<int> & v, int num = 1) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (int i = 0; i < v.size(); i++) 
-{
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-for (int j=0; j<num; j++) {a_stream >> str_value;}
-a_stream >> doub_value;
-calc(v[i],doub_value);
-
-}
-}
-
-void invoke2(ifstream &ifs, function<void(int, int, double)> calc, const vector<int> & v) {
-
-double doub_value;
-string textInput;
-string str_value;
-for (int i = 0; i < v.size(); i++) {
-
-getline(ifs,textInput);
-istringstream a_stream(textInput);
-a_stream >> str_value >> doub_value;
-calc(v[i],v[i],doub_value);
-}
-}
-
-
-ifstream & setParamsFromDump(ifstream &ifs, Worm & w) {
-
-   vector<int> v = {DA,DB,DD,VD,VA,VB}; 
-   string textInput;
-   
-
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);
-   auto calc = bind(&NervousSystem::SetNeuronTimeConstant, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   { 
-   getline(ifs,textInput);  
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetNeuronBias, &(w.n), placeholders::_1, placeholders::_2);
-   invoke(ifs,calc,v);
-   }
-   {
-   getline(ifs,textInput);
-   getline(ifs,textInput);   
-   auto calc = bind(&NervousSystem::SetChemicalSynapseWeight, &(w.n), 
-   placeholders::_1, placeholders::_2, placeholders::_3);
-   invoke2(ifs,calc,v);
-   }
- 
-
-   return ifs;
-
-}
 
 
 istream& readNSysFromFile(istream& is, NervousSystem& c)

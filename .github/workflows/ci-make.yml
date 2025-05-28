@@ -28,17 +28,22 @@ jobs:
       run: g++ -v
 
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev
+      run: sudo apt-get install -y nlohmann-json3-dev tree 
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
       
     - name: Install dependencies (macOS)
-      run: brew install nlohmann-json
+      run: brew install nlohmann-json tree
       if: ${{ contains(matrix.runs-on, 'macos') }}
     
     - name: Run C++ tests 
       run: |
           make tests
           ./tests
+
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
 
     - name: Test makefile
       run: make
@@ -58,30 +63,21 @@ jobs:
 
     - name: Test Python command line script
       run: |
-        pip install numpy matplotlib
-        python run_main.py -R 1233 -p 6 --doEvol --folderName exampleRun2  # Note: small population of 6 for quick runtime
+        python run_main.py -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
 
     - name: Test using test_all.sh
       run: |
-        pip install OSBModelValidation
+        which nrniv
+        export NEURON_HOME=$pythonLocation
+        env
         
-        ./test_all.sh 
+        ./test_all.sh # also generated neuroml
 
         git diff exampleRun/phenotype.dat 
-
-    - name: Test NeuroML
-      run: |
-        pip install pyNeuroML
-        cd neuroml
-        ./regenerate.sh 
-
-    - name: Test C++/Python interactions
-      run: |
-        cd test_files
-        ./test.sh 
-
 
       
     - name: list generated files
       run: |
           ls -alth
+          tree
+          pip list

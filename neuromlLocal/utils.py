@@ -31,7 +31,7 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
     return a
 
 
-cells_have_3d_locations = False
+cells_have_3d_locations = True
 
 
 def get_projection_id(pre, post, synclass, syntype=None):
@@ -213,24 +213,23 @@ def makeProjectionsConnections(
         conn_indices[cpn_index] += 1
 
 
-
 def check_equal(list):
     return all(i == list[0] for i in list)
 
+
 def getVals(pop_names, cell_names, vals):
-    
     pop_vals = []
     for pop_name in pop_names:
         vals_list = [vals[i] for i, val in enumerate(cell_names) if val == pop_name]
         if check_equal(vals_list):
-           pop_vals.append(vals_list[0])
+            pop_vals.append(vals_list[0])
         else:
-           print("Not all equal")
-           exit()    
+            print("Not all equal")
+            exit()
     return pop_vals
 
+
 def makeCellXml(network_json_data, cellX_filename):
-    
     pop_names = getPopNames(network_json_data)
     cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
     cell_biases = network_json_data["Nervous system"]["biases"]["value"]

@@ -61,6 +61,20 @@
             "value": 0.41666666666666663
         }
     },
+    "Evolutionary Optimization Parameters": {
+        "Duration": {
+            "message": "optimization simulation duration",
+            "value": 24
+        },
+        "pop_size": {
+            "message": "population size",
+            "value": 96
+        },
+        "randomseed": {
+            "message": "seed",
+            "value": 1233
+        }
+    },
     "Fitness traj": {
         "AvgSpeed": {
             "message": "Average speed of the worm in meters per second",
