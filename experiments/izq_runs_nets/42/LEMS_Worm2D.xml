@@ -2,7 +2,7 @@
 
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v1.3.15 (libNeuroML v0.6.5)
+        This LEMS file has been automatically generated using PyNeuroML v1.3.17 (libNeuroML v0.6.5)
 
      -->
 
@@ -127,110 +127,110 @@
 
         <Display id="display0_VM" title="States" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-15" ymax="10">
             <Line id="MV1_0_MV1" quantity="PopMV1/0/MV1/state" scale="1" color="#F0F8FF" timeScale="1ms"/>
-            <Line id="MV2_0_MV2" quantity="PopMV2/0/MV2/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
-            <Line id="MV3_0_MV3" quantity="PopMV3/0/MV3/state" scale="1" color="#00FFFF" timeScale="1ms"/>
-            <Line id="MV4_0_MV4" quantity="PopMV4/0/MV4/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
-            <Line id="MV1_1_MV1" quantity="PopMV1/1/MV1/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
-            <Line id="MV2_1_MV2" quantity="PopMV2/1/MV2/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
-            <Line id="MV3_1_MV3" quantity="PopMV3/1/MV3/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
-            <Line id="MV1_2_MV1" quantity="PopMV1/2/MV1/state" scale="1" color="#000000" timeScale="1ms"/>
-            <Line id="MV2_2_MV2" quantity="PopMV2/2/MV2/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
-            <Line id="MV3_2_MV3" quantity="PopMV3/2/MV3/state" scale="1" color="#0000FF" timeScale="1ms"/>
-            <Line id="MV1_3_MV1" quantity="PopMV1/3/MV1/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
-            <Line id="MV2_3_MV2" quantity="PopMV2/3/MV2/state" scale="1" color="#A52A2A" timeScale="1ms"/>
-            <Line id="MV3_3_MV3" quantity="PopMV3/3/MV3/state" scale="1" color="#DEB887" timeScale="1ms"/>
-            <Line id="MV1_4_MV1" quantity="PopMV1/4/MV1/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
-            <Line id="MV2_4_MV2" quantity="PopMV2/4/MV2/state" scale="1" color="#7FFF00" timeScale="1ms"/>
-            <Line id="MV3_4_MV3" quantity="PopMV3/4/MV3/state" scale="1" color="#D2691E" timeScale="1ms"/>
-            <Line id="MV1_5_MV1" quantity="PopMV1/5/MV1/state" scale="1" color="#FF7F50" timeScale="1ms"/>
-            <Line id="MV2_5_MV2" quantity="PopMV2/5/MV2/state" scale="1" color="#6495ED" timeScale="1ms"/>
-            <Line id="MV3_5_MV3" quantity="PopMV3/5/MV3/state" scale="1" color="#FFF8DC" timeScale="1ms"/>
-            <Line id="MV4_1_MV4" quantity="PopMV4/1/MV4/state" scale="1" color="#DC143C" timeScale="1ms"/>
-            <Line id="MV1_6_MV1" quantity="PopMV1/6/MV1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
-            <Line id="MV2_6_MV2" quantity="PopMV2/6/MV2/state" scale="1" color="#00008B" timeScale="1ms"/>
-            <Line id="MV3_6_MV3" quantity="PopMV3/6/MV3/state" scale="1" color="#008B8B" timeScale="1ms"/>
-            <Line id="MV4_2_MV4" quantity="PopMV4/2/MV4/state" scale="1" color="#B8860B" timeScale="1ms"/>
+            <Line id="MV1_1_MV1" quantity="PopMV1/1/MV1/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="MV1_2_MV1" quantity="PopMV1/2/MV1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="MV1_3_MV1" quantity="PopMV1/3/MV1/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="MV1_4_MV1" quantity="PopMV1/4/MV1/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="MV1_5_MV1" quantity="PopMV1/5/MV1/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="MV1_6_MV1" quantity="PopMV1/6/MV1/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="MV1_7_MV1" quantity="PopMV1/7/MV1/state" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="MV1_8_MV1" quantity="PopMV1/8/MV1/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="MV1_9_MV1" quantity="PopMV1/9/MV1/state" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="MV1_10_MV1" quantity="PopMV1/10/MV1/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="MV1_11_MV1" quantity="PopMV1/11/MV1/state" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="MV1_12_MV1" quantity="PopMV1/12/MV1/state" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="MV1_13_MV1" quantity="PopMV1/13/MV1/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
+            <Line id="MV1_14_MV1" quantity="PopMV1/14/MV1/state" scale="1" color="#7FFF00" timeScale="1ms"/>
+            <Line id="MV1_15_MV1" quantity="PopMV1/15/MV1/state" scale="1" color="#D2691E" timeScale="1ms"/>
+            <Line id="MV1_16_MV1" quantity="PopMV1/16/MV1/state" scale="1" color="#FF7F50" timeScale="1ms"/>
+            <Line id="MV1_17_MV1" quantity="PopMV1/17/MV1/state" scale="1" color="#6495ED" timeScale="1ms"/>
+            <Line id="MV1_18_MV1" quantity="PopMV1/18/MV1/state" scale="1" color="#FFF8DC" timeScale="1ms"/>
+            <Line id="MV1_19_MV1" quantity="PopMV1/19/MV1/state" scale="1" color="#DC143C" timeScale="1ms"/>
+            <Line id="MV1_20_MV1" quantity="PopMV1/20/MV1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="MV1_21_MV1" quantity="PopMV1/21/MV1/state" scale="1" color="#00008B" timeScale="1ms"/>
+            <Line id="MV1_22_MV1" quantity="PopMV1/22/MV1/state" scale="1" color="#008B8B" timeScale="1ms"/>
+            <Line id="MV1_23_MV1" quantity="PopMV1/23/MV1/state" scale="1" color="#B8860B" timeScale="1ms"/>
         </Display>
 
         <Display id="display0_DM" title="States" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-15" ymax="10">
             <Line id="MD1_0_MD1" quantity="PopMD1/0/MD1/state" scale="1" color="#F0F8FF" timeScale="1ms"/>
-            <Line id="MD2_0_MD2" quantity="PopMD2/0/MD2/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
-            <Line id="MD3_0_MD3" quantity="PopMD3/0/MD3/state" scale="1" color="#00FFFF" timeScale="1ms"/>
-            <Line id="MD4_0_MD4" quantity="PopMD4/0/MD4/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
-            <Line id="MD1_1_MD1" quantity="PopMD1/1/MD1/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
-            <Line id="MD2_1_MD2" quantity="PopMD2/1/MD2/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
-            <Line id="MD3_1_MD3" quantity="PopMD3/1/MD3/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
-            <Line id="MD1_2_MD1" quantity="PopMD1/2/MD1/state" scale="1" color="#000000" timeScale="1ms"/>
-            <Line id="MD2_2_MD2" quantity="PopMD2/2/MD2/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
-            <Line id="MD3_2_MD3" quantity="PopMD3/2/MD3/state" scale="1" color="#0000FF" timeScale="1ms"/>
-            <Line id="MD1_3_MD1" quantity="PopMD1/3/MD1/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
-            <Line id="MD2_3_MD2" quantity="PopMD2/3/MD2/state" scale="1" color="#A52A2A" timeScale="1ms"/>
-            <Line id="MD3_3_MD3" quantity="PopMD3/3/MD3/state" scale="1" color="#DEB887" timeScale="1ms"/>
-            <Line id="MD1_4_MD1" quantity="PopMD1/4/MD1/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
-            <Line id="MD2_4_MD2" quantity="PopMD2/4/MD2/state" scale="1" color="#7FFF00" timeScale="1ms"/>
-            <Line id="MD3_4_MD3" quantity="PopMD3/4/MD3/state" scale="1" color="#D2691E" timeScale="1ms"/>
-            <Line id="MD1_5_MD1" quantity="PopMD1/5/MD1/state" scale="1" color="#FF7F50" timeScale="1ms"/>
-            <Line id="MD2_5_MD2" quantity="PopMD2/5/MD2/state" scale="1" color="#6495ED" timeScale="1ms"/>
-            <Line id="MD3_5_MD3" quantity="PopMD3/5/MD3/state" scale="1" color="#FFF8DC" timeScale="1ms"/>
-            <Line id="MD4_1_MD4" quantity="PopMD4/1/MD4/state" scale="1" color="#DC143C" timeScale="1ms"/>
-            <Line id="MD1_6_MD1" quantity="PopMD1/6/MD1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
-            <Line id="MD2_6_MD2" quantity="PopMD2/6/MD2/state" scale="1" color="#00008B" timeScale="1ms"/>
-            <Line id="MD3_6_MD3" quantity="PopMD3/6/MD3/state" scale="1" color="#008B8B" timeScale="1ms"/>
-            <Line id="MD4_2_MD4" quantity="PopMD4/2/MD4/state" scale="1" color="#B8860B" timeScale="1ms"/>
+            <Line id="MD1_1_MD1" quantity="PopMD1/1/MD1/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="MD1_2_MD1" quantity="PopMD1/2/MD1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="MD1_3_MD1" quantity="PopMD1/3/MD1/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="MD1_4_MD1" quantity="PopMD1/4/MD1/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="MD1_5_MD1" quantity="PopMD1/5/MD1/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="MD1_6_MD1" quantity="PopMD1/6/MD1/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="MD1_7_MD1" quantity="PopMD1/7/MD1/state" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="MD1_8_MD1" quantity="PopMD1/8/MD1/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="MD1_9_MD1" quantity="PopMD1/9/MD1/state" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="MD1_10_MD1" quantity="PopMD1/10/MD1/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="MD1_11_MD1" quantity="PopMD1/11/MD1/state" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="MD1_12_MD1" quantity="PopMD1/12/MD1/state" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="MD1_13_MD1" quantity="PopMD1/13/MD1/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
+            <Line id="MD1_14_MD1" quantity="PopMD1/14/MD1/state" scale="1" color="#7FFF00" timeScale="1ms"/>
+            <Line id="MD1_15_MD1" quantity="PopMD1/15/MD1/state" scale="1" color="#D2691E" timeScale="1ms"/>
+            <Line id="MD1_16_MD1" quantity="PopMD1/16/MD1/state" scale="1" color="#FF7F50" timeScale="1ms"/>
+            <Line id="MD1_17_MD1" quantity="PopMD1/17/MD1/state" scale="1" color="#6495ED" timeScale="1ms"/>
+            <Line id="MD1_18_MD1" quantity="PopMD1/18/MD1/state" scale="1" color="#FFF8DC" timeScale="1ms"/>
+            <Line id="MD1_19_MD1" quantity="PopMD1/19/MD1/state" scale="1" color="#DC143C" timeScale="1ms"/>
+            <Line id="MD1_20_MD1" quantity="PopMD1/20/MD1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="MD1_21_MD1" quantity="PopMD1/21/MD1/state" scale="1" color="#00008B" timeScale="1ms"/>
+            <Line id="MD1_22_MD1" quantity="PopMD1/22/MD1/state" scale="1" color="#008B8B" timeScale="1ms"/>
+            <Line id="MD1_23_MD1" quantity="PopMD1/23/MD1/state" scale="1" color="#B8860B" timeScale="1ms"/>
         </Display>
 
         <OutputFile id="states_file_VM" fileName="Worm2D.states_VM.dat">
             <OutputColumn id="MV1_0_MV1" quantity="PopMV1/0/MV1/state"/>
-            <OutputColumn id="MV2_0_MV2" quantity="PopMV2/0/MV2/state"/>
-            <OutputColumn id="MV3_0_MV3" quantity="PopMV3/0/MV3/state"/>
-            <OutputColumn id="MV4_0_MV4" quantity="PopMV4/0/MV4/state"/>
             <OutputColumn id="MV1_1_MV1" quantity="PopMV1/1/MV1/state"/>
-            <OutputColumn id="MV2_1_MV2" quantity="PopMV2/1/MV2/state"/>
-            <OutputColumn id="MV3_1_MV3" quantity="PopMV3/1/MV3/state"/>
             <OutputColumn id="MV1_2_MV1" quantity="PopMV1/2/MV1/state"/>
-            <OutputColumn id="MV2_2_MV2" quantity="PopMV2/2/MV2/state"/>
-            <OutputColumn id="MV3_2_MV3" quantity="PopMV3/2/MV3/state"/>
             <OutputColumn id="MV1_3_MV1" quantity="PopMV1/3/MV1/state"/>
-            <OutputColumn id="MV2_3_MV2" quantity="PopMV2/3/MV2/state"/>
-            <OutputColumn id="MV3_3_MV3" quantity="PopMV3/3/MV3/state"/>
             <OutputColumn id="MV1_4_MV1" quantity="PopMV1/4/MV1/state"/>
-            <OutputColumn id="MV2_4_MV2" quantity="PopMV2/4/MV2/state"/>
-            <OutputColumn id="MV3_4_MV3" quantity="PopMV3/4/MV3/state"/>
             <OutputColumn id="MV1_5_MV1" quantity="PopMV1/5/MV1/state"/>
-            <OutputColumn id="MV2_5_MV2" quantity="PopMV2/5/MV2/state"/>
-            <OutputColumn id="MV3_5_MV3" quantity="PopMV3/5/MV3/state"/>
-            <OutputColumn id="MV4_1_MV4" quantity="PopMV4/1/MV4/state"/>
             <OutputColumn id="MV1_6_MV1" quantity="PopMV1/6/MV1/state"/>
-            <OutputColumn id="MV2_6_MV2" quantity="PopMV2/6/MV2/state"/>
-            <OutputColumn id="MV3_6_MV3" quantity="PopMV3/6/MV3/state"/>
-            <OutputColumn id="MV4_2_MV4" quantity="PopMV4/2/MV4/state"/>
+            <OutputColumn id="MV1_7_MV1" quantity="PopMV1/7/MV1/state"/>
+            <OutputColumn id="MV1_8_MV1" quantity="PopMV1/8/MV1/state"/>
+            <OutputColumn id="MV1_9_MV1" quantity="PopMV1/9/MV1/state"/>
+            <OutputColumn id="MV1_10_MV1" quantity="PopMV1/10/MV1/state"/>
+            <OutputColumn id="MV1_11_MV1" quantity="PopMV1/11/MV1/state"/>
+            <OutputColumn id="MV1_12_MV1" quantity="PopMV1/12/MV1/state"/>
+            <OutputColumn id="MV1_13_MV1" quantity="PopMV1/13/MV1/state"/>
+            <OutputColumn id="MV1_14_MV1" quantity="PopMV1/14/MV1/state"/>
+            <OutputColumn id="MV1_15_MV1" quantity="PopMV1/15/MV1/state"/>
+            <OutputColumn id="MV1_16_MV1" quantity="PopMV1/16/MV1/state"/>
+            <OutputColumn id="MV1_17_MV1" quantity="PopMV1/17/MV1/state"/>
+            <OutputColumn id="MV1_18_MV1" quantity="PopMV1/18/MV1/state"/>
+            <OutputColumn id="MV1_19_MV1" quantity="PopMV1/19/MV1/state"/>
+            <OutputColumn id="MV1_20_MV1" quantity="PopMV1/20/MV1/state"/>
+            <OutputColumn id="MV1_21_MV1" quantity="PopMV1/21/MV1/state"/>
+            <OutputColumn id="MV1_22_MV1" quantity="PopMV1/22/MV1/state"/>
+            <OutputColumn id="MV1_23_MV1" quantity="PopMV1/23/MV1/state"/>
         </OutputFile>
 
         <OutputFile id="states_file_DM" fileName="Worm2D.states_DM.dat">
             <OutputColumn id="MD1_0_MD1" quantity="PopMD1/0/MD1/state"/>
-            <OutputColumn id="MD2_0_MD2" quantity="PopMD2/0/MD2/state"/>
-            <OutputColumn id="MD3_0_MD3" quantity="PopMD3/0/MD3/state"/>
-            <OutputColumn id="MD4_0_MD4" quantity="PopMD4/0/MD4/state"/>
             <OutputColumn id="MD1_1_MD1" quantity="PopMD1/1/MD1/state"/>
-            <OutputColumn id="MD2_1_MD2" quantity="PopMD2/1/MD2/state"/>
-            <OutputColumn id="MD3_1_MD3" quantity="PopMD3/1/MD3/state"/>
             <OutputColumn id="MD1_2_MD1" quantity="PopMD1/2/MD1/state"/>
-            <OutputColumn id="MD2_2_MD2" quantity="PopMD2/2/MD2/state"/>
-            <OutputColumn id="MD3_2_MD3" quantity="PopMD3/2/MD3/state"/>
             <OutputColumn id="MD1_3_MD1" quantity="PopMD1/3/MD1/state"/>
-            <OutputColumn id="MD2_3_MD2" quantity="PopMD2/3/MD2/state"/>
-            <OutputColumn id="MD3_3_MD3" quantity="PopMD3/3/MD3/state"/>
             <OutputColumn id="MD1_4_MD1" quantity="PopMD1/4/MD1/state"/>
-            <OutputColumn id="MD2_4_MD2" quantity="PopMD2/4/MD2/state"/>
-            <OutputColumn id="MD3_4_MD3" quantity="PopMD3/4/MD3/state"/>
             <OutputColumn id="MD1_5_MD1" quantity="PopMD1/5/MD1/state"/>
-            <OutputColumn id="MD2_5_MD2" quantity="PopMD2/5/MD2/state"/>
-            <OutputColumn id="MD3_5_MD3" quantity="PopMD3/5/MD3/state"/>
-            <OutputColumn id="MD4_1_MD4" quantity="PopMD4/1/MD4/state"/>
             <OutputColumn id="MD1_6_MD1" quantity="PopMD1/6/MD1/state"/>
-            <OutputColumn id="MD2_6_MD2" quantity="PopMD2/6/MD2/state"/>
-            <OutputColumn id="MD3_6_MD3" quantity="PopMD3/6/MD3/state"/>
-            <OutputColumn id="MD4_2_MD4" quantity="PopMD4/2/MD4/state"/>
+            <OutputColumn id="MD1_7_MD1" quantity="PopMD1/7/MD1/state"/>
+            <OutputColumn id="MD1_8_MD1" quantity="PopMD1/8/MD1/state"/>
+            <OutputColumn id="MD1_9_MD1" quantity="PopMD1/9/MD1/state"/>
+            <OutputColumn id="MD1_10_MD1" quantity="PopMD1/10/MD1/state"/>
+            <OutputColumn id="MD1_11_MD1" quantity="PopMD1/11/MD1/state"/>
+            <OutputColumn id="MD1_12_MD1" quantity="PopMD1/12/MD1/state"/>
+            <OutputColumn id="MD1_13_MD1" quantity="PopMD1/13/MD1/state"/>
+            <OutputColumn id="MD1_14_MD1" quantity="PopMD1/14/MD1/state"/>
+            <OutputColumn id="MD1_15_MD1" quantity="PopMD1/15/MD1/state"/>
+            <OutputColumn id="MD1_16_MD1" quantity="PopMD1/16/MD1/state"/>
+            <OutputColumn id="MD1_17_MD1" quantity="PopMD1/17/MD1/state"/>
+            <OutputColumn id="MD1_18_MD1" quantity="PopMD1/18/MD1/state"/>
+            <OutputColumn id="MD1_19_MD1" quantity="PopMD1/19/MD1/state"/>
+            <OutputColumn id="MD1_20_MD1" quantity="PopMD1/20/MD1/state"/>
+            <OutputColumn id="MD1_21_MD1" quantity="PopMD1/21/MD1/state"/>
+            <OutputColumn id="MD1_22_MD1" quantity="PopMD1/22/MD1/state"/>
+            <OutputColumn id="MD1_23_MD1" quantity="PopMD1/23/MD1/state"/>
         </OutputFile>
 
         <OutputFile id="states_file" fileName="Worm2D.states.dat">

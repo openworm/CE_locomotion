@@ -117,7 +117,7 @@ origins = {
 
 
 muscle_group_sizes = [4, 3, 3, 3, 3, 4, 4]
-#muscle_group_sizes = [1] * 24
+muscle_group_sizes = [1] * 24
 
 default_cells = {}
 default_cells["Net21"] = {}
@@ -139,7 +139,7 @@ spacing = 0.2
 
 def append_pop_properties(pop):
     pop.properties.append(Property("color", colors[pop.component]))
-    pop.properties.append(Property("type", exc_inh_type[pop.component]))
+    # pop.properties.append(Property("type", exc_inh_type[pop.component]))
     pop.type = "populationList"
     for i in range(pop.size):
         inst = Instance(i)
@@ -555,6 +555,8 @@ def run(a=None, **kwargs):
 
     nml_level = 3
     nml_engine = "circo"
+    nml_level = 2
+    nml_engine = "dot"
     generate_nmlgraph(
         nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
     )

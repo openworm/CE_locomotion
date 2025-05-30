@@ -4,7 +4,6 @@
     <network id="Worm2DNet">
         <population id="PopAS" component="AS" size="7" type="populationList">
             <property tag="color" value=".80 .1 .30"/>
-            <property tag="type" value="I"/>
             <instance id="0">
                 <location x="0.0" y="0.0" z="0.0"/>
             </instance>
@@ -29,7 +28,6 @@
         </population>
         <population id="PopDA" component="DA" size="7" type="populationList">
             <property tag="color" value=".82 .7 .43"/>
-            <property tag="type" value="E"/>
             <instance id="0">
                 <location x="100.0" y="-100.0" z="0.0"/>
             </instance>
@@ -54,7 +52,6 @@
         </population>
         <population id="PopDB" component="DB" size="7" type="populationList">
             <property tag="color" value=".43 .69 .67"/>
-            <property tag="type" value="E"/>
             <instance id="0">
                 <location x="100.0" y="0.0" z="0.0"/>
             </instance>
@@ -79,7 +76,6 @@
         </population>
         <population id="PopDD" component="DD" size="7" type="populationList">
             <property tag="color" value=".24 .32 .62"/>
-            <property tag="type" value="I"/>
             <instance id="0">
                 <location x="100.0" y="100.0" z="0.0"/>
             </instance>
@@ -104,7 +100,6 @@
         </population>
         <population id="PopVA" component="VA" size="7" type="populationList">
             <property tag="color" value=".52 .33 .17"/>
-            <property tag="type" value="E"/>
             <instance id="0">
                 <location x="-100.0" y="-100.0" z="0.0"/>
             </instance>
@@ -129,7 +124,6 @@
         </population>
         <population id="PopVB" component="VB" size="7" type="populationList">
             <property tag="color" value=".17 .4 .37"/>
-            <property tag="type" value="E"/>
             <instance id="0">
                 <location x="-100.0" y="0.0" z="0.0"/>
             </instance>
@@ -154,7 +148,6 @@
         </population>
         <population id="PopVD" component="VD" size="7" type="populationList">
             <property tag="color" value=".65 .78 .9"/>
-            <property tag="type" value="I"/>
             <instance id="0">
                 <location x="-100.0" y="100.0" z="0.0"/>
             </instance>

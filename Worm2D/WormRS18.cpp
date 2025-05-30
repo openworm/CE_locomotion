@@ -200,35 +200,29 @@ void Worm18::InitializeState(RandomState &rs)
     Worm2D::InitializeState(rs);
 }
 
-/* void Worm18::HeadStep(double StepSize, double output)
-{
-    // Update Nervous System
-    h.EulerStep(StepSize);
-
-    // Time
-    t += StepSize;
-} */
 
 
 vector<toFromWeight> Worm18::makeVentralMuscleConn()
 {
     vector<toFromWeight> vec1;
 
-    {vector<int> neurons({SMDV, RMDV});
-    vector<double> NMJ({NMJ_SMDV, NMJ_RMDD});
-    for (int i = 1; i <= HeadMotorNeuronMuscles; i++)
-    makeMuscleConnHelp(vec1, neurons, NMJ, 1, i, NMJ_Gain);}
+        {vector<int> neurons({SMDV, RMDV});
+        vector<double> NMJ({NMJ_SMDV, NMJ_RMDD});
+        for (int i = 1; i <= HeadMotorNeuronMuscles; i++)
+        makeMuscleConnHelp(vec1, neurons, NMJ, 1, i, NMJ_Gain);}
 
     
         vector<int> neuronsA({VDA, VBA});
         vector<int> neuronsP({VDP, VBP});
         vector<double> NMJA({NMJ_VDa, NMJ_VBa});
         vector<double> NMJP({NMJ_VDp, NMJ_VBp});
-        vector<double> NMJA2({NMJ_VDa/2, NMJ_VBa/2});
-        vector<double> NMJP2({NMJ_VDp/2, NMJ_VBp/2});
+        vector<double> NMJA2({NMJ_VDa/2.0, NMJ_VBa/2.0});
+        vector<double> NMJP2({NMJ_VDp/2.0, NMJ_VBp/2.0});
+
         for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
         int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
-        int mt = (i-VNCMuscleStart)%NmusclePerNU;
+        //int mt = (i-VNCMuscleStart)%NmusclePerNU;
+        int mt = 1;
         switch(mt){
             case 0:
                 makeMuscleConnHelp(vec1, neuronsA, NMJA, mi, i, NMJ_Gain);
@@ -309,8 +303,6 @@ void Worm18::setMuscleInputOrig(double StepSize)
 
     // Update Muscle activation
     m.EulerStep(StepSize);
-
-
 
 }
 

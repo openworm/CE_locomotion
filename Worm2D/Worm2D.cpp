@@ -99,7 +99,8 @@ void Worm2Dm::InitializeState(RandomState &rs)
 }
 
 int Worm2Dm::nn(int neuronNumber, int unitNumber)
-{
+{   
+    if (unitNumber==1) return neuronNumber;
     return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
 }
 
