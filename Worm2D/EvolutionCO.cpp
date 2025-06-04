@@ -1,0 +1,110 @@
+#include "EvolutionCO.h"
+#include <math.h>
+#include "Worm21.h"
+#include "Segment21.h"
+
+
+
+int EvolutionCO::getVectSize(int CircuitSize)
+{
+return 2*(CircuitSize-4) + (CircuitSize-4)*(CircuitSize-4) 
++ (CircuitSize-2)*2 + (CircuitSize-4) + 1 + 2*((CircuitSize-2) + 1) + 4;
+}
+
+
+void EvolutionCO::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+	int k = 1;
+
+	// Sensor to interneurons
+	for (int i = 1; i <= 2*(CircuitSize-4); i++){
+		phen(k) = MapSearchParameter(gen(k), -SensorWeightRange, SensorWeightRange);
+		k++;
+	}
+
+	// Weights between interneurons (fully recurrent, non-symm)
+	for (int i = 1; i <= (CircuitSize-4)*(CircuitSize-4) + (CircuitSize-2)*2 + (CircuitSize-4) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -InterneuronWeightRange, InterneuronWeightRange);
+		k++;
+	}
+
+	// Biases interneurons
+	for (int i = 1; i <= (CircuitSize-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -BiasRange, BiasRange);
+		k++;
+	}
+
+	//  Time-constants
+	for (int i = 1; i <= (CircuitSize-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), TauMin, TauMax);
+		k++;
+	}
+
+	//		CPG to motorneurons
+	phen(k) = MapSearchParameter( gen(k), 0.0, StretchReceptorRange); // w_CPG_SMB
+	k++;
+
+	//      Difference sensor parameters
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // N
+	k++;
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // M
+	k++;
+
+	//      Weight of the connection between the motorneurons and the muscles
+	phen(k) = MapSearchParameter( gen(k), MinNeckTurnGain, MaxNeckTurnGain);
+}
+
+
+double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
+{
+	TVector<double> phenotype;
+	phenotype.SetBounds(1, evoPars1.VectSize);
+	GenPhenMapping(v, phenotype);
+	WormAgent Worm(CircuitSize);
+	Worm.SetParameters(phenotype);
+
+	double f, accdist, totaldist;
+	int k = 0;
+	double fitness = 0.0;
+	int taxis,kinesis;
+	for (int mode = 1; mode <= 1; mode++)
+	{
+		if (mode==0){taxis = 0;kinesis = 1;}
+		else {taxis = 1;kinesis = 0;}
+		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
+		{
+			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
+			{
+				Worm.InitialiseAgent(2*RunDuration, evoPars1.StepSize);
+				Worm.ResetAgentsBody(orient, rs);
+				Worm.ResetChemCon(gradSteep);
+				Worm.ResetAgentIntState(rs);
+				Worm.UpdateChemCon(gradSteep);
+				for (int repeats = 1; repeats <= 2; repeats++)
+				{
+					Worm.ResetAgentsBody(orient, rs);
+					for (double t = evoPars1.StepSize; t <= TransientDuration; t += evoPars1.StepSize)
+					{
+						Worm.UpdateSensors();
+						Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						Worm.UpdateChemCon(gradSteep);
+					}
+					accdist = 0.0;
+					for (double t = evoPars1.StepSize; t <= EvalDuration; t += evoPars1.StepSize)
+					{
+						Worm.UpdateSensors();
+						Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						Worm.UpdateChemCon(gradSteep);
+						accdist += Worm.DistanceToCentre();
+					}
+					totaldist = (accdist/(EvalDuration/evoPars1.StepSize));
+					f = (MaxDist - totaldist)/MaxDist;
+					f = f < 0 ? 0.0 : f;
+					fitness += f;
+					k++;
+				}
+			}
+		}
+	}
+	return fitness/k;
+}
