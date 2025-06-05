@@ -1,8 +1,9 @@
 #include "EvolutionCO.h"
 #include <math.h>
-#include "Worm21.h"
-#include "Segment21.h"
+#include "WormAgent.h"
+//#include "Segment21.h"
 
+//using namespace TSCO;
 
 
 int EvolutionCO::getVectSize(int CircuitSize)
@@ -106,5 +107,77 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 			}
 		}
 	}
+	return fitness/k;
+}
+
+double EvolutionCO::Behavior(TVector<double> &v)
+{
+
+	int VectSize = evoPars1.VectSize;
+	double StepSize = evoPars1.StepSize;
+
+
+	RandomState rs;
+	ofstream filet("behavior_taxis.dat");
+	ofstream filek("behavior_kinesis.dat");
+	TVector<double> phenotype;
+	phenotype.SetBounds(1, VectSize);
+	GenPhenMapping(v, phenotype);
+	WormAgent Worm(CircuitSize);
+	Worm.SetParameters(phenotype);
+
+	double f, accdist, totaldist;
+	int k = 0;
+	double fitness = 0.0;
+	int taxis,kinesis;
+	for (int mode = 0; mode <= 1; mode++)
+	{
+		if (mode==0){taxis = 0;kinesis = 1;}
+		else {taxis = 1;kinesis = 0;}
+		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
+		{
+			for (double orient = 0.0; orient <= 0.0; orient += Pi/2)
+			{
+				Worm.InitialiseAgent(2*RunDuration, StepSize);
+				Worm.ResetAgentsBody(orient, rs);
+				Worm.ResetChemCon(gradSteep);
+				Worm.ResetAgentIntState(rs);
+				Worm.UpdateChemCon(gradSteep);
+				for (int repeats = 1; repeats <= 1; repeats++)
+				{
+					Worm.ResetAgentsBody(orient, rs);
+					for (double t = StepSize; t <= TransientDuration; t += StepSize)
+					{
+						Worm.UpdateSensors();
+						Worm.Step(StepSize,rs,t,taxis,kinesis);
+						Worm.UpdateChemCon(gradSteep);
+						if (mode==0){filek << t << " ";
+							Worm.PrintDetail(filek);}
+						else {filet << t << " ";
+							Worm.PrintDetail(filet);}
+					}
+					accdist = 0.0;
+					for (double t = TransientDuration + StepSize; t <= TransientDuration + EvalDuration; t += StepSize)
+					{
+						Worm.UpdateSensors();
+						Worm.Step(StepSize,rs,t,taxis,kinesis);
+						Worm.UpdateChemCon(gradSteep);
+						accdist += Worm.DistanceToCentre();
+						if (mode==0){filek << t << " ";
+							Worm.PrintDetail(filek);}
+						else {filet << t << " ";
+							Worm.PrintDetail(filet);}
+					}
+					totaldist = (accdist/(EvalDuration/StepSize));
+					f = (MaxDist - totaldist)/MaxDist;
+					f = f < 0 ? 0.0 : f;
+					fitness += f;
+					k++;
+				}
+			}
+		}
+	}
+	filet.close();
+	filek.close();
 	return fitness/k;
 }

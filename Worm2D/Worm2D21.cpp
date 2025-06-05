@@ -13,7 +13,6 @@
 
 Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
        new c302ForW2D(), 0 , true)
-       //new c302ForW2D(), new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr)), true)
 {
 
     cout << "1 Worm2D21m const "<< muscForWDconst << endl;    

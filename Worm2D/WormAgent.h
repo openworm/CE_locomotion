@@ -2,6 +2,8 @@
 #include "CTRNN.h"
 #include "Worm2D.h"
 
+using namespace CTRNNspace;
+
 // Global constants
 const double	StepSize		=	0.01;			// Fastest time-constant is now 0.1 (10ms)
 const double	Pi				=	3.1415926;
@@ -58,13 +60,13 @@ public:
 	void PrintPath(ofstream &file);
 	void Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis);
 
-	TVector<double> chemConHistory;
+	VMCO::TVector<double> chemConHistory;
 	double sensorN, sensorM;
 	double dSensorN, dSensorM;
 	int iSensorN, iSensorM;
 	double tempDiff;
 
-	TVector<double> w_ASER, w_ASEL;
+	VMCO::TVector<double> w_ASER, w_ASEL;
 	double oASEL, oASER;
 	double w_CPG_SMBV, w_CPG_SMBD;
 	double avgvel,avgtheta;
@@ -72,10 +74,25 @@ public:
 	int timer;
 	double NMdiff;
 	double pushCurv;
-	TVector<double> histCurv,histTheta;
+	VMCO::TVector<double> histCurv,histTheta;
 	double px, py, vx, vy, orient, distanceToCentre, theta;
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
 	int size;
 	int forward;
-	CTRNN NervousSystem;
+
+	//modified quantities
+
+	CTRNN & NervousSystem;
+
+	//added quantities
+
+	RandomState rs;
+	double timestep, gradSteep, orient_orig, StepSize, RunDuration;
+	int taxis, kinesis;
+
+	void initForSimulation(){return;}
+	const vector<string> getCellNames() {return {"A","B"};}
+	vector<doubIntParamsHead> getWormParams();
+	void Step(double StepSize, double output);
+	void InitializeState(RandomState &rs);
 };

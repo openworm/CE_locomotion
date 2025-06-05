@@ -8,6 +8,7 @@
 #include "EvolutionRS18.h"
 #include "EvolutionCE.h"
 #include "Evolution21.h"
+#include "EvolutionCO.h"
 #include "jsonUtils.h"
 #include "Simulation.h"
 
@@ -46,7 +47,7 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") er = new EvolutionCE(argc,argv);
     if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
     if (model_name == "Net21") er = new Evolution21(argc,argv);
-
+    if (model_name == "CO") er = new EvolutionCO(argc,argv);
     
     InitializeBodyConstants();
 

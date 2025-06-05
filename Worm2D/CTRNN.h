@@ -10,14 +10,16 @@
 // Uncomment the following line for table-based fast sigmoid w/ linear interpolation
 //#define FAST_SIGMOID
 
-#include "VectorMatrix.h"
-#include "random.h"
+#include "VectorMatrixCO.h"
+#include "../random.h"
 #include <iostream>
 #include <math.h>
 //#include <omp.h> // OpenMPI
 #include "../neuromlLocal/NSBaseForW2D.h"
 
 #pragma once
+
+namespace CTRNNspace{
 
 const double	TooLarge				= 999999999;
 
@@ -108,8 +110,9 @@ class CTRNN : public NSForW2D{
         //void RK4Step(double stepsize);
 		
         int size;
-        TVector<double> states, outputs, biases, gains, taus, Rtaus, externalinputs;
-        TMatrix<double> weights, junctions;
-        TVector<double> TempStates,TempOutputs,k1,k2,k3,k4;
+        VMCO::TVector<double> states, outputs, biases, gains, taus, Rtaus, externalinputs;
+        VMCO::TMatrix<double> weights, junctions;
+        VMCO::TVector<double> TempStates,TempOutputs,k1,k2,k3,k4;
 };
 
+}

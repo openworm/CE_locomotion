@@ -1,9 +1,11 @@
-//#include "TSearch.h"
+#include "TSearchCO.h"
 //#include "VectorMatrix.h"
 #include "Evolution.h"
 
 
-class EvolutionCO:public Evolution
+//using namespace TSCO;
+
+class EvolutionCO : public Evolution
 {
     public:
     
@@ -17,11 +19,11 @@ class EvolutionCO:public Evolution
 
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
-    void RunSimulation(TVector<double> &v, RandomState &rs);
+    void RunSimulation(TVector<double> &v, RandomState &rs){Behavior(v);}
     void RunSimulation(Worm2Dm &w1, RandomState &rs);
-    void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
+    //void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
    
-
+    double Behavior(TVector<double> &v);
     
     protected:
    

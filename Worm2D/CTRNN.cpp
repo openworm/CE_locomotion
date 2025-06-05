@@ -15,8 +15,10 @@
 // ************************************************************
 
 #include "CTRNN.h"
-#include "random.h"
+//#include "../random.h"
 #include <stdlib.h>
+
+using namespace CTRNNspace;
 
 // A fast sigmoid implementation using a table w/ linear interpolation
 #ifdef FAST_SIGMOID

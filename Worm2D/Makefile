@@ -12,8 +12,8 @@ LDFLAGS += "-L/opt/homebrew/lib"
 CXXFLAGS += "-I/opt/homebrew/include"
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
-main: main.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o WormCE.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o WormCE.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
+main: main.o WormAgent.o CTRNN.o EvolutionCO.o TSearchCO.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o WormCE.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o WormAgent.o EvolutionCO.o CTRNN.o TSearchCO.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o WormCE.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
 c302ForW2D.o: ../neuromlLocal/c302ForW2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.h  #../NervousSystemBase.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/c302ForW2D.cpp 
 	@echo ' '
@@ -37,6 +37,8 @@ Simulation.o: Simulation.cpp Simulation.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Simulation.cpp
 EvolutionCE.o: EvolutionCE.cpp EvolutionCE.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionCE.cpp
+EvolutionCO.o: EvolutionCO.cpp EvolutionCO.h 
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionCO.cpp	
 Evolution21.o: Evolution21.cpp Evolution21.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution21.cpp
 Evolution.o: Evolution.cpp Evolution.h 
@@ -65,6 +67,12 @@ StretchReceptorCE.o: StretchReceptorCE.cpp StretchReceptorCE.h
 	$(CC) -c -O3 -std=c++11 -flto StretchReceptorCE.cpp	
 Muscles.o: ../Muscles.cpp ../Muscles.h #VectorMatrix.h random.h
 	$(CC) -c -O3 -flto ../Muscles.cpp
+CTRNN.o: CTRNN.cpp CTRNN.h #random.h
+	$(CC) -c -O3 CTRNN.cpp
+TSearchCO.o: TSearchCO.cpp TSearchCO.h
+	$(CC) -c -O3 TSearchCO.cpp
+WormAgent.o: WormAgent.cpp WormAgent.h TSearchCO.h CTRNN.h #VectorMatrixCO.h
+	$(CC) -c -O3 WormAgent.cpp	
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 clean:

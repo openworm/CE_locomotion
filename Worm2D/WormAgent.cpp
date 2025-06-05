@@ -1,19 +1,23 @@
 #include "WormAgent.h"
-#include "TSearch.h"
-#include "CTRNN.h"
-#include "random.h"
+#include "TSearchCO.h"
+//#include "CTRNN.h"
+//#include "random.h"
 
 // ****************************
 // Constructors and Destructors
 // ****************************
 
+using namespace CTRNNspace;
+
 // The constructor
-WormAgent::WormAgent(int newsize)
+WormAgent::WormAgent(int newsize):
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0),NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 }
 
-WormAgent::WormAgent(int newsize, const char* fnm)
+WormAgent::WormAgent(int newsize, const char* fnm):
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0),NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
@@ -237,6 +241,39 @@ void WormAgent::PrintDetail( ofstream &file)
 	file << avgtheta << " ";
 	// file << pastAvgCon << " ";
 	file << endl;
+}
+
+void WormAgent::InitializeState(RandomState &rs)
+{
+	Worm2Dm::InitializeState(rs);
+	InitialiseAgent(2*RunDuration, StepSize);
+	ResetAgentsBody(orient_orig, rs);
+	ResetChemCon(gradSteep);
+	ResetAgentIntState(rs);
+	UpdateChemCon(gradSteep);
+	
+
+}
+vector<doubIntParamsHead> WormAgent::getWormParams()
+{
+
+    vector<doubIntParamsHead> parvec;
+    doubIntParamsHead var1;
+
+    var1.parDoub.head = "Worm";
+    var1.parDoub.names = {"parameter"};
+    var1.parDoub.vals = {1};
+
+    parvec.push_back(var1);
+    return parvec;
+
+}
+
+void WormAgent::Step(double StepSize, double output)
+{
+	UpdateSensors();
+	Step(StepSize,rs,t,taxis,kinesis);
+	UpdateChemCon(gradSteep);
 }
 
 // Step

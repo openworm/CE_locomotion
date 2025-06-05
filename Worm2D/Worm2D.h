@@ -46,10 +46,8 @@ class Worm2Dm
     virtual void Step(double StepSize, double output) = 0;
     virtual void InitializeState(RandomState &rs) = 0;
     virtual vector<doubIntParamsHead> getWormParams() = 0;
-    virtual void addParsToJson(json & j) = 0;
-    virtual void DumpParams(ofstream &ofs) = 0;
-    virtual void initForSimulation() =  0;
     
+    virtual void initForSimulation() =  0;
     virtual const vector<string> getCellNames() = 0;
 
 
@@ -62,6 +60,9 @@ class Worm2Dm
     void DumpVal(ofstream &ofs, int skips, double val);
     void DumpBodyState(ofstream &ofs, int skips);
     void DumpCurvature(ofstream &ofs, int skips);
+
+    virtual void addParsToJson(json & j);
+    virtual void DumpParams(ofstream &ofs);
     
     void writeJsonFile(ofstream & json_out);
     
@@ -75,7 +76,12 @@ class Worm2Dm
     double Orientation();
     void AngleCurvature(TVector<double> &c);
     NSForW2D & itsNS(){return *n_ptr;}
-    virtual ~Worm2Dm(){if (m_ptr) delete m_ptr; if (n_ptr) delete n_ptr;}
+
+    virtual ~Worm2Dm(){
+        if (m_ptr) delete m_ptr; 
+        if (n_ptr) delete n_ptr;
+        
+    }
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -83,6 +89,7 @@ class Worm2Dm
 
     NSForW2D * const n_ptr;
     muscForW2D * m_ptr;
+    
     WormBody b;
     const wormIzqParams par1;
     double t; // Time

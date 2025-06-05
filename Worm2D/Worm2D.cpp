@@ -12,14 +12,13 @@ vector<toFromWeight> dummyVec()
 }
 
 
-
-
-
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),muscForWDconst(false){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
+muscForWDconst(false){}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),muscForWDconst(mfwc){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
+muscForWDconst(mfwc){}
 
 
 
