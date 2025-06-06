@@ -9,18 +9,27 @@
 
 using namespace CTRNNspace;
 
-// The constructor
 WormAgent::WormAgent(int newsize):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0),NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 }
 
+
+// The constructor
+WormAgent::WormAgent(TVector<double> & v, int newsize):
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+{
+	InitialiseCircuit(newsize);
+	SetParameters(v);
+}
+
 WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0),NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
+
 
 // The destructor
 WormAgent::~WormAgent()
@@ -243,6 +252,20 @@ void WormAgent::PrintDetail( ofstream &file)
 	file << endl;
 }
 
+
+void WormAgent::setSimPars(double orient_orig_,
+	double gradSteep_, int taxis_, int kinesis_,double  StepSize_,
+	double RunDuration_)
+{
+	orient_orig = orient_orig_;
+	gradSteep = gradSteep_;
+	taxis = taxis_;
+	kinesis = kinesis_;
+	StepSize =	StepSize_;
+	RunDuration = RunDuration_;
+}
+
+
 void WormAgent::InitializeState(RandomState &rs)
 {
 	Worm2Dm::InitializeState(rs);
@@ -250,10 +273,9 @@ void WormAgent::InitializeState(RandomState &rs)
 	ResetAgentsBody(orient_orig, rs);
 	ResetChemCon(gradSteep);
 	ResetAgentIntState(rs);
-	UpdateChemCon(gradSteep);
-	
-
+	UpdateChemCon(gradSteep);	
 }
+
 vector<doubIntParamsHead> WormAgent::getWormParams()
 {
 
@@ -272,7 +294,7 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 void WormAgent::Step(double StepSize, double output)
 {
 	UpdateSensors();
-	Step(StepSize,rs,t,taxis,kinesis);
+	Step(StepSize,rs,timestep,taxis,kinesis);
 	UpdateChemCon(gradSteep);
 }
 

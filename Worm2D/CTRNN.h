@@ -54,9 +54,9 @@ inline double InverseSigmoid(double y)
   return log(y/(1-y));
 }
 
-
+}
 // The CTRNN class declaration
-
+using namespace CTRNNspace;
 class CTRNN : public NSForW2D{
     public:
         // The constructor
@@ -115,4 +115,3 @@ class CTRNN : public NSForW2D{
         VMCO::TVector<double> TempStates,TempOutputs,k1,k2,k3,k4;
 };
 
-}

@@ -23,73 +23,6 @@ muscForWDconst(mfwc){}
 
 
 
-void Worm2D::setMuscleInput(double StepSize)
-{
-
-    for (int i = 1; i<= vMuscConn.size; i++){
-        double tot = 0;
-    for (int j = 1; j <= vMuscConn.numConns(i); j++){
-        tot +=  vMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(vMuscConn.weights[i][j].from);
-    }
-    m.SetVentralMuscleInput(i, tot);
-    }
-    for (int i = 1; i<= dMuscConn.size; i++){
-        double tot = 0;
-    for (int j = 1; j <= dMuscConn.numConns(i); j++){
-        tot +=  dMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(dMuscConn.weights[i][j].from);
-    }
-    m.SetDorsalMuscleInput(i, tot);
-    }
-
-    m.EulerStep(StepSize);
-    //cout << "setMuscInp" << endl;
-    //exit(1);
-}
-
-void Worm2D::setUpMuscleConn()
-{
-vMuscConn.setWeights(makeVentralMuscleConn());
-dMuscConn.setWeights(makeDorsalMuscleConn());
-}
-
-void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain)
-{
-
-    for (int j = 0; j<neurons.size();j++){
-        double weight = NMJs[j]*NMJ_Gain(to); 
-        int from = nn(neurons[j],mi);
-        toFromWeight tv({from,weight},to);
-        vec1.push_back(tv);
-
-}
-}
-
-
-
-
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
-m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
-{
-    //cout << "Worm2D const" << endl;
-    setUp();
-}
-
-
-void Worm2D::setUp()
-{
-    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);  
-    //InitializeState(rs);
-}
-
-void Worm2D::InitializeState(RandomState &rs)
-{
-    Worm2Dm::InitializeState(rs);
-    m.InitializeMuscleState();
-    return;
-}
-
-
 void Worm2Dm::InitializeState(RandomState &rs)
 {
     t = 0.0;
@@ -375,9 +308,12 @@ void Worm2Dm::DumpActState(ofstream &ofs, int skips)
         }
         // Muscles
         //ofs << "\nM: ";
+
+        if (m_ptr){
         for (int i = 1; i <= par1.N_muscles; i++) {
             ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
         }
+    }
         ofs << "\n";
     }
 }
@@ -401,4 +337,71 @@ void Worm2Dm::DumpActStateState(ofstream &ofs, int skips)
         }
         ofs << "\n";
     }
+}
+
+
+
+
+void Worm2D::setMuscleInput(double StepSize)
+{
+
+    for (int i = 1; i<= vMuscConn.size; i++){
+        double tot = 0;
+    for (int j = 1; j <= vMuscConn.numConns(i); j++){
+        tot +=  vMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(vMuscConn.weights[i][j].from);
+    }
+    m.SetVentralMuscleInput(i, tot);
+    }
+    for (int i = 1; i<= dMuscConn.size; i++){
+        double tot = 0;
+    for (int j = 1; j <= dMuscConn.numConns(i); j++){
+        tot +=  dMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(dMuscConn.weights[i][j].from);
+    }
+    m.SetDorsalMuscleInput(i, tot);
+    }
+
+    m.EulerStep(StepSize);
+    //cout << "setMuscInp" << endl;
+    //exit(1);
+}
+
+void Worm2D::setUpMuscleConn()
+{
+vMuscConn.setWeights(makeVentralMuscleConn());
+dMuscConn.setWeights(makeDorsalMuscleConn());
+}
+
+void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain)
+{
+
+    for (int j = 0; j<neurons.size();j++){
+        double weight = NMJs[j]*NMJ_Gain(to); 
+        int from = nn(neurons[j],mi);
+        toFromWeight tv({from,weight},to);
+        vec1.push_back(tv);
+
+}
+}
+
+
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
+m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+{
+    //cout << "Worm2D const" << endl;
+    setUp();
+}
+
+
+void Worm2D::setUp()
+{
+    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);  
+    //InitializeState(rs);
+}
+
+void Worm2D::InitializeState(RandomState &rs)
+{
+    Worm2Dm::InitializeState(rs);
+    m.InitializeMuscleState();
+    return;
 }

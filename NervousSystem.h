@@ -20,6 +20,8 @@
 
 // The sigmoid function
 
+namespace NS{
+
 inline double sigmoid(double x)
 {
   return 1/(1 + exp(-x));
@@ -32,9 +34,11 @@ inline double InverseSigmoid(double y)
 {
   return log(y/(1-y));
 }
-
+}
 
 // The NervousSystem class declaration
+
+
 
 class NervousSystem : public NervousSystemBase {
 //class NervousSystem : public NervousSystemInt<NervousSystem> {
@@ -48,9 +52,9 @@ class NervousSystem : public NervousSystemBase {
         int CircuitSize(void) {return size;};
         void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns);
         double NeuronState(int i) {return states[i];};
-        void SetNeuronState(int i, double value) {states[i] = value;outputs[i] = sigmoid(gains[i]*(states[i] + biases[i]));};
+        void SetNeuronState(int i, double value) {states[i] = value;outputs[i] = NS::sigmoid(gains[i]*(states[i] + biases[i]));};
         double NeuronOutput(int i) {return outputs[i];};
-        void SetNeuronOutput(int i, double value) {outputs[i] = value; states[i] = InverseSigmoid(value)/gains[i] - biases[i];};
+        void SetNeuronOutput(int i, double value) {outputs[i] = value; states[i] = NS::InverseSigmoid(value)/gains[i] - biases[i];};
         double NeuronBias(int i) {return biases[i];};
         void SetNeuronBias(int i, double value) {biases[i] = value;};
         double NeuronGain(int i) {return gains[i];};

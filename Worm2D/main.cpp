@@ -2,6 +2,7 @@
 #include "WormRS18.h"
 #include "WormCE.h"
 #include "Worm21.h"
+#include "WormAgent.h"
 //#include "Worm2DCE.h"
 //#include "../argUtils.h"
 #include <iomanip>  // cout precision
@@ -42,7 +43,6 @@ int main (int argc, const char* argv[])
     }
 
     
-
     Evolution* er = 0;
     if (model_name == "CE") er = new EvolutionCE(argc,argv);
     if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
@@ -78,12 +78,13 @@ int main (int argc, const char* argv[])
     // write worm_data.json 
     if (do_json) {
 
-        Worm2D* w = 0;
+        Worm2Dm* w = 0;
         
 
         if (model_name == "CE") w = new WormCE(phenotype,0);
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
+        if (model_name == "CO") w = new WormAgent(phenotype);
 
         cout << "making json from main" << endl;
         //write_json(er,w, "worm_data_2.json");
@@ -101,7 +102,8 @@ int main (int argc, const char* argv[])
         json_out.close();
 
         ofstream nsdump(er->rename_file("NSdump.dat"));
-        nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
+        if (model_name == "CO") nsdump << dynamic_cast<CTRNN&>(w->itsNS());
+        else nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
         nsdump.close();
 
         delete w;
@@ -116,19 +118,18 @@ int main (int argc, const char* argv[])
     const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1"));
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     
-
     if (!do_nml){
     
     //er->RunSimulation(bestVector, rs);
 
-    Worm2D* w = 0;
+    Worm2Dm* w = 0;
 
-   
     cout << "making worm" << endl;
 
     if (model_name == "CE") w = new WormCE(phenotype,0);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
+    if (model_name == "CO") w = new WormAgent(phenotype);
 
     //write_json(er,w, "worm_data_3.json");
 
@@ -151,7 +152,6 @@ int main (int argc, const char* argv[])
     s1.runSimulation(*w);
 
     delete w;
-
 
     }
     else{
@@ -180,7 +180,6 @@ int main (int argc, const char* argv[])
     if (model_name == "Net21") w = new Worm2D21(phenotype);
 
     }
-
 
     write_json(er,w, "worm_data_nml.json");
 

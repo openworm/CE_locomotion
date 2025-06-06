@@ -62,8 +62,8 @@ class Worm2Dm
     void DumpCurvature(ofstream &ofs, int skips);
 
     virtual void addParsToJson(json & j);
-    virtual void DumpParams(ofstream &ofs);
-    
+    virtual void DumpParams(ofstream &ofs){return;}
+
     void writeJsonFile(ofstream & json_out);
     
     double getVelocity();
@@ -80,7 +80,6 @@ class Worm2Dm
     virtual ~Worm2Dm(){
         if (m_ptr) delete m_ptr; 
         if (n_ptr) delete n_ptr;
-        
     }
 
     protected:
@@ -90,7 +89,9 @@ class Worm2Dm
     NSForW2D * const n_ptr;
     muscForW2D * m_ptr;
     
+
     WormBody b;
+
     const wormIzqParams par1;
     double t; // Time
     const bool muscForWDconst;
@@ -99,8 +100,6 @@ class Worm2Dm
 
     int nn(int neuronNumber, int unitNumber);
 
-    const int Head = 1;
-    const int Tail = N_segments;
 
 };
 

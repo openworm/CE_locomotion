@@ -13,18 +13,20 @@ class EvolutionCO : public Evolution
     EvolutionCO(int argc, const char* argv[]):Evolution(argc,argv,
       {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 100, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 10, 40.0, 10.0, 0.01, 23, getVectSize(10)},
+        1.1, 0.1, 1, 0, 1, 10, EvalDuration, TransientDuration, 0.01, 23, getVectSize(10)},
         getVectSize(10)),MinDifSensor(10*evoPars1.StepSize),TauMin(10*evoPars1.StepSize)
     {}
 
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs){Behavior(v);}
-    void RunSimulation(Worm2Dm &w1, RandomState &rs);
+    void RunSimulation(Worm2Dm &w1, RandomState &rs){Behavior(w1);}
     //void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
    
     double Behavior(TVector<double> &v);
-    
+    double Behavior(Worm2Dm & w1);
+
+
     protected:
    
     int getVectSize(int circuitsize);

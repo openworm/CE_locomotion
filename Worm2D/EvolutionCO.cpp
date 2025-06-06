@@ -58,6 +58,8 @@ void EvolutionCO::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 {
+
+
 	TVector<double> phenotype;
 	phenotype.SetBounds(1, evoPars1.VectSize);
 	GenPhenMapping(v, phenotype);
@@ -114,17 +116,27 @@ double EvolutionCO::Behavior(TVector<double> &v)
 {
 
 	int VectSize = evoPars1.VectSize;
-	double StepSize = evoPars1.StepSize;
-
-
-	RandomState rs;
-	ofstream filet("behavior_taxis.dat");
-	ofstream filek("behavior_kinesis.dat");
 	TVector<double> phenotype;
 	phenotype.SetBounds(1, VectSize);
 	GenPhenMapping(v, phenotype);
 	WormAgent Worm(CircuitSize);
 	Worm.SetParameters(phenotype);
+	return Behavior(Worm);
+}
+
+
+double EvolutionCO::Behavior(Worm2Dm & w1)
+{
+
+	
+	double StepSize = evoPars1.StepSize;
+
+	WormAgent & Worm = dynamic_cast<WormAgent&>(w1);
+
+	RandomState rs;
+	ofstream filet(rename_file("behavior_taxis.dat"));
+	ofstream filek(rename_file("behavior_kinesis.dat"));
+	
 
 	double f, accdist, totaldist;
 	int k = 0;
@@ -180,4 +192,30 @@ double EvolutionCO::Behavior(TVector<double> &v)
 	filet.close();
 	filek.close();
 	return fitness/k;
+}
+
+void EvolutionCO::addExtraParsToJson(json & j)
+{   
+    
+
+    doubIntParamsHead var1;
+    var1.parDoub.head = "Evolutionary Optimization Parameters";
+       //var1.parInt.head = "Evolutionary Optimization Parameters";
+       var1.parDoub.names = {"TransientDuration", "RunDuration", "EvalDuration", "HST", "BiasRange", "SensorWeightRange", 
+	"InterneuronWeightRange", "StretchReceptorRange", "MinDifSensor", 
+	"MaxDifSensor", "TauMin", "TauMax", "MinNeckTurnGain", "MaxNeckTurnGain", "MaxDist"
+	   };
+
+       var1.parDoub.vals = {
+TransientDuration, RunDuration, EvalDuration, HST, BiasRange, SensorWeightRange, 
+	InterneuronWeightRange, StretchReceptorRange, MinDifSensor, 
+	MaxDifSensor, TauMin, TauMax, MinNeckTurnGain, MaxNeckTurnGain, MaxDist
+
+    };
+
+       //var1.parInt.names = {};
+       //var1.parInt.vals = {};
+
+    appendToJson<double>(j[var1.parDoub.head],var1.parDoub);
+    //appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }

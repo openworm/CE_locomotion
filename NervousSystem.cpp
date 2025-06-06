@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 
+
 // ****************************
 // Constructors and Destructors
 // ****************************
@@ -204,7 +205,7 @@ void NervousSystem::EulerStep(double stepsize)
     }
     // Update the outputs of all neurons.
     for (int i = 1; i <= size; i++)
-        outputs[i] = sigmoid(gains[i] * (states[i] + biases[i]));
+        outputs[i] = NS::sigmoid(gains[i] * (states[i] + biases[i]));
 }
 
 

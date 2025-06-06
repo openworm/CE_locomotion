@@ -19,6 +19,7 @@ const int		VelDelta		=	(int) (HST/StepSize);
 class WormAgent : public Worm2Dm {
 public:
 	// The constructor
+	WormAgent(TVector<double> &v, int newsize = 10); // Construct from phenotype
 	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
 	// The destructor
@@ -90,9 +91,17 @@ public:
 	double timestep, gradSteep, orient_orig, StepSize, RunDuration;
 	int taxis, kinesis;
 
+
 	void initForSimulation(){return;}
 	const vector<string> getCellNames() {return {"A","B"};}
 	vector<doubIntParamsHead> getWormParams();
 	void Step(double StepSize, double output);
 	void InitializeState(RandomState &rs);
+  	void setSimPars(double orient_orig_ = 0.0,
+	double gradSteep_ = 0.5,
+	int taxis_ = 1,
+	int kinesis_ = 0,
+	double StepSize_ =	0.01,
+	double RunDuration_ = 350.0	);
+
 };

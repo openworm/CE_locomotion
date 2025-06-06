@@ -72,6 +72,9 @@ const double C_par        = (C_agar_par - C_water_par)*Medium + C_water_par;    
 const double C_perp       = (C_agar_perp - C_water_perp)*Medium + C_water_perp; // Per rod normal drag coefficient in kg/s
 
 
+const int Head = 1;
+const int Tail = N_segments;
+
 // Function prototypes
 
 void InitializeBodyConstants(void);

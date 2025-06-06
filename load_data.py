@@ -62,6 +62,15 @@ plot_formats["CE"]["plot_col_divs"] = [3, 3]
 plot_formats["CE"]["plot_time"] = 10
 plot_formats["CE"]["worm_plot_time"] = 5
 
+plot_formats["CO"] = {}
+plot_formats["CO"]["fig_titles"] = ["Neurons"]
+plot_formats["CO"]["data_sizes"] = [10]
+plot_formats["CO"]["fig_labels"] = ["Neu"]
+plot_formats["CO"]["plot_cell_names"] = ["N" + str(i) for i in range(10)]
+plot_formats["CO"]["plot_col_divs"] = [5, 5]
+plot_formats["CO"]["plot_time"] = 10
+plot_formats["CO"]["worm_plot_time"] = 5
+
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
 

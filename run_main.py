@@ -11,27 +11,18 @@ import random
 from datetime import datetime
 import json
 
-""" plot_formats = {}
-plot_formats["RS18"] = {}
-plot_formats["RS18"]["fig_titles"] = [
-    "Stretch receptors",
-    "Head Neurons",
-    "Body Neurons",
-    "Muscles",
-]
-plot_formats["RS18"]["data_sizes"] = [20, 4, 36, 48]
-plot_formats["RS18"]["fig_labels"] = ["SR", "Neu", "Neu", "Mu"]
 
-plot_formats["Net21"] = {}
-plot_formats["Net21"]["fig_titles"] = ["Neurons", "Muscles"]
-plot_formats["Net21"]["data_sizes"] = [49, 48]
-plot_formats["Net21"]["fig_labels"] = ["Neu", "Mu"]
 
-plot_formats["CE"] = {}
-plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
-plot_formats["CE"]["data_sizes"] = [40, 60, 48]
-plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"] """
-
+defaults_base_CO = {
+    "popSize": 96,
+    "duration": 100,
+    "transient": 250,
+    "nervousSystemFileName": "main_sim",
+    "doNML": 0,
+    "doRandInit": 0,
+    "maxGens": 100,
+    "doMuscSim": 0,
+}
 
 defaults_base_celoc = {
     "popSize": 96,
@@ -447,6 +438,7 @@ def run(a=None, **kwargs):
         "CE": defaults_base_celoc,
         "RS18": defaults_base_2018,
         "Net21": defaults_base_2021,
+        "CO": defaults_base_CO
     }
 
     defaults_base = defaults_bases[model_name]
