@@ -52,8 +52,8 @@ const int VA = 5;
 const int VB = 6;
 
 // Body segment name conventions
-const int Head = 1;
-const int Tail = N_segments;
+//const int Head = 1;
+//const int Tail = N_segments;
 
 
 

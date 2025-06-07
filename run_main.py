@@ -12,7 +12,6 @@ from datetime import datetime
 import json
 
 
-
 defaults_base_CO = {
     "popSize": 96,
     "duration": 100,
@@ -438,7 +437,7 @@ def run(a=None, **kwargs):
         "CE": defaults_base_celoc,
         "RS18": defaults_base_2018,
         "Net21": defaults_base_2021,
-        "CO": defaults_base_CO
+        "CO": defaults_base_CO,
     }
 
     defaults_base = defaults_bases[model_name]

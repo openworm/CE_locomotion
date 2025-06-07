@@ -323,8 +323,9 @@ def reload_single_run(a=None, **kwargs):
 
             # print("--- - Plotting at t=%s (%s,%s)" % (t, xs, ys))
         import json
+
         with open(hf.rename_file("output.wcon"), "w", encoding="utf-8") as json_file:
-             json.dump(wcon, json_file, indent=4, ensure_ascii=False)
+            json.dump(wcon, json_file, indent=4, ensure_ascii=False)
 
         axs[count_num, 0].set_aspect("equal")
 
@@ -334,7 +335,6 @@ def reload_single_run(a=None, **kwargs):
     filename = hf.rename_file("ExampleActivity.png")
     plt.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-
 
     if a.showPlot:
         print("Showing plot")
