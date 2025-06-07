@@ -92,6 +92,7 @@ public:
 	int taxis, kinesis;
 
 
+	void addParsToJson(json & j);
 	void initForSimulation(){return;}
 	const vector<string> getCellNames() {return {"A","B"};}
 	vector<doubIntParamsHead> getWormParams();

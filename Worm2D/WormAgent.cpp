@@ -291,6 +291,19 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 }
 
+
+void WormAgent::addParsToJson(json & j)
+{
+
+	string nsHead = "Nervous system";
+    //appendAllNSJson(j[nsHead], NervousSystem); //not yet implemented
+      
+    Worm2Dm::addParsToJson(j);
+        
+    appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+}
+
+
 void WormAgent::Step(double StepSize, double output)
 {
 	UpdateSensors();
@@ -353,4 +366,5 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 	// Move the agent
 	px += StepSize * vx;
 	py += StepSize * vy;
+	t += StepSize;
 }

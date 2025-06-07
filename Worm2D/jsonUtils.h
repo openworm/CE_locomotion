@@ -5,6 +5,7 @@
 #include "../Muscles.h"
 #include "../WormBody.h"
 #include "../NervousSystem.h"
+#include "CTRNN.h"
 #include "../utils.h"
 #include "NSToMuscles.h"
 
@@ -53,6 +54,7 @@ vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);
 void appendMuscleToJson(json & j, Muscles & m);
 void appendAllNSJson(json & j, NervousSystem & n);
+void appendAllNSJson(json & j, CTRNN & n);
 void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);

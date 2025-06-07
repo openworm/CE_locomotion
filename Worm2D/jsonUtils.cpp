@@ -172,6 +172,22 @@ void appendNSToJson(json & j, NervousSystem& c)
     j["Electrical weights"]["message"] = "electrical weights in sparse format";
 }
 
+void appendAllNSJson( json & j, CTRNN & n)
+{
+
+{Params<vector<double> > parvec = getNervousSysParamsDoubleNH(dynamic_cast<NervousSystem&>(n));
+appendToJson<vector<double> >(j,parvec);}
+        
+{Params<int> parvec = getNervousSysParamsIntNH(dynamic_cast<NervousSystem&>(n));
+appendToJson<int>(j,parvec);}
+
+{Params< vector<int> > parvec = getNervousSysVecInt(dynamic_cast<NervousSystem&>(n));
+appendToJson<vector<int> >(j,parvec);}
+
+appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
+
+}
+
 
 void appendAllNSJson( json & j, NervousSystem & n)
 {
