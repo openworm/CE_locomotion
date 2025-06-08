@@ -310,6 +310,7 @@ ofstream bodyfile, actfile, curvfile, paramsfile;
             w.DumpBodyState(bodyfile, skip_steps);
             w.DumpActState(actfile, skip_steps);
             w.DumpCurvature(curvfile, skip_steps);
+            
         }
 
         cout << fitness_tr << endl;
@@ -393,10 +394,12 @@ void Evolution21::RunSimulation(Worm2Dm & w1, RandomState &rs){
             double vel = sqrt(pow(xt-xtp,2)+pow(yt-ytp,2))/StepSize; */
 
             w.Step(StepSize);
+            w.writeData();
             w.DumpBodyState(bodyfile, skip_steps);
             w.DumpActState(actfile, skip_steps);
             w.DumpActStateState(statefile, skip_steps);
             w.DumpCurvature(curvfile, skip_steps);
+          
             //w.DumpVal(velfile, skip_steps, vel);
         }
 

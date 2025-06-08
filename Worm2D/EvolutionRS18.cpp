@@ -133,13 +133,13 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
 
     Worm18 w(phenotype, 0);
     w.InitializeState(rs);
-
+    w.rs18output = 1;
 
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
 
     }
 
@@ -149,7 +149,7 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     // Time loop
     for (double t = 0.0; t <= Duration; t += StepSize) {
 
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
 
         // Current and past centroid position
         xtp = xt; ytp = yt;
@@ -219,7 +219,8 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     GenPhenMapping(v, phenotype);
 
     Worm18 w(phenotype, 0);
-    
+    w.rs18output = 1;
+
 
 
 
@@ -235,7 +236,7 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
        
 
 
@@ -253,7 +254,7 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     // Time loop
     for (double t = 0.0; t <= Duration; t += StepSize) {
 
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
 
         // Current and past centroid position
         xtp = xt; ytp = yt;
@@ -304,7 +305,8 @@ void EvolutionRS18::RunSimulation(Worm2Dm &w1, RandomState &rs)
     Worm18 & w = dynamic_cast<Worm18&>(w1);
     double fitness;
     ofstream fitfile;
-  
+    w.rs18output = 1;
+
     const double & Duration = evoPars1.Duration;
   
     const double & StepSize = evoPars1.StepSize;
@@ -355,7 +357,7 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
        
 
 
@@ -373,7 +375,7 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     // Time loop
     for (double t = 0.0; t <= Duration; t += StepSize) {
 
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
 
         // Current and past centroid position
         xtp = xt; ytp = yt;

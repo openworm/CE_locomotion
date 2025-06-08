@@ -12,6 +12,7 @@ vector<toFromWeight> dummyVec()
 }
 
 
+
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(false){}
@@ -21,12 +22,17 @@ par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(mfwc){}
 
 
+void Worm2Dbody::InitializeState(RandomState &rs)
+{
 
+    b.InitializeBodyState();
+    return;
+}
 
 void Worm2Dm::InitializeState(RandomState &rs)
 {
     t = 0.0;
-    b.InitializeBodyState();
+    Worm2Dbody::InitializeState(rs);
     return;
 }
 
@@ -37,7 +43,7 @@ int Worm2Dm::nn(int neuronNumber, int unitNumber)
 }
 
 
-double Worm2Dm::CoMx()
+double Worm2Dbody::CoMx()
 {
     double temp = 0.0;
     for (int i = 1; i <= N_rods; i++) {
@@ -46,7 +52,7 @@ double Worm2Dm::CoMx()
     return temp/N_rods;
 }
 
-double Worm2Dm::CoMy()
+double Worm2Dbody::CoMy()
 {
     double temp = 0.0;
     for (int i = 1; i <= N_rods; i++) {
@@ -55,7 +61,7 @@ double Worm2Dm::CoMy()
     return temp/N_rods;
 }
 
-void Worm2Dm::Curvature(TVector<double> &c)
+void Worm2Dbody::Curvature(TVector<double> &c)
 {
     double dx1,dy1,dx2,dy2,a,a1,a2,seg;
     int k=1;
@@ -84,12 +90,12 @@ void Worm2Dm::Curvature(TVector<double> &c)
     }
 }
 
-double Worm2Dm::Orientation()
+double Worm2Dbody::Orientation()
 {
     return atan2(b.Y(Head)-b.Y(Tail),b.X(Head)-b.X(Tail));
 }
 
-void Worm2Dm::AngleCurvature(TVector<double> &c)
+void Worm2Dbody::AngleCurvature(TVector<double> &c)
 {
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
   int k=1;
@@ -115,6 +121,8 @@ void Worm2Dm::AngleCurvature(TVector<double> &c)
     k++;
   }
 }
+
+void Worm2Dm::Step(double StepSize_) { StepSize = StepSize_; Step1(); t += StepSize_; datatime = t;}
 
 void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
 {
@@ -152,7 +160,7 @@ void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
   }
 }
 
-double Worm2Dm::getVelocity()
+double Worm2Dbody::getVelocity()
 {
    static double xtp =  CoMx();
    static double ytp =  CoMy();
@@ -194,6 +202,37 @@ void Worm2Dm::DumpVal(ofstream &ofs, int skips, double val)
     }
 }
 
+void Worm2Dbody::writeData()
+{
+    static bool firstcall = true;
+
+    if (firstcall){
+        ofsvec.push_back(ofstream(basename + "/bodyData.dat"));
+    }
+
+    static ofstream & ofs = ofsvec.back();  
+    firstcall = false;
+    
+    cout << "open bodyData" << endl;
+
+    static int tt = dataskips;
+   
+
+    if (++tt >= dataskips) {
+        tt = 0;
+
+        ofs << datatime;
+        // Body
+        for (int i = 1; i <= N_rods; i++)
+        {
+            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
+        }
+        ofs << endl;
+    }
+    return;
+}
+
+
 void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
 {
     static int tt = skips;
@@ -222,6 +261,10 @@ void Worm2Dm::writeJsonFile(ofstream & json_out)
     //json_out.close();
 
 }
+void Worm2Dbody::addParsToJson(json & j)
+{  
+ appendBodyToJson(j, b);
+}
 
 void Worm2Dm::addParsToJson(json & j)
 {  
@@ -229,7 +272,7 @@ void Worm2Dm::addParsToJson(json & j)
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
-    appendBodyToJson(j, b);
+     Worm2Dbody::addParsToJson(j);
 
     vector<doubIntParamsHead> parvec = getWormParams();
     for (size_t i=0;i<parvec.size(); i++) {

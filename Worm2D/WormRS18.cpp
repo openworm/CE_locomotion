@@ -307,7 +307,7 @@ void Worm18::setMuscleInputOrig(double StepSize)
 }
 
 
-void Worm18::Step(double StepSize, double output)
+void Worm18::Step1()
 {
    
     double ds, vs;
@@ -332,7 +332,7 @@ void Worm18::Step(double StepSize, double output)
 //#ifdef HEADSR
 if (rS18Macros.headsr)
 {
-    if (output == 1){
+    if (rs18output == 1){
         n.SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
         n.SetNeuronExternalInput(SMDV, sr.HeadVentralOutput());   // to segments
     }
@@ -383,7 +383,7 @@ if (rS18Macros.vncsr)
     b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
 
     // Time
-    t += StepSize;
+    //t += StepSize;
 }
 
 const vector<string>  Worm18::getCellNames() 

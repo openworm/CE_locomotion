@@ -66,7 +66,7 @@ using json = nlohmann::json;
 class Worm2DCE: public  Worm2D{
     
     public:
-    void Step(double StepSize, double output);
+    //void Step(double StepSize);
     void DumpActState(ofstream &ofs, int skips);
     void InitializeState(RandomState &rs);
     Worm2DCE(json & j);
@@ -81,6 +81,8 @@ class Worm2DCE: public  Worm2D{
     friend class EvolutionCE;
 
     protected:
+    void Step1();
+
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)
     :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0){}
 

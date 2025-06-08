@@ -181,7 +181,7 @@ void Worm2D21::setMuscleInputOrig(double StepSize)
     m.EulerStep(StepSize);
 }
 
-void Worm2D21m::Step(double StepSize)
+void Worm2D21m::Step1()
 {
     
     
@@ -232,7 +232,7 @@ void Worm2D21m::Step(double StepSize)
     b.SetVentralSegmentActivation(N_segments, m_ptr->VentralMuscleOutput(par1.N_muscles)/2);
     
     // Time
-    t += StepSize;
+    //t += StepSize;
 }
 
 vector<doubIntParamsHead> Worm2D21m::getWormParams(){

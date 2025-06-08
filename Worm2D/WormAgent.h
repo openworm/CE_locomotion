@@ -96,7 +96,7 @@ public:
 	void initForSimulation(){return;}
 	const vector<string> getCellNames() {return {"A","B"};}
 	vector<doubIntParamsHead> getWormParams();
-	void Step(double StepSize, double output);
+	void Step1();
 	void InitializeState(RandomState &rs);
   	void setSimPars(double orient_orig_ = 0.0,
 	double gradSteep_ = 0.5,

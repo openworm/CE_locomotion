@@ -46,11 +46,13 @@ public:
     //void DumpActStateState(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
 
-    void Step(double StepSize);
-    void Step(double StepSize, double output){return Step(StepSize);}
+    //void Step();
+    //void Step(double StepSize, double output){return Step(StepSize);}
     
 
 protected:
+
+    void Step1();
     void addParsToJson(json & j);
 
     

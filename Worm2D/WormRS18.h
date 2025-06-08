@@ -33,8 +33,8 @@ public:
     Worm18(TVector<double> &v, double output);
    
     void InitializeState(RandomState &rs);
-    void HeadStep(double StepSize, double output);
-    void Step(double StepSize, double output); 
+    //void HeadStep(double StepSize, double output);
+  
     
     void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
@@ -42,6 +42,7 @@ public:
     void initForSimulation(){}
     
     protected:
+    void Step1(); 
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     void addParsToJson(json & j);
@@ -113,6 +114,7 @@ public:
     //const int Head = 1;
     //const int Tail = N_segments;
 
+    bool rs18output;
     const RS18Macros rS18Macros;
     RS18Macros setMacros();
 

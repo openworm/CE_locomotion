@@ -70,7 +70,7 @@ void Worm2DCE::InitializeState(RandomState &rs)
   Worm2D::InitializeState(rs);
 }
 
-void Worm2DCE::Step(double StepSize, double output)
+void Worm2DCE::Step1()
 {
   int mi;
   int mt = 0;
@@ -193,7 +193,7 @@ void Worm2DCE::Step(double StepSize, double output)
   b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
 
   // Time
-  t += StepSize;
+  //t += StepSize;
 }
 
 vector<doubIntParamsHead> Worm2DCE::getWormParams(){

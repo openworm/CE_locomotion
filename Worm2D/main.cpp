@@ -33,6 +33,8 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
 
 int main (int argc, const char* argv[])
 {
+
+   
  
     std::cout << std::setprecision(10);
     string model_name =  getParameter(argc,argv,"--modelname","");
@@ -132,6 +134,8 @@ int main (int argc, const char* argv[])
     if (model_name == "CO") w = new WormAgent(phenotype);
 
     //write_json(er,w, "worm_data_3.json");
+    w->setBasename(er->itsEvoPars().directoryName);
+    w->setDataskips(er->itsEvoPars().skip_steps);
 
     cout << "making simulation" << endl;
     {RandomState rs;

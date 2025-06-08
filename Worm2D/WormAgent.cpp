@@ -304,7 +304,7 @@ void WormAgent::addParsToJson(json & j)
 }
 
 
-void WormAgent::Step(double StepSize, double output)
+void WormAgent::Step1()
 {
 	UpdateSensors();
 	Step(StepSize,rs,timestep,taxis,kinesis);
@@ -366,5 +366,5 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 	// Move the agent
 	px += StepSize * vx;
 	py += StepSize * vy;
-	t += StepSize;
+	//t += StepSize;
 }

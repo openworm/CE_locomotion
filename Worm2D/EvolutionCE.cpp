@@ -110,13 +110,13 @@ double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int directio
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize){
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
     }
     xt = w.CoMx(); yt = w.CoMy();
     oxt = w.CoMx(); oyt = w.CoMy();
     // Run
     for (double t = 0.0; t <= Duration; t += StepSize) {
-        w.Step(StepSize, 1);
+        w.Step(StepSize);
         // Current and past centroid position
         xtp = xt; ytp = yt;
         xt = w.CoMx(); yt = w.CoMy();
@@ -188,7 +188,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
-      w.Step(StepSize, 1);
+      w.Step(StepSize);
       w.DumpBodyState(bodyfile, skip_steps);
       w.DumpCurvature(curvfile, skip_steps);
       w.DumpActState(actfile, skip_steps);
@@ -198,7 +198,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
    w.sr.SR_B_gain = 0.0;
 
    for (double t = 0.0; t <= (12); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);
@@ -210,7 +210,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
    w.AVB_output =  w.AVB_inact;
 
    for (double t = 0.0; t <= (20); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);
@@ -220,7 +220,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
    w.sr.SR_B_gain = 0.0;
 
    for (double t = 0.0; t <= (12); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);
@@ -267,7 +267,7 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
-      w.Step(StepSize, 1);
+      w.Step(StepSize);
       w.DumpBodyState(bodyfile, skip_steps);
       w.DumpCurvature(curvfile, skip_steps);
       w.DumpActState(actfile, skip_steps);
@@ -277,7 +277,7 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
    w.sr.SR_B_gain = 0.0;
 
    for (double t = 0.0; t <= (12); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);
@@ -289,7 +289,7 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
    w.AVB_output =  w.AVB_inact;
 
    for (double t = 0.0; t <= (20); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);
@@ -299,7 +299,7 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
    w.sr.SR_B_gain = 0.0;
 
    for (double t = 0.0; t <= (12); t += StepSize){
-       w.Step(StepSize, 1);
+       w.Step(StepSize);
        w.DumpBodyState(bodyfile, skip_steps);
        w.DumpCurvature(curvfile, skip_steps);
        w.DumpActState(actfile, skip_steps);

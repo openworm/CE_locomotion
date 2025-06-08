@@ -37,44 +37,85 @@ struct wormIzqParams
 
 vector<toFromWeight> dummyVec();
 
-class Worm2Dm 
+
+
+class DataWriter{
+
+    public:
+   
+    virtual void writeData() {cout << "write data not implemented!" << endl;}
+   
+    DataWriter(){datatime=0;}
+    virtual ~DataWriter(){for (int i=0; i<ofsvec.size(); i++) ofsvec[i].close();}
+   
+    void incDatatime(double Stepsize){datatime+=Stepsize;}
+    void setDataskips(double dataskips_){dataskips = dataskips_;}
+    void setBasename(string basename_){basename=basename_;}
+    protected:
+    
+
+    vector<ofstream> ofsvec;
+    int dataskips;
+    double datatime;
+    string basename;
+};
+
+
+
+class Worm2Dbody : virtual public DataWriter{
+
+    public:
+
+    //Worm2Dbody():DataWriter(){}
+    double CoMx();
+    double CoMy();
+    void Curvature(TVector<double> &c);
+    double Orientation();
+    void AngleCurvature(TVector<double> &c);
+    void DumpBodyState(ofstream &ofs, int skips);
+    virtual void InitializeState(RandomState &rs) = 0;
+    
+    virtual void addParsToJson(json & j);
+    double getVelocity();
+    void writeData();
+    //virtual ~Worm2Dbody(){}
+
+    protected:
+
+    WormBody b;
+
+};
+
+class Worm2Dm : public Worm2Dbody
 {
     public:
 
-    
-
-    virtual void Step(double StepSize, double output) = 0;
+    //virtual void Step(double StepSize, double output) = 0;
     virtual void InitializeState(RandomState &rs) = 0;
     virtual vector<doubIntParamsHead> getWormParams() = 0;
     
     virtual void initForSimulation() =  0;
     virtual const vector<string> getCellNames() = 0;
 
-
-    void Step(double StepSize) {Step(StepSize,1);}
-
-
+    
+    void Step(double StepSize_);
+    void DumpBodyState(ofstream &ofs, int skips);
+    void DumpCurvature(ofstream &ofs, int skips);
     virtual void setMuscleInput(double StepSize) {return;}
     virtual void DumpActState(ofstream &ofs, int skips);
     virtual void DumpActStateState(ofstream &ofs, int skips);
     void DumpVal(ofstream &ofs, int skips, double val);
-    void DumpBodyState(ofstream &ofs, int skips);
-    void DumpCurvature(ofstream &ofs, int skips);
-
+    
+  
     virtual void addParsToJson(json & j);
     virtual void DumpParams(ofstream &ofs){return;}
 
     void writeJsonFile(ofstream & json_out);
     
-    double getVelocity();
+   
     void DumpNSOrdered(ofstream &ofs, int skips);
     
     
-    double CoMx();
-    double CoMy();
-    void Curvature(TVector<double> &c);
-    double Orientation();
-    void AngleCurvature(TVector<double> &c);
     NSForW2D & itsNS(){return *n_ptr;}
 
     virtual ~Worm2Dm(){
@@ -86,16 +127,16 @@ class Worm2Dm
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 
+    virtual void Step1() = 0;
     NSForW2D * const n_ptr;
     muscForW2D * m_ptr;
     
 
-    WormBody b;
 
     const wormIzqParams par1;
     double t; // Time
     const bool muscForWDconst;
-    
+    double StepSize;
     
 
     int nn(int neuronNumber, int unitNumber);
