@@ -68,11 +68,11 @@ StretchReceptorCE.o: StretchReceptorCE.cpp StretchReceptorCE.h
 Muscles.o: ../Muscles.cpp ../Muscles.h #VectorMatrix.h random.h
 	$(CC) -c -O3 -flto ../Muscles.cpp
 CTRNN.o: CTRNN.cpp CTRNN.h #random.h
-	$(CC) -c -O3 CTRNN.cpp
+	$(CC) -c -O3 -std=c++11 -flto CTRNN.cpp
 TSearchCO.o: TSearchCO.cpp TSearchCO.h
-	$(CC) -c -O3 TSearchCO.cpp
+	$(CC) -c -O3 -std=c++11 -flto TSearchCO.cpp
 WormAgent.o: WormAgent.cpp WormAgent.h TSearchCO.h CTRNN.h #VectorMatrixCO.h
-	$(CC) -c -O3 WormAgent.cpp	
+	$(CC) -c -O3 -std=c++11 -flto WormAgent.cpp	
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 clean:
