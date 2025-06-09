@@ -71,8 +71,8 @@ CTRNN.o: CTRNN.cpp CTRNN.h #random.h
 	$(CC) -c -O3 -std=c++11 -flto CTRNN.cpp
 TSearchCO.o: TSearchCO.cpp TSearchCO.h
 	$(CC) -c -O3 -std=c++11 -flto TSearchCO.cpp
-WormAgent.o: WormAgent.cpp WormAgent.h TSearchCO.h CTRNN.h #VectorMatrixCO.h
-	$(CC) -c -O3 -std=c++11 -flto WormAgent.cpp	
+WormAgent.o: WormAgent.cpp WormAgent.h #TSearchCO.h CTRNN.h #VectorMatrixCO.h
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormAgent.cpp	
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 clean:
