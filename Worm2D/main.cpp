@@ -184,7 +184,9 @@ int main (int argc, const char* argv[])
     if (model_name == "Net21") w = new Worm2D21(phenotype);
 
     }
-
+    
+    w->setBasename(er->itsEvoPars().directoryName);
+    w->setDataskips(er->itsEvoPars().skip_steps);
     write_json(er,w, "worm_data_nml.json");
 
     {RandomState rs;

@@ -159,12 +159,12 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   const int & VectSize = evoPars1.VectSize;
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
-  const int & skip_steps = evoPars1.skip_steps;
+  //const int & skip_steps = evoPars1.skip_steps;
 
 
-  ofstream curvfile(rename_file("curv.dat"));
-  ofstream bodyfile(rename_file("body.dat"));
-  ofstream actfile(rename_file("act.dat"));
+  //ofstream curvfile(rename_file("curv.dat"));
+  //ofstream bodyfile(rename_file("body.dat"));
+  //ofstream actfile(rename_file("act.dat"));
   // Genotype-Phenotype Mapping
   TVector<double> phenotype(1, VectSize);
   GenPhenMapping(v, phenotype);
@@ -173,6 +173,9 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   
   
   WormCE w(phenotype, 1);
+  w.setBasename(itsEvoPars().directoryName);
+  w.setDataskips(itsEvoPars().skip_steps);
+
   {
   ofstream phenfile(rename_file("phenotype.dat"));
   w.DumpParams(phenfile);
@@ -189,9 +192,10 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
       w.Step(StepSize);
-      w.DumpBodyState(bodyfile, skip_steps);
-      w.DumpCurvature(curvfile, skip_steps);
-      w.DumpActState(actfile, skip_steps);
+      w.writeData();
+      //w.DumpBodyState(bodyfile, skip_steps);
+      //w.DumpCurvature(curvfile, skip_steps);
+      //w.DumpActState(actfile, skip_steps);
   }
 
    w.sr.SR_A_gain = 0.0;
@@ -199,9 +203,10 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+       w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
    w.sr.SR_A_gain = sra;
@@ -210,10 +215,11 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
    w.AVB_output =  w.AVB_inact;
 
    for (double t = 0.0; t <= (20); t += StepSize){
-       w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+      w.Step(StepSize);
+      w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
    w.sr.SR_A_gain = 0.0;
@@ -221,14 +227,15 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+       w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
   
-  bodyfile.close();
-  curvfile.close();
+  //bodyfile.close();
+  //curvfile.close();
   return 0;
 }
 
@@ -243,12 +250,12 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
   
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
-  const int & skip_steps = evoPars1.skip_steps;
+  //const int & skip_steps = evoPars1.skip_steps;
 
 
-  ofstream curvfile(rename_file("curv.dat"));
-  ofstream bodyfile(rename_file("body.dat"));
-  ofstream actfile(rename_file("act.dat"));
+  //ofstream curvfile(rename_file("curv.dat"));
+  //ofstream bodyfile(rename_file("body.dat"));
+  //ofstream actfile(rename_file("act.dat"));
   
 
   double sra = w.sr.SR_A_gain;
@@ -268,9 +275,10 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
       w.Step(StepSize);
-      w.DumpBodyState(bodyfile, skip_steps);
-      w.DumpCurvature(curvfile, skip_steps);
-      w.DumpActState(actfile, skip_steps);
+      w.writeData();
+      //w.DumpBodyState(bodyfile, skip_steps);
+      //w.DumpCurvature(curvfile, skip_steps);
+      //w.DumpActState(actfile, skip_steps);
   }
 
    w.sr.SR_A_gain = 0.0;
@@ -278,9 +286,10 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+       w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
    w.sr.SR_A_gain = sra;
@@ -290,9 +299,10 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+       w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
    w.sr.SR_A_gain = 0.0;
@@ -300,9 +310,10 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.DumpBodyState(bodyfile, skip_steps);
-       w.DumpCurvature(curvfile, skip_steps);
-       w.DumpActState(actfile, skip_steps);
+       w.writeData();
+       //w.DumpBodyState(bodyfile, skip_steps);
+       //w.DumpCurvature(curvfile, skip_steps);
+       //w.DumpActState(actfile, skip_steps);
    }
 
   // reset worm parameters to presimulation values
@@ -312,9 +323,9 @@ void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
   w.AVA_output =  wao;
   w.AVB_output =  wbo;
 
-  bodyfile.close();
-  curvfile.close();
-  actfile.close();
+  //bodyfile.close();
+  //curvfile.close();
+  //actfile.close();
 }
 
 

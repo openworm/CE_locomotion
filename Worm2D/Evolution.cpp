@@ -155,17 +155,21 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
     const double & Duration = evoPars1.Duration;
     const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
+    //const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
-    ofstream bodyfile, actfile, curvfile, paramsfile, velfile;
+    ofstream paramsfile, velfile;
 
-    bodyfile.open(rename_file("body2.dat"));
-    actfile.open(rename_file("act2.dat"));
-    curvfile.open(rename_file("curv2.dat"));
-    paramsfile.open(rename_file("params2.dat"));
-    velfile.open(rename_file("velocity2.dat"));
+    //bodyfile.open(rename_file("body2.dat"));
+    //actfile.open(rename_file("act2.dat"));
+    //curvfile.open(rename_file("curv2.dat"));
+    paramsfile.open(rename_file("sts_params.dat"));
+    velfile.open(rename_file("sts_velocity.dat"));
+
+    w.setPrefix("sts");
+    w.setBasename(itsEvoPars().directoryName);
+    w.setDataskips(itsEvoPars().skip_steps);
 
     w.DumpParams(paramsfile);
     paramsfile.close();
@@ -187,16 +191,17 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
             double vel = sqrt(pow(xt-xtp,2)+pow(yt-ytp,2))/StepSize;
 
             w.Step(StepSize);
-            w.DumpBodyState(bodyfile, skip_steps);
-            w.DumpActState(actfile, skip_steps);
-            w.DumpCurvature(curvfile, skip_steps);
+            w.writeData();
+            //w.DumpBodyState(bodyfile, skip_steps);
+            //w.DumpActState(actfile, skip_steps);
+            //w.DumpCurvature(curvfile, skip_steps);
             w.DumpVal(velfile, skip_steps, vel);
         }
 
         
-        bodyfile.close();
-        actfile.close();
-        curvfile.close();
+        //bodyfile.close();
+        //actfile.close();
+        //curvfile.close();
         velfile.close();
 
 }

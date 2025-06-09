@@ -11,6 +11,25 @@ vector<toFromWeight> dummyVec()
     return vec1;
 }
 
+void DataWriter::resetStats(bool & firstcall, size_t & pos, int & tt, string name_)
+{
+ 
+    if (firstcall || !isOpen[pos]){
+      ofsvec.push_back(ofstream(getName(name_)));
+      pos = ofsvec.size() - 1;
+      isOpen.push_back(true);
+      firstcall = false;
+      tt = dataskips;
+     }
+
+}
+
+void DataWriter::closeAll(){for (int i=0; i<ofsvec.size(); i++) {ofsvec[i].close(); isOpen[i]=false;}}
+    
+string DataWriter::getName(string name_){
+        if (prefix!="") return basename + "/" + prefix + "_" + name_;
+        else return basename + "/" + name_;
+ }
 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
@@ -61,34 +80,7 @@ double Worm2Dbody::CoMy()
     return temp/N_rods;
 }
 
-void Worm2Dbody::Curvature(TVector<double> &c)
-{
-    double dx1,dy1,dx2,dy2,a,a1,a2,seg;
-    int k=1;
 
-    for (int i = 3; i < N_segments-1; i+=2)
-    {
-        dx1 = b.X(i) - b.X(i-2);
-        dy1 = b.Y(i) - b.Y(i-2);
-        dx2 = b.X(i+2) - b.X(i);
-        dy2 = b.Y(i+2) - b.Y(i);
-
-        a1 = atan2(dy1,dx1);
-        a2 = atan2(dy2,dx2);
-
-        if (a1 > PI/2 and a2 < -PI/2)
-            a = (a1 - 2*PI) - a2;
-        else
-            if (a1 < -PI/2 and a2 > PI/2)
-                a = a1 - (a2 - 2*PI);
-            else
-                a = a1-a2;
-
-        seg = sqrt(pow(b.X(i-2)-b.X(i+2),2) + pow(b.Y(i-2)-b.Y(i+2),2));
-        c(k) = (2*sin(a)/seg)/1000;
-        k++;
-    }
-}
 
 double Worm2Dbody::Orientation()
 {
@@ -124,7 +116,8 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
 
 void Worm2Dm::Step(double StepSize_) { StepSize = StepSize_; Step1(); t += StepSize_; datatime = t;}
 
-void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
+
+/* void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
 {
 
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
@@ -158,7 +151,7 @@ void Worm2Dm::DumpCurvature(ofstream &ofs, int skips)
     }
     ofs << "\n";
   }
-}
+} */
 
 double Worm2Dbody::getVelocity()
 {
@@ -202,20 +195,113 @@ void Worm2Dm::DumpVal(ofstream &ofs, int skips, double val)
     }
 }
 
+
 void Worm2Dbody::writeData()
 {
-    static bool firstcall = true;
+writeBody();
+writeCurvature();
+}
 
-    if (firstcall){
-        ofsvec.push_back(ofstream(basename + "/bodyData.dat"));
+
+void Worm2Dbody::Curvature(TVector<double> &c)
+{
+    double dx1,dy1,dx2,dy2,a,a1,a2,seg;
+    int k=1;
+
+    for (int i = 3; i < N_segments-1; i+=2)
+    {
+        dx1 = b.X(i) - b.X(i-2);
+        dy1 = b.Y(i) - b.Y(i-2);
+        dx2 = b.X(i+2) - b.X(i);
+        dy2 = b.Y(i+2) - b.Y(i);
+
+        a1 = atan2(dy1,dx1);
+        a2 = atan2(dy2,dx2);
+
+        if (a1 > PI/2 and a2 < -PI/2)
+            a = (a1 - 2*PI) - a2;
+        else
+            if (a1 < -PI/2 and a2 > PI/2)
+                a = a1 - (a2 - 2*PI);
+            else
+                a = a1-a2;
+
+        seg = sqrt(pow(b.X(i-2)-b.X(i+2),2) + pow(b.Y(i-2)-b.Y(i+2),2));
+        c(k) = (2*sin(a)/seg)/1000;
+        k++;
     }
+}
 
-    static ofstream & ofs = ofsvec.back();  
-    firstcall = false;
+void Worm2Dbody::writeCurvature()
+{
+
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,"curv.dat");
+
+   /*  if (firstcall || !isOpen[pos]){
+        ofsvec.push_back(ofstream(getName("curv.dat")));
+        isOpen.push_back(true);
+        pos = ofsvec.size() - 1;
+        firstcall = false;
+        tt = dataskips;
+    } */
+   
+    ofstream & ofs = ofsvec[pos];  
+   
+
+  double dx1,dy1,dx2,dy2,a,a1,a2,seg;
+ 
+  if (++tt >= dataskips) {
+    tt = 0;
+    //time
+    ofs << datatime;
+
+    for (int i = 3; i < N_segments-1; i+=2)
+    {
+      dx1 = b.X(i) - b.X(i-2);
+      dy1 = b.Y(i) - b.Y(i-2);
+      dx2 = b.X(i+2) - b.X(i);
+      dy2 = b.Y(i+2) - b.Y(i);
+
+      a1 = atan2(dy1,dx1);
+      a2 = atan2(dy2,dx2);
+
+      if (a1 > PI/2 and a2 < -PI/2)
+      a = (a1 - 2*PI) - a2;
+      else
+      if (a1 < -PI/2 and a2 > PI/2)
+      a = a1 - (a2 - 2*PI);
+      else
+      a = a1-a2;
+
+      seg = sqrt(pow(b.X(i-2)-b.X(i+2),2) + pow(b.Y(i-2)-b.Y(i+2),2));
+      ofs <<  " " << (2*sin(a)/seg)/1000;
+    }
+    ofs << endl;
+  }
+}
+
+
+void Worm2Dbody::writeBody()
+{
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
     
-    cout << "open bodyData" << endl;
+    resetStats(firstcall,pos,tt,"body.dat");
 
-    static int tt = dataskips;
+  /*   if (firstcall || !isOpen[pos]){
+        ofsvec.push_back(ofstream(getName("body.dat")));
+        pos = ofsvec.size() - 1;
+        isOpen.push_back(true);
+        firstcall = false;
+        tt = dataskips;
+    } */
+   
+    ofstream & ofs = ofsvec[pos];  
    
 
     if (++tt >= dataskips) {
@@ -233,7 +319,7 @@ void Worm2Dbody::writeData()
 }
 
 
-void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
+/* void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
 {
     static int tt = skips;
 
@@ -249,7 +335,7 @@ void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
         ofs << "\n";
     }
 }
-
+ */
 void Worm2Dm::writeJsonFile(ofstream & json_out)
 {
 
@@ -333,14 +419,36 @@ void Worm2D::addParsToJson(json & j)
     //addExtraParsToJson(j);
 }
 
-void Worm2Dm::DumpActState(ofstream &ofs, int skips)
+void Worm2Dm::writeData()
 {
-    static int tt = skips;
+writeAct();
+writeState();
+Worm2Dbody::writeData();
+}
+
+void Worm2Dm::writeAct()
+{
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
     
-    if (++tt >= skips) {
+    resetStats(firstcall,pos,tt,"act.dat");
+
+   /*  if (firstcall || !isOpen[pos]){
+        ofsvec.push_back(ofstream(getName("act.dat")));
+        pos = ofsvec.size() - 1;
+        isOpen.push_back(true);
+        firstcall = false;
+        tt = dataskips;
+    } */
+   
+    ofstream & ofs = ofsvec[pos];  
+
+
+    if (++tt >= dataskips) {
         tt = 0;
         //time
-        ofs << t;
+        ofs << datatime;
 
         // Ventral Cord Motor Neurons
         //ofs << "\nV: ";
@@ -357,19 +465,36 @@ void Worm2Dm::DumpActState(ofstream &ofs, int skips)
             ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
         }
     }
-        ofs << "\n";
+        ofs << endl;
     }
 }
 
 
-void Worm2Dm::DumpActStateState(ofstream &ofs, int skips)
+void Worm2Dm::writeState()
 {
-    static int tt = skips;
+
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+    resetStats(firstcall,pos,tt,"state.dat");
+
+ /*    if (firstcall || !isOpen[pos]){
+        ofsvec.push_back(ofstream(getName("state.dat")));
+        pos = ofsvec.size() - 1;
+        isOpen.push_back(true);
+        firstcall = false;
+        tt = dataskips;
+    }
+    */
+    ofstream & ofs = ofsvec[pos];  
+
     
-    if (++tt >= skips) {
+   
+    
+    if (++tt >= dataskips) {
         tt = 0;
         //time
-        ofs << t;
+        ofs << datatime;
 
         // Ventral Cord Motor Neurons
         //ofs << "\nV: ";
@@ -378,7 +503,7 @@ void Worm2Dm::DumpActStateState(ofstream &ofs, int skips)
                 ofs <<  " " << n_ptr->NeuronState(nn(j,i));
             }
         }
-        ofs << "\n";
+        ofs << endl;
     }
 }
 

@@ -197,11 +197,12 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     }
 
 
-ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
+    //ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
+    ofstream paramsfile;
 
-    bodyfile.open(rename_file("body.dat"));
-    actfile.open(rename_file("act.dat"));
-    curvfile.open(rename_file("curv.dat"));
+    //bodyfile.open(rename_file("body.dat"));
+    //actfile.open(rename_file("act.dat"));
+    //curvfile.open(rename_file("curv.dat"));
     paramsfile.open(rename_file("params.dat"));
 
 
@@ -220,6 +221,8 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
 
     Worm18 w(phenotype, 0);
     w.rs18output = 1;
+    w.setBasename(itsEvoPars().directoryName);
+    w.setDataskips(itsEvoPars().skip_steps);
 
 
 
@@ -237,13 +240,13 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
         w.Step(StepSize);
-       
+        w.writeData();
 
 
-        w.Curvature(curvature);
-        curvfile << curvature << endl;
-        w.DumpBodyState(bodyfile, skip);
-        w.DumpActState(actfile, skip);
+        //w.Curvature(curvature);
+        //curvfile << curvature << endl;
+        //w.DumpBodyState(bodyfile, skip);
+        //w.DumpActState(actfile, skip);
     
 
     }
@@ -273,12 +276,12 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
         temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
 
+        w.writeData();
 
-
-        w.Curvature(curvature);
-        curvfile << curvature << endl;
-        w.DumpBodyState(bodyfile, skip);
-        w.DumpActState(actfile, skip);
+        //w.Curvature(curvature);
+        //curvfile << curvature << endl;
+        //w.DumpBodyState(bodyfile, skip);
+        //w.DumpActState(actfile, skip);
 
 
     }
@@ -287,9 +290,9 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
 
 
     cout << fitness << " " << BBCfit << " " << distancetravelled << " " << distancetravelled/Duration << endl;
-    bodyfile.close();
-    actfile.close();
-    curvfile.close();
+    //bodyfile.close();
+    //actfile.close();
+    //curvfile.close();
 
 
 if (speedoutput){
@@ -322,11 +325,12 @@ void EvolutionRS18::RunSimulation(Worm2Dm &w1, RandomState &rs)
     }
 
 
-ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
+//ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
+ofstream paramsfile;
 
-    bodyfile.open(rename_file("body.dat"));
-    actfile.open(rename_file("act.dat"));
-    curvfile.open(rename_file("curv.dat"));
+    //bodyfile.open(rename_file("body.dat"));
+    //actfile.open(rename_file("act.dat"));
+    //curvfile.open(rename_file("curv.dat"));
     paramsfile.open(rename_file("params.dat"));
 
 
@@ -358,13 +362,13 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
         w.Step(StepSize);
-       
+        w.writeData();
 
 
-        w.Curvature(curvature);
-        curvfile << curvature << endl;
-        w.DumpBodyState(bodyfile, skip);
-        w.DumpActState(actfile, skip);
+        //w.Curvature(curvature);
+        //curvfile << curvature << endl;
+        //w.DumpBodyState(bodyfile, skip);
+        //w.DumpActState(actfile, skip);
     
 
     }
@@ -390,11 +394,11 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
 
 
-
-        w.Curvature(curvature);
-        curvfile << curvature << endl;
-        w.DumpBodyState(bodyfile, skip);
-        w.DumpActState(actfile, skip);
+        w.writeData();
+        //w.Curvature(curvature);
+        //curvfile << curvature << endl;
+        //w.DumpBodyState(bodyfile, skip);
+        //w.DumpActState(actfile, skip);
 
 
     }
@@ -403,9 +407,9 @@ ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
 
 
     cout << fitness << " " << BBCfit << " " << distancetravelled << " " << distancetravelled/Duration << endl;
-    bodyfile.close();
-    actfile.close();
-    curvfile.close();
+    //bodyfile.close();
+    //actfile.close();
+    //curvfile.close();
 
 
 if (speedoutput){

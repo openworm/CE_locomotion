@@ -67,11 +67,12 @@ class Worm2DCE: public  Worm2D{
     
     public:
     //void Step(double StepSize);
-    void DumpActState(ofstream &ofs, int skips);
+    //void DumpActState(ofstream &ofs, int skips);
     void InitializeState(RandomState &rs);
     Worm2DCE(json & j);
     void addParsToJson(json & j);
-   
+    void writeAct();
+
     const vector<string> getCellNames() {return {"DA", "DB", "DD", "VD", "VA", "VB"};}
     vector<doubIntParamsHead> getWormParams();
     StretchReceptorCE sr;

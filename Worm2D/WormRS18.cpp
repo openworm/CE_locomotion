@@ -439,14 +439,33 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
 
 
 
-void Worm18::DumpActState(ofstream &ofs, int skips)
-{
-    static int tt = skips;
 
-    if (++tt >= skips) {
+void Worm18::writeAct()
+{
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,"act.dat");
+
+ /*  if (firstcall || !isOpen[pos]){
+      ofsvec.push_back(ofstream(getName("act.dat")));
+      pos = ofsvec.size() - 1;
+      isOpen.push_back(true);
+      firstcall = false;
+      tt = dataskips;
+  } */
+  
+  ofstream & ofs = ofsvec[pos];  
+
+
+    
+
+
+    if (++tt >= dataskips) {
         tt = 0;
 
-        ofs << t;
+        ofs << datatime;
         //ofs << "\nSR: ";
         // Stretch receptors
         ofs <<  " " << sr.HeadDorsalOutput() << " " << sr.HeadVentralOutput();
@@ -459,21 +478,22 @@ void Worm18::DumpActState(ofstream &ofs, int skips)
         int offset = par1.N_units*par1.N_neuronsperunit;
 
         for (int i = 1; i <= 4; i++) {
-            ofs <<  " " << n.NeuronOutput(offset + i);
+            ofs <<  " " << n_ptr->NeuronOutput(offset + i);
         }
         // Ventral Cord Motor Neurons
         //ofs << "\nV: ";
         for (int i = 1; i <= par1.N_units; i++) {
             for (int j = 1; j <= par1.N_neuronsperunit; j++) {
-                ofs <<  " " << n.NeuronOutput(nn(j,i));
+                ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
             }
         }
         // Muscles
         //ofs << "\nM: ";
+        if (m_ptr){
         for (int i = 1; i <= par1.N_muscles; i++) {
-            ofs <<  " " << m.DorsalMuscleOutput(i) << " " << m.VentralMuscleOutput(i);
-        }
-        ofs << "\n";
+            ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+        }}
+        ofs << endl;
     }
 }
 

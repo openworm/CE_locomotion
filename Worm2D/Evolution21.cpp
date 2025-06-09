@@ -177,11 +177,12 @@ double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &r
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
-ofstream bodyfile, actfile, curvfile, paramsfile;
+    //ofstream bodyfile, actfile, curvfile;
+    ofstream paramsfile;
 
-    bodyfile.open(rename_file("body.dat"));
-    actfile.open(rename_file("act.dat"));
-    curvfile.open(rename_file("curv.dat"));
+    //bodyfile.open(rename_file("body.dat"));
+    //actfile.open(rename_file("act.dat"));
+    //curvfile.open(rename_file("curv.dat"));
     paramsfile.open(rename_file("params.dat"));
 
     // Fitness
@@ -209,7 +210,8 @@ ofstream bodyfile, actfile, curvfile, paramsfile;
     GenPhenMapping(v, phenotype);
     
     Worm21 w(phenotype);
-    
+    w.setBasename(itsEvoPars().directoryName);
+    w.setDataskips(itsEvoPars().skip_steps);
     
     w.DumpParams(paramsfile);
     
@@ -307,17 +309,18 @@ ofstream bodyfile, actfile, curvfile, paramsfile;
 
         for (double t = 0.0; t <= 60; t += StepSize){
             w.Step(StepSize);
-            w.DumpBodyState(bodyfile, skip_steps);
-            w.DumpActState(actfile, skip_steps);
-            w.DumpCurvature(curvfile, skip_steps);
+            w.writeData();
+            //w.DumpBodyState(bodyfile, skip_steps);
+            //w.DumpActState(actfile, skip_steps);
+            //w.DumpCurvature(curvfile, skip_steps);
             
         }
 
         cout << fitness_tr << endl;
         //cout << fitness_tr << " " << fitness_ds << endl; //removed fitness_ds since not defined
-        bodyfile.close();
-        actfile.close();
-        curvfile.close();
+        //bodyfile.close();
+        //actfile.close();
+        //curvfile.close();
            
 //#endif
     return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
@@ -330,19 +333,20 @@ void Evolution21::RunSimulation(Worm2Dm & w1, RandomState &rs){
     Worm2D21m & w = dynamic_cast<Worm2D21m&>(w1);
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
+    //const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
-    const int & skip_steps = evoPars1.skip_steps;
+    //const int & skip_steps = evoPars1.skip_steps;
 
-    ofstream bodyfile, actfile, curvfile, paramsfile, velfile, statefile;
+    //ofstream bodyfile, actfile, curvfile, paramsfile, velfile, statefile;
+    ofstream paramsfile;
 
-    bodyfile.open(rename_file("body.dat"));
-    actfile.open(rename_file("act.dat"));
-    curvfile.open(rename_file("curv.dat"));
+    //bodyfile.open(rename_file("body.dat"));
+    //actfile.open(rename_file("act.dat"));
+    //curvfile.open(rename_file("curv.dat"));
     paramsfile.open(rename_file("params.dat"));
-    statefile.open(rename_file("state.dat"));
+    //statefile.open(rename_file("state.dat"));
     //velfile.open(rename_file("velocity.dat"));
 
     w.DumpParams(paramsfile);
@@ -395,18 +399,18 @@ void Evolution21::RunSimulation(Worm2Dm & w1, RandomState &rs){
 
             w.Step(StepSize);
             w.writeData();
-            w.DumpBodyState(bodyfile, skip_steps);
-            w.DumpActState(actfile, skip_steps);
-            w.DumpActStateState(statefile, skip_steps);
-            w.DumpCurvature(curvfile, skip_steps);
+            //w.DumpBodyState(bodyfile, skip_steps);
+            //w.DumpActState(actfile, skip_steps);
+            //w.DumpActStateState(statefile, skip_steps);
+            //w.DumpCurvature(curvfile, skip_steps);
           
             //w.DumpVal(velfile, skip_steps, vel);
         }
 
-        statefile.close();
-        bodyfile.close();
-        actfile.close();
-        curvfile.close();
+        //statefile.close();
+        //bodyfile.close();
+        //actfile.close();
+        //curvfile.close();
         //velfile.close();
 
 }

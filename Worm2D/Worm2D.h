@@ -45,19 +45,27 @@ class DataWriter{
    
     virtual void writeData() {cout << "write data not implemented!" << endl;}
    
-    DataWriter(){datatime=0;}
-    virtual ~DataWriter(){for (int i=0; i<ofsvec.size(); i++) ofsvec[i].close();}
+    DataWriter(){datatime=0;prefix="";basename=".";}
+    virtual ~DataWriter(){closeAll();}
    
-    void incDatatime(double Stepsize){datatime+=Stepsize;}
+    void incDatatime(double Stepsize_){datatime+=Stepsize_;}
     void setDataskips(double dataskips_){dataskips = dataskips_;}
-    void setBasename(string basename_){basename=basename_;}
-    protected:
-    
+    void setBasename(string basename_){basename=basename_;closeAll();}
+    void setPrefix(string prefix_){prefix=prefix_;closeAll();}
 
+    protected:
+    void resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
+
+    void closeAll();
+    string getName(string name_);
+
+    vector<bool> isOpen;
     vector<ofstream> ofsvec;
+    vector<string> ofnames;
     int dataskips;
     double datatime;
     string basename;
+    string prefix;
 };
 
 
@@ -72,14 +80,16 @@ class Worm2Dbody : virtual public DataWriter{
     void Curvature(TVector<double> &c);
     double Orientation();
     void AngleCurvature(TVector<double> &c);
-    void DumpBodyState(ofstream &ofs, int skips);
+    //void DumpBodyState(ofstream &ofs, int skips);
     virtual void InitializeState(RandomState &rs) = 0;
     
     virtual void addParsToJson(json & j);
     double getVelocity();
     void writeData();
     //virtual ~Worm2Dbody(){}
-
+    void writeBody();
+    void writeCurvature();
+    
     protected:
 
     WormBody b;
@@ -99,14 +109,16 @@ class Worm2Dm : public Worm2Dbody
 
     
     void Step(double StepSize_);
-    void DumpBodyState(ofstream &ofs, int skips);
-    void DumpCurvature(ofstream &ofs, int skips);
+    //void DumpBodyState(ofstream &ofs, int skips);
+    //void DumpCurvature(ofstream &ofs, int skips);
     virtual void setMuscleInput(double StepSize) {return;}
-    virtual void DumpActState(ofstream &ofs, int skips);
-    virtual void DumpActStateState(ofstream &ofs, int skips);
+    //virtual void DumpActState(ofstream &ofs, int skips);
+    //virtual void DumpActStateState(ofstream &ofs, int skips);
     void DumpVal(ofstream &ofs, int skips, double val);
-    
-  
+    void writeData();
+    virtual void writeAct();
+    void writeState();
+
     virtual void addParsToJson(json & j);
     virtual void DumpParams(ofstream &ofs){return;}
 

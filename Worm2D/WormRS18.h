@@ -35,8 +35,8 @@ public:
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
   
-    
-    void DumpActState(ofstream &ofs, int skips);
+    void writeAct();
+    //void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
     void initForSimulation(){}

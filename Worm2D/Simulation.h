@@ -16,9 +16,9 @@ public:
 
     Simulation(const simPars & sp1):sp(sp1)
     {
-        curvfile.open(rename_file("sim_curv.dat"));
-        bodyfile.open(rename_file("sim_body.dat"));
-        actfile.open(rename_file("sim_act.dat"));
+        //curvfile.open(rename_file("sim_curv.dat"));
+        //bodyfile.open(rename_file("sim_body.dat"));
+        //actfile.open(rename_file("sim_act.dat"));
         velfile.open(rename_file("sim_vel.dat"));
         nsfile.open(rename_file("sim_ns.dat"));
 
@@ -26,12 +26,14 @@ public:
     void runSimulation(Worm2Dm & w);
 
 
-    ~Simulation(){actfile.close(); curvfile.close(); 
-        bodyfile.close(); velfile.close(); nsfile.close();}
+    ~Simulation(){
+        //actfile.close(); curvfile.close(); 
+        //bodyfile.close(); 
+        velfile.close(); nsfile.close();}
     
 private:
 const simPars sp;
 string rename_file(string filename);
-ofstream actfile, curvfile, bodyfile, velfile, nsfile;
+ofstream velfile, nsfile;
 
 };

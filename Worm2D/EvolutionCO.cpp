@@ -136,7 +136,7 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 	RandomState rs;
 	ofstream filet(rename_file("behavior_taxis.dat"));
 	ofstream filek(rename_file("behavior_kinesis.dat"));
-	ofstream actfile(rename_file("act.dat"));
+	//ofstream actfile(rename_file("act.dat"));
 	
 
 	double f, accdist, totaldist;
@@ -168,7 +168,8 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 							Worm.PrintDetail(filek);}
 						else {filet << t << " ";
 							Worm.PrintDetail(filet);}
-						Worm.DumpActState(actfile, skip_steps);	
+						Worm.writeData();
+						//Worm.DumpActState(actfile, skip_steps);	
 					}
 					accdist = 0.0;
 					for (double t = TransientDuration + StepSize; t <= TransientDuration + EvalDuration; t += StepSize)
@@ -181,7 +182,8 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 							Worm.PrintDetail(filek);}
 						else {filet << t << " ";
 							Worm.PrintDetail(filet);}
-						Worm.DumpActState(actfile, skip_steps);
+						Worm.writeData();	
+						//Worm.DumpActState(actfile, skip_steps);
 					}
 					totaldist = (accdist/(EvalDuration/StepSize));
 					f = (MaxDist - totaldist)/MaxDist;
@@ -194,7 +196,7 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 	}
 	filet.close();
 	filek.close();
-	actfile.close();
+	//actfile.close();
 	return fitness/k;
 }
 

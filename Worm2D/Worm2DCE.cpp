@@ -232,14 +232,30 @@ void Worm2DCE::addParsToJson(json & j)
     appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }
 
-void Worm2DCE::DumpActState(ofstream &ofs, int skips)
+void Worm2DCE::writeAct()
 {
-  static int tt = skips;
 
-  if (++tt >= skips) {
+
+  static bool firstcall = true;
+  static size_t pos;
+  static int tt;
+  resetStats(firstcall,pos,tt,"act.dat");
+
+  /* if (firstcall || !isOpen[pos]){
+      ofsvec.push_back(ofstream(getName("act.dat")));
+      pos = ofsvec.size() - 1;
+      isOpen.push_back(true);
+      firstcall = false;
+      tt = dataskips;
+  } */
+  
+  ofstream & ofs = ofsvec[pos];  
+  
+
+  if (++tt >= dataskips) {
     tt = 0;
 
-    ofs << t;
+    ofs << datatime;
     //ofs << "\nSR: ";
     // Stretch receptors
     for (int i = 1; i <= N_stretchrec; i++) {
@@ -254,10 +270,11 @@ void Worm2DCE::DumpActState(ofstream &ofs, int skips)
     }
     // Muscles
     //ofs << "\nM: ";
+    if (m_ptr){
     for (int i = 1; i <= par1.N_muscles; i++) {
-      ofs <<  " " << m.DorsalMuscleOutput(i) << " " << m.VentralMuscleOutput(i);
-    }
-    ofs << "\n";
+      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+    }}
+    ofs << endl;
   }
 }
 
