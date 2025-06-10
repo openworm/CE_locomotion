@@ -1,8 +1,8 @@
 from run_main import run
 
 run(
-    simduration = 10,
-    simtransient = 10,
+    simduration=10,
+    simtransient=10,
     duration=50,
     transient=50,
     maxGens=40,

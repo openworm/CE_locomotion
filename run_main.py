@@ -262,7 +262,6 @@ def process_args():
         help="Duration of transient for best worm in ms.",
     )
 
-
     parser.add_argument(
         "-p",
         "--popSize",
@@ -533,7 +532,14 @@ def run(a=None, **kwargs):
 
     same_vals = True
     sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient", "doMuscSim"]
-    sim_args = [do_nml, a.RandSeed, a.simduration, do_randInit, a.simtransient, do_muscsim]
+    sim_args = [
+        do_nml,
+        a.RandSeed,
+        a.simduration,
+        do_randInit,
+        a.simtransient,
+        do_muscsim,
+    ]
     sim_defaults = [
         defaults_base["doNML"],
         random_seed,
