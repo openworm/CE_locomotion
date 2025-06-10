@@ -43,3 +43,7 @@
 /Worm2D/main
 /network2021/main
 /experiments/izq_runs_nets/*/*.gv
+/experiments/izq_runs_nets/*/*.pdf
+/*/*.gv
+/*/*.pdf
+
