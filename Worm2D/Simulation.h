@@ -1,5 +1,8 @@
 #include "Worm2D.h"
-#include "Evolution.h"
+//#include "Evolution.h"
+
+//struct simPars;
+
 
 struct simPars{
     string directoryName;

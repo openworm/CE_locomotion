@@ -26,6 +26,26 @@ void Evolution::addParsToJson(json & j)
     addExtraParsToJson(j);
 }
 
+simPars Evolution::setSimPars(int argc, const char* argv[])
+{
+
+simPars sp1;
+sp1.Duration = evoPars1.Duration;
+sp1.Transient = evoPars1.Transient;
+
+ if (((argc-1) % 2) != 0)
+     {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+ for (int arg = 1; arg<argc; arg+=2){
+    if (strcmp(argv[arg],"-sd")==0) sp1.Duration = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-st")==0) sp1.Transient = atoi(argv[arg+1]);
+}
+
+return sp1;
+
+}
+
+
 evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
 
 

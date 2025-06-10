@@ -7,6 +7,7 @@
 #include <string.h>
 #include "jsonUtils.h"
 #include "Worm2D.h"
+#include "Simulation.h"
 
 template <typename T>
 struct Callback;
@@ -24,7 +25,14 @@ template <typename Ret, typename... Params>
 std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
 struct evoPars;
+//struct simPars;
 
+/* struct simPars{
+
+  double Duration;       //
+  double Transient; 
+
+}; */
  
 
 struct evoPars{
@@ -120,6 +128,7 @@ class Evolution
 
     protected:
     evoPars setPars(int argc, const char* argv[], evoPars ep1);
+    simPars setSimPars(int argc, const char* argv[]);
 
     
     virtual void configure_p1();
@@ -129,7 +138,8 @@ class Evolution
     
     
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
-    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_))
+    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(argc,argv))
     {
       evolfile.open(rename_file("fitness.dat"));
       evolfile << setprecision(10);
@@ -138,7 +148,8 @@ class Evolution
     virtual void addExtraParsToJson(json & j) = 0;
     TSearch* const s; 
     const evoPars evoPars1;
-    
+    const simPars simPars1;
+
     private:
  
     ofstream evolfile;

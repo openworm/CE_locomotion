@@ -139,7 +139,7 @@ double EvolutionCO::Behavior(TVector<double> &v)
 double EvolutionCO::Behavior(Worm2Dm & w1)
 {
 
-	const int & skip_steps = evoPars1.skip_steps;
+	//const int & skip_steps = evoPars1.skip_steps;
 	double StepSize = evoPars1.StepSize;
 
 	WormAgent & Worm = dynamic_cast<WormAgent&>(w1);
@@ -162,18 +162,22 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 		{
 			for (double orient = 0.0; orient <= 0.0; orient += Pi/2)
 			{
-				Worm.InitialiseAgent(2*RunDuration, StepSize);
+				/* Worm.InitialiseAgent(2*(simPars1.Transient + simPars1.Duration), StepSize);
 				Worm.ResetAgentsBody(orient, rs);
 				Worm.ResetChemCon(gradSteep);
 				Worm.ResetAgentIntState(rs);
-				Worm.UpdateChemCon(gradSteep);
+				Worm.UpdateChemCon(gradSteep); */
+
+				Worm.setSimPars(orient,gradSteep,simPars1.Transient + simPars1.Duration,evoPars1.StepSize);
+				Worm.InitializeState(rs);
+
 				for (int repeats = 1; repeats <= 1; repeats++)
 				{
 					Worm.ResetAgentsBody(orient, rs);
-					for (double t = StepSize; t <= TransientDuration; t += StepSize)
+					for (double t = StepSize; t <= simPars1.Transient; t += StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
-						Worm.Step(evoPars1.StepSize);
+						Worm.Step(StepSize);
 
 						//Worm.UpdateSensors();
 						//Worm.Step(StepSize,rs,t,taxis,kinesis);
@@ -187,10 +191,10 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 						//Worm.DumpActState(actfile, skip_steps);	
 					}
 					accdist = 0.0;
-					for (double t = TransientDuration + StepSize; t <= TransientDuration + EvalDuration; t += StepSize)
+					for (double t = simPars1.Transient + StepSize; t <= simPars1.Transient + simPars1.Duration; t += StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
-						Worm.Step(evoPars1.StepSize);
+						Worm.Step(StepSize);
 
 						//Worm.UpdateSensors();
 						//Worm.Step(StepSize,rs,t,taxis,kinesis);
@@ -204,7 +208,7 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 						Worm.writeData();	
 						//Worm.DumpActState(actfile, skip_steps);
 					}
-					totaldist = (accdist/(EvalDuration/StepSize));
+					totaldist = (accdist/(simPars1.Duration/StepSize));
 					f = (MaxDist - totaldist)/MaxDist;
 					f = f < 0 ? 0.0 : f;
 					fitness += f;

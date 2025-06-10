@@ -16,6 +16,8 @@ defaults_base_CO = {
     "popSize": 96,
     "duration": 50,
     "transient": 50,
+    "simduration": 50,
+    "simtransient": 50,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -27,6 +29,8 @@ defaults_base_celoc = {
     "popSize": 96,
     "duration": 24,
     "transient": 8,
+    "simduration": 24,
+    "simtransient": 8,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -38,6 +42,8 @@ defaults_base_2018 = {
     "popSize": 96,
     "duration": 50,
     "transient": 10,
+    "simduration": 50,
+    "simtransient": 10,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -49,6 +55,8 @@ defaults_base_2021 = {
     "popSize": 100,
     "duration": 40,
     "transient": 10,
+    "simduration": 40,
+    "simtransient": 10,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
@@ -61,6 +69,8 @@ DEFAULTS = {
     "popSize": None,  # 96,
     "duration": None,  # 24,
     "transient": None,
+    "simduration": None,  # 24,
+    "simtransient": None,
     "RandSeed": None,
     "outputFolderName": None,
     "doEvol": False,
@@ -222,7 +232,7 @@ def process_args():
         type=float,
         metavar="<duration>",
         default=DEFAULTS["duration"],
-        help="Duration of simulation for evolution and best worm in ms.",
+        help="Duration of simulation for evolution in ms.",
     )
 
     parser.add_argument(
@@ -231,8 +241,27 @@ def process_args():
         type=float,
         metavar="<transient>",
         default=DEFAULTS["transient"],
-        help="Duration of transient for evolution and best worm in ms.",
+        help="Duration of transient for evolution in ms.",
     )
+
+    parser.add_argument(
+        "-sd",
+        "--simduration",
+        type=float,
+        metavar="<simduration>",
+        default=DEFAULTS["simduration"],
+        help="Duration of simulation for best worm in ms.",
+    )
+
+    parser.add_argument(
+        "-st",
+        "--simtransient",
+        type=float,
+        metavar="<simtransient>",
+        default=DEFAULTS["simtransient"],
+        help="Duration of transient for best worm in ms.",
+    )
+
 
     parser.add_argument(
         "-p",
@@ -504,13 +533,13 @@ def run(a=None, **kwargs):
 
     same_vals = True
     sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient", "doMuscSim"]
-    sim_args = [do_nml, a.RandSeed, a.duration, do_randInit, a.transient, do_muscsim]
+    sim_args = [do_nml, a.RandSeed, a.simduration, do_randInit, a.simtransient, do_muscsim]
     sim_defaults = [
         defaults_base["doNML"],
         random_seed,
-        defaults_base["duration"],
+        defaults_base["simduration"],
         defaults_base["doRandInit"],
-        defaults_base["transient"],
+        defaults_base["simtransient"],
         defaults_base["doMuscSim"],
     ]
     for par, arg, default in zip(sim_pars, sim_args, sim_defaults):

@@ -13,7 +13,7 @@ class EvolutionCO : public Evolution
     EvolutionCO(int argc, const char* argv[]):Evolution(argc,argv,
       {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 10, 50, 50, 0.01, 23, getVectSize(10)},
+        1.1, 0.1, 1, 0, 1, 1, 50, 50, 0.01, 23, getVectSize(10)},
         getVectSize(10)),MinDifSensor(10*evoPars1.StepSize),TauMin(10*evoPars1.StepSize)
     {}
 
