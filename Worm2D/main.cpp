@@ -51,6 +51,8 @@ int main (int argc, const char* argv[])
     if (model_name == "Net21") er = new Evolution21(argc,argv);
     if (model_name == "CO") er = new EvolutionCO(argc,argv);
     
+    const evoPars & ep1 = er->itsEvoPars();
+
     InitializeBodyConstants();
 
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
@@ -86,8 +88,14 @@ int main (int argc, const char* argv[])
         if (model_name == "CE") w = new WormCE(phenotype,0);
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
-        if (model_name == "CO") w = new WormAgent(phenotype);
+        if (model_name == "CO") {
 
+        w = new WormAgent(phenotype);
+        double orient = 0;
+        double gradSteep = 0;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,ep1.Transient + ep1.Duration,ep1.StepSize);
+
+        }
         cout << "making json from main" << endl;
         //write_json(er,w, "worm_data_2.json");
 
@@ -95,6 +103,7 @@ int main (int argc, const char* argv[])
         rs.SetRandomSeed(er->itsEvoPars().randomseed);
         w->InitializeState(rs); 
 
+        cout << "making json from main 2" << endl;
         ofstream json_out(er->rename_file("worm_data.json"));
         //json_out << setprecision(32);
         json j;
@@ -184,7 +193,7 @@ int main (int argc, const char* argv[])
     if (model_name == "Net21") w = new Worm2D21(phenotype);
 
     }
-    
+
     w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
     write_json(er,w, "worm_data_nml.json");

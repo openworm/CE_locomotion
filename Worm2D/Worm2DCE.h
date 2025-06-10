@@ -82,8 +82,8 @@ class Worm2DCE: public  Worm2D{
     friend class EvolutionCE;
 
     protected:
-    void Step1();
-
+    //void Step1();
+    void Step1(double StepSize);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)
     :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0){}
 

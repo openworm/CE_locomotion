@@ -87,22 +87,29 @@ public:
 
 	//added quantities
 
+	using Worm2Dm::Step;
 	RandomState rs;
-	double timestep, gradSteep, orient_orig, StepSize, RunDuration;
+	double HStimestep, gradSteep, orient_orig, RunDuration, HSStepSize;
 	int taxis, kinesis;
 
-
+	void writeData(){Worm2Dm::writeAct();Worm2Dm::writeState();}
 	void addParsToJson(json & j);
 	void initForSimulation(){return;}
 	const vector<string> getCellNames() {return {"A","B"};}
 	vector<doubIntParamsHead> getWormParams();
-	void Step1();
+	void Step1(double Stepsize);
+	
 	void InitializeState(RandomState &rs);
-  	void setSimPars(double orient_orig_ = 0.0,
+
+	void setStepPars(double gradSteep_, RandomState &rs_, double timestep_, int taxis_, int kinesis_);
+	void setSimPars(double orient_orig_,
+	double gradSteep_, double RunDuration_, double HSStepSize_);
+
+  	/* void setSimPars(double orient_orig_ = 0.0,
 	double gradSteep_ = 0.5,
 	int taxis_ = 1,
 	int kinesis_ = 0,
 	double StepSize_ =	0.01,
-	double RunDuration_ = 350.0	);
+	double RunDuration_ = 350.0	); */
 
 };

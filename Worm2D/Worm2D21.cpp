@@ -181,7 +181,7 @@ void Worm2D21::setMuscleInputOrig(double StepSize)
     m.EulerStep(StepSize);
 }
 
-void Worm2D21m::Step1()
+void Worm2D21m::Step1(double StepSize)
 {
     
     

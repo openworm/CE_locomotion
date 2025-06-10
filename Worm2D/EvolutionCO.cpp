@@ -78,29 +78,40 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 		{
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
-				Worm.InitialiseAgent(2*RunDuration, evoPars1.StepSize);
+				Worm.setSimPars(orient,gradSteep,evoPars1.Transient + evoPars1.Duration,evoPars1.StepSize);
+				Worm.InitializeState(rs);
+
+				/* Worm.InitialiseAgent(2*RunDuration, evoPars1.StepSize);
 				Worm.ResetAgentsBody(orient, rs);
 				Worm.ResetChemCon(gradSteep);
 				Worm.ResetAgentIntState(rs);
-				Worm.UpdateChemCon(gradSteep);
+				Worm.UpdateChemCon(gradSteep); */
+
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
 					Worm.ResetAgentsBody(orient, rs);
-					for (double t = evoPars1.StepSize; t <= TransientDuration; t += evoPars1.StepSize)
+					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)
 					{
-						Worm.UpdateSensors();
-						Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
-						Worm.UpdateChemCon(gradSteep);
+						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						Worm.Step(evoPars1.StepSize);
+
+						//Worm.UpdateSensors();
+						//Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm.UpdateChemCon(gradSteep);
 					}
 					accdist = 0.0;
-					for (double t = evoPars1.StepSize; t <= EvalDuration; t += evoPars1.StepSize)
+					for (double t = evoPars1.StepSize; t <= evoPars1.Duration; t += evoPars1.StepSize)
 					{
-						Worm.UpdateSensors();
-						Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
-						Worm.UpdateChemCon(gradSteep);
+						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						Worm.Step(evoPars1.StepSize);
+
+						//Worm.UpdateSensors();
+						//Worm.Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm.UpdateChemCon(gradSteep);
+
 						accdist += Worm.DistanceToCentre();
 					}
-					totaldist = (accdist/(EvalDuration/evoPars1.StepSize));
+					totaldist = (accdist/(evoPars1.Duration/evoPars1.StepSize));
 					f = (MaxDist - totaldist)/MaxDist;
 					f = f < 0 ? 0.0 : f;
 					fitness += f;
@@ -143,7 +154,7 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 	int k = 0;
 	double fitness = 0.0;
 	int taxis,kinesis;
-	for (int mode = 0; mode <= 1; mode++)
+	for (int mode = 1; mode <= 1; mode++)
 	{
 		if (mode==0){taxis = 0;kinesis = 1;}
 		else {taxis = 1;kinesis = 0;}
@@ -161,9 +172,13 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 					Worm.ResetAgentsBody(orient, rs);
 					for (double t = StepSize; t <= TransientDuration; t += StepSize)
 					{
-						Worm.UpdateSensors();
-						Worm.Step(StepSize,rs,t,taxis,kinesis);
-						Worm.UpdateChemCon(gradSteep);
+						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						Worm.Step(evoPars1.StepSize);
+
+						//Worm.UpdateSensors();
+						//Worm.Step(StepSize,rs,t,taxis,kinesis);
+						//Worm.UpdateChemCon(gradSteep);
+
 						if (mode==0){filek << t << " ";
 							Worm.PrintDetail(filek);}
 						else {filet << t << " ";
@@ -174,9 +189,13 @@ double EvolutionCO::Behavior(Worm2Dm & w1)
 					accdist = 0.0;
 					for (double t = TransientDuration + StepSize; t <= TransientDuration + EvalDuration; t += StepSize)
 					{
-						Worm.UpdateSensors();
-						Worm.Step(StepSize,rs,t,taxis,kinesis);
-						Worm.UpdateChemCon(gradSteep);
+						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						Worm.Step(evoPars1.StepSize);
+
+						//Worm.UpdateSensors();
+						//Worm.Step(StepSize,rs,t,taxis,kinesis);
+						//Worm.UpdateChemCon(gradSteep);
+
 						accdist += Worm.DistanceToCentre();
 						if (mode==0){filek << t << " ";
 							Worm.PrintDetail(filek);}

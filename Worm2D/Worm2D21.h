@@ -52,7 +52,7 @@ public:
 
 protected:
 
-    void Step1();
+    void Step1(double StepSize);
     void addParsToJson(json & j);
 
     

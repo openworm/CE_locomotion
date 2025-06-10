@@ -1,9 +1,11 @@
 from run_main import run
 
 run(
-    maxGens=10,
-    popSize=96,
-    RandSeed=95166,
+    duration = 50,
+    transient = 50,
+    maxGens=40,
+    popSize=26,
+    RandSeed=1749493257,
     modelName="CO",
     modelFolder="Worm2D",
     outputFolderName="exampleRunCOW2D",

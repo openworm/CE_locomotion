@@ -42,7 +42,7 @@ public:
     void initForSimulation(){}
     
     protected:
-    void Step1(); 
+    void Step1(double Stepsize); 
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     void addParsToJson(json & j);

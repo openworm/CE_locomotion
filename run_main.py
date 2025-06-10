@@ -14,8 +14,8 @@ import json
 
 defaults_base_CO = {
     "popSize": 96,
-    "duration": 100,
-    "transient": 250,
+    "duration": 50,
+    "transient": 50,
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,

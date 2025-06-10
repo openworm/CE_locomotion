@@ -307,7 +307,7 @@ void Worm18::setMuscleInputOrig(double StepSize)
 }
 
 
-void Worm18::Step1()
+void Worm18::Step1(double StepSize)
 {
    
     double ds, vs;

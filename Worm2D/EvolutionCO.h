@@ -11,9 +11,9 @@ class EvolutionCO : public Evolution
     
 
     EvolutionCO(int argc, const char* argv[]):Evolution(argc,argv,
-      {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        96, 100, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 10, EvalDuration, TransientDuration, 0.01, 23, getVectSize(10)},
+      {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
+        26, 40, 0.05, 0.5, UNIFORM, 
+        1.1, 0.1, 1, 0, 1, 10, 50, 50, 0.01, 23, getVectSize(10)},
         getVectSize(10)),MinDifSensor(10*evoPars1.StepSize),TauMin(10*evoPars1.StepSize)
     {}
 
@@ -35,8 +35,8 @@ class EvolutionCO : public Evolution
     
 
     const int	CircuitSize = 10;
-const double TransientDuration = 250.0;
-const double RunDuration = 350.0;
+const double TransientDuration = 50.0;
+const double RunDuration = 100.0;
 const double EvalDuration = RunDuration - TransientDuration;
 
 const double	HST				=	4.2;

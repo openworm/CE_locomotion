@@ -70,7 +70,7 @@ void Worm2DCE::InitializeState(RandomState &rs)
   Worm2D::InitializeState(rs);
 }
 
-void Worm2DCE::Step1()
+void Worm2DCE::Step1(double StepSize)
 {
   int mi;
   int mt = 0;

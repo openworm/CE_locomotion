@@ -13,14 +13,22 @@ WormAgent::WormAgent(int newsize):
 Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
+
 }
 
 
 // The constructor
-WormAgent::WormAgent(TVector<double> & v, int newsize):
+/* WormAgent::WormAgent(TVector<double> & v, int newsize):
 Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
+	SetParameters(v);
+} */
+
+WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
+//Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+{
+	//InitialiseCircuit(newsize);
 	SetParameters(v);
 }
 
@@ -254,22 +262,29 @@ void WormAgent::PrintDetail( ofstream &file)
 
 
 void WormAgent::setSimPars(double orient_orig_,
-	double gradSteep_, int taxis_, int kinesis_,double  StepSize_,
-	double RunDuration_)
+	double gradSteep_, double RunDuration_, double HSStepSize_)
 {
 	orient_orig = orient_orig_;
 	gradSteep = gradSteep_;
+	RunDuration = RunDuration_;
+	HSStepSize = HSStepSize_;
+}
+
+void WormAgent::setStepPars(double gradSteep_, 
+	RandomState &rs_, double timestep_, int taxis_, int kinesis_)
+{	
+	rs = rs_;
+	gradSteep = gradSteep_;
 	taxis = taxis_;
 	kinesis = kinesis_;
-	StepSize =	StepSize_;
-	RunDuration = RunDuration_;
+	HStimestep = timestep_;
 }
 
 
 void WormAgent::InitializeState(RandomState &rs)
 {
 	Worm2Dm::InitializeState(rs);
-	InitialiseAgent(2*RunDuration, StepSize);
+	InitialiseAgent(2*RunDuration, HSStepSize);
 	ResetAgentsBody(orient_orig, rs);
 	ResetChemCon(gradSteep);
 	ResetAgentIntState(rs);
@@ -304,12 +319,17 @@ void WormAgent::addParsToJson(json & j)
 }
 
 
-void WormAgent::Step1()
+void WormAgent::Step1(double Stepsize)
 {
 	UpdateSensors();
-	Step(StepSize,rs,timestep,taxis,kinesis);
+	Step(StepSize,rs,HStimestep,taxis,kinesis);
 	UpdateChemCon(gradSteep);
 }
+
+/* void WormAgent::Step(double StepSize)
+{
+	Step(StepSize,rs,HStimestep,taxis,kinesis);
+} */
 
 // Step
 void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)

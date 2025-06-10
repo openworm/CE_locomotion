@@ -139,7 +139,7 @@ class Worm2Dm : public Worm2Dbody
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 
-    virtual void Step1() = 0;
+    virtual void Step1(double StepSize_) = 0;
     NSForW2D * const n_ptr;
     muscForW2D * m_ptr;
     
@@ -148,7 +148,7 @@ class Worm2Dm : public Worm2Dbody
     const wormIzqParams par1;
     double t; // Time
     const bool muscForWDconst;
-    double StepSize;
+    //double StepSize;
     
 
     int nn(int neuronNumber, int unitNumber);
