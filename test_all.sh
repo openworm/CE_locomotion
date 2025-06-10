@@ -44,6 +44,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRun21W2D
     rm -rf exampleRunCEW2D_nml
     rm -rf exampleRun21W2D_nml
+    rm -rf exampleRunCOW2D
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -54,6 +55,7 @@ if [ "$quick_test" == 0 ]; then
         python test2018W2D.py
     fi;
 
+    omv test -V .test.COW2D.omt
     omv test -V .test.example.omt
     omv test -V .test.CEW2D.omt
     omv test -V .test.2021.omt
