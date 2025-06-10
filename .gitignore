@@ -44,6 +44,8 @@
 /network2021/main
 /experiments/izq_runs_nets/*/*.gv
 /experiments/izq_runs_nets/*/*.pdf
+/experiments/izq_runs_nets_nml/*/*.gv
+/experiments/izq_runs_nets_nml/*/*.pdf
 /*/*.gv
 /*/*.pdf
 
