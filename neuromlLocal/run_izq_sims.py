@@ -55,7 +55,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         overwrite=True,
         duration=duration,
         transient=transient,
-        RandSeed = 853982,
+        RandSeed=853982,
     )
     regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
@@ -69,5 +69,5 @@ for input_folder, output_folder, output_folder_nml in zip(
         doMuscSim=doMuscles,
         duration=duration,
         transient=transient,
-        RandSeed = 853982,
+        RandSeed=853982,
     )
