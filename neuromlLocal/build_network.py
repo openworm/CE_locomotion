@@ -225,8 +225,8 @@ def run(a=None, **kwargs):
             appendFile=True,
         )
 
-    cellX_filename = "cell_syn_X_cells.xml"
-    utils.makeCellXml(network_json_data, cellX_filename)
+    cellW2D_filename = "cell_syn_W2D_cells.xml"
+    utils.makeCellXml(network_json_data, cellW2D_filename)
 
     if doMuscles:
         muscX_filename = "musc_X_cells.xml"
@@ -238,7 +238,8 @@ def run(a=None, **kwargs):
     if not output_folder_name == this_file_dir:
         shutil.copyfile(cell_Id_file_name, output_folder_name + "/cell_Ids.json")
         shutil.copyfile(
-            this_file_dir + "/cell_syn_X.xml", output_folder_name + "/cell_syn_X.xml"
+            this_file_dir + "/cell_syn_W2D.xml",
+            output_folder_name + "/cell_syn_W2D.xml",
         )
         if doMuscles:
             shutil.copyfile(
@@ -247,12 +248,12 @@ def run(a=None, **kwargs):
 
     if not cur_wkd_dir == this_file_dir:
         shutil.copyfile(cell_Id_file_name, "cell_Ids.json")
-        shutil.copyfile(this_file_dir + "/cell_syn_X.xml", "cell_syn_X.xml")
+        shutil.copyfile(this_file_dir + "/cell_syn_W2D.xml", "cell_syn_W2D.xml")
         if doMuscles:
             shutil.copyfile(this_file_dir + "/musc_X.xml", "musc_X.xml")
 
     if not output_folder_name == cur_wkd_dir:
-        shutil.copyfile(cellX_filename, output_folder_name + "/" + cellX_filename)
+        shutil.copyfile(cellW2D_filename, output_folder_name + "/" + cellW2D_filename)
         if doMuscles:
             shutil.copyfile(muscX_filename, output_folder_name + "/" + muscX_filename)
 
@@ -282,7 +283,7 @@ def run(a=None, **kwargs):
 
         cell_num = network_json_data["Nervous system"]["size"]["value"]
         size0 = cell_num
-        cell_comp = "GenericNeuronCellX"
+        cell_comp = "GenericNeuronCellW2D"
         pop0 = Population(
             id=utils.get_pop_id(population_structure), component=cell_comp, size=size0
         )
@@ -328,7 +329,7 @@ def run(a=None, **kwargs):
                 pre_cell=pre_cell_id,
                 post_cell=post_cell_id,
                 pre_component="silentSyn",
-                post_component="neuron_to_neuron_syn_x",
+                post_component="neuron_to_neuron_syn_w2d",
                 weight=weight,
             )
 

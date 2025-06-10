@@ -312,7 +312,7 @@ def makeProjectionsConnections(
                 pre_cell=pre_cell_id,
                 post_cell=post_cell_id,
                 pre_component="silentSyn",
-                post_component="neuron_to_neuron_syn_x",
+                post_component="neuron_to_neuron_syn_w2d",
                 weight=weight,
             )
 
@@ -357,7 +357,7 @@ def getVals(
     return pop_vals
 
 
-def makeCellXml(network_json_data, cellX_filename):
+def makeCellXml(network_json_data, cellW2D_filename):
     print("generating CellXml")
     pop_names = getPopNames(network_json_data)
     cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
@@ -374,10 +374,10 @@ def makeCellXml(network_json_data, cellX_filename):
     # print('states')
     pop_states = getVals(pop_names, cell_names, cell_states, do_check_equal=False)
 
-    cellX_strings = []
+    cellW2D_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
         output_string = (
-            '<cellX id="'
+            '<cellW2D id="'
             + str(pop_cell_name)
             + '" bias="'
             + str(pop_biases[ind])
@@ -389,11 +389,11 @@ def makeCellXml(network_json_data, cellX_filename):
             + str(pop_taus[ind])
             + 's"/>'
         )
-        cellX_strings.append(output_string)
+        cellW2D_strings.append(output_string)
 
-    with open(cellX_filename, "w") as f:
+    with open(cellW2D_filename, "w") as f:
         f.write("<Lems>\n")
-        for val in cellX_strings:
+        for val in cellW2D_strings:
             f.write(val)
             f.write("\n")
         f.write("</Lems>")
