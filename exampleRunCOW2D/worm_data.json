@@ -1,0 +1,196 @@
+{
+    "Body": {
+        "C_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "C_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "C_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "C_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "L_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "Medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "N_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "R_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        },
+        "beta_D": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_L": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_M0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "delta_M": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_D": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_L": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_M0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        }
+    },
+    "Evolutionary Optimization Parameters": {
+        "BiasRange": {
+            "value": 15.0
+        },
+        "CheckpointInterval": {
+            "value": 0
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 50.0
+        },
+        "ElitistFraction": {
+            "value": 0.1
+        },
+        "EvalDuration": {
+            "value": 50.0
+        },
+        "HST": {
+            "value": 4.2
+        },
+        "InterneuronWeightRange": {
+            "value": 15.0
+        },
+        "MaxDifSensor": {
+            "value": 4.2
+        },
+        "MaxDist": {
+            "value": 4.5
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 40
+        },
+        "MaxNeckTurnGain": {
+            "value": 2.0
+        },
+        "MinDifSensor": {
+            "value": 0.1
+        },
+        "MinNeckTurnGain": {
+            "value": 1.0
+        },
+        "MutationVariance": {
+            "value": 0.05
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "PopulationSize": {
+            "value": 26
+        },
+        "ReEvaluationFlag": {
+            "value": 1
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "RunDuration": {
+            "value": 100.0
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "SensorWeightRange": {
+            "value": 1500.0
+        },
+        "StepSize": {
+            "value": 0.01
+        },
+        "StretchReceptorRange": {
+            "value": 15.0
+        },
+        "TauMax": {
+            "value": 4.2
+        },
+        "TauMin": {
+            "value": 0.1
+        },
+        "Transient": {
+            "value": 50.0
+        },
+        "TransientDuration": {
+            "value": 50.0
+        },
+        "VectSize": {
+            "value": 93
+        },
+        "randomseed": {
+            "value": 1749493257
+        },
+        "skip_steps": {
+            "value": 10
+        }
+    },
+    "Nervous system": {
+        "Cell name": {
+            "value": [
+                "A",
+                "B"
+            ]
+        }
+    },
+    "Worm": {
+        "N_muscles": {
+            "value": 0
+        },
+        "N_neuronsperunit": {
+            "value": 10
+        },
+        "N_size": {
+            "value": 10
+        },
+        "N_units": {
+            "value": 1
+        },
+        "T_muscle": {
+            "value": 1.0
+        },
+        "parameter": {
+            "value": 1.0
+        }
+    }
+}

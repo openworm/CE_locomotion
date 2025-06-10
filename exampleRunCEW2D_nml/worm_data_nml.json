@@ -1,0 +1,401 @@
+{
+    "Body": {
+        "C_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "C_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "C_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "C_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "L_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "Medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "N_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "R_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        },
+        "beta_D": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_L": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_M0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "delta_M": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_D": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_L": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_M0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        }
+    },
+    "Dorsal NMJ": {
+        "Cell name": {
+            "value": [
+                "dum1"
+            ]
+        },
+        "NumConns": {
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Dorsal NMJ weights weights in sparse format",
+            "value": []
+        }
+    },
+    "Evolutionary Optimization Parameters": {
+        "AvgSpeed": {
+            "value": 0.0001
+        },
+        "BBCfit": {
+            "value": 0.0024000000000000002
+        },
+        "BiasRange": {
+            "value": 16.0
+        },
+        "CSRange": {
+            "value": 16.0
+        },
+        "CheckpointInterval": {
+            "value": 0
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 24.0
+        },
+        "ESRange": {
+            "value": 2.0
+        },
+        "ElitistFraction": {
+            "value": 0.02
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 10
+        },
+        "MutationVariance": {
+            "value": 0.05
+        },
+        "NMJmax": {
+            "value": 0.8
+        },
+        "NMJmin": {
+            "value": 0.0
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "PopulationSize": {
+            "value": 96
+        },
+        "ReEvaluationFlag": {
+            "value": 0
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "SCRange": {
+            "value": 16.0
+        },
+        "SR_A": {
+            "value": 1
+        },
+        "SR_B": {
+            "value": 2
+        },
+        "SRmax": {
+            "value": 200.0
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "StepSize": {
+            "value": 0.005
+        },
+        "Transient": {
+            "value": 8.0
+        },
+        "VectSize": {
+            "value": 17
+        },
+        "randomseed": {
+            "value": 1233
+        },
+        "skip_steps": {
+            "value": 10
+        }
+    },
+    "Muscle": {
+        "Nmuscles": {
+            "value": 24
+        },
+        "T_muscle": {
+            "value": 0.1
+        }
+    },
+    "Nervous system": {
+        "Cell name": {
+            "value": [
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB",
+                "DA",
+                "DB",
+                "DD",
+                "VD",
+                "VA",
+                "VB"
+            ]
+        }
+    },
+    "Stretch receptor": {
+        "NSEGS": {
+            "message": "Number of segments in the body",
+            "value": 50.0
+        },
+        "NSEGSSR": {
+            "message": "Number of segments sensed by each stretch receptor",
+            "value": 6.0
+        },
+        "NSR": {
+            "message": "Number of stretch receptor in DA, DB, VA and VB, equal to number of units",
+            "value": 10.0
+        },
+        "SR_A_gain": {
+            "value": 0.0
+        },
+        "SR_B_gain": {
+            "value": 165.7002176192561
+        }
+    },
+    "Ventral NMJ": {
+        "Cell name": {
+            "value": [
+                "dum1"
+            ]
+        },
+        "NumConns": {
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Ventral NMJ weights weights in sparse format",
+            "value": []
+        }
+    },
+    "Worm": {
+        "AVA_act": {
+            "value": 0.0
+        },
+        "AVA_inact": {
+            "value": 0.0
+        },
+        "AVA_output": {
+            "value": 0.0
+        },
+        "AVB_act": {
+            "value": 0.0
+        },
+        "AVB_inact": {
+            "value": 0.0
+        },
+        "AVB_output": {
+            "value": 0.0
+        },
+        "NMJ_DA": {
+            "value": 0.2394267872076254
+        },
+        "NMJ_DB": {
+            "value": 0.41458707070859624
+        },
+        "NMJ_DD": {
+            "value": -0.3888755563666353
+        },
+        "NMJ_VA": {
+            "value": 0.2394267872076254
+        },
+        "NMJ_VB": {
+            "value": 0.41458707070859624
+        },
+        "NMJ_VD": {
+            "value": -0.3888755563666353
+        },
+        "N_muscles": {
+            "value": 24
+        },
+        "N_neuronsperunit": {
+            "value": 6
+        },
+        "N_size": {
+            "value": 60
+        },
+        "N_stretchrec": {
+            "message": "Number of stretch receptors",
+            "value": 10
+        },
+        "N_units": {
+            "value": 10
+        },
+        "NmusclePerNU": {
+            "message": "All the way down to 24, in groups of 3 per unit",
+            "value": 4
+        },
+        "T_muscle": {
+            "value": 0.1
+        }
+    }
+}
