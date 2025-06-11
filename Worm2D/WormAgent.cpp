@@ -168,6 +168,7 @@ void WormAgent::InitialiseCircuit(int CircuitSize)
 
 void WormAgent::InitialiseAgent(double runduration, double stepsize)
 {
+	VelDelta		=	(int) (HST/stepsize);
 	iSensorN = (int) (sensorN/stepsize);
 	dSensorN = (double) iSensorN;
 	iSensorM = (int) (sensorM/stepsize);
@@ -319,7 +320,7 @@ void WormAgent::addParsToJson(json & j)
 }
 
 
-void WormAgent::Step1(double Stepsize)
+void WormAgent::Step1(double StepSize)
 {
 	UpdateSensors();
 	Step(StepSize,rs,HStimestep,taxis,kinesis);
