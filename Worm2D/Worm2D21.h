@@ -56,8 +56,10 @@ protected:
     void addParsToJson(json & j);
 
     
-    const vector<string> getCellNames() {return {"AS", "DA", "DB", "DD", "VD", "VB", "VA" };}
+    const vector<string> getCellNames() {return 
+    getCellNamesAll( {"AS", "DA", "DB", "DD", "VD", "VB", "VA" }, par1.N_units);}
 
+    const string getModelName() {return {"Net21"};}
     vector<doubIntParamsHead> getWormParams();
     double wAVA_DA, wAVA_VA;
     double wAVB_DB, wAVB_VB;

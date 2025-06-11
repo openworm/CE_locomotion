@@ -70,7 +70,8 @@ class DataWriter{
 
 
 
-class Worm2Dbody : virtual public DataWriter{
+class Worm2Dbody : virtual public DataWriter
+{
 
     public:
 
@@ -96,6 +97,45 @@ class Worm2Dbody : virtual public DataWriter{
 
 };
 
+/* class Worm2Dbase : virtual public DataWriter
+{
+
+public:
+virtual void InitializeState(RandomState &rs) = 0;
+
+virtual void initForSimulation() =  0;
+
+void Step(double StepSize_);
+void writeData();
+virtual void writeAct();
+void writeState();
+virtual void addParsToJson(json & j);
+
+protected:
+Worm2Dbase(NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+Worm2Dbase(NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+
+
+virtual const string getModelName() = 0;
+virtual vector<doubIntParamsHead> getWormParams() = 0;
+virtual void Step1(double StepSize_) = 0;
+NSForW2D * const n_ptr;
+muscForW2D * m_ptr;
+    
+NSForW2D & itsNS(){return *n_ptr;}
+
+virtual ~Worm2Dbase(){
+        if (m_ptr) delete m_ptr; 
+        if (n_ptr) delete n_ptr;
+}
+
+double t; // Time
+const bool muscForWDconst;
+
+};
+ */
+
+
 class Worm2Dm : public Worm2Dbody
 {
     public:
@@ -106,6 +146,7 @@ class Worm2Dm : public Worm2Dbody
     
     virtual void initForSimulation() =  0;
     virtual const vector<string> getCellNames() = 0;
+    virtual const string getModelName() = 0;
 
     
     void Step(double StepSize_);

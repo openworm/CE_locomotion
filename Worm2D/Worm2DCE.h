@@ -73,7 +73,11 @@ class Worm2DCE: public  Worm2D{
     void addParsToJson(json & j);
     void writeAct();
 
-    const vector<string> getCellNames() {return {"DA", "DB", "DD", "VD", "VA", "VB"};}
+    const vector<string> getCellNames() {return 
+        getCellNamesAll( {"DA", "DB", "DD", "VD", "VA", "VB"}, par1.N_units);}
+    
+    const string getModelName() {return {"CE"};}
+
     vector<doubIntParamsHead> getWormParams();
     StretchReceptorCE sr;
     void DumpParams(ofstream &ofs);

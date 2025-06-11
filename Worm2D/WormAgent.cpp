@@ -311,12 +311,12 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 void WormAgent::addParsToJson(json & j)
 {
 
-	string nsHead = "Nervous system";
+	//string nsHead = "Nervous system";
     //appendAllNSJson(j[nsHead], NervousSystem); //not yet implemented
       
     Worm2Dm::addParsToJson(j);
         
-    appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }
 
 

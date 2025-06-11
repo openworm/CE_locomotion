@@ -123,9 +123,10 @@ default_cells = {}
 default_cells["Net21"] = {}
 default_cells["CE"] = {}
 default_cells["RS18"] = {}
+default_cells["CO"] = {}
 
-default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VA", "VB", "VD"] * 7
-default_cells["CE"]["names"] = ["DA", "DB", "DD", "VA", "VB", "VD"] * 10
+default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
+default_cells["CE"]["names"] = ["DA", "DB", "DD", "VD", "VA", "VB"] * 10
 default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + [
     "SMDD",
     "RMDD",
@@ -133,6 +134,7 @@ default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + 
     "RMDV",
 ]
 
+default_cells["CO"]["names"] = ["A", "B"]
 
 spacing = 0.2
 
@@ -195,8 +197,14 @@ def run(a=None, **kwargs):
         chemical_weights = utils.dropSelfConnections(chemical_weights)
 
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
-    cell_names = utils.getCellNames(network_json_data)
-    pop_cell_names = utils.getPopNames(network_json_data)
+    model_name = utils.getModelName(network_json_data)
+    if model_name is not None:
+        cell_names = default_cells[model_name]["names"]
+    else:
+        cell_names = utils.getCellNames(network_json_data)
+    pop_cell_names = utils.getPopNamesCell(cell_names)
+    # cell_names = utils.getCellNames(network_json_data)
+    # pop_cell_names = utils.getPopNames(network_json_data)
     popSizes = utils.getPopSizes(cell_names, pop_cell_names)
 
     cur_wkd_dir = os.getcwd()

@@ -139,13 +139,19 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
+def getModelName(network_json_data):
+    if "Model name" in network_json_data["Nervous system"]:
+        return network_json_data["Nervous system"]["Model name"]["value"]
+    return None
+
+
 def getCellNames(network_json_data):
     return network_json_data["Nervous system"]["Cell name"]["value"]
 
 
 def getPopNames(network_json_data):
     cell_names = getCellNames(network_json_data)
-    return sorted(list(set(cell_names)))
+    return getPopNamesCell(cell_names)
 
 
 def getPopNamesCell(cell_names):

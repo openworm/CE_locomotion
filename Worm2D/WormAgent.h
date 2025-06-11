@@ -96,6 +96,7 @@ public:
 	void addParsToJson(json & j);
 	void initForSimulation(){return;}
 	const vector<string> getCellNames() {return {"A","B"};}
+	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();
 	void Step1(double Stepsize);
 	

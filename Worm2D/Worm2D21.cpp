@@ -319,8 +319,7 @@ void Worm2D21::addParsToJson(json & j){
 
 void Worm2D21m::addParsToJson(json & j){
         Worm2Dm::addParsToJson(j);
-        string nsHead = "Nervous system";
-        appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+        
     }
 
 

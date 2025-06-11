@@ -171,6 +171,9 @@
                 "A",
                 "B"
             ]
+        },
+        "Model name": {
+            "value": "CO"
         }
     },
     "Worm": {

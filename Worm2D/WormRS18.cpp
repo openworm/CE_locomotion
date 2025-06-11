@@ -407,7 +407,7 @@ void Worm18::addParsToJson(json & j)
     appendAllNSJson(j[nsHead], n);
     Worm2D::addParsToJson(j);
     //string nsHead = "Nervous system";
-    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+    //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getHeadCellNames(), 1);
 }
 

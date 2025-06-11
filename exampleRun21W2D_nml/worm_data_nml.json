@@ -766,6 +766,9 @@
                 "VB",
                 "VA"
             ]
+        },
+        "Model name": {
+            "value": "Net21"
         }
     },
     "Ventral NMJ": {

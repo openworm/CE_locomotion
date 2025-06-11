@@ -323,7 +323,17 @@ void Worm2Dm::addParsToJson(json & j)
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
-     Worm2Dbody::addParsToJson(j);
+    Worm2Dbody::addParsToJson(j);
+    
+    string nsHead = "Nervous system";
+    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+
+    {Params< string > par;
+    par.names = {"Model name"};
+    par.vals = {getModelName()};
+    appendToJson<string>(j[nsHead],par);
+    }
 
     vector<doubIntParamsHead> parvec = getWormParams();
     for (size_t i=0;i<parvec.size(); i++) {
@@ -538,3 +548,5 @@ void Worm2D::InitializeState(RandomState &rs)
     m.InitializeMuscleState();
     return;
 }
+
+const string Worm2Dm::getModelName() {return "Unspecified";}

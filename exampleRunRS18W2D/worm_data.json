@@ -1504,6 +1504,9 @@
                 }
             ]
         },
+        "Model name": {
+            "value": "RS18"
+        },
         "NumChemicalConns": {
             "value": [
                 1,

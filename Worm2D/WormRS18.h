@@ -51,7 +51,8 @@ public:
     vector<toFromWeight> makeDorsalMuscleConn();
     const vector<string> getVMuscNames(){ return {"dum1"};}
     const vector<string> getDMuscNames(){ return {"dum1"};}
-
+    const string getModelName() {return {"RS18"};}
+    
     //Params<double> getWormParams();
     //const vector<string> getHeadCellNames() 
     //{return {"SMDD", "RMDD", "SMDV", "RMDV"};}

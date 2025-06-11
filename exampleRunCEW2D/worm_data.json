@@ -1341,6 +1341,9 @@
                 }
             ]
         },
+        "Model name": {
+            "value": "CE"
+        },
         "NumChemicalConns": {
             "value": [
                 2,

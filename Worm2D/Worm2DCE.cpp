@@ -228,8 +228,8 @@ void Worm2DCE::addParsToJson(json & j)
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
     Worm2D::addParsToJson(j);
-    string nsHead = "Nervous system";
-    appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+    //string nsHead = "Nervous system";
+    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }
 
 void Worm2DCE::writeAct()
