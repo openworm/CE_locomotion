@@ -48,4 +48,4 @@
 /experiments/izq_runs_nets_nml/*/*.pdf
 /*/*.gv
 /*/*.pdf
-
+.DS_Store
