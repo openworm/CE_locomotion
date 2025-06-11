@@ -1,9 +1,15 @@
 <Lems>
 
+    <ComponentType name="baseGradedSynapseDL"
+                   extends="baseSynapseDL"
+                   description="Base type for dimensionless graded synapses">
+    </ComponentType>
 
     <ComponentType name="outputSynapse"
                    extends="baseGradedSynapse"
                    description="For Worm2D...">
+
+        <Parameter name="sign" dimension="none"/>
 
         <Property name="weight" dimension="none" defaultValue="1"/>
 
@@ -17,25 +23,25 @@
 
         <Dynamics>
             <DerivedVariable name="outputpeer" dimension="none" select="peer/output"/>
-            <DerivedVariable name="i" exposure="i"  value="weight * outputpeer * PAMP_SCALE"/>
+            <DerivedVariable name="i" exposure="i"  value="weight * sign * outputpeer * PAMP_SCALE"/>
         </Dynamics>
     </ComponentType>
 
-<ComponentType name="cellX"
-    extends="baseCellMembPot"
-    description="...">
+<ComponentType name="cellW2D"
+    extends="baseCellMembPotCap"
+    description="Cell based on Worm2D model">
     
     <Parameter name="bias" dimension="none" description="..."/>
     <Parameter name="gain" dimension="none" description="..."/>
     <Parameter name="tau" dimension="time"/>
 
     <Constant name="COND_SCALE" dimension="conductance" value="1nS"/>
-    <DerivedParameter name="C" dimension="capacitance" value="tau*COND_SCALE"/>
 
     <!--
     Defined in baseCellMembPotCap:
     <Parameter name="C" dimension="capacitance"/>
     -->
+    <DerivedParameter name="C" dimension="capacitance" value="tau*COND_SCALE"/>
 
     <!-- Initial Conditions -->
     <Parameter name="state0" dimension="none"/>
@@ -87,11 +93,11 @@
 </ComponentType>
 
 
+
 <silentSynapse id="silentSyn"/>
-<outputSynapse id="neuron_to_neuron_syn_x"/>
+<outputSynapse id="neuron_to_neuron_syn_w2d" sign="1"/>
 
 <gapJunction id="gapJunction0" conductance="1nS"/>
-
 
 </Lems>
     
