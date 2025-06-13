@@ -102,7 +102,7 @@ public:
     void addParsToJson(json & j);
 
     
-
+    void setMuscleInput(double StepSize){return Worm2D::setMuscleInput(StepSize);}
     void setMuscleInputOrig(double);
     vector<toFromWeight> makeVentralMuscleConn();
     vector<toFromWeight> makeDorsalMuscleConn();

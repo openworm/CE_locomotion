@@ -58,6 +58,8 @@ public:
     //{return {"SMDD", "RMDD", "SMDV", "RMDV"};}
     
     void setMuscleInputOrig(double StepSize);
+    void setMuscleInputOrigDorsal();
+    void setMuscleInputOrigVentral(); 
 
     vector<doubIntParamsHead> getWormParams();
 

@@ -41,6 +41,8 @@ par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(mfwc){}
 
 
+
+
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
 
@@ -206,14 +208,7 @@ void Worm2Dbody::writeCurvature()
 
     resetStats(firstcall,pos,tt,"curv.dat");
 
-   /*  if (firstcall || !isOpen[pos]){
-        ofsvec.push_back(ofstream(getName("curv.dat")));
-        isOpen.push_back(true);
-        pos = ofsvec.size() - 1;
-        firstcall = false;
-        tt = dataskips;
-    } */
-   
+
     ofstream & ofs = ofsvec[pos];  
    
 
@@ -258,14 +253,7 @@ void Worm2Dbody::writeBody()
     
     resetStats(firstcall,pos,tt,"body.dat");
 
-  /*   if (firstcall || !isOpen[pos]){
-        ofsvec.push_back(ofstream(getName("body.dat")));
-        pos = ofsvec.size() - 1;
-        isOpen.push_back(true);
-        firstcall = false;
-        tt = dataskips;
-    } */
-   
+ 
     ofstream & ofs = ofsvec[pos];  
    
 
@@ -409,13 +397,7 @@ void Worm2Dm::writeAct()
     
     resetStats(firstcall,pos,tt,"act.dat");
 
-   /*  if (firstcall || !isOpen[pos]){
-        ofsvec.push_back(ofstream(getName("act.dat")));
-        pos = ofsvec.size() - 1;
-        isOpen.push_back(true);
-        firstcall = false;
-        tt = dataskips;
-    } */
+  
    
     ofstream & ofs = ofsvec[pos];  
 
@@ -452,20 +434,9 @@ void Worm2Dm::writeState()
     static size_t pos;
     static int tt;
     resetStats(firstcall,pos,tt,"state.dat");
-
- /*    if (firstcall || !isOpen[pos]){
-        ofsvec.push_back(ofstream(getName("state.dat")));
-        pos = ofsvec.size() - 1;
-        isOpen.push_back(true);
-        firstcall = false;
-        tt = dataskips;
-    }
-    */
+ 
     ofstream & ofs = ofsvec[pos];  
 
-    
-   
-    
     if (++tt >= dataskips) {
         tt = 0;
         //time
@@ -482,19 +453,22 @@ void Worm2Dm::writeState()
     }
 }
 
-
-
-
-void Worm2D::setMuscleInput(double StepSize)
+void Worm2D::setMuscleInputVent()
 {
 
-    for (int i = 1; i<= vMuscConn.size; i++){
+for (int i = 1; i<= vMuscConn.size; i++){
         double tot = 0;
     for (int j = 1; j <= vMuscConn.numConns(i); j++){
         tot +=  vMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(vMuscConn.weights[i][j].from);
     }
     m.SetVentralMuscleInput(i, tot);
-    }
+}
+
+}
+
+void Worm2D::setMuscleInputDors()
+{
+
     for (int i = 1; i<= dMuscConn.size; i++){
         double tot = 0;
     for (int j = 1; j <= dMuscConn.numConns(i); j++){
@@ -502,6 +476,18 @@ void Worm2D::setMuscleInput(double StepSize)
     }
     m.SetDorsalMuscleInput(i, tot);
     }
+
+}
+
+
+
+
+void Worm2D::setMuscleInput(double StepSize)
+{
+
+    
+    setMuscleInputVent();
+    setMuscleInputDors();
 
     m.EulerStep(StepSize);
     //cout << "setMuscInp" << endl;

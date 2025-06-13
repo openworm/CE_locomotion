@@ -13,7 +13,7 @@ import json
 
 
 defaults_base_CO = {
-    "popSize": 96,
+    "popSize": 26,
     "duration": 50,
     "transient": 50,
     "simduration": 50,
@@ -21,7 +21,7 @@ defaults_base_CO = {
     "nervousSystemFileName": "main_sim",
     "doNML": 0,
     "doRandInit": 0,
-    "maxGens": 100,
+    "maxGens": 40,
     "doMuscSim": 0,
 }
 
@@ -447,7 +447,12 @@ def run(a=None, **kwargs):
         else:
             do_randInit = 0
 
-    model_names = {".": "CE", "RoyalSociety2018": "RS18", "network2021": "Net21"}
+    model_names = {
+        ".": "CE",
+        "RoyalSociety2018": "RS18",
+        "network2021": "Net21",
+        "CE_orientation": "CO",
+    }
 
     model_name = None
     if a.modelFolder == "Worm2D" or a.modelFolder == "../Worm2D":
@@ -614,12 +619,13 @@ def run(a=None, **kwargs):
     rsr = import_module(module_name).reload_single_run
     rsr(show_plot=False, plot_format = plot_format) """
 
-    from load_data import reload_single_run
+    if a.modelFolder != "CE_orientation":
+        from load_data import reload_single_run
 
-    # reload_single_run(show_plot=False, plot_format=plot_format)
-    reload_single_run(
-        showPlot=False, folderName=a.outputFolderName, modelName=plot_format
-    )
+        # reload_single_run(show_plot=False, plot_format=plot_format)
+        reload_single_run(
+            showPlot=False, folderName=a.outputFolderName, modelName=plot_format
+        )
 
 
 if __name__ == "__main__":

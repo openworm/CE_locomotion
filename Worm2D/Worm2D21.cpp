@@ -205,7 +205,7 @@ void Worm2D21m::Step1(double StepSize)
     }
     
     setMuscleInput(StepSize);
-
+    //setMuscleInputOrig(StepSize);   
 
     // Update Muscle activation
     //m.EulerStep(StepSize);

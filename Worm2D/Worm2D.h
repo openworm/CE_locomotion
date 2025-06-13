@@ -97,7 +97,7 @@ class Worm2Dbody : virtual public DataWriter
 
 };
 
-/* class Worm2Dbase : virtual public DataWriter
+class Worm2Dbase : virtual public DataWriter
 {
 
 public:
@@ -133,7 +133,7 @@ double t; // Time
 const bool muscForWDconst;
 
 };
- */
+
 
 
 class Worm2Dm : public Worm2Dbody
@@ -228,7 +228,9 @@ class Worm2D : virtual public Worm2Dm
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
     void setMuscleInput(double StepSize);
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
-    
+    void setMuscleInputVent();
+    void setMuscleInputDors();
+
     void setUp();
     Muscles & m;
    
