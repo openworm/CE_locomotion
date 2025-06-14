@@ -20,6 +20,10 @@ make clean
 make
 cd ..
 
+cd Worm2D
+make clean
+make
+cd ..
 
 
 if [ "$quick_test" == 0 ]; then
