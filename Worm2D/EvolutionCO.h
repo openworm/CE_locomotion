@@ -20,11 +20,11 @@ class EvolutionCO : public Evolution
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs){Behavior(v);}
-    void RunSimulation(Worm2Dm &w1, RandomState &rs){Behavior(w1);}
+    void RunSimulation(Worm2Dbase &w1, RandomState &rs){Behavior(w1);}
     //void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
    
     double Behavior(TVector<double> &v);
-    double Behavior(Worm2Dm & w1);
+    double Behavior(Worm2Dbase & w1);
 
 
     protected:

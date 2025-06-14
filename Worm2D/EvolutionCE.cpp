@@ -240,7 +240,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 }
 
 
-void EvolutionCE::RunSimulation(Worm2Dm & w1, RandomState &rs){
+void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   cout << "running sim" << endl;
   

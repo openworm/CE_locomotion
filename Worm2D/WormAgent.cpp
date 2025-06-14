@@ -10,7 +10,7 @@
 using namespace CTRNNspace;
 
 WormAgent::WormAgent(int newsize):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 
@@ -33,7 +33,7 @@ WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
 }
 
 WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
@@ -284,7 +284,7 @@ void WormAgent::setStepPars(double gradSteep_,
 
 void WormAgent::InitializeState(RandomState &rs)
 {
-	Worm2Dm::InitializeState(rs);
+	Worm2Dbase::InitializeState(rs);
 	InitialiseAgent(2*RunDuration, HSStepSize);
 	ResetAgentsBody(orient_orig, rs);
 	ResetChemCon(gradSteep);
@@ -314,7 +314,7 @@ void WormAgent::addParsToJson(json & j)
 	//string nsHead = "Nervous system";
     //appendAllNSJson(j[nsHead], NervousSystem); //not yet implemented
       
-    Worm2Dm::addParsToJson(j);
+    Worm2Dbase::addParsToJson(j);
         
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }

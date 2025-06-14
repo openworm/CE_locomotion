@@ -2,7 +2,7 @@
 
 string Simulation::rename_file(string filename){return sp.directoryName + "/" + filename;}
 
-void Simulation::runSimulation(Worm2Dm & w)
+void Simulation::runSimulation(Worm2Dbase & w)
 {
     w.setBasename(sp.directoryName);
     w.setDataskips(sp.skip_steps);
@@ -19,8 +19,8 @@ void Simulation::runSimulation(Worm2Dm & w)
         //w.DumpBodyState(bodyfile, sp.skip_steps);
         //w.DumpCurvature(curvfile, sp.skip_steps);
         //w.DumpActState(actfile, sp.skip_steps);
-        w.DumpVal(velfile,sp.skip_steps,w.getVelocity()/sp.StepSize);
-        w.DumpNSOrdered(nsfile, sp.skip_steps);
+        //w.DumpVal(velfile,sp.skip_steps,w.getVelocity()/sp.StepSize);
+        //w.DumpNSOrdered(nsfile, sp.skip_steps);
     }
     
     

@@ -303,7 +303,7 @@ if (speedoutput){
     return fitness;
 }
 
-void EvolutionRS18::RunSimulation(Worm2Dm &w1, RandomState &rs)
+void EvolutionRS18::RunSimulation(Worm2Dbase &w1, RandomState &rs)
 {
     Worm18 & w = dynamic_cast<Worm18&>(w1);
     double fitness;

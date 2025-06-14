@@ -26,7 +26,7 @@ public:
         nsfile.open(rename_file("sim_ns.dat"));
 
     }
-    void runSimulation(Worm2Dm & w);
+    void runSimulation(Worm2Dbase & w);
 
 
     ~Simulation(){

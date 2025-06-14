@@ -136,7 +136,7 @@ double EvolutionCO::Behavior(TVector<double> &v)
 }
 
 
-double EvolutionCO::Behavior(Worm2Dm & w1)
+double EvolutionCO::Behavior(Worm2Dbase & w1)
 {
 
 	//const int & skip_steps = evoPars1.skip_steps;

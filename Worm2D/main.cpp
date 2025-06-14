@@ -34,8 +34,6 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
 int main (int argc, const char* argv[])
 {
 
-   
- 
     std::cout << std::setprecision(10);
     string model_name =  getParameter(argc,argv,"--modelname","");
     if (model_name == "")
@@ -82,7 +80,7 @@ int main (int argc, const char* argv[])
     // write worm_data.json 
     if (do_json) {
 
-        Worm2Dm* w = 0;
+        Worm2Dbase* w = 0;
         
 
         if (model_name == "CE") w = new WormCE(phenotype,0);
@@ -133,7 +131,7 @@ int main (int argc, const char* argv[])
     
     //er->RunSimulation(bestVector, rs);
 
-    Worm2Dm* w = 0;
+    Worm2Dbase* w = 0;
 
     cout << "making worm" << endl;
 

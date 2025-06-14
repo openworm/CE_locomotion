@@ -20,7 +20,7 @@ class Evolution21:public Evolution
     double EvaluationFunction2(TVector<double> &v, RandomState &rs);
     double EvaluationFunction2Output(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
-    void RunSimulation(Worm2Dm &w1, RandomState &rs);
+    void RunSimulation(Worm2Dbase &w1, RandomState &rs);
     int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar);
    
 

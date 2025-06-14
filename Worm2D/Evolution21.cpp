@@ -326,7 +326,7 @@ double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &r
     return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
 }
 
-void Evolution21::RunSimulation(Worm2Dm & w1, RandomState &rs){
+void Evolution21::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
     cout << "running evo21 sim" << endl;
   

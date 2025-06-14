@@ -102,7 +102,6 @@ class Worm2Dbase : virtual public DataWriter
 
 public:
 virtual void InitializeState(RandomState &rs) = 0;
-
 virtual void initForSimulation() =  0;
 
 void Step(double StepSize_);
@@ -110,10 +109,19 @@ void writeData();
 virtual void writeAct();
 void writeState();
 virtual void addParsToJson(json & j);
+void writeJsonFile(ofstream & json_out);
+
+NSForW2D & itsNS(){return *n_ptr;}
+virtual void DumpParams(ofstream &ofs) = 0;
+
+virtual ~Worm2Dbase(){
+        if (m_ptr) delete m_ptr; 
+        if (n_ptr) delete n_ptr;
+}
 
 protected:
-Worm2Dbase(NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
-Worm2Dbase(NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 
 
 virtual const string getModelName() = 0;
@@ -122,34 +130,33 @@ virtual void Step1(double StepSize_) = 0;
 NSForW2D * const n_ptr;
 muscForW2D * m_ptr;
     
-NSForW2D & itsNS(){return *n_ptr;}
 
-virtual ~Worm2Dbase(){
-        if (m_ptr) delete m_ptr; 
-        if (n_ptr) delete n_ptr;
-}
 
 double t; // Time
 const bool muscForWDconst;
+const wormIzqParams par1;
+int nn(int neuronNumber, int unitNumber);
+
 
 };
 
 
 
-class Worm2Dm : public Worm2Dbody
+class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 {
     public:
 
     //virtual void Step(double StepSize, double output) = 0;
+
     virtual void InitializeState(RandomState &rs) = 0;
-    virtual vector<doubIntParamsHead> getWormParams() = 0;
+    //virtual vector<doubIntParamsHead> getWormParams() = 0;
     
-    virtual void initForSimulation() =  0;
+    //virtual void initForSimulation() =  0;
     virtual const vector<string> getCellNames() = 0;
-    virtual const string getModelName() = 0;
+    //virtual const string getModelName() = 0;
 
     
-    void Step(double StepSize_);
+    //void Step(double StepSize_);
     //void DumpBodyState(ofstream &ofs, int skips);
     //void DumpCurvature(ofstream &ofs, int skips);
     virtual void setMuscleInput(double StepSize) {return;}
@@ -157,42 +164,42 @@ class Worm2Dm : public Worm2Dbody
     //virtual void DumpActStateState(ofstream &ofs, int skips);
     void DumpVal(ofstream &ofs, int skips, double val);
     void writeData();
-    virtual void writeAct();
-    void writeState();
+    //virtual void writeAct();
+    //void writeState();
 
     virtual void addParsToJson(json & j);
-    virtual void DumpParams(ofstream &ofs){return;}
+    //virtual void DumpParams(ofstream &ofs){return;}
 
-    void writeJsonFile(ofstream & json_out);
+    //void writeJsonFile(ofstream & json_out);
     
    
     void DumpNSOrdered(ofstream &ofs, int skips);
     
     
-    NSForW2D & itsNS(){return *n_ptr;}
+    //NSForW2D & itsNS(){return *n_ptr;}
 
-    virtual ~Worm2Dm(){
+   /*  virtual ~Worm2Dm(){
         if (m_ptr) delete m_ptr; 
         if (n_ptr) delete n_ptr;
-    }
+    } */
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 
-    virtual void Step1(double StepSize_) = 0;
-    NSForW2D * const n_ptr;
-    muscForW2D * m_ptr;
+    //virtual void Step1(double StepSize_) = 0;
+    //NSForW2D * const n_ptr;
+    //muscForW2D * m_ptr;
     
 
 
-    const wormIzqParams par1;
-    double t; // Time
-    const bool muscForWDconst;
+    //const wormIzqParams par1;
+    //double t; // Time
+    //const bool muscForWDconst;
     //double StepSize;
     
 
-    int nn(int neuronNumber, int unitNumber);
+    //int nn(int neuronNumber, int unitNumber);
 
 
 };
