@@ -60,9 +60,9 @@ def make_fig(plot_format):
         * 1000.0
     )
 
-    plot_velocity = True
-    if plot_velocity:
-        vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
+    #plot_velocity = True
+    #if plot_velocity:
+    #    vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
     x = body[:, range(1, 154, 3)]
     y = body[:, range(2, 154, 3)]
     xc = np.sum(x, axis=1) / nrods
@@ -131,8 +131,10 @@ def make_fig(plot_format):
     ###############################
     # s = np.where(np.array(sel) == 23)[0]
 
+    plot_velocity = True
     plot_transient = 50.0
     if plot_velocity:
+        vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
         # ax2.plot(np.linspace(0, 10, len(vel[s][0])), 1000*vel[s][0], 'k', linewidth = 3)
         ax2.plot(vel[0][1:] - plot_transient, 1000 * vel[1][1:], "k", linewidth=3)
         ax2.axhline(y=AvgSpeed, linestyle="--", color="r")

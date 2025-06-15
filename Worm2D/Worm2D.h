@@ -113,6 +113,9 @@ void writeJsonFile(ofstream & json_out);
 
 NSForW2D & itsNS(){return *n_ptr;}
 virtual void DumpParams(ofstream &ofs) = 0;
+void DumpNSOrdered();
+void DumpVal(string filename_, double val);
+virtual double getVelocity() = 0;
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
@@ -162,18 +165,18 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     virtual void setMuscleInput(double StepSize) {return;}
     //virtual void DumpActState(ofstream &ofs, int skips);
     //virtual void DumpActStateState(ofstream &ofs, int skips);
-    void DumpVal(ofstream &ofs, int skips, double val);
+    //void DumpVal(ofstream &ofs, int skips, double val);
     void writeData();
     //virtual void writeAct();
     //void writeState();
-
+    double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
     //virtual void DumpParams(ofstream &ofs){return;}
 
     //void writeJsonFile(ofstream & json_out);
     
    
-    void DumpNSOrdered(ofstream &ofs, int skips);
+    //void DumpNSOrdered(ofstream &ofs, int skips);
     
     
     //NSForW2D & itsNS(){return *n_ptr;}

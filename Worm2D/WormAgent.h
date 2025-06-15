@@ -106,6 +106,7 @@ public:
 	void setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_);
 	void DumpParams(ofstream &ofs){return;}
+	double getVelocity(){return avgvel;}
 
   	/* void setSimPars(double orient_orig_ = 0.0,
 	double gradSteep_ = 0.5,

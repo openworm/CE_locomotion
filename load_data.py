@@ -66,11 +66,11 @@ plot_formats["CE"]["worm_plot_time"] = 5
 plot_formats["CE"]["do_body_plot"] = True
 
 plot_formats["CO"] = {}
-plot_formats["CO"]["fig_titles"] = ["Neurons"]
-plot_formats["CO"]["data_sizes"] = [10]
-plot_formats["CO"]["fig_labels"] = ["Neu"]
+plot_formats["CO"]["fig_titles"] = ["Inter neurons", "Kinesis neurons", "Head Motor neurons"]
+plot_formats["CO"]["data_sizes"] = [6,2,2]
+plot_formats["CO"]["fig_labels"] = ["Neu", "Kin", "Mot"]
 plot_formats["CO"]["plot_cell_names"] = ["N" + str(i) for i in range(10)]
-plot_formats["CO"]["plot_col_divs"] = [5, 5]
+plot_formats["CO"]["plot_col_divs"] = [6, 4]
 plot_formats["CO"]["plot_time"] = 10
 plot_formats["CO"]["worm_plot_time"] = 5
 plot_formats["CO"]["do_body_plot"] = False

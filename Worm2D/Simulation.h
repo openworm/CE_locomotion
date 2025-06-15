@@ -22,8 +22,8 @@ public:
         //curvfile.open(rename_file("sim_curv.dat"));
         //bodyfile.open(rename_file("sim_body.dat"));
         //actfile.open(rename_file("sim_act.dat"));
-        velfile.open(rename_file("sim_vel.dat"));
-        nsfile.open(rename_file("sim_ns.dat"));
+        //velfile.open(rename_file("sim_vel.dat"));
+        //nsfile.open(rename_file("sim_ns.dat"));
 
     }
     void runSimulation(Worm2Dbase & w);
@@ -32,11 +32,12 @@ public:
     ~Simulation(){
         //actfile.close(); curvfile.close(); 
         //bodyfile.close(); 
-        velfile.close(); nsfile.close();}
+        //velfile.close(); nsfile.close();
+        }
     
 private:
 const simPars sp;
 string rename_file(string filename);
-ofstream velfile, nsfile;
+//ofstream velfile, nsfile;
 
 };

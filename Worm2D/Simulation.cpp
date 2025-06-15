@@ -19,8 +19,8 @@ void Simulation::runSimulation(Worm2Dbase & w)
         //w.DumpBodyState(bodyfile, sp.skip_steps);
         //w.DumpCurvature(curvfile, sp.skip_steps);
         //w.DumpActState(actfile, sp.skip_steps);
-        //w.DumpVal(velfile,sp.skip_steps,w.getVelocity()/sp.StepSize);
-        //w.DumpNSOrdered(nsfile, sp.skip_steps);
+        w.DumpVal("vel",w.getVelocity()/sp.StepSize);
+        w.DumpNSOrdered();
     }
     
     

@@ -144,31 +144,47 @@ double Worm2Dbody::getVelocity()
 
 }
 
-void Worm2Dm::DumpNSOrdered(ofstream &ofs, int skips)
+void Worm2Dbase::DumpNSOrdered()
 {
 
     //const int NSsize = dynamic_cast<NervousSystem&>(*n_ptr).size;
-    static int tt = skips;
 
-    if (++tt >= skips) {
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,"ns.dat");
+
+
+    ofstream & ofs = ofsvec[pos];  
+
+
+    if (++tt >= dataskips) {
         tt = 0;
-        ofs << t;
+        ofs << datatime;
         for (int i = 1; i <= par1.N_size; i++) ofs <<  " " << n_ptr->NeuronOutput(i);
-        ofs << "\n";
+        ofs << endl;
     }
 }
 
 
-void Worm2Dm::DumpVal(ofstream &ofs, int skips, double val)
+void Worm2Dbase::DumpVal(string filename_, double val)
 {
-    static int tt = skips;
 
-    if (++tt >= skips) {
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,filename_);
+
+    ofstream & ofs = ofsvec[pos];  
+
+    if (++tt >= dataskips) {
         tt = 0;
 
-        ofs << t << " " << val;
+        ofs << datatime << " " << val;
     
-        ofs << "\n";
+        ofs << endl;
     }
 }
 
