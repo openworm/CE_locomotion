@@ -95,6 +95,8 @@ public:
 	//void writeData(){Worm2Dm::writeAct();Worm2Dm::writeState();}
 	void addParsToJson(json & j);
 	void initForSimulation(){return;}
+
+
 	//const vector<string> getCellNames() {return {"A","B"};}
 	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();
@@ -107,12 +109,8 @@ public:
 	double gradSteep_, double RunDuration_, double HSStepSize_);
 	void DumpParams(ofstream &ofs){return;}
 	double getVelocity(){return avgvel;}
-
-  	/* void setSimPars(double orient_orig_ = 0.0,
-	double gradSteep_ = 0.5,
-	int taxis_ = 1,
-	int kinesis_ = 0,
-	double StepSize_ =	0.01,
-	double RunDuration_ = 350.0	); */
+	void writeBodyPos();
+	void writeData();	
+  	
 
 };

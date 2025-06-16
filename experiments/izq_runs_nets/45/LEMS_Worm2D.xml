@@ -14,8 +14,8 @@
     <Include file="Networks.xml"/>
     <Include file="Simulation.xml"/>
 
-    <Include file="cell_syn_X.xml"/>
-    <Include file="cell_syn_X_cells.xml"/>
+    <Include file="cell_syn_W2D.xml"/>
+    <Include file="cell_syn_W2D_cells.xml"/>
     <Include file="musc_X.xml"/>
     <Include file="musc_X_cells.xml"/>
     <Include file="Worm2D.net.nml"/>

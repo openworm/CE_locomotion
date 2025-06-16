@@ -85,6 +85,7 @@ DEFAULTS = {
     "modelFolder": ".",
     "maxGens": None,
     "modelName": None,
+    "reRand": False,
 }
 
 
@@ -178,6 +179,17 @@ def process_args():
         default=DEFAULTS["doNML"],
         help=(
             "Run the equivalent neuroML simulation without muscles instead of C++ simulation if True."
+        ),
+    )
+
+    parser.add_argument(
+        "-rr",
+        "--reRand",
+        action="store_true",
+        # metavar="<run NML>",
+        default=DEFAULTS["reRand"],
+        help=(
+            "If true a new random seed is generated to replace the filed value. Ignored if RandSeed is set."
         ),
     )
 
@@ -437,6 +449,10 @@ def run(a=None, **kwargs):
     else:
         sim_data = {}
 
+    if a.reRand:
+        if "seed" in sim_data:
+            del sim_data["seed"]
+
     random.seed(datetime.now().timestamp())
     random_seed = random.randint(1, 1000000)
 
@@ -508,6 +524,9 @@ def run(a=None, **kwargs):
     elif os.path.isfile(evol_par_file_base):
         with open(evol_par_file_base) as f:
             evol_data = json.load(f)
+
+    if a.reRand and do_evol and ("randomseed" in evol_data):
+        del evol_data["randomseed"]
 
     same_vals = True
     # if do_evol:

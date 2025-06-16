@@ -60,8 +60,8 @@ def make_fig(plot_format):
         * 1000.0
     )
 
-    #plot_velocity = True
-    #if plot_velocity:
+    # plot_velocity = True
+    # if plot_velocity:
     #    vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
     x = body[:, range(1, 154, 3)]
     y = body[:, range(2, 154, 3)]

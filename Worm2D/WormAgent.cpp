@@ -214,6 +214,7 @@ void WormAgent::ResetChemCon(double gradSteep)
 void WormAgent::ResetAgentIntState(RandomState &rs)
 {
 	NervousSystem.RandomizeCircuitState(0.0, 0.0, rs);
+	//NervousSystem.RandomizeCircuitState(0.0, 0.5, rs);
 }
 
 // *******
@@ -236,6 +237,34 @@ void WormAgent::UpdateSensors()
 	oASEL = tempDiff > 0.0 ? tempDiff: 0.0;
 	oASER = tempDiff < 0.0 ? fabs(tempDiff): 0.0;
 }
+
+void WormAgent::writeData()
+{
+	Worm2Dbase::writeData();
+	writeBodyPos();
+}
+
+
+void WormAgent::writeBodyPos()
+{
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+    
+    resetStats(firstcall,pos,tt,"body.dat");
+
+    ofstream & ofs = ofsvec[pos];  
+   
+    if (++tt >= dataskips) {
+        tt = 0;
+
+        ofs << datatime << " " << px << " " << py << " " << theta << endl;
+        // Body
+        
+    }
+    return;
+}
+
 
 void WormAgent::PrintPath( ofstream &file)
 {
@@ -311,12 +340,8 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 void WormAgent::addParsToJson(json & j)
 {
 
-	//string nsHead = "Nervous system";
-    //appendAllNSJson(j[nsHead], NervousSystem); //not yet implemented
-      
     Worm2Dbase::addParsToJson(j);
         
-    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }
 
 
@@ -327,10 +352,6 @@ void WormAgent::Step1(double StepSize)
 	UpdateChemCon(gradSteep);
 }
 
-/* void WormAgent::Step(double StepSize)
-{
-	Step(StepSize,rs,HStimestep,taxis,kinesis);
-} */
 
 // Step
 void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)

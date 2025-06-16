@@ -297,24 +297,6 @@ void Worm2Dbody::writeBody()
     return;
 }
 
-
-/* void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
-{
-    static int tt = skips;
-
-    if (++tt >= skips) {
-        tt = 0;
-
-        ofs << t;
-        // Body
-        for (int i = 1; i <= N_rods; i++)
-        {
-            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
-        }
-        ofs << "\n";
-    }
-}
- */
 void Worm2Dbase::writeJsonFile(ofstream & json_out)
 {
 

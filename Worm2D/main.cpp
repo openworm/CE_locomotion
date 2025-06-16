@@ -90,7 +90,7 @@ int main (int argc, const char* argv[])
 
         w = new WormAgent(phenotype);
         double orient = 0;
-        double gradSteep = 0;
+        double gradSteep = 0.5;
         dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,ep1.Transient + ep1.Duration,ep1.StepSize);
 
         }
@@ -144,7 +144,8 @@ int main (int argc, const char* argv[])
     w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
 
-    cout << "making simulation" << endl;
+
+    cout << "making simulation simrandseed " << simrandseed << endl;
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
     er->RunSimulation(*w, rs);}
@@ -157,8 +158,22 @@ int main (int argc, const char* argv[])
     rs.SetRandomSeed(simrandseed);
     w->InitializeState(rs);}
     w->initForSimulation();
+    double simduration = atof(getParameter(argc,argv,"-sd","60"));
+    double simtransient = atof(getParameter(argc,argv,"-st","50"));
+
+    //double simduration = 60;
+    //double simtransient = 50;
+    if (model_name == "CO") {
+
+        //simduration = 10;
+        double orient = 0;
+        double gradSteep = 0.5;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,simduration + simtransient,ep1.StepSize);
+
+    }
+
     simPars sp1 = {er->itsEvoPars().directoryName,
-        er->itsEvoPars().skip_steps, 60, 50, er->itsEvoPars().StepSize};
+        er->itsEvoPars().skip_steps, simduration, simtransient, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w);
 
