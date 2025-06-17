@@ -158,11 +158,11 @@ int main (int argc, const char* argv[])
     rs.SetRandomSeed(simrandseed);
     w->InitializeState(rs);}
     w->initForSimulation();
-    double simduration = atof(getParameter(argc,argv,"-sd","60"));
-    double simtransient = atof(getParameter(argc,argv,"-st","50"));
+    //double simduration = atof(getParameter(argc,argv,"-sd","60"));
+    //double simtransient = atof(getParameter(argc,argv,"-st","50"));
 
-    //double simduration = 60;
-    //double simtransient = 50;
+    double simduration = 60;
+    double simtransient = 50;
     if (model_name == "CO") {
 
         //simduration = 10;

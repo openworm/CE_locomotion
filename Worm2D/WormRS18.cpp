@@ -504,7 +504,6 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
 
 
 
-
 void Worm18::writeAct()
 {
     static bool firstcall = true;
@@ -513,18 +512,10 @@ void Worm18::writeAct()
 
     resetStats(firstcall,pos,tt,"act.dat");
 
- /*  if (firstcall || !isOpen[pos]){
-      ofsvec.push_back(ofstream(getName("act.dat")));
-      pos = ofsvec.size() - 1;
-      isOpen.push_back(true);
-      firstcall = false;
-      tt = dataskips;
-  } */
+ 
   
   ofstream & ofs = ofsvec[pos];  
 
-
-    
 
 
     if (++tt >= dataskips) {
