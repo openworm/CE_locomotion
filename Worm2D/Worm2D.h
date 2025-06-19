@@ -8,6 +8,14 @@
 #include "jsonUtils.h"
 #include "../neuromlLocal/NSBaseForW2D.h"
 
+//datawriter->worm2dbase (nervous system and muscle pointers)
+//datawriter->worm2dbody (just body plus functions)
+//worm2dbase + worm2dbody -> worm2dm (nn ptr + musc ptr + body)
+//worm2dm -> worm2d (cc musc + nn ptr plus nn to musc connections )
+//worm2dm -> worm2d21m (nn+musc ptrs + body + net21 specifics)
+//Worm2D21m + worm2d -> worm2d21 (cc musc + nn ptr + musc connections)
+//worm2d21 -> worm21 (cc musc + cc nn + musc connections)
+
 
 //using json = nlohmann::json;
 
@@ -237,6 +245,7 @@ class Worm2D : virtual public Worm2Dm
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
     void setMuscleInput(double StepSize);
+    void setMuscleInputVec(double StepSize);
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     void setMuscleInputVent();
     void setMuscleInputDors();
@@ -245,6 +254,7 @@ class Worm2D : virtual public Worm2Dm
     Muscles & m;
    
     NSToMuscles vMuscConn, dMuscConn;
+    vector<toFromWeight> vMuscConnvec, dMuscConnvec;
     
  
 };

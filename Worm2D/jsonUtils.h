@@ -39,6 +39,15 @@ return retvec;
 } 
 
 template<class T>
+void appendVectorToJson(json & j, const vector<T> & vec)
+{
+
+     j["value"] = vec;
+
+}
+
+
+template<class T>
 void appendToJson(json & j, const Params<T> & par)
 {
     size_t mess_ind = 0;
@@ -49,6 +58,9 @@ void appendToJson(json & j, const Params<T> & par)
         }
                
 }
+void to_json(json & j, const weightentry & w);
+void to_json(json & j, const toFromWeight & w);
+void from_json(const json& j, toFromWeight & w);
 
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);

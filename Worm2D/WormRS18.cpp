@@ -204,6 +204,8 @@ void Worm18::InitializeState(RandomState &rs)
 
 vector<toFromWeight> Worm18::makeVentralMuscleConn()
 {
+    //cout << "making ventral muscle con" << endl;
+
     vector<toFromWeight> vec1;
 
         {vector<int> neurons({SMDV, RMDV});
@@ -250,6 +252,7 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
 
 vector<toFromWeight> Worm18::makeDorsalMuscleConn()
 {
+    //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
 
     {vector<int> neurons({SMDD, RMDD});
@@ -281,8 +284,6 @@ void Worm18::setMuscleInputOrigDorsal()
         dorsalHeadInput = NMJ_DD*n.NeuronOutput(nn(DD,mi)) + NMJ_DB*n.NeuronOutput(nn(DB,mi));
         m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
         }
-
-
 }
 
 
@@ -365,16 +366,12 @@ void Worm18::setMuscleInputOrig(double StepSize)
 
 }
 
-
-void Worm18::Step1(double StepSize)
+void Worm18::preNStep(double StepSize)
 {
-   
-    double ds, vs;
 
- 
+double ds, vs;
 
-    // Update Body
-    b.StepBody(StepSize);
+b.StepBody(StepSize);
 
     // Set input to Stretch Receptors from Body
     for(int i = 1; i <= N_segments; ++i){
@@ -410,14 +407,14 @@ if (rS18Macros.vncsr)
 }    
 //#endif
 
-    // Update Nervous System
-    //h.EulerStep(StepSize);
-    n.EulerStep(StepSize);
+}
 
-    // Set input to Muscles
-    //  Input from the head circuit
 
-    setMuscleInputOrig(StepSize);
+void Worm18::postNStep(double StepSize)
+{
+
+     setMuscleInputOrig(StepSize);
+    //setMuscleInputVec(StepSize);
     //setMuscleInput(StepSize);
 
     //setMuscleInputDors();   
@@ -446,6 +443,21 @@ if (rS18Macros.vncsr)
     b.SetVentralSegmentActivation(N_segments-1, m.VentralMuscleOutput(par1.N_muscles)/2);
     b.SetDorsalSegmentActivation(N_segments, m.DorsalMuscleOutput(par1.N_muscles)/2);
     b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
+}
+
+void Worm18::Step1(double StepSize)
+{
+   
+    preNStep(StepSize);
+
+    // Update Nervous System
+    //h.EulerStep(StepSize);
+    n.EulerStep(StepSize);
+
+    // Set input to Muscles
+    //  Input from the head circuit
+
+    postNStep(StepSize);
 
     // Time
     //t += StepSize;

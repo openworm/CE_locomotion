@@ -398,7 +398,9 @@ void Worm2D::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
 
-
+    appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights_vec"], dMuscConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights_vec"], vMuscConnvec);
+   
     
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
@@ -499,17 +501,40 @@ for (int i = 1; i<= vMuscConn.size; i++){
 void Worm2D::setMuscleInputDors()
 {
 
-    for (int i = 1; i<= dMuscConn.size; i++){
+    for (int to = 1; to<= dMuscConn.size; to++){
         double tot = 0;
-    for (int j = 1; j <= dMuscConn.numConns(i); j++){
-        tot +=  dMuscConn.weights[i][j].weight*n_ptr->NeuronOutput(dMuscConn.weights[i][j].from);
+    for (int j = 1; j <= dMuscConn.numConns(to); j++){
+        tot +=  dMuscConn.weights[to][j].weight*n_ptr->NeuronOutput(dMuscConn.weights[to][j].from);
     }
-    m.SetDorsalMuscleInput(i, tot);
+    m.SetDorsalMuscleInput(to, tot);
     }
 
 }
 
+void Worm2D::setMuscleInputVec(double StepSize)
+{
+    vector<double> vtot(par1.N_muscles);
 
+    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    for (int i=0;i<vMuscConnvec.size();i++)
+    {
+        const toFromWeight & tfw = vMuscConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
+    
+    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    for (int i=0;i<dMuscConnvec.size();i++)
+    {
+        const toFromWeight & tfw = dMuscConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);
+
+
+
+    m.EulerStep(StepSize);
+}
 
 
 void Worm2D::setMuscleInput(double StepSize)
@@ -526,8 +551,10 @@ void Worm2D::setMuscleInput(double StepSize)
 
 void Worm2D::setUpMuscleConn()
 {
-vMuscConn.setWeights(makeVentralMuscleConn());
-dMuscConn.setWeights(makeDorsalMuscleConn());
+vMuscConnvec = makeVentralMuscleConn();
+dMuscConnvec = makeDorsalMuscleConn();
+vMuscConn.setWeights(vMuscConnvec);
+dMuscConn.setWeights(dMuscConnvec);
 }
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 

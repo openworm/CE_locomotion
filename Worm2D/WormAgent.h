@@ -1,5 +1,5 @@
 #pragma once
-#include "CTRNN.h"
+//#include "CTRNN.h"
 #include "Worm2D.h"
 
 using namespace CTRNNspace;
@@ -83,7 +83,7 @@ public:
 	const double	HST				=	4.2;			// Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997.
 	const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Ferree, Marcotte, Lockery, 1997.
 	int		VelDelta;  //		=	(int) (HST/StepSize);
-	CTRNN & NervousSystem;
+	NervousSystem & n;
 
 	//added quantities
 

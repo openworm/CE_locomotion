@@ -151,6 +151,8 @@ getVector<int>(c.NumElectricalConns, c.size),
 return par;
 }
 
+
+
 void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
 {    
     vector<toFromWeight> newvec;

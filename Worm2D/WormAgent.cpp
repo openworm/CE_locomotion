@@ -7,10 +7,11 @@
 // Constructors and Destructors
 // ****************************
 
-using namespace CTRNNspace;
+//using namespace CTRNNspace;
 
 WormAgent::WormAgent(int newsize):
-Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+//Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0), n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 
@@ -19,21 +20,22 @@ Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<
 
 // The constructor
 /* WormAgent::WormAgent(TVector<double> & v, int newsize):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 	SetParameters(v);
 } */
 
 WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
-//Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+//Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	//InitialiseCircuit(newsize);
 	SetParameters(v);
 }
 
 WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0), n(dynamic_cast<NervousSystem&>(*n_ptr))
+//Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
@@ -72,8 +74,8 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 
 	BestIndividualFile >> outputGain;
 
-	BestIndividualFile >> NervousSystem;
-	size = NervousSystem.CircuitSize();
+	BestIndividualFile >> n;
+	size = n.CircuitSize();
 
 	BestIndividualFile.close();
 }
@@ -94,7 +96,7 @@ void WormAgent::SetParameters(TVector<double> &v)
 	// Chemical synapse weights between the N CTRNN nodes
 	for (int i = 1; i <= size-4; i++){
 		for (int j = 1; j <= size-4; j++){
-			NervousSystem.SetConnectionWeight(i, j, v(k));
+			n.SetChemicalSynapseWeight(i, j, v(k));
 			k++;
 		}
 	}
@@ -102,39 +104,39 @@ void WormAgent::SetParameters(TVector<double> &v)
 	// Chemical synapses from interneurons to F/B  and between F/B motor neurons
 	for (int i = 1; i <= size-2; i++){
 		for (int j = size-3; j <= size-2; j++){
-			NervousSystem.SetConnectionWeight(i, j, v(k));
+			n.SetChemicalSynapseWeight(i, j, v(k));
 			k++;
 		}
 	}
 
 	// // Chemical synapses from interneurons to D/V with DV symmetry
 	for (int i = 1; i <= size-4; i++){
-			NervousSystem.SetConnectionWeight(i, size, v(k));
-			NervousSystem.SetConnectionWeight(i, size-1, v(k));
+			n.SetChemicalSynapseWeight(i, size, v(k));
+			n.SetChemicalSynapseWeight(i, size-1, v(k));
 			k++;
 	}
 
 	// Self-connections for the DV motorneurons
-	NervousSystem.SetConnectionWeight(size, size, v(k));
-	NervousSystem.SetConnectionWeight(size-1, size-1, v(k));
+	n.SetChemicalSynapseWeight(size, size, v(k));
+	n.SetChemicalSynapseWeight(size-1, size-1, v(k));
 	k++;
 
 	// Biases
 	for (int i = 1; i <= size-2; i++){
-		NervousSystem.SetNeuronBias(i, v(k));
+		n.SetNeuronBias(i, v(k));
 		k++;
 	}
-	NervousSystem.SetNeuronBias(size, v(k));
-	NervousSystem.SetNeuronBias(size-1, v(k));
+	n.SetNeuronBias(size, v(k));
+	n.SetNeuronBias(size-1, v(k));
 	k++;
 
 	// Time-constants
 	for (int i = 1; i <= size-2; i++){
-		NervousSystem.SetNeuronTimeConstant(i, v(k));
+		n.SetNeuronTimeConstant(i, v(k));
 		k++;
 	}
-	NervousSystem.SetNeuronTimeConstant(size, v(k));
-	NervousSystem.SetNeuronTimeConstant(size-1, v(k));
+	n.SetNeuronTimeConstant(size, v(k));
+	n.SetNeuronTimeConstant(size-1, v(k));
 	k++;
 
 	// conections from CPG to motor neurons
@@ -158,7 +160,7 @@ void WormAgent::SetParameters(TVector<double> &v)
 void WormAgent::InitialiseCircuit(int CircuitSize)
 {
 	size = CircuitSize;
-	NervousSystem.SetCircuitSize(size);
+	n.SetCircuitSize(size,300,300);
 	w_ASER.SetBounds(1, size);
 	w_ASER.FillContents(0.0);
 	w_ASEL.SetBounds(1, size);
@@ -213,8 +215,8 @@ void WormAgent::ResetChemCon(double gradSteep)
 
 void WormAgent::ResetAgentIntState(RandomState &rs)
 {
-	NervousSystem.RandomizeCircuitState(0.0, 0.0, rs);
-	//NervousSystem.RandomizeCircuitState(0.0, 0.5, rs);
+	n.RandomizeCircuitState(0.0, 0.0, rs);
+	//n.RandomizeCircuitState(0.0, 0.5, rs);
 }
 
 // *******
@@ -251,7 +253,7 @@ void WormAgent::writeBodyPos()
     static size_t pos;
     static int tt;
     
-    resetStats(firstcall,pos,tt,"body.dat");
+    resetStats(firstcall,pos,tt,"bodypos.dat");
 
     ofstream & ofs = ofsvec[pos];  
    
@@ -283,7 +285,7 @@ void WormAgent::PrintDetail( ofstream &file)
 	file << oASEL << " ";
 	file << oASER << " ";
 	for (int i = 1; i <= size; i++){
-		file << NervousSystem.NeuronOutput(i) << " ";
+		file << n.NeuronOutput(i) << " ";
 	}
 	file << avgtheta << " ";
 	// file << pastAvgCon << " ";
@@ -358,19 +360,19 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 {
 	// Input from sensory neurons to interneurons
 	for (int i = 1; i <= size-4; i++){
-			NervousSystem.SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
+			n.SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
 	}
 
 	// Add antiphase oscillatory input to the neck motor neurons
-	NervousSystem.SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep));
-	NervousSystem.SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep));
+	n.SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep));
+	n.SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep));
 
 	// Update the signaling system
-	NervousSystem.EulerStep(StepSize);
+	n.EulerStep(StepSize);
 
 	// Update curvature
 	if (taxis == 1){
-		NMdiff = NervousSystem.NeuronOutput(size-1) - NervousSystem.NeuronOutput(size);
+		NMdiff = n.NeuronOutput(size-1) - n.NeuronOutput(size);
 		theta = outputGain * NMdiff;
 		orient += StepSize * theta;
 
@@ -385,12 +387,12 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 
 	// Update Forward -> Backward
 	if (kinesis == 1){
-		if ((forward == 1) && (NervousSystem.NeuronOutput(size-2) > 0.6) && (NervousSystem.NeuronOutput(size-3) < 0.4) )
+		if ((forward == 1) && (n.NeuronOutput(size-2) > 0.6) && (n.NeuronOutput(size-3) < 0.4) )
 		{
 			forward = 0;
 		}
 		// Update Backward -> Forward
-		if ((forward == 0) && (NervousSystem.NeuronOutput(size-2) < 0.4) && (NervousSystem.NeuronOutput(size-3) > 0.6) )
+		if ((forward == 0) && (n.NeuronOutput(size-2) < 0.4) && (n.NeuronOutput(size-3) > 0.6) )
 		{
 			forward = 1;
 			orient = rs.UniformRandom(0, 2*Pi);

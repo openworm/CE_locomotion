@@ -43,6 +43,8 @@ public:
     
     protected:
     void Step1(double Stepsize); 
+    void preNStep(double Stepsize);
+    void postNStep(double Stepsize);
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     void addParsToJson(json & j);

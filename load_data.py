@@ -266,7 +266,10 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-        body_data = np.loadtxt(hf.rename_file("body.dat")).T
+        if a.modelName == "CO":
+            body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
+        else:
+            body_data = np.loadtxt(hf.rename_file("body.dat")).T
 
         tmax = 1520
         if tmax >= body_data.shape[1]:

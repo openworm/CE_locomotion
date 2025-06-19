@@ -111,8 +111,9 @@ int main (int argc, const char* argv[])
         json_out.close();
 
         ofstream nsdump(er->rename_file("NSdump.dat"));
-        if (model_name == "CO") nsdump << dynamic_cast<CTRNN&>(w->itsNS());
-        else nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
+        //if (model_name == "CO") nsdump << dynamic_cast<CTRNN&>(w->itsNS());
+        //else 
+        nsdump << dynamic_cast<NervousSystem&>(w->itsNS());
         nsdump.close();
 
         delete w;
