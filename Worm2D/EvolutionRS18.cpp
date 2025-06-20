@@ -221,9 +221,9 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
 
     Worm18 w(phenotype, 0);
     w.setRs18output(1);
-    w.setBasename(itsEvoPars().directoryName);
+    //w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
-    w.dataReset();
+    //w.dataReset();
 
 
 
@@ -233,7 +233,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
 
 
     w.InitializeState(rs);
-
+    w.InitializeData(itsEvoPars().directoryName);
 
 
     // Transient

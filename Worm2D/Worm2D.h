@@ -56,6 +56,7 @@ class DataWriter{
         if (basename==".") {cout << "basename not set" << endl; exit(1);}
         writeData();
     }
+    
     DataWriter(){datatime=0;prefix="";basename=".";}
     virtual ~DataWriter(){closeAll();}
     
@@ -67,12 +68,15 @@ class DataWriter{
    
     void dataReset(){closeAll();writeDataCheck();}
     //void dataReset(){closeAll();}
+    void closeAll();
+    void InitializeData(string basename_);
+
 
     protected:
 
     bool resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
     virtual void writeData() = 0; //{cout << "write data not implemented!" << endl;}
-    void closeAll();
+   
 
     string getName(string name_);
 
@@ -118,6 +122,7 @@ class Worm2Dbase : virtual public DataWriter
 {
 
 public:
+
 virtual void InitializeState(RandomState &rs) = 0;
 virtual void initForSimulation() =  0;
 

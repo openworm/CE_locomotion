@@ -142,9 +142,10 @@ int main (int argc, const char* argv[])
     if (model_name == "CO") w = new WormAgent(phenotype);
 
     //write_json(er,w, "worm_data_3.json");
-    w->setBasename(er->itsEvoPars().directoryName);
+    //w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
-    w->dataReset();
+    w->InitializeData(er->itsEvoPars().directoryName);
+    //w->dataReset();
 
     cout << "making simulation simrandseed " << simrandseed << endl;
     {RandomState rs;
@@ -208,9 +209,10 @@ int main (int argc, const char* argv[])
 
     }
 
-    w->setBasename(er->itsEvoPars().directoryName);
+    //w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
-    w->dataReset();
+    w->InitializeData(er->itsEvoPars().directoryName);
+    //w->dataReset();
     write_json(er,w, "worm_data_nml.json");
 
     {RandomState rs;

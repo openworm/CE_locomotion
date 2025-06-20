@@ -4,10 +4,11 @@ string Simulation::rename_file(string filename){return sp.directoryName + "/" + 
 
 void Simulation::runSimulation(Worm2Dbase & w)
 {
-    w.setBasename(sp.directoryName);
+    //w.setBasename(sp.directoryName);
     w.setDataskips(sp.skip_steps);
     w.setPrefix("sim");
-    w.dataReset();
+    w.InitializeData(sp.directoryName);
+    //w.dataReset();
     //w.closeAll();
     //w.writeData();
 

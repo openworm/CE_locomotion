@@ -36,6 +36,12 @@ string DataWriter::getName(string name_){
         else return basename + "/" + name_;
  }
 
+void  DataWriter::InitializeData(string basename_)
+{
+    setBasename(basename_);
+    dataReset();
+}
+
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
@@ -63,16 +69,20 @@ m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_m
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
     b.InitializeBodyState();
-    //writeData();
+    //writeDataCheck();
     return;
 }
 
 void Worm2Dbase::InitializeState(RandomState &rs)
 {
     t = 0.0;
-    //writeData();
+    //writeDataCheck();
+    //dataReset();
     return;
 }
+
+
+
 
 void Worm2Dm::InitializeState(RandomState &rs)
 {
