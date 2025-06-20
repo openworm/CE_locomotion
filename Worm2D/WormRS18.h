@@ -35,12 +35,14 @@ public:
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
   
+    //void writeData(){Worm2D::writeData();}
     void writeAct();
     //void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
     void initForSimulation(){}
-    
+    void setRs18output(bool val_){rs18output=val_;}
+
     protected:
     void Step1(double Stepsize); 
     void preNStep(double Stepsize);
@@ -65,7 +67,9 @@ public:
 
     vector<doubIntParamsHead> getWormParams();
 
-    friend class EvolutionRS18;
+    //friend class EvolutionRS18;
+
+    
 
     protected:
 

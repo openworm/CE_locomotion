@@ -144,7 +144,7 @@ int main (int argc, const char* argv[])
     //write_json(er,w, "worm_data_3.json");
     w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
-
+    w->dataReset();
 
     cout << "making simulation simrandseed " << simrandseed << endl;
     {RandomState rs;
@@ -210,6 +210,7 @@ int main (int argc, const char* argv[])
 
     w->setBasename(er->itsEvoPars().directoryName);
     w->setDataskips(er->itsEvoPars().skip_steps);
+    w->dataReset();
     write_json(er,w, "worm_data_nml.json");
 
     {RandomState rs;

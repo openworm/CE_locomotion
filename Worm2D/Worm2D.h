@@ -51,20 +51,29 @@ class DataWriter{
 
     public:
    
-    virtual void writeData() {cout << "write data not implemented!" << endl;}
-   
+    
+    void writeDataCheck(){ 
+        if (basename==".") {cout << "basename not set" << endl; exit(1);}
+        writeData();
+    }
     DataWriter(){datatime=0;prefix="";basename=".";}
     virtual ~DataWriter(){closeAll();}
-   
+    
+
     void incDatatime(double Stepsize_){datatime+=Stepsize_;}
     void setDataskips(double dataskips_){dataskips = dataskips_;}
-    void setBasename(string basename_){basename=basename_;closeAll();}
-    void setPrefix(string prefix_){prefix=prefix_;closeAll();}
+    void setBasename(string basename_){basename=basename_;}
+    void setPrefix(string prefix_){prefix=prefix_;}
+   
+    void dataReset(){closeAll();writeDataCheck();}
+    //void dataReset(){closeAll();}
 
     protected:
-    void resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
 
+    bool resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
+    virtual void writeData() = 0; //{cout << "write data not implemented!" << endl;}
     void closeAll();
+
     string getName(string name_);
 
     vector<bool> isOpen;
@@ -94,13 +103,13 @@ class Worm2Dbody : virtual public DataWriter
     
     virtual void addParsToJson(json & j);
     double getVelocity();
-    void writeData();
+    
     //virtual ~Worm2Dbody(){}
-    void writeBody();
-    void writeCurvature();
+    virtual void writeBody();
+    virtual void writeCurvature();
     
     protected:
-
+    void writeData();
     WormBody b;
 
 };
@@ -113,7 +122,7 @@ virtual void InitializeState(RandomState &rs) = 0;
 virtual void initForSimulation() =  0;
 
 void Step(double StepSize_);
-void writeData();
+
 virtual void writeAct();
 void writeState();
 virtual void addParsToJson(json & j);
@@ -133,7 +142,7 @@ virtual ~Worm2Dbase(){
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-
+void writeData();
 
 virtual const string getModelName() = 0;
 virtual vector<doubIntParamsHead> getWormParams() = 0;
@@ -174,7 +183,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //virtual void DumpActState(ofstream &ofs, int skips);
     //virtual void DumpActStateState(ofstream &ofs, int skips);
     //void DumpVal(ofstream &ofs, int skips, double val);
-    void writeData();
+    //void writeData();
     //virtual void writeAct();
     //void writeState();
     double getVelocity(){return Worm2Dbody::getVelocity();}
@@ -197,6 +206,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+    void writeData();
 
     //virtual void Step1(double StepSize_) = 0;
     //NSForW2D * const n_ptr;
@@ -230,7 +240,7 @@ class Worm2D : virtual public Worm2Dm
     //NSForW2D & itsNS(){return *n_ptr;}
 
     void InitializeState(RandomState &rs);
-   
+    //void writeData(){Worm2Dm::writeData();}
 
     protected:
 

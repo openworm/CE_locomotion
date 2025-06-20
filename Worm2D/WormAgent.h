@@ -101,7 +101,10 @@ public:
 	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();
 	void Step1(double Stepsize);
-	
+	void preNStep(double StepSize, double timestep);
+	void postNStep(double StepSize, RandomState &rs, int taxis, int kinesis);
+	void moveAgent(double StepSize);
+
 	void InitializeState(RandomState &rs);
 
 	void setStepPars(double gradSteep_, RandomState &rs_, double timestep_, int taxis_, int kinesis_);

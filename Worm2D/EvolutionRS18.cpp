@@ -133,8 +133,8 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
 
     Worm18 w(phenotype, 0);
     w.InitializeState(rs);
-    w.rs18output = 1;
-
+    
+    w.setRs18output(1);
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
@@ -220,10 +220,10 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     GenPhenMapping(v, phenotype);
 
     Worm18 w(phenotype, 0);
-    w.rs18output = 1;
+    w.setRs18output(1);
     w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
-
+    w.dataReset();
 
 
 
@@ -240,7 +240,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
         w.Step(StepSize);
-        w.writeData();
+        w.writeDataCheck();
 
 
         //w.Curvature(curvature);
@@ -276,7 +276,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
         temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
 
-        w.writeData();
+        w.writeDataCheck();
 
         //w.Curvature(curvature);
         //curvfile << curvature << endl;
@@ -308,7 +308,8 @@ void EvolutionRS18::RunSimulation(Worm2Dbase &w1, RandomState &rs)
     Worm18 & w = dynamic_cast<Worm18&>(w1);
     double fitness;
     ofstream fitfile;
-    w.rs18output = 1;
+    
+    w.setRs18output(1);
 
     const double & Duration = evoPars1.Duration;
   
@@ -362,7 +363,7 @@ ofstream paramsfile;
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
         w.Step(StepSize);
-        w.writeData();
+        w.writeDataCheck();
 
 
         //w.Curvature(curvature);
@@ -394,7 +395,7 @@ ofstream paramsfile;
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
 
 
-        w.writeData();
+        w.writeDataCheck();
         //w.Curvature(curvature);
         //curvfile << curvature << endl;
         //w.DumpBodyState(bodyfile, skip);

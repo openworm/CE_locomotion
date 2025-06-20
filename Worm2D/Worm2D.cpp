@@ -11,16 +11,21 @@ vector<toFromWeight> dummyVec()
     return vec1;
 }
 
-void DataWriter::resetStats(bool & firstcall, size_t & pos, int & tt, string name_)
+bool DataWriter::resetStats(bool & firstcall, size_t & pos, int & tt, string name_)
 {
  
+    bool retval = false;
     if (firstcall || !isOpen[pos]){
       ofsvec.push_back(ofstream(getName(name_)));
       pos = ofsvec.size() - 1;
       isOpen.push_back(true);
       firstcall = false;
       tt = dataskips;
+      retval = true;
      }
+
+     //return false;
+     return retval;
 
 }
 
@@ -46,16 +51,26 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_){}
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc){}
 
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
+m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+{
+    //cout << "Worm2D const" << endl;
+    setUp();
+}
+
+
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
     b.InitializeBodyState();
+    //writeData();
     return;
 }
 
 void Worm2Dbase::InitializeState(RandomState &rs)
 {
     t = 0.0;
+    //writeData();
     return;
 }
 
@@ -64,6 +79,23 @@ void Worm2Dm::InitializeState(RandomState &rs)
 
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
+    
+    return;
+}
+
+
+
+void Worm2D::setUp()
+{
+    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);  
+    //InitializeState(rs);
+}
+
+void Worm2D::InitializeState(RandomState &rs)
+{
+    Worm2Dm::InitializeState(rs);
+    m.InitializeMuscleState();
+   
     return;
 }
 
@@ -73,6 +105,24 @@ int Worm2Dbase::nn(int neuronNumber, int unitNumber)
     return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
 }
 
+void Worm2Dbody::writeData()
+{
+writeBody();
+writeCurvature();
+}
+
+void Worm2Dm::writeData()
+{
+Worm2Dbase::writeData();
+Worm2Dbody::writeData();
+}
+
+
+void Worm2Dbase::writeData()
+{
+writeAct();
+writeState();
+}
 
 double Worm2Dbody::CoMx()
 {
@@ -153,7 +203,7 @@ void Worm2Dbase::DumpNSOrdered()
     static size_t pos;
     static int tt;
 
-    resetStats(firstcall,pos,tt,"ns.dat");
+    if (resetStats(firstcall,pos,tt,"ns.dat")) return;
 
 
     ofstream & ofs = ofsvec[pos];  
@@ -175,7 +225,7 @@ void Worm2Dbase::DumpVal(string filename_, double val)
     static size_t pos;
     static int tt;
 
-    resetStats(firstcall,pos,tt,filename_);
+    if (resetStats(firstcall,pos,tt,filename_)) return;
 
     ofstream & ofs = ofsvec[pos];  
 
@@ -189,11 +239,7 @@ void Worm2Dbase::DumpVal(string filename_, double val)
 }
 
 
-void Worm2Dbody::writeData()
-{
-writeBody();
-writeCurvature();
-}
+
 
 
 void Worm2Dbody::Curvature(TVector<double> &c)
@@ -232,9 +278,8 @@ void Worm2Dbody::writeCurvature()
     static size_t pos;
     static int tt;
 
-    resetStats(firstcall,pos,tt,"curv.dat");
-
-
+    if (resetStats(firstcall,pos,tt,"curv.dat")) return;
+    
     ofstream & ofs = ofsvec[pos];  
    
 
@@ -277,7 +322,7 @@ void Worm2Dbody::writeBody()
     static size_t pos;
     static int tt;
     
-    resetStats(firstcall,pos,tt,"body.dat");
+    if (resetStats(firstcall,pos,tt,"body.dat")) return;
 
  
     ofstream & ofs = ofsvec[pos];  
@@ -408,18 +453,7 @@ void Worm2D::addParsToJson(json & j)
     //addExtraParsToJson(j);
 }
 
-void Worm2Dm::writeData()
-{
-Worm2Dbase::writeData();
-Worm2Dbody::writeData();
-}
 
-
-void Worm2Dbase::writeData()
-{
-writeAct();
-writeState();
-}
 
 void Worm2Dbase::writeAct()
 {
@@ -427,7 +461,7 @@ void Worm2Dbase::writeAct()
     static size_t pos;
     static int tt;
     
-    resetStats(firstcall,pos,tt,"act.dat");
+    if (resetStats(firstcall,pos,tt,"act.dat")) return;
 
   
    
@@ -465,7 +499,8 @@ void Worm2Dbase::writeState()
     static bool firstcall = true;
     static size_t pos;
     static int tt;
-    resetStats(firstcall,pos,tt,"state.dat");
+
+    if (resetStats(firstcall,pos,tt,"state.dat")) return;
  
     ofstream & ofs = ofsvec[pos];  
 
@@ -571,25 +606,6 @@ void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1,
 }
 
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
-m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
-{
-    //cout << "Worm2D const" << endl;
-    setUp();
-}
 
-
-void Worm2D::setUp()
-{
-    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);  
-    //InitializeState(rs);
-}
-
-void Worm2D::InitializeState(RandomState &rs)
-{
-    Worm2Dm::InitializeState(rs);
-    m.InitializeMuscleState();
-    return;
-}
 
 const string Worm2Dbase::getModelName() {return "Unspecified";}

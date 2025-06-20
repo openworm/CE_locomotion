@@ -239,7 +239,8 @@ void Worm2DCE::writeAct()
   static bool firstcall = true;
   static size_t pos;
   static int tt;
-  resetStats(firstcall,pos,tt,"act.dat");
+
+  if (resetStats(firstcall,pos,tt,"act.dat")) return;
 
   /* if (firstcall || !isOpen[pos]){
       ofsvec.push_back(ofstream(getName("act.dat")));

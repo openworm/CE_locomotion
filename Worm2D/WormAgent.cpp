@@ -253,7 +253,7 @@ void WormAgent::writeBodyPos()
     static size_t pos;
     static int tt;
     
-    resetStats(firstcall,pos,tt,"bodypos.dat");
+    if (resetStats(firstcall,pos,tt,"bodypos.dat")) return;
 
     ofstream & ofs = ofsvec[pos];  
    
@@ -354,11 +354,9 @@ void WormAgent::Step1(double StepSize)
 	UpdateChemCon(gradSteep);
 }
 
-
-// Step
-void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)
+void WormAgent::preNStep(double StepSize, double timestep)
 {
-	// Input from sensory neurons to interneurons
+// Input from sensory neurons to interneurons
 	for (int i = 1; i <= size-4; i++){
 			n.SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
 	}
@@ -367,10 +365,12 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 	n.SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep));
 	n.SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep));
 
-	// Update the signaling system
-	n.EulerStep(StepSize);
 
-	// Update curvature
+}
+
+void WormAgent::postNStep(double StepSize, RandomState &rs, int taxis, int kinesis)
+{
+// Update curvature
 	if (taxis == 1){
 		NMdiff = n.NeuronOutput(size-1) - n.NeuronOutput(size);
 		theta = outputGain * NMdiff;
@@ -403,7 +403,14 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 			{avgvel = MaxVel;}
  	}
 
-	// Update the velocity
+
+
+
+}
+
+void WormAgent::moveAgent(double StepSize)
+{
+// Update the velocity
 	vx = cos(orient) * avgvel;
 	vy = sin(orient) * avgvel;
 
@@ -411,4 +418,19 @@ void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxi
 	px += StepSize * vx;
 	py += StepSize * vy;
 	//t += StepSize;
+
+
 }
+
+
+// Step
+void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)
+{
+	preNStep(StepSize, timestep);
+	// Update the signaling system
+	n.EulerStep(StepSize);
+	postNStep(StepSize,rs,taxis,kinesis);
+	moveAgent(StepSize);
+}
+
+	

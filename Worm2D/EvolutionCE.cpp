@@ -175,6 +175,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   WormCE w(phenotype, 1);
   w.setBasename(itsEvoPars().directoryName);
   w.setDataskips(itsEvoPars().skip_steps);
+  w.dataReset();
 
   {
   ofstream phenfile(rename_file("phenotype.dat"));
@@ -192,7 +193,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
       w.Step(StepSize);
-      w.writeData();
+      w.writeDataCheck();
       //w.DumpBodyState(bodyfile, skip_steps);
       //w.DumpCurvature(curvfile, skip_steps);
       //w.DumpActState(actfile, skip_steps);
@@ -203,7 +204,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.writeData();
+       w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);
@@ -216,7 +217,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    for (double t = 0.0; t <= (20); t += StepSize){
       w.Step(StepSize);
-      w.writeData();
+      w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);
@@ -227,7 +228,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.writeData();
+       w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);
@@ -275,7 +276,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
       w.Step(StepSize);
-      w.writeData();
+      w.writeDataCheck();
       //w.DumpBodyState(bodyfile, skip_steps);
       //w.DumpCurvature(curvfile, skip_steps);
       //w.DumpActState(actfile, skip_steps);
@@ -286,7 +287,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.writeData();
+       w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);
@@ -299,7 +300,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
-       w.writeData();
+       w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);
@@ -310,7 +311,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
-       w.writeData();
+       w.writeDataCheck();
        //w.DumpBodyState(bodyfile, skip_steps);
        //w.DumpCurvature(curvfile, skip_steps);
        //w.DumpActState(actfile, skip_steps);

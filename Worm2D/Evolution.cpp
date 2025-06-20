@@ -190,6 +190,7 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
     w.setPrefix("sts");
     w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
+    w.dataReset();
 
     w.DumpParams(paramsfile);
     paramsfile.close();
@@ -211,7 +212,7 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
             double vel = sqrt(pow(xt-xtp,2)+pow(yt-ytp,2))/StepSize;
 
             w.Step(StepSize);
-            w.writeData();
+            w.writeDataCheck();
             //w.DumpBodyState(bodyfile, skip_steps);
             //w.DumpActState(actfile, skip_steps);
             //w.DumpCurvature(curvfile, skip_steps);

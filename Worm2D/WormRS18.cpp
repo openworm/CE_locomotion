@@ -185,6 +185,7 @@ rS18Macros(setMacros()),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D({6,24,0.1
     }
 
      setUpMuscleConn();
+     //writeData();
 }
 
 void Worm18::InitializeState(RandomState &rs)
@@ -198,6 +199,7 @@ void Worm18::InitializeState(RandomState &rs)
     //n.RandomizeCircuitState(0.5, 0.5, rs); //fix initial conditions
     //h.RandomizeCircuitState(-0.5, 0.5, rs);
     Worm2D::InitializeState(rs);
+    //writeData();
 }
 
 
@@ -518,11 +520,13 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
 
 void Worm18::writeAct()
 {
+   
+
     static bool firstcall = true;
     static size_t pos;
     static int tt;
 
-    resetStats(firstcall,pos,tt,"act.dat");
+    if (resetStats(firstcall,pos,tt,"act.dat")) return;
 
  
   

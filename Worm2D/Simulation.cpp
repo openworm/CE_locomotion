@@ -7,6 +7,9 @@ void Simulation::runSimulation(Worm2Dbase & w)
     w.setBasename(sp.directoryName);
     w.setDataskips(sp.skip_steps);
     w.setPrefix("sim");
+    w.dataReset();
+    //w.closeAll();
+    //w.writeData();
 
     cout << "running simulation sim" << endl;
 
@@ -15,7 +18,7 @@ void Simulation::runSimulation(Worm2Dbase & w)
     for (double t = 0.0; t <= sp.Duration; t += sp.StepSize){
         
         w.Step(sp.StepSize);
-        w.writeData();
+        w.writeDataCheck();
         //w.DumpBodyState(bodyfile, sp.skip_steps);
         //w.DumpCurvature(curvfile, sp.skip_steps);
         //w.DumpActState(actfile, sp.skip_steps);

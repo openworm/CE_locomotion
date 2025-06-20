@@ -212,6 +212,7 @@ double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &r
     Worm21 w(phenotype);
     w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
+    w.dataReset();
     
     w.DumpParams(paramsfile);
     
@@ -398,7 +399,7 @@ void Evolution21::RunSimulation(Worm2Dbase & w1, RandomState &rs){
             double vel = sqrt(pow(xt-xtp,2)+pow(yt-ytp,2))/StepSize; */
 
             w.Step(StepSize);
-            w.writeData();
+            w.writeDataCheck();
             //w.DumpBodyState(bodyfile, skip_steps);
             //w.DumpActState(actfile, skip_steps);
             //w.DumpActStateState(statefile, skip_steps);

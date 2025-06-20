@@ -104,6 +104,9 @@
         "weights": {
             "message": "Dorsal NMJ weights weights in sparse format",
             "value": []
+        },
+        "weights_vec": {
+            "value": []
         }
     },
     "Evolutionary Optimization Parameters": {
@@ -2056,6 +2059,9 @@
         },
         "weights": {
             "message": "Ventral NMJ weights weights in sparse format",
+            "value": []
+        },
+        "weights_vec": {
             "value": []
         }
     },
