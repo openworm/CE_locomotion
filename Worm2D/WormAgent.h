@@ -9,7 +9,7 @@ using namespace CTRNNspace;
 
 
 // The WormAgent class declaration
-class WormAgent : public Worm2Dbase {
+class WormAgent : virtual public Worm2Dbase {
 public:
 	// The constructor
 	WormAgent(TVector<double> &v, int newsize = 10); // Construct from phenotype

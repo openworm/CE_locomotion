@@ -56,7 +56,7 @@ class DataWriter{
         if (basename==".") {cout << "basename not set" << endl; exit(1);}
         writeData();
     }
-    
+
     DataWriter(){datatime=0;prefix="";basename=".";}
     virtual ~DataWriter(){closeAll();}
     
@@ -167,7 +167,7 @@ int nn(int neuronNumber, int unitNumber);
 
 
 
-class Worm2Dm : public Worm2Dbody, public Worm2Dbase
+class Worm2Dm : public Worm2Dbody, virtual public Worm2Dbase
 {
     public:
 

@@ -22,7 +22,12 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0)
+  } ,0),Worm2Dbase({j["Worm"]["N_neuronsperunit"]["value"], 
+    j["Worm"]["N_muscles"]["value"], 
+    j["Worm"]["T_muscle"]["value"],
+    j["Worm"]["N_units"]["value"],
+    j["Nervous system"]["size"]["value"]
+  }, new c302ForW2D(), new Muscles)
 {
   cout << "Worm2DCE const" << endl;
 

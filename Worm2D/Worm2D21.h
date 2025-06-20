@@ -97,7 +97,8 @@ public:
     protected:
 
     Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_)
-    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0),Worm2D21m(){}
+    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0),Worm2D21m(),
+    Worm2Dbase(par1_, n_ptr_, new Muscles){}
 
     void addParsToJson(json & j);
 

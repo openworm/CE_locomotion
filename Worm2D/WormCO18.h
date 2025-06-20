@@ -6,8 +6,8 @@ class WormCO18 : public Worm18, public WormAgent
 
 public:
 
-WormCO18::WormCO18(TVector<double> &v18, TVector<double> &vw, int newsize_, double output_):
-Worm18(v18,output_),WormAgent(vw,newsize_),Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles){}
+WormCO18::WormCO18(TVector<double> &v18, TVector<double> &vw, int newsize_):
+Worm18(v18,1),WormAgent(vw,newsize_),Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles){}
 
 void addParsToJson(json & j);
 

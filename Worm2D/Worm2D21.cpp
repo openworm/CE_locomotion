@@ -12,7 +12,8 @@
 
 
 Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), 0 , true)
+       new c302ForW2D(), 0 , true),Worm2Dbase({7,24,0.1,7,49},
+       new c302ForW2D(), 0) 
 {
 
     cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
@@ -34,7 +35,8 @@ AVB = 0;
 
 }
 Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m(),Worm2Dbase({7,24,0.1,7,49},
+       new c302ForW2D(), 0) 
 {
   
    // NMJ Weight
@@ -61,7 +63,9 @@ Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},
 
 
 Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m(),
+       Worm2Dbase({7,24,0.1,7,49},
+       new c302ForW2D(), 0) 
 {
 
 // NMJ Weight
