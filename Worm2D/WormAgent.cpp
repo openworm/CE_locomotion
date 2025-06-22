@@ -207,7 +207,7 @@ void WormAgent::ResetAgentsBody(double neworient, RandomState &rs)
 	forward = 1;
 }
 
-void WormAgent::ResetChemCon(double gradSteep)
+void WormAgent::ResetChemCon()
 {
 	chemCon = -distanceToCentre * gradSteep;
 	pastCon = chemCon;
@@ -229,7 +229,7 @@ void WormAgent::ResetAgentIntState(RandomState &rs)
 // Updating
 // *******
 
-void WormAgent::UpdateChemCon(double gradSteep)
+void WormAgent::UpdateChemCon()
 {
 	distanceToCentre = sqrt(pow(px,2) + pow(py,2));
 	pastCon = chemCon;
@@ -326,9 +326,9 @@ void WormAgent::InitializeState(RandomState &rs)
 	Worm2Dbase::InitializeState(rs);
 	InitialiseAgent(2*RunDuration, HSStepSize);
 	ResetAgentsBody(orient_orig, rs);
-	ResetChemCon(gradSteep);
+	ResetChemCon();
 	ResetAgentIntState(rs);
-	UpdateChemCon(gradSteep);	
+	UpdateChemCon();	
 }
 
 vector<doubIntParamsHead> WormAgent::getWormParams()
@@ -359,7 +359,7 @@ void WormAgent::Step1(double StepSize)
 {
 	UpdateSensors();
 	StepOrig(StepSize);
-	UpdateChemCon(gradSteep);
+	UpdateChemCon();
 }
 
 void WormAgent::preNStep(double StepSize)

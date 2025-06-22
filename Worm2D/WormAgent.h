@@ -50,8 +50,8 @@ public:
 	double DistanceToCentre(void) {return distanceToCentre;};
 
 	// Control
-	void ResetChemCon(double gradSteep);
-	void UpdateChemCon(double gradSteep);
+	void ResetChemCon();
+	void UpdateChemCon();
 
 	void UpdateSensors();
 	void ResetAgentsBody(double neworient, RandomState &rs);
