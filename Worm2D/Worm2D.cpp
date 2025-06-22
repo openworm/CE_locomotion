@@ -186,8 +186,15 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
   }
 }
 
-void Worm2Dbase::Step(double StepSize_) { //StepSize = StepSize_; 
-    Step1(StepSize_); t += StepSize_; datatime = t;}
+void Worm2Dbase::Step(double StepSize_) 
+{ //StepSize = StepSize_; 
+    Step1(StepSize_); 
+
+    t += StepSize_; 
+    datatime += StepSize_; 
+    //datatime = t;
+    //datatime += StepSize_; 
+}
 
 
 double Worm2Dbody::getVelocity()

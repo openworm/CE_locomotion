@@ -136,15 +136,8 @@ class Evolution
     void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);
     void ResultsDisplay(TSearch &s);
     
+    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
     
-    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
-    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
-    simPars1(setSimPars(argc,argv))
-    {
-      evolfile.open(rename_file("fitness.dat"));
-      evolfile << setprecision(10);
-    }
-
     virtual void addExtraParsToJson(json & j) = 0;
     TSearch* const s; 
     const evoPars evoPars1;

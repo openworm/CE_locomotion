@@ -47,7 +47,7 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") er = new EvolutionCE(argc,argv);
     if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
     if (model_name == "Net21") er = new Evolution21(argc,argv);
-    if (model_name == "CO") er = new EvolutionCO(argc,argv);
+    if (model_name == "CO") er = new EvolutionCO(argc,argv,0.01,10);
     
     const evoPars & ep1 = er->itsEvoPars();
 
@@ -88,7 +88,7 @@ int main (int argc, const char* argv[])
         if (model_name == "Net21") w = new Worm21(phenotype);
         if (model_name == "CO") {
 
-        w = new WormAgent(phenotype);
+        w = new WormAgent(phenotype, 10);
         double orient = 0;
         double gradSteep = 0.5;
         dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,ep1.Transient + ep1.Duration,ep1.StepSize);
@@ -139,7 +139,7 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") w = new WormCE(phenotype,0);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
-    if (model_name == "CO") w = new WormAgent(phenotype);
+    if (model_name == "CO") w = new WormAgent(phenotype,10);
 
     //write_json(er,w, "worm_data_3.json");
     //w->setBasename(er->itsEvoPars().directoryName);

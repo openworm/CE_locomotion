@@ -2,17 +2,25 @@
 //#include "CTRNN.h"
 #include "Worm2D.h"
 
-using namespace CTRNNspace;
+//using namespace CTRNNspace;
 
 // Global constants
 //const double	StepSize		=	0.01;			// Fastest time-constant is now 0.1 (10ms)
-
+const double	Pi				=	3.1415926;
+const double	MaxDist			=	4.5;			// Half the radius of the big petri dish (in cm)
+const double	MaxVel			=	0.022;			// Forward velocity (in cm/s) CHECK WHAT THE REAL VELOCITY SHOULD BE
+const double	MaxGauGradHeight =	1.0;			// Because the MaxDist is also the maximum height of the cone shaped gradient
+const double	ChemDiffConst	=	2*pow(1.61,2);	// Simulated chemical environment according to Ward, 1973 as described in Ferree and Lockery 1999 equation 14.
+const double	HST				=	4.2;			// Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997.
+const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Ferree, Marcotte, Lockery, 1997.
+//int		VelDelta;  //		=	(int) (HST/StepSize);
+	
 
 // The WormAgent class declaration
-class WormAgent : virtual public Worm2Dbase {
+class WormAgent : public Worm2Dbase {
 public:
 	// The constructor
-	WormAgent(TVector<double> &v, int newsize = 10); // Construct from phenotype
+	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
 	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
 	// The destructor
@@ -52,7 +60,7 @@ public:
 	void InitialiseAgent(double runduration, double stepsize);
 	void PrintDetail(ofstream &file);
 	void PrintPath(ofstream &file);
-	void Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis);
+	void StepOrig(double StepSize);
 
 	VMCO::TVector<double> chemConHistory;
 	double sensorN, sensorM;
@@ -74,23 +82,15 @@ public:
 	int size;
 	int forward;
 
-	//modified quantities
-	const double	Pi				=	3.1415926;
-	const double	MaxDist			=	4.5;			// Half the radius of the big petri dish (in cm)
-	const double	MaxVel			=	0.022;			// Forward velocity (in cm/s) CHECK WHAT THE REAL VELOCITY SHOULD BE
-	const double	MaxGauGradHeight=	1.0;			// Because the MaxDist is also the maximum height of the cone shaped gradient
-	const double	ChemDiffConst	=	2*pow(1.61,2);	// Simulated chemical environment according to Ward, 1973 as described in Ferree and Lockery 1999 equation 14.
-	const double	HST				=	4.2;			// Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997.
-	const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Ferree, Marcotte, Lockery, 1997.
-	int		VelDelta;  //		=	(int) (HST/StepSize);
-	NervousSystem & n;
 
-	//added quantities
+	int		VelDelta;  //		=	(int) (HST/StepSize);
 
 	using Worm2Dbase::Step;
 	RandomState rs;
-	double HStimestep, gradSteep, orient_orig, RunDuration, HSStepSize;
+	double gradSteep, orient_orig, RunDuration, HSStepSize;
 	int taxis, kinesis;
+	//double sjadd;	
+	//int sdqqq;
 
 	//void writeData(){Worm2Dm::writeAct();Worm2Dm::writeState();}
 	void addParsToJson(json & j);
@@ -101,13 +101,13 @@ public:
 	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();
 	void Step1(double Stepsize);
-	void preNStep(double StepSize, double timestep);
-	void postNStep(double StepSize, RandomState &rs, int taxis, int kinesis);
+	void preNStep(double StepSize);
+	void postNStep(double StepSize);
 	void moveAgent(double StepSize);
 
 	void InitializeState(RandomState &rs);
 
-	void setStepPars(double gradSteep_, RandomState &rs_, double timestep_, int taxis_, int kinesis_);
+	void setStepPars(double gradSteep_, RandomState &rs_, double t_, int taxis_, int kinesis_);
 	void setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_);
 	void DumpParams(ofstream &ofs){return;}

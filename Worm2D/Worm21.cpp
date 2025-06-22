@@ -17,7 +17,7 @@
 // The constructor
 Worm21::Worm21(TVector<double> &v)
 :Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles), Worm2D21(v),
-n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2Dbase({7,24,0.1,7,49}, new NervousSystem(), new Muscles)
+n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
     // Muscles
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);

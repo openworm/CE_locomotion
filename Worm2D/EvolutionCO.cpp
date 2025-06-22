@@ -1,6 +1,6 @@
 #include "EvolutionCO.h"
 #include <math.h>
-#include "WormAgent.h"
+
 //#include "Segment21.h"
 
 //using namespace TSCO;
@@ -64,6 +64,8 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 	phenotype.SetBounds(1, evoPars1.VectSize);
 	GenPhenMapping(v, phenotype);
 	WormAgent Worm(CircuitSize);
+	//Worm.setDataskips(itsEvoPars().skip_steps);
+	//Worm.InitializeData(itsEvoPars().directoryName);
 	Worm.SetParameters(phenotype);
 
 	double f, accdist, totaldist;
@@ -90,6 +92,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
 					Worm.ResetAgentsBody(orient, rs);
+					Worm.setTime(0);
 					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
@@ -100,6 +103,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 						//Worm.UpdateChemCon(gradSteep);
 					}
 					accdist = 0.0;
+					Worm.setTime(0);
 					for (double t = evoPars1.StepSize; t <= evoPars1.Duration; t += evoPars1.StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
@@ -131,6 +135,10 @@ double EvolutionCO::Behavior(TVector<double> &v)
 	phenotype.SetBounds(1, VectSize);
 	GenPhenMapping(v, phenotype);
 	WormAgent Worm(CircuitSize);
+	//Worm.setBasename(itsEvoPars().directoryName);
+    Worm.setDataskips(itsEvoPars().skip_steps);
+	Worm.InitializeData(itsEvoPars().directoryName);
+    //Worm.dataReset();
 	Worm.SetParameters(phenotype);
 	return Behavior(Worm);
 }
@@ -174,6 +182,7 @@ double EvolutionCO::Behavior(Worm2Dbase & w1)
 				for (int repeats = 1; repeats <= 1; repeats++)
 				{
 					Worm.ResetAgentsBody(orient, rs);
+					Worm.setTime(0);
 					for (double t = StepSize; t <= simPars1.Transient; t += StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
@@ -191,6 +200,7 @@ double EvolutionCO::Behavior(Worm2Dbase & w1)
 						//Worm.DumpActState(actfile, skip_steps);	
 					}
 					accdist = 0.0;
+					Worm.setTime(simPars1.Transient);
 					for (double t = simPars1.Transient + StepSize; t <= simPars1.Transient + simPars1.Duration; t += StepSize)
 					{
 						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);

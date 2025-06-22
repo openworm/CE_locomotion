@@ -30,14 +30,15 @@ return {headsr,vncsr};
 
 // The constructor
 Worm18::Worm18(TVector<double> &v,double output):Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles),
-rS18Macros(setMacros()),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D({6,24,0.1,6,40},0),
-Worm2Dbase({6,24,0.1,6,40}, new NervousSystem(), new Muscles)
+rS18Macros(setMacros()),//n(dynamic_cast<NervousSystem&>(*n_ptr)),
+Worm2D({6,24,0.1,6,40},0)
 {
     //supArgs1.writeMessage();
 
     // Muscles
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     // Nervous system // Ventral cord
     n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
@@ -191,7 +192,7 @@ Worm2Dbase({6,24,0.1,6,40}, new NervousSystem(), new Muscles)
 
 void Worm18::InitializeState(RandomState &rs)
 {
-    
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     n.RandomizeCircuitState(-0.5, 0.5, rs);
     /* for (int i = 1; i <= n.size-4; i++)
         n.SetNeuronState(i, (i-0.5)/(n.size-4));
@@ -276,7 +277,7 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
 void Worm18::setMuscleInputOrigDorsal()
 {
 
-    double dorsalHeadInput = NMJ_SMDD*n.NeuronOutput(SMDD) + NMJ_RMDV*n.NeuronOutput(RMDD);
+    double dorsalHeadInput = NMJ_SMDD*n_ptr->NeuronOutput(SMDD) + NMJ_RMDV*n_ptr->NeuronOutput(RMDD);
 
     for (int i = 1; i <= HeadMotorNeuronMuscles; i++){
         m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);      
@@ -284,7 +285,7 @@ void Worm18::setMuscleInputOrigDorsal()
 
     for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
         int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
-        dorsalHeadInput = NMJ_DD*n.NeuronOutput(nn(DD,mi)) + NMJ_DB*n.NeuronOutput(nn(DB,mi));
+        dorsalHeadInput = NMJ_DD*n_ptr->NeuronOutput(nn(DD,mi)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,mi));
         m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
         }
 }
@@ -295,7 +296,7 @@ void Worm18::setMuscleInputOrigVentral()
    double ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
 
   
-    ventralHeadInput = NMJ_SMDV*n.NeuronOutput(SMDV) + NMJ_RMDD*n.NeuronOutput(RMDV);
+    ventralHeadInput = NMJ_SMDV*n_ptr->NeuronOutput(SMDV) + NMJ_RMDD*n_ptr->NeuronOutput(RMDV);
 
     for (int i = 1; i <= HeadMotorNeuronMuscles; i++){
         m.SetVentralMuscleInput(i, NMJ_Gain(i)*ventralHeadInput);
@@ -306,8 +307,8 @@ void Worm18::setMuscleInputOrigVentral()
 
     for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
         int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
-        ventralHeadInputA = NMJ_VDa*n.NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n.NeuronOutput(nn(VBA,mi));
-        ventralHeadInputP = NMJ_VDp*n.NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n.NeuronOutput(nn(VBP,mi));
+        ventralHeadInputA = NMJ_VDa*n_ptr->NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n_ptr->NeuronOutput(nn(VBA,mi));
+        ventralHeadInputP = NMJ_VDp*n_ptr->NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n_ptr->NeuronOutput(nn(VBP,mi));
         int mt = (i-VNCMuscleStart)%NmusclePerNU;
         switch(mt){
             case 0:
@@ -333,8 +334,8 @@ void Worm18::setMuscleInputOrig(double StepSize)
 {
    double dorsalHeadInput, ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
 
-    dorsalHeadInput = NMJ_SMDD*n.NeuronOutput(SMDD) + NMJ_RMDV*n.NeuronOutput(RMDD);
-    ventralHeadInput = NMJ_SMDV*n.NeuronOutput(SMDV) + NMJ_RMDD*n.NeuronOutput(RMDV);
+    dorsalHeadInput = NMJ_SMDD*n_ptr->NeuronOutput(SMDD) + NMJ_RMDV*n_ptr->NeuronOutput(RMDD);
+    ventralHeadInput = NMJ_SMDV*n_ptr->NeuronOutput(SMDV) + NMJ_RMDD*n_ptr->NeuronOutput(RMDV);
 
     for (int i = 1; i <= HeadMotorNeuronMuscles; i++){
         m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
@@ -346,10 +347,10 @@ void Worm18::setMuscleInputOrig(double StepSize)
 
     for (int i = VNCMuscleStart; i <= par1.N_muscles; i++){
         int mi = (int) ((i-VNCMuscleStart)/NmusclePerNU)+1;
-        dorsalHeadInput = NMJ_DD*n.NeuronOutput(nn(DD,mi)) + NMJ_DB*n.NeuronOutput(nn(DB,mi));
+        dorsalHeadInput = NMJ_DD*n_ptr->NeuronOutput(nn(DD,mi)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,mi));
         m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalHeadInput);
-        ventralHeadInputA = NMJ_VDa*n.NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n.NeuronOutput(nn(VBA,mi));
-        ventralHeadInputP = NMJ_VDp*n.NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n.NeuronOutput(nn(VBP,mi));
+        ventralHeadInputA = NMJ_VDa*n_ptr->NeuronOutput(nn(VDA,mi)) + NMJ_VBa*n_ptr->NeuronOutput(nn(VBA,mi));
+        ventralHeadInputP = NMJ_VDp*n_ptr->NeuronOutput(nn(VDP,mi)) + NMJ_VBp*n_ptr->NeuronOutput(nn(VBP,mi));
         int mt = (i-VNCMuscleStart)%NmusclePerNU;
         switch(mt){
             case 0:
@@ -392,8 +393,8 @@ b.StepBody(StepSize);
 if (rS18Macros.headsr)
 {
     if (rs18output == 1){
-        n.SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
-        n.SetNeuronExternalInput(SMDV, sr.HeadVentralOutput());   // to segments
+        n_ptr->SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
+        n_ptr->SetNeuronExternalInput(SMDV, sr.HeadVentralOutput());   // to segments
     }
 }
 //#endif
@@ -403,9 +404,9 @@ if (rS18Macros.headsr)
 if (rS18Macros.vncsr)
 {
     for (int i = 1; i <= par1.N_units; i++){
-        n.SetNeuronExternalInput(nn(DB,i), sr.VCDorsalOutput(i));
-        n.SetNeuronExternalInput(nn(VBA,i), sr.VCVentralAOutput(i));
-        n.SetNeuronExternalInput(nn(VBP,i), sr.VCVentralPOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(DB,i), sr.VCDorsalOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBA,i), sr.VCVentralAOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBP,i), sr.VCVentralPOutput(i));
     }
 }    
 //#endif
@@ -455,7 +456,7 @@ void Worm18::Step1(double StepSize)
 
     // Update Nervous System
     //h.EulerStep(StepSize);
-    n.EulerStep(StepSize);
+    n_ptr->EulerStep(StepSize);
 
     // Set input to Muscles
     //  Input from the head circuit
@@ -480,6 +481,8 @@ void Worm18::addParsToJson(json & j)
     //appendAllNSJson(j[nsHead], h);
     //vector<string> cell_names = {"SMDD", "RMDD", "SMDV", "RMDV"};
     //appendCellNamesToJson(j[nsHead], cell_names, 1);
+
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
@@ -581,12 +584,12 @@ void Worm18::DumpVoltage(ofstream &ofs, int skips)
         // Head Neurons
         int offset = par1.N_units*par1.N_neuronsperunit;
         for (int i = 1; i <= 4; i++) {
-            ofs <<  " " << n.NeuronState(offset + i);
+            ofs <<  " " << n_ptr->NeuronState(offset + i);
         }
         // Ventral Cord Motor Neurons
         for (int i = 1; i <= par1.N_units; i++) {
             for (int j = 1; j <= par1.N_neuronsperunit; j++) {
-                ofs <<  " " << n.NeuronState(nn(j,i));
+                ofs <<  " " << n_ptr->NeuronState(nn(j,i));
             }
         }
         ofs << "\n";
@@ -597,6 +600,9 @@ void Worm18::DumpVoltage(ofstream &ofs, int skips)
 
 void Worm18::DumpParams(ofstream &ofs)
 {
+
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    
     ofs << "Time-constants: \n DB: " << n.NeuronTimeConstant(DB) << "\n VBA/P: " << n.NeuronTimeConstant(VBA) << " / " << n.NeuronTimeConstant(VBP) << "\n DD: " << n.NeuronTimeConstant(DD) << "\n VDA/P: " << n.NeuronTimeConstant(VDA) << " / " << n.NeuronTimeConstant(VDP) << endl;
     ofs << "Biases: \n DB: " << n.NeuronBias(DB) << "\n VBA/P: " << n.NeuronBias(VBA) << " / " << n.NeuronBias(VBP)  <<  "\n DD: " << n.NeuronBias(DD) << "\n VDA/P: " << n.NeuronBias(VDA) <<  " / " << n.NeuronBias(VDP) << endl;
     ofs << "Self conns: \n DB: " << n.ChemicalSynapseWeight(DB, DB) << "\n VBA/P: " << n.ChemicalSynapseWeight(VBA, VBA) << " / " << n.ChemicalSynapseWeight(VBP, VBP) << "\n DD: " << n.ChemicalSynapseWeight(DD, DD) <<  "\n VDA/P: " << n.ChemicalSynapseWeight(VDA, VDA) <<  " / " << n.ChemicalSynapseWeight(VDP, VDP) << endl;

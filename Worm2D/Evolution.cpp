@@ -16,6 +16,17 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
    return retval;
 }
 
+
+Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
+    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(argc,argv))
+    {
+      evolfile.open(rename_file("fitness.dat"));
+      evolfile << setprecision(10);
+    }
+
+
+
 void Evolution::addParsToJson(json & j)
 {  
     

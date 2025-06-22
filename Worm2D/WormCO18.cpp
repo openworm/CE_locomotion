@@ -2,38 +2,38 @@
 
 void WormCO18::InitializeState(RandomState &rs)
 {
-    Worm18::InitializeState(rs);
-    WormAgent::InitializeState(rs);
+    InitializeState(rs);
+    wa->InitializeState(rs);
 }
 
 void WormCO18::writeData(){
     
-    Worm18::writeData();
+    writeData();
     dataskips;
-    WormAgent::writeData();
+    wa->writeData();
 }
 
 void WormCO18::addParsToJson(json & j)
 {
-    Worm18::addParsToJson(j["RS18"]);
-    WormAgent::addParsToJson(j["CO"]);
+    addParsToJson(j["RS18"]);
+    wa->addParsToJson(j["CO"]);
 }
 
 void WormCO18::Step1(double StepSize)
 {
   
 
-    UpdateSensors();
-    WormAgent::preNStep(StepSize, HStimestep);
-    Worm18::preNStep(StepSize);
+    wa->UpdateSensors();
+    wa->preNStep(StepSize);
+    preNStep(StepSize);
 
   
-    Worm18::n.EulerStep(StepSize);
-    WormAgent::n.EulerStep(StepSize);
+    n_ptr->EulerStep(StepSize);
+    wa->itsNS().EulerStep(StepSize);
     
-    WormAgent::postNStep(StepSize,rs,taxis,kinesis);
-    Worm18::postNStep(StepSize);
-    moveAgent(StepSize);
-    UpdateChemCon(gradSteep);
+    wa->postNStep(StepSize);
+    postNStep(StepSize);
+    wa->moveAgent(StepSize);
+    wa->UpdateChemCon(gradSteep);
 
 }

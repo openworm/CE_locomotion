@@ -73,7 +73,7 @@ public:
 
     protected:
 
-    NervousSystem & n;
+    //NervousSystem & n;
     StretchReceptor18 sr;
     //NervousSystem h;
     
