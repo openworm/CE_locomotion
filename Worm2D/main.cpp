@@ -91,7 +91,11 @@ int main (int argc, const char* argv[])
         w = new WormAgent(phenotype, 10);
         double orient = 0;
         double gradSteep = 0.5;
-        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,ep1.Transient + ep1.Duration,ep1.StepSize);
+        int taxis = 1;
+        int kinesis = 0;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,
+            ep1.Transient + ep1.Duration,
+            ep1.StepSize, taxis, kinesis);
 
         }
         cout << "making json from main" << endl;
@@ -170,7 +174,11 @@ int main (int argc, const char* argv[])
         //simduration = 10;
         double orient = 0;
         double gradSteep = 0.5;
-        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,simduration + simtransient,ep1.StepSize);
+        int taxis = 1;
+        int kinesis = 0;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,
+            ep1.Transient + ep1.Duration,
+            ep1.StepSize, taxis, kinesis);
 
     }
 

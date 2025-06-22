@@ -54,7 +54,7 @@ public:
 	void UpdateChemCon();
 
 	void UpdateSensors();
-	void ResetAgentsBody(double neworient, RandomState &rs);
+	void ResetAgentsBody();
 	void ResetAgentIntState(RandomState &rs);
 	void SetParameters(TVector<double> &v);
 	void InitialiseAgent(double runduration, double stepsize);
@@ -108,8 +108,9 @@ public:
 	void InitializeState(RandomState &rs);
 
 	void setStepPars(double gradSteep_, RandomState &rs_, double t_, int taxis_, int kinesis_);
+	
 	void setSimPars(double orient_orig_,
-	double gradSteep_, double RunDuration_, double HSStepSize_);
+	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_);
 	void DumpParams(ofstream &ofs){return;}
 	double getVelocity(){return avgvel;}
 	void writeBodyPos();

@@ -193,7 +193,7 @@ void WormAgent::InitialiseAgent(double runduration, double stepsize)
 // Resetting
 // *******
 
-void WormAgent::ResetAgentsBody(double neworient, RandomState &rs)
+void WormAgent::ResetAgentsBody()
 {
 	distanceToCentre = -MaxDist;
 	double tempangle = 0.0;
@@ -202,7 +202,7 @@ void WormAgent::ResetAgentsBody(double neworient, RandomState &rs)
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;
-	orient = neworient;
+	orient = orient_orig;
 	CPGoffset = 0.0;
 	forward = 1;
 }
@@ -301,12 +301,14 @@ void WormAgent::PrintDetail( ofstream &file)
 
 
 void WormAgent::setSimPars(double orient_orig_,
-	double gradSteep_, double RunDuration_, double HSStepSize_)
+	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_)
 {
 	orient_orig = orient_orig_;
 	gradSteep = gradSteep_;
 	RunDuration = RunDuration_;
 	HSStepSize = HSStepSize_;
+	taxis = taxis_;
+	kinesis = kinesis_;
 }
 
 void WormAgent::setStepPars(double gradSteep_, 
@@ -325,7 +327,7 @@ void WormAgent::InitializeState(RandomState &rs)
 {
 	Worm2Dbase::InitializeState(rs);
 	InitialiseAgent(2*RunDuration, HSStepSize);
-	ResetAgentsBody(orient_orig, rs);
+	ResetAgentsBody();
 	ResetChemCon();
 	ResetAgentIntState(rs);
 	UpdateChemCon();	

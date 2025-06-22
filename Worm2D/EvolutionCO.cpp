@@ -80,7 +80,9 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 		{
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
-				Worm.setSimPars(orient,gradSteep,evoPars1.Transient + evoPars1.Duration,evoPars1.StepSize);
+				Worm.setSimPars(orient,
+					gradSteep,evoPars1.Transient + evoPars1.Duration,
+					evoPars1.StepSize, taxis, kinesis);
 				Worm.InitializeState(rs);
 
 				/* Worm.InitialiseAgent(2*RunDuration, evoPars1.StepSize);
@@ -91,11 +93,11 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
-					Worm.ResetAgentsBody(orient, rs);
+					Worm.ResetAgentsBody();
 					Worm.setTime(0);
 					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)
 					{
-						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
 						Worm.Step(evoPars1.StepSize);
 
 						//Worm.UpdateSensors();
@@ -106,7 +108,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 					Worm.setTime(0);
 					for (double t = evoPars1.StepSize; t <= evoPars1.Duration; t += evoPars1.StepSize)
 					{
-						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
 						Worm.Step(evoPars1.StepSize);
 
 						//Worm.UpdateSensors();
@@ -176,16 +178,18 @@ double EvolutionCO::Behavior(Worm2Dbase & w1)
 				Worm.ResetAgentIntState(rs);
 				Worm.UpdateChemCon(gradSteep); */
 
-				Worm.setSimPars(orient,gradSteep,simPars1.Transient + simPars1.Duration,evoPars1.StepSize);
+				Worm.setSimPars(orient,gradSteep,
+					simPars1.Transient + simPars1.Duration,
+					evoPars1.StepSize, taxis, kinesis);
 				Worm.InitializeState(rs);
 
 				for (int repeats = 1; repeats <= 1; repeats++)
 				{
-					Worm.ResetAgentsBody(orient, rs);
+					Worm.ResetAgentsBody();
 					Worm.setTime(0);
 					for (double t = StepSize; t <= simPars1.Transient; t += StepSize)
 					{
-						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
 						Worm.Step(StepSize);
 
 						//Worm.UpdateSensors();
@@ -203,7 +207,7 @@ double EvolutionCO::Behavior(Worm2Dbase & w1)
 					Worm.setTime(simPars1.Transient);
 					for (double t = simPars1.Transient + StepSize; t <= simPars1.Transient + simPars1.Duration; t += StepSize)
 					{
-						Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm.setStepPars(gradSteep,rs,t,taxis,kinesis);
 						Worm.Step(StepSize);
 
 						//Worm.UpdateSensors();
