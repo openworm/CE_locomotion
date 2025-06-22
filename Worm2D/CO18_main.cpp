@@ -35,7 +35,7 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
 int main (int argc, const char* argv[])
 {
 
-    EvolutionCO erco(argc,argv);
+    EvolutionCO erco(argc,argv,0.01,10);
     EvolutionRS18 er18(argc,argv);
 
     TVector<double> phenotypeCO(1, erco.itsEvoPars().VectSize);
@@ -69,11 +69,24 @@ int main (int argc, const char* argv[])
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
-    wco18.InitializeState(rs);
+    
+
     //wco18.initForSimulation();
     double orient = 0;
     double gradSteep = 0.5;
-    wco18.setSimPars(orient,gradSteep,simduration + simtransient,er18.itsEvoPars().StepSize);
+    int taxis = 1;
+    int kinesis = 0;
+    wco18.itsWA().setSimPars(orient,gradSteep,
+        simduration + simtransient,
+        er18.itsEvoPars().StepSize, taxis, kinesis);
+    wco18.InitializeState(rs);
+
+    wco18.setDataskips(er18.itsEvoPars().skip_steps);
+    //w.setPrefix("sim");
+    wco18.InitializeData(er18.itsEvoPars().directoryName);
+    wco18.itsWA().setDataskips(er18.itsEvoPars().skip_steps);
+    wco18.itsWA().setPrefix("WA");
+    wco18.itsWA().InitializeData(er18.itsEvoPars().directoryName);
 
     simPars sp1 = {er18.itsEvoPars().directoryName,
     er18.itsEvoPars().skip_steps, simduration, simtransient, er18.itsEvoPars().StepSize};

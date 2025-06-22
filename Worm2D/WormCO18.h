@@ -11,12 +11,11 @@ Worm18(v18,1),wa(new WormAgent(vw,newsize_)),Worm2Dm({6,24,0.1,6,40}, new Nervou
 {}
 
 void addParsToJson(json & j);
-
 void writeData();
-
 void Step1(double StepSize);
-
 void InitializeState(RandomState &rs);
+
+WormAgent & itsWA(){return *wa;}
 
 protected:
 

@@ -57,7 +57,7 @@ class DataWriter{
         writeData();
     }
     
-    DataWriter(){datatime=0;prefix="";basename=".";}
+    DataWriter():doFirstCall(true){datatime=0;prefix="";basename=".";}
     virtual ~DataWriter(){closeAll();}
     
 
@@ -80,6 +80,7 @@ class DataWriter{
 
     string getName(string name_);
 
+    const bool doFirstCall;
     vector<bool> isOpen;
     vector<ofstream> ofsvec;
     vector<string> ofnames;

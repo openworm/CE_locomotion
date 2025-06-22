@@ -47,8 +47,11 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") er = new EvolutionCE(argc,argv);
     if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
     if (model_name == "Net21") er = new Evolution21(argc,argv);
-    if (model_name == "CO") er = new EvolutionCO(argc,argv,0.01,10);
-    
+    if (model_name == "CO") {
+     double stepsize = 0.01;
+     int circuitsize = 10;   
+        er = new EvolutionCO(argc,argv,stepsize,circuitsize);
+    }
     const evoPars & ep1 = er->itsEvoPars();
 
     InitializeBodyConstants();
@@ -160,10 +163,7 @@ int main (int argc, const char* argv[])
     w->DumpParams(phenfile);
     phenfile.close();}
 
-    {RandomState rs;
-    rs.SetRandomSeed(simrandseed);
-    w->InitializeState(rs);}
-    w->initForSimulation();
+
     //double simduration = atof(getParameter(argc,argv,"-sd","60"));
     //double simtransient = atof(getParameter(argc,argv,"-st","50"));
 
@@ -177,14 +177,26 @@ int main (int argc, const char* argv[])
         int taxis = 1;
         int kinesis = 0;
         dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,
-            ep1.Transient + ep1.Duration,
+            simtransient + simduration,
             ep1.StepSize, taxis, kinesis);
 
     }
 
+    {RandomState rs;
+    rs.SetRandomSeed(simrandseed);
+    w->InitializeState(rs);}
+    w->initForSimulation();
+    
+    
+
     simPars sp1 = {er->itsEvoPars().directoryName,
         er->itsEvoPars().skip_steps, simduration, simtransient, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
+    
+    w->setDataskips(sp1.skip_steps);
+    w->setPrefix("sim");
+    w->InitializeData(sp1.directoryName);
+
     s1.runSimulation(*w);
 
     delete w;

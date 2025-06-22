@@ -21,7 +21,7 @@ bool DataWriter::resetStats(bool & firstcall, size_t & pos, int & tt, string nam
       isOpen.push_back(true);
       firstcall = false;
       tt = dataskips;
-      retval = true;
+      if (doFirstCall) retval = true;
      }
 
      //return false;
@@ -39,7 +39,7 @@ string DataWriter::getName(string name_){
 void  DataWriter::InitializeData(string basename_)
 {
     setBasename(basename_);
-    dataReset();
+    if (doFirstCall) dataReset();
 }
 
 
@@ -76,6 +76,7 @@ void Worm2Dbody::InitializeState(RandomState &rs)
 void Worm2Dbase::InitializeState(RandomState &rs)
 {
     t = 0.0;
+    datatime =  0.0;
     //writeDataCheck();
     //dataReset();
     return;

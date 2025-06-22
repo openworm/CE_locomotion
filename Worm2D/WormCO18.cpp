@@ -9,7 +9,6 @@ void WormCO18::InitializeState(RandomState &rs)
 void WormCO18::writeData(){
     
     writeData();
-    dataskips;
     wa->writeData();
 }
 
@@ -34,6 +33,6 @@ void WormCO18::Step1(double StepSize)
     wa->postNStep(StepSize);
     postNStep(StepSize);
     wa->moveAgent(StepSize);
-    wa->UpdateChemCon(gradSteep);
+    wa->UpdateChemCon();
 
 }
