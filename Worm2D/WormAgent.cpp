@@ -173,14 +173,14 @@ void WormAgent::InitialiseCircuit(int CircuitSize)
 	forward = 1;
 }
 
-void WormAgent::InitialiseAgent(double runduration, double stepsize)
+void WormAgent::InitialiseAgent()
 {
-	VelDelta		=	(int) (HST/stepsize);
-	iSensorN = (int) (sensorN/stepsize);
+	VelDelta		=	(int) (HST/HSStepSize);
+	iSensorN = (int) (sensorN/HSStepSize);
 	dSensorN = (double) iSensorN;
-	iSensorM = (int) (sensorM/stepsize);
+	iSensorM = (int) (sensorM/HSStepSize);
 	dSensorM = (double) iSensorM;
-	int upperbound = ((int) ((runduration + sensorN + sensorM) / stepsize)) + 1;
+	int upperbound = ((int) ((2*RunDuration + sensorN + sensorM) / HSStepSize)) + 1;
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
 	histCurv.SetBounds(1, VelDelta);
@@ -311,7 +311,7 @@ void WormAgent::setSimPars(double orient_orig_,
 	kinesis = kinesis_;
 }
 
-void WormAgent::setStepPars(double gradSteep_, 
+/* void WormAgent::setStepPars(double gradSteep_, 
 	RandomState &rs_, double t_, int taxis_, int kinesis_)
 {	
 	rs = rs_;
@@ -320,16 +320,17 @@ void WormAgent::setStepPars(double gradSteep_,
 	kinesis = kinesis_;
 	//HStimestep = timestep_;
 	//HStimestepdil = t_;
-}
+} */
 
 
-void WormAgent::InitializeState(RandomState &rs)
+void WormAgent::InitializeState(RandomState &rs_)
 {
-	Worm2Dbase::InitializeState(rs);
-	InitialiseAgent(2*RunDuration, HSStepSize);
+	rs = rs_;
+	Worm2Dbase::InitializeState(rs_);
+	InitialiseAgent();
 	ResetAgentsBody();
 	ResetChemCon();
-	ResetAgentIntState(rs);
+	ResetAgentIntState(rs_);
 	UpdateChemCon();	
 }
 

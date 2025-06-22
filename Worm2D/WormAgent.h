@@ -57,7 +57,8 @@ public:
 	void ResetAgentsBody();
 	void ResetAgentIntState(RandomState &rs);
 	void SetParameters(TVector<double> &v);
-	void InitialiseAgent(double runduration, double stepsize);
+	//void InitialiseAgent(double runduration, double stepsize);
+	void InitialiseAgent();
 	void PrintDetail(ofstream &file);
 	void PrintPath(ofstream &file);
 	void StepOrig(double StepSize);
@@ -107,7 +108,7 @@ public:
 
 	void InitializeState(RandomState &rs);
 
-	void setStepPars(double gradSteep_, RandomState &rs_, double t_, int taxis_, int kinesis_);
+	//void setStepPars(double gradSteep_, RandomState &rs_, double t_, int taxis_, int kinesis_);
 	
 	void setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_);
