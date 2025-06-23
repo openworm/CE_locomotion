@@ -16,6 +16,9 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
    return retval;
 }
 
+string Evolution::rename_file(string filename){return evoPars1.directoryName + "/" + 
+    evoParsNC.filePrefix + filename;}
+
 
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
@@ -73,6 +76,7 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
     //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
     //if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
 
+
     if (strcmp(argv[arg],"--folder")==0) {
       ep1.directoryName= argv[arg+1];
       struct stat sb;
@@ -96,6 +100,9 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
     //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
     
     }
+
+    evoParsNC.filePrefix = "";
+
     return ep1;
 
 }

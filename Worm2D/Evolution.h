@@ -33,7 +33,11 @@ struct evoPars;
   double Transient; 
 
 }; */
- 
+
+struct evoParsNonConst{
+string filePrefix;
+
+};
 
 struct evoPars{
    string directoryName;
@@ -57,6 +61,7 @@ struct evoPars{
    double StepSize;
    int N_curvs;
    int VectSize;
+   
 
 
    const doubIntParamsHead getParams() const
@@ -84,16 +89,7 @@ struct evoPars{
 
 };
 
-/* template<class T> 
-T getParameter(int argc, const char* argv[], string parName, T defaultval){
-    
-    T retval = defaultval;
-    if (((argc-1) % 2) != 0)
-    {cout << "The arguments are not configured correctly." << endl;exit(1);}
-    for (int arg = 1; arg<argc; arg+=2) 
-    if (strcmp(argv[arg],parName.c_str())==0) {retval = atoi(argv[arg+1]);break;}
-    return retval;
-} */
+
 
 const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
 
@@ -123,8 +119,8 @@ class Evolution
       if (s) delete s;
     }
 
-
-    string rename_file(string filename){return evoPars1.directoryName + "/" + filename;}
+    string rename_file(string filename);
+    evoParsNonConst evoParsNC;
 
     protected:
     evoPars setPars(int argc, const char* argv[], evoPars ep1);
@@ -142,6 +138,7 @@ class Evolution
     TSearch* const s; 
     const evoPars evoPars1;
     const simPars simPars1;
+    
 
     private:
  

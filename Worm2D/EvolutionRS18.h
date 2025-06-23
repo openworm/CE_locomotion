@@ -3,7 +3,7 @@
 #include "Evolution.h"
 
 
-class EvolutionRS18:public Evolution
+class EvolutionRS18 : public Evolution
 {
     public:
     

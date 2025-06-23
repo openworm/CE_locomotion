@@ -11,6 +11,18 @@ import random
 from datetime import datetime
 import json
 
+defaults_base_CO18 = {
+    "popSize": 26,
+    "duration": 50,
+    "transient": 50,
+    "simduration": 50,
+    "simtransient": 50,
+    "nervousSystemFileName": "main_sim",
+    "doNML": 0,
+    "doRandInit": 0,
+    "maxGens": 40,
+    "doMuscSim": 0,
+}
 
 defaults_base_CO = {
     "popSize": 26,
@@ -468,6 +480,7 @@ def run(a=None, **kwargs):
         "RoyalSociety2018": "RS18",
         "network2021": "Net21",
         "CE_orientation": "CO",
+        "Worm2D/CO18": "CO18",
     }
 
     model_name = None
@@ -487,6 +500,7 @@ def run(a=None, **kwargs):
         "RS18": defaults_base_2018,
         "Net21": defaults_base_2021,
         "CO": defaults_base_CO,
+        "CO18": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
