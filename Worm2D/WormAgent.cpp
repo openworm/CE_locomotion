@@ -311,16 +311,7 @@ void WormAgent::setSimPars(double orient_orig_,
 	kinesis = kinesis_;
 }
 
-/* void WormAgent::setStepPars(double gradSteep_, 
-	RandomState &rs_, double t_, int taxis_, int kinesis_)
-{	
-	rs = rs_;
-	gradSteep = gradSteep_;
-	taxis = taxis_;
-	kinesis = kinesis_;
-	//HStimestep = timestep_;
-	//HStimestepdil = t_;
-} */
+
 
 
 void WormAgent::InitializeState(RandomState &rs_)
@@ -352,27 +343,25 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 void WormAgent::addParsToJson(json & j)
 {
-
     Worm2Dbase::addParsToJson(j);
-        
 }
 
 
-void WormAgent::Step1(double StepSize)
+void WormAgent::Step1()
 {
 	UpdateSensors();
-	StepOrig(StepSize);
+	StepOrig();
 	UpdateChemCon();
 }
 
-void WormAgent::preNStep(double StepSize)
+void WormAgent::preNStep()
 {
 // Input from sensory neurons to interneurons
 	for (int i = 1; i <= size-4; i++){
 			n_ptr->SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
 	}
 
-	const double timestep1 =  t + StepSize;
+	const double timestep1 =  t + settedStepSize;
 	// Add antiphase oscillatory input to the neck motor neurons
 	n_ptr->SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep1));
 	n_ptr->SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep1));
@@ -380,19 +369,19 @@ void WormAgent::preNStep(double StepSize)
 
 }
 
-void WormAgent::postNStep(double StepSize)
+void WormAgent::postNStep()
 {
 // Update curvature
 	if (taxis == 1){
 		NMdiff = n_ptr->NeuronOutput(size-1) - n_ptr->NeuronOutput(size);
 		theta = outputGain * NMdiff;
-		orient += StepSize * theta;
+		orient += settedStepSize * theta;
 
 		// Check that there is always one part of the curvature that is convex and another that is concave. This way thrust is generated.
 		// Maintain a cumulative average of absolute theta and ensure that it is not too low (otherwise it's going straightish)
 		DthetaDt = theta - pastTheta;
 		pastTheta = theta;
-		pushCurv = DthetaDt > 0 ? StepSize : -StepSize;
+		pushCurv = DthetaDt > 0 ? settedStepSize : -settedStepSize;
 		avgtheta = histTheta.PushFront(fabs(theta))/VelDelta;
 		avgvel = MaxVel * pow(1 - (fabs(histCurv.PushFront(pushCurv))/HST), 2) * pow(1-fabs(0.7-avgtheta),2);
 	}
@@ -420,15 +409,15 @@ void WormAgent::postNStep(double StepSize)
 
 }
 
-void WormAgent::moveAgent(double StepSize)
+void WormAgent::moveAgent()
 {
 // Update the velocity
 	vx = cos(orient) * avgvel;
 	vy = sin(orient) * avgvel;
 
 	// Move the agent
-	px += StepSize * vx;
-	py += StepSize * vy;
+	px += settedStepSize * vx;
+	py += settedStepSize * vy;
 	//t += StepSize;
 
 
@@ -436,13 +425,13 @@ void WormAgent::moveAgent(double StepSize)
 
 
 // Step
-void WormAgent::StepOrig(double StepSize)
+void WormAgent::StepOrig()
 {
-	preNStep(StepSize);
+	preNStep();
 	// Update the signaling system
-	n_ptr->EulerStep(StepSize);
-	postNStep(StepSize);
-	moveAgent(StepSize);
+	n_ptr->EulerStep(settedStepSize);
+	postNStep();
+	moveAgent();
 }
 
 	

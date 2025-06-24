@@ -6,7 +6,7 @@
 
 struct simPars{
     string directoryName;
-    int skip_steps;
+   // int skip_steps;
     double Duration;       //
     double Transient;       //
     double StepSize;

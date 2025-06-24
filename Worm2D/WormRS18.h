@@ -44,9 +44,9 @@ public:
     void setRs18output(bool val_){rs18output=val_;}
 
     protected:
-    void Step1(double Stepsize); 
-    void preNStep(double Stepsize);
-    void postNStep(double Stepsize);
+    void Step1(); 
+    void preNStep();
+    void postNStep();
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     void addParsToJson(json & j);
@@ -61,7 +61,7 @@ public:
     //const vector<string> getHeadCellNames() 
     //{return {"SMDD", "RMDD", "SMDV", "RMDV"};}
     
-    void setMuscleInputOrig(double StepSize);
+    void setMuscleInputOrig();
     void setMuscleInputOrigDorsal();
     void setMuscleInputOrigVentral(); 
 

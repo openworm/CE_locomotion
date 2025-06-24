@@ -70,7 +70,7 @@ void Worm2DCE::InitializeState(RandomState &rs)
   Worm2D::InitializeState(rs);
 }
 
-void Worm2DCE::Step1(double StepSize)
+void Worm2DCE::Step1()
 {
   int mi;
   int mt = 0;
@@ -79,7 +79,7 @@ void Worm2DCE::Step1(double StepSize)
   TVector<double> ventralInput(1, par1.N_units);
 
   // Update Body
-  b.StepBody(StepSize);
+  b.StepBody(settedStepSize);
 
   // Set input to Stretch Receptors from Body
   // Input to SR only if the segment stretch
@@ -123,7 +123,7 @@ void Worm2DCE::Step1(double StepSize)
   }
 
   // Update Nervous System
-  n_ptr->EulerStep(StepSize);
+  n_ptr->EulerStep(settedStepSize);
   //cout << "step " << t << endl;
    
   // Set input to Muscles
@@ -169,7 +169,7 @@ void Worm2DCE::Step1(double StepSize)
   }
 
   // Update Muscle activation
-  m.EulerStep(StepSize);
+  m.EulerStep(settedStepSize);
 
   // Set input to Mechanical Body
   //  First two segments receive special treatment because they are only affected by a single muscle

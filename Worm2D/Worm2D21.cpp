@@ -143,7 +143,7 @@ vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double
 
 }
 
-void Worm2D21::setMuscleInputOrig(double StepSize)
+void Worm2D21::setMuscleInputOrig()
 {
 // Set input to Muscles
     // Head: 4 muscles one neural unit  //////////////////////
@@ -178,19 +178,19 @@ void Worm2D21::setMuscleInputOrig(double StepSize)
             m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalInput);
         }
     }
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
 }
 
-void Worm2D21m::Step1(double StepSize)
+void Worm2D21m::Step1()
 {
     
     
     // Update Body
-    b.StepBody(StepSize);
+    b.StepBody(settedStepSize);
     
     
     // Update Nervous System
-    n_ptr->EulerStep(StepSize);
+    n_ptr->EulerStep(settedStepSize);
     
     // Interneuron input  //////////////////////
     for (int i = 1; i <= par1.N_units; i++){
@@ -204,7 +204,7 @@ void Worm2D21m::Step1(double StepSize)
         //n_ptr->SetNeuronExternalInput(nn(VA, i), 1);
     }
     
-    setMuscleInput(StepSize);
+    setMuscleInput();
     //setMuscleInputOrig(StepSize);   
 
     // Update Muscle activation

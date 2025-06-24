@@ -61,7 +61,7 @@ public:
 	void InitialiseAgent();
 	void PrintDetail(ofstream &file);
 	void PrintPath(ofstream &file);
-	void StepOrig(double StepSize);
+	void StepOrig();
 
 	VMCO::TVector<double> chemConHistory;
 	double sensorN, sensorM;
@@ -101,10 +101,10 @@ public:
 	//const vector<string> getCellNames() {return {"A","B"};}
 	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();
-	void Step1(double Stepsize);
-	void preNStep(double StepSize);
-	void postNStep(double StepSize);
-	void moveAgent(double StepSize);
+	void Step1();
+	void preNStep();
+	void postNStep();
+	void moveAgent();
 
 	void InitializeState(RandomState &rs);
 

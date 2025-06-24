@@ -11,18 +11,7 @@ import random
 from datetime import datetime
 import json
 
-defaults_base_CO18 = {
-    "popSize": 26,
-    "duration": 50,
-    "transient": 50,
-    "simduration": 50,
-    "simtransient": 50,
-    "nervousSystemFileName": "main_sim",
-    "doNML": 0,
-    "doRandInit": 0,
-    "maxGens": 40,
-    "doMuscSim": 0,
-}
+
 
 defaults_base_CO = {
     "popSize": 26,
@@ -62,6 +51,21 @@ defaults_base_2018 = {
     "maxGens": 1000,
     "doMuscSim": 0,
 }
+
+defaults_base_CO18 = {
+    "popSize": 96,
+    "duration": 50,
+    "transient": 10,
+    "simduration": 50,
+    "simtransient": 10,
+    "nervousSystemFileName": "main_sim",
+    "doNML": 0,
+    "doRandInit": 0,
+    "maxGens": 1000,
+    "doMuscSim": 0,
+}
+
+
 
 defaults_base_2021 = {
     "popSize": 100,

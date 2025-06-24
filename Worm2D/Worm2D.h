@@ -128,6 +128,9 @@ virtual void InitializeState(RandomState &rs) = 0;
 virtual void initForSimulation() =  0;
 
 void Step(double StepSize_);
+void Step();
+void setStepSize(double val_){settedStepSize=val_;}
+
 
 virtual void writeAct();
 void writeState();
@@ -146,6 +149,8 @@ virtual ~Worm2Dbase(){
 }
 
 void setTime(double t_){t=t_;}
+const double & itsStepSize() const {return settedStepSize;}
+void incSimTimes();
 
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -154,7 +159,7 @@ void writeData();
 
 virtual const string getModelName() = 0;
 virtual vector<doubIntParamsHead> getWormParams() = 0;
-virtual void Step1(double StepSize_) = 0;
+virtual void Step1() = 0;
 NSForW2D * const n_ptr;
 muscForW2D * m_ptr;
     
@@ -164,7 +169,7 @@ double t; // Time
 const bool muscForWDconst;
 const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber);
-
+double settedStepSize;
 
 };
 
@@ -187,7 +192,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //void Step(double StepSize_);
     //void DumpBodyState(ofstream &ofs, int skips);
     //void DumpCurvature(ofstream &ofs, int skips);
-    virtual void setMuscleInput(double StepSize) {return;}
+    virtual void setMuscleInput() {return;}
     //virtual void DumpActState(ofstream &ofs, int skips);
     //virtual void DumpActStateState(ofstream &ofs, int skips);
     //void DumpVal(ofstream &ofs, int skips, double val);
@@ -262,8 +267,8 @@ class Worm2D : virtual public Worm2Dm
     void setUpMuscleConn();
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-    void setMuscleInput(double StepSize);
-    void setMuscleInputVec(double StepSize);
+    void setMuscleInput();
+    void setMuscleInputVec();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     void setMuscleInputVent();
     void setMuscleInputDors();

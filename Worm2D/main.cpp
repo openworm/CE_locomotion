@@ -190,10 +190,11 @@ int main (int argc, const char* argv[])
     
 
     simPars sp1 = {er->itsEvoPars().directoryName,
-        er->itsEvoPars().skip_steps, simduration, simtransient, er->itsEvoPars().StepSize};
+        //er->itsEvoPars().skip_steps, 
+        simduration, simtransient, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
     
-    w->setDataskips(sp1.skip_steps);
+    w->setDataskips(er->itsEvoPars().skip_steps);
     w->setPrefix("sim");
     w->InitializeData(sp1.directoryName);
 
@@ -244,7 +245,8 @@ int main (int argc, const char* argv[])
     w->InitializeState(rs);
     w->initForSimulation();
     simPars sp1 = {er->itsEvoPars().directoryName,
-        er->itsEvoPars().skip_steps, 60, 50, er->itsEvoPars().StepSize};
+        //er->itsEvoPars().skip_steps, 
+        60, 50, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w);}
 

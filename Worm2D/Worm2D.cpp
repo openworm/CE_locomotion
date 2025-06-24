@@ -187,14 +187,29 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
   }
 }
 
-void Worm2Dbase::Step(double StepSize_) 
-{ //StepSize = StepSize_; 
-    Step1(StepSize_); 
 
-    t += StepSize_; 
-    datatime += StepSize_; 
+void Worm2Dbase::Step() 
+{ //StepSize = StepSize_; 
+    Step1(); 
+
+    incSimTimes();
     //datatime = t;
     //datatime += StepSize_; 
+}
+
+
+void Worm2Dbase::incSimTimes()
+{
+    t += settedStepSize; 
+    datatime += settedStepSize; 
+
+}
+
+
+void Worm2Dbase::Step(double StepSize_) 
+{ //StepSize = StepSize_; 
+    settedStepSize = StepSize_;
+    Step();
 }
 
 
@@ -564,7 +579,7 @@ void Worm2D::setMuscleInputDors()
 
 }
 
-void Worm2D::setMuscleInputVec(double StepSize)
+void Worm2D::setMuscleInputVec()
 {
     vector<double> vtot(par1.N_muscles);
 
@@ -586,18 +601,18 @@ void Worm2D::setMuscleInputVec(double StepSize)
 
 
 
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
 }
 
 
-void Worm2D::setMuscleInput(double StepSize)
+void Worm2D::setMuscleInput()
 {
 
     
     setMuscleInputVent();
     setMuscleInputDors();
 
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
     //cout << "setMuscInp" << endl;
     //exit(1);
 }

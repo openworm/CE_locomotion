@@ -21,8 +21,9 @@ class EvolutionRS18 : public Evolution
     double EvaluationFunctionNoOut(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
     void RunSimulation(Worm2Dbase &w1, RandomState &rs);
-    void configure();
-    
+    //void configure();
+    void configure_p12();
+
     protected:
     void addExtraParsToJson(json & j);
 

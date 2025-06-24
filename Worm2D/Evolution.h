@@ -108,7 +108,7 @@ class Evolution
 
     void addParsToJson(json & j);
     
-    virtual void configure();
+    void configure();
     
     
     const evoPars & itsEvoPars() const {return evoPars1;}
@@ -125,8 +125,10 @@ class Evolution
     protected:
     evoPars setPars(int argc, const char* argv[], evoPars ep1);
     simPars setSimPars(int argc, const char* argv[]);
-
+    void setUp();
     
+    virtual void configure_p12(){return;}
+
     virtual void configure_p1();
     virtual void configure_p2();
     void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);

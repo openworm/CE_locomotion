@@ -422,9 +422,10 @@ if (speedoutput){
 }
 
 
-void EvolutionRS18::configure()
+
+void EvolutionRS18::configure_p12()
 {
-    configure_p1();
+   // configure_p1();
     if (evo_seed)
     {
         ifstream BestIndividualFile;
@@ -439,6 +440,6 @@ void EvolutionRS18::configure()
             }
         }
     }
-    configure_p2();
+   // configure_p2();
 
 }

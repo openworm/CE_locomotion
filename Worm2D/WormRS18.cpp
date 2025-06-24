@@ -330,7 +330,7 @@ void Worm18::setMuscleInputOrigVentral()
 
 
 
-void Worm18::setMuscleInputOrig(double StepSize)
+void Worm18::setMuscleInputOrig()
 {
    double dorsalHeadInput, ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
 
@@ -366,16 +366,16 @@ void Worm18::setMuscleInputOrig(double StepSize)
     }
 
     // Update Muscle activation
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
 
 }
 
-void Worm18::preNStep(double StepSize)
+void Worm18::preNStep()
 {
 
 double ds, vs;
 
-b.StepBody(StepSize);
+b.StepBody(settedStepSize);
 
     // Set input to Stretch Receptors from Body
     for(int i = 1; i <= N_segments; ++i){
@@ -414,10 +414,10 @@ if (rS18Macros.vncsr)
 }
 
 
-void Worm18::postNStep(double StepSize)
+void Worm18::postNStep()
 {
 
-     setMuscleInputOrig(StepSize);
+     setMuscleInputOrig();
     //setMuscleInputVec(StepSize);
     //setMuscleInput(StepSize);
 
@@ -449,19 +449,19 @@ void Worm18::postNStep(double StepSize)
     b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
 }
 
-void Worm18::Step1(double StepSize)
+void Worm18::Step1()
 {
    
-    preNStep(StepSize);
+    preNStep();
 
     // Update Nervous System
     //h.EulerStep(StepSize);
-    n_ptr->EulerStep(StepSize);
+    n_ptr->EulerStep(settedStepSize);
 
     // Set input to Muscles
     //  Input from the head circuit
 
-    postNStep(StepSize);
+    postNStep();
 
     // Time
     //t += StepSize;
