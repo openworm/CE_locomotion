@@ -12,7 +12,6 @@ from datetime import datetime
 import json
 
 
-
 defaults_base_CO = {
     "popSize": 26,
     "duration": 50,
@@ -64,7 +63,6 @@ defaults_base_CO18 = {
     "maxGens": 1000,
     "doMuscSim": 0,
 }
-
 
 
 defaults_base_2021 = {

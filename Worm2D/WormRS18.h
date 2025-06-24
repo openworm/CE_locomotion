@@ -40,7 +40,7 @@ public:
     //void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
-    void initForSimulation(){}
+    void initForSimulation(){return;}
     void setRs18output(bool val_){rs18output=val_;}
 
     protected:
