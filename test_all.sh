@@ -13,8 +13,11 @@ make tests
 rm -rf test_output/*.dat
 ./tests
 
+# Compile the main program
 make
 
+
+# Compile the CE_orientation C++ code
 cd CE_orientation
 make clean
 make
@@ -30,6 +33,9 @@ make clean
 make
 cd ..
 
+gits
+
+# Compile the Worm2D C++ code
 cd Worm2D
 make clean
 make
