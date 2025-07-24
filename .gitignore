@@ -50,3 +50,9 @@
 /*/*.pdf
 .DS_Store
 /CE_orientation/main
+/neuromlLocal/LEMS_Worm2D.xml
+/neuromlLocal/Worm2D.net.nml
+/neuromlLocal/cell_Ids.json
+/neuromlLocal/cell_syn_W2D_cells.xml
+/test_output_2/test.output.dat
+/test_output_2/test.state.dat
