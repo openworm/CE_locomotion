@@ -13,13 +13,17 @@ make tests
 rm -rf test_output/*.dat
 ./tests
 
+# Compile the main program
 make
 
+
+# Compile the CE_orientation C++ code
 cd CE_orientation
 make clean
 make
 cd ..
 
+# Compile the Worm2D C++ code
 cd Worm2D
 make clean
 make
@@ -28,11 +32,14 @@ cd ..
 
 if [ "$quick_test" == 0 ]; then
 
+
+    # Run the main program & generate exampleRun dir
+    rm -rf exampleRun
+    
+    omv test -V .test.example.omt
     
     rm -rf exampleRunCOW2D
     rm -rf exampleRunCO
-
-   
 
     omv test -V .test.CO.omt
     omv test -V .test.COW2D.omt
