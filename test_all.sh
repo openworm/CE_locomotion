@@ -33,8 +33,6 @@ make clean
 make
 cd ..
 
-gits
-
 # Compile the Worm2D C++ code
 cd Worm2D
 make clean
