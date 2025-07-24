@@ -46,6 +46,11 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.nmlNS.omt
     
 
+    ###rm -rf exampleRunCOW2D
+    ###rm -rf exampleRunCO
+ 
+    ###omv test -V .test.CO.omt
+    ###omv test -V .test.COW2D.omt
 
     
 fi
