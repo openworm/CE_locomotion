@@ -35,14 +35,18 @@ if [ "$quick_test" == 0 ]; then
 
     # Run the main program & generate exampleRun dir
     rm -rf exampleRun
-    
     omv test -V .test.example.omt
-    
-    rm -rf exampleRunCOW2D
-    rm -rf exampleRunCO
 
-    omv test -V .test.CO.omt
-    omv test -V .test.COW2D.omt
+    # Regenerate the neuroml & test version of main with that 
+    rm -rf exampleRun_nml    
+    cd neuromlLocal
+    ./regenerate.sh # regenerated NML & runs omv all -V
+    cd ..
+    
+    omv test -V .test.nmlNS.omt
+    
+
+
     
 fi
 
