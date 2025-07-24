@@ -10,7 +10,7 @@
 using namespace CTRNNspace;
 
 WormAgent::WormAgent(int newsize):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	InitialiseCircuit(newsize);
 
@@ -33,7 +33,7 @@ WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
 }
 
 WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), NervousSystem(dynamic_cast<CTRNN&>(*n_ptr))
 {
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
@@ -214,6 +214,7 @@ void WormAgent::ResetChemCon(double gradSteep)
 void WormAgent::ResetAgentIntState(RandomState &rs)
 {
 	NervousSystem.RandomizeCircuitState(0.0, 0.0, rs);
+	//NervousSystem.RandomizeCircuitState(0.0, 0.5, rs);
 }
 
 // *******
@@ -236,6 +237,34 @@ void WormAgent::UpdateSensors()
 	oASEL = tempDiff > 0.0 ? tempDiff: 0.0;
 	oASER = tempDiff < 0.0 ? fabs(tempDiff): 0.0;
 }
+
+void WormAgent::writeData()
+{
+	Worm2Dbase::writeData();
+	writeBodyPos();
+}
+
+
+void WormAgent::writeBodyPos()
+{
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+    
+    resetStats(firstcall,pos,tt,"body.dat");
+
+    ofstream & ofs = ofsvec[pos];  
+   
+    if (++tt >= dataskips) {
+        tt = 0;
+
+        ofs << datatime << " " << px << " " << py << " " << theta << endl;
+        // Body
+        
+    }
+    return;
+}
+
 
 void WormAgent::PrintPath( ofstream &file)
 {
@@ -284,7 +313,7 @@ void WormAgent::setStepPars(double gradSteep_,
 
 void WormAgent::InitializeState(RandomState &rs)
 {
-	Worm2Dm::InitializeState(rs);
+	Worm2Dbase::InitializeState(rs);
 	InitialiseAgent(2*RunDuration, HSStepSize);
 	ResetAgentsBody(orient_orig, rs);
 	ResetChemCon(gradSteep);
@@ -311,12 +340,8 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 void WormAgent::addParsToJson(json & j)
 {
 
-	//string nsHead = "Nervous system";
-    //appendAllNSJson(j[nsHead], NervousSystem); //not yet implemented
-      
-    Worm2Dm::addParsToJson(j);
+    Worm2Dbase::addParsToJson(j);
         
-    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }
 
 
@@ -327,10 +352,6 @@ void WormAgent::Step1(double StepSize)
 	UpdateChemCon(gradSteep);
 }
 
-/* void WormAgent::Step(double StepSize)
-{
-	Step(StepSize,rs,HStimestep,taxis,kinesis);
-} */
 
 // Step
 void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)

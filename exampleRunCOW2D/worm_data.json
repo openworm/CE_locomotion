@@ -1,66 +1,4 @@
 {
-    "Body": {
-        "C_agar_par_total": {
-            "message": "Total tangential drag coefficient for agar in kg/s",
-            "value": 0.0032
-        },
-        "C_agar_perp_total": {
-            "message": "Total rod normal drag coefficient in agar in kg/s",
-            "value": 0.128
-        },
-        "C_water_par_total": {
-            "message": "Total rod tangential drag coefficient for water in kg/s",
-            "value": 3.3e-06
-        },
-        "C_water_perp_total": {
-            "message": "Total rod normal drag coefficient for water in kg/s",
-            "value": 5.2e-06
-        },
-        "L_worm": {
-            "message": "Length of worm in m",
-            "value": 0.001
-        },
-        "Medium": {
-            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
-            "value": 1.0
-        },
-        "N_segments": {
-            "message": "Number of body segments on each side, dorsal and ventral",
-            "value": 50
-        },
-        "R_min": {
-            "message": "Minor radius of prolate ellipse body in m",
-            "value": 4e-05
-        },
-        "beta_D": {
-            "message": "Diagonal passive damping constant in s",
-            "value": 0.07291666666666666
-        },
-        "beta_L": {
-            "message": "Lateral passive damping constant in s",
-            "value": 0.0005208333333333333
-        },
-        "beta_M0": {
-            "message": "Baseline active damping constant in s",
-            "value": 0.052083333333333336
-        },
-        "delta_M": {
-            "message": "Rest muscle length scaling constant",
-            "value": 0.65
-        },
-        "kappa_D": {
-            "message": "Diagonal spring constant in kg/s",
-            "value": 7.291666666666666
-        },
-        "kappa_L": {
-            "message": "Lateral spring constant in kg/s",
-            "value": 0.020833333333333332
-        },
-        "kappa_M0": {
-            "message": "Baseline active muscle spring constant in kg/s",
-            "value": 0.41666666666666663
-        }
-    },
     "Evolutionary Optimization Parameters": {
         "BiasRange": {
             "value": 15.0
@@ -166,12 +104,6 @@
         }
     },
     "Nervous system": {
-        "Cell name": {
-            "value": [
-                "A",
-                "B"
-            ]
-        },
         "Model name": {
             "value": "CO"
         }

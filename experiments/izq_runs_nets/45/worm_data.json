@@ -1647,6 +1647,9 @@
                 }
             ]
         },
+        "Model name": {
+            "value": "Net21"
+        },
         "NumChemicalConns": {
             "value": [
                 2,

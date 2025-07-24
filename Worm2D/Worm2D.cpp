@@ -32,32 +32,42 @@ string DataWriter::getName(string name_){
  }
 
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(false){}
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(mfwc){}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
+Worm2Dbase(par1_,n_ptr_,m_ptr_){}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
+Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc){}
 
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
-
     b.InitializeBodyState();
+    return;
+}
+
+void Worm2Dbase::InitializeState(RandomState &rs)
+{
+    t = 0.0;
     return;
 }
 
 void Worm2Dm::InitializeState(RandomState &rs)
 {
-    t = 0.0;
+
+    Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
     return;
 }
 
-int Worm2Dm::nn(int neuronNumber, int unitNumber)
+int Worm2Dbase::nn(int neuronNumber, int unitNumber)
 {   
     if (unitNumber==1) return neuronNumber;
     return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
@@ -116,7 +126,7 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
   }
 }
 
-void Worm2Dm::Step(double StepSize_) { //StepSize = StepSize_; 
+void Worm2Dbase::Step(double StepSize_) { //StepSize = StepSize_; 
     Step1(StepSize_); t += StepSize_; datatime = t;}
 
 
@@ -134,31 +144,47 @@ double Worm2Dbody::getVelocity()
 
 }
 
-void Worm2Dm::DumpNSOrdered(ofstream &ofs, int skips)
+void Worm2Dbase::DumpNSOrdered()
 {
 
     //const int NSsize = dynamic_cast<NervousSystem&>(*n_ptr).size;
-    static int tt = skips;
 
-    if (++tt >= skips) {
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,"ns.dat");
+
+
+    ofstream & ofs = ofsvec[pos];  
+
+
+    if (++tt >= dataskips) {
         tt = 0;
-        ofs << t;
+        ofs << datatime;
         for (int i = 1; i <= par1.N_size; i++) ofs <<  " " << n_ptr->NeuronOutput(i);
-        ofs << "\n";
+        ofs << endl;
     }
 }
 
 
-void Worm2Dm::DumpVal(ofstream &ofs, int skips, double val)
+void Worm2Dbase::DumpVal(string filename_, double val)
 {
-    static int tt = skips;
 
-    if (++tt >= skips) {
+    static bool firstcall = true;
+    static size_t pos;
+    static int tt;
+
+    resetStats(firstcall,pos,tt,filename_);
+
+    ofstream & ofs = ofsvec[pos];  
+
+    if (++tt >= dataskips) {
         tt = 0;
 
-        ofs << t << " " << val;
+        ofs << datatime << " " << val;
     
-        ofs << "\n";
+        ofs << endl;
     }
 }
 
@@ -271,25 +297,7 @@ void Worm2Dbody::writeBody()
     return;
 }
 
-
-/* void Worm2Dm::DumpBodyState(ofstream &ofs, int skips)
-{
-    static int tt = skips;
-
-    if (++tt >= skips) {
-        tt = 0;
-
-        ofs << t;
-        // Body
-        for (int i = 1; i <= N_rods; i++)
-        {
-            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
-        }
-        ofs << "\n";
-    }
-}
- */
-void Worm2Dm::writeJsonFile(ofstream & json_out)
+void Worm2Dbase::writeJsonFile(ofstream & json_out)
 {
 
     json j;
@@ -300,22 +308,24 @@ void Worm2Dm::writeJsonFile(ofstream & json_out)
     //json_out.close();
 
 }
+
+
 void Worm2Dbody::addParsToJson(json & j)
 {  
  appendBodyToJson(j, b);
 }
 
-void Worm2Dm::addParsToJson(json & j)
+
+void Worm2Dbase::addParsToJson(json & j)
 {  
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
-    Worm2Dbody::addParsToJson(j);
+  
     
     string nsHead = "Nervous system";
-    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
-    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+   
 
     {Params< string > par;
     par.names = {"Model name"};
@@ -330,6 +340,20 @@ void Worm2Dm::addParsToJson(json & j)
         if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
+}
+
+
+void Worm2Dm::addParsToJson(json & j)
+{  
+   
+    Worm2Dbody::addParsToJson(j);
+    Worm2Dbase::addParsToJson(j);
+
+    string nsHead = "Nervous system";
+    //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+
+
 }
 
 
@@ -384,12 +408,18 @@ void Worm2D::addParsToJson(json & j)
 
 void Worm2Dm::writeData()
 {
-writeAct();
-writeState();
+Worm2Dbase::writeData();
 Worm2Dbody::writeData();
 }
 
-void Worm2Dm::writeAct()
+
+void Worm2Dbase::writeData()
+{
+writeAct();
+writeState();
+}
+
+void Worm2Dbase::writeAct()
 {
     static bool firstcall = true;
     static size_t pos;
@@ -427,7 +457,7 @@ void Worm2Dm::writeAct()
 }
 
 
-void Worm2Dm::writeState()
+void Worm2Dbase::writeState()
 {
 
     static bool firstcall = true;
@@ -535,4 +565,4 @@ void Worm2D::InitializeState(RandomState &rs)
     return;
 }
 
-const string Worm2Dm::getModelName() {return "Unspecified";}
+const string Worm2Dbase::getModelName() {return "Unspecified";}

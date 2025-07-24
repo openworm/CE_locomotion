@@ -43,7 +43,7 @@ plot_formats["RS18"]["plot_col_divs"] = [6, 4]
 plot_formats["RS18"]["plot_time"] = 20
 plot_formats["RS18"]["worm_plot_time"] = 12
 plot_formats["RS18"]["do_body_plot"] = True
-
+plot_formats["RS18"]["do_curv_plot"] = True
 
 plot_formats["Net21"] = {}
 plot_formats["Net21"]["fig_titles"] = ["Neurons", "Muscles"]
@@ -54,6 +54,8 @@ plot_formats["Net21"]["plot_col_divs"] = [4, 3]
 plot_formats["Net21"]["plot_time"] = 10
 plot_formats["Net21"]["worm_plot_time"] = 2
 plot_formats["Net21"]["do_body_plot"] = True
+plot_formats["Net21"]["do_curv_plot"] = True
+
 
 plot_formats["CE"] = {}
 plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
@@ -64,17 +66,22 @@ plot_formats["CE"]["plot_col_divs"] = [3, 3]
 plot_formats["CE"]["plot_time"] = 10
 plot_formats["CE"]["worm_plot_time"] = 5
 plot_formats["CE"]["do_body_plot"] = True
+plot_formats["CE"]["do_curv_plot"] = True
 
 plot_formats["CO"] = {}
-plot_formats["CO"]["fig_titles"] = ["Neurons"]
-plot_formats["CO"]["data_sizes"] = [10]
-plot_formats["CO"]["fig_labels"] = ["Neu"]
+plot_formats["CO"]["fig_titles"] = [
+    "Inter neurons",
+    "Kinesis neurons",
+    "Head Motor neurons",
+]
+plot_formats["CO"]["data_sizes"] = [6, 2, 2]
+plot_formats["CO"]["fig_labels"] = ["Neu", "Kin", "Mot"]
 plot_formats["CO"]["plot_cell_names"] = ["N" + str(i) for i in range(10)]
-plot_formats["CO"]["plot_col_divs"] = [5, 5]
+plot_formats["CO"]["plot_col_divs"] = [6, 4]
 plot_formats["CO"]["plot_time"] = 10
 plot_formats["CO"]["worm_plot_time"] = 5
-plot_formats["CO"]["do_body_plot"] = False
-
+plot_formats["CO"]["do_body_plot"] = True
+plot_formats["CO"]["do_curv_plot"] = False
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
@@ -95,7 +102,7 @@ def process_args():
         metavar="<model name>",
         default=DEFAULTS["modelName"],
         help=(
-            "Name of model is required.\nOptions include: RS18, CE, Net21."
+            "Name of model is required.\nOptions include: RS18, CE, Net21, CO"
             # "Default is: %s" % DEFAULTS["modelName"]
         ),
     )
@@ -240,7 +247,7 @@ def reload_single_run(a=None, **kwargs):
         offset += val[0]
 
     ###  Worm body curvature
-    if plot_format["do_body_plot"]:
+    if plot_format["do_curv_plot"]:
         curv_data = np.loadtxt(hf.rename_file("curv.dat")).T
         t_data = curv_data[0]
         data_seg = (t_data >= t_start) & (t_data < t_end)
@@ -258,6 +265,7 @@ def reload_single_run(a=None, **kwargs):
 
         ###  Body position
 
+    if plot_format["do_body_plot"]:
         body_data = np.loadtxt(hf.rename_file("body.dat")).T
 
         tmax = 1520
@@ -267,7 +275,8 @@ def reload_single_run(a=None, **kwargs):
 
         # title = axs[count_num, 0].set_title("2D worm motion", fontsize=title_font_size, loc='right')
         axs[count_num, 0].set_title(
-            "2D worm \n motion", fontsize=title_font_size, y=0.5, x=1.1
+            "2D worm motion",
+            fontsize=title_font_size,  # y=0.5, x=1.1
         )
 
         box = axs[count_num, 0].get_position()
@@ -297,9 +306,17 @@ def reload_single_run(a=None, **kwargs):
             # color2 = "#%06x" % random.randint(0, 0xFFFFFF)
 
             point_start = 1
+            point_end = 50
+            markersize = 3
+            markersize_small = 0.4
+            if a.modelName == "CO":
+                point_start = 0
+                point_end = 1
+                markersize = 10
+                markersize_small = 10
             xs = []
             ys = []
-            for i in range(point_start, 50):
+            for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 xs.append(x * 1000)
                 y = body_data[i * 3 + 2][t]
@@ -312,7 +329,11 @@ def reload_single_run(a=None, **kwargs):
                     )
 
                 axs[count_num, 0].plot(
-                    [x], [y], ".", color=color, markersize=3 if t == 1 else 0.4
+                    [x],
+                    [y],
+                    ".",
+                    color=color,
+                    markersize=markersize if t == 1 else markersize_small,
                 )
 
                 # print("%s - Plotting %i at t=%s (%s,%s), %s"%('\n' if i==point_start else '', i, t,x,y1, color))
@@ -327,7 +348,7 @@ def reload_single_run(a=None, **kwargs):
         with open(hf.rename_file("output.wcon"), "w", encoding="utf-8") as json_file:
             json.dump(wcon, json_file, indent=4, ensure_ascii=False)
 
-        axs[count_num, 0].set_aspect("equal")
+        # axs[count_num, 0].set_aspect("equal")
 
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
@@ -343,7 +364,8 @@ def reload_single_run(a=None, **kwargs):
 
     from F2_fig_behavior import make_fig
 
-    make_fig(plot_format=plot_format)
+    if a.modelName != "CO":
+        make_fig(plot_format=plot_format)
 
 
 if __name__ == "__main__":

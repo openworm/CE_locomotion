@@ -18,7 +18,7 @@ class EvolutionCE:public Evolution
     //evoPars getEvoPars(const SuppliedArgs & sa);
     double save_traces(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
-    void RunSimulation(Worm2Dm & w, RandomState &rs);
+    void RunSimulation(Worm2Dbase & w, RandomState &rs);
     
 
     protected:
