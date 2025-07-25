@@ -289,9 +289,7 @@ def reload_single_run(a=None, **kwargs):
         wcon = {}
         wcon["data"] = []
 
-        WCON_POSITION_RESOLUTION = (
-            "%.6f"  # Helps ensure consistent resolution in output across Linux/MacOS
-        )
+        WCON_POSITION_RESOLUTION = "%.5f"  # Helps ensure consistent resolution in output across Linux/MacOS - important for testing
 
         dd = {}
         wcon["data"].append(dd)

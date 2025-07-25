@@ -13,6 +13,7 @@ DEFAULTS = {"doMuscles": False, "folder": None}
 
 
 FORMAT_CONN_WEIGHTS = "%.8f"
+FORMAT_CELL_PARAMS = "%.8f"
 
 
 def process_args():
@@ -389,13 +390,13 @@ def makeCellXml(network_json_data, cellW2D_filename):
             '<cellW2D id="'
             + str(pop_cell_name)
             + '" bias="'
-            + str(pop_biases[ind])
+            + str(FORMAT_CELL_PARAMS % pop_biases[ind])
             + '" gain="'
-            + str(pop_gains[ind])
+            + str(FORMAT_CELL_PARAMS % pop_gains[ind])
             + '" state0="'
-            + str(pop_states[ind])
+            + str(FORMAT_CELL_PARAMS % pop_states[ind])
             + '" tau="'
-            + str(pop_taus[ind])
+            + str(FORMAT_CELL_PARAMS % pop_taus[ind])
             + 's"/>'
         )
         cellW2D_strings.append(output_string)
