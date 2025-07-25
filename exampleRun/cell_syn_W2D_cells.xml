@@ -1,0 +1,8 @@
+<Lems>
+<cellW2D id="DA" bias="3.23830606" gain="1.00000000" state0="-5.43553063" tau="1.00000000s"/>
+<cellW2D id="DB" bias="4.43074222" gain="1.00000000" state0="-6.62796680" tau="1.00000000s"/>
+<cellW2D id="DD" bias="-2.36289252" gain="1.00000000" state0="4.56011709" tau="1.00000000s"/>
+<cellW2D id="VA" bias="3.23830606" gain="1.00000000" state0="-1.04108148" tau="1.00000000s"/>
+<cellW2D id="VB" bias="4.43074222" gain="1.00000000" state0="-2.23351764" tau="1.00000000s"/>
+<cellW2D id="VD" bias="-2.36289252" gain="1.00000000" state0="0.16566794" tau="1.00000000s"/>
+</Lems>

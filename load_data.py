@@ -289,6 +289,8 @@ def reload_single_run(a=None, **kwargs):
         wcon = {}
         wcon["data"] = []
 
+        WCON_POSITION_RESOLUTION = "%.5f"  # Helps ensure consistent resolution in output across Linux/MacOS - important for testing
+
         dd = {}
         wcon["data"].append(dd)
         dd["id"] = "test"
@@ -318,9 +320,9 @@ def reload_single_run(a=None, **kwargs):
             ys = []
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
-                xs.append(x * 1000)
+                xs.append(float(WCON_POSITION_RESOLUTION % (x * 1000)))
                 y = body_data[i * 3 + 2][t]
-                ys.append(y * 1000)
+                ys.append(float(WCON_POSITION_RESOLUTION % (y * 1000)))
                 # y1 = body_data[i * 3 + 2][t]
                 if i == 1 and a.verbose:
                     print(
