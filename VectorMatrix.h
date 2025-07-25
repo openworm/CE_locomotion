@@ -27,15 +27,17 @@ public:
 	// Constructors
 	TVector(void);
 	TVector(int LowerBound, int UpperBound);
-	TVector(TVector<EltType> &v);
+	TVector(TVector<EltType> &v); 
+	
+
 	// The destructor
 	~TVector();
 	// Accessors
-	int Size(void) {return ub - lb + 1;};
+	int Size(void) const {return ub - lb + 1;};
 	void SetSize(int NewSize) {SetBounds(lb,NewSize+lb-1);};
-	int LowerBound(void) {return lb;};
+	int LowerBound(void) const {return lb;};
 	void SetLowerBound(int NewLB) {SetBounds(NewLB,ub);};
-	int UpperBound(void) {return ub;};
+	int UpperBound(void) const {return ub;};
 	void SetUpperBound(int NewUB) {SetBounds(lb,NewUB);};
 	void SetBounds(int NewLB, int NewUB);
 	// Other stuff
@@ -54,6 +56,9 @@ public:
 		return (*this)(index);
 #endif
 	};
+
+
+	inline const EltType &operator()(int index) const; //added const operator
 	inline EltType &operator()(int index);
 	inline TVector<EltType> &operator=(TVector<EltType> &v);
 	
@@ -92,6 +97,8 @@ TVector<EltType>::TVector(TVector<EltType> &v)
 	for (int i = lb; i <= ub; i++)
 		Vector[i] = v[i];
 }
+
+
 
 
 // The destructor
@@ -171,6 +178,17 @@ void TVector<EltType>::InitializeContents(EltType v1,...)
 
 
 // Overload the () operator to provide safe indexing
+
+template<class EltType>
+inline const EltType &TVector<EltType>::operator()(int index) const
+{
+	if (index < lb || index > ub) 
+	{
+		cerr << "Vector index " << index << " out of bounds\n";
+	 	exit(0);
+	}
+	return Vector[index];
+}
 
 template<class EltType>
 inline EltType &TVector<EltType>::operator()(int index)

@@ -29,9 +29,13 @@ bool vncsr;
 
 class Worm18 : public Worm2D {
 public:
-    
-    Worm18(TVector<double> &v, double output);
-   
+
+    Worm18();
+    Worm18(vector<double> v, double output);
+    Worm18(const TVector<double> &v, double output);
+    //Worm18(bool dummy);
+    Worm18(const TVector<double> &v);
+
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
   
@@ -40,16 +44,20 @@ public:
     //void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
-    void initForSimulation(){}
+    void initForSimulation(RandomState& rs){setRs18output(1);}
     void setRs18output(bool val_){rs18output=val_;}
+    void addParsToJson(json & j);
+    void SetParameters(const TVector<double> & v);
 
+    friend class WormCO18;
+    
     protected:
-    void Step1(double Stepsize); 
-    void preNStep(double Stepsize);
-    void postNStep(double Stepsize);
+    void Step1(); 
+    virtual void preNStep();
+    void postNStep();
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
-    void addParsToJson(json & j);
+    //void addParsToJson(json & j);
     const vector<string> getCellNames() ;
     vector<toFromWeight> makeVentralMuscleConn();
     vector<toFromWeight> makeDorsalMuscleConn();
@@ -61,7 +69,7 @@ public:
     //const vector<string> getHeadCellNames() 
     //{return {"SMDD", "RMDD", "SMDV", "RMDV"};}
     
-    void setMuscleInputOrig(double StepSize);
+    void setMuscleInputOrig();
     void setMuscleInputOrigDorsal();
     void setMuscleInputOrigVentral(); 
 
@@ -73,11 +81,11 @@ public:
 
     protected:
 
-    NervousSystem & n;
+    //NervousSystem & n;
     StretchReceptor18 sr;
     //NervousSystem h;
     
-    
+    void setPhenoNames();
    
     // Neuromuscular junctions
     double NMJ_DB, NMJ_VBa, NMJ_VBp, NMJ_DD, NMJ_VDa, NMJ_VDp;

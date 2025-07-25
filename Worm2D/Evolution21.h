@@ -22,7 +22,7 @@ class Evolution21:public Evolution
     void RunSimulation(TVector<double> &v, RandomState &rs);
     void RunSimulation(Worm2Dbase &w1, RandomState &rs);
     int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar);
-   
+    void writeJson(TVector<double> &v);
 
     
     protected:

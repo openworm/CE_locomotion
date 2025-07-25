@@ -12,11 +12,45 @@
 
 //extern SuppliedArgs2021 supArgs1;
 
+void Worm21::setPhenoNames()
+{
+ 
+    Worm2D21::setPhenoNames();
+
+	for (int i = 1; i <= 7; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("bias");
+	}
+        
+    for (int i = 8; i <= 14; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("tau");
+	}
+
+    for (int i = 15; i <= 30; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("chemsyn");
+	}
+       
+    phenoNamesNums.push_back(31);
+	phenoNames.push_back("electsyn");
+    
+    for (int i = 40; i <= 41; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("chemsyn");
+	}
+    
+    for (int i = 42; i <= 44; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("electsyn");
+	}
+
+}
+
 
 
 // The constructor
-Worm21::Worm21(TVector<double> &v)
-:Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles), Worm2D21(v),
+Worm21::Worm21(TVector<double> &v):Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles), Worm2D21(v),
 n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
     // Muscles
@@ -123,7 +157,9 @@ void Worm21::DumpParams(ofstream &ofs)
 }
 
 
-void Worm21::addParsToJson(json & j){
+void Worm21::addParsToJson(json & j)
+{
         string nsHead = "Nervous system";
         appendAllNSJson(j[nsHead], n);
-        Worm2D21::addParsToJson(j);}
+        Worm2D21::addParsToJson(j);    
+    }

@@ -7,6 +7,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 import sys
 import argparse
+import os
+import neuromlLocal.utils as utils
+from matplotlib.ticker import MaxNLocator
+import math
 
 # import neuromlLocal.utils as utils
 import matplotlib as mpl
@@ -45,6 +49,7 @@ plot_formats["RS18"]["worm_plot_time"] = 12
 plot_formats["RS18"]["do_body_plot"] = True
 plot_formats["RS18"]["do_curv_plot"] = True
 
+
 plot_formats["Net21"] = {}
 plot_formats["Net21"]["fig_titles"] = ["Neurons", "Muscles"]
 plot_formats["Net21"]["data_sizes"] = [49, 48]
@@ -73,15 +78,38 @@ plot_formats["CO"]["fig_titles"] = [
     "Inter neurons",
     "Kinesis neurons",
     "Head Motor neurons",
+    "Sensory receptors",
 ]
-plot_formats["CO"]["data_sizes"] = [6, 2, 2]
-plot_formats["CO"]["fig_labels"] = ["Neu", "Kin", "Mot"]
-plot_formats["CO"]["plot_cell_names"] = ["N" + str(i) for i in range(10)]
-plot_formats["CO"]["plot_col_divs"] = [6, 4]
+
+plot_formats["CO"]["data_sizes"] = [6, 2, 2, 2]
+plot_formats["CO"]["fig_labels"] = ["Neu", "Kin", "Mot", "Sen"]
+plot_formats["CO"]["plot_cell_names"] = (
+    ["I" + str(i) for i in range(6)]
+    + ["K" + str(i) for i in range(2)]
+    + ["H" + str(i) for i in range(2)]
+    + ["S" + str(i) for i in range(2)]
+)
+plot_formats["CO"]["plot_col_divs"] = [6, 6]
 plot_formats["CO"]["plot_time"] = 10
 plot_formats["CO"]["worm_plot_time"] = 5
 plot_formats["CO"]["do_body_plot"] = True
 plot_formats["CO"]["do_curv_plot"] = False
+
+CO18_size = 6
+plot_formats["CO18"] = {}
+plot_formats["CO18"]["fig_titles"] = ["Neurons", "Sensory"]
+plot_formats["CO18"]["data_sizes"] = [CO18_size, 2]
+plot_formats["CO18"]["fig_labels"] = ["Neu", "Sen"]
+plot_formats["CO18"]["plot_cell_names"] = ["N" + str(i) for i in range(CO18_size)] + [
+    "S" + str(i) for i in range(2)
+]
+plot_formats["CO18"]["plot_col_divs"] = [CO18_size, 2]
+plot_formats["CO18"]["plot_time"] = 10
+plot_formats["CO18"]["worm_plot_time"] = 5
+plot_formats["CO18"]["do_body_plot"] = False
+plot_formats["CO18"]["do_curv_plot"] = False
+
+plot_formats["CO18Full"] = plot_formats["CO18"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
@@ -157,21 +185,212 @@ def run_main(args=None):
     reload_single_run(a=args)
 
 
-# def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):
-def reload_single_run(a=None, **kwargs):
-    a = build_namespace(DEFAULTS, a, **kwargs)
-
+def setFolder(a):
     if a.modelName is None:
         print("plot_format is required to make figure.")
         return
-
-    plot_format = plot_formats[a.modelName]
 
     if a.folderName is None:
         print("Folder name is required for data.")
         return
 
     hf.dir_name = a.folderName
+    hf.file_prefix = a.modelName + "_"
+
+
+title_font_size = 16
+label_font_size = 14
+
+
+def plot_evols(a=None, **kwargs):
+    a = build_namespace(DEFAULTS, a, **kwargs)
+
+    setFolder(a)
+
+    mpl.rcParams["xtick.labelsize"] = 12
+    mpl.rcParams["ytick.labelsize"] = 12
+
+    file = hf.rename_file("genhistory.dat")
+    if not os.path.isfile(file):
+        hf.file_prefix = None
+
+    evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+    network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
+    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
+        "value"
+    ]
+
+    doPhenNames = False
+    if "PhenoNames" in network_json_data:
+        phen_names = network_json_data["PhenoNames"]["value"]
+        phen_nums = network_json_data["PhenoNamesNums"]["value"]
+        doPhenNames = True
+
+    if a.modelName == "CO18" or a.modelName == "CO18Full":
+        network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
+        phen_names += network_json_data_RS18["PhenoNames"]["value"]
+        phen_nums += network_json_data_RS18["PhenoNamesNums"]["value"]
+
+    # print(phen_names)
+    # print(phen_nums)
+
+    print(vectsize)
+
+    phen_offset = vectsize * 2
+    phen_size = vectsize
+
+    # evol_data_1 = evol_data_orig #[:,1+phen_offset:]
+    #
+
+    if evol_data_1.ndim == 1:
+        evol_data_1 = evol_data_1[np.newaxis, :]
+    avlen = evol_data_1.shape[0] - 1
+    if avlen > 5:
+        avlen = 5
+    if avlen == 0:
+        avlen = 1
+    print(evol_data_1.shape)
+    evol_data = np.zeros((evol_data_1.shape[0] - avlen + 1, evol_data_1.shape[1]))
+    for phen in range(evol_data_1.shape[1]):
+        evol_data[:, phen] = np.convolve(
+            evol_data_1[:, phen], np.ones(avlen) / avlen, mode="valid"
+        )
+
+    gen_index_orig = evol_data[
+        :, 0
+    ]  # generation number, phenotype number (first is gen index)
+    evol_data = evol_data[:, 1 + phen_offset :]
+
+    plot_cols = 2
+
+    evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
+    evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
+
+    if doPhenNames:
+        phen_names_set = sorted(set(phen_names))
+        phen_name_list = []
+        evol_data_av = []
+        for phen_name in phen_names_set:
+            phen_name_list.append(phen_name)
+            indices = [
+                phen_nums[ind] - 1
+                for ind, val in enumerate(phen_names)
+                if val == phen_name
+            ]
+            evol_data_av.append(np.mean(evol_data_full_diff[indices]))
+
+        # phen_name_list = sorted(phen_name_list_1)
+        # evol_data_av = [evol_data_av_1[phen_name_list_1.index(phen_name)] for phen_name in phen_name_list]
+        # evol_data_av = evol_data_av_1[sorted_indices]
+
+        print(phen_name_list)
+        print(evol_data_av)
+
+    evol_data_diff = evol_data[1:] - evol_data[0:-1]
+    evol_data_diff_sign = (evol_data_diff > 0) * 2.0 - 1.0
+
+    evol_data_diff_2 = (evol_data_diff_sign * np.log(np.abs(evol_data_diff))) - np.log(
+        np.abs(evol_data[0:-1])
+    )
+    evol_data_diff_abs = evol_data_diff
+    gen_index_diff = gen_index_orig[1:]
+
+    plot_data = [evol_data, evol_data_diff_2, evol_data_diff_abs]
+    # evol_data = evol_data[..., np.newaxis]
+    gen_indices = [gen_index_orig, gen_index_diff, gen_index_diff]
+
+    plot_rows = math.ceil((len(plot_data) + 1) / plot_cols)
+    if plot_rows > 1:
+        fig, axs = plt.subplots(
+            plot_rows, plot_cols, figsize=(plot_rows * 4, 10), squeeze=False
+        )
+    else:
+        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
+
+    phen_range = range(0, phen_size)
+    phen_label = range(1, phen_size + 1)
+
+    titles = ["Gen History", "Gen History diff", "Gen History diff abs"]
+
+    initial_gen = 0
+    final_gen = 1000
+
+    plot_num = 0
+    for plot_data_1, title, gen_index in zip(plot_data, titles, gen_indices):
+        row_num = int(plot_num / plot_cols)
+        col_num = plot_num % plot_cols
+        axs[row_num, col_num].set_title(title, fontsize=title_font_size)
+        for phen in phen_range:
+            gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
+            axs[row_num, col_num].plot(
+                gen_index[gen_seg],
+                plot_data_1[gen_seg, phen],
+                label="%i" % (phen),
+                linewidth=0.5,
+            )
+
+        axs[row_num, col_num].set_xlabel("Generation", fontsize=label_font_size)
+        plot_num += 1
+
+    row_num = int(plot_num / plot_cols)
+    col_num = plot_num % plot_cols
+    axs[row_num, col_num].set_title("Total variation", fontsize=title_font_size)
+    axs[row_num, col_num].plot(phen_label, evol_data_full_diff)
+    axs[row_num, col_num].plot(phen_label, evol_data_full_diff_abs)
+    axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+    fig.tight_layout()
+    # fig.subplots_adjust(hspace=0.5)
+
+    filename = hf.rename_file("Evolution.png")
+    plt.savefig(filename, bbox_inches="tight", dpi=300)
+    print("Saved plot image to: %s" % filename)
+
+    if doPhenNames:
+        plot_cols = 1
+        plot_rows = 2
+        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
+        plot_num = 0
+        row_num = int(plot_num / plot_cols)
+        col_num = plot_num % plot_cols
+        axs[row_num, col_num].set_title(
+            "Phen averaged variation", fontsize=title_font_size
+        )
+        axs[row_num, col_num].plot(range(len(evol_data_av)), evol_data_av)
+        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+        axs[row_num, col_num].set_xticks(range(len(evol_data_av)))
+        # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
+        axs[row_num, col_num].grid(axis="x")
+        plot_num = 1
+        row_num = int(plot_num / plot_cols)
+        col_num = plot_num % plot_cols
+        axs[row_num, col_num].set_title(
+            "Phen averaged variation log", fontsize=title_font_size
+        )
+        axs[row_num, col_num].plot(
+            range(len(evol_data_av)), np.log(np.abs(evol_data_av))
+        )
+        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+        axs[row_num, col_num].set_xticks(range(len(evol_data_av)))
+        axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
+        axs[row_num, col_num].grid(axis="x")
+
+        fig.tight_layout()
+        # fig.subplots_adjust(hspace=0.5)
+
+        filename = hf.rename_file("Evolution_averages.png")
+        plt.savefig(filename, bbox_inches="tight", dpi=300)
+        print("Saved plot image to: %s" % filename)
+
+
+# def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):
+def reload_single_run(a=None, **kwargs):
+    a = build_namespace(DEFAULTS, a, **kwargs)
+
+    setFolder(a)
+
+    plot_format = plot_formats[a.modelName]
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
 
@@ -182,27 +401,23 @@ def reload_single_run(a=None, **kwargs):
         "skip_steps"
     ]["value"] """
 
-    # t_inc = step_size * skip_steps
-
-    # N_muscles_perside = 24  # Number of muscles alongside the body
-    # N_muscles = N_muscles_perside * 2
-    # N_units = 10  # Number of neural units in VNC
-    # N_neuronsperunit = 6  # Number of neurons in a VNC neural unit (6 neurons)
-    # N_stretchrec_units = 10  # Number of stretch receptors
-    # N_stretchrec = N_stretchrec_units * 4  # Number of stretch receptors
-
-    # N_stretchrec = 2 + 6 * 3  # number of streatch receptors
-    # N_hneurons = 4
-    # N_vneurons = 36
-    # N_muscles = 24 * 2
-
-    # N_neurons = N_neuronsperunit * N_units
-
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
+    act_file = hf.rename_file("act.dat")
+    if not os.path.isfile(act_file):
+        hf.file_prefix = None
     act_data = np.loadtxt(hf.rename_file("act.dat")).T
     t_data = act_data[0]
+
+    if a.modelName == "CO18" or a.modelName == "CO18Full":
+        network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
+        CO18_size = network_json_data["Nervous system"]["size"]["value"]
+        plot_formats[a.modelName]["data_sizes"] = [CO18_size, 2]
+        plot_formats[a.modelName]["plot_cell_names"] = [
+            "N" + str(i) for i in range(CO18_size)
+        ] + ["S" + str(i) for i in range(2)]
+        plot_formats[a.modelName]["plot_col_divs"] = [CO18_size, 2]
 
     def makeFigure(data_offset, data_size, title, label, plot_num):
         axs[plot_num, 0].set_title(title, fontsize=title_font_size)
@@ -221,11 +436,15 @@ def reload_single_run(a=None, **kwargs):
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
         axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
         axs[plot_num, 1].xaxis.set_ticklabels([])
+        axs[plot_num, 1].yaxis.set_major_locator(MaxNLocator(integer=True))
 
-    fig, axs = plt.subplots(len(plot_format["fig_titles"]) + 1, 2, figsize=(16, 10))
-
-    title_font_size = 16
-    label_font_size = 14
+    plot_rows = len(plot_format["fig_titles"])
+    if plot_format["do_curv_plot"] or plot_format["do_body_plot"]:
+        plot_rows += 1
+    if plot_rows > 1:
+        fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
+    else:
+        fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
 
     ###  Worm neuron/muscle activation
 
@@ -271,9 +490,10 @@ def reload_single_run(a=None, **kwargs):
         else:
             body_data = np.loadtxt(hf.rename_file("body.dat")).T
 
-        tmax = 1520
-        if tmax >= body_data.shape[1]:
-            tmax = body_data.shape[1]
+        # tmax = 1520
+        tmax = body_data.shape[1]
+        # if tmax >= body_data.shape[1]:
+        #    tmax = body_data.shape[1]
         num = 60.0
 
         # title = axs[count_num, 0].set_title("2D worm motion", fontsize=title_font_size, loc='right')
@@ -321,9 +541,11 @@ def reload_single_run(a=None, **kwargs):
             ys = []
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
-                xs.append(x * 1000)
+                # xs.append(x * 1000)
+                xs.append(x * 10)
                 y = body_data[i * 3 + 2][t]
-                ys.append(y * 1000)
+                # ys.append(y * 1000)
+                ys.append(y * 10)
                 # y1 = body_data[i * 3 + 2][t]
                 if i == 1 and a.verbose:
                     print(

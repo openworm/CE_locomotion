@@ -5,11 +5,6 @@ set -ex
 
 ruff format *py
 
-python regenerate.py --folder ../exampleRun
-
-#omv all -V 
-omv test -V .test.w2d.nrn.omt
-omv test -V .test.w2d.omt
 
 python regenerate.py --folder ../exampleRunCEW2D
 

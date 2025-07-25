@@ -63,6 +63,7 @@ class NervousSystem : public NervousSystemBase {
         void SetNeuronTimeConstant(int i, double value) {taus[i] = value; Rtaus[i] = 1/value;};
         double NeuronExternalInput(int i) {return externalinputs[i];};
         void SetNeuronExternalInput(int i, double value) {externalinputs[i] = value;};
+        void IncNeuronExternalInput(int i, double value) {externalinputs[i] += value;};
         double ChemicalSynapseWeight(int from, int to);
         void SetChemicalSynapseWeight(int from, int to, double value);
         double ElectricalSynapseWeight(int from, int to);

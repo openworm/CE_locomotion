@@ -13,4 +13,5 @@ run(
     outputFolderName="exampleRunCOW2D",
     doEvol=True,
     overwrite=True,
+    checkPointInterval=5,
 )

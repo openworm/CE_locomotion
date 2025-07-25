@@ -1,17 +1,17 @@
 //#include "TSearch.h"
 //#include "VectorMatrix.h"
 #include "Evolution.h"
+#pragma once
 
-
-class EvolutionRS18:public Evolution
+class EvolutionRS18 : public Evolution
 {
     public:
     
-
-    EvolutionRS18(int argc, const char* argv[])
+    EvolutionRS18(int argc, const char* argv[]):EvolutionRS18(argc,argv,""){}
+    EvolutionRS18(int argc, const char* argv[], string modelname_)
     :Evolution(argc,argv, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
     ),speedoutput(atoi(getParameter(argc,argv,"--speed_output", "0"))),
     evo_seed(atoi(getParameter(argc,argv,"--evo_seed", "0"))){}
 
@@ -21,8 +21,11 @@ class EvolutionRS18:public Evolution
     double EvaluationFunctionNoOut(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
     void RunSimulation(Worm2Dbase &w1, RandomState &rs);
-    void configure();
-    
+    //void configure();
+    void configure_p12();
+    void writeJson(TVector<double> &v);
+
+
     protected:
     void addExtraParsToJson(json & j);
 

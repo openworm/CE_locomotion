@@ -19,7 +19,7 @@ class EvolutionCE:public Evolution
     double save_traces(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs);
     void RunSimulation(Worm2Dbase & w, RandomState &rs);
-    
+    void writeJson(TVector<double> &v);
 
     protected:
     void addExtraParsToJson(json & j);

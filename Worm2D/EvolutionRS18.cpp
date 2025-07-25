@@ -2,6 +2,9 @@
 #include <math.h>
 #include "WormRS18.h"
 
+
+void EvolutionRS18::writeJson(TVector<double> &v) {Worm18 w(v); writeJson1(w);}
+
 void EvolutionRS18::addExtraParsToJson(json & j)
 {
   
@@ -311,11 +314,11 @@ void EvolutionRS18::RunSimulation(Worm2Dbase &w1, RandomState &rs)
     
     w.setRs18output(1);
 
-    const double & Duration = evoPars1.Duration;
+    const double & Duration = simPars1.Duration;
   
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
-    const double & Transient = evoPars1.Transient;
+    const double & Transient = simPars1.Transient;
 
 
     if (speedoutput)
@@ -352,7 +355,7 @@ ofstream paramsfile;
 
     w.DumpParams(paramsfile);
     //writeParsToJson(w);
-
+   
 
 
     w.InitializeState(rs);
@@ -422,9 +425,10 @@ if (speedoutput){
 }
 
 
-void EvolutionRS18::configure()
+
+void EvolutionRS18::configure_p12()
 {
-    configure_p1();
+   // configure_p1();
     if (evo_seed)
     {
         ifstream BestIndividualFile;
@@ -439,6 +443,6 @@ void EvolutionRS18::configure()
             }
         }
     }
-    configure_p2();
+   // configure_p2();
 
 }

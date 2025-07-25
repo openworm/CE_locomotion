@@ -3,6 +3,40 @@
 
 //using json = nlohmann::json;
 
+string main_directoryname, main_modelname;
+
+void Worm2Dbase::addPhenoName(string name, int k)
+{phenoNamesNums.push_back(k);phenoNames.push_back(name);}
+
+
+vector<double> Worm2Dbase::readPhenotype()
+{
+    cout << "readPhenotype" << endl;
+    vector<double> vec1;
+    double val;
+    //string basename = main_directoryname;
+    //string modelname = main_modelname;
+
+    //cout << "ksks " << basename << " " << getModelName() << endl;
+    string filename = main_directoryname + "/" + main_modelname + "_best.pheno.dat";
+    //string filename = basename + "/" + getModelName() + "_best.gen.dat";
+    cout << filename << endl;
+    //throw std::exception();
+    //exit(0);
+
+    
+    ifstream infile(filename);
+    
+    while(infile >> val) vec1.push_back(val);
+    //TVector<double> phenovec = getTVector<double>(vec1);
+    infile.close();
+    for (int i=0; i<vec1.size();i++) cout << vec1[i] << " ";
+    cout << endl;
+    return vec1;
+
+}
+
+
 vector<toFromWeight> dummyVec()
 {
    toFromWeight tv({0,0},0);
@@ -11,25 +45,32 @@ vector<toFromWeight> dummyVec()
     return vec1;
 }
 
-bool DataWriter::resetStats(bool & firstcall, size_t & pos, int & tt, string name_)
-{
- 
-    bool retval = false;
-    if (firstcall || !isOpen[pos]){
-      ofsvec.push_back(ofstream(getName(name_)));
-      pos = ofsvec.size() - 1;
-      isOpen.push_back(true);
-      firstcall = false;
-      tt = dataskips;
-      retval = true;
-     }
 
-     //return false;
-     return retval;
+size_t DataWriter::getPos(string name_)
+{
+
+    string filename = getName(name_);
+    for (size_t i=0;i<ofnames.size();i++)
+    if (ofnames[i]==filename) return i;
+    ofnames.push_back(filename);
+    ofsvec.push_back(ofstream(filename));
+    isOpen.push_back(true);
+    tts.push_back(dataskips);
+    return ofnames.size()-1;
 
 }
 
-void DataWriter::closeAll(){for (int i=0; i<ofsvec.size(); i++) {ofsvec[i].close(); isOpen[i]=false;}}
+
+void DataWriter::closeAll()
+{
+    for (int i=0; i<ofsvec.size(); i++) 
+    ofsvec[i].close(); 
+    isOpen.clear();
+    ofsvec.clear();
+    ofnames.clear();
+    tts.clear();
+}
+
     
 string DataWriter::getName(string name_){
         if (prefix!="") return basename + "/" + prefix + "_" + name_;
@@ -38,9 +79,18 @@ string DataWriter::getName(string name_){
 
 void  DataWriter::InitializeData(string basename_)
 {
+    cout << "DataWriter init state" << endl;
     setBasename(basename_);
-    dataReset();
+    //if (doFirstCall) dataReset();
 }
+
+void DataWriter::dataReset(){closeAll();
+//    writeDataCheck();
+}
+
+
+////////////////////////////
+/////////////////////////////
 
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
@@ -68,14 +118,17 @@ m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_m
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
+    cout << "Worm2Dbody init state" << endl;
     b.InitializeBodyState();
     //writeDataCheck();
     return;
 }
 
 void Worm2Dbase::InitializeState(RandomState &rs)
-{
+{  
+    cout << "Worm2Dbase init state" << endl;
     t = 0.0;
+    datatime =  0.0;
     //writeDataCheck();
     //dataReset();
     return;
@@ -84,9 +137,10 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 
 
 
+
 void Worm2Dm::InitializeState(RandomState &rs)
 {
-
+    cout << "Worm2Dm init state" << endl;
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
     
@@ -103,6 +157,7 @@ void Worm2D::setUp()
 
 void Worm2D::InitializeState(RandomState &rs)
 {
+    cout << "Worm2D init state" << endl;
     Worm2Dm::InitializeState(rs);
     m.InitializeMuscleState();
    
@@ -130,8 +185,31 @@ Worm2Dbody::writeData();
 
 void Worm2Dbase::writeData()
 {
+   // cout << "Worm2Dbase write data" << endl;
 writeAct();
 writeState();
+}
+
+void Worm2Dbody::shiftX(double shiftdist_)
+{
+    shiftdist_=  shiftdist_/100.0;
+    for (int i = 1; i <= N_rods; i++) b.X(i)+=shiftdist_;
+}
+
+void Worm2Dbody::shiftY(double shiftdist_)
+{
+    shiftdist_=  shiftdist_/100.0; //change to meters
+    for (int i = 1; i <= N_rods; i++) b.Y(i)+=shiftdist_;
+}
+
+void Worm2Dbody::zeroX()
+{
+    shiftX(-PositionX());
+}
+
+void Worm2Dbody::zeroY()
+{
+    shiftY(-PositionY());
 }
 
 double Worm2Dbody::CoMx()
@@ -186,8 +264,31 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
   }
 }
 
-void Worm2Dbase::Step(double StepSize_) { //StepSize = StepSize_; 
-    Step1(StepSize_); t += StepSize_; datatime = t;}
+
+void Worm2Dbase::Step() 
+{ //StepSize = StepSize_; 
+    Step1(); 
+
+    incSimTimes();
+    //datatime = t;
+    //datatime += StepSize_; 
+}
+
+
+void Worm2Dbase::incSimTimes()
+{
+    t += settedStepSize; 
+    datatime += settedStepSize; 
+
+}
+
+
+void Worm2Dbase::Step(double StepSize_) 
+{ //StepSize = StepSize_; 
+    setStepSize(StepSize_);
+    //settedStepSize = StepSize_;
+    Step();
+}
 
 
 double Worm2Dbody::getVelocity()
@@ -209,15 +310,15 @@ void Worm2Dbase::DumpNSOrdered()
 
     //const int NSsize = dynamic_cast<NervousSystem&>(*n_ptr).size;
 
-    static bool firstcall = true;
+    /* static bool firstcall = true;
     static size_t pos;
     static int tt;
 
-    if (resetStats(firstcall,pos,tt,"ns.dat")) return;
+    if (resetStats(firstcall,pos,tt,"ns.dat")) return; */
 
-
+    size_t pos = getPos("ns.dat");
     ofstream & ofs = ofsvec[pos];  
-
+    int & tt = tts[pos];
 
     if (++tt >= dataskips) {
         tt = 0;
@@ -231,13 +332,15 @@ void Worm2Dbase::DumpNSOrdered()
 void Worm2Dbase::DumpVal(string filename_, double val)
 {
 
-    static bool firstcall = true;
+   /*  static bool firstcall = true;
     static size_t pos;
     static int tt;
 
-    if (resetStats(firstcall,pos,tt,filename_)) return;
+    if (resetStats(firstcall,pos,tt,filename_)) return; */
 
+    size_t pos = getPos(filename_);
     ofstream & ofs = ofsvec[pos];  
+    int & tt = tts[pos];
 
     if (++tt >= dataskips) {
         tt = 0;
@@ -284,14 +387,16 @@ void Worm2Dbody::Curvature(TVector<double> &c)
 void Worm2Dbody::writeCurvature()
 {
 
-    static bool firstcall = true;
+    /* static bool firstcall = true;
     static size_t pos;
     static int tt;
 
-    if (resetStats(firstcall,pos,tt,"curv.dat")) return;
+    if (resetStats(firstcall,pos,tt,"curv.dat")) return; */
     
+
+    size_t pos = getPos("curv.dat");
     ofstream & ofs = ofsvec[pos];  
-   
+    int & tt = tts[pos];
 
   double dx1,dy1,dx2,dy2,a,a1,a2,seg;
  
@@ -328,15 +433,15 @@ void Worm2Dbody::writeCurvature()
 
 void Worm2Dbody::writeBody()
 {
-    static bool firstcall = true;
+   /*  static bool firstcall = true;
     static size_t pos;
     static int tt;
     
-    if (resetStats(firstcall,pos,tt,"body.dat")) return;
+    if (resetStats(firstcall,pos,tt,"body.dat")) return; */
 
- 
+    size_t pos = getPos("body.dat");
     ofstream & ofs = ofsvec[pos];  
-   
+    int & tt = tts[pos];
 
     if (++tt >= dataskips) {
         tt = 0;
@@ -345,7 +450,7 @@ void Worm2Dbody::writeBody()
         // Body
         for (int i = 1; i <= N_rods; i++)
         {
-            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
+            ofs <<  " " << b.X(i)*100.0 << " " << b.Y(i)*100.0 << " " << b.Phi(i);
         }
         ofs << endl;
     }
@@ -377,11 +482,8 @@ void Worm2Dbase::addParsToJson(json & j)
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
-  
-    
     string nsHead = "Nervous system";
    
-
     {Params< string > par;
     par.names = {"Model name"};
     par.vals = {getModelName()};
@@ -395,8 +497,18 @@ void Worm2Dbase::addParsToJson(json & j)
         if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
-}
 
+    cout << "worm2dbase add pars to json" << endl;
+
+    setPhenoNames();
+    if (phenoNames.size()>0) 
+    {
+        for (int i=0; i<phenoNames.size();i++) phenoNames[i] = getModelName() + "_" + phenoNames[i];
+        appendVectorToJson<string>(j["PhenoNames"], phenoNames);
+        appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
+    }
+
+}
 
 void Worm2Dm::addParsToJson(json & j)
 {  
@@ -408,7 +520,6 @@ void Worm2Dm::addParsToJson(json & j)
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
 
-
 }
 
 
@@ -416,7 +527,6 @@ void Worm2D::addParsToJson(json & j)
 {  
      // addwormIzqParams
     Worm2Dm::addParsToJson(j);
-
 
     appendMuscleToJson(j,m);
     
@@ -467,16 +577,20 @@ void Worm2D::addParsToJson(json & j)
 
 void Worm2Dbase::writeAct()
 {
-    static bool firstcall = true;
+   /*  static bool firstcall = true;
     static size_t pos;
     static int tt;
     
+
+    cout << "Worm2Dbase writeact 1 " << endl;
+
     if (resetStats(firstcall,pos,tt,"act.dat")) return;
 
-  
+    cout << "Worm2Dbase writeact 2 " << endl;  */
    
+    size_t pos = getPos("act.dat");
     ofstream & ofs = ofsvec[pos];  
-
+    int & tt = tts[pos];
 
     if (++tt >= dataskips) {
         tt = 0;
@@ -505,14 +619,17 @@ void Worm2Dbase::writeAct()
 
 void Worm2Dbase::writeState()
 {
-
+/* 
     static bool firstcall = true;
     static size_t pos;
     static int tt;
 
     if (resetStats(firstcall,pos,tt,"state.dat")) return;
- 
+  */
+   
+    size_t pos = getPos("state.dat");
     ofstream & ofs = ofsvec[pos];  
+    int & tt = tts[pos];
 
     if (++tt >= dataskips) {
         tt = 0;
@@ -556,7 +673,7 @@ void Worm2D::setMuscleInputDors()
 
 }
 
-void Worm2D::setMuscleInputVec(double StepSize)
+void Worm2D::setMuscleInputVec()
 {
     vector<double> vtot(par1.N_muscles);
 
@@ -578,18 +695,18 @@ void Worm2D::setMuscleInputVec(double StepSize)
 
 
 
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
 }
 
 
-void Worm2D::setMuscleInput(double StepSize)
+void Worm2D::setMuscleInput()
 {
 
     
     setMuscleInputVent();
     setMuscleInputDors();
 
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
     //cout << "setMuscInp" << endl;
     //exit(1);
 }
@@ -618,4 +735,4 @@ void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1,
 
 
 
-const string Worm2Dbase::getModelName() {return "Unspecified";}
+//const string Worm2Dbase::getModelName() {return "Unspecified";}

@@ -1255,6 +1255,30 @@
             "value": "Net21"
         }
     },
+    "PhenoNames": {
+        "value": [
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ",
+            "Net21_NMJ_Gain_Map"
+        ]
+    },
+    "PhenoNamesNums": {
+        "value": [
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39
+        ]
+    },
     "Ventral NMJ": {
         "Cell name": {
             "value": [

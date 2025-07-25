@@ -119,6 +119,7 @@ class TSearch {
 		// Status Accessors
 		int Generation(void) {return Gen;};
 		TVector<double> &Individual(int i) {return Population(i);};
+		//RandomState & itsRandomState(int i) {return RandomStates(i);};
 		double Fitness(int i) {return fitness(i);};
 		double Performance(int i) {return Perf(i);};
 		double BestPerformance (void) {return BestPerf;};
@@ -130,12 +131,15 @@ class TSearch {
 		// Input and output
     void WriteCheckpointFile(void);
     void ReadCheckpointFile(void);
+	
     //friend ostream& operator<<(ostream& os, TSearch& s);
 		//friend istream& operator>>(istream& is, TSearch& s);
+	string cptfilename; //added search filename
 
+	void DoSearch(int ResumeFlag); //make accessible
 	private:
 		// Helper Methods
-		void DoSearch(int ResumeFlag);
+		//void DoSearch(int ResumeFlag);
 		int EqualVector(TVector<double> &v1, TVector<double> &v2)
 		{
 			if (v1.Size() != v2.Size()) return 0;

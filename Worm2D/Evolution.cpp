@@ -16,6 +16,130 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
    return retval;
 }
 
+
+string Evolution::rename_file(string filename){return evoPars1.directoryName + "/" + 
+    evoPars1.fileprefix + filename;}
+
+
+Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
+    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
+    genprev(1, VectSize_)
+    {setFromCPT();}
+  
+Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
+    :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
+    genprev(1, VectSize_)
+    {setFromCPT();}
+
+
+
+void Evolution::checkPars()
+{
+    if (s->VectorSize() != evoPars1.VectSize){
+         cout << "cpt vectorsize "  << s->VectorSize() << " evolution vectorsize " <<  evoPars1.VectSize << endl;
+         assert(s->VectorSize() == evoPars1.VectSize && "Vectorsize is not correct");
+    }
+
+    if (s->PopulationSize()!= evoPars1.PopulationSize) 
+    {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
+    popsize = s->PopulationSize();}
+
+
+}
+
+void Evolution::setFromCPT()
+{
+    popsize = evoPars1.PopulationSize;
+    s->cptfilename = rename_file("search.cpt");
+    struct stat buffer;   
+    if (evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
+        s->ReadCheckpointFile();
+        cout << "setFromCPT " << s->cptfilename << endl;
+        doResume = true;
+    ResultsDisplay(*s);
+    checkPars();
+
+
+    }
+    else doResume = false;
+   
+}
+
+
+void Evolution::setUp()
+{   
+    if  (doResume) {
+        fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
+        fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
+        fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
+    }
+    evolfile.open(rename_file("fitness.dat"), std::ios_base::app);
+    evolfile << setprecision(10);
+    //setFromCPT();
+    genhistfile.open(rename_file("genhistory.dat"), std::ios_base::app);
+    genhistfile2.open(rename_file("gendiffhistory.dat"), std::ios_base::app);
+    doneFirst = false;
+}
+
+void Evolution::setFromEvol(const Evolution & er, int offset)
+{
+    if (doResume) return;
+
+    cout << "setFromEvol original pop size " 
+    << s->PopulationSize() << "loaded pop size " 
+    << er.s->PopulationSize();
+
+    s->InitializeSearch();
+    int minsize = s->PopulationSize();
+    if (er.s->PopulationSize() < minsize) 
+        minsize = er.s->PopulationSize();
+
+
+    //assert(s->PopulationSize() == er.s->PopulationSize());
+    //assert(evoPars1.VectSize==er.evoPars1.VectSize + offset);
+
+    cout << "using " << minsize;
+    for (int i = 1; i <= minsize; i++) {
+    for (int j = 1; j <= er.s->Individual(i).Size(); j++){
+    s->Individual(i)(j+offset) = er.s->Individual(i)(j);
+}
+
+}
+    
+//doResume = true;
+
+}
+
+
+
+void Evolution::writeJson1(Worm2Dbase & w)
+{   
+    
+    RandomState rs;
+    rs.SetRandomSeed(evoPars1.randomseed);
+   
+    
+    w.setStepSize(evoPars1.StepSize);
+    w.setDataskips(evoPars1.skip_steps);
+    w.setPrefix();
+    w.InitializeData(evoPars1.directoryName);
+
+    w.InitializeState(rs); 
+    w.initForSimulation(rs);
+    
+
+    ofstream json_out(rename_file("worm_data_evo.json"));
+    json j;
+    w.addParsToJson(j);   
+    addParsToJson(j);
+   
+    json_out << std::setw(4) << j << std::endl;
+    json_out.close(); 
+  
+}
+
 void Evolution::addParsToJson(json & j)
 {  
     
@@ -45,8 +169,11 @@ return sp1;
 
 }
 
-
-evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
+evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1)
+{
+return setPars(argc,argv,ep1,"");
+}
+evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string prefix_){
 
 
     if (((argc-1) % 2) != 0)
@@ -61,6 +188,7 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
     //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = atoi(argv[arg+1]);
     //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
     //if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
+
 
     if (strcmp(argv[arg],"--folder")==0) {
       ep1.directoryName= argv[arg+1];
@@ -81,17 +209,80 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1){
     if (strcmp(argv[arg],"-p")==0) ep1.PopulationSize = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-d")==0) ep1.Duration = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-t")==0) ep1.Transient = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-cpt")==0) ep1.CheckpointInterval = atoi(argv[arg+1]);
 
     //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
     
     }
+
+    ep1.fileprefix = prefix_;
+
+    //evoParsNC.filePrefix = "";
+
     return ep1;
 
 }
 
 void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar)
 {
+    cout << "EvolutionaryRunDisplay" << endl;
     evolfile << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
+    if (writeBestFlag) ResultsDisplay(*s);
+
+    TVector<double> & phencur =  getBestPhenotype();
+    TVector<double> & gencur =  getBestGenotype();
+
+    genhistfile << Generation << " " << gencur << " " << phencur;
+
+    if (doneFirst){
+    genhistfile2 << Generation;
+
+    {vector<double> val = TVectorRatio<double>(gencur, genprev);
+    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
+    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
+    {vector<double> val = TVectorRatio<double>(phencur, phenprev);
+    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
+    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
+
+    genhistfile2 << endl;
+    }
+
+    doneFirst = true;
+    phenprev = phencur;
+    genprev = gencur;
+
+    TVector<double> avphen(1, evoPars1.VectSize);
+    for (int j = 1; j <= avphen.Size(); j++) avphen(j)=0;
+
+    for (int i = 1; i <= s->PopulationSize(); i++) {
+        TVector<double> phenotype(1, evoPars1.VectSize);
+        GenPhenMapping(s->Individual(i), phenotype);
+        for (int j = 1; j <= phenotype.Size(); j++) 
+        avphen(j) +=  phenotype(j);    
+    }
+    for (int j = 1; j <= avphen.Size(); j++) avphen(j)= avphen(j)/s->PopulationSize();
+    
+    genhistfile << " " << avphen << endl;
+
+    cout << phencur.Size() << " " << phencur << endl;
+    writeJson(phencur);
+  
+
+}
+
+TVector<double> & Evolution::getBestPhenotype()
+{
+
+//TVector<double> phenotype(1, itsEvoPars().VectSize);   
+TVector<double> bestVector = s->BestIndividual();
+GenPhenMapping(bestVector, phenotype);
+return phenotype;
+
+}
+
+TVector<double> & Evolution::getBestGenotype()
+{
+    return s->BestIndividual();
 }
 
 
@@ -111,7 +302,7 @@ void Evolution::ResultsDisplay(TSearch &s)
 
 void Evolution::configure_p1()
 {
-   
+    
     s->SetRandomSeed(evoPars1.randomseed);
 
     {typedef void (*callback_t)(int, double, double, double);
@@ -131,7 +322,7 @@ void Evolution::configure_p1()
 
     s->SetSelectionMode(evoPars1.SelectionMode);             //{FITNESS_PROPORTIONATE,RANK_BASED}
     s->SetReproductionMode(evoPars1.ReproductionMode);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
-    s->SetPopulationSize(evoPars1.PopulationSize); //96
+    s->SetPopulationSize(popsize); //96
     s->SetMaxGenerations(evoPars1.MaxGenerations); //1000
     s->SetMutationVariance(evoPars1.MutationVariance);                // For 71 parameters, an estimated avg change of 0.25 for weights (mapped to 15).
     s->SetCrossoverProbability(evoPars1.CrossoverProbability);
@@ -155,15 +346,21 @@ void Evolution::configure_p2()
             std::placeholders::_1, std::placeholders::_2);
     callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
     s->SetEvaluationFunction(func);}
-
-    s->ExecuteSearch();
+    
+    if (doResume) {cout << "Resuming search" << endl; s->DoSearch(1);}
+    else s->ExecuteSearch();
   
 }
 
 void Evolution::configure()
 {
+    setUp();
     configure_p1();
+    configure_p12();
     configure_p2();
+    evolfile.close();
+    genhistfile.close();
+    genhistfile2.close();
 }
 
    
@@ -190,7 +387,7 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
     w.setPrefix("sts");
     w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
-    w.dataReset();
+    //w.dataReset();
 
     w.DumpParams(paramsfile);
     paramsfile.close();

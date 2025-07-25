@@ -8,6 +8,7 @@
 #include "jsonUtils.h"
 #include "Worm2D.h"
 #include "Simulation.h"
+//#include "../utils.h"
 
 template <typename T>
 struct Callback;
@@ -33,7 +34,11 @@ struct evoPars;
   double Transient; 
 
 }; */
- 
+
+struct evoParsNonConst{
+string filePrefix;
+
+};
 
 struct evoPars{
    string directoryName;
@@ -57,6 +62,8 @@ struct evoPars{
    double StepSize;
    int N_curvs;
    int VectSize;
+   string fileprefix;
+   
 
 
    const doubIntParamsHead getParams() const
@@ -84,21 +91,9 @@ struct evoPars{
 
 };
 
-/* template<class T> 
-T getParameter(int argc, const char* argv[], string parName, T defaultval){
-    
-    T retval = defaultval;
-    if (((argc-1) % 2) != 0)
-    {cout << "The arguments are not configured correctly." << endl;exit(1);}
-    for (int arg = 1; arg<argc; arg+=2) 
-    if (strcmp(argv[arg],parName.c_str())==0) {retval = atoi(argv[arg+1]);break;}
-    return retval;
-} */
+
 
 const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
-
-
-
 
 
 class Evolution
@@ -109,10 +104,14 @@ class Evolution
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) = 0;
     virtual void RunSimulation(Worm2Dbase & w, RandomState &rs) = 0;
     void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
+    TVector<double> & getBestGenotype();
+    TVector<double> & getBestPhenotype();
 
+    virtual void writeJson(TVector<double> &) = 0;
+    
     void addParsToJson(json & j);
     
-    virtual void configure();
+    void configure();
     
     
     const evoPars & itsEvoPars() const {return evoPars1;}
@@ -123,37 +122,44 @@ class Evolution
       if (s) delete s;
     }
 
-
-    string rename_file(string filename){return evoPars1.directoryName + "/" + filename;}
+    string rename_file(string filename);
+    //evoParsNonConst evoParsNC;
+    void setFromCPT();
 
     protected:
-    evoPars setPars(int argc, const char* argv[], evoPars ep1);
-    simPars setSimPars(int argc, const char* argv[]);
-
+    void writeJson1(Worm2Dbase & w);
     
+
+    //void writeJson(Worm2Dbase &);
+    evoPars setPars(int argc, const char* argv[], evoPars ep1);
+    evoPars setPars(int argc, const char* argv[], evoPars ep1, string prefix_);
+    simPars setSimPars(int argc, const char* argv[]);
+    void setUp();
+    void setFromEvol(const Evolution & er, int offset);
+
+    virtual void configure_p12(){return;}
+
     virtual void configure_p1();
     virtual void configure_p2();
     void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);
     void ResultsDisplay(TSearch &s);
     
-    
-    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
-    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
-    simPars1(setSimPars(argc,argv))
-    {
-      evolfile.open(rename_file("fitness.dat"));
-      evolfile << setprecision(10);
-    }
+    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
+    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
 
     virtual void addExtraParsToJson(json & j) = 0;
     TSearch* const s; 
     const evoPars evoPars1;
     const simPars simPars1;
+    void checkPars();
 
     private:
- 
-    ofstream evolfile;
-   
 
+    
+    TVector<double> phenotype, phenprev, genprev; //(1, itsEvoPars().VectSize);   
+    ofstream evolfile, genhistfile, genhistfile2;
+    const bool writeBestFlag;
+    bool doResume, doneFirst;
+    int popsize;
 };
 

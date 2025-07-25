@@ -10,6 +10,13 @@
 //#include "../argUtils.h"
 #include "../neuromlLocal/c302ForW2D.h"
 
+void Worm2D21m::setPhenoNames()
+{
+
+    for (int i=32; i<=38; i++) addPhenoName("NMJ", i);
+    addPhenoName("NMJ_Gain_Map", 39);
+}
+
 
 Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
        new c302ForW2D(), 0 , true)
@@ -30,9 +37,9 @@ wAVA_VA = 1;
 AVA = 0; 
 AVB = 0; 
 
-
-
 }
+
+
 Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},
        new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
@@ -83,7 +90,7 @@ for (int i=1; i<=par1.N_muscles; i++)
     setUpMuscleConn();
 }
 
-void Worm2D21m::initForSimulation()
+void Worm2D21m::initForSimulation(RandomState &rs)
 {
     SetAVB(0.0);
     SetAVA(0.0);
@@ -92,7 +99,7 @@ void Worm2D21m::initForSimulation()
 void Worm2D21m::InitializeState(RandomState &rs)
 {    
     cout << "Worm2D21m init state" << endl;
-    Worm2Dm::InitializeState(rs);
+    //Worm2Dm::InitializeState(rs);
     for (int i = 1; i <= par1.N_size; i++)
     n_ptr->SetNeuronExternalInput(i,0); //adam set all initial inputs to zero
     return;    
@@ -143,7 +150,7 @@ vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double
 
 }
 
-void Worm2D21::setMuscleInputOrig(double StepSize)
+void Worm2D21::setMuscleInputOrig()
 {
 // Set input to Muscles
     // Head: 4 muscles one neural unit  //////////////////////
@@ -178,19 +185,19 @@ void Worm2D21::setMuscleInputOrig(double StepSize)
             m.SetDorsalMuscleInput(i, NMJ_Gain(i)*dorsalInput);
         }
     }
-    m.EulerStep(StepSize);
+    m.EulerStep(settedStepSize);
 }
 
-void Worm2D21m::Step1(double StepSize)
+void Worm2D21m::Step1()
 {
     
     
     // Update Body
-    b.StepBody(StepSize);
+    b.StepBody(settedStepSize);
     
     
     // Update Nervous System
-    n_ptr->EulerStep(StepSize);
+    n_ptr->EulerStep(settedStepSize);
     
     // Interneuron input  //////////////////////
     for (int i = 1; i <= par1.N_units; i++){
@@ -204,7 +211,7 @@ void Worm2D21m::Step1(double StepSize)
         //n_ptr->SetNeuronExternalInput(nn(VA, i), 1);
     }
     
-    setMuscleInput(StepSize);
+    setMuscleInput();
     //setMuscleInputOrig(StepSize);   
 
     // Update Muscle activation
@@ -318,7 +325,7 @@ void Worm2D21::addParsToJson(json & j){
     }
 
 void Worm2D21m::addParsToJson(json & j){
-        Worm2Dm::addParsToJson(j);
+        //Worm2Dm::addParsToJson(j);
         
     }
 

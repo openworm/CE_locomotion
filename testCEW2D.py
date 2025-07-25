@@ -8,4 +8,5 @@ run(
     outputFolderName="exampleRunCEW2D",
     doEvol=True,
     overwrite=True,
+    checkPointInterval=5,
 )

@@ -2,6 +2,7 @@
 #include <math.h>
 #include "WormCE.h"
 
+void EvolutionCE::writeJson(TVector<double> &v) {WormCE w(v,0); writeJson1(w);}
 
 void EvolutionCE::addExtraParsToJson(json & j)
 {

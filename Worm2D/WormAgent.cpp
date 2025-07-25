@@ -9,34 +9,35 @@
 
 //using namespace CTRNNspace;
 
+
+
+
 WormAgent::WormAgent(int newsize):
 //Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0), n(dynamic_cast<NervousSystem&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
+	//cout << "WormAgent::WormAgent(int newsize)" << endl;
+	//setSimParsDefault();
 	InitialiseCircuit(newsize);
 
 }
 
 
-// The constructor
-/* WormAgent::WormAgent(TVector<double> & v, int newsize):
-Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
-{
+WormAgent::WormAgent(TVector<double> & v, int newsize)://WormAgent(newsize)
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
+{	
+	//setSimParsDefault();
+	
+	//cout << "WormAgent::WormAgent(TVector<double> & v, int newsize)" << endl;
 	InitialiseCircuit(newsize);
 	SetParameters(v);
-} */
-
-WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
-//Worm2Dm({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
-{
-	//InitialiseCircuit(newsize);
-	SetParameters(v);
 }
+
 
 WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0), n(dynamic_cast<NervousSystem&>(*n_ptr))
-//Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
 {
+	//setSimParsDefault();
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
 }
 
@@ -47,12 +48,18 @@ WormAgent::~WormAgent()
 	InitialiseCircuit(0);
 }
 
+
+
 // *********
 // Setting parameters
 // *********
+
+
+
 void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 {
 	ifstream BestIndividualFile;
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
 	// parameters from file
 	BestIndividualFile.open(fnm);
@@ -80,8 +87,18 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 	BestIndividualFile.close();
 }
 
+
+
+
+
+
 void WormAgent::SetParameters(TVector<double> &v)
 {
+
+
+	//cout << "WormAgent::SetParameters" << endl;
+
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 	// sensory connections
 	int k = 1;
 	for (int i = 1; i <= size-4; i++){
@@ -154,12 +171,21 @@ void WormAgent::SetParameters(TVector<double> &v)
 	outputGain = v(k);
 }
 
+
+
+
+
 // **************
 // Initialising
 // **************
-void WormAgent::InitialiseCircuit(int CircuitSize)
+
+
+
+void WormAgent::InitialiseCircuit(int CircuitSize_)
 {
-	size = CircuitSize;
+
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+	size = CircuitSize_;
 	n.SetCircuitSize(size,300,300);
 	w_ASER.SetBounds(1, size);
 	w_ASER.FillContents(0.0);
@@ -168,14 +194,55 @@ void WormAgent::InitialiseCircuit(int CircuitSize)
 	forward = 1;
 }
 
-void WormAgent::InitialiseAgent(double runduration, double stepsize)
+void WormAgent::setSimParsDefault()
 {
-	VelDelta		=	(int) (HST/stepsize);
-	iSensorN = (int) (sensorN/stepsize);
+	orient_orig = 0;
+	gradSteep = 0.5;
+	RunDuration = 100;
+	HSStepSize = itsStepSize();
+	taxis = 1;
+	kinesis = 0;
+	cout << "HS " << HSStepSize << endl;
+}
+
+void WormAgent::setSimPars(double orient_orig_,
+	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_)
+{
+	orient_orig = orient_orig_;
+	gradSteep = gradSteep_;
+	RunDuration = RunDuration_;
+	HSStepSize = HSStepSize_;
+	taxis = taxis_;
+	kinesis = kinesis_;
+}
+
+void WormAgent::initForSimulation(RandomState &rs_)
+//void WormAgent::InitializeSimulation(RandomState &rs_)
+{
+	rs = &rs_;
+	InitialiseAgent();
+	ResetAgentsBody();
+	ResetChemCon();
+	ResetAgentIntState(*rs);
+	UpdateChemCon();
+	//RandomState rs2 = *rs;	
+	//Worm2Dbase::InitializeState(rs2);
+}
+
+
+void WormAgent::InitializeState(RandomState &rs_)
+{
+	Worm2Dbase::InitializeState(rs_);
+}
+
+void WormAgent::InitialiseAgent()
+{
+	VelDelta		=	(int) (HST/HSStepSize);
+	iSensorN = (int) (sensorN/HSStepSize);
 	dSensorN = (double) iSensorN;
-	iSensorM = (int) (sensorM/stepsize);
+	iSensorM = (int) (sensorM/HSStepSize);
 	dSensorM = (double) iSensorM;
-	int upperbound = ((int) ((runduration + sensorN + sensorM) / stepsize)) + 1;
+	int upperbound = ((int) (((2*RunDuration) + sensorN + sensorM) / HSStepSize)) + 1;
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
 	histCurv.SetBounds(1, VelDelta);
@@ -188,23 +255,25 @@ void WormAgent::InitialiseAgent(double runduration, double stepsize)
 // Resetting
 // *******
 
-void WormAgent::ResetAgentsBody(double neworient, RandomState &rs)
+void WormAgent::ResetAgentsBody()
 {
 	distanceToCentre = -MaxDist;
 	double tempangle = 0.0;
-	px = cos(tempangle) * distanceToCentre;
-	py = sin(tempangle) * distanceToCentre;
+	//SetPositionX(cos(tempangle) * distanceToCentre);
+	//SetPositionY(sin(tempangle) * distanceToCentre);
+	px = cos(tempangle) * MaxDist*-1; //DistanceToCentre();
+	py = sin(tempangle) * MaxDist*-1; //DistanceToCentre();
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;
-	orient = neworient;
+	orient = orient_orig;
 	CPGoffset = 0.0;
 	forward = 1;
 }
 
-void WormAgent::ResetChemCon(double gradSteep)
+void WormAgent::ResetChemCon()
 {
-	chemCon = -distanceToCentre * gradSteep;
+	chemCon = -DistanceToCentre() * gradSteep;
 	pastCon = chemCon;
 	timer = iSensorN + iSensorM + 1;
 	for (int i = 1; i <= timer; i++)
@@ -215,21 +284,30 @@ void WormAgent::ResetChemCon(double gradSteep)
 
 void WormAgent::ResetAgentIntState(RandomState &rs)
 {
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 	n.RandomizeCircuitState(0.0, 0.0, rs);
 	//n.RandomizeCircuitState(0.0, 0.5, rs);
 }
 
-// *******
-// Updating
-// *******
-void WormAgent::UpdateChemCon(double gradSteep)
+
+
+void WormAgent::setDistanceToCentre()
 {
-	distanceToCentre = sqrt(pow(px,2) + pow(py,2));
+	//cout << "WormAgent::setDistanceToCentre()" << endl;
+	distanceToCentre = sqrt(pow(PositionX(),2) + pow(PositionY(),2));
+}
+
+void WormAgent::UpdateChemCon()
+{
+	setDistanceToCentre();
+	//distanceToCentre = sqrt(pow(px_,2) + pow(py_,2));
+	//distanceToCentre = sqrt(pow(px,2) + pow(py,2));
 	pastCon = chemCon;
-	chemCon = -distanceToCentre * gradSteep;
+	chemCon = -DistanceToCentre() * gradSteep;
 	chemConHistory(timer) = chemCon;
 	timer += 1;
 }
+
 
 void WormAgent::UpdateSensors()
 {
@@ -240,27 +318,53 @@ void WormAgent::UpdateSensors()
 	oASER = tempDiff < 0.0 ? fabs(tempDiff): 0.0;
 }
 
+
 void WormAgent::writeData()
 {
+	//cout << "WormAgent write data" << endl;
 	Worm2Dbase::writeData();
 	writeBodyPos();
+}
+
+void WormAgent::writeAct()
+{
+  
+    size_t pos = getPos("act.dat");
+    ofstream & ofs = ofsvec[pos];  
+    int & tt = tts[pos];
+
+    if (++tt >= dataskips) {
+        tt = 0;
+        //time
+        ofs << datatime;
+
+		for (int i = 1; i <= size; i++) ofs << " " << n_ptr->NeuronOutput(i);
+
+		ofs << " " << oASEL << " " << oASER ;
+      
+
+        ofs << endl;
+    }
 }
 
 
 void WormAgent::writeBodyPos()
 {
-    static bool firstcall = true;
+    /* static bool firstcall = true;
     static size_t pos;
     static int tt;
     
-    if (resetStats(firstcall,pos,tt,"bodypos.dat")) return;
+    if (resetStats(firstcall,pos,tt,"bodypos.dat")) return; */
 
+	size_t pos = getPos("bodypos.dat");
     ofstream & ofs = ofsvec[pos];  
-   
+	int & tt = tts[pos];
+
     if (++tt >= dataskips) {
         tt = 0;
 
-        ofs << datatime << " " << px << " " << py << " " << theta << endl;
+	//ofs << datatime << " " << px << " " << py << " " << theta << endl;
+    ofs << datatime << " " << PositionX() << " " << PositionY() << " " << theta << endl;
         // Body
         
     }
@@ -270,22 +374,26 @@ void WormAgent::writeBodyPos()
 
 void WormAgent::PrintPath( ofstream &file)
 {
-	file << px << " ";
-	file << py << " ";
+	file << PositionX() << " ";
+	//file << px << " ";
+	file << PositionY() << " ";
+	//file << py << " ";
 	file << endl;
 }
 
 void WormAgent::PrintDetail( ofstream &file)
 {
-	file << px << " ";
-	file << py << " ";
+	file << PositionX() << " ";
+	file << PositionY() << " ";
+	//file << px << " ";
+	//file << py << " ";
 	file << theta << " ";
 	file << orient << " ";
 	file << avgvel << " ";
 	file << oASEL << " ";
 	file << oASER << " ";
 	for (int i = 1; i <= size; i++){
-		file << n.NeuronOutput(i) << " ";
+		file << n_ptr->NeuronOutput(i) << " ";
 	}
 	file << avgtheta << " ";
 	// file << pastAvgCon << " ";
@@ -293,35 +401,7 @@ void WormAgent::PrintDetail( ofstream &file)
 }
 
 
-void WormAgent::setSimPars(double orient_orig_,
-	double gradSteep_, double RunDuration_, double HSStepSize_)
-{
-	orient_orig = orient_orig_;
-	gradSteep = gradSteep_;
-	RunDuration = RunDuration_;
-	HSStepSize = HSStepSize_;
-}
 
-void WormAgent::setStepPars(double gradSteep_, 
-	RandomState &rs_, double timestep_, int taxis_, int kinesis_)
-{	
-	rs = rs_;
-	gradSteep = gradSteep_;
-	taxis = taxis_;
-	kinesis = kinesis_;
-	HStimestep = timestep_;
-}
-
-
-void WormAgent::InitializeState(RandomState &rs)
-{
-	Worm2Dbase::InitializeState(rs);
-	InitialiseAgent(2*RunDuration, HSStepSize);
-	ResetAgentsBody(orient_orig, rs);
-	ResetChemCon(gradSteep);
-	ResetAgentIntState(rs);
-	UpdateChemCon(gradSteep);	
-}
 
 vector<doubIntParamsHead> WormAgent::getWormParams()
 {
@@ -330,10 +410,26 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
     doubIntParamsHead var1;
 
     var1.parDoub.head = "Worm";
-    var1.parDoub.names = {"parameter"};
-    var1.parDoub.vals = {1};
+    var1.parDoub.names = {"MaxDist", "MaxVel", "MaxGauGradHeight", 
+		"ChemDiffConst", "HST", "HSP",
+	"w_CPG_SMBV", "w_CPG_SMBD", "sensorN", "sensorM", "outputGain"
+	};
+    var1.parDoub.vals = {MaxDist, MaxVel, MaxGauGradHeight, ChemDiffConst, HST, HSP,
+	w_CPG_SMBV, w_CPG_SMBD, sensorN, sensorM, outputGain
+	};
+
+	var1.parDoub.messages = {
+	"Half the radius of the big petri dish (in cm)", 
+	"Forward velocity (in cm/s)",
+	"Because the MaxDist is also the maximum height of the cone shaped gradient",
+	"Simulated chemical environment according to Ward, 1973 as described in Ferree and Lockery 1999 equation 14.",
+	"Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997",
+	"Head-sweep period 2*Pi/T, According to Ferree, Marcotte, Lockery, 1997."};
+
 
     parvec.push_back(var1);
+
+
     return parvec;
 
 }
@@ -341,61 +437,91 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 void WormAgent::addParsToJson(json & j)
 {
-
     Worm2Dbase::addParsToJson(j);
-        
+	string nsHead = "Nervous system";
+    appendAllNSJson(j[nsHead], dynamic_cast<NervousSystem&>(*n_ptr));
+
+	Params< vector<double> > par;
+	par.names =  {"w_ASER", "w_ASEL"};
+	par.vals = {getVector<double>(w_ASER), getVector<double>(w_ASEL)};
+	appendToJson<vector<double> >(j["Sensory"],par);
+
 }
 
 
-void WormAgent::Step1(double StepSize)
+void WormAgent::Step1()
 {
 	UpdateSensors();
-	Step(StepSize,rs,HStimestep,taxis,kinesis);
-	UpdateChemCon(gradSteep);
+	StepOrig();
+	UpdateChemCon();
 }
 
-void WormAgent::preNStep(double StepSize, double timestep)
+
+
+// Step
+void WormAgent::StepOrig()
+{
+	preNStep();
+	// Update the signaling system
+	n_ptr->EulerStep(settedStepSize);
+	postNStep();
+	moveAgent();
+}
+
+
+void WormAgent::preNStep1()
 {
 // Input from sensory neurons to interneurons
 	for (int i = 1; i <= size-4; i++){
-			n.SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
+			n_ptr->SetNeuronExternalInput(i, w_ASEL[i] * oASEL + w_ASER[i] * oASER);
 	}
-
-	// Add antiphase oscillatory input to the neck motor neurons
-	n.SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep));
-	n.SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep));
-
 
 }
 
-void WormAgent::postNStep(double StepSize, RandomState &rs, int taxis, int kinesis)
+
+void WormAgent::preNStep()
+{
+// 
+	preNStep1();
+
+	const double timestep1 =  t + settedStepSize;
+	// Add antiphase oscillatory input to the neck motor neurons
+	n_ptr->SetNeuronExternalInput(size-1, w_CPG_SMBV * sin(CPGoffset + HSP*timestep1));
+	n_ptr->SetNeuronExternalInput(size, w_CPG_SMBD * sin(CPGoffset + Pi + HSP*timestep1));
+
+}
+
+
+
+
+void WormAgent::postNStep()
 {
 // Update curvature
 	if (taxis == 1){
-		NMdiff = n.NeuronOutput(size-1) - n.NeuronOutput(size);
+		NMdiff = n_ptr->NeuronOutput(size-1) - n_ptr->NeuronOutput(size);
 		theta = outputGain * NMdiff;
-		orient += StepSize * theta;
+		orient += settedStepSize * theta;
 
 		// Check that there is always one part of the curvature that is convex and another that is concave. This way thrust is generated.
 		// Maintain a cumulative average of absolute theta and ensure that it is not too low (otherwise it's going straightish)
 		DthetaDt = theta - pastTheta;
 		pastTheta = theta;
-		pushCurv = DthetaDt > 0 ? StepSize : -StepSize;
+		pushCurv = DthetaDt > 0 ? settedStepSize : -settedStepSize;
 		avgtheta = histTheta.PushFront(fabs(theta))/VelDelta;
 		avgvel = MaxVel * pow(1 - (fabs(histCurv.PushFront(pushCurv))/HST), 2) * pow(1-fabs(0.7-avgtheta),2);
 	}
 
 	// Update Forward -> Backward
 	if (kinesis == 1){
-		if ((forward == 1) && (n.NeuronOutput(size-2) > 0.6) && (n.NeuronOutput(size-3) < 0.4) )
+		if ((forward == 1) && (n_ptr->NeuronOutput(size-2) > 0.6) && (n_ptr->NeuronOutput(size-3) < 0.4) )
 		{
 			forward = 0;
 		}
 		// Update Backward -> Forward
-		if ((forward == 0) && (n.NeuronOutput(size-2) < 0.4) && (n.NeuronOutput(size-3) > 0.6) )
+		if ((forward == 0) && (n_ptr->NeuronOutput(size-2) < 0.4) && (n_ptr->NeuronOutput(size-3) > 0.6) )
 		{
 			forward = 1;
-			orient = rs.UniformRandom(0, 2*Pi);
+			orient = rs->UniformRandom(0, 2*Pi);
 		}
 		if (forward == 0)
 			{avgvel = -MaxVel;}
@@ -403,34 +529,25 @@ void WormAgent::postNStep(double StepSize, RandomState &rs, int taxis, int kines
 			{avgvel = MaxVel;}
  	}
 
-
-
-
 }
 
-void WormAgent::moveAgent(double StepSize)
+void WormAgent::moveAgent()
 {
 // Update the velocity
 	vx = cos(orient) * avgvel;
 	vy = sin(orient) * avgvel;
 
 	// Move the agent
-	px += StepSize * vx;
-	py += StepSize * vy;
+	//SetPositionX(PositionX() + (settedStepSize * vx));
+	//SetPositionY(PositionY() + (settedStepSize * vx));
+
+	//PositionX() += settedStepSize * vx;
+	//PositionY() += settedStepSize * vy;
+	px += settedStepSize * vx;
+	py += settedStepSize * vy;
 	//t += StepSize;
 
 
-}
-
-
-// Step
-void WormAgent::Step(double StepSize, RandomState &rs, double timestep, int taxis, int kinesis)
-{
-	preNStep(StepSize, timestep);
-	// Update the signaling system
-	n.EulerStep(StepSize);
-	postNStep(StepSize,rs,taxis,kinesis);
-	moveAgent(StepSize);
 }
 
 	

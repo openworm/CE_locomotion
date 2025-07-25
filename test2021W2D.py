@@ -9,4 +9,5 @@ run(
     outputFolderName="exampleRun21W2D",
     doEvol=True,
     overwrite=True,
+    checkPointInterval=5,
 )

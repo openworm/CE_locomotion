@@ -77,6 +77,7 @@ TSearch::TSearch(int VSize, double (*EvalFn)(TVector<double> &, RandomState &))
 	SetSearchConstraint(1);
 	SetReEvaluationFlag(0);
 	SetCheckpointInterval(0);
+	cptfilename = "search.cpt";
 }
 
 
@@ -861,12 +862,12 @@ void TSearch::SortPopulation(void)
 //  ...
 //  <RandomState N>
 
-void TSearch::WriteCheckpointFile(void)
+void TSearch::WriteCheckpointFile()
 {
-  ofstream bofs("search.cpt", ios::binary);
+
+	ofstream bofs(cptfilename, ios::binary);
   int i;
   double d;
-    
 	// Write the vector size and population size
   bofs.write((const char*) &(vectorSize), sizeof(vectorSize));
   i = PopulationSize();
@@ -925,12 +926,13 @@ void TSearch::WriteCheckpointFile(void)
   // Write out the random state for each individual in the population
   for (int i = 1; i <= PopulationSize(); i++)
     RandomStates[i].BinaryWriteRandomState(bofs);
+
 }
 
 
-void TSearch::ReadCheckpointFile(void)
+void TSearch::ReadCheckpointFile()
 {
-  ifstream bifs("search.cpt", ios::binary);
+  ifstream bifs(cptfilename, ios::binary);
   int i;
   double d;
   TVector<int> iv;

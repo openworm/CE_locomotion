@@ -51,7 +51,7 @@ cout << "Worm2DCE const" << endl;
 
 }
 
-void Worm2DCE::initForSimulation()
+void Worm2DCE::initForSimulation(RandomState & rs)
 {
 
   cout << "initForSimulation" << endl;
@@ -70,7 +70,7 @@ void Worm2DCE::InitializeState(RandomState &rs)
   Worm2D::InitializeState(rs);
 }
 
-void Worm2DCE::Step1(double StepSize)
+void Worm2DCE::Step1()
 {
   int mi;
   int mt = 0;
@@ -79,7 +79,7 @@ void Worm2DCE::Step1(double StepSize)
   TVector<double> ventralInput(1, par1.N_units);
 
   // Update Body
-  b.StepBody(StepSize);
+  b.StepBody(settedStepSize);
 
   // Set input to Stretch Receptors from Body
   // Input to SR only if the segment stretch
@@ -123,7 +123,7 @@ void Worm2DCE::Step1(double StepSize)
   }
 
   // Update Nervous System
-  n_ptr->EulerStep(StepSize);
+  n_ptr->EulerStep(settedStepSize);
   //cout << "step " << t << endl;
    
   // Set input to Muscles
@@ -169,7 +169,7 @@ void Worm2DCE::Step1(double StepSize)
   }
 
   // Update Muscle activation
-  m.EulerStep(StepSize);
+  m.EulerStep(settedStepSize);
 
   // Set input to Mechanical Body
   //  First two segments receive special treatment because they are only affected by a single muscle
@@ -235,13 +235,13 @@ void Worm2DCE::addParsToJson(json & j)
 void Worm2DCE::writeAct()
 {
 
-
+/* 
   static bool firstcall = true;
   static size_t pos;
   static int tt;
 
   if (resetStats(firstcall,pos,tt,"act.dat")) return;
-
+ */
   /* if (firstcall || !isOpen[pos]){
       ofsvec.push_back(ofstream(getName("act.dat")));
       pos = ofsvec.size() - 1;
@@ -250,8 +250,9 @@ void Worm2DCE::writeAct()
       tt = dataskips;
   } */
   
+  size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
-  
+  int & tt = tts[pos];
 
   if (++tt >= dataskips) {
     tt = 0;

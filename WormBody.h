@@ -86,9 +86,10 @@ class WormBody {
 public:
     // Accessors
     inline double time() {return t;}
-    inline double X(int i) {return Z[3*(i-1)];}     // YYY == SHOULD THIS BE i-1
-    inline double Y(int i) {return Z[3*(i-1)+1];}   // YYY
+    inline double & X(int i) {return Z[3*(i-1)];}     // YYY == SHOULD THIS BE i-1
+    inline double & Y(int i) {return Z[3*(i-1)+1];}   // YYY
     inline double Phi(int i) {return Z[3*(i-1)+2];} // YYY
+    
     inline void SetDorsalSegmentActivation(int i, double a)
     {
         if (i > 0 && i <= N_segments)

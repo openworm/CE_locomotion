@@ -47,8 +47,11 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") er = new EvolutionCE(argc,argv);
     if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
     if (model_name == "Net21") er = new Evolution21(argc,argv);
-    if (model_name == "CO") er = new EvolutionCO(argc,argv);
-    
+    if (model_name == "CO") {
+     double stepsize = 0.01;
+     int circuitsize = 10;   
+        er = new EvolutionCO(argc,argv,stepsize,circuitsize);
+    }
     const evoPars & ep1 = er->itsEvoPars();
 
     InitializeBodyConstants();
@@ -63,6 +66,7 @@ int main (int argc, const char* argv[])
         seedfile.close();
     }
 
+    
     //get vector of best individual
    
     TVector<double> bestVector(1, er->itsEvoPars().VectSize);
@@ -88,10 +92,14 @@ int main (int argc, const char* argv[])
         if (model_name == "Net21") w = new Worm21(phenotype);
         if (model_name == "CO") {
 
-        w = new WormAgent(phenotype);
+        w = new WormAgent(phenotype, 10);
         double orient = 0;
         double gradSteep = 0.5;
-        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,ep1.Transient + ep1.Duration,ep1.StepSize);
+        int taxis = 1;
+        int kinesis = 0;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,
+            ep1.Transient + ep1.Duration,
+            ep1.StepSize, taxis, kinesis);
 
         }
         cout << "making json from main" << endl;
@@ -132,14 +140,15 @@ int main (int argc, const char* argv[])
     
     //er->RunSimulation(bestVector, rs);
 
-    Worm2Dbase* w = 0;
+    {
+        Worm2Dbase* w = 0;
 
     cout << "making worm" << endl;
 
     if (model_name == "CE") w = new WormCE(phenotype,0);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
-    if (model_name == "CO") w = new WormAgent(phenotype);
+    if (model_name == "CO") w = new WormAgent(phenotype,10);
 
     //write_json(er,w, "worm_data_3.json");
     //w->setBasename(er->itsEvoPars().directoryName);
@@ -156,12 +165,27 @@ int main (int argc, const char* argv[])
     w->DumpParams(phenfile);
     phenfile.close();}
 
-    {RandomState rs;
-    rs.SetRandomSeed(simrandseed);
-    w->InitializeState(rs);}
-    w->initForSimulation();
+    delete w;
+
+    }
+
     //double simduration = atof(getParameter(argc,argv,"-sd","60"));
     //double simtransient = atof(getParameter(argc,argv,"-st","50"));
+
+
+    Worm2Dbase* w = 0;
+
+    cout << "making worm 2" << endl;
+
+    if (model_name == "CE") w = new WormCE(phenotype,0);
+    if (model_name == "RS18") w = new Worm18(phenotype,0);
+    if (model_name == "Net21") w = new Worm21(phenotype);
+    if (model_name == "CO") w = new WormAgent(phenotype,10);
+
+   
+    RandomState rs;
+    rs.SetRandomSeed(simrandseed);
+    w->InitializeState(rs);
 
     double simduration = 60;
     double simtransient = 50;
@@ -170,13 +194,32 @@ int main (int argc, const char* argv[])
         //simduration = 10;
         double orient = 0;
         double gradSteep = 0.5;
-        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,simduration + simtransient,ep1.StepSize);
+        int taxis = 1;
+        int kinesis = 0;
+        dynamic_cast<WormAgent&>(*w).setSimPars(orient,gradSteep,
+            simtransient + simduration,
+            ep1.StepSize, taxis, kinesis);
+       // dynamic_cast<WormAgent&>(*w).InitializeSimulation(rs);
 
     }
+    
+
+    w->initForSimulation(rs);
+    w->setStepSize(er->itsEvoPars().StepSize);
+
 
     simPars sp1 = {er->itsEvoPars().directoryName,
-        er->itsEvoPars().skip_steps, simduration, simtransient, er->itsEvoPars().StepSize};
+        //er->itsEvoPars().skip_steps, 
+        simduration, simtransient, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
+    
+    
+
+    w->setDataskips(er->itsEvoPars().skip_steps);
+    w->setPrefix("sim");
+    w->InitializeData(er->itsEvoPars().directoryName);
+
+    
     s1.runSimulation(*w);
 
     delete w;
@@ -222,9 +265,10 @@ int main (int argc, const char* argv[])
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
     w->InitializeState(rs);
-    w->initForSimulation();
+    w->initForSimulation(rs);
     simPars sp1 = {er->itsEvoPars().directoryName,
-        er->itsEvoPars().skip_steps, 60, 50, er->itsEvoPars().StepSize};
+        //er->itsEvoPars().skip_steps, 
+        60, 50, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w);}
 

@@ -3,6 +3,8 @@
 #include "Worm21.h"
 #include "Segment21.h"
 
+void Evolution21::writeJson(TVector<double> &v) {Worm21 w(v); writeJson1(w);}
+
 void Evolution21::addExtraParsToJson(json & j)
 {   
     

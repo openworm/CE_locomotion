@@ -6,7 +6,7 @@
 
 struct simPars{
     string directoryName;
-    int skip_steps;
+   // int skip_steps;
     double Duration;       //
     double Transient;       //
     double StepSize;
@@ -37,7 +37,7 @@ public:
     
 private:
 const simPars sp;
-string rename_file(string filename);
+//string rename_file(string filename);
 //ofstream velfile, nsfile;
 
 };

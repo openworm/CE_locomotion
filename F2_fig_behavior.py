@@ -74,6 +74,8 @@ def make_fig(plot_format):
     ###############################
     def plot_worm(ax, k):
         dx, dy = x[k] - xc[k], y[k] - yc[k]
+        dx = dx / 100.0
+        dy = dy / 100.0
         #    b = np.arctan((dx[0]-dx[-1])/(dy[0]-dy[-1]))
         b = 3 * np.pi / 2 + np.arctan((dx[0] - dx[-1]) / (dy[0] - dy[-1]))
         tx = np.cos(b) * dx - np.sin(b) * dy
@@ -85,6 +87,8 @@ def make_fig(plot_format):
         ax.plot(tx + r / 2.0 * np.cos(ta), ty + r / 2.0 * np.sin(ta), "k", lw=1)
         ax.set_xlim(-0.0005, 0.0005)
         ax.set_ylim(-0.00015, 0.00015)
+        # ax.set_xlim(-0.05, 0.05)
+        # ax.set_ylim(-0.015, 0.015)
         ax.text(
             -0.0004,
             0.0001,

@@ -605,7 +605,7 @@
             "value": 15.0
         },
         "CheckpointInterval": {
-            "value": 0
+            "value": 5
         },
         "CrossoverMode": {
             "value": 0
@@ -2200,6 +2200,74 @@
                 1.3786617071180713
             ]
         }
+    },
+    "PhenoNames": {
+        "value": [
+            "RS18_b_bias",
+            "RS18_d_bias",
+            "RS18_b_tau",
+            "RS18_d_tau",
+            "RS18_b_selfcons",
+            "RS18_d_selfcons",
+            "RS18_chemcons",
+            "RS18_chemcons",
+            "RS18_chemcons",
+            "RS18_electcons",
+            "RS18_electcons",
+            "RS18_electcons",
+            "RS18_electcons",
+            "RS18_stretch_recep",
+            "RS18_stretch_recep",
+            "RS18_b_NMJ",
+            "RS18_d_NMJ",
+            "RS18_SMD_bias",
+            "RS18_RMD_bias",
+            "RS18_SMD_tau",
+            "RS18_RMD_tau",
+            "RS18_SMD_self_chem",
+            "RS18_RMD_self_chem",
+            "RS18_SMD_DV_chem",
+            "RS18_SR_chem",
+            "RS18_RMD_DV_chem",
+            "RS18_SR_elec",
+            "RS18_RR_elec",
+            "RS18_NMJ_SMD",
+            "RS18_NMJ_RMD"
+        ]
+    },
+    "PhenoNamesNums": {
+        "value": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            28,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30
+        ]
     },
     "Stretch receptor": {
         "Head_gain": {

@@ -3,5 +3,6 @@
     "PopulationSize": 96,
     "randomseed": 1233,
     "MaxGenerations": 10,
-    "Transient": 8.0
+    "Transient": 8.0,
+    "CheckpointInterval": 0
 }

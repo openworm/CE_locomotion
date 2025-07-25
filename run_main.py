@@ -51,6 +51,20 @@ defaults_base_2018 = {
     "doMuscSim": 0,
 }
 
+defaults_base_CO18 = {
+    "popSize": 96,
+    "duration": 50,
+    "transient": 10,
+    "simduration": 50,
+    "simtransient": 10,
+    "nervousSystemFileName": "main_sim",
+    "doNML": 0,
+    "doRandInit": 0,
+    "maxGens": 1000,
+    "doMuscSim": 0,
+}
+
+
 defaults_base_2021 = {
     "popSize": 100,
     "duration": 40,
@@ -86,6 +100,7 @@ DEFAULTS = {
     "maxGens": None,
     "modelName": None,
     "reRand": False,
+    "checkPointInterval": 0,
 }
 
 
@@ -179,6 +194,18 @@ def process_args():
         default=DEFAULTS["doNML"],
         help=(
             "Run the equivalent neuroML simulation without muscles instead of C++ simulation if True."
+        ),
+    )
+
+    parser.add_argument(
+        "-cpti",
+        "--checkPointInterval",
+        type=float,
+        metavar="<checkPointInterval>",
+        default=DEFAULTS["checkPointInterval"],
+        help=(
+            "Store evolution checkpoint file to resume search later at this interval."
+            "If a checkpoint file is found search will be started from that."
         ),
     )
 
@@ -427,6 +454,13 @@ def run(a=None, **kwargs):
 
     if a.inputFolderName is not None and a.inputFolderName != a.outputFolderName:
         import shutil
+        import glob
+        import pathlib
+
+        if hasattr(a, "addPrefix"):
+            prefix = getattr(a, "addPrefix") + "_"
+        else:
+            prefix = ""
 
         files = [
             "fitness.dat",
@@ -435,12 +469,20 @@ def run(a=None, **kwargs):
             "worm_data.json",
             "best.gen.dat",
             "phenotype.dat",
+            "best.pheno.dat",
+            "search.cpt",
         ]
 
         for file in files:
-            input_path = a.inputFolderName + "/" + file
-            if os.path.isfile(input_path):
-                shutil.copyfile(input_path, a.outputFolderName + "/" + file)
+            input_filenames = glob.glob(a.inputFolderName + "/*" + file)
+            # print(input_filenames)
+            for file1 in input_filenames:
+                filename1 = pathlib.Path(file1).name
+                input_path = a.inputFolderName + "/" + filename1
+                if os.path.isfile(input_path):
+                    shutil.copyfile(
+                        input_path, a.outputFolderName + "/" + prefix + filename1
+                    )
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):
@@ -468,17 +510,24 @@ def run(a=None, **kwargs):
         "RoyalSociety2018": "RS18",
         "network2021": "Net21",
         "CE_orientation": "CO",
+        # "Worm2D/CO18": "CO18",
     }
 
+    doW2D = False
     model_name = None
-    if a.modelFolder == "Worm2D" or a.modelFolder == "../Worm2D":
+    if (
+        a.modelFolder == "Worm2D"
+        or a.modelFolder == "../Worm2D"
+        or a.modelFolder == "Worm2D/CO18"
+    ):
         if a.modelName is None:
             print(
-                "'modelName' parameter is required if `Worm2D' is the model folder.\n"
-                "Options are 'CE', 'RS18', 'Net21'.\n"
+                "'modelName' parameter is required if `Worm2D' or subfolder is the model folder.\n"
+                # "Options are 'CE', 'RS18', 'Net21'.\n"
             )
             sys.exit(1)
         model_name = a.modelName
+        doW2D = True
     else:
         model_name = model_names[a.modelFolder]
 
@@ -487,10 +536,20 @@ def run(a=None, **kwargs):
         "RS18": defaults_base_2018,
         "Net21": defaults_base_2021,
         "CO": defaults_base_CO,
+        "CO18": defaults_base_CO18,
+        "CO18Full": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
-    plot_format = model_name
+    # plot_format = model_name
+
+    evol_extra_parameters = {}
+    evol_extra_parameters["network_size"] = 6
+    sim_extra_parameters = {}
+    sim_extra_parameters["orient"] = 0
+
+    main_cmd = a.modelFolder + "/" + a.mainProcessName
+    cmd = [main_cmd]
 
     evol_pars = [
         "Duration",
@@ -498,15 +557,32 @@ def run(a=None, **kwargs):
         "randomseed",
         "MaxGenerations",
         "Transient",
+        "CheckpointInterval",
     ]
-    evol_args = [a.duration, a.popSize, a.RandSeed, a.maxGens, a.transient]
+
+    evol_args = [
+        a.duration,
+        a.popSize,
+        a.RandSeed,
+        a.maxGens,
+        a.transient,
+        a.checkPointInterval,
+    ]
     evol_defaults = [
         defaults_base["duration"],
         defaults_base["popSize"],
         random_seed,
         defaults_base["maxGens"],
         defaults_base["transient"],
+        0,
     ]
+
+    for parameter_key in evol_extra_parameters:
+        if hasattr(a, parameter_key):
+            evol_pars.append(parameter_key)
+            evol_args.append(getattr(a, parameter_key))
+            evol_defaults.append(evol_extra_parameters[parameter_key])
+            cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
     evol_data = {}
     evol_par_file_base = a.outputFolderName + "/evolution_pars.json"
@@ -537,7 +613,7 @@ def run(a=None, **kwargs):
         print(
             "Evolution not needed as evolution parameters are the same as the existing ones."
         )
-        do_evol = False
+        do_evol = 0
 
     do_nml = None
     if a.doNML is not None:
@@ -554,7 +630,6 @@ def run(a=None, **kwargs):
         else:
             do_muscsim = 0
 
-    same_vals = True
     sim_pars = ["doNML", "seed", "Duration", "doRandInit", "Transient", "doMuscSim"]
     sim_args = [
         do_nml,
@@ -572,6 +647,15 @@ def run(a=None, **kwargs):
         defaults_base["simtransient"],
         defaults_base["doMuscSim"],
     ]
+
+    for parameter_key in sim_extra_parameters:
+        if hasattr(a, parameter_key):
+            sim_pars.append(parameter_key)
+            sim_args.append(getattr(a, parameter_key))
+            sim_defaults.append(sim_extra_parameters[parameter_key])
+            cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
+
+    same_vals = True
     for par, arg, default in zip(sim_pars, sim_args, sim_defaults):
         if not setDict(sim_data, par, arg, default):
             same_vals = False
@@ -591,17 +675,17 @@ def run(a=None, **kwargs):
 
     # cmd = ["./main",]
 
-    main_cmd = a.modelFolder + "/" + a.mainProcessName
     # main_cmd = "../main"
     # main_cmd = "/home/adam/uclwork/CE_locomotion/experiments/.main"
 
     if a.crandSeed is not None:
-        cmd = [main_cmd, "-r", str(a.crandSeed)]
+        cmd += ["-r", str(a.crandSeed)]
     else:
         if do_evol:
-            cmd = [main_cmd, "-R", str(evol_data["randomseed"])]
+            cmd += ["-R", str(evol_data["randomseed"])]
         else:
-            cmd = [main_cmd, "-R", str(sim_data["seed"])]
+            cmd += ["-R", str(sim_data["seed"])]
+
     # cmd += ["-sr", str(sim_data["seed"])]
     cmd += ["-p", str(evol_data["PopulationSize"])]
     cmd += ["-d", str(evol_data["Duration"])]
@@ -610,6 +694,7 @@ def run(a=None, **kwargs):
     cmd += ["-sd", str(sim_data["Duration"])]
     cmd += ["-st", str(sim_data["Transient"])]
     cmd += ["--doevol", str(do_evol)]
+    cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
 
     cmd += ["--dorandinit", str(sim_data["doRandInit"])]
     cmd += ["--donml", str(sim_data["doNML"])]
@@ -643,7 +728,17 @@ def run(a=None, **kwargs):
 
         # reload_single_run(show_plot=False, plot_format=plot_format)
         reload_single_run(
-            showPlot=False, folderName=a.outputFolderName, modelName=plot_format
+            showPlot=False, folderName=a.outputFolderName, modelName=model_name
+        )
+
+        if doW2D and do_evol:
+            from load_data import plot_evols
+
+            plot_evols(folderName=a.outputFolderName, modelName=model_name)
+
+    if model_name == "CO18" or model_name == "CO18Full":
+        reload_single_run(
+            showPlot=False, folderName=a.outputFolderName, modelName="RS18"
         )
 
 

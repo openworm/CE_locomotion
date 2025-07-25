@@ -27,7 +27,6 @@ using namespace std;
 //const double T_muscle = 0.1;        // Muscle time constant
 
 
-
 // Body segment name conventions
 //const int Head = 1;
 //const int Tail = N_segments;
@@ -39,14 +38,10 @@ public:
     
     void InitializeState(RandomState &rs);
     void DumpParams(ofstream &ofs);
-    
-    
     NervousSystem & n;
 
     protected:
     void addParsToJson(json & j);
-    
-    
+    void setPhenoNames();
 
-    
 };

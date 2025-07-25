@@ -16,6 +16,11 @@
 //Worm2D21m + worm2d -> worm2d21 (cc musc + nn ptr + musc connections)
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
+extern string main_directoryname, main_modelname;
+
+
+//string main_directoryname;
+//string main_modelname;
 
 //using json = nlohmann::json;
 
@@ -53,11 +58,20 @@ class DataWriter{
    
     
     void writeDataCheck(){ 
-        if (basename==".") {cout << "basename not set" << endl; exit(1);}
+        if (basename==".") {cout << "basename not set" << endl; throw std::exception();}
         writeData();
     }
     
-    DataWriter(){datatime=0;prefix="";basename=".";}
+    DataWriter()//:doFirstCall(true)
+    {datatime=0;
+    prefix="";
+    basename=".";
+    isOpen.clear();
+    ofsvec.clear();
+    ofnames.clear();
+    tts.clear();
+    }
+
     virtual ~DataWriter(){closeAll();}
     
 
@@ -65,28 +79,35 @@ class DataWriter{
     void setDataskips(double dataskips_){dataskips = dataskips_;}
     void setBasename(string basename_){basename=basename_;}
     void setPrefix(string prefix_){prefix=prefix_;}
-   
-    void dataReset(){closeAll();writeDataCheck();}
+    void setPrefix(){prefix=getModelName();}
+
+    void dataReset();
+    
     //void dataReset(){closeAll();}
     void closeAll();
     void InitializeData(string basename_);
 
 
     protected:
+    virtual const string getModelName() = 0;
+    size_t getPos(string name_);
 
-    bool resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
+    //bool resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
     virtual void writeData() = 0; //{cout << "write data not implemented!" << endl;}
    
-
     string getName(string name_);
 
+    //const bool doFirstCall;
     vector<bool> isOpen;
     vector<ofstream> ofsvec;
     vector<string> ofnames;
+    vector<int> tts;
+
     int dataskips;
     double datatime;
     string basename;
     string prefix;
+    
 };
 
 
@@ -104,7 +125,13 @@ class Worm2Dbody : virtual public DataWriter
     void AngleCurvature(TVector<double> &c);
     //void DumpBodyState(ofstream &ofs, int skips);
     virtual void InitializeState(RandomState &rs) = 0;
-    
+    double PositionX(){return b.X(Head)*100.0;} //change to cm
+    double PositionY(){return b.Y(Head)*100.0;}
+    void shiftX(double shiftdist_);
+    void shiftY(double shiftdist_);
+    void zeroX();
+    void zeroY();
+
     virtual void addParsToJson(json & j);
     double getVelocity();
     
@@ -124,10 +151,16 @@ class Worm2Dbase : virtual public DataWriter
 public:
 
 virtual void InitializeState(RandomState &rs) = 0;
-virtual void initForSimulation() =  0;
+virtual void initForSimulation(RandomState &) =  0;
+
+
 
 void Step(double StepSize_);
+void Step();
+virtual void setStepSize(double val_){settedStepSize=val_;}
 
+
+vector<double> readPhenotype();
 virtual void writeAct();
 void writeState();
 virtual void addParsToJson(json & j);
@@ -144,24 +177,31 @@ virtual ~Worm2Dbase(){
         if (n_ptr) delete n_ptr;
 }
 
+void setTime(double t_){t=t_;}
+const double & itsStepSize() const {return settedStepSize;}
+void incSimTimes();
+
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 void writeData();
+virtual void setPhenoNames() {return;}
 
-virtual const string getModelName() = 0;
 virtual vector<doubIntParamsHead> getWormParams() = 0;
-virtual void Step1(double StepSize_) = 0;
+virtual void Step1() = 0;
 NSForW2D * const n_ptr;
 muscForW2D * m_ptr;
     
+vector<string> phenoNames;
+vector<int> phenoNamesNums;
 
+void addPhenoName(string name, int k);
 
 double t; // Time
 const bool muscForWDconst;
 const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber);
-
+double settedStepSize;
 
 };
 
@@ -177,55 +217,17 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //virtual vector<doubIntParamsHead> getWormParams() = 0;
     
     //virtual void initForSimulation() =  0;
-    virtual const vector<string> getCellNames() = 0;
-    //virtual const string getModelName() = 0;
 
-    
-    //void Step(double StepSize_);
-    //void DumpBodyState(ofstream &ofs, int skips);
-    //void DumpCurvature(ofstream &ofs, int skips);
-    virtual void setMuscleInput(double StepSize) {return;}
-    //virtual void DumpActState(ofstream &ofs, int skips);
-    //virtual void DumpActStateState(ofstream &ofs, int skips);
-    //void DumpVal(ofstream &ofs, int skips, double val);
-    //void writeData();
-    //virtual void writeAct();
-    //void writeState();
+    virtual const vector<string> getCellNames() = 0;
+    virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
-    //virtual void DumpParams(ofstream &ofs){return;}
-
-    //void writeJsonFile(ofstream & json_out);
     
-   
-    //void DumpNSOrdered(ofstream &ofs, int skips);
-    
-    
-    //NSForW2D & itsNS(){return *n_ptr;}
-
-   /*  virtual ~Worm2Dm(){
-        if (m_ptr) delete m_ptr; 
-        if (n_ptr) delete n_ptr;
-    } */
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     void writeData();
-
-    //virtual void Step1(double StepSize_) = 0;
-    //NSForW2D * const n_ptr;
-    //muscForW2D * m_ptr;
-    
-
-
-    //const wormIzqParams par1;
-    //double t; // Time
-    //const bool muscForWDconst;
-    //double StepSize;
-    
-
-    //int nn(int neuronNumber, int unitNumber);
 
 
 };
@@ -259,8 +261,8 @@ class Worm2D : virtual public Worm2Dm
     void setUpMuscleConn();
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-    void setMuscleInput(double StepSize);
-    void setMuscleInputVec(double StepSize);
+    void setMuscleInput();
+    void setMuscleInputVec();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     void setMuscleInputVent();
     void setMuscleInputDors();

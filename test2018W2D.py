@@ -9,4 +9,5 @@ run(
     outputFolderName="exampleRunRS18W2D",
     doEvol=True,
     overwrite=True,
+    checkPointInterval=5,
 )

@@ -1,10 +1,77 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <sys/stat.h>
+#include <iostream>
+//#include <string.h>
+//#include "VectorMatrix.h"
+#include <iomanip> 
+#include <fstream>
 
 
-using std::string;
-using std::vector;
+using namespace std;
+
+
+
+/* template<class T>
+class TVecRef
+{
+    public:
+    TVecRef(TVector<T> & v, int offset_):ptr(&v),offset(offset_){}
+
+    T &operator()(int index){return ptr->(index + offset);}
+
+    private:
+    const int offset;
+    shared_ptr<TVector<T> > ptr;
+    //const TVector<T> & ref;
+};
+
+
+template<class T>
+class TVecROff : private TVector<T>
+{
+    public:
+    TVecROff(TVector<T> v, int offset_):offset(offset_),lb(v.lb),ub(v.ub),Vector(v.Vector){}
+
+    T &operator()(int index){return (*this)(index + offset);}
+
+    private:
+    const int offset;
+}; */
+
+
+template<class T>
+void fileDropLines(string name, int rows, int cols)
+{
+    vector<vector<T> > filevec;
+
+    {ifstream file(name);
+
+    for (int i = 0; i < rows; i++) 
+    {
+        vector<T> v;
+        for (int j = 0; j < cols; j++) {
+            T val;
+            file >> val;
+            v.push_back(val);
+    }
+    filevec.push_back(v);
+    }
+    file.close();
+    }
+
+    {ofstream file(name);
+    file << setprecision(10);
+    for (int i = 0; i < filevec.size(); i++) 
+    {
+        for (int j = 0; j < filevec[i].size(); j++) 
+            file << filevec[i][j] << " ";
+    file << endl;
+    }
+    file.close();}
+
+}
 
 template <class T>
 struct Params {
