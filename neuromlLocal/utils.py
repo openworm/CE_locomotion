@@ -12,6 +12,9 @@ from neuroml import (
 DEFAULTS = {"doMuscles": False, "folder": None}
 
 
+FORMAT_CONN_WEIGHTS = "%.8f"
+
+
 def process_args():
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")
@@ -319,7 +322,7 @@ def makeProjectionsConnections(
                 post_cell=post_cell_id,
                 pre_component="silentSyn",
                 post_component="neuron_to_neuron_syn_w2d",
-                weight=weight,
+                weight=FORMAT_CONN_WEIGHTS % weight,
             )
 
             net.continuous_projections[
@@ -332,7 +335,7 @@ def makeProjectionsConnections(
                 pre_cell=pre_cell_id,
                 post_cell=post_cell_id,
                 synapse="gapJunction0",
-                weight=weight,
+                weight=FORMAT_CONN_WEIGHTS % weight,
             )
 
             net.electrical_projections[

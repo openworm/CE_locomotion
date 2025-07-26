@@ -338,7 +338,7 @@ def run(a=None, **kwargs):
                 post_cell=post_cell_id,
                 pre_component="silentSyn",
                 post_component="neuron_to_neuron_syn_w2d",
-                weight=weight,
+                weight=utils.FORMAT_CONN_WEIGHTS % weight,
             )
 
             proj0.continuous_connection_instance_ws.append(conn0)
@@ -360,7 +360,7 @@ def run(a=None, **kwargs):
                 pre_cell=pre_cell_id,
                 post_cell=post_cell_id,
                 synapse="gapJunction0",
-                weight=weight,
+                weight=utils.FORMAT_CONN_WEIGHTS % weight,
             )
 
             elProj0.electrical_connection_instance_ws.append(conn0)
