@@ -58,8 +58,8 @@ void Evolution::setFromCPT()
         s->ReadCheckpointFile();
         cout << "setFromCPT " << s->cptfilename << endl;
         doResume = true;
-    ResultsDisplay(*s);
-    checkPars();
+        //ResultsDisplay(*s);
+        checkPars();
 
 
     }

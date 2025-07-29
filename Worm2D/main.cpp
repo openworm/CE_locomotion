@@ -62,21 +62,21 @@ int main (int argc, const char* argv[])
         er->configure();
         ofstream seedfile;
         seedfile.open(er->rename_file("seed.dat"));
-        seedfile << er->itsEvoPars().randomseed << endl;
+        seedfile << ep1.randomseed << endl;
         seedfile.close();
     }
 
     
     //get vector of best individual
    
-    TVector<double> bestVector(1, er->itsEvoPars().VectSize);
+    TVector<double> bestVector(1, ep1.VectSize);
 
     {ifstream BestIndividualFile;
     BestIndividualFile.open(er->rename_file("best.gen.dat"));
     BestIndividualFile >> bestVector;
     BestIndividualFile.close();}
     
-    TVector<double> phenotype(1, er->itsEvoPars().VectSize);
+    TVector<double> phenotype(1, ep1.VectSize);
     er->GenPhenMapping(bestVector, phenotype);
 
     bool do_json = 1;
