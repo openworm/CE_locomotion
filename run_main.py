@@ -513,6 +513,7 @@ def run(a=None, **kwargs):
         # "Worm2D/CO18": "CO18",
     }
 
+    doW2D = False
     model_name = None
     if (
         a.modelFolder == "Worm2D"
@@ -526,6 +527,7 @@ def run(a=None, **kwargs):
             )
             sys.exit(1)
         model_name = a.modelName
+        doW2D = True
     else:
         model_name = model_names[a.modelFolder]
 
@@ -734,7 +736,7 @@ def run(a=None, **kwargs):
             showPlot=False, folderName=a.outputFolderName, modelName=model_name
         )
 
-        if do_evol or doPlotEvol:
+        if doW2D and (do_evol or doPlotEvol):
             from load_data import plot_evols
 
             plot_evols(folderName=a.outputFolderName, modelName=model_name)
