@@ -519,6 +519,7 @@ def run(a=None, **kwargs):
         a.modelFolder == "Worm2D"
         or a.modelFolder == "../Worm2D"
         or a.modelFolder == "Worm2D/CO18"
+        or a.modelFolder == "../W2Dmoddev"
     ):
         if a.modelName is None:
             print(
