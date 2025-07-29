@@ -201,6 +201,12 @@ def setFolder(a):
 title_font_size = 16
 label_font_size = 14
 
+def getRowsCols(plot_num, plot_cols):
+    return int(plot_num / plot_cols), plot_num % plot_cols
+
+
+def sign(val):
+    return (val > 0) * 2.0 - 1.0
 
 def plot_evols(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
@@ -264,12 +270,20 @@ def plot_evols(a=None, **kwargs):
     plot_cols = 2
 
     evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
-    evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
+    evol_data_full_diff = sign(evol_data_full_diff)*np.log(np.abs(evol_data_full_diff))
+    evol_data_full_diff2 = (evol_data[-1] - evol_data[0])
+    evol_data_full_diff2 = sign(evol_data_full_diff2)*np.log(np.abs(evol_data_full_diff2))
+    #evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
+    evol_data_fin = sign(evol_data[-1])*np.log(np.abs(evol_data[-1]))
+    evol_data_init = sign(evol_data[0])*np.log(np.abs(evol_data[0]))
+    evol_data_list = [evol_data_full_diff, evol_data_full_diff2, evol_data_fin, evol_data_init]
+    evol_data_avs_titles = ['Relative variation', 'Variation', 'Final value', 'Initial value']
 
     if doPhenNames:
+        
         phen_names_set = sorted(set(phen_names))
         phen_name_list = []
-        evol_data_av = []
+        evol_data_avs = [[] for x in range(len(evol_data_list))]
         for phen_name in phen_names_set:
             phen_name_list.append(phen_name)
             indices = [
@@ -277,17 +291,20 @@ def plot_evols(a=None, **kwargs):
                 for ind, val in enumerate(phen_names)
                 if val == phen_name
             ]
-            evol_data_av.append(np.mean(evol_data_full_diff[indices]))
+            for av_val, val in zip(evol_data_avs, evol_data_list):
+                av_val.append(np.mean(val[indices]))
+
 
         # phen_name_list = sorted(phen_name_list_1)
         # evol_data_av = [evol_data_av_1[phen_name_list_1.index(phen_name)] for phen_name in phen_name_list]
         # evol_data_av = evol_data_av_1[sorted_indices]
 
         print(phen_name_list)
-        print(evol_data_av)
+        #print(evol_data_avs[0])
 
     evol_data_diff = evol_data[1:] - evol_data[0:-1]
-    evol_data_diff_sign = (evol_data_diff > 0) * 2.0 - 1.0
+
+    evol_data_diff_sign = sign(evol_data_diff)
 
     evol_data_diff_2 = (evol_data_diff_sign * np.log(np.abs(evol_data_diff))) - np.log(
         np.abs(evol_data[0:-1])
@@ -335,10 +352,13 @@ def plot_evols(a=None, **kwargs):
     row_num = int(plot_num / plot_cols)
     col_num = plot_num % plot_cols
     axs[row_num, col_num].set_title("Total variation", fontsize=title_font_size)
-    axs[row_num, col_num].plot(phen_label, evol_data_full_diff)
-    axs[row_num, col_num].plot(phen_label, evol_data_full_diff_abs)
+    #axs[row_num, col_num].plot(phen_label, evol_data_full_diff)
+    axs[row_num, col_num].plot(phen_label, evol_data_fin, label = 'final')
+    axs[row_num, col_num].plot(phen_label, evol_data_init, label = 'initial')
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+    axs[row_num, col_num].legend()
     fig.tight_layout()
+    
     # fig.subplots_adjust(hspace=0.5)
 
     filename = hf.rename_file("Evolution.png")
@@ -347,35 +367,25 @@ def plot_evols(a=None, **kwargs):
 
     if doPhenNames:
         plot_cols = 1
-        plot_rows = 2
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
-        plot_num = 0
-        row_num = int(plot_num / plot_cols)
-        col_num = plot_num % plot_cols
-        axs[row_num, col_num].set_title(
-            "Phen averaged variation", fontsize=title_font_size
+        plot_rows = len(evol_data_avs)
+        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 10), squeeze=False)
+        for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
+            row_num, col_num = getRowsCols(ind, plot_cols)
+            axs[row_num, col_num].set_title(title, fontsize=title_font_size
         )
-        axs[row_num, col_num].plot(range(len(evol_data_av)), evol_data_av)
-        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-        axs[row_num, col_num].set_xticks(range(len(evol_data_av)))
-        # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
-        axs[row_num, col_num].grid(axis="x")
-        plot_num = 1
-        row_num = int(plot_num / plot_cols)
-        col_num = plot_num % plot_cols
-        axs[row_num, col_num].set_title(
-            "Phen averaged variation log", fontsize=title_font_size
-        )
-        axs[row_num, col_num].plot(
-            range(len(evol_data_av)), np.log(np.abs(evol_data_av))
-        )
-        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-        axs[row_num, col_num].set_xticks(range(len(evol_data_av)))
-        axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
-        axs[row_num, col_num].grid(axis="x")
+            axs[row_num, col_num].plot(range(len(val)), val)
+            #axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+            axs[row_num, col_num].set_xticks(range(len(val)))
+            # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
+            axs[row_num, col_num].grid(axis="x")
+            axs[row_num, col_num].grid(axis="y")
 
+
+        axs[3, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
+        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+        axs[3, 0].set_xticklabels(phen_name_list, rotation="vertical")
+        
         fig.tight_layout()
         # fig.subplots_adjust(hspace=0.5)
 
