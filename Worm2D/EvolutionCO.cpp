@@ -79,8 +79,6 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 
 
 
-
-
 double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm)
 {
 

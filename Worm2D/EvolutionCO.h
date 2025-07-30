@@ -31,7 +31,6 @@ class EvolutionCO : virtual public Evolution
 {
     public:
    
-
     EvolutionCO(int argc, const char* argv[], double StepSize_, int circuitsize_):Evolution(argc,argv,
       {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 

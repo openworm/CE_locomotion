@@ -5,8 +5,8 @@ run(
     simtransient=10,
     duration=50,
     transient=50,
-    maxGens=40,
-    popSize=26,
+    maxGens=25,
+    popSize=78,
     RandSeed=1749493257,
     modelName="CO",
     modelFolder="Worm2D",
@@ -14,4 +14,5 @@ run(
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,
+    reRand=True,
 )

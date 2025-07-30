@@ -519,7 +519,7 @@ def run(a=None, **kwargs):
         a.modelFolder == "Worm2D"
         or a.modelFolder == "../Worm2D"
         or a.modelFolder == "Worm2D/CO18"
-        or a.modelFolder == "../W2Dmoddev"
+        or a.modelFolder == "W2Dmoddev/src"
     ):
         if a.modelName is None:
             print(
@@ -656,10 +656,9 @@ def run(a=None, **kwargs):
             sim_defaults.append(sim_extra_parameters[parameter_key])
             cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
-
     doPlotEvol = False
-    if hasattr(a, 'doPlotEvol'):
-        doPlotEvol = getattr(a, 'doPlotEvol')
+    if hasattr(a, "doPlotEvol"):
+        doPlotEvol = getattr(a, "doPlotEvol")
 
     same_vals = True
     for par, arg, default in zip(sim_pars, sim_args, sim_defaults):

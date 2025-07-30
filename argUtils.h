@@ -59,7 +59,12 @@ bool output;
 
 };
 
+class SuppliedArgsCO : public SuppliedArgs
+{
+public:
+SuppliedArgsCO();
 
+};
 
 
 

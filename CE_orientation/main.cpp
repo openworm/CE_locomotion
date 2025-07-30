@@ -27,7 +27,7 @@ const double TauMax = HST;
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;
 
-SuppliedArgs supArgs1;
+SuppliedArgsCO supArgs1;
 
 
 // Global variables
@@ -353,8 +353,10 @@ int main (int argc, const char* argv[])
 	s.SetSearchResultsDisplayFunction(ResultsDisplay);
 	s.SetSelectionMode(RANK_BASED);			//{FITNESS_PROPORTIONATE,RANK_BASED}
 	s.SetReproductionMode(GENETIC_ALGORITHM);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
-	s.SetPopulationSize(26); //96
-	s.SetMaxGenerations(40); //100
+	//s.SetPopulationSize(26); //96
+	s.SetPopulationSize(supArgs1.pop_size); //96
+	//s.SetMaxGenerations(40); //100
+	s.SetMaxGenerations(supArgs1.max_gens);
 	s.SetMutationVariance(0.05);
 	s.SetCrossoverProbability(0.5);
 	s.SetCrossoverMode(UNIFORM);			//{UNIFORM, TWO_POINT}

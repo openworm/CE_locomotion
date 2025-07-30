@@ -41,6 +41,14 @@ SuppliedArgs2021::SuppliedArgs2021():SuppliedArgs()
   output = 0;
 }
 
+SuppliedArgsCO::SuppliedArgsCO():SuppliedArgs()
+{
+  pop_size = 26;
+  max_gens = 40;
+}
+
+
+
 doubIntParamsHead SuppliedArgs::getParams()
 {
   doubIntParamsHead var1;
