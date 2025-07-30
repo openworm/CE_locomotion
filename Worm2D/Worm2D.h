@@ -229,6 +229,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     void writeData();
 
+    bool W2Dmparscalled, W2Dminitcalled;
 
 };
 

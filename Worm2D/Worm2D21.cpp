@@ -18,13 +18,12 @@ void Worm2D21m::setPhenoNames()
 }
 
 
-Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), 0 , true)
+Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0 , true)
 {
 
     cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
-    if (muscForWDconst) m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    cout << "2 Worm2D21m const "<< muscForWDconst << endl;
+    if (muscForWDconst) {m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
+    cout << "muscForWDconst set"<< muscForWDconst << endl;}
 
 // Interneuron inputs (AVB)
 wAVB_DB = 1;
@@ -40,8 +39,8 @@ AVB = 0;
 }
 
 
-Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},new c302ForW2D(), new Muscles),
+Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
   
    // NMJ Weight
@@ -99,7 +98,7 @@ void Worm2D21m::initForSimulation(RandomState &rs)
 void Worm2D21m::InitializeState(RandomState &rs)
 {    
     cout << "Worm2D21m init state" << endl;
-    //Worm2Dm::InitializeState(rs);
+    Worm2Dm::InitializeState(rs);
     for (int i = 1; i <= par1.N_size; i++)
     n_ptr->SetNeuronExternalInput(i,0); //adam set all initial inputs to zero
     return;    
@@ -319,16 +318,20 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
     }
 } */
 
+
+void Worm2D21m::addParsToJson(json & j){
+        Worm2Dm::addParsToJson(j);
+        
+    }
+
+
 void Worm2D21::addParsToJson(json & j){
         Worm2D21m::addParsToJson(j);
         Worm2D::addParsToJson(j); 
     }
 
-void Worm2D21m::addParsToJson(json & j){
-        //Worm2Dm::addParsToJson(j);
-        
-    }
-
+//// 2Dm -> 2D  -> 2D21
+///  2Dm -> 2D21m -> 2D21
 
 
 void Worm2D21m::DumpParams(ofstream &ofs){ofs << "Worm2D21m parameters" << endl;}

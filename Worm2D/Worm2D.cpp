@@ -102,10 +102,10 @@ par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 muscForWDconst(mfwc){}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-Worm2Dbase(par1_,n_ptr_,m_ptr_){}
+Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc){}
+Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
 m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
@@ -135,15 +135,15 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 }
 
 
-
-
-
 void Worm2Dm::InitializeState(RandomState &rs)
 {
+    //if (W2Dminitcalled) return;
     cout << "Worm2Dm init state" << endl;
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
-    
+
+    //W2Dminitcalled = true;
+
     return;
 }
 
@@ -512,6 +512,7 @@ void Worm2Dbase::addParsToJson(json & j)
 
 void Worm2Dm::addParsToJson(json & j)
 {  
+    if (W2Dmparscalled) return;
    
     Worm2Dbody::addParsToJson(j);
     Worm2Dbase::addParsToJson(j);
@@ -520,6 +521,7 @@ void Worm2Dm::addParsToJson(json & j)
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
 
+    W2Dmparscalled = true;
 }
 
 

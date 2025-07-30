@@ -189,6 +189,7 @@ int main (int argc, const char* argv[])
 
     double simduration = 60;
     double simtransient = 50;
+
     if (model_name == "CO") {
 
         //simduration = 10;
@@ -204,8 +205,7 @@ int main (int argc, const char* argv[])
     }
     
 
-    w->initForSimulation(rs);
-    w->setStepSize(er->itsEvoPars().StepSize);
+    
 
 
     simPars sp1 = {er->itsEvoPars().directoryName,
@@ -214,7 +214,8 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     
     
-
+    w->initForSimulation(rs);
+    w->setStepSize(er->itsEvoPars().StepSize);
     w->setDataskips(er->itsEvoPars().skip_steps);
     w->setPrefix("sim");
     w->InitializeData(er->itsEvoPars().directoryName);
@@ -252,10 +253,11 @@ int main (int argc, const char* argv[])
 
     }
 
-    //w->setBasename(er->itsEvoPars().directoryName);
+    
     w->setDataskips(er->itsEvoPars().skip_steps);
     w->InitializeData(er->itsEvoPars().directoryName);
-    //w->dataReset();
+    w->setStepSize(er->itsEvoPars().StepSize);
+    
     write_json(er,w, "worm_data_nml.json");
 
     {RandomState rs;
@@ -264,12 +266,21 @@ int main (int argc, const char* argv[])
 
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
+
     w->InitializeState(rs);
     w->initForSimulation(rs);
+
+    
+    //w->setDataskips(er->itsEvoPars().skip_steps);
+    w->setPrefix("sim");
+    //w->InitializeData(er->itsEvoPars().directoryName);
+
     simPars sp1 = {er->itsEvoPars().directoryName,
         //er->itsEvoPars().skip_steps, 
         60, 50, er->itsEvoPars().StepSize};
     Simulation s1(sp1);
+
+
     s1.runSimulation(*w);}
 
     delete w;
