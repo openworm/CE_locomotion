@@ -75,8 +75,8 @@ def getCellIdDicts():
         import sys
 
         print("cell_Ids.json not found")
-
         sys.exit()
+
     NSIds = cellIdDict["Nervous System"]
     if "Ventral Muscles" in cellIdDict:
         VMIds = cellIdDict["Ventral Muscles"]
@@ -406,6 +406,16 @@ def makeCellXml(network_json_data, cellW2D_filename):
             f.write(val)
             f.write("\n")
         f.write("</Lems>")
+
+
+def deleteFiles(files_to_delete):
+    for file_to_delete in files_to_delete:
+        deleteFile(file_to_delete)
+
+
+def deleteFile(file_to_delete):
+    if os.path.exists(file_to_delete):
+        os.remove(file_to_delete)
 
 
 def makeMuscCellXml(network_json_data, cellX_filename, cell_names):

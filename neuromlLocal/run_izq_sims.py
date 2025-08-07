@@ -42,14 +42,16 @@ out_path_list_nml_musc = []
 # path = inputFolderBase
 # out_path = outFolderBase
 dir_list = sorted(os.listdir(inputFolderBase))
-# dir_list = [dir_list[0]]
+# dir_list = dir_list[0:3]
 path_list += [inputFolderBase + "/" + dir for dir in dir_list]
 out_path_list += [outFolderBase + "/" + dir for dir in dir_list]
 out_path_list_nml += [outFolderBase_nml + "/" + dir for dir in dir_list]
 out_path_list_nml_musc += [outFolderBase_nml_musc + "/" + dir for dir in dir_list]
 
-for input_folder, output_folder, output_folder_nml, output_folder_nml_musc in zip(
-    path_list, out_path_list, out_path_list_nml, out_path_list_nml_musc
+
+doMuscles = False
+for input_folder, output_folder, output_folder_nml in zip(
+    path_list, out_path_list, out_path_list_nml
 ):
     print(output_folder)
     run(
@@ -63,7 +65,8 @@ for input_folder, output_folder, output_folder_nml, output_folder_nml_musc in zi
         transient=transient,
         RandSeed=853982,
     )
-    # doMuscles = False
+
+    print(output_folder_nml)
     regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml,
@@ -78,7 +81,10 @@ for input_folder, output_folder, output_folder_nml, output_folder_nml_musc in zi
         transient=transient,
         RandSeed=853982,
     )
-    """ doMuscles = True
+
+doMuscles = True
+for output_folder, output_folder_nml_musc in zip(out_path_list, out_path_list_nml_musc):
+    print(output_folder_nml_musc)
     regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml_musc,
@@ -92,4 +98,4 @@ for input_folder, output_folder, output_folder_nml, output_folder_nml_musc in zi
         duration=duration,
         transient=transient,
         RandSeed=853982,
-    ) """
+    )

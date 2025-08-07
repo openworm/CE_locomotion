@@ -2,9 +2,12 @@ import subprocess
 import argparse
 import os
 import sys
+
 # import helper_funcs as hf
 # from importlib import import_module
-
+import shutil
+import glob
+import pathlib
 
 # from pyneuroml.utils.cli import build_namespace
 import random
@@ -453,10 +456,6 @@ def run(a=None, **kwargs):
         sys.exit(1)
 
     if a.inputFolderName is not None and a.inputFolderName != a.outputFolderName:
-        import shutil
-        import glob
-        import pathlib
-
         if hasattr(a, "addPrefix"):
             prefix = getattr(a, "addPrefix") + "_"
         else:
@@ -745,6 +744,24 @@ def run(a=None, **kwargs):
         reload_single_run(
             showPlot=False, folderName=a.outputFolderName, modelName="RS18"
         )
+
+    if do_nml:
+        if a.inputFolderName is not None and a.inputFolderName != a.outputFolderName:
+            files_sub = [".xml", ".nml"]
+            files_pre = ["Worm2DNet", "LEMS", "cell_Ids.json"]
+
+        input_filenames = []
+        for file in files_sub:
+            input_filenames += glob.glob(a.inputFolderName + "/*" + file)
+        for file in files_pre:
+            input_filenames += glob.glob(a.inputFolderName + "/" + file + "*")
+
+            # print(input_filenames)
+        for file1 in input_filenames:
+            filename1 = pathlib.Path(file1).name
+            input_path = a.inputFolderName + "/" + filename1
+            if os.path.isfile(input_path):
+                shutil.move(input_path, a.outputFolderName + "/" + filename1)
 
 
 if __name__ == "__main__":

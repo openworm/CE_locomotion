@@ -5,6 +5,7 @@ through libNeuroML, save it as XML and validate it
 
 """
 
+import glob
 import os
 import shutil
 import neuroml.writers as writers
@@ -233,13 +234,32 @@ def run(a=None, **kwargs):
             appendFile=True,
         )
 
+    input_filenames_to_delete = []
+    files_sub = [
+        ".mod",
+    ]
+    files_pre = [
+        "Worm2D",
+        "LEMS",
+    ]
+
+    for file in files_sub:
+        input_filenames_to_delete += glob.glob(this_file_dir + "/*" + file)
+    for file in files_pre:
+        input_filenames_to_delete += glob.glob(this_file_dir + "/" + file + "*")
+
+    utils.deleteFiles(input_filenames_to_delete)
+    if os.path.isdir(this_file_dir + "/x86_64"):
+        shutil.rmtree(this_file_dir + "/x86_64")
     cellW2D_filename = "cell_syn_W2D_cells.xml"
-    utils.makeCellXml(network_json_data, cellW2D_filename)
+    cellW2D_filepath = this_file_dir + "/" + cellW2D_filename
+    utils.makeCellXml(network_json_data, cellW2D_filepath)
 
     if doMuscles:
         muscX_filename = "musc_X_cells.xml"
+        muscX_filepath = this_file_dir + "/" + muscX_filename
         utils.makeMuscCellXml(
-            network_json_data, muscX_filename, vNMJ_cellnames + dNMJ_cellnames
+            network_json_data, muscX_filepath, vNMJ_cellnames + dNMJ_cellnames
         )
 
     # copy from current working directory to neuromLocal and output folder
@@ -253,8 +273,11 @@ def run(a=None, **kwargs):
             shutil.copyfile(
                 this_file_dir + "/musc_X.xml", output_folder_name + "/musc_X.xml"
             )
+        shutil.copyfile(cellW2D_filepath, output_folder_name + "/" + cellW2D_filename)
+        if doMuscles:
+            shutil.copyfile(muscX_filepath, output_folder_name + "/" + muscX_filename)
 
-    if not cur_wkd_dir == this_file_dir:
+    """ if not cur_wkd_dir == this_file_dir:
         shutil.copyfile(cell_Id_file_name, "cell_Ids.json")
         shutil.copyfile(this_file_dir + "/cell_syn_W2D.xml", "cell_syn_W2D.xml")
         if doMuscles:
@@ -264,7 +287,7 @@ def run(a=None, **kwargs):
         shutil.copyfile(cellW2D_filename, output_folder_name + "/" + cellW2D_filename)
         if doMuscles:
             shutil.copyfile(muscX_filename, output_folder_name + "/" + muscX_filename)
-
+ """
     nml_doc = NeuroMLDocument(id="Worm2D")
     # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
     # nml_doc.includes.append(IncludeType(href=cellX_filename))
@@ -546,7 +569,7 @@ def run(a=None, **kwargs):
 
                 input_list.input_ws.append(input_w)
 
-    nml_file = "Worm2D.net.nml"
+    nml_file = this_file_dir + "/Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
 
     print("Written network file to: " + nml_file)
@@ -562,6 +585,7 @@ def run(a=None, **kwargs):
             "Not valid, but this is expected as it contains a newly defined ComponentType (not part of the core NeuroML elements)"
         )
 
+    # utils.deleteFiles(["Worm2DNet.gv", "Worm2DNet.gv.png", "Worm2D.net.nml"])
     nml_level = 3
     nml_engine = "circo"
     nml_level = 2

@@ -24,6 +24,11 @@ def run(a=None, **kwargs):
 
     json_file = a.folder + "/worm_data.json"
 
+    if hasattr(a, "output_folder"):
+        output_folder = getattr(a, "output_folder")
+    else:
+        output_folder = a.folder
+
     population_structures = [
         "one population",
         "individual populations",
@@ -37,13 +42,13 @@ def run(a=None, **kwargs):
     build_network_run(
         population_structure=population_structure,
         json_file=json_file,
-        output_folder=a.folder,
+        output_folder=output_folder,
         doMuscles=a.doMuscles,
     )
     create_new_lems_run(
         population_structure=population_structure,
         json_file=json_file,
-        output_folder=a.folder,
+        output_folder=output_folder,
         doMuscles=a.doMuscles,
     )
 
