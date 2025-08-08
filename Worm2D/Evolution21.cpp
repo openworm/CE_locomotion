@@ -548,6 +548,9 @@ double Evolution21::EvaluationFunction2(TVector<double> &v, RandomState &rs){
         return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
     }
 
+
+
+    
 void Evolution21::configure_p2()
 {
     

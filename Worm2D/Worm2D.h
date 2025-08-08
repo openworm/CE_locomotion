@@ -277,5 +277,3 @@ class Worm2D : virtual public Worm2Dm
  
 };
 
-
-

@@ -1,14 +1,15 @@
 #pragma once
-#include "../TSearch.h"
-#include "../VectorMatrix.h"
+//#include "../TSearch.h"
+//#include "../VectorMatrix.h"
 //#include "../argUtils.h"
 #include <functional>
 #include <iomanip> 
 #include <string.h>
-#include "jsonUtils.h"
+//#include "jsonUtils.h"
 #include "Worm2D.h"
 #include "Simulation.h"
 //#include "../utils.h"
+#include "Evolvable.h"
 
 template <typename T>
 struct Callback;
@@ -35,72 +36,11 @@ struct evoPars;
 
 }; */
 
-struct evoParsNonConst{
-string filePrefix;
-
-};
-
-struct evoPars{
-   string directoryName;
-   long randomseed;
-   TSelectionMode SelectionMode;
-   TReproductionMode ReproductionMode;
-   int PopulationSize;
-   int MaxGenerations;
-   double MutationVariance;
-   double CrossoverProbability;
-   TCrossoverMode CrossoverMode;
-   double MaxExpectedOffspring;
-   double ElitistFraction;
-   int SearchConstraint;
-   int CheckpointInterval;
-   bool ReEvaluationFlag;
-   int skip_steps;
-   // Integration parameters
-   double Duration;       //
-   double Transient;       //
-   double StepSize;
-   int N_curvs;
-   int VectSize;
-   string fileprefix;
-   
-
-
-   const doubIntParamsHead getParams() const
-   {
-       doubIntParamsHead var1;
-       var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
-       var1.parDoub.names = 
-       {"MutationVariance", "CrossoverProbability", 
-         "MaxExpectedOffspring", "ElitistFraction",
-         "Duration", "Transient", "StepSize"};
-       var1.parDoub.vals = {MutationVariance, CrossoverProbability, 
-         MaxExpectedOffspring, ElitistFraction,
-         Duration, Transient, StepSize};
-
-       var1.parInt.names = {"randomseed", "SelectionMode", "ReproductionMode", 
-         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
-         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize"};
-       var1.parInt.vals = {randomseed, SelectionMode, ReproductionMode, 
-         PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
-         ReEvaluationFlag, skip_steps, N_curvs, VectSize};
-
-       return var1;
-   }
-
-};
 
 
 const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
 
-class Evolvable
-{
-    public:
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
-    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-    virtual void writeJson(TVector<double> &) = 0;
-};
+
 
 class Evolution
 {
@@ -174,6 +114,8 @@ class Evolution
 class EvolutionFull : public Evolution
 {
 public:
+EvolutionFull(int argc, const char* argv[], shared_ptr<Evolvable> evol1_)
+:evolvable1(evol1_),Evolution(argc,argv,evol1_->getEvoPars(),evol1_->getVectSize()){}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs)
@@ -181,5 +123,6 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs)
 void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
 
 protected:
-Evolvable * evolvable1;
+shared_ptr<Evolvable> evolvable1;
+//Evolvable * evolvable1;
 };
