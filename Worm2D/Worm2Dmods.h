@@ -1,30 +1,39 @@
 #include "Worm2D.h"
 
 
+struct Worm2Doscpars
+{
+double NMJweight;
+};
+
 class Worm2Dosc : public Worm2D
 {
 
 public:
 Worm2Dosc(TVector<double> &v);
-Worm2Dosc::Worm2Dosc(const pfa & pfa_);
+Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
 const vector<string> getCellNames() {return;}
 void InitializeState(RandomState &rs);
 void initForSimulation(RandomState &) {return;}
 void DumpParams(ofstream &ofs) {return;}
-pfa getPfaFromPheno(TVector<double> &v){}
+
 
 protected:
+pfa getPfaFromPheno(TVector<double> &v){}
+Worm2Doscpars getParsFromPheno(TVector<double> &v){}
+
 vector<doubIntParamsHead> getWormParams() {return;}
 void Step1();
 const vector<string> getVMuscNames() {return;}
 const vector<string> getDMuscNames() {return;}
 
-vector<toFromWeight> makeVentralMuscleConn() {return;}
-vector<toFromWeight> makeDorsalMuscleConn() {return;}
-
+vector<toFromWeight> makeVentralMuscleConn();
+vector<toFromWeight> makeDorsalMuscleConn();
+vector<toFromWeight> makeDVMuscleConn();
 
 NSosc & n;
+const Worm2Doscpars pars1;
 
 };
 
@@ -45,11 +54,13 @@ void SetNeuronExternalInput(int i, double value) {return;}
 void EulerStep(double stepsize) {return;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
-
+const pfa & itsPfa() const {return pfa1;}
+ 
 private:
 double t;
 pfa pfa1;
 //vector<double> phase, freq, amp;
 const double pi2 = 3.14159265*2.0;
+
 
 };

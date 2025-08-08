@@ -1,19 +1,42 @@
 #include "Worm2Dmods.h"
 
-Worm2Dosc::Worm2Dosc(const pfa & pfa_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
-Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),n(dynamic_cast<NSosc&>(*n_ptr))
+Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
+Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),
+n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
 {
     setUpMuscleConn();
     n.setTime(t);
 }
 
-Worm2Dosc::Worm2Dosc(TVector<double> &v):Worm2Dosc(getPfaFromPheno(v)){}
+Worm2Dosc::Worm2Dosc(TVector<double> &v):Worm2Dosc(getPfaFromPheno(v), getParsFromPheno(v)){}
 
 void Worm2Dosc::InitializeState(RandomState &rs)
 {    
     cout << "Worm2Dosc init state" << endl;
     Worm2D::InitializeState(rs);
     return;    
+}
+
+vector<toFromWeight> Worm2Dosc::makeDVMuscleConn()
+{
+    const int nsize = n.itsPfa().size;
+    assert(nsize == 24);
+    vector<toFromWeight> vec1;
+    for (int to=1;to<=nsize;to++){
+    toFromWeight tv({to,pars1.NMJweight},to);
+    vec1.push_back(tv);}
+    return vec1;
+}
+
+
+vector<toFromWeight> Worm2Dosc::makeDorsalMuscleConn()
+{
+    return makeDVMuscleConn();
+}
+
+vector<toFromWeight> Worm2Dosc::makeVentralMuscleConn()
+{
+    return makeDVMuscleConn();
 }
 
 void Worm2Dosc::Step1()
