@@ -92,17 +92,25 @@ struct evoPars{
 };
 
 
-
 const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
 
+class Evolvable
+{
+    public:
+    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
+    virtual void writeJson(TVector<double> &) = 0;
+};
 
 class Evolution
 {
     public:
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-    virtual void RunSimulation(TVector<double> &v, RandomState &rs) = 0;
-    virtual void RunSimulation(Worm2Dbase & w, RandomState &rs) = 0;
+    virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
+    {cout << "RunSim not implemented" << endl; assert(0);}
+    virtual void RunSimulation(Worm2Dbase & w, RandomState &rs)
+    {cout << "RunSim not implemented" << endl; assert(0);}
     void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
     TVector<double> & getBestGenotype();
     TVector<double> & getBestPhenotype();
@@ -163,3 +171,15 @@ class Evolution
     int popsize;
 };
 
+class EvolutionFull : public Evolution
+{
+public:
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+{return evolvable1->GenPhenMapping(gen,phen);}
+double EvaluationFunction(TVector<double> &v, RandomState &rs)
+{return evolvable1->EvaluationFunction(v,rs);}
+void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
+
+protected:
+Evolvable * evolvable1;
+};
