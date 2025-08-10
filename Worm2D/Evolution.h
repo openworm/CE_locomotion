@@ -114,8 +114,11 @@ class Evolution
 class EvolutionFull : public Evolution
 {
 public:
-EvolutionFull(int argc, const char* argv[], shared_ptr<Evolvable> evol1_)
-:evolvable1(evol1_),Evolution(argc,argv,evol1_->getEvoPars(),evol1_->getVectSize()){}
+EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
+:evolvable1(evol1_),Evolution(argc,argv,evol1_->getEvoPars(),evol1_->getVectSize())
+{
+evolvable1->ep_ptr = &evoPars1;
+}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs)
@@ -123,6 +126,6 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs)
 void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
 
 protected:
-shared_ptr<Evolvable> evolvable1;
-//Evolvable * evolvable1;
+//shared_ptr<Evolvable> evolvable1;
+Evolvable * evolvable1;
 };

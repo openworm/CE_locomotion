@@ -2,11 +2,13 @@
 #include "Evolvable.h"
 
 struct evoPars;
-
+struct pfa;
 struct Worm2Doscpars
 {
 double NMJweight;
 };
+
+const double pi2 = 3.14159265*2.0;
 
 class Worm2Dosc : public Worm2D, public Evolvable
 {
@@ -26,8 +28,8 @@ evoPars getEvoPars();
 int getVectSize();
 
 protected:
-pfa getPfaFromPheno(TVector<double> &v){}
-Worm2Doscpars getParsFromPheno(TVector<double> &v){}
+pfa getPfaFromPheno(TVector<double> &v);
+Worm2Doscpars getParsFromPheno(TVector<double> &v);
 
 vector<doubIntParamsHead> getWormParams() {return;}
 void Step1();
@@ -36,7 +38,7 @@ const vector<string> getDMuscNames() {return;}
 
 vector<toFromWeight> makeVentralMuscleConn();
 vector<toFromWeight> makeDorsalMuscleConn();
-vector<toFromWeight> makeDVMuscleConn();
+vector<toFromWeight> makeDVMuscleConn(int offset);
 
 NSosc & n;
 const Worm2Doscpars pars1;
@@ -66,7 +68,7 @@ private:
 double t;
 pfa pfa1;
 //vector<double> phase, freq, amp;
-const double pi2 = 3.14159265*2.0;
+
 
 
 };

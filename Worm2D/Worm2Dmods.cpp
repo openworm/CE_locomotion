@@ -17,13 +17,12 @@ void Worm2Dosc::InitializeState(RandomState &rs)
     return;    
 }
 
-vector<toFromWeight> Worm2Dosc::makeDVMuscleConn()
+vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
 {
-    const int nsize = n.itsPfa().size;
-    assert(nsize == 24);
     vector<toFromWeight> vec1;
-    for (int to=1;to<=nsize;to++){
-    toFromWeight tv({to,pars1.NMJweight},to);
+    for (int to_musc=1;to_musc<=24;to_musc++){
+    int from_neuron = to_musc+offset;
+    toFromWeight tv({from_neuron,pars1.NMJweight},to_musc);
     vec1.push_back(tv);}
     return vec1;
 }
@@ -31,12 +30,12 @@ vector<toFromWeight> Worm2Dosc::makeDVMuscleConn()
 
 vector<toFromWeight> Worm2Dosc::makeDorsalMuscleConn()
 {
-    return makeDVMuscleConn();
+    return makeDVMuscleConn(0);
 }
 
 vector<toFromWeight> Worm2Dosc::makeVentralMuscleConn()
 {
-    return makeDVMuscleConn();
+    return makeDVMuscleConn(24);
 }
 
 void Worm2Dosc::Step1()
@@ -86,70 +85,61 @@ void Worm2Dosc::Step1()
    
 }
 
-NSosc::NSosc(const pfa & pfa_)
-{
-pfa1.size = pfa_.size;
-for (int i=0;i<pfa_.size;i++)
-{
-pfa1.phase.push_back(pfa_.phase[i]);
-pfa1.freq.push_back(pfa_.freq[i]);
-pfa1.amp.push_back(pfa_.amp[i]);
-}
-
-}
+NSosc::NSosc(const pfa & pfa_):pfa1(pfa_){}
 
 void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
-  // Bias
-  for (int i = 1; i <= 7; i++){
-    phen(i) = MapSearchParameter(gen(i), -BiasRange, BiasRange);
-}
-// Time Constant
-for (int i = 8; i <= 14; i++){
-    phen(i) = MapSearchParameter(gen(i), TauMin, TauMax);
-}
-// Self connections
-for (int i = 15; i <= 21; i++){
-    phen(i) = MapSearchParameter(gen(i), -SCRange, SCRange);
-}
-// Chemical synapses
-for (int i = 22; i <=30; i++){
-    phen(i) = MapSearchParameter(gen(i), -CSRange, CSRange);
-}
+    
+    const double NMJweight_top = 10;
+    const double freq_lo = 0.1;
+    const double freq_hi = 10;
+    //phases_lag
+    int i = 1;
+    phen(i) = MapSearchParameter(gen(i), 0, pi2);
+    i++;
+    phen(i) = MapSearchParameter(gen(i), 0, pi2);
+    //dv phase_offset
 
-// Gap junctions
-phen(31) = MapSearchParameter(gen(31), 0.0, ESRange);
+    //for (i = 1; i <= 48; i++)
+    //phen(i) = MapSearchParameter(gen(i), 0, pi2);
 
-// Intersegment synapse tested
-phen(40) = MapSearchParameter(gen(40), -CSRange, CSRange);  // DB to DDnext
-phen(41) = MapSearchParameter(gen(41), -CSRange, CSRange);  // VAnext to DD
-phen(42) = MapSearchParameter(gen(42), 0.0, ESRange);       // AS -- VAnext
-phen(43) = MapSearchParameter(gen(43), 0.0, ESRange);       // DA -- ASnext
-phen(44) = MapSearchParameter(gen(44), 0.0, ESRange);       // VB -- DBnext
-
-// NMJ Weight
-phen(32) = MapSearchParameter(gen(32), 0.0, NMJmax);       // AS
-phen(33) = MapSearchParameter(gen(33), 0.0, NMJmax);       // DA
-phen(34) = MapSearchParameter(gen(34), NMJmax, NMJmax);       // DB
-phen(35) = MapSearchParameter(gen(35), -NMJmax, 0.0);      // DD
-phen(36) = MapSearchParameter(gen(36), -NMJmax, 0.0);      // VD
-phen(37) = MapSearchParameter(gen(37), NMJmax, NMJmax);      // VB
-phen(38) = MapSearchParameter(gen(38), 0.0, NMJmax);      // VA
-
-phen(39) = MapSearchParameter(gen(39), 0.2, 1.0);       // Used to be 0.4/0.6 XXX NMJ_Gain Mapping
+    //weight
+    i++;
+    phen(i) = MapSearchParameter(gen(i), 0, NMJweight_top);
+    i++;
+    phen(i) = MapSearchParameter(gen(i), freq_lo, freq_hi);
 
 }
+
+void Worm2Dosc::writeJson(TVector<double> &){}
+
+evoPars Worm2Dosc::getEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 4};}
+
+int Worm2Dosc::getVectSize(){return 4;}
+
 
 
 double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
 
-    const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
-    const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
-    const double & Transient = evoPars1.Transient;
-    const int & skip_steps = evoPars1.skip_steps;
+  
 
+
+    const double OSCT = 0.25 * ep_ptr->Duration; // Cap for oscillation evaluation
+    const double agarfreq = 0.44;
+    const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
+    const double    BBCfit = AvgSpeed*ep_ptr->Duration;
+
+    const double & Duration = ep_ptr->Duration;
+    const int & VectSize = ep_ptr->VectSize;
+    const double & StepSize = ep_ptr->StepSize;
+    const int & N_curvs = ep_ptr->N_curvs;
+    const double & Transient = ep_ptr->Transient;
+    const int & skip_steps = ep_ptr->skip_steps;
+
+    int dbunit = 1;
+    int vbunit = 25;
     
         // Fitness
         double fitness_tr = 0.0;
@@ -175,47 +165,47 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
         TVector<double> phenotype(1, VectSize);
         GenPhenMapping(v, phenotype);
         
-        Worm21 w(phenotype);
+        //Worm21 w(phenotype);
         
-        w.InitializeState(rs);
+        InitializeState(rs);
         
         // Transient XXX
-        w.SetAVB(0.0);
-        w.SetAVA(0.0);
+        //SetAVB(0.0);
+        //SetAVA(0.0);
         
         for (double t = 0.0; t <= Transient; t += StepSize){
-            w.Step(StepSize);
+            Step(StepSize);
         }    
         
-        DBp = w.n.NeuronOutput(10);
-        VBp = w.n.NeuronOutput(13);
+        DBp = n.NeuronOutput(10);
+        VBp = n.NeuronOutput(13);
     
-        w.Step(StepSize); // determine sign of derivative
+        Step(StepSize); // determine sign of derivative
     
-        dDB = w.n.NeuronOutput(10) - DBp;
-        dVB = w.n.NeuronOutput(13) - VBp;
+        dDB = n.NeuronOutput(10) - DBp;
+        dVB = n.NeuronOutput(13) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n.NeuronOutput(10);
-        VBp = w.n.NeuronOutput(13);
+        DBp = n.NeuronOutput(10);
+        VBp = n.NeuronOutput(13);
         
-        double xt = w.CoMx(), xtp;
-        double yt = w.CoMy(), ytp;
+        double xt = CoMx(), xtp;
+        double yt = CoMy(), ytp;
     
         // Time loop
         for (double t = 0.0; t <= Duration; t += StepSize) {
             // Step simulation
-            w.Step(StepSize);
+            Step(StepSize);
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = w.n.NeuronOutput(10) - DBp;
-            dVB = w.n.NeuronOutput(13) - VBp;
+            dDB = n.NeuronOutput(10) - DBp;
+            dVB = n.NeuronOutput(13) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - w.n.NeuronOutput(10));
-            oscVB += abs(VBp - w.n.NeuronOutput(13));
+            oscDB += abs(DBp - n.NeuronOutput(10));
+            oscVB += abs(VBp - n.NeuronOutput(13));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -230,13 +220,13 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = w.n.NeuronOutput(10);
-            VBp = w.n.NeuronOutput(13);
+            DBp = n.NeuronOutput(10);
+            VBp = n.NeuronOutput(13);
             
             //// Locomotion
             // Current and past centroid position
             xtp = xt; ytp = yt;
-            xt = w.CoMx(); yt = w.CoMy();
+            xt = CoMx(); yt = CoMy();
             
             // Integration error check
             if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
@@ -244,7 +234,7 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
             }
             
             // Fitness
-            bodyorientation = w.Orientation();                  // Orientation of the body position
+            bodyorientation = Orientation();                  // Orientation of the body position
             movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
@@ -267,13 +257,7 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
     
    
         return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
-}
+    }
 
 
 
-
-void Worm2Dosc::writeJson(TVector<double> &){}
-evoPars Worm2Dosc::getEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44};}
-int Worm2Dosc::getVectSize(){return 44;}

@@ -62,11 +62,14 @@ struct evoPars{
 
 class Evolvable
 {
-    public:
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
-    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-    virtual void writeJson(TVector<double> &) = 0;
-    virtual evoPars getEvoPars() = 0;
-    virtual int getVectSize() = 0;
-    
+  public:
+  virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+  virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
+  virtual void writeJson(TVector<double> &) = 0;
+  virtual evoPars getEvoPars() = 0;
+  virtual int getVectSize() = 0;
+
+  friend class EvolutionFull;
+  protected:
+  const evoPars * ep_ptr = 0;
 };
