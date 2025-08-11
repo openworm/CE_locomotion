@@ -110,6 +110,7 @@ plot_formats["CO18"]["do_body_plot"] = False
 plot_formats["CO18"]["do_curv_plot"] = False
 
 plot_formats["CO18Full"] = plot_formats["CO18"]
+plot_formats["W2Dosc"] = plot_formats["Net21"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 

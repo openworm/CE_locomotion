@@ -6,6 +6,36 @@ Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
+
+pfa Worm2Dosc::getPfaFromFile(const string & filename_)
+{
+    ifstream ifs;
+    ifs.open(filename_);
+    TVector<double> bestVector(1, getVectSize());
+    ifs >> bestVector;
+    ifs.close();
+
+    return getPfaFromGeno(bestVector);
+
+}
+
+
+Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
+{
+    ifstream ifs;
+    ifs.open(filename_);
+    TVector<double> bestVector(1, getVectSize());
+    ifs >> bestVector;
+    ifs.close();
+
+    return getParsFromGeno(bestVector);
+
+
+}
+
+
+
+
 Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
 Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),
 n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
@@ -14,6 +44,7 @@ n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
     n.setTime(t);
 }
 
+Worm2Dosc::Worm2Dosc(const string & filename_):Worm2Dosc(getPfaFromFile(filename_), getParsFromFile(filename_)){}
 Worm2Dosc::Worm2Dosc(TVector<double> & geno_):Worm2Dosc(getPfaFromGeno(geno_), getParsFromGeno(geno_)){}
 
 void Worm2Dosc::InitializeState(RandomState &rs)
@@ -119,7 +150,7 @@ void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 void Worm2Dosc::writeJson(TVector<double> &){}
 
-evoPars Worm2Dosc::getEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+evoPars Worm2Dosc::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 4};}
 
@@ -129,8 +160,8 @@ pfa Worm2Dosc::getPfaFromPheno(TVector<double> &phen)
 {
 pfa pfa1;
 pfa1.size = 48;
-for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*i);
-for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*i + phen[2]);
+for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*(i-1));
+for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
 for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
 return pfa1;
 }
@@ -143,12 +174,25 @@ Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &phen)
 }
 
 
-pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v){}
-Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v){}
+pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v)
+{
+ TVector<double> phenotype(1, getVectSize());
+ GenPhenMapping(v, phenotype);
+ return getPfaFromPheno(phenotype);
+}
+
+Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v)
+{
+TVector<double> phenotype(1, getVectSize());
+ GenPhenMapping(v, phenotype);
+ return getParsFromPheno(phenotype);
+}
 
 double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
 
   
+    cout << "Worm2Dosc::EvaluationFunction" << endl;
+
     const double OSCT = 0.25 * ep_ptr->Duration; // Cap for oscillation evaluation
     const double agarfreq = 0.44;
     const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds

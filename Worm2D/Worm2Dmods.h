@@ -47,6 +47,7 @@ class Worm2Dosc : public Worm2D, public Evolvable
 {
 
 public:
+Worm2Dosc(const string & filename_);
 Worm2Dosc();
 Worm2Dosc(TVector<double> &v);
 Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
@@ -58,7 +59,7 @@ void DumpParams(ofstream &ofs) {return;}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 void writeJson(TVector<double> &);
-evoPars getEvoPars();
+evoPars getDefaultEvoPars();
 int getVectSize();
 
 protected:
@@ -66,6 +67,8 @@ pfa getPfaFromPheno(TVector<double> &v);
 Worm2Doscpars getParsFromPheno(TVector<double> &v);
 pfa getPfaFromGeno(TVector<double> &v);
 Worm2Doscpars getParsFromGeno(TVector<double> &v);
+pfa getPfaFromFile(const string & filename_);
+Worm2Doscpars getParsFromFile(const string & filename_);
 
 vector<doubIntParamsHead> getWormParams() {
     vector<doubIntParamsHead> parvec;

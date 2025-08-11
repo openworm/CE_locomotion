@@ -531,6 +531,12 @@ def run(a=None, **kwargs):
     else:
         model_name = model_names[a.modelFolder]
 
+    mainProcessName = a.mainProcessName
+    if a.modelName == "W2Dosc":
+        assert(a.modelFolder == "Worm2D")
+        mainProcessName = "main_osc"
+
+
     defaults_bases = {
         "CE": defaults_base_celoc,
         "RS18": defaults_base_2018,
@@ -538,6 +544,7 @@ def run(a=None, **kwargs):
         "CO": defaults_base_CO,
         "CO18": defaults_base_CO18,
         "CO18Full": defaults_base_CO18,
+        "W2Dosc" : defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
@@ -548,7 +555,8 @@ def run(a=None, **kwargs):
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
 
-    main_cmd = a.modelFolder + "/" + a.mainProcessName
+
+    main_cmd = a.modelFolder + "/" + mainProcessName
     cmd = [main_cmd]
 
     evol_pars = [

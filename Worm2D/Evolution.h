@@ -115,7 +115,7 @@ class EvolutionFull : public Evolution
 {
 public:
 EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
-:evolvable1(evol1_),Evolution(argc,argv,evol1_->getEvoPars(),evol1_->getVectSize())
+:evolvable1(evol1_),Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize())
 {
 evolvable1->ep_ptr = &evoPars1;
 }

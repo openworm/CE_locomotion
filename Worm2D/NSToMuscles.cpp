@@ -45,7 +45,7 @@ void NSToMuscles::setWeight(int from, int to, double value)
     for (int i = 1; i <= numConns(to); i++)
         if (weights[to][i].from == from) {
             weights[to][i].weight = value;
-            cout << "weight reset in NSToMuscles" << endl;
+            //cout << "weight reset in NSToMuscles" << endl;
             return;
         };
     // Otherwise, make sure we have room for an additional connection ...
