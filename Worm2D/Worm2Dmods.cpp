@@ -1,5 +1,11 @@
 #include "Worm2Dmods.h"
 
+
+Worm2Dosc::Worm2Dosc():Worm2D({48,24,0.1,1,48},0),
+Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
+n(dynamic_cast<NSosc&>(*n_ptr)){}
+
+
 Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
 Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),
 n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
@@ -8,7 +14,7 @@ n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
     n.setTime(t);
 }
 
-Worm2Dosc::Worm2Dosc(TVector<double> &v):Worm2Dosc(getPfaFromPheno(v), getParsFromPheno(v)){}
+Worm2Dosc::Worm2Dosc(TVector<double> & geno_):Worm2Dosc(getPfaFromGeno(geno_), getParsFromGeno(geno_)){}
 
 void Worm2Dosc::InitializeState(RandomState &rs)
 {    
@@ -119,13 +125,21 @@ evoPars Worm2Dosc::getEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM,
 
 int Worm2Dosc::getVectSize(){return 4;}
 
+pfa Worm2Dosc::getPfaFromPheno(TVector<double> &phen)
+{
+pfa pfa1;
+pfa1.size = 48;
+for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[0]);
 
+
+}
+Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &v){}
+pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v){}
+Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v){}
 
 double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
 
   
-
-
     const double OSCT = 0.25 * ep_ptr->Duration; // Cap for oscillation evaluation
     const double agarfreq = 0.44;
     const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
@@ -140,7 +154,12 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
 
     int dbunit = 1;
     int vbunit = 25;
-    
+
+    getPfaFromPheno(v);
+    pars1 = getParsFromPheno(v);
+
+    setUpMuscleConn();
+
         // Fitness
         double fitness_tr = 0.0;
         double bodyorientation, anglediff;
@@ -177,17 +196,17 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
             Step(StepSize);
         }    
         
-        DBp = n.NeuronOutput(10);
-        VBp = n.NeuronOutput(13);
+        DBp = n.NeuronOutput(dbunit);
+        VBp = n.NeuronOutput(vbunit);
     
         Step(StepSize); // determine sign of derivative
     
-        dDB = n.NeuronOutput(10) - DBp;
-        dVB = n.NeuronOutput(13) - VBp;
+        dDB = n.NeuronOutput(dbunit) - DBp;
+        dVB = n.NeuronOutput(vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = n.NeuronOutput(10);
-        VBp = n.NeuronOutput(13);
+        DBp = n.NeuronOutput(dbunit);
+        VBp = n.NeuronOutput(vbunit);
         
         double xt = CoMx(), xtp;
         double yt = CoMy(), ytp;
@@ -199,13 +218,13 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = n.NeuronOutput(10) - DBp;
-            dVB = n.NeuronOutput(13) - VBp;
+            dDB = n.NeuronOutput(dbunit) - DBp;
+            dVB = n.NeuronOutput(vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - n.NeuronOutput(10));
-            oscVB += abs(VBp - n.NeuronOutput(13));
+            oscDB += abs(DBp - n.NeuronOutput(dbunit));
+            oscVB += abs(VBp - n.NeuronOutput(vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -220,8 +239,8 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = n.NeuronOutput(10);
-            VBp = n.NeuronOutput(13);
+            DBp = n.NeuronOutput(dbunit);
+            VBp = n.NeuronOutput(vbunit);
             
             //// Locomotion
             // Current and past centroid position

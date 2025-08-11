@@ -14,6 +14,7 @@ class Worm2Dosc : public Worm2D, public Evolvable
 {
 
 public:
+Worm2Dosc();
 Worm2Dosc(TVector<double> &v);
 Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
@@ -30,6 +31,8 @@ int getVectSize();
 protected:
 pfa getPfaFromPheno(TVector<double> &v);
 Worm2Doscpars getParsFromPheno(TVector<double> &v);
+pfa getPfaFromGeno(TVector<double> &v);
+Worm2Doscpars getParsFromGeno(TVector<double> &v);
 
 vector<doubIntParamsHead> getWormParams() {return;}
 void Step1();
@@ -41,7 +44,7 @@ vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeDVMuscleConn(int offset);
 
 NSosc & n;
-const Worm2Doscpars pars1;
+Worm2Doscpars pars1;
 
 };
 
@@ -55,6 +58,7 @@ class NSosc : public NSForW2D {
 public:
 
 NSosc(const pfa & pfa_);
+NSosc(){}
 
 double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
 double NeuronState(int i) {return 0;}
