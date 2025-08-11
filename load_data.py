@@ -111,6 +111,7 @@ plot_formats["CO18"]["do_curv_plot"] = False
 
 plot_formats["CO18Full"] = plot_formats["CO18"]
 plot_formats["W2Dosc"] = plot_formats["Net21"]
+plot_formats["W2Dosc"]["data_sizes"] = [48, 48]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
@@ -612,7 +613,7 @@ def reload_single_run(a=None, **kwargs):
 
     from F2_fig_behavior import make_fig
 
-    if a.modelName != "CO":
+    if not (a.modelName == "CO" or a.modelName == "W2Dosc"):
         make_fig(plot_format=plot_format)
 
 
