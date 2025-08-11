@@ -55,6 +55,8 @@ Worm2D21.o: Worm2D21.cpp Worm2D21.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -std=c++11  -flto Worm2D21.cpp 
 Worm21.o: Worm21.cpp Worm21.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm21.cpp
+Worm2Dmods.o: Worm2Dmods.cpp Worm2Dmods.h 
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm2Dmods.cpp	
 Segment21.o: Segment21.cpp Segment21.h
 	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Segment21.cpp	
 WormBody.o: ../WormBody.cpp ../WormBody.h
@@ -75,5 +77,9 @@ WormAgent.o: WormAgent.cpp WormAgent.h #TSearchCO.h CTRNN.h #VectorMatrixCO.h
 	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormAgent.cpp	
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
+main_osc.o: main_osc.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main_osc.cpp
+main_osc: main_osc.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main_osc main_osc.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
 clean:
 	rm -f *.o main

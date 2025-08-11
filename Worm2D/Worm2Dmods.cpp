@@ -108,12 +108,12 @@ void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
     //for (i = 1; i <= 48; i++)
     //phen(i) = MapSearchParameter(gen(i), 0, pi2);
-
+    i++;
+    phen(i) = MapSearchParameter(gen(i), freq_lo, freq_hi);
     //weight
     i++;
     phen(i) = MapSearchParameter(gen(i), 0, NMJweight_top);
-    i++;
-    phen(i) = MapSearchParameter(gen(i), freq_lo, freq_hi);
+   
 
 }
 
@@ -129,15 +129,24 @@ pfa Worm2Dosc::getPfaFromPheno(TVector<double> &phen)
 {
 pfa pfa1;
 pfa1.size = 48;
-for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[0]);
-
-
+for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*i);
+for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*i + phen[2]);
+for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
+return pfa1;
 }
-Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &v){}
+
+Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &phen)
+{
+    Worm2Doscpars w1;
+    w1.NMJweight = phen[4];
+    return w1;
+}
+
+
 pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v){}
 Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v){}
 
-double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
+double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
 
   
     const double OSCT = 0.25 * ep_ptr->Duration; // Cap for oscillation evaluation
@@ -154,9 +163,10 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
 
     int dbunit = 1;
     int vbunit = 25;
-
-    getPfaFromPheno(v);
-    pars1 = getParsFromPheno(v);
+    TVector<double> phenotype(1, VectSize);
+    GenPhenMapping(geno, phenotype);
+    n.pfa1 = getPfaFromPheno(phenotype);
+    pars1 = getParsFromPheno(phenotype);
 
     setUpMuscleConn();
 
@@ -181,8 +191,7 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &v, RandomState &rs){
     
         
         // Genotype-Phenotype Mapping
-        TVector<double> phenotype(1, VectSize);
-        GenPhenMapping(v, phenotype);
+        
         
         //Worm21 w(phenotype);
         

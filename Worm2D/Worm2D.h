@@ -7,6 +7,7 @@
 //#include <nlohmann/json.hpp>
 #include "jsonUtils.h"
 #include "../neuromlLocal/NSBaseForW2D.h"
+#include "Evolvable.h"
 
 //datawriter->worm2dbase (nervous system and muscle pointers)
 //datawriter->worm2dbody (just body plus functions)

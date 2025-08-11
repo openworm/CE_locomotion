@@ -9,7 +9,7 @@
 #include "Worm2D.h"
 #include "Simulation.h"
 //#include "../utils.h"
-#include "Evolvable.h"
+//#include "Evolvable.h"
 
 template <typename T>
 struct Callback;
@@ -26,7 +26,7 @@ struct Callback<Ret(Params...)> {
 template <typename Ret, typename... Params>
 std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
-struct evoPars;
+//struct evoPars;
 //struct simPars;
 
 /* struct simPars{
@@ -95,7 +95,7 @@ class Evolution
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
 
-    virtual void addExtraParsToJson(json & j) = 0;
+    virtual void addExtraParsToJson(json & j) {return;}
     TSearch* const s; 
     const evoPars evoPars1;
     const simPars simPars1;
