@@ -119,6 +119,7 @@ m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_m
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
     cout << "Worm2Dbody init state" << endl;
+    InitializeBodyConstants();
     b.InitializeBodyState();
     //writeDataCheck();
     return;
