@@ -88,6 +88,8 @@ vector<toFromWeight> makeDVMuscleConn(int offset);
 
 NSosc & n;
 Worm2Doscpars pars1;
+const int dbunit = 1;
+const int vbunit = 25;
 
 };
 
@@ -105,6 +107,8 @@ vector<toFromWeight> makeVentralMuscleConn();
 int getVectSize() {return 3;}
 pfa getPfaFromPheno(TVector<double> &phen);
 Worm2Doscpars getParsFromPheno(TVector<double> &phen);
+const int dbunit = 1;
+const int vbunit = 1;
 
 };
 

@@ -262,8 +262,7 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
     const double & Transient = ep_ptr->Transient;
     const int & skip_steps = ep_ptr->skip_steps;
 
-    int dbunit = 1;
-    int vbunit = 25;
+   
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(geno, phenotype);
     n.pfa1 = getPfaFromPheno(phenotype);
