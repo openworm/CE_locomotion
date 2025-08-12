@@ -13,7 +13,7 @@ int main (int argc, const char* argv[])
     return 0;
     }
 
-    Worm2Dosc * w1;
+    Evolvable * w1;
     if (model_name == "W2Dosc") w1 = new Worm2Dosc();
     EvolutionFull evo(argc,argv,w1);
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
