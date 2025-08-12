@@ -1,11 +1,14 @@
 #include "Worm2Dmods.h"
 
 
-Worm2Dosc::Worm2Dosc():Worm2D({48,24,0.1,1,48},0),
-Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
+Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
+
+Worm2Dosc::Worm2Dosc(int size_):Worm2D({size_,24,0.1,1,size_},0),
+Worm2Dm({size_,24,0.1,1,size_}, new NSosc(), new Muscles),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
-
+Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),
+Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles){}
 
 pfa Worm2Dosc::getPfaFromFile(const string & filename_)
 {
@@ -32,8 +35,6 @@ Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
 
 
 }
-
-
 
 
 Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
@@ -64,6 +65,25 @@ vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
     return vec1;
 }
 
+vector<toFromWeight> Worm2DoscHalf::makeDVMuscleConn(double weig_amp)
+{
+    vector<toFromWeight> vec1;
+    for (int to_musc=1;to_musc<=24;to_musc++){
+    int from_neuron = to_musc;
+    toFromWeight tv({from_neuron,pars1.NMJweight*weig_amp},to_musc);
+    vec1.push_back(tv);}
+    return vec1;
+}
+
+vector<toFromWeight> Worm2DoscHalf::makeDorsalMuscleConn()
+{
+    return makeDVMuscleConn(1);
+}
+
+vector<toFromWeight> Worm2DoscHalf::makeVentralMuscleConn()
+{
+    return makeDVMuscleConn(-1);
+}
 
 vector<toFromWeight> Worm2Dosc::makeDorsalMuscleConn()
 {
@@ -148,11 +168,32 @@ void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 }
 
+void Worm2DoscHalf::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+    
+    const double NMJweight_top = 10;
+    const double freq_lo = 0.1;
+    const double freq_hi = 10;
+    //phases_lag
+    int i = 1;
+    phen(i) = MapSearchParameter(gen(i), 0, pi2);
+   
+    //for (i = 1; i <= 48; i++)
+    //phen(i) = MapSearchParameter(gen(i), 0, pi2);
+    i++;
+    phen(i) = MapSearchParameter(gen(i), freq_lo, freq_hi);
+    //weight
+    i++;
+    phen(i) = MapSearchParameter(gen(i), 0, NMJweight_top);
+   
+
+}
+
 void Worm2Dosc::writeJson(TVector<double> &){}
 
 evoPars Worm2Dosc::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 4};}
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};}
 
 int Worm2Dosc::getVectSize(){return 4;}
 
@@ -164,6 +205,22 @@ for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*(i-1));
 for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
 for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
 return pfa1;
+}
+
+pfa Worm2DoscHalf::getPfaFromPheno(TVector<double> &phen)
+{
+pfa pfa1;
+pfa1.size = 24;
+for (int i = 1; i<=24; i++) {pfa1.phase.push_back(phen[1]*(i-1));
+pfa1.freq.push_back(phen[2]);pfa1.amp.push_back(1);}
+return pfa1;
+}
+
+Worm2Doscpars Worm2DoscHalf::getParsFromPheno(TVector<double> &phen)
+{
+    Worm2Doscpars w1;
+    w1.NMJweight = phen[3];
+    return w1;
 }
 
 Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &phen)

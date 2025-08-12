@@ -47,6 +47,7 @@ class Worm2Dosc : public Worm2D, public Evolvable
 {
 
 public:
+Worm2Dosc(int size_);
 Worm2Dosc(const string & filename_);
 Worm2Dosc();
 Worm2Dosc(TVector<double> &v);
@@ -91,7 +92,21 @@ Worm2Doscpars pars1;
 };
 
 
+class Worm2DoscHalf : public Worm2Dosc
+{
+public:
+Worm2DoscHalf();
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
+protected:
+vector<toFromWeight> makeDVMuscleConn(double);
+vector<toFromWeight> makeDorsalMuscleConn();
+vector<toFromWeight> makeVentralMuscleConn();
+int getVectSize() {return 3;}
+pfa getPfaFromPheno(TVector<double> &phen);
+Worm2Doscpars getParsFromPheno(TVector<double> &phen);
+
+};
 
 
 //Worm2Dosc w;
