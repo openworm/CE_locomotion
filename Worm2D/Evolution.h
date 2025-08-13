@@ -107,25 +107,37 @@ class Evolution
     TVector<double> phenotype, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, doneFirst;
+    bool doResume, doneFirst, setFromCPTflag;
     int popsize;
+
 };
+
 
 class EvolutionFull : public Evolution
 {
 public:
-EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
-:evolvable1(evol1_),Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize())
-{
-evolvable1->ep_ptr = &evoPars1;
-}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs)
 {return evolvable1->EvaluationFunction(v,rs);}
 void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
 
+virtual ~EvolutionFull(){if (evolvable1) delete evolvable1;}
+
 protected:
+EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
+:evolvable1(evol1_),Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize())
+{
+evolvable1->ep_ptr = &evoPars1;
+}
 //shared_ptr<Evolvable> evolvable1;
-Evolvable * evolvable1;
+Evolvable * const evolvable1;
+};
+
+template<class T>
+class EvolutionFullW : public EvolutionFull
+{
+public:
+EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
+
 };

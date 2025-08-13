@@ -24,14 +24,16 @@ string Evolution::rename_file(string filename){return evoPars1.directoryName + "
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
-    genprev(1, VectSize_)
-    {setFromCPT();}
+    genprev(1, VectSize_),setFromCPTflag(false)
+    {//setFromCPT();
+    }
   
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
-    genprev(1, VectSize_)
-    {setFromCPT();}
+    genprev(1, VectSize_),setFromCPTflag(false)
+    {//setFromCPT();
+    }
 
 
 
@@ -51,6 +53,7 @@ void Evolution::checkPars()
 
 void Evolution::setFromCPT()
 {
+    setFromCPTflag = true;
     popsize = evoPars1.PopulationSize;
     s->cptfilename = rename_file("search.cpt");
     struct stat buffer;   
@@ -70,6 +73,8 @@ void Evolution::setFromCPT()
 
 void Evolution::setUp()
 {   
+
+    setFromCPT();
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
@@ -85,6 +90,7 @@ void Evolution::setUp()
 
 void Evolution::setFromEvol(const Evolution & er, int offset)
 {
+    if (!setFromCPTflag) setFromCPT();
     if (doResume) return;
 
     cout << "setFromEvol original pop size " 
@@ -289,7 +295,7 @@ TVector<double> & Evolution::getBestGenotype()
 
 void Evolution::ResultsDisplay(TSearch &s)
 {
-    TVector<double> bestVector;
+    {TVector<double> bestVector;
     ofstream BestIndividualFile;
 
     bestVector = s.BestIndividual();
@@ -297,7 +303,19 @@ void Evolution::ResultsDisplay(TSearch &s)
     //BestIndividualFile.open(bestfilename);
     BestIndividualFile << setprecision(32);
     BestIndividualFile << bestVector << endl;
+    BestIndividualFile.close();}
+
+    {
+    ofstream BestIndividualFile;
+    BestIndividualFile.open(rename_file("best.phen.dat"));
+    //BestIndividualFile.open(bestfilename);
+    BestIndividualFile << setprecision(32);
+    BestIndividualFile << getBestPhenotype() << endl;
     BestIndividualFile.close();
+    }
+
+
+
 }
 
 void Evolution::configure_p1()

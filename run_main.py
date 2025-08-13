@@ -532,10 +532,9 @@ def run(a=None, **kwargs):
         model_name = model_names[a.modelFolder]
 
     mainProcessName = a.mainProcessName
-    if a.modelName == "W2Dosc":
-        assert(a.modelFolder == "Worm2D")
+    if a.modelName == "W2Dosc" or a.modelName == "W2DoscH":
+        assert a.modelFolder == "Worm2D"
         mainProcessName = "main_osc"
-
 
     defaults_bases = {
         "CE": defaults_base_celoc,
@@ -544,7 +543,8 @@ def run(a=None, **kwargs):
         "CO": defaults_base_CO,
         "CO18": defaults_base_CO18,
         "CO18Full": defaults_base_CO18,
-        "W2Dosc" : defaults_base_CO18,
+        "W2Dosc": defaults_base_CO18,
+        "W2DoscH": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
@@ -554,7 +554,6 @@ def run(a=None, **kwargs):
     evol_extra_parameters["network_size"] = 6
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
-
 
     main_cmd = a.modelFolder + "/" + mainProcessName
     cmd = [main_cmd]

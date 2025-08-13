@@ -98,6 +98,8 @@ class Worm2DoscHalf : public Worm2Dosc
 {
 public:
 Worm2DoscHalf();
+Worm2DoscHalf(const string & filename_);
+Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
 protected:
