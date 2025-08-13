@@ -28,7 +28,7 @@ int main (int argc, const char* argv[])
    //delete w1;
     
     
-    
+    cout << evo.rename_file("best.gen.dat") << " " << model_name << endl;
 
 
     Worm2Dbase * w2;
@@ -36,7 +36,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo.rename_file("best.gen.dat"));
     
     cout << "const 1" << endl;
-    assert(0);
+    //assert(0);
 
     const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1"));
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}

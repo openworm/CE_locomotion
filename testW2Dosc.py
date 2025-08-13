@@ -5,7 +5,7 @@ run(
     simtransient=10,
     duration=50,
     transient=50,
-    maxGens=50,
+    maxGens=10,
     popSize=28,
     RandSeed=1749493257,
     modelName="W2Dosc",

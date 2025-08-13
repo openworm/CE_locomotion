@@ -742,7 +742,7 @@ def run(a=None, **kwargs):
             showPlot=False, folderName=a.outputFolderName, modelName=model_name
         )
 
-        if doW2D and (do_evol or doPlotEvol):
+        if doW2D and doPlotEvol:
             from load_data import plot_evols
 
             plot_evols(folderName=a.outputFolderName, modelName=model_name)

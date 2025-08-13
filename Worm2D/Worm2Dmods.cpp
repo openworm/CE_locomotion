@@ -17,19 +17,34 @@ Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa
 Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),
 n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
 {
+    cout << "Worm2Dosc" << endl;
     setUpMuscleConn();
     n.setTime(t);
 }
+
+Worm2Dosc::Worm2Dosc(const string & filename_):
+Worm2D({48,24,0.1,1,48},0),Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
+n(dynamic_cast<NSosc&>(*n_ptr)),pars1(getParsFromFile(filename_,4))
+{
+    n.pfa1 = getPfaFromFile(filename_,4);
+    cout << "Worm2Dosc" << endl;
+    setUpMuscleConn();
+    n.setTime(t);
+}
+
 
 Worm2DoscHalf::Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_):
 Worm2Dosc(pfa_,pars1_),Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles){}
 
 
 Worm2DoscHalf::Worm2DoscHalf(const string & filename_):
-Worm2DoscHalf(getPfaFromFile(filename_), getParsFromFile(filename_)){}
+Worm2DoscHalf(getPfaFromFile(filename_,3), getParsFromFile(filename_,3)){}
 
-Worm2Dosc::Worm2Dosc(const string & filename_):Worm2Dosc(getPfaFromFile(filename_), getParsFromFile(filename_)){}
-Worm2Dosc::Worm2Dosc(TVector<double> & geno_):Worm2Dosc(getPfaFromGeno(geno_), getParsFromGeno(geno_)){}
+//Worm2Dosc::Worm2Dosc(const string & filename_):
+//Worm2Dosc(getPfaFromFile(filename_,4), getParsFromFile(filename_,4)){}
+
+Worm2Dosc::Worm2Dosc(TVector<double> & geno_):
+Worm2Dosc(getPfaFromGeno(geno_), getParsFromGeno(geno_)){}
 
 
 
@@ -40,35 +55,39 @@ void Worm2Dosc::InitializeState(RandomState &rs)
     return;    
 }
 
-pfa Worm2Dosc::getPfaFromFile(const string & filename_)
+pfa Worm2Dosc::getPfaFromFile(const string & filename_, int vsize)
 {
+ 
     ifstream ifs;
     ifs.open(filename_);
-    TVector<double> bestVector(1, getVectSize());
+    TVector<double> bestVector(1, vsize);
     ifs >> bestVector;
     ifs.close();
-
+  
     return getPfaFromGeno(bestVector);
 
 }
 
 
-Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
+Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_, int vsize)
 {
+    cout << "Worm2Dosc::getParsFromFile" << endl;
     ifstream ifs;
     ifs.open(filename_);
-    TVector<double> bestVector(1, getVectSize());
+    TVector<double> bestVector(1, vsize);
+    //assert(0);
     ifs >> bestVector;
     ifs.close();
-
+cout << "Worm2Dosc::getParsFromFile" << endl;
     return getParsFromGeno(bestVector);
 
-
 }
-int Worm2Dosc::getVectSize(){return 4;}
+
+int Worm2Dosc::getVectSize(){return vectsize;}
 
 pfa Worm2Dosc::getPfaFromPheno(TVector<double> &phen)
 {
+    
 pfa pfa1;
 pfa1.size = 48;
 for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*(i-1));
@@ -97,22 +116,32 @@ Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &phen)
 {
     Worm2Doscpars w1;
     w1.NMJweight = phen[4];
+    cout << "Worm2Dosc::getParsFromPheno" << endl;
     return w1;
 }
 
 
 pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v)
-{
- TVector<double> phenotype(1, getVectSize());
+{ 
+ TVector<double> phenotype(1, v.Size());
  GenPhenMapping(v, phenotype);
  return getPfaFromPheno(phenotype);
 }
 
 Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v)
 {
-TVector<double> phenotype(1, getVectSize());
+    cout << "Worm2Dosc::getParsFromGeno" << " " << v.Size() << endl;
+ cout << v << endl;
+
+TVector<double> phenotype(1, v.Size());
+cout << phenotype.Size() << endl;
+
  GenPhenMapping(v, phenotype);
+ cout << "Worm2Dosc::getParsFromGeno" << endl;
+ 
  return getParsFromPheno(phenotype);
+ 
+
 }
 
 vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
@@ -207,6 +236,8 @@ NSosc::NSosc(const pfa & pfa_):pfa1(pfa_){}
 void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
     
+    cout << "GenPhenMapping" << endl;
+    //assert(0);
     const double NMJweight_top = 10;
     const double freq_lo = 0.1;
     const double freq_hi = 10;
@@ -224,7 +255,7 @@ void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
     //weight
     i++;
     phen(i) = MapSearchParameter(gen(i), 0, NMJweight_top);
-   
+   cout << "GenPhenMapping" << endl;
 
 }
 
@@ -253,7 +284,7 @@ void Worm2Dosc::writeJson(TVector<double> &){}
 
 evoPars Worm2Dosc::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};}
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, vectsize};}
 
 
 
@@ -268,7 +299,8 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
     const double    BBCfit = AvgSpeed*ep_ptr->Duration;
 
     const double & Duration = ep_ptr->Duration;
-    const int & VectSize = ep_ptr->VectSize;
+    assert(ep_ptr->VectSize == vectsize);
+    const int & VectSize = vectsize;
     const double & StepSize = ep_ptr->StepSize;
     const int & N_curvs = ep_ptr->N_curvs;
     const double & Transient = ep_ptr->Transient;

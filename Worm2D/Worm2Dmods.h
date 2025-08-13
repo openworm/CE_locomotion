@@ -68,8 +68,8 @@ pfa getPfaFromPheno(TVector<double> &v);
 Worm2Doscpars getParsFromPheno(TVector<double> &v);
 pfa getPfaFromGeno(TVector<double> &v);
 Worm2Doscpars getParsFromGeno(TVector<double> &v);
-pfa getPfaFromFile(const string & filename_);
-Worm2Doscpars getParsFromFile(const string & filename_);
+pfa getPfaFromFile(const string & filename_, int size);
+Worm2Doscpars getParsFromFile(const string & filename_, int size);
 
 vector<doubIntParamsHead> getWormParams() {
     vector<doubIntParamsHead> parvec;
@@ -90,6 +90,7 @@ NSosc & n;
 Worm2Doscpars pars1;
 const int dbunit = 1;
 const int vbunit = 25;
+const int vectsize = 4;
 
 };
 
@@ -109,8 +110,10 @@ vector<toFromWeight> makeVentralMuscleConn();
 int getVectSize() {return 3;}
 pfa getPfaFromPheno(TVector<double> &phen);
 Worm2Doscpars getParsFromPheno(TVector<double> &phen);
+
 const int dbunit = 1;
 const int vbunit = 1;
+const int vectsize = 3;
 
 };
 
