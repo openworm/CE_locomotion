@@ -12,7 +12,14 @@ Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),
 Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles){}
 
 
-
+Worm2Dosc::Worm2Dosc(const Worm2Dosc& w):Worm2D({w.n.pfa1.size,24,0.1,1,w.n.pfa1.size},0),
+Worm2Dm({w.n.pfa1.size,24,0.1,1,w.n.pfa1.size}, new NSosc(w.n.pfa1), new Muscles),
+n(dynamic_cast<NSosc&>(*n_ptr)),pars1(w.pars1)
+{
+    cout << "Worm2Dosc copy" << endl;
+    setUpMuscleConn();
+    n.setTime(t);
+}
 
 Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
 Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),

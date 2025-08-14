@@ -47,6 +47,7 @@ class Worm2Dosc : public Worm2D, public Evolvable
 {
 
 public:
+Worm2Dosc(const Worm2Dosc&);
 Worm2Dosc(int size_);
 Worm2Dosc(const string & filename_);
 Worm2Dosc();

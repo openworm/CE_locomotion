@@ -11,7 +11,7 @@ run(
     modelName="W2Dosc",
     modelFolder="Worm2D",
     outputFolderName="exampleRunW2Dosc",
-    doEvol=True,
+    doEvol=False,
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
