@@ -122,7 +122,7 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs)
 {return evolvable1->EvaluationFunction(v,rs);}
 void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
 
-virtual ~EvolutionFull(){if (evolvable1) delete evolvable1;}
+virtual ~EvolutionFull(){}
 
 protected:
 EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
@@ -139,5 +139,7 @@ class EvolutionFullW : public EvolutionFull
 {
 public:
 EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
+virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
 
 };
+

@@ -4,26 +4,29 @@
 Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
 
 
-Worm2Dosc::Worm2Dosc(int size_):Worm2D({size_,24,0.1,1,size_},0),
+Worm2Dosc::Worm2Dosc(int size_):
+Worm2DoscBase(new Worm2Doscpars(),size_),
 Worm2Dm({size_,24,0.1,1,size_}, new NSosc(), new Muscles),
-n(dynamic_cast<NSosc&>(*n_ptr)){}
+pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)){}
 
 Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),
 Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles){}
 
 
-Worm2Dosc::Worm2Dosc(const Worm2Dosc& w):Worm2D({w.n.pfa1.size,24,0.1,1,w.n.pfa1.size},0),
+Worm2Dosc::Worm2Dosc(const Worm2Dosc& w):
+Worm2DoscBase(new Worm2Doscpars(w.pars1),w.n.pfa1.size),
 Worm2Dm({w.n.pfa1.size,24,0.1,1,w.n.pfa1.size}, new NSosc(w.n.pfa1), new Muscles),
-n(dynamic_cast<NSosc&>(*n_ptr)),pars1(w.pars1)
+pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr))
 {
     cout << "Worm2Dosc copy" << endl;
     setUpMuscleConn();
     n.setTime(t);
 }
 
-Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):Worm2D({pfa_.size,24,0.1,1,pfa_.size},0),
+Worm2Dosc::Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & pars1_):
+Worm2DoscBase(new Worm2Doscpars(pars1_),pfa_.size),
 Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), new Muscles),
-n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
+pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr))
 {
     cout << "Worm2Dosc" << endl;
     setUpMuscleConn();
@@ -31,8 +34,9 @@ n(dynamic_cast<NSosc&>(*n_ptr)),pars1(pars1_)
 }
 
 Worm2Dosc::Worm2Dosc(const string & filename_):
-Worm2D({48,24,0.1,1,48},0),Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
-n(dynamic_cast<NSosc&>(*n_ptr))//,pars1(getParsFromFile(filename_,4))
+Worm2DoscBase(new Worm2Doscpars(),48),
+Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
+pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr))
 {
     n.pfa1 = getPfaFromFile(filename_);
     pars1 = getParsFromFile(filename_);
@@ -42,7 +46,14 @@ n(dynamic_cast<NSosc&>(*n_ptr))//,pars1(getParsFromFile(filename_,4))
 }
 
 Worm2DoscHalf::Worm2DoscHalf(const string & filename_):
-Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles),Worm2Dosc(filename_){}
+Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles),Worm2Dosc(24)
+{
+    n.pfa1 = getPfaFromFile(filename_);
+    pars1 = getParsFromFile(filename_);
+    cout << "Worm2Dosc" << endl;
+    setUpMuscleConn();
+    n.setTime(t);
+}
 
 
 
@@ -61,7 +72,7 @@ Worm2Dosc(pfa_,pars1_),Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), 
 
 
 
-void Worm2Dosc::InitializeState(RandomState &rs)
+void Worm2DoscBase::InitializeState(RandomState &rs)
 {    
     cout << "Worm2Dosc init state" << endl;
     Worm2D::InitializeState(rs);
@@ -84,14 +95,14 @@ pfa Worm2Dosc::getPfaFromFile(const string & filename_)
 
 Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
 {
-    cout << "Worm2Dosc::getParsFromFile" << endl;
+    
     ifstream ifs;
     ifs.open(filename_);
     TVector<double> bestVector(1, getVectSize());
     //assert(0);
     ifs >> bestVector;
     ifs.close();
-cout << "Worm2Dosc::getParsFromFile" << endl;
+
     return getParsFromGeno(bestVector);
 
 }
@@ -143,14 +154,12 @@ pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v)
 
 Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v)
 {
-    cout << "Worm2Dosc::getParsFromGeno" << " " << v.Size() << endl;
- cout << v << endl;
-
-TVector<double> phenotype(1, v.Size());
-cout << phenotype.Size() << endl;
-
- GenPhenMapping(v, phenotype);
- cout << "Worm2Dosc::getParsFromGeno" << endl;
+    
+    cout << v << endl;
+    TVector<double> phenotype(1, v.Size());
+    cout << phenotype.Size() << endl;
+    GenPhenMapping(v, phenotype);
+ 
  
  return getParsFromPheno(phenotype);
  
@@ -159,6 +168,7 @@ cout << phenotype.Size() << endl;
 
 vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
 {
+ 
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
     int from_neuron = to_musc+offset;
@@ -293,15 +303,15 @@ void Worm2DoscHalf::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 }
 
-void Worm2Dosc::writeJson(TVector<double> &){}
+void Worm2DoscBase::writeJson(TVector<double> &){}
 
-evoPars Worm2Dosc::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+evoPars Worm2DoscBase::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};}
 
 
 
-double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
+double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs){
 
   
     cout << "Worm2Dosc::EvaluationFunction" << endl;
@@ -415,7 +425,7 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
             
             // Integration error check
             if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
-                return 0.0;
+                return 0;
             }
             
             // Fitness
@@ -446,3 +456,40 @@ double Worm2Dosc::EvaluationFunction(TVector<double> &geno, RandomState &rs){
 
 
 
+/* vector<toFromWeight> Worm2Dosc21::makeDorsalMuscleConn()
+{
+const int DN = 1;
+
+vector<int> dorsalNeurons({DN});
+vector<double> dorsalNMJ({NMJ_DN});
+return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+}
+
+vector<toFromWeight> Worm2Dosc21::makeVentralMuscleConn()
+{
+vector<int> ventralNeurons({VD,VA,VB});
+vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
+return makeMuscleConn(ventralNeurons, ventralNMJ);
+}
+
+
+vector<toFromWeight> Worm2Dosc21::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
+{
+    vector<toFromWeight> vec1;
+    int unit = 1;
+    for (int to_musc = 1; to_musc < 5; to_musc++) 
+    makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
+        
+    for (int unit = 2; unit <= 5; unit++)
+        for (int to_musc = 5 + 3*(unit-2); to_musc < 5 + 3*(unit-1); to_musc++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
+
+    for (int unit = 6; unit <= 7; unit++)
+        for (int to_musc = 17 + 4*(unit-6); to_musc < 17 + 4*(unit-5); to_musc++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
+    
+    cout << "made muscle con" << endl;
+            //exit(1);
+    return vec1;
+
+} */

@@ -723,13 +723,13 @@ dMuscConn.setWeights(dMuscConnvec);
 }
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain)
+    vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)
 {
 
     for (int j = 0; j<neurons.size();j++){
-        double weight = NMJs[j]*NMJ_Gain(to); 
-        int from = nn(neurons[j],mi);
-        toFromWeight tv({from,weight},to);
+        double weight = NMJs[j]*NMJ_Gain(to_muscle); 
+        int from_neuron = nn(neurons[j],unit);
+        toFromWeight tv({from_neuron,weight},to_muscle);
         vec1.push_back(tv);
 
 }

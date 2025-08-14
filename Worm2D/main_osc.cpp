@@ -12,8 +12,12 @@ int main (int argc, const char* argv[])
     cout << "Model name is required." << endl;
     return 0;
     }
+    EvolutionFull * evo = 0;
+    
+    if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
+    if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
 
-    EvolutionFullW<Worm2Dosc> evo(argc,argv);
+    //EvolutionFullW<Worm2Dosc> evo(argc,argv);
 
     /* Evolvable * w1;
     if (model_name == "W2Dosc") w1 = new Worm2Dosc();
@@ -23,17 +27,17 @@ int main (int argc, const char* argv[])
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
     if (do_evol) 
     {
-        evo.configure();
+        evo->configure();
     }
    //delete w1;
     
     
-    cout << evo.rename_file("best.gen.dat") << " " << model_name << endl;
+    cout << evo->rename_file("best.gen.dat") << " " << model_name << endl;
 
 
     Worm2Dbase * w2;
-    if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo.rename_file("best.gen.dat"));
-    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo->rename_file("best.gen.dat"));
+    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo->rename_file("best.gen.dat"));
     
     cout << "const 1" << endl;
     //assert(0);
@@ -49,24 +53,25 @@ int main (int argc, const char* argv[])
     double simtransient = atof(getParameter(argc,argv,"-st","50"));
 
     
-    simPars sp1 = {evo.itsEvoPars().directoryName,
+    simPars sp1 = {evo->itsEvoPars().directoryName,
         //er->itsEvoPars().skip_steps, 
-        simduration, simtransient, evo.itsEvoPars().StepSize};
+        simduration, simtransient, evo->itsEvoPars().StepSize};
     Simulation s1(sp1);
     
     cout << "const 1" << endl;
 
     w2->initForSimulation(rs);
-    w2->setStepSize(evo.itsEvoPars().StepSize);
-    w2->setDataskips(evo.itsEvoPars().skip_steps);
+    w2->setStepSize(evo->itsEvoPars().StepSize);
+    w2->setDataskips(evo->itsEvoPars().skip_steps);
     //w->setPrefix("sim");
-    w2->InitializeData(evo.itsEvoPars().directoryName);
+    w2->InitializeData(evo->itsEvoPars().directoryName);
 
     cout << "const 1" << endl;
 
     s1.runSimulation(*w2);
     cout << "const 1" << endl;
 
+    delete evo;
     delete w2;
     return 0;
 }

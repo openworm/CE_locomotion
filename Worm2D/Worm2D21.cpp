@@ -132,16 +132,17 @@ return makeMuscleConn(ventralNeurons, ventralNMJ);
 vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
 {
     vector<toFromWeight> vec1;
-    int mi = 1;
-    for (int i = 1; i < 5; i++) makeMuscleConnHelp(vec1, neurons, NMJ, mi, i, NMJ_Gain);
+    int unit = 1;
+    for (int to_musc = 1; to_musc < 5; to_musc++) 
+    makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
         
-    for (int mi = 2; mi <= 5; mi++)
-        for (int i = 5 + 3*(mi-2); i < 5 + 3*(mi-1); i++)
-            makeMuscleConnHelp(vec1, neurons, NMJ, mi, i, NMJ_Gain);
+    for (int unit = 2; unit <= 5; unit++)
+        for (int to_musc = 5 + 3*(unit-2); to_musc < 5 + 3*(unit-1); to_musc++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
 
-    for (int mi = 6; mi <= 7; mi++)
-        for (int i = 17 + 4*(mi-6); i < 17 + 4*(mi-5); i++)
-            makeMuscleConnHelp(vec1, neurons, NMJ, mi, i, NMJ_Gain);
+    for (int unit = 6; unit <= 7; unit++)
+        for (int to_musc = 17 + 4*(unit-6); to_musc < 17 + 4*(unit-5); to_musc++)
+            makeMuscleConnHelp(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain);
     
     cout << "made muscle con" << endl;
             //exit(1);
