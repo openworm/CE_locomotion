@@ -50,7 +50,7 @@ public:
 Worm2Dosc(int size_);
 Worm2Dosc(const string & filename_);
 Worm2Dosc();
-Worm2Dosc(TVector<double> &v);
+//Worm2Dosc(TVector<double> &v);
 Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
 const vector<string> getCellNames() {return {"not implemented"};}
@@ -61,15 +61,15 @@ void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 void writeJson(TVector<double> &);
 evoPars getDefaultEvoPars();
-int getVectSize();
+int getVectSize(){return 4;}
 
 protected:
 pfa getPfaFromPheno(TVector<double> &v);
 Worm2Doscpars getParsFromPheno(TVector<double> &v);
 pfa getPfaFromGeno(TVector<double> &v);
 Worm2Doscpars getParsFromGeno(TVector<double> &v);
-pfa getPfaFromFile(const string & filename_, int size);
-Worm2Doscpars getParsFromFile(const string & filename_, int size);
+pfa getPfaFromFile(const string & filename_);
+Worm2Doscpars getParsFromFile(const string & filename_);
 
 vector<doubIntParamsHead> getWormParams() {
     vector<doubIntParamsHead> parvec;
@@ -88,9 +88,9 @@ vector<toFromWeight> makeDVMuscleConn(int offset);
 
 NSosc & n;
 Worm2Doscpars pars1;
-const int dbunit = 1;
-const int vbunit = 25;
-const int vectsize = 4;
+const int dbunit = 6;
+const int vbunit = 30;
+//const int vectsize = 4;
 
 };
 
@@ -113,7 +113,7 @@ Worm2Doscpars getParsFromPheno(TVector<double> &phen);
 
 const int dbunit = 1;
 const int vbunit = 1;
-const int vectsize = 3;
+//const int vectsize = 3;
 
 };
 
