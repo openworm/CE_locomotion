@@ -38,8 +38,8 @@ Worm2DoscBase(new Worm2Doscpars(),48),
 Worm2Dm({48,24,0.1,1,48}, new NSosc(), new Muscles),
 pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr))
 {
-    n.pfa1 = getPfaFromFile(filename_);
-    pars1 = getParsFromFile(filename_);
+    setPfaFromFile(filename_);
+    setParsFromFile(filename_);
     cout << "Worm2Dosc" << endl;
     setUpMuscleConn();
     n.setTime(t);
@@ -48,8 +48,8 @@ pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr))
 Worm2DoscHalf::Worm2DoscHalf(const string & filename_):
 Worm2Dm({24,24,0.1,1,24}, new NSosc(), new Muscles),Worm2Dosc(24)
 {
-    n.pfa1 = getPfaFromFile(filename_);
-    pars1 = getParsFromFile(filename_);
+    setPfaFromFile(filename_);
+    setParsFromFile(filename_);
     cout << "Worm2Dosc" << endl;
     setUpMuscleConn();
     n.setTime(t);
@@ -79,7 +79,7 @@ void Worm2DoscBase::InitializeState(RandomState &rs)
     return;    
 }
 
-pfa Worm2Dosc::getPfaFromFile(const string & filename_)
+void Worm2DoscBase::setPfaFromFile(const string & filename_)
 {
  
     ifstream ifs;
@@ -88,12 +88,39 @@ pfa Worm2Dosc::getPfaFromFile(const string & filename_)
     ifs >> bestVector;
     ifs.close();
   
-    return getPfaFromGeno(bestVector);
+    setPfaFromGeno(bestVector);
 
 }
 
+void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
+{ 
+ TVector<double> phenotype(1, v.Size());
+ GenPhenMapping(v, phenotype);
+ setPfaFromPheno(phenotype);
+}
 
-Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
+
+void Worm2Dosc::setPfaFromPheno(TVector<double> &phen)
+{
+    
+n.pfa1.size = 48;
+for (int i = 1; i<=24; i++) n.pfa1.phase.push_back(phen[1]*(i-1));
+for (int i = 25; i<=48; i++) n.pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
+for (int i = 1; i<=48; i++) {n.pfa1.freq.push_back(phen[3]);n.pfa1.amp.push_back(1);}
+
+}
+
+void Worm2DoscHalf::setPfaFromPheno(TVector<double> &phen)
+{
+n.pfa1.size = 24;
+for (int i = 1; i<=24; i++) {n.pfa1.phase.push_back(phen[1]*(i-1));
+n.pfa1.freq.push_back(phen[2]);n.pfa1.amp.push_back(1);}
+}
+
+
+
+
+void Worm2DoscBase::setParsFromFile(const string & filename_)
 {
     
     ifstream ifs;
@@ -103,72 +130,45 @@ Worm2Doscpars Worm2Dosc::getParsFromFile(const string & filename_)
     ifs >> bestVector;
     ifs.close();
 
-    return getParsFromGeno(bestVector);
+    setParsFromGeno(bestVector);
 
 }
 
 
-
-pfa Worm2Dosc::getPfaFromPheno(TVector<double> &phen)
+void Worm2Dosc::setParsFromPheno(TVector<double> &phen)
 {
-    
-pfa pfa1;
-pfa1.size = 48;
-for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*(i-1));
-for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
-for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
-return pfa1;
-}
-
-pfa Worm2DoscHalf::getPfaFromPheno(TVector<double> &phen)
-{
-pfa pfa1;
-pfa1.size = 24;
-for (int i = 1; i<=24; i++) {pfa1.phase.push_back(phen[1]*(i-1));
-pfa1.freq.push_back(phen[2]);pfa1.amp.push_back(1);}
-return pfa1;
-}
-
-Worm2Doscpars Worm2DoscHalf::getParsFromPheno(TVector<double> &phen)
-{
-    Worm2Doscpars w1;
-    w1.NMJweight = phen[3];
-    return w1;
-}
-
-Worm2Doscpars Worm2Dosc::getParsFromPheno(TVector<double> &phen)
-{
-    Worm2Doscpars w1;
-    w1.NMJweight = phen[4];
+    pars1.NMJweight = phen[4];
+    pars1.dbunit = 6;
+    pars1.vbunit = 30;
     cout << "Worm2Dosc::getParsFromPheno" << endl;
-    return w1;
 }
 
 
-pfa Worm2Dosc::getPfaFromGeno(TVector<double> &v)
-{ 
- TVector<double> phenotype(1, v.Size());
- GenPhenMapping(v, phenotype);
- return getPfaFromPheno(phenotype);
+void Worm2DoscHalf::setParsFromPheno(TVector<double> &phen)
+{
+    pars1.NMJweight = phen[3];
+    pars1.dbunit = 1;
+    pars1.vbunit = 1;
 }
 
-Worm2Doscpars Worm2Dosc::getParsFromGeno(TVector<double> &v)
+
+
+
+
+void Worm2DoscBase::setParsFromGeno(TVector<double> &v)
 {
     
-    cout << v << endl;
+    //cout << v << endl;
     TVector<double> phenotype(1, v.Size());
-    cout << phenotype.Size() << endl;
+    //cout << phenotype.Size() << endl;
     GenPhenMapping(v, phenotype);
  
+    setParsFromPheno(phenotype);
  
- return getParsFromPheno(phenotype);
- 
-
 }
 
 vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
 {
- 
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
     int from_neuron = to_musc+offset;
@@ -207,7 +207,7 @@ vector<toFromWeight> Worm2Dosc::makeVentralMuscleConn()
     return makeDVMuscleConn(24);
 }
 
-void Worm2Dosc::Step1()
+void Worm2DoscBase::Step1()
 {
 
     n.setTime(t);
@@ -332,8 +332,8 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
    
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(geno, phenotype);
-    n.pfa1 = getPfaFromPheno(phenotype);
-    pars1 = getParsFromPheno(phenotype);
+    setPfaFromPheno(phenotype);
+    setParsFromPheno(phenotype);
 
     setUpMuscleConn();
 
@@ -372,17 +372,17 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
             Step(StepSize);
         }    
         
-        DBp = n.NeuronOutput(dbunit);
-        VBp = n.NeuronOutput(vbunit);
+        DBp = n.NeuronOutput(pars1_ptr->dbunit);
+        VBp = n.NeuronOutput(pars1_ptr->vbunit);
     
         Step(StepSize); // determine sign of derivative
     
-        dDB = n.NeuronOutput(dbunit) - DBp;
-        dVB = n.NeuronOutput(vbunit) - VBp;
+        dDB = n.NeuronOutput(pars1_ptr->dbunit) - DBp;
+        dVB = n.NeuronOutput(pars1_ptr->vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = n.NeuronOutput(dbunit);
-        VBp = n.NeuronOutput(vbunit);
+        DBp = n.NeuronOutput(pars1_ptr->dbunit);
+        VBp = n.NeuronOutput(pars1_ptr->vbunit);
         
         double xt = CoMx(), xtp;
         double yt = CoMy(), ytp;
@@ -394,13 +394,13 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = n.NeuronOutput(dbunit) - DBp;
-            dVB = n.NeuronOutput(vbunit) - VBp;
+            dDB = n.NeuronOutput(pars1_ptr->dbunit) - DBp;
+            dVB = n.NeuronOutput(pars1_ptr->vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - n.NeuronOutput(dbunit));
-            oscVB += abs(VBp - n.NeuronOutput(vbunit));
+            oscDB += abs(DBp - n.NeuronOutput(pars1_ptr->dbunit));
+            oscVB += abs(VBp - n.NeuronOutput(pars1_ptr->vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -415,8 +415,8 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = n.NeuronOutput(dbunit);
-            VBp = n.NeuronOutput(vbunit);
+            DBp = n.NeuronOutput(pars1_ptr->dbunit);
+            VBp = n.NeuronOutput(pars1_ptr->vbunit);
             
             //// Locomotion
             // Current and past centroid position
