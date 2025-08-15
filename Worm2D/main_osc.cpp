@@ -16,6 +16,7 @@ int main (int argc, const char* argv[])
     
     if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
     if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
+    if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
 
     //assert(0);
 
@@ -40,7 +41,8 @@ int main (int argc, const char* argv[])
     Worm2Dbase * w2;
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo->rename_file("best.gen.dat"));
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo->rename_file("best.gen.dat"));
-    
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(evo->rename_file("best.gen.dat"));
+
     cout << "const 1" << endl;
     //assert(0);
 

@@ -116,6 +116,8 @@ class Evolution
 class EvolutionFull : public Evolution
 {
 public:
+Evolvable * const evolvable1;
+
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs)
@@ -126,12 +128,12 @@ virtual ~EvolutionFull(){}
 
 protected:
 EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
-:evolvable1(evol1_),Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize())
+:Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize()),evolvable1(evol1_)
 {
 evolvable1->ep_ptr = &evoPars1;
 }
 //shared_ptr<Evolvable> evolvable1;
-Evolvable * const evolvable1;
+
 };
 
 template<class T>

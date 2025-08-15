@@ -532,7 +532,7 @@ def run(a=None, **kwargs):
         model_name = model_names[a.modelFolder]
 
     mainProcessName = a.mainProcessName
-    if a.modelName == "W2Dosc" or a.modelName == "W2DoscH":
+    if a.modelName == "W2Dosc" or a.modelName == "W2DoscH" or a.modelName == "W2Dosc21":
         assert a.modelFolder == "Worm2D"
         mainProcessName = "main_osc"
 
@@ -545,6 +545,7 @@ def run(a=None, **kwargs):
         "CO18Full": defaults_base_CO18,
         "W2Dosc": defaults_base_CO18,
         "W2DoscH": defaults_base_CO18,
+        "W2Dosc21": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
