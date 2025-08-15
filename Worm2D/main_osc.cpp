@@ -17,6 +17,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
     if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
 
+    //assert(0);
+
     //EvolutionFullW<Worm2Dosc> evo(argc,argv);
 
     /* Evolvable * w1;

@@ -1,5 +1,11 @@
 #include "Worm2Dmods.h"
 
+void pfa::swap_all(pfa & pfa_){
+size = pfa_.size;
+phase.swap(pfa_.phase);
+freq.swap(pfa_.freq);
+amp.swap(pfa_.amp);
+}
 
 Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
 
@@ -103,18 +109,25 @@ void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
 void Worm2Dosc::setPfaFromPheno(TVector<double> &phen)
 {
     
-n.pfa1.size = 48;
-for (int i = 1; i<=24; i++) n.pfa1.phase.push_back(phen[1]*(i-1));
-for (int i = 25; i<=48; i++) n.pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
-for (int i = 1; i<=48; i++) {n.pfa1.freq.push_back(phen[3]);n.pfa1.amp.push_back(1);}
+pfa pfa1;
+pfa1.size = 48;
+for (int i = 1; i<=24; i++) pfa1.phase.push_back(phen[1]*(i-1));
+for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen[1]*(i-25) + phen[2]);
+for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
+
+n.pfa1.swap_all(pfa1);
 
 }
 
 void Worm2DoscHalf::setPfaFromPheno(TVector<double> &phen)
 {
-n.pfa1.size = 24;
-for (int i = 1; i<=24; i++) {n.pfa1.phase.push_back(phen[1]*(i-1));
-n.pfa1.freq.push_back(phen[2]);n.pfa1.amp.push_back(1);}
+pfa pfa1;
+pfa1.size = 24;
+for (int i = 1; i<=24; i++) {pfa1.phase.push_back(phen[1]*(i-1));
+pfa1.freq.push_back(phen[2]);pfa1.amp.push_back(1);}
+
+n.pfa1.swap_all(pfa1);
+
 }
 
 

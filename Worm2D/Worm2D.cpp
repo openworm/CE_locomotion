@@ -108,7 +108,7 @@ Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bo
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
-m(dynamic_cast<Muscles&>(*m_ptr)),vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
 {
     //cout << "Worm2D const" << endl;
     setUp();
@@ -532,7 +532,10 @@ void Worm2D::addParsToJson(json & j)
     Worm2Dm::addParsToJson(j);
 
     appendMuscleToJson(j,m);
-    
+    NSToMuscles vMuscConn(par1.N_muscles);
+    NSToMuscles dMuscConn(par1.N_muscles);
+    vMuscConn.setWeights(vMuscConnvec);
+    dMuscConn.setWeights(dMuscConnvec);
    
     j["Ventral NMJ"]["weights"]["message"] = "Ventral NMJ weights weights in sparse format";
     appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
@@ -650,7 +653,7 @@ void Worm2Dbase::writeState()
     }
 }
 
-void Worm2D::setMuscleInputVent()
+/* void Worm2D::setMuscleInputVent()
 {
 
 for (int i = 1; i<= vMuscConn.size; i++){
@@ -674,7 +677,7 @@ void Worm2D::setMuscleInputDors()
     m.SetDorsalMuscleInput(to, tot);
     }
 
-}
+} */
 
 void Worm2D::setMuscleInputVec()
 {
@@ -705,9 +708,9 @@ void Worm2D::setMuscleInputVec()
 void Worm2D::setMuscleInput()
 {
 
-    
-    setMuscleInputVent();
-    setMuscleInputDors();
+    setMuscleInputVec();
+    //setMuscleInputVent();
+    //setMuscleInputDors();
 
     m.EulerStep(settedStepSize);
     //cout << "setMuscInp" << endl;
@@ -716,10 +719,13 @@ void Worm2D::setMuscleInput()
 
 void Worm2D::setUpMuscleConn()
 {
-vMuscConnvec = makeVentralMuscleConn();
-dMuscConnvec = makeDorsalMuscleConn();
-vMuscConn.setWeights(vMuscConnvec);
-dMuscConn.setWeights(dMuscConnvec);
+vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
+vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
+vMuscConnvec.swap(vMuscConnvec1);
+dMuscConnvec.swap(dMuscConnvec1);
+
+//vMuscConn.setWeights(vMuscConnvec);
+//dMuscConn.setWeights(dMuscConnvec);
 }
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 

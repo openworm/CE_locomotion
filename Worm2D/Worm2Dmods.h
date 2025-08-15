@@ -8,7 +8,10 @@ const double pi2 = 3.14159265*2.0;
 struct pfa{
 vector<double> phase, freq, amp;
 int size;
+void swap_all(pfa & pfa_);
 };
+
+
 
 
 class NSosc : public NSForW2D {
@@ -40,7 +43,7 @@ pfa pfa1;
 class W2Dparameters
 {
 public:
-double NMJweight;
+
 int dbunit;
 int vbunit;
 virtual ~W2Dparameters(){}
@@ -48,7 +51,7 @@ virtual ~W2Dparameters(){}
 class Worm2Doscpars : public W2Dparameters
 {
 public:
-
+double NMJweight;
 };
 
 class Worm2DoscBase : public Worm2D, public Evolvable

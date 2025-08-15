@@ -112,8 +112,8 @@ plot_formats["CO18"]["do_curv_plot"] = False
 plot_formats["CO18Full"] = plot_formats["CO18"]
 plot_formats["W2Dosc"] = plot_formats["Net21"]
 plot_formats["W2Dosc"]["data_sizes"] = [48, 48]
-#plot_formats["W2DoscH"] = plot_formats["W2Dosc"]
-#plot_formats["W2DoscH"]["data_sizes"] = [24, 48]
+# plot_formats["W2DoscH"] = plot_formats["W2Dosc"]
+# plot_formats["W2DoscH"]["data_sizes"] = [24, 48]
 
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
