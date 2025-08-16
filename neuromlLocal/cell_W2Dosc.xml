@@ -2,8 +2,9 @@
     extends="baseCellMembPotCap"
     description="Oscillating Cell for Worm2D model">
     
-    <Parameter name="bias" dimension="none" description="..."/>
-    <Parameter name="gain" dimension="none" description="..."/>
+    <Parameter name="freq" dimension="none" description="..."/>
+    <Parameter name="phase" dimension="none" description="..."/>
+    <Parameter name="timestep" dimension="none" description="..."/>
     <Parameter name="tau" dimension="time"/>
 
     <Constant name="COND_SCALE" dimension="conductance" value="1nS"/>
@@ -38,10 +39,10 @@
         
         <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
         <DerivedVariable name="state" dimension="none" exposure="state" value="v/MVOLT" />
-        <DerivedVariable name="output" dimension="none" exposure="output" value="1/(1 + exp(-1 * gain * (state+bias)))" />
+        <DerivedVariable name="output" dimension="none" exposure="output" value="sin(freq*state + phase)" />
 
 
-        <DerivedVariable name="iMemb" dimension="current" exposure="iMemb" value="((0-state)*PAMP + iSyn)"/>
+        <DerivedVariable name="iMemb" dimension="current" exposure="iMemb" value="timestep"/>
 
         <TimeDerivative variable="v" value="iMemb / C"/>
         
