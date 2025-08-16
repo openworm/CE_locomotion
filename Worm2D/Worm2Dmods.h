@@ -66,15 +66,15 @@ void initForSimulation(RandomState &) {return;}
 void DumpParams(ofstream &ofs) {return;}
 
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
-void writeJson(TVector<double> &);
+//void writeJson(TVector<double> &);
 evoPars getDefaultEvoPars();
 
 virtual void setPfaFromPheno(TVector<double> &v) = 0;
 virtual void setParsFromPheno(TVector<double> &v) = 0;
 void setPfaFromGeno(TVector<double> &v);
 void setParsFromGeno(TVector<double> &v);
-void setPfaFromFile(const string & filename_);
-void setParsFromFile(const string & filename_);
+void setPfaFromFile(const string & genofilename_);
+void setParsFromFile(const string & genofilename_);
 const vector<string> getCellNames() {return {"not implemented"};}
 protected:
 
@@ -89,7 +89,7 @@ vector<doubIntParamsHead> getWormParams() {
     return parvec;
 }
 
-
+void construct(TVector<double> &pheno);
 void construct(const string & filename_);
 virtual ~Worm2DoscBase(){if (pars1_ptr) delete pars1_ptr;}
 
@@ -110,6 +110,7 @@ Worm2Dosc(const Worm2Dosc&);
 Worm2Dosc(int size_);
 Worm2Dosc(const string & filename_);
 Worm2Dosc();
+Worm2Dosc(TVector<double> & pheno);
 //Worm2Dosc(TVector<double> &v);
 Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
@@ -150,6 +151,7 @@ public:
 Worm2DoscHalf();
 Worm2DoscHalf(const string & filename_);
 Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
+Worm2DoscHalf(TVector<double> & pheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
 protected:
@@ -181,6 +183,7 @@ class Worm2Dosc21 : public Worm2DoscBase
 public:
 Worm2Dosc21();
 Worm2Dosc21(const string & filename_);
+Worm2Dosc21(TVector<double> & pheno);
 
 protected:
 vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);

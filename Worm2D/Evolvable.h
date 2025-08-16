@@ -66,7 +66,7 @@ class Evolvable
   Evolvable():ep_ptr(nullptr){}
   virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
   
-  virtual void writeJson(TVector<double> &) = 0;
+  //virtual void writeJson(TVector<double> &) = 0;
   virtual evoPars getDefaultEvoPars() = 0;
   virtual int getVectSize() = 0;
   virtual ~Evolvable(){}

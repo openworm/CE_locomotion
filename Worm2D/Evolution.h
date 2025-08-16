@@ -122,7 +122,8 @@ void GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {return evolvable1->GenPhenMapping(gen,phen);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs)
 {return evolvable1->EvaluationFunction(v,rs);}
-void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
+//void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
+//void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
 
 virtual ~EvolutionFull(){}
 
@@ -142,6 +143,6 @@ class EvolutionFullW : public EvolutionFull
 public:
 EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
 virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
-
+void writeJson(TVector<double> & pheno){T w(pheno);writeJson1(w);}
 };
 
