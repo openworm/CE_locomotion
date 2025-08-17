@@ -11,6 +11,7 @@ import os
 import neuromlLocal.utils as utils
 from matplotlib.ticker import MaxNLocator
 import math
+import copy
 
 # import neuromlLocal.utils as utils
 import matplotlib as mpl
@@ -110,8 +111,10 @@ plot_formats["CO18"]["do_body_plot"] = False
 plot_formats["CO18"]["do_curv_plot"] = False
 
 plot_formats["CO18Full"] = plot_formats["CO18"]
-plot_formats["W2Dosc"] = plot_formats["Net21"]
+plot_formats["W2Dosc"] = copy.deepcopy(plot_formats["Net21"])
 plot_formats["W2Dosc"]["data_sizes"] = [48, 48]
+plot_formats["W2Dosc21"] = copy.deepcopy(plot_formats["Net21"])
+plot_formats["W2Dosc21"]["data_sizes"] = [14, 48]
 # plot_formats["W2DoscH"] = plot_formats["W2Dosc"]
 # plot_formats["W2DoscH"]["data_sizes"] = [24, 48]
 
@@ -616,7 +619,7 @@ def reload_single_run(a=None, **kwargs):
 
     from F2_fig_behavior import make_fig
 
-    if not (a.modelName == "CO" or a.modelName == "W2Dosc"):
+    if not (a.modelName == "CO" or a.modelName == "W2Dosc" or a.modelName == "W2Dosc21"):
         make_fig(plot_format=plot_format)
 
 

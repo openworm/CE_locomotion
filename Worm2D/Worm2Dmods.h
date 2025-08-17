@@ -9,6 +9,8 @@ struct pfa{
 vector<double> phase, freq, amp;
 int size;
 void swap_all(pfa & pfa_);
+void addParsToJson(json & j);
+
 };
 
 
@@ -95,6 +97,8 @@ virtual ~Worm2DoscBase(){if (pars1_ptr) delete pars1_ptr;}
 
 Worm2DoscBase(W2Dparameters * w2par_ptr, int size_):Worm2D({size_,24,0.1,1,size_},0),
 n(dynamic_cast<NSosc&>(*n_ptr)),pars1_ptr(w2par_ptr){}
+
+void addParsToJson(json & j);
 
 NSosc & n;
 W2Dparameters * const pars1_ptr;

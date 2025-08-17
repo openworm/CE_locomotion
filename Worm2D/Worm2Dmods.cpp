@@ -7,6 +7,22 @@ freq.swap(pfa_.freq);
 amp.swap(pfa_.amp);
 }
 
+
+void pfa::addParsToJson(json & j)
+{
+j["size"]["value"] = size;
+j["freqs"]["value"] = freq;
+j["phases"]["value"] = phase;
+j["amps"]["value"] = amp;
+}
+
+void Worm2DoscBase::addParsToJson(json & j)
+{
+    Worm2D::addParsToJson(j);
+    n.pfa1.addParsToJson(j["Nervous system"]);
+
+}
+
 void Worm2DoscBase::construct(const string & filename_)
 {
     setPfaFromFile(filename_);
@@ -24,6 +40,9 @@ void Worm2DoscBase::construct(TVector<double> &pheno)
     n.setTime(t);
 
 }
+
+
+
 
 Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
 

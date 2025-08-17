@@ -165,8 +165,13 @@ def run(a=None, **kwargs):
     network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
 
-    chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
-    electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
+    chemical_weights = None
+    if "Chemical weights" in network_json_data["Nervous system"]:
+        chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
+
+    electrical_weights = None
+    if "Electrical weights" in network_json_data["Nervous system"]:
+        electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
         "value"
     ]
 
@@ -194,7 +199,7 @@ def run(a=None, **kwargs):
         dNMJ_popSizes = utils.getPopSizes(dNMJ_cellnames, dNMJ_pop_cell_names)
 
     drop_self_connections = False
-    if drop_self_connections:
+    if drop_self_connections and (chemical_weights is not None):
         chemical_weights = utils.dropSelfConnections(chemical_weights)
 
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
@@ -292,8 +297,13 @@ def run(a=None, **kwargs):
     # nml_doc.includes.append(IncludeType(href="cell_syn_X.xml"))
     # nml_doc.includes.append(IncludeType(href=cellX_filename))
 
-    add_gapJunctions = True
-    add_continuousProjections = True
+    add_gapJunctions = False
+    if electrical_weights is not None:
+        add_gapJunctions = True
+    add_continuousProjections = False
+    if chemical_weights is not None:
+       add_continuousProjections = True
+
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
 
