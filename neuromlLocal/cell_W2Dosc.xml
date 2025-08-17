@@ -1,7 +1,9 @@
 <ComponentType name="cellW2Dosc"
     extends="baseCellMembPotCap"
     description="Oscillating Cell for Worm2D model">
-    
+
+
+    <Parameter name="amp" dimension="none" description="..."/>
     <Parameter name="freq" dimension="none" description="..."/>
     <Parameter name="phase" dimension="none" description="..."/>
     <Parameter name="timestep" dimension="none" description="..."/>
@@ -39,7 +41,7 @@
         
         <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
         <DerivedVariable name="state" dimension="none" exposure="state" value="v/MVOLT" />
-        <DerivedVariable name="output" dimension="none" exposure="output" value="sin(freq*state + phase)" />
+        <DerivedVariable name="output" dimension="none" exposure="output" value="amp*sin(freq*state + phase)" />
 
 
         <DerivedVariable name="iMemb" dimension="current" exposure="iMemb" value="timestep"/>
