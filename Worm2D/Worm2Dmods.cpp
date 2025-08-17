@@ -11,9 +11,12 @@ amp.swap(pfa_.amp);
 void pfa::addParsToJson(json & j)
 {
 j["size"]["value"] = size;
-j["freqs"]["value"] = freq;
-j["phases"]["value"] = phase;
-j["amps"]["value"] = amp;
+j["freq"]["value"] = freq;
+j["freq"]["cell_val"] = 1;
+j["phase"]["value"] = phase;
+j["phase"]["cell_val"] = 1;
+j["amp"]["value"] = amp;
+j["amp"]["cell_val"] = 1;
 }
 
 void Worm2DoscBase::addParsToJson(json & j)

@@ -14,6 +14,37 @@ DEFAULTS = {"doMuscles": False, "folder": None}
 
 FORMAT_CONN_WEIGHTS = "%.8f"
 
+muscle_group_sizes = [4, 3, 3, 3, 3, 4, 4]
+muscle_group_sizes = [1] * 24
+
+default_cells = {}
+default_cells["Net21"] = {}
+default_cells["CE"] = {}
+default_cells["RS18"] = {}
+default_cells["CO"] = {}
+
+
+default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
+default_cells["CE"]["names"] = ["DA", "DB", "DD", "VD", "VA", "VB"] * 10
+default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + [
+    "SMDD",
+    "RMDD",
+    "SMDV",
+    "RMDV",
+]
+
+default_cells["CO"]["names"] = ["A", "B"]
+
+default_cells["Worm2Dosc"] = {}
+default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
+default_cells["Worm2Dosc"]["add_PG"] = False
+default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
+default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
+default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
+                                                 "phase":1, "timestep":1, 
+                                                 "tau":1, "state0":0}
+default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
+
 
 def process_args():
     parser = argparse.ArgumentParser(
@@ -366,6 +397,7 @@ def getVals(
     return pop_vals
 
 
+
 def makeCellXml(network_json_data, cellW2D_filename):
     print("generating CellXml")
     pop_names = getPopNames(network_json_data)
@@ -416,6 +448,54 @@ def deleteFiles(files_to_delete):
 def deleteFile(file_to_delete):
     if os.path.exists(file_to_delete):
         os.remove(file_to_delete)
+
+def makeCellXmlGen(network_json_data, filename, cell_names):
+    print("generating CellXml")
+    pop_names = getPopNamesCell(cell_names)
+    vals = {}
+    for key in network_json_data["Nervous system"]:
+        if ("cell_val" in network_json_data["Nervous system"][key] 
+                          and network_json_data["Nervous system"][key]["cell_val"] == 1):
+            cell_vals = network_json_data["Nervous system"][key]["value"]
+            vals[key] = getVals(pop_names, cell_names, cell_vals)
+    cell_strings = []
+    for ind, pop_cell_name in enumerate(pop_names):
+        output_string = '<cellW2D id="' +str (pop_cell_name)
+        for key in vals:
+            output_string += f'" {key}="'
+            + str(vals[key][ind])
+        output_string += 's"/>'
+        cell_strings.append(output_string)
+    with open(filename, "w") as f:
+        f.write("<Lems>\n")
+        for val in cell_strings:
+            f.write(val)
+            f.write("\n")
+        f.write("</Lems>")
+
+def makeCellXmlReq(network_json_data, filename, cell_names, par_name_default, xml_cell_name):
+    print("generating CellXml")
+    pop_names = getPopNamesCell(cell_names)
+    vals = {}
+    for key in par_name_default:
+        if key in network_json_data["Nervous system"]:
+            cell_vals = network_json_data["Nervous system"][key]["value"]
+            vals[key] = getVals(pop_names, cell_names, cell_vals)
+        else:
+            vals[key] = [par_name_default[key]] * len(cell_names)
+    cell_strings = []
+    for ind, pop_cell_name in enumerate(pop_names):
+        output_string = f'<{xml_cell_name} id="' +str (pop_cell_name)
+        for key in vals:
+            output_string += (f'" {key}="' + str(vals[key][ind]))
+        output_string += 's"/>'
+        cell_strings.append(output_string)
+    with open(filename, "w") as f:
+        f.write("<Lems>\n")
+        for val in cell_strings:
+            f.write(val)
+            f.write("\n")
+        f.write("</Lems>")
 
 
 def makeMuscCellXml(network_json_data, cellX_filename, cell_names):

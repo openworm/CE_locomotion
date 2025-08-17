@@ -1,7 +1,7 @@
 import sys
 import utils
+import os
 
-# import os
 from build_network import run as build_network_run
 from create_new_lems_file import run as create_new_lems_run
 
@@ -23,6 +23,8 @@ def run(a=None, **kwargs):
         sys.exit()
 
     json_file = a.folder + "/worm_data.json"
+    if not os.path.isfile(json_file):
+      json_file = a.folder + "/worm_data_evo.json"
 
     if hasattr(a, "output_folder"):
         output_folder = getattr(a, "output_folder")

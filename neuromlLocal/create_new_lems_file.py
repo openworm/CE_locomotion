@@ -34,8 +34,15 @@ def run(a=None, **kwargs):
 
     NSIds, VMIds, DMIds = utils.getCellIdDicts()
 
-    # network_json_data = utils.getJsonFile(a.json_file)
+    network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
+    model_name = utils.getModelName(network_json_data)
+
+    if model_name is not None:
+        default_dict = utils.default_cells[model_name]
+    else:  
+        default_dict = None
+
 
     # cell_names = utils.getCellNames(network_json_data)
     # pop_names = utils.getPopNames(network_json_data)
@@ -68,8 +75,12 @@ def run(a=None, **kwargs):
     ls = LEMSSimulation(sim_id, 50000, 1, "Worm2DNet")
     # ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
 
-    ls.include_lems_file("cell_syn_W2D.xml")
-    ls.include_lems_file("cell_syn_W2D_cells.xml")
+    if default_dict is not None and "XML cell file" in default_dict:
+        ls.include_lems_file(default_dict["XML cell file"])
+        ls.include_lems_file(default_dict["XML cells file"])
+    else:
+        ls.include_lems_file("cell_syn_W2D.xml")
+        ls.include_lems_file("cell_syn_W2D_cells.xml")
     doMuscles = a.doMuscles
     if doMuscles:
         ls.include_lems_file("musc_X.xml")

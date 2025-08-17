@@ -56,6 +56,8 @@ colors = {
     "MV2": ".9 .4 .1",
     "MV3": ".9 .4 .1",
     "MV4": ".9 .4 .1",
+    "ND": ".80 .1 .30",
+    "NV": ".82 .7 .43",
 }
 
 
@@ -84,6 +86,8 @@ exc_inh_type = {
     "MV2": "E",
     "MV3": "E",
     "MV4": "E",
+    "ND": "E",
+    "NV": "E",
 }
 
 origins = {
@@ -110,32 +114,13 @@ origins = {
     "MV2": [1, -1],
     "MV3": [-1, -1],
     "MV4": [-1, 1],
+    "ND": [1, 1],
+    "NV": [-1, -1],
 }
 
 # muscle_ids = [
 # "MD1", "MD2", "MD3", "MD4", "MV1", "MV2", "MV3", "MV4"
 # ]
-
-
-muscle_group_sizes = [4, 3, 3, 3, 3, 4, 4]
-muscle_group_sizes = [1] * 24
-
-default_cells = {}
-default_cells["Net21"] = {}
-default_cells["CE"] = {}
-default_cells["RS18"] = {}
-default_cells["CO"] = {}
-
-default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
-default_cells["CE"]["names"] = ["DA", "DB", "DD", "VD", "VA", "VB"] * 10
-default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + [
-    "SMDD",
-    "RMDD",
-    "SMDV",
-    "RMDV",
-]
-
-default_cells["CO"]["names"] = ["A", "B"]
 
 spacing = 0.2
 
@@ -179,7 +164,7 @@ def run(a=None, **kwargs):
     if doMuscles:
         d_muscle_cell_names = []
         v_muscle_cell_names = []
-        for muscle_group_size in muscle_group_sizes:
+        for muscle_group_size in utils.muscle_group_sizes:
             for i in range(muscle_group_size):
                 d_muscle_cell_names.append("MD" + str(i + 1))
                 v_muscle_cell_names.append("MV" + str(i + 1))
@@ -205,9 +190,11 @@ def run(a=None, **kwargs):
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
     model_name = utils.getModelName(network_json_data)
     if model_name is not None:
-        cell_names = default_cells[model_name]["names"]
+        default_dict = utils.default_cells[model_name]
+        cell_names = default_dict["names"]
     else:
         cell_names = utils.getCellNames(network_json_data)
+        default_dict = None
     pop_cell_names = utils.getPopNamesCell(cell_names)
     # cell_names = utils.getCellNames(network_json_data)
     # pop_cell_names = utils.getPopNames(network_json_data)
@@ -256,10 +243,24 @@ def run(a=None, **kwargs):
     utils.deleteFiles(input_filenames_to_delete)
     if os.path.isdir(this_file_dir + "/x86_64"):
         shutil.rmtree(this_file_dir + "/x86_64")
-    cellW2D_filename = "cell_syn_W2D_cells.xml"
-    cellW2D_filepath = this_file_dir + "/" + cellW2D_filename
-    utils.makeCellXml(network_json_data, cellW2D_filepath)
 
+    print(default_dict)
+    if default_dict is not None and "XML cell file" in default_dict:
+        xml_cell_filename = default_dict["XML cell file"]
+        cells_filename = default_dict["XML cells file"]
+        cells_filepath = this_file_dir + "/" + cells_filename
+        utils.makeCellXmlReq(network_json_data, cells_filepath, 
+                             cell_names, 
+                             default_dict["default parameters"], 
+                             default_dict["XML cell name"])
+
+    else:
+        xml_cell_filename = "cell_syn_W2D.xml"
+        cells_filename = "cell_syn_W2D_cells.xml"
+        cells_filepath = this_file_dir + "/" + cells_filename
+        utils.makeCellXml(network_json_data, cells_filepath)
+     
+        
     if doMuscles:
         muscX_filename = "musc_X_cells.xml"
         muscX_filepath = this_file_dir + "/" + muscX_filename
@@ -271,14 +272,14 @@ def run(a=None, **kwargs):
     if not output_folder_name == this_file_dir:
         shutil.copyfile(cell_Id_file_name, output_folder_name + "/cell_Ids.json")
         shutil.copyfile(
-            this_file_dir + "/cell_syn_W2D.xml",
-            output_folder_name + "/cell_syn_W2D.xml",
+            this_file_dir + '/' + xml_cell_filename,
+            output_folder_name  + '/' + xml_cell_filename
         )
         if doMuscles:
             shutil.copyfile(
                 this_file_dir + "/musc_X.xml", output_folder_name + "/musc_X.xml"
             )
-        shutil.copyfile(cellW2D_filepath, output_folder_name + "/" + cellW2D_filename)
+        shutil.copyfile(cells_filepath, output_folder_name + "/" + cells_filename)
         if doMuscles:
             shutil.copyfile(muscX_filepath, output_folder_name + "/" + muscX_filename)
 
@@ -526,6 +527,8 @@ def run(a=None, **kwargs):
     )"""
     pop_id = "PopDA"
     add_PG = True
+    if (default_dict is not None) and ("add_PG" in default_dict): 
+        add_PG = default_dict["add_PG"]
     if add_PG:
         # pop_stim_ind = 0
         # pop0 = net.populations[pop_stim_ind]
@@ -554,30 +557,31 @@ def run(a=None, **kwargs):
 
             input_list.input_ws.append(input_w)
 
-    pg_ext = PulseGenerator(
-        id="extStim",
-        delay="0s",
-        duration="10000s",
-        amplitude="1 pA",
-    )
+    if False:
+        pg_ext = PulseGenerator(
+            id="extStim",
+            delay="0s",
+            duration="10000s",
+            amplitude="1 pA",
+        )
 
-    nml_doc.pulse_generators.append(pg_ext)
-    for pop in net.populations:
-        if not doMuscles or pop.id[3:] not in muscle_ids:
-            input_list = InputList(
-                id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
-            )
-
-            net.input_lists.append(input_list)
-            for i in range(pop.size):
-                input_w = InputW(
-                    id=i,
-                    target=utils.get_cell_id_string(pop.id, pop.component, i),
-                    destination="synapses",
-                    weight=0,
+        nml_doc.pulse_generators.append(pg_ext)
+        for pop in net.populations:
+            if not doMuscles or pop.id[3:] not in muscle_ids:
+                input_list = InputList(
+                    id="ExtStim%s" % pop.id, component=pg_ext.id, populations=pop.id
                 )
 
-                input_list.input_ws.append(input_w)
+                net.input_lists.append(input_list)
+                for i in range(pop.size):
+                    input_w = InputW(
+                        id=i,
+                        target=utils.get_cell_id_string(pop.id, pop.component, i),
+                        destination="synapses",
+                        weight=0,
+                    )
+
+                    input_list.input_ws.append(input_w)
 
     nml_file = this_file_dir + "/Worm2D.net.nml"
     writers.NeuroMLWriter.write(nml_doc, nml_file)
