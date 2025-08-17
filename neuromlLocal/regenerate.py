@@ -31,12 +31,17 @@ def run(a=None, **kwargs):
     else:
         output_folder = a.folder
 
+    if hasattr(a, "popstruct"):
+        popstruct = getattr(a, "popstruct")
+    else:
+        popstruct = 2  
+
     population_structures = [
         "one population",
         "individual populations",
         "cell specific populations",
     ]
-    population_structure = population_structures[2]
+    population_structure = population_structures[popstruct]
     # json_file = "../exampleRunCEW2D/worm_data.json"
     # json_file = "../exampleRun21W2D/worm_data.json"
     # json_file = "../exampleRunRS18W2D/worm_data.json"

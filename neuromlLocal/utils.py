@@ -9,7 +9,7 @@ from neuroml import (
     ElectricalConnectionInstanceW,
 )
 
-DEFAULTS = {"doMuscles": False, "folder": None}
+DEFAULTS = {"doMuscles": False, "folder": None, "popstruct" : 2}
 
 
 FORMAT_CONN_WEIGHTS = "%.8f"
@@ -36,7 +36,8 @@ default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + 
 default_cells["CO"]["names"] = ["A", "B"]
 
 default_cells["Worm2Dosc"] = {}
-default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
+#default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
+default_cells["Worm2Dosc"]["names"] = ["NV" + str(i) for i in range(24)] + ["ND" + str(i) for i in range(24)]
 default_cells["Worm2Dosc"]["add_PG"] = False
 default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
 default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
@@ -67,6 +68,19 @@ def process_args():
         metavar="<folder name>",
         default=DEFAULTS["folder"],
         help=("Required name of folder with worm.json for generation of nml files\n"),
+    )
+
+    parser.add_argument(
+        "-ps",
+        "--popstruct",
+        type=int,
+        metavar="<popstruct>",
+        default=DEFAULTS["popstruct"],
+        help=(
+            "Select population structure, (0) one population,"
+            "(1) individual populations,"
+            "(2) cell specific populations."
+        ),
     )
 
     return parser.parse_args()

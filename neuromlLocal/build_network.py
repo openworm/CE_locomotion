@@ -31,6 +31,13 @@ from pyneuroml.modelgraphs import generate_nmlgraph
 from neuromllite.MatrixHandler import MatrixHandler
 from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
 
+import random
+
+def getRandColor():
+    col_str = ""
+    for _ in range(3):
+        col_str += (str(random.uniform(0.0, 1.0)) + " ")
+    return col_str
 
 colors = {
     "AS": ".80 .1 .30",
@@ -90,6 +97,12 @@ exc_inh_type = {
     "NV": "E",
 }
 
+def getRandOrigin():
+    origin = []
+    for _ in range(2):
+        origin.append(random.uniform(0.0, 1.0))
+    return origin
+
 origins = {
     "AS": [0, 0],
     "DA": [1, -1],
@@ -126,12 +139,18 @@ spacing = 0.2
 
 
 def append_pop_properties(pop):
-    pop.properties.append(Property("color", colors[pop.component]))
+    if pop.component in colors:
+        pop.properties.append(Property("color", colors[pop.component]))
+    else: 
+        pop.properties.append(Property("color", getRandColor()))
     # pop.properties.append(Property("type", exc_inh_type[pop.component]))
     pop.type = "populationList"
     for i in range(pop.size):
         inst = Instance(i)
-        o = origins[pop.component]
+        if pop.component in origins:
+            o = origins[pop.component]
+        else:
+            o = getRandOrigin()
         inst.location = Location(o[0] * 100, o[1] * 100, i * 100)
         pop.instances.append(inst)
 
@@ -612,15 +631,16 @@ def run(a=None, **kwargs):
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
         shutil.copyfile("Worm2D.net.nml", output_folder_name + "/Worm2D.net.nml")
 
-    handler = MatrixHandler(
-        level=1,
-        nl_network=None,
-        show_already=False,
-        save_figs_to_dir=output_folder_name,
-    )
-    currParser = NeuroMLXMLParser(handler)
-    currParser.parse(nml_file)
-    handler.finalise_document()
+    if False:
+        handler = MatrixHandler(
+            level=1,
+            nl_network=None,
+            show_already=False,
+            save_figs_to_dir=output_folder_name,
+        )
+        currParser = NeuroMLXMLParser(handler)
+        currParser.parse(nml_file)
+        handler.finalise_document()
 
 
 if __name__ == "__main__":

@@ -76,6 +76,8 @@ def run(a=None, **kwargs):
     # ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
 
     if default_dict is not None and "XML cell file" in default_dict:
+        print(default_dict["XML cell file"])
+        print(default_dict["XML cells file"])
         ls.include_lems_file(default_dict["XML cell file"])
         ls.include_lems_file(default_dict["XML cells file"])
     else:

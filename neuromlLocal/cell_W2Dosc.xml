@@ -1,3 +1,5 @@
+<Lems>
+
 <ComponentType name="cellW2Dosc"
     extends="baseCellMembPotCap"
     description="Oscillating Cell for Worm2D model">
@@ -65,13 +67,6 @@
     </Dynamics>
     
 </ComponentType>
-
-
-
-<silentSynapse id="silentSyn"/>
-<outputSynapse id="neuron_to_neuron_syn_w2d" sign="1"/>
-
-<gapJunction id="gapJunction0" conductance="1nS"/>
 
 </Lems>
     
