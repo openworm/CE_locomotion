@@ -268,6 +268,9 @@ def run(a=None, **kwargs):
         xml_cell_filename = default_dict["XML cell file"]
         cells_filename = default_dict["XML cells file"]
         cells_filepath = this_file_dir + "/" + cells_filename
+        if "timestep" in default_dict["default parameters"]:
+            default_dict["default parameters"]["timestep"] \
+             = network_json_data["Evolutionary Optimization Parameters"]["StepSize"]["value"]
         utils.makeCellXmlReq(network_json_data, cells_filepath, 
                              cell_names, 
                              default_dict["default parameters"], 

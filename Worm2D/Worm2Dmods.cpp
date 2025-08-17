@@ -12,11 +12,11 @@ void pfa::addParsToJson(json & j)
 {
 j["size"]["value"] = size;
 j["freq"]["value"] = freq;
-j["freq"]["cell_val"] = 1;
+//j["freq"]["cell_val"] = 1;
 j["phase"]["value"] = phase;
-j["phase"]["cell_val"] = 1;
+//j["phase"]["cell_val"] = 1;
 j["amp"]["value"] = amp;
-j["amp"]["cell_val"] = 1;
+//j["amp"]["cell_val"] = 1;
 }
 
 void Worm2DoscBase::addParsToJson(json & j)
@@ -447,24 +447,24 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
     
         
         // Genotype-Phenotype Mapping
-        
-        
         //Worm21 w(phenotype);
         
         InitializeState(rs);
-        
+        initForSimulation(rs);
+        setStepSize(StepSize);
+
         // Transient XXX
         //SetAVB(0.0);
         //SetAVA(0.0);
         
         for (double t = 0.0; t <= Transient; t += StepSize){
-            Step(StepSize);
+            Step();
         }    
         
         DBp = n.NeuronOutput(pars1_ptr->dbunit);
         VBp = n.NeuronOutput(pars1_ptr->vbunit);
     
-        Step(StepSize); // determine sign of derivative
+        Step(); // determine sign of derivative
     
         dDB = n.NeuronOutput(pars1_ptr->dbunit) - DBp;
         dVB = n.NeuronOutput(pars1_ptr->vbunit) - VBp;
@@ -479,7 +479,7 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
         // Time loop
         for (double t = 0.0; t <= Duration; t += StepSize) {
             // Step simulation
-            Step(StepSize);
+            Step();
             
             ///// Oscilation
             // check changes in sign of derivative

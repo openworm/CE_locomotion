@@ -43,7 +43,7 @@ default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
 default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
 default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
                                                  "phase":1, "timestep":1, 
-                                                 "tau":1, "state0":0}
+                                                 "tau":{"value":1,"dim":"s"}, "state0":0}
 default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
 
 
@@ -496,13 +496,18 @@ def makeCellXmlReq(network_json_data, filename, cell_names, par_name_default, xm
             cell_vals = network_json_data["Nervous system"][key]["value"]
             vals[key] = getVals(pop_names, cell_names, cell_vals)
         else:
-            vals[key] = [par_name_default[key]] * len(cell_names)
+            if isinstance(par_name_default[key],dict):
+                vals[key] = [par_name_default[key]["value"]] * len(cell_names)
+            else:
+                vals[key] = [par_name_default[key]] * len(cell_names)
     cell_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
         output_string = f'<{xml_cell_name} id="' +str (pop_cell_name)
         for key in vals:
             output_string += (f'" {key}="' + str(vals[key][ind]))
-        output_string += 's"/>'
+            if isinstance(par_name_default[key],dict):
+                output_string += f'{par_name_default[key]["dim"]}'
+        output_string += '"/>'
         cell_strings.append(output_string)
     with open(filename, "w") as f:
         f.write("<Lems>\n")
