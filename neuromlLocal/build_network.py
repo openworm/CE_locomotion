@@ -33,11 +33,13 @@ from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
 
 import random
 
+
 def getRandColor():
     col_str = ""
     for _ in range(3):
-        col_str += (str(random.uniform(0.0, 1.0)) + " ")
+        col_str += str(random.uniform(0.0, 1.0)) + " "
     return col_str
+
 
 colors = {
     "AS": ".80 .1 .30",
@@ -97,11 +99,13 @@ exc_inh_type = {
     "NV": "E",
 }
 
+
 def getRandOrigin():
     origin = []
     for _ in range(2):
         origin.append(random.uniform(0.0, 1.0))
     return origin
+
 
 origins = {
     "AS": [0, 0],
@@ -141,7 +145,7 @@ spacing = 0.2
 def append_pop_properties(pop):
     if pop.component in colors:
         pop.properties.append(Property("color", colors[pop.component]))
-    else: 
+    else:
         pop.properties.append(Property("color", getRandColor()))
     # pop.properties.append(Property("type", exc_inh_type[pop.component]))
     pop.type = "populationList"
@@ -171,13 +175,15 @@ def run(a=None, **kwargs):
 
     chemical_weights = None
     if "Chemical weights" in network_json_data["Nervous system"]:
-        chemical_weights = network_json_data["Nervous system"]["Chemical weights"]["value"]
+        chemical_weights = network_json_data["Nervous system"]["Chemical weights"][
+            "value"
+        ]
 
     electrical_weights = None
     if "Electrical weights" in network_json_data["Nervous system"]:
         electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
-        "value"
-    ]
+            "value"
+        ]
 
     doMuscles = a.doMuscles
     if doMuscles:
@@ -269,25 +275,31 @@ def run(a=None, **kwargs):
         cells_filename = default_dict["XML cells file"]
         cells_filepath = this_file_dir + "/" + cells_filename
         if "timestep" in default_dict["default parameters"]:
-            if isinstance(default_dict["default parameters"]["timestep"],dict):
-                default_dict["default parameters"]["timestep"]["value"] = \
-                network_json_data["Evolutionary Optimization Parameters"]["StepSize"]["value"]
+            if isinstance(default_dict["default parameters"]["timestep"], dict):
+                default_dict["default parameters"]["timestep"]["value"] = (
+                    network_json_data["Evolutionary Optimization Parameters"][
+                        "StepSize"
+                    ]["value"]
+                )
             else:
-                default_dict["default parameters"]["timestep"] = \
-                network_json_data["Evolutionary Optimization Parameters"]["StepSize"]["value"]
-         
-        utils.makeCellXmlReq(network_json_data, cells_filepath, 
-                             cell_names, 
-                             default_dict["default parameters"], 
-                             default_dict["XML cell name"])
+                default_dict["default parameters"]["timestep"] = network_json_data[
+                    "Evolutionary Optimization Parameters"
+                ]["StepSize"]["value"]
+
+        utils.makeCellXmlReq(
+            network_json_data,
+            cells_filepath,
+            cell_names,
+            default_dict["default parameters"],
+            default_dict["XML cell name"],
+        )
 
     else:
         xml_cell_filename = "cell_syn_W2D.xml"
         cells_filename = "cell_syn_W2D_cells.xml"
         cells_filepath = this_file_dir + "/" + cells_filename
         utils.makeCellXml(network_json_data, cells_filepath)
-     
-        
+
     if doMuscles:
         muscX_filename = "musc_X_cells.xml"
         muscX_filepath = this_file_dir + "/" + muscX_filename
@@ -299,8 +311,8 @@ def run(a=None, **kwargs):
     if not output_folder_name == this_file_dir:
         shutil.copyfile(cell_Id_file_name, output_folder_name + "/cell_Ids.json")
         shutil.copyfile(
-            this_file_dir + '/' + xml_cell_filename,
-            output_folder_name  + '/' + xml_cell_filename
+            this_file_dir + "/" + xml_cell_filename,
+            output_folder_name + "/" + xml_cell_filename,
         )
         if doMuscles:
             shutil.copyfile(
@@ -330,7 +342,7 @@ def run(a=None, **kwargs):
         add_gapJunctions = True
     add_continuousProjections = False
     if chemical_weights is not None:
-       add_continuousProjections = True
+        add_continuousProjections = True
 
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
@@ -554,7 +566,7 @@ def run(a=None, **kwargs):
     )"""
     pop_id = "PopDA"
     add_PG = True
-    if (default_dict is not None) and ("add_PG" in default_dict): 
+    if (default_dict is not None) and ("add_PG" in default_dict):
         add_PG = default_dict["add_PG"]
     if add_PG:
         # pop_stim_ind = 0

@@ -24,7 +24,7 @@ def run(a=None, **kwargs):
 
     json_file = a.folder + "/worm_data.json"
     if not os.path.isfile(json_file):
-      json_file = a.folder + "/worm_data_evo.json"
+        json_file = a.folder + "/worm_data_evo.json"
 
     if hasattr(a, "output_folder"):
         output_folder = getattr(a, "output_folder")
@@ -34,7 +34,7 @@ def run(a=None, **kwargs):
     if hasattr(a, "popstruct"):
         popstruct = getattr(a, "popstruct")
     else:
-        popstruct = 2  
+        popstruct = 2
 
     population_structures = [
         "one population",

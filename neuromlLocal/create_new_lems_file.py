@@ -40,9 +40,8 @@ def run(a=None, **kwargs):
 
     if model_name is not None:
         default_dict = utils.default_cells[model_name]
-    else:  
+    else:
         default_dict = None
-
 
     # cell_names = utils.getCellNames(network_json_data)
     # pop_names = utils.getPopNames(network_json_data)

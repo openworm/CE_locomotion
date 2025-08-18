@@ -9,7 +9,7 @@ from neuroml import (
     ElectricalConnectionInstanceW,
 )
 
-DEFAULTS = {"doMuscles": False, "folder": None, "popstruct" : 2}
+DEFAULTS = {"doMuscles": False, "folder": None, "popstruct": 2}
 
 
 FORMAT_CONN_WEIGHTS = "%.8f"
@@ -36,16 +36,28 @@ default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + 
 default_cells["CO"]["names"] = ["A", "B"]
 
 default_cells["Worm2Dosc"] = {}
-#default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
-default_cells["Worm2Dosc"]["names"] = ["NV" + str(i) for i in range(24)] + ["ND" + str(i) for i in range(24)]
+# default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
+default_cells["Worm2Dosc"]["names"] = ["NV" + str(i) for i in range(24)] + [
+    "ND" + str(i) for i in range(24)
+]
 default_cells["Worm2Dosc"]["add_PG"] = False
 default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
 default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
-default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
-                                                 "phase":1, "timestep":{"value":1, "dim":"s"},
-                                                 "tau":{"value":1,"dim":"s"}, "state0":0}
-default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
-                                                 "phase":1, "timestep": 1, "state0":0}
+default_cells["Worm2Dosc"]["default parameters"] = {
+    "amp": 1,
+    "freq": 1,
+    "phase": 1,
+    "timestep": {"value": 1, "dim": "s"},
+    "tau": {"value": 1, "dim": "s"},
+    "state0": 0,
+}
+default_cells["Worm2Dosc"]["default parameters"] = {
+    "amp": 1,
+    "freq": 1,
+    "phase": 1,
+    "timestep": 1,
+    "state0": 0,
+}
 default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
 
 
@@ -413,7 +425,6 @@ def getVals(
     return pop_vals
 
 
-
 def makeCellXml(network_json_data, cellW2D_filename):
     print("generating CellXml")
     pop_names = getPopNames(network_json_data)
@@ -465,21 +476,24 @@ def deleteFile(file_to_delete):
     if os.path.exists(file_to_delete):
         os.remove(file_to_delete)
 
+
 def makeCellXmlGen(network_json_data, filename, cell_names):
     print("generating CellXml")
     pop_names = getPopNamesCell(cell_names)
     vals = {}
     for key in network_json_data["Nervous system"]:
-        if ("cell_val" in network_json_data["Nervous system"][key] 
-                          and network_json_data["Nervous system"][key]["cell_val"] == 1):
+        if (
+            "cell_val" in network_json_data["Nervous system"][key]
+            and network_json_data["Nervous system"][key]["cell_val"] == 1
+        ):
             cell_vals = network_json_data["Nervous system"][key]["value"]
             vals[key] = getVals(pop_names, cell_names, cell_vals)
     cell_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
-        output_string = '<cellW2D id="' +str (pop_cell_name)
+        output_string = '<cellW2D id="' + str(pop_cell_name)
         for key in vals:
             output_string += f'" {key}="'
-            + str(vals[key][ind])
+            +str(vals[key][ind])
         output_string += 's"/>'
         cell_strings.append(output_string)
     with open(filename, "w") as f:
@@ -489,7 +503,10 @@ def makeCellXmlGen(network_json_data, filename, cell_names):
             f.write("\n")
         f.write("</Lems>")
 
-def makeCellXmlReq(network_json_data, filename, cell_names, par_name_default, xml_cell_name):
+
+def makeCellXmlReq(
+    network_json_data, filename, cell_names, par_name_default, xml_cell_name
+):
     print("generating CellXml")
     pop_names = getPopNamesCell(cell_names)
     vals = {}
@@ -498,17 +515,17 @@ def makeCellXmlReq(network_json_data, filename, cell_names, par_name_default, xm
             cell_vals = network_json_data["Nervous system"][key]["value"]
             vals[key] = getVals(pop_names, cell_names, cell_vals)
         else:
-            if isinstance(par_name_default[key],dict):
+            if isinstance(par_name_default[key], dict):
                 vals[key] = [par_name_default[key]["value"]] * len(cell_names)
             else:
                 vals[key] = [par_name_default[key]] * len(cell_names)
     cell_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
-        output_string = f'<{xml_cell_name} id="' +str (pop_cell_name)
+        output_string = f'<{xml_cell_name} id="' + str(pop_cell_name)
         for key in vals:
-            output_string += (f'" {key}="' + str(vals[key][ind]))
-            if isinstance(par_name_default[key],dict):
-                output_string += f'{par_name_default[key]["dim"]}'
+            output_string += f'" {key}="' + str(vals[key][ind])
+            if isinstance(par_name_default[key], dict):
+                output_string += f"{par_name_default[key]['dim']}"
         output_string += '"/>'
         cell_strings.append(output_string)
     with open(filename, "w") as f:
