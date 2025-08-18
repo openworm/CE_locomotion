@@ -63,7 +63,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-class Worm2DCE: public  Worm2D{
+class Worm2DCE: public Worm2D{
     
     public:
     //void Step(double StepSize);
@@ -88,8 +88,7 @@ class Worm2DCE: public  Worm2D{
     protected:
     //void Step1();
     void Step1();
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)
-    :Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,0){}
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0){}
 
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
     vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}

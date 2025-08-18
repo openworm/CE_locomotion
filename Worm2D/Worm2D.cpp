@@ -104,8 +104,13 @@ muscForWDconst(mfwc){}
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
 Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
+Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){} 
+
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
+
+//Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
 m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)

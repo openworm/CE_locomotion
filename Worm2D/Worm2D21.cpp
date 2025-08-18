@@ -39,7 +39,7 @@ AVB = 0;
 }
 
 
-Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},new c302ForW2D(), new Muscles),
+Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
 Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
   
@@ -66,8 +66,7 @@ Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 
 
 
-Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},
-       new c302ForW2D(), new Muscles),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
 
 // NMJ Weight

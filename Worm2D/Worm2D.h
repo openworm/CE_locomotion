@@ -228,6 +228,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
     void writeData();
 
     bool W2Dmparscalled, W2Dminitcalled;
@@ -268,6 +269,7 @@ class Worm2D : virtual public Worm2Dm
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
+    //Worm2D();
 
     void setUp();
     Muscles & m;
