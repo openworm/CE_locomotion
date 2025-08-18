@@ -152,7 +152,7 @@ class Worm2Dbase : virtual public DataWriter
 public:
 
 virtual void InitializeState(RandomState &rs) = 0;
-virtual void initForSimulation(RandomState &) =  0;
+virtual void initForSimulation(RandomState &) {return;}
 
 
 
@@ -168,7 +168,7 @@ virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
 
 NSForW2D & itsNS(){return *n_ptr;}
-virtual void DumpParams(ofstream &ofs) = 0;
+virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
 void DumpVal(string filename_, double val);
 virtual double getVelocity() = 0;

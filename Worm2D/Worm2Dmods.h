@@ -26,7 +26,7 @@ NSosc(){}
 double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
 double NeuronState(int i) {return 0;}
 void SetNeuronExternalInput(int i, double value) {return;}
-void EulerStep(double stepsize) {return;}
+void EulerStep(double stepsize) {t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
 const pfa & itsPfa() const {return pfa1;}
@@ -57,32 +57,20 @@ class Worm2Doscpars : public W2Dparameters
 public:
 double NMJweight;
 };
-
-
-
-class Worm2DoscBase : public Worm2D, public Evolvable
+class Worm2DPars : public Worm2D
 {
 public:
-void InitializeState(RandomState &rs);
-void initForSimulation(RandomState &) {return;}
-void DumpParams(ofstream &ofs) {return;}
 
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-//void writeJson(TVector<double> &);
-evoPars getDefaultEvoPars();
-
-virtual void setPfaFromPheno(TVector<double> &v) = 0;
-virtual void setParsFromPheno(TVector<double> &v) = 0;
-void setPfaFromGeno(TVector<double> &v);
-void setParsFromGeno(TVector<double> &v);
-void setPfaFromFile(const string & genofilename_);
-void setParsFromFile(const string & genofilename_);
-const vector<string> getCellNames() {return {"not implemented"};}
 protected:
 
-void Step1();
+const vector<string> getCellNames() {return {"not implemented"};}
 const vector<string> getVMuscNames() {return {"not implemented"};}
 const vector<string> getDMuscNames() {return {"not implemented"};}
+void Step1();
+
+Worm2DPars(W2Dparameters * w2par_ptr, int size_):Worm2D({size_,24,0.1,1,size_},0),pars1_ptr(w2par_ptr){}
+virtual ~Worm2DPars(){if (pars1_ptr) delete pars1_ptr;}
+W2Dparameters * const pars1_ptr;
 
 vector<doubIntParamsHead> getWormParams() {
     vector<doubIntParamsHead> parvec;
@@ -90,22 +78,56 @@ vector<doubIntParamsHead> getWormParams() {
     parvec.push_back(var1);
     return parvec;
 }
+};
+
+
+class Worm2DoscBase : public Worm2DPars, public Evolvable
+{
+public:
+//void InitializeState(RandomState &rs);
+//void initForSimulation(RandomState &) {return;}
+//void DumpParams(ofstream &ofs) {return;}
+
+double EvaluationFunction(TVector<double> &v, RandomState &rs);
+//void writeJson(TVector<double> &);
+evoPars getDefaultEvoPars();
+virtual void setParsFromPheno(TVector<double> &v) = 0;
+void setParsFromFile(const string & genofilename_);
+void setParsFromGeno(TVector<double> &v);
+virtual void setPfaFromPheno(TVector<double> &v) = 0;
+//virtual void setParsFromPheno(TVector<double> &v) = 0;
+void setPfaFromGeno(TVector<double> &v);
+
+void setPfaFromFile(const string & genofilename_);
+//void setParsFromFile(const string & genofilename_);
+//const vector<string> getCellNames() {return {"not implemented"};}
+protected:
+
+//void Step1();
+//const vector<string> getVMuscNames() {return {"not implemented"};}
+//const vector<string> getDMuscNames() {return {"not implemented"};}
+
+
+
 
 void construct(TVector<double> &pheno);
 void construct(const string & filename_);
 virtual ~Worm2DoscBase(){if (pars1_ptr) delete pars1_ptr;}
 
-Worm2DoscBase(W2Dparameters * w2par_ptr, int size_):Worm2D({size_,24,0.1,1,size_},0),
-n(dynamic_cast<NSosc&>(*n_ptr)),pars1_ptr(w2par_ptr){}
+Worm2DoscBase(W2Dparameters * w2par_ptr, int size_):Worm2DPars(w2par_ptr,size_),
+n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 void addParsToJson(json & j);
 
 NSosc & n;
-W2Dparameters * const pars1_ptr;
-
-
+//W2Dparameters * const pars1_ptr;
 
 };
+
+
+
+
+
 
 class Worm2Dosc : public Worm2DoscBase
 {

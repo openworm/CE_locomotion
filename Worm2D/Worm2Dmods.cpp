@@ -154,12 +154,12 @@ Worm2Dosc(pfa_,pars1_),Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), 
 
 
 
-void Worm2DoscBase::InitializeState(RandomState &rs)
+/* void Worm2DoscBase::InitializeState(RandomState &rs)
 {    
     cout << "Worm2Dosc init state" << endl;
     Worm2D::InitializeState(rs);
     return;    
-}
+} */
 
 void Worm2DoscBase::setPfaFromFile(const string & genofilename_)
 {
@@ -211,16 +211,13 @@ n.pfa1.swap_all(pfa1);
 
 void Worm2DoscBase::setParsFromFile(const string & filename_)
 {
-    
     ifstream ifs;
     ifs.open(filename_);
     TVector<double> bestVector(1, getVectSize());
     //assert(0);
     ifs >> bestVector;
     ifs.close();
-
     setParsFromGeno(bestVector);
-
 }
 
 
@@ -296,15 +293,15 @@ vector<toFromWeight> Worm2Dosc::makeVentralMuscleConn()
     return makeDVMuscleConn(24);
 }
 
-void Worm2DoscBase::Step1()
+void Worm2DPars::Step1()
 {
 
-    n.setTime(t);
+    //n.setTime(t);
     // Update Body
     b.StepBody(settedStepSize);
     
     // Update Nervous System
-    //n_ptr->EulerStep(settedStepSize);
+    n_ptr->EulerStep(settedStepSize);
     
     // Interneuron input  //////////////////////
     /* for (int i = 1; i <= par1.N_units; i++){
@@ -421,10 +418,13 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
    
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(geno, phenotype);
-    setPfaFromPheno(phenotype);
-    setParsFromPheno(phenotype);
-
-    setUpMuscleConn();
+    //setPfaFromPheno(phenotype);
+    //setParsFromPheno(phenotype);
+    construct(phenotype);
+    //setUpMuscleConn();
+    InitializeState(rs);
+    initForSimulation(rs);
+    setStepSize(StepSize);
 
         // Fitness
         double fitness_tr = 0.0;
@@ -449,9 +449,7 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
         // Genotype-Phenotype Mapping
         //Worm21 w(phenotype);
         
-        InitializeState(rs);
-        initForSimulation(rs);
-        setStepSize(StepSize);
+        
 
         // Transient XXX
         //SetAVB(0.0);
