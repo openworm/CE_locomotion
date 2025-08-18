@@ -42,8 +42,10 @@ default_cells["Worm2Dosc"]["add_PG"] = False
 default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
 default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
 default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
-                                                 "phase":1, "timestep":1, 
+                                                 "phase":1, "timestep":{"value":1, "dim":"s"},
                                                  "tau":{"value":1,"dim":"s"}, "state0":0}
+default_cells["Worm2Dosc"]["default parameters"] = {"amp":1, "freq":1, 
+                                                 "phase":1, "timestep": 1, "state0":0}
 default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
 
 
