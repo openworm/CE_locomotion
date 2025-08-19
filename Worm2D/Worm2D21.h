@@ -92,7 +92,7 @@ public:
 
     void addParsToJson(json & j);
 
-    void writeData(){Worm2D::writeData();}
+    //void writeData(){Worm2D::writeData();}
     void setMuscleInput(){return Worm2D::setMuscleInput();}
     void setMuscleInputOrig();
     vector<toFromWeight> makeVentralMuscleConn();

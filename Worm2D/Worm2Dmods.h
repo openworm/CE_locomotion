@@ -48,11 +48,15 @@ class W2Dparameters
 {
 public:
 virtual ~W2Dparameters(){}
+virtual void setParsFromJson(json & j){}
+virtual void addParsToJson(json & j){}
 };
 class Worm2Doscpars1 : virtual public W2Dparameters
 {
 public:
 double NMJweight;
+void setParsFromJson(json & j){NMJweight = j["NMJWeight"]["value"];}
+void addParsToJson(json & j){j["NMJWeight"]["value"] = NMJweight;}
 };
 
 class Evolparameters : virtual public W2Dparameters
@@ -60,9 +64,17 @@ class Evolparameters : virtual public W2Dparameters
 public:
 int dbunit;
 int vbunit;
+void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
+void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
 
-class Worm2Doscpars : public Worm2Doscpars1, public Evolparameters{};
+class Worm2Doscpars : public Worm2Doscpars1, public Evolparameters
+{
+public:
+void setParsFromJson(json & j){Worm2Doscpars1::setParsFromJson(j); Evolparameters::setParsFromJson(j);}
+void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j); Evolparameters::addParsToJson(j);}
+
+};
 
 
 class Worm2Dosc21pars : public Evolparameters
@@ -89,6 +101,8 @@ Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr);
 
 virtual ~Worm2DPars(){if (pars1_ptr) delete pars1_ptr;}
 W2Dparameters * const pars1_ptr;
+
+void addParsToJson(json & j){Worm2D::addParsToJson(j);pars1_ptr->addParsToJson(j["Worm"]);}
 
 
 vector<doubIntParamsHead> getWormParams() {
@@ -143,7 +157,20 @@ Evolparameters & Epars1;
 };
 
 
-class Worm2Dosc : public Worm2DoscBase
+
+class Worm2Dosc1 
+{
+public:
+Worm2Dosc1(Worm2Doscpars1 & pars1_):pars1(pars1_){}
+vector<toFromWeight> makeVentralMuscleConn();
+vector<toFromWeight> makeDorsalMuscleConn();
+vector<toFromWeight> makeDVMuscleConn(int offset);
+
+protected:
+Worm2Doscpars1 & pars1;
+};
+
+class Worm2Dosc : public Worm2DoscBase, public Worm2Dosc1
 {
 public:
 //Worm2Dosc(const Worm2Dosc&);
@@ -154,7 +181,8 @@ Worm2Dosc(TVector<double> & pheno);
 //Worm2Dosc(TVector<double> &v);
 //Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
-
+vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc1::makeVentralMuscleConn();}
+vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
 int getVectSize(){return 4;}
@@ -165,10 +193,6 @@ void setPfaFromPheno(TVector<double> &v);
 void setParsFromPheno(TVector<double> &v);
 
 
-
-vector<toFromWeight> makeVentralMuscleConn();
-vector<toFromWeight> makeDorsalMuscleConn();
-vector<toFromWeight> makeDVMuscleConn(int offset);
 
 
 
@@ -185,14 +209,13 @@ Worm2Doscpars & pars1;
 };
 
 
-class Worm2DoscNML : public Worm2DPars
+class Worm2DoscNML : public Worm2DPars, public Worm2Dosc1
 {
 
     public:
     Worm2DoscNML(int size);
+    Worm2DoscNML(json & j);
 
-protected:
-Worm2Doscpars1 & pars1;
 
 };
 
@@ -202,7 +225,7 @@ class Worm2DoscHalf : public Worm2Dosc
 public:
 Worm2DoscHalf();
 Worm2DoscHalf(const string & filename_);
-Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
+//Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
 Worm2DoscHalf(TVector<double> & pheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 

@@ -23,7 +23,7 @@ j["amp"]["value"] = amp;
 
 void Worm2DoscBase::addParsToJson(json & j)
 {
-    Worm2D::addParsToJson(j);
+    Worm2DPars::addParsToJson(j);
     n.pfa1.addParsToJson(j["Nervous system"]);
 
 }
@@ -52,8 +52,12 @@ Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
 Worm2DoscNML::Worm2DoscNML(int size_):Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D()),
 Worm2DPars({size_,24,0.1,1,size_}, 0, new Worm2Doscpars1()),
-pars1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
+Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
 
+Worm2DoscNML::Worm2DoscNML(json & j):Worm2DoscNML(48)
+{
+pars1.setParsFromJson(j);
+}
 
 Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
 Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc()),
@@ -64,7 +68,7 @@ n(dynamic_cast<NSosc&>(*n_ptr)){}
 Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
 
 
-Worm2Dosc::Worm2Dosc(int size_):
+Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)),
 Worm2DoscBase({size_,24,0.1,1,size_}, new Worm2Doscpars()),
 pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),Worm2Dm({size_,24,0.1,1,size_},new NSosc()){}
 
@@ -257,7 +261,7 @@ void Worm2DoscBase::setParsFromGeno(TVector<double> &v)
  
 }
 
-vector<toFromWeight> Worm2Dosc::makeDVMuscleConn(int offset)
+vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
 {
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
@@ -287,12 +291,12 @@ vector<toFromWeight> Worm2DoscHalf::makeVentralMuscleConn()
     return makeDVMuscleConn(-1);
 }
 
-vector<toFromWeight> Worm2Dosc::makeDorsalMuscleConn()
+vector<toFromWeight> Worm2Dosc1::makeDorsalMuscleConn()
 {
     return makeDVMuscleConn(0);
 }
 
-vector<toFromWeight> Worm2Dosc::makeVentralMuscleConn()
+vector<toFromWeight> Worm2Dosc1::makeVentralMuscleConn()
 {
     return makeDVMuscleConn(24);
 }
@@ -657,3 +661,5 @@ void Worm2Dosc21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
    cout << "GenPhenMapping" << endl;
 
 }
+
+
