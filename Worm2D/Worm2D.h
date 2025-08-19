@@ -262,9 +262,11 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
     virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
     void setUpMuscleConn();
+    void setUpMuscleConn(json & j);
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
     void setMuscleInput();
+    
     void setMuscleInputVec();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //void setMuscleInputVent();

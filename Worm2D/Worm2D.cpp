@@ -706,7 +706,7 @@ void Worm2D::setMuscleInputVec()
 
 
 
-    m.EulerStep(settedStepSize);
+    //m.EulerStep(settedStepSize);
 }
 
 
@@ -720,6 +720,15 @@ void Worm2D::setMuscleInput()
     m.EulerStep(settedStepSize);
     //cout << "setMuscInp" << endl;
     //exit(1);
+}
+
+void Worm2D::setUpMuscleConn(json & j)
+{
+vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"];
+vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"];
+vMuscConnvec.swap(vMuscConnvec1);
+dMuscConnvec.swap(dMuscConnvec1);
+
 }
 
 void Worm2D::setUpMuscleConn()

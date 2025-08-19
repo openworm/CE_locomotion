@@ -37,11 +37,17 @@ int main (int argc, const char* argv[])
     
     cout << evo->rename_file("best.gen.dat") << " " << model_name << endl;
 
+    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0"));
 
     Worm2Dbase * w2;
+    if (!do_nml){
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo->rename_file("best.gen.dat"));
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo->rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(evo->rename_file("best.gen.dat"));
+    }else{
+
+    if (model_name == "W2Dosc") w2 = new Worm2DoscNML(evo->rename_file("worm_data_evo.json"));
+    }
 
     cout << "const 1" << endl;
     //assert(0);

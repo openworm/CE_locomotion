@@ -54,9 +54,15 @@ Worm2DoscNML::Worm2DoscNML(int size_):Worm2Dm({size_,24,0.1,1,size_}, new c302Fo
 Worm2DPars({size_,24,0.1,1,size_}, 0, new Worm2Doscpars1()),
 Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
 
-Worm2DoscNML::Worm2DoscNML(json & j):Worm2DoscNML(48)
+Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 {
-pars1.setParsFromJson(j);
+    ifstream json_in(jsonfile_);
+    json j;
+    json_in >> j;
+    json_in.close();
+    
+    pars1.setParsFromJson(j);
+    setUpMuscleConn(j);
 }
 
 Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
