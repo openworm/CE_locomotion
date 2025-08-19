@@ -4,9 +4,9 @@
 
 void pfa::swap_all(pfa & pfa_){
 size = pfa_.size;
-phase.swap(pfa_.phase);
-freq.swap(pfa_.freq);
-amp.swap(pfa_.amp);
+pfa_.phase.swap(phase);
+pfa_.freq.swap(freq);
+pfa_.amp.swap(amp);
 }
 
 
@@ -56,12 +56,15 @@ Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 {
+
     ifstream json_in(jsonfile_);
     json j;
+    //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
     json_in >> j;
     json_in.close();
-    
-    pars1.setParsFromJson(j);
+    //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
+    pars1.setParsFromJson(j["Worm"]);
+
     setUpMuscleConn(j);
 }
 
@@ -76,7 +79,13 @@ Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
 
 Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)),
 Worm2DoscBase({size_,24,0.1,1,size_}, new Worm2Doscpars()),
-pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),Worm2Dm({size_,24,0.1,1,size_},new NSosc()){}
+pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),Worm2Dm({size_,24,0.1,1,size_},new NSosc())
+{
+
+    TVector<double> pheno;
+    pheno.SetBounds(1,getVectSize());
+    construct(pheno);
+}
 
 Worm2Dosc21::Worm2Dosc21():
 Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
@@ -431,11 +440,11 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
 
    
     TVector<double> phenotype(1, VectSize);
-    GenPhenMapping(geno, phenotype);
+    //GenPhenMapping(geno, phenotype);
     //setPfaFromPheno(phenotype);
-    //setParsFromPheno(phenotype);
-    construct(phenotype);
-    //setUpMuscleConn();
+    setParsFromPheno(phenotype);
+    //construct(phenotype);
+    setUpMuscleConn();
     InitializeState(rs);
     initForSimulation(rs);
     setStepSize(StepSize);

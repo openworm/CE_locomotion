@@ -5,7 +5,9 @@ const double pi2 = 3.14159265*2.0;
 
 //struct evoPars;
 
-struct pfa{
+class pfa{
+
+    public:
 vector<double> phase, freq, amp;
 int size;
 void swap_all(pfa & pfa_);
@@ -92,15 +94,13 @@ public:
 
 protected:
 
-const vector<string> getCellNames() {return {"not implemented"};}
-const vector<string> getVMuscNames() {return {"not implemented"};}
-const vector<string> getDMuscNames() {return {"not implemented"};}
+
 void Step1();
 
 Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr);
 
 virtual ~Worm2DPars(){if (pars1_ptr) delete pars1_ptr;}
-W2Dparameters * const pars1_ptr;
+W2Dparameters * const pars1_ptr = nullptr;
 
 void addParsToJson(json & j){Worm2D::addParsToJson(j);pars1_ptr->addParsToJson(j["Worm"]);}
 

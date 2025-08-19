@@ -47,8 +47,17 @@ int main (int argc, const char* argv[])
     }else{
 
     if (model_name == "W2Dosc") w2 = new Worm2DoscNML(evo->rename_file("worm_data_evo.json"));
-    }
 
+    }
+    ofstream json_out(evo->rename_file("worm_data_worm.json"));
+    //json_out << setprecision(32);
+    json j;
+    w2->addParsToJson(j);
+    if (do_evol) evo->addParsToJson(j);
+    json_out << std::setw(4) << j << std::endl;
+    json_out.close();
+
+    
     cout << "const 1" << endl;
     //assert(0);
 

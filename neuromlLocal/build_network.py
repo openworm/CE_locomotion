@@ -596,7 +596,7 @@ def run(a=None, **kwargs):
 
             input_list.input_ws.append(input_w)
 
-    if False:
+    if add_PG:
         pg_ext = PulseGenerator(
             id="extStim",
             delay="0s",
@@ -651,7 +651,7 @@ def run(a=None, **kwargs):
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
         shutil.copyfile("Worm2D.net.nml", output_folder_name + "/Worm2D.net.nml")
 
-    if False:
+    if add_PG:
         handler = MatrixHandler(
             level=1,
             nl_network=None,

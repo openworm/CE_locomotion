@@ -146,7 +146,8 @@ class Worm2DNRNSimulation:
         self.ns.sim_time = 10
 
         # self.h.OneStim_0.weight = 0.0
-        getattr(self.h, "OneStim_0").weight = 0.0
+        if hasattr(self.h, "OneStim_0"):
+            getattr(self.h, "OneStim_0").weight = 0.0
 
         print_(
             "Initialised Worm2DNRNSimulation of length %s ms and dt = %s ms..."

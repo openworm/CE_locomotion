@@ -470,6 +470,7 @@ def run(a=None, **kwargs):
             "phenotype.dat",
             "best.pheno.dat",
             "search.cpt",
+            "worm_data_evo.json",
         ]
 
         for file in files:
@@ -595,6 +596,8 @@ def run(a=None, **kwargs):
     evol_data = {}
     evol_par_file_base = a.outputFolderName + "/evolution_pars.json"
     evol_par_file = a.outputFolderName + "/worm_data.json"
+    if not os.path.isfile(evol_par_file):
+        evol_par_file = a.outputFolderName + "/worm_data_evo.json"
     if os.path.isfile(evol_par_file):
         with open(evol_par_file) as f:
             worm_data = json.load(f)

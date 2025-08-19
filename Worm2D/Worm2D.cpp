@@ -724,8 +724,15 @@ void Worm2D::setMuscleInput()
 
 void Worm2D::setUpMuscleConn(json & j)
 {
-vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"];
-vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"];
+    
+//assert(0  && "Worm2D::setUpMuscleConn(json & j)");
+//json jns = j["Nervous system"];
+//auto outputs = jns["outputs"]["value"].template get< vector<double> >();
+//auto biases = jns["biases"]["value"].template get< vector<double> >();
+auto vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+auto dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+//vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"];
+//vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"];
 vMuscConnvec.swap(vMuscConnvec1);
 dMuscConnvec.swap(dMuscConnvec1);
 
@@ -735,8 +742,9 @@ void Worm2D::setUpMuscleConn()
 {
 vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
 vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
-vMuscConnvec.swap(vMuscConnvec1);
-dMuscConnvec.swap(dMuscConnvec1);
+vMuscConnvec1.swap(vMuscConnvec);
+dMuscConnvec1.swap(dMuscConnvec);
+
 
 //vMuscConn.setWeights(vMuscConnvec);
 //dMuscConn.setWeights(dMuscConnvec);

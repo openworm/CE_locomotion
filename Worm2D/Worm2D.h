@@ -190,8 +190,8 @@ virtual void setPhenoNames() {return;}
 
 virtual vector<doubIntParamsHead> getWormParams() = 0;
 virtual void Step1() = 0;
-NSForW2D * const n_ptr;
-muscForW2D * m_ptr;
+NSForW2D * const n_ptr = nullptr;
+muscForW2D * m_ptr = nullptr;
     
 vector<string> phenoNames;
 vector<int> phenoNamesNums;
@@ -219,11 +219,11 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     
     //virtual void initForSimulation() =  0;
 
-    virtual const vector<string> getCellNames() = 0;
+    virtual const vector<string> getCellNames() {return {"not implemented"};}
     virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
-    
+    virtual ~Worm2Dm(){}
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -255,8 +255,8 @@ class Worm2D : virtual public Worm2Dm
     protected:
 
     
-    virtual const vector<string> getVMuscNames() = 0;
-    virtual const vector<string> getDMuscNames() = 0;
+    virtual const vector<string> getVMuscNames() {return {"not implemented"};}
+    virtual const vector<string> getDMuscNames() {return {"not implemented"};}
 
     //virtual void addExtraParsToJson(json & j) = 0;
     virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
