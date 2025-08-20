@@ -73,6 +73,7 @@ class Evolvable
 
   friend class EvolutionFull;
   protected:
+  //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
   virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
   const evoPars * ep_ptr;
 };

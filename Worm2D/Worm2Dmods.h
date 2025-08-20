@@ -184,7 +184,7 @@ const string getModelName() {return "Worm2Dosc";}
 vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc1::makeVentralMuscleConn();}
 vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
-
+void setPhenoNames(); //{return;}
 int getVectSize(){return 4;}
 
 protected:

@@ -365,6 +365,13 @@ void Worm2DPars::Step1()
 
 NSosc::NSosc(const pfa & pfa_):pfa1(pfa_){}
 
+void Worm2Dosc::setPhenoNames(){
+    addPhenoName("phase offset", 1);
+    addPhenoName("DV phase offset", 2);
+    addPhenoName("freq", 3);
+    addPhenoName("NMJ weight", 4);
+}
+
 void Worm2Dosc::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
     
@@ -440,11 +447,11 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
 
    
     TVector<double> phenotype(1, VectSize);
-    //GenPhenMapping(geno, phenotype);
+    GenPhenMapping(geno, phenotype);
     //setPfaFromPheno(phenotype);
-    setParsFromPheno(phenotype);
-    //construct(phenotype);
-    setUpMuscleConn();
+    //setParsFromPheno(phenotype);
+    construct(phenotype);
+    //setUpMuscleConn();
     InitializeState(rs);
     initForSimulation(rs);
     setStepSize(StepSize);

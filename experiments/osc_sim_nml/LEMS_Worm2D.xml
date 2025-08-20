@@ -1,0 +1,228 @@
+<Lems>
+
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v1.3.21 (libNeuroML v0.6.7)
+
+     -->
+
+    <!-- Specify which component to run -->
+    <Target component="Worm2D" reportFile="report.txt"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+
+    <Include file="cell_W2Dosc.xml"/>
+    <Include file="cell_W2Dosc_cells.xml"/>
+    <Include file="Worm2D.net.nml"/>
+
+    <Simulation id="Worm2D" length="50000.0ms" step="1.0ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        <Display id="display0" title="States" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-15" ymax="10">
+            <Line id="NV0_0_NV0" quantity="PopNV0/0/NV0/state" scale="1" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="NV1_0_NV1" quantity="PopNV1/0/NV1/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="NV2_0_NV2" quantity="PopNV2/0/NV2/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV3_0_NV3" quantity="PopNV3/0/NV3/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="NV4_0_NV4" quantity="PopNV4/0/NV4/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="NV5_0_NV5" quantity="PopNV5/0/NV5/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="NV6_0_NV6" quantity="PopNV6/0/NV6/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="NV7_0_NV7" quantity="PopNV7/0/NV7/state" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="NV8_0_NV8" quantity="PopNV8/0/NV8/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="NV9_0_NV9" quantity="PopNV9/0/NV9/state" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="NV10_0_NV10" quantity="PopNV10/0/NV10/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="NV11_0_NV11" quantity="PopNV11/0/NV11/state" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="NV12_0_NV12" quantity="PopNV12/0/NV12/state" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="NV13_0_NV13" quantity="PopNV13/0/NV13/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
+            <Line id="NV14_0_NV14" quantity="PopNV14/0/NV14/state" scale="1" color="#7FFF00" timeScale="1ms"/>
+            <Line id="NV15_0_NV15" quantity="PopNV15/0/NV15/state" scale="1" color="#D2691E" timeScale="1ms"/>
+            <Line id="NV16_0_NV16" quantity="PopNV16/0/NV16/state" scale="1" color="#FF7F50" timeScale="1ms"/>
+            <Line id="NV17_0_NV17" quantity="PopNV17/0/NV17/state" scale="1" color="#6495ED" timeScale="1ms"/>
+            <Line id="NV18_0_NV18" quantity="PopNV18/0/NV18/state" scale="1" color="#FFF8DC" timeScale="1ms"/>
+            <Line id="NV19_0_NV19" quantity="PopNV19/0/NV19/state" scale="1" color="#DC143C" timeScale="1ms"/>
+            <Line id="NV20_0_NV20" quantity="PopNV20/0/NV20/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV21_0_NV21" quantity="PopNV21/0/NV21/state" scale="1" color="#00008B" timeScale="1ms"/>
+            <Line id="NV22_0_NV22" quantity="PopNV22/0/NV22/state" scale="1" color="#008B8B" timeScale="1ms"/>
+            <Line id="NV23_0_NV23" quantity="PopNV23/0/NV23/state" scale="1" color="#B8860B" timeScale="1ms"/>
+            <Line id="ND0_0_ND0" quantity="PopND0/0/ND0/state" scale="1" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="ND1_0_ND1" quantity="PopND1/0/ND1/state" scale="1" color="#006400" timeScale="1ms"/>
+            <Line id="ND2_0_ND2" quantity="PopND2/0/ND2/state" scale="1" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="ND3_0_ND3" quantity="PopND3/0/ND3/state" scale="1" color="#BDB76B" timeScale="1ms"/>
+            <Line id="ND4_0_ND4" quantity="PopND4/0/ND4/state" scale="1" color="#8B008B" timeScale="1ms"/>
+            <Line id="ND5_0_ND5" quantity="PopND5/0/ND5/state" scale="1" color="#556B2F" timeScale="1ms"/>
+            <Line id="ND6_0_ND6" quantity="PopND6/0/ND6/state" scale="1" color="#FF8C00" timeScale="1ms"/>
+            <Line id="ND7_0_ND7" quantity="PopND7/0/ND7/state" scale="1" color="#9932CC" timeScale="1ms"/>
+            <Line id="ND8_0_ND8" quantity="PopND8/0/ND8/state" scale="1" color="#8B0000" timeScale="1ms"/>
+            <Line id="ND9_0_ND9" quantity="PopND9/0/ND9/state" scale="1" color="#E9967A" timeScale="1ms"/>
+            <Line id="ND10_0_ND10" quantity="PopND10/0/ND10/state" scale="1" color="#8FBC8F" timeScale="1ms"/>
+            <Line id="ND11_0_ND11" quantity="PopND11/0/ND11/state" scale="1" color="#483D8B" timeScale="1ms"/>
+            <Line id="ND12_0_ND12" quantity="PopND12/0/ND12/state" scale="1" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="ND13_0_ND13" quantity="PopND13/0/ND13/state" scale="1" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="ND14_0_ND14" quantity="PopND14/0/ND14/state" scale="1" color="#00CED1" timeScale="1ms"/>
+            <Line id="ND15_0_ND15" quantity="PopND15/0/ND15/state" scale="1" color="#9400D3" timeScale="1ms"/>
+            <Line id="ND16_0_ND16" quantity="PopND16/0/ND16/state" scale="1" color="#FF1493" timeScale="1ms"/>
+            <Line id="ND17_0_ND17" quantity="PopND17/0/ND17/state" scale="1" color="#00BFFF" timeScale="1ms"/>
+            <Line id="ND18_0_ND18" quantity="PopND18/0/ND18/state" scale="1" color="#696969" timeScale="1ms"/>
+            <Line id="ND19_0_ND19" quantity="PopND19/0/ND19/state" scale="1" color="#696969" timeScale="1ms"/>
+            <Line id="ND20_0_ND20" quantity="PopND20/0/ND20/state" scale="1" color="#1E90FF" timeScale="1ms"/>
+            <Line id="ND21_0_ND21" quantity="PopND21/0/ND21/state" scale="1" color="#B22222" timeScale="1ms"/>
+            <Line id="ND22_0_ND22" quantity="PopND22/0/ND22/state" scale="1" color="#FFFAF0" timeScale="1ms"/>
+            <Line id="ND23_0_ND23" quantity="PopND23/0/ND23/state" scale="1" color="#228B22" timeScale="1ms"/>
+        </Display>
+
+        <Display id="display1" title="Outputs" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-.1" ymax="1">
+            <Line id="NV0_0_NV0" quantity="PopNV0/0/NV0/output" scale="1" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="NV1_0_NV1" quantity="PopNV1/0/NV1/output" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="NV2_0_NV2" quantity="PopNV2/0/NV2/output" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV3_0_NV3" quantity="PopNV3/0/NV3/output" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="NV4_0_NV4" quantity="PopNV4/0/NV4/output" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="NV5_0_NV5" quantity="PopNV5/0/NV5/output" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="NV6_0_NV6" quantity="PopNV6/0/NV6/output" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="NV7_0_NV7" quantity="PopNV7/0/NV7/output" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="NV8_0_NV8" quantity="PopNV8/0/NV8/output" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="NV9_0_NV9" quantity="PopNV9/0/NV9/output" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="NV10_0_NV10" quantity="PopNV10/0/NV10/output" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="NV11_0_NV11" quantity="PopNV11/0/NV11/output" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="NV12_0_NV12" quantity="PopNV12/0/NV12/output" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="NV13_0_NV13" quantity="PopNV13/0/NV13/output" scale="1" color="#5F9EA0" timeScale="1ms"/>
+            <Line id="NV14_0_NV14" quantity="PopNV14/0/NV14/output" scale="1" color="#7FFF00" timeScale="1ms"/>
+            <Line id="NV15_0_NV15" quantity="PopNV15/0/NV15/output" scale="1" color="#D2691E" timeScale="1ms"/>
+            <Line id="NV16_0_NV16" quantity="PopNV16/0/NV16/output" scale="1" color="#FF7F50" timeScale="1ms"/>
+            <Line id="NV17_0_NV17" quantity="PopNV17/0/NV17/output" scale="1" color="#6495ED" timeScale="1ms"/>
+            <Line id="NV18_0_NV18" quantity="PopNV18/0/NV18/output" scale="1" color="#FFF8DC" timeScale="1ms"/>
+            <Line id="NV19_0_NV19" quantity="PopNV19/0/NV19/output" scale="1" color="#DC143C" timeScale="1ms"/>
+            <Line id="NV20_0_NV20" quantity="PopNV20/0/NV20/output" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV21_0_NV21" quantity="PopNV21/0/NV21/output" scale="1" color="#00008B" timeScale="1ms"/>
+            <Line id="NV22_0_NV22" quantity="PopNV22/0/NV22/output" scale="1" color="#008B8B" timeScale="1ms"/>
+            <Line id="NV23_0_NV23" quantity="PopNV23/0/NV23/output" scale="1" color="#B8860B" timeScale="1ms"/>
+            <Line id="ND0_0_ND0" quantity="PopND0/0/ND0/output" scale="1" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="ND1_0_ND1" quantity="PopND1/0/ND1/output" scale="1" color="#006400" timeScale="1ms"/>
+            <Line id="ND2_0_ND2" quantity="PopND2/0/ND2/output" scale="1" color="#A9A9A9" timeScale="1ms"/>
+            <Line id="ND3_0_ND3" quantity="PopND3/0/ND3/output" scale="1" color="#BDB76B" timeScale="1ms"/>
+            <Line id="ND4_0_ND4" quantity="PopND4/0/ND4/output" scale="1" color="#8B008B" timeScale="1ms"/>
+            <Line id="ND5_0_ND5" quantity="PopND5/0/ND5/output" scale="1" color="#556B2F" timeScale="1ms"/>
+            <Line id="ND6_0_ND6" quantity="PopND6/0/ND6/output" scale="1" color="#FF8C00" timeScale="1ms"/>
+            <Line id="ND7_0_ND7" quantity="PopND7/0/ND7/output" scale="1" color="#9932CC" timeScale="1ms"/>
+            <Line id="ND8_0_ND8" quantity="PopND8/0/ND8/output" scale="1" color="#8B0000" timeScale="1ms"/>
+            <Line id="ND9_0_ND9" quantity="PopND9/0/ND9/output" scale="1" color="#E9967A" timeScale="1ms"/>
+            <Line id="ND10_0_ND10" quantity="PopND10/0/ND10/output" scale="1" color="#8FBC8F" timeScale="1ms"/>
+            <Line id="ND11_0_ND11" quantity="PopND11/0/ND11/output" scale="1" color="#483D8B" timeScale="1ms"/>
+            <Line id="ND12_0_ND12" quantity="PopND12/0/ND12/output" scale="1" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="ND13_0_ND13" quantity="PopND13/0/ND13/output" scale="1" color="#2F4F4F" timeScale="1ms"/>
+            <Line id="ND14_0_ND14" quantity="PopND14/0/ND14/output" scale="1" color="#00CED1" timeScale="1ms"/>
+            <Line id="ND15_0_ND15" quantity="PopND15/0/ND15/output" scale="1" color="#9400D3" timeScale="1ms"/>
+            <Line id="ND16_0_ND16" quantity="PopND16/0/ND16/output" scale="1" color="#FF1493" timeScale="1ms"/>
+            <Line id="ND17_0_ND17" quantity="PopND17/0/ND17/output" scale="1" color="#00BFFF" timeScale="1ms"/>
+            <Line id="ND18_0_ND18" quantity="PopND18/0/ND18/output" scale="1" color="#696969" timeScale="1ms"/>
+            <Line id="ND19_0_ND19" quantity="PopND19/0/ND19/output" scale="1" color="#696969" timeScale="1ms"/>
+            <Line id="ND20_0_ND20" quantity="PopND20/0/ND20/output" scale="1" color="#1E90FF" timeScale="1ms"/>
+            <Line id="ND21_0_ND21" quantity="PopND21/0/ND21/output" scale="1" color="#B22222" timeScale="1ms"/>
+            <Line id="ND22_0_ND22" quantity="PopND22/0/ND22/output" scale="1" color="#FFFAF0" timeScale="1ms"/>
+            <Line id="ND23_0_ND23" quantity="PopND23/0/ND23/output" scale="1" color="#228B22" timeScale="1ms"/>
+        </Display>
+
+        <OutputFile id="states_file" fileName="Worm2D.states.dat">
+            <OutputColumn id="NV0_0_NV0" quantity="PopNV0/0/NV0/state"/>
+            <OutputColumn id="NV1_0_NV1" quantity="PopNV1/0/NV1/state"/>
+            <OutputColumn id="NV2_0_NV2" quantity="PopNV2/0/NV2/state"/>
+            <OutputColumn id="NV3_0_NV3" quantity="PopNV3/0/NV3/state"/>
+            <OutputColumn id="NV4_0_NV4" quantity="PopNV4/0/NV4/state"/>
+            <OutputColumn id="NV5_0_NV5" quantity="PopNV5/0/NV5/state"/>
+            <OutputColumn id="NV6_0_NV6" quantity="PopNV6/0/NV6/state"/>
+            <OutputColumn id="NV7_0_NV7" quantity="PopNV7/0/NV7/state"/>
+            <OutputColumn id="NV8_0_NV8" quantity="PopNV8/0/NV8/state"/>
+            <OutputColumn id="NV9_0_NV9" quantity="PopNV9/0/NV9/state"/>
+            <OutputColumn id="NV10_0_NV10" quantity="PopNV10/0/NV10/state"/>
+            <OutputColumn id="NV11_0_NV11" quantity="PopNV11/0/NV11/state"/>
+            <OutputColumn id="NV12_0_NV12" quantity="PopNV12/0/NV12/state"/>
+            <OutputColumn id="NV13_0_NV13" quantity="PopNV13/0/NV13/state"/>
+            <OutputColumn id="NV14_0_NV14" quantity="PopNV14/0/NV14/state"/>
+            <OutputColumn id="NV15_0_NV15" quantity="PopNV15/0/NV15/state"/>
+            <OutputColumn id="NV16_0_NV16" quantity="PopNV16/0/NV16/state"/>
+            <OutputColumn id="NV17_0_NV17" quantity="PopNV17/0/NV17/state"/>
+            <OutputColumn id="NV18_0_NV18" quantity="PopNV18/0/NV18/state"/>
+            <OutputColumn id="NV19_0_NV19" quantity="PopNV19/0/NV19/state"/>
+            <OutputColumn id="NV20_0_NV20" quantity="PopNV20/0/NV20/state"/>
+            <OutputColumn id="NV21_0_NV21" quantity="PopNV21/0/NV21/state"/>
+            <OutputColumn id="NV22_0_NV22" quantity="PopNV22/0/NV22/state"/>
+            <OutputColumn id="NV23_0_NV23" quantity="PopNV23/0/NV23/state"/>
+            <OutputColumn id="ND0_0_ND0" quantity="PopND0/0/ND0/state"/>
+            <OutputColumn id="ND1_0_ND1" quantity="PopND1/0/ND1/state"/>
+            <OutputColumn id="ND2_0_ND2" quantity="PopND2/0/ND2/state"/>
+            <OutputColumn id="ND3_0_ND3" quantity="PopND3/0/ND3/state"/>
+            <OutputColumn id="ND4_0_ND4" quantity="PopND4/0/ND4/state"/>
+            <OutputColumn id="ND5_0_ND5" quantity="PopND5/0/ND5/state"/>
+            <OutputColumn id="ND6_0_ND6" quantity="PopND6/0/ND6/state"/>
+            <OutputColumn id="ND7_0_ND7" quantity="PopND7/0/ND7/state"/>
+            <OutputColumn id="ND8_0_ND8" quantity="PopND8/0/ND8/state"/>
+            <OutputColumn id="ND9_0_ND9" quantity="PopND9/0/ND9/state"/>
+            <OutputColumn id="ND10_0_ND10" quantity="PopND10/0/ND10/state"/>
+            <OutputColumn id="ND11_0_ND11" quantity="PopND11/0/ND11/state"/>
+            <OutputColumn id="ND12_0_ND12" quantity="PopND12/0/ND12/state"/>
+            <OutputColumn id="ND13_0_ND13" quantity="PopND13/0/ND13/state"/>
+            <OutputColumn id="ND14_0_ND14" quantity="PopND14/0/ND14/state"/>
+            <OutputColumn id="ND15_0_ND15" quantity="PopND15/0/ND15/state"/>
+            <OutputColumn id="ND16_0_ND16" quantity="PopND16/0/ND16/state"/>
+            <OutputColumn id="ND17_0_ND17" quantity="PopND17/0/ND17/state"/>
+            <OutputColumn id="ND18_0_ND18" quantity="PopND18/0/ND18/state"/>
+            <OutputColumn id="ND19_0_ND19" quantity="PopND19/0/ND19/state"/>
+            <OutputColumn id="ND20_0_ND20" quantity="PopND20/0/ND20/state"/>
+            <OutputColumn id="ND21_0_ND21" quantity="PopND21/0/ND21/state"/>
+            <OutputColumn id="ND22_0_ND22" quantity="PopND22/0/ND22/state"/>
+            <OutputColumn id="ND23_0_ND23" quantity="PopND23/0/ND23/state"/>
+        </OutputFile>
+
+        <OutputFile id="outputs_file" fileName="Worm2D.outputs.dat">
+            <OutputColumn id="NV0_0_NV0" quantity="PopNV0/0/NV0/output"/>
+            <OutputColumn id="NV1_0_NV1" quantity="PopNV1/0/NV1/output"/>
+            <OutputColumn id="NV2_0_NV2" quantity="PopNV2/0/NV2/output"/>
+            <OutputColumn id="NV3_0_NV3" quantity="PopNV3/0/NV3/output"/>
+            <OutputColumn id="NV4_0_NV4" quantity="PopNV4/0/NV4/output"/>
+            <OutputColumn id="NV5_0_NV5" quantity="PopNV5/0/NV5/output"/>
+            <OutputColumn id="NV6_0_NV6" quantity="PopNV6/0/NV6/output"/>
+            <OutputColumn id="NV7_0_NV7" quantity="PopNV7/0/NV7/output"/>
+            <OutputColumn id="NV8_0_NV8" quantity="PopNV8/0/NV8/output"/>
+            <OutputColumn id="NV9_0_NV9" quantity="PopNV9/0/NV9/output"/>
+            <OutputColumn id="NV10_0_NV10" quantity="PopNV10/0/NV10/output"/>
+            <OutputColumn id="NV11_0_NV11" quantity="PopNV11/0/NV11/output"/>
+            <OutputColumn id="NV12_0_NV12" quantity="PopNV12/0/NV12/output"/>
+            <OutputColumn id="NV13_0_NV13" quantity="PopNV13/0/NV13/output"/>
+            <OutputColumn id="NV14_0_NV14" quantity="PopNV14/0/NV14/output"/>
+            <OutputColumn id="NV15_0_NV15" quantity="PopNV15/0/NV15/output"/>
+            <OutputColumn id="NV16_0_NV16" quantity="PopNV16/0/NV16/output"/>
+            <OutputColumn id="NV17_0_NV17" quantity="PopNV17/0/NV17/output"/>
+            <OutputColumn id="NV18_0_NV18" quantity="PopNV18/0/NV18/output"/>
+            <OutputColumn id="NV19_0_NV19" quantity="PopNV19/0/NV19/output"/>
+            <OutputColumn id="NV20_0_NV20" quantity="PopNV20/0/NV20/output"/>
+            <OutputColumn id="NV21_0_NV21" quantity="PopNV21/0/NV21/output"/>
+            <OutputColumn id="NV22_0_NV22" quantity="PopNV22/0/NV22/output"/>
+            <OutputColumn id="NV23_0_NV23" quantity="PopNV23/0/NV23/output"/>
+            <OutputColumn id="ND0_0_ND0" quantity="PopND0/0/ND0/output"/>
+            <OutputColumn id="ND1_0_ND1" quantity="PopND1/0/ND1/output"/>
+            <OutputColumn id="ND2_0_ND2" quantity="PopND2/0/ND2/output"/>
+            <OutputColumn id="ND3_0_ND3" quantity="PopND3/0/ND3/output"/>
+            <OutputColumn id="ND4_0_ND4" quantity="PopND4/0/ND4/output"/>
+            <OutputColumn id="ND5_0_ND5" quantity="PopND5/0/ND5/output"/>
+            <OutputColumn id="ND6_0_ND6" quantity="PopND6/0/ND6/output"/>
+            <OutputColumn id="ND7_0_ND7" quantity="PopND7/0/ND7/output"/>
+            <OutputColumn id="ND8_0_ND8" quantity="PopND8/0/ND8/output"/>
+            <OutputColumn id="ND9_0_ND9" quantity="PopND9/0/ND9/output"/>
+            <OutputColumn id="ND10_0_ND10" quantity="PopND10/0/ND10/output"/>
+            <OutputColumn id="ND11_0_ND11" quantity="PopND11/0/ND11/output"/>
+            <OutputColumn id="ND12_0_ND12" quantity="PopND12/0/ND12/output"/>
+            <OutputColumn id="ND13_0_ND13" quantity="PopND13/0/ND13/output"/>
+            <OutputColumn id="ND14_0_ND14" quantity="PopND14/0/ND14/output"/>
+            <OutputColumn id="ND15_0_ND15" quantity="PopND15/0/ND15/output"/>
+            <OutputColumn id="ND16_0_ND16" quantity="PopND16/0/ND16/output"/>
+            <OutputColumn id="ND17_0_ND17" quantity="PopND17/0/ND17/output"/>
+            <OutputColumn id="ND18_0_ND18" quantity="PopND18/0/ND18/output"/>
+            <OutputColumn id="ND19_0_ND19" quantity="PopND19/0/ND19/output"/>
+            <OutputColumn id="ND20_0_ND20" quantity="PopND20/0/ND20/output"/>
+            <OutputColumn id="ND21_0_ND21" quantity="PopND21/0/ND21/output"/>
+            <OutputColumn id="ND22_0_ND22" quantity="PopND22/0/ND22/output"/>
+            <OutputColumn id="ND23_0_ND23" quantity="PopND23/0/ND23/output"/>
+        </OutputFile>
+
+    </Simulation>
+
+</Lems>

@@ -144,5 +144,6 @@ public:
 EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
 virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
 void writeJson(TVector<double> & pheno){T w(pheno);writeJson1(w);}
+
 };
 

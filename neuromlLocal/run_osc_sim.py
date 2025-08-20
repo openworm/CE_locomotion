@@ -12,20 +12,20 @@ from regenerate import run as regenerate_run
 output_folder= "../experiments/osc_sim"
 output_folder_nml= "../experiments/osc_sim_nml"
 
-duration = 40
+duration = 10
 transient = 10
 
 doMuscles = False
 
 print(output_folder)
 run(
-    simduration=10,
-    simtransient=10,
-    duration=duration,
-    transient=transient,
-    maxGens=20,
+    simduration=duration,
+    simtransient=transient,
+    duration=50,
+    transient=20,
+    maxGens=100,
     popSize=22,
-    RandSeed=4012128,
+    RandSeed=4128,
     modelName="W2Dosc",
     modelFolder="../Worm2D",
     outputFolderName=output_folder,
@@ -33,26 +33,21 @@ run(
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
-    doPlotEvol=False,
+    doPlotEvol=True,
     doNML=False,
 )
 print(output_folder_nml)
 regenerate_run(folder=output_folder, doMuscles=doMuscles)
 run(
-    simduration=10,
-    simtransient=10,
-    duration=duration,
-    transient=transient,
-    maxGens=20,
-    popSize=22,
-    RandSeed=4012128,
+    simduration=duration,
+    simtransient=transient,
+    RandSeed=4128,
     modelName="W2Dosc",
     modelFolder="../Worm2D",
     outputFolderName=output_folder_nml,
     inputFolderName=output_folder,
-    doEvol=True,
+    doEvol=False,
     overwrite=True,
-    checkPointInterval=5,
     reRand=True,
     doPlotEvol=False,
     doNML=True,

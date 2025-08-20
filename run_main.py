@@ -534,7 +534,6 @@ def run(a=None, **kwargs):
 
     mainProcessName = a.mainProcessName
     if a.modelName == "W2Dosc" or a.modelName == "W2DoscH" or a.modelName == "W2Dosc21":
-        assert a.modelFolder == "Worm2D"
         mainProcessName = "main_osc"
 
     defaults_bases = {
