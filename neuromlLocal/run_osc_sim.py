@@ -1,16 +1,15 @@
 import sys
-import os
+
 
 sys.path.append("..")
 # sys.path.append("../neuromlLocal")
 
 from run_main import run
-from run_main import make_directory
 from regenerate import run as regenerate_run
 
 
-output_folder= "../experiments/osc_sim"
-output_folder_nml= "../experiments/osc_sim_nml"
+output_folder = "../experiments/osc_sim"
+output_folder_nml = "../experiments/osc_sim_nml"
 
 duration = 10
 transient = 10
@@ -54,4 +53,3 @@ run(
     doPlotEvol=False,
     doNML=True,
 )
-
