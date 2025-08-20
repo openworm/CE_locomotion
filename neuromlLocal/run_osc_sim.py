@@ -17,15 +17,17 @@ transient = 10
 
 doMuscles = False
 
+randseed = 4012128
+
 print(output_folder)
 run(
     simduration=duration,
     simtransient=transient,
     duration=50,
-    transient=20,
+    transient=30,
     maxGens=100,
     popSize=22,
-    RandSeed=4128,
+    RandSeed=4012128,
     modelName="W2Dosc",
     modelFolder="../Worm2D",
     outputFolderName=output_folder,
@@ -41,7 +43,7 @@ regenerate_run(folder=output_folder, doMuscles=doMuscles)
 run(
     simduration=duration,
     simtransient=transient,
-    RandSeed=4128,
+    RandSeed=randseed,
     modelName="W2Dosc",
     modelFolder="../Worm2D",
     outputFolderName=output_folder_nml,

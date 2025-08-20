@@ -121,7 +121,7 @@ public:
 //void initForSimulation(RandomState &) {return;}
 //void DumpParams(ofstream &ofs) {return;}
 
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
+//double EvaluationFunction(TVector<double> &v, RandomState &rs);
 //void writeJson(TVector<double> &);
 evoPars getDefaultEvoPars();
 virtual void setParsFromPheno(TVector<double> &v) = 0;
@@ -134,13 +134,18 @@ void setPfaFromGeno(TVector<double> &v);
 void setPfaFromFile(const string & genofilename_);
 //void setParsFromFile(const string & genofilename_);
 //const vector<string> getCellNames() {return {"not implemented"};}
+
+NSosc & n;
+//Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
+Evolparameters & Epars1;
+
 protected:
 
 //void Step1();
 //const vector<string> getVMuscNames() {return {"not implemented"};}
 //const vector<string> getDMuscNames() {return {"not implemented"};}
 
-
+void constructFromGeno(TVector<double> &geno);
 void construct(TVector<double> &pheno);
 void construct(const string & filename_);
 
@@ -148,9 +153,7 @@ Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr);
 
 void addParsToJson(json & j);
 
-NSosc & n;
-//Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
-Evolparameters & Epars1;
+
 
 //W2Dparameters * const pars1_ptr;
 
@@ -177,7 +180,7 @@ public:
 Worm2Dosc(int size_);
 Worm2Dosc(const string & filename_);
 Worm2Dosc();
-Worm2Dosc(TVector<double> & pheno);
+Worm2Dosc(TVector<double> & phengen, const bool & isPheno);
 //Worm2Dosc(TVector<double> &v);
 //Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
@@ -228,7 +231,7 @@ public:
 Worm2DoscHalf();
 Worm2DoscHalf(const string & filename_);
 //Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
-Worm2DoscHalf(TVector<double> & pheno);
+Worm2DoscHalf(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
 protected:
@@ -253,7 +256,7 @@ class Worm2Dosc21 : public Worm2DoscBase
 public:
 Worm2Dosc21();
 Worm2Dosc21(const string & filename_);
-Worm2Dosc21(TVector<double> & pheno);
+Worm2Dosc21(TVector<double> & pheno, const bool & isPheno);
 
 protected:
 vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);

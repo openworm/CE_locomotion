@@ -36,6 +36,14 @@ void Worm2DoscBase::construct(const string & filename_)
     n.setTime(t);
 }
 
+void Worm2DoscBase::constructFromGeno(TVector<double> &geno)
+{
+    setPfaFromGeno(geno);
+    setParsFromGeno(geno);
+    setUpMuscleConn();
+    n.setTime(t);
+
+}
 
 void Worm2DoscBase::construct(TVector<double> &pheno)
 {
@@ -102,12 +110,13 @@ pars1(dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NS
     construct(filename_);
 }
 
-Worm2Dosc21::Worm2Dosc21(TVector<double> & pheno):
+Worm2Dosc21::Worm2Dosc21(TVector<double> & pheno, const bool & isPheno):
 Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
 pars1(dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NSosc())
 {
     pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    construct(pheno);
+    if (isPheno) construct(pheno);
+    else constructFromGeno(pheno);
 }
 
 
@@ -145,9 +154,10 @@ Worm2Dosc::Worm2Dosc(const string & filename_):Worm2Dosc(48)
 
 
 
-Worm2Dosc::Worm2Dosc(TVector<double> & pheno):Worm2Dosc(48)
+Worm2Dosc::Worm2Dosc(TVector<double> & phengen, const bool & isPheno):Worm2Dosc(48)
 {
-    construct(pheno);
+    if (isPheno) construct(phengen);
+    else constructFromGeno(phengen);
 }
 
 
@@ -157,9 +167,11 @@ Worm2DoscHalf::Worm2DoscHalf(const string & filename_):Worm2Dosc(24),Worm2Dm({2,
     construct(filename_);   
 }
 
-Worm2DoscHalf::Worm2DoscHalf(TVector<double> & pheno):Worm2Dosc(24),Worm2Dm({2,24,0.1,7,14},new NSosc())
+Worm2DoscHalf::Worm2DoscHalf(TVector<double> & pheno, const bool & isPheno):Worm2Dosc(24),Worm2Dm({2,24,0.1,7,14},new NSosc())
 {
-    construct(pheno);    
+     if (isPheno) construct(pheno);
+    else constructFromGeno(pheno);
+   
 }
 
 /* Worm2DoscHalf::Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_):
@@ -427,7 +439,7 @@ evoPars Worm2DoscBase::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC
 
 
 
-double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs){
+/* double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs){
 
   
     cout << "Worm2Dosc::EvaluationFunction" << endl;
@@ -569,7 +581,7 @@ double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs)
     
    
         return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
-    }
+    } */
 
 
 
