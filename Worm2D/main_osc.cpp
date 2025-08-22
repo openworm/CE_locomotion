@@ -12,11 +12,11 @@ int main (int argc, const char* argv[])
     cout << "Model name is required." << endl;
     return 0;
     }
-    EvolutionFull * evo = 0;
+    Evolution * evo = 0;
     
-    if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
-    if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
-    if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
+    if (model_name == "W2Dosc") evo = new EvolutionFullW2<Worm2Dosc>(argc,argv);
+    if (model_name == "W2DoscH") evo = new EvolutionFullW2<Worm2DoscHalf>(argc,argv);
+    if (model_name == "W2Dosc21") evo = new EvolutionFullW2<Worm2Dosc21>(argc,argv);
 
     //assert(0);
 

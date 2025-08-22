@@ -78,17 +78,18 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs);
 evoPars getDefaultEvoPars();
 }; */
 
-
+template<typename Derived>
 class Evolvable
 {
   public:
   //Evolvable():ep_ptr(nullptr){}
-  virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+  void itsGenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+  {return Derived::GenPhenMapping(gen,phen);}
   
   //virtual void writeJson(TVector<double> &) = 0;
-  virtual evoPars getDefaultEvoPars() = 0;
-  virtual int getVectSize() = 0;
-  virtual ~Evolvable(){}
+  //virtual evoPars getDefaultEvoPars() = 0;
+  int itsVectSize() {return Derived::getVectSize();};
+  //virtual ~Evolvable(){}
 
   friend class EvolutionFull;
   protected:

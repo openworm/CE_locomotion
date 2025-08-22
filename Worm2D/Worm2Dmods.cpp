@@ -21,12 +21,14 @@ j["amp"]["value"] = amp;
 //j["amp"]["cell_val"] = 1;
 }
 
+
 void Worm2DoscBase::addParsToJson(json & j)
 {
     Worm2DPars::addParsToJson(j);
     n.pfa1.addParsToJson(j["Nervous system"]);
 
 }
+
 
 void Worm2DoscBase::construct(const string & filename_)
 {
@@ -35,6 +37,7 @@ void Worm2DoscBase::construct(const string & filename_)
     setUpMuscleConn();
     n.setTime(t);
 }
+
 
 void Worm2DoscBase::constructFromGeno(TVector<double> &geno)
 {
@@ -76,6 +79,7 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
     setUpMuscleConn(j);
 }
 
+
 Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
 Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc()),
 Epars1(dynamic_cast<Evolparameters&>(*pars1_ptr)),
@@ -92,6 +96,7 @@ pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),Worm2Dm({size_,24,0.1,1,size_},n
 
     TVector<double> pheno;
     pheno.SetBounds(1,getVectSize());
+    //pheno.SetBounds(1,evoVectSize);
     construct(pheno);
 }
 
@@ -121,7 +126,7 @@ pars1(dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NS
 
 
 
-Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
+Worm2DoscHalf::Worm2DoscHalf():Worm2DoscBase<Worm2DoscHalf>(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
 
 
 /* Worm2Dosc::Worm2Dosc(const Worm2Dosc& w):
@@ -201,7 +206,7 @@ void Worm2DoscBase::setPfaFromFile(const string & genofilename_)
  
     ifstream ifs;
     ifs.open(genofilename_);
-    TVector<double> bestVector(1, getVectSize());
+    TVector<double> bestVector(1, evoVectSize);
     ifs >> bestVector;
     ifs.close();
   

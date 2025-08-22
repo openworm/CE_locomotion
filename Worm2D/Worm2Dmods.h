@@ -113,8 +113,8 @@ vector<doubIntParamsHead> getWormParams() {
 }
 };
 
-
-class Worm2DoscBase : public Worm2DPars, public Evolvable
+template<typename D>
+class Worm2DoscBase : public Worm2DPars, public Evolvable<D>
 {
 public:
 //void InitializeState(RandomState &rs);
@@ -123,7 +123,7 @@ public:
 
 //double EvaluationFunction(TVector<double> &v, RandomState &rs);
 //void writeJson(TVector<double> &);
-evoPars getDefaultEvoPars();
+//evoPars getDefaultEvoPars();
 virtual void setParsFromPheno(TVector<double> &v) = 0;
 void setParsFromFile(const string & genofilename_);
 void setParsFromGeno(TVector<double> &v);
@@ -173,7 +173,10 @@ protected:
 Worm2Doscpars1 & pars1;
 };
 
-class Worm2Dosc : public Worm2DoscBase, public Worm2Dosc1
+
+
+
+class Worm2Dosc : virtual public Worm2DoscBase<Worm2Dosc>, public Worm2Dosc1
 {
 public:
 //Worm2Dosc(const Worm2Dosc&);
@@ -186,10 +189,12 @@ Worm2Dosc(TVector<double> & phengen, const bool & isPheno);
 const string getModelName() {return "Worm2Dosc";}
 vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc1::makeVentralMuscleConn();}
 vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+static void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 void setPhenoNames(); //{return;}
-int getVectSize(){return 4;}
+static int getVectSize(){return 4;}
 
+
+//static inline int evoVectSize = 4;
 protected:
 
 void setPfaFromPheno(TVector<double> &v);
@@ -225,20 +230,21 @@ class Worm2DoscNML : public Worm2DPars, public Worm2Dosc1
 };
 
 
-class Worm2DoscHalf : public Worm2Dosc
+class Worm2DoscHalf : public Worm2Dosc, public Worm2Dosc1, virtual public Worm2DoscBase<Worm2DoscHalf>
 {
 public:
 Worm2DoscHalf();
 Worm2DoscHalf(const string & filename_);
 //Worm2DoscHalf(const pfa & pfa_, const Worm2Doscpars & pars1_);
 Worm2DoscHalf(TVector<double> & pheno, const bool & isPheno);
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+static void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+//static inline int evoVectSize = 3;
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeVentralMuscleConn();
-int getVectSize() {return 3;}
+static int getVectSize() {return 3;}
 
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -257,15 +263,17 @@ public:
 Worm2Dosc21();
 Worm2Dosc21(const string & filename_);
 Worm2Dosc21(TVector<double> & pheno, const bool & isPheno);
+//static inline int evoVectSize = 6;
+static void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 
 protected:
 vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeVentralMuscleConn();
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
-int getVectSize() {return 6;}
+static int getVectSize() {return 6;}
 const string getModelName() {return "Worm2Dosc21";}
 
 Worm2Dosc21pars & pars1;
