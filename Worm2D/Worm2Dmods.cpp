@@ -22,41 +22,6 @@ j["amp"]["value"] = amp;
 }
 
 
-void Worm2DoscBase::addParsToJson(json & j)
-{
-    Worm2DPars::addParsToJson(j);
-    n.pfa1.addParsToJson(j["Nervous system"]);
-
-}
-
-
-void Worm2DoscBase::construct(const string & filename_)
-{
-    setPfaFromFile(filename_);
-    setParsFromFile(filename_);
-    setUpMuscleConn();
-    n.setTime(t);
-}
-
-
-void Worm2DoscBase::constructFromGeno(TVector<double> &geno)
-{
-    setPfaFromGeno(geno);
-    setParsFromGeno(geno);
-    setUpMuscleConn();
-    n.setTime(t);
-
-}
-
-void Worm2DoscBase::construct(TVector<double> &pheno)
-{
-    setPfaFromPheno(pheno);
-    setParsFromPheno(pheno);
-    setUpMuscleConn();
-    n.setTime(t);
-
-}
-
 Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr):
 Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
@@ -79,11 +44,6 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
     setUpMuscleConn(j);
 }
 
-
-Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
-Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc()),
-Epars1(dynamic_cast<Evolparameters&>(*pars1_ptr)),
-n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
 Worm2Dosc::Worm2Dosc():Worm2Dosc(48){}
@@ -126,7 +86,7 @@ pars1(dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NS
 
 
 
-Worm2DoscHalf::Worm2DoscHalf():Worm2DoscBase<Worm2DoscHalf>(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
+Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
 
 
 /* Worm2Dosc::Worm2Dosc(const Worm2Dosc& w):
@@ -201,25 +161,6 @@ Worm2Dosc(pfa_,pars1_),Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), 
     return;    
 } */
 
-void Worm2DoscBase::setPfaFromFile(const string & genofilename_)
-{
- 
-    ifstream ifs;
-    ifs.open(genofilename_);
-    TVector<double> bestVector(1, evoVectSize);
-    ifs >> bestVector;
-    ifs.close();
-  
-    setPfaFromGeno(bestVector);
-
-}
-
-void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
-{ 
- TVector<double> phenotype(1, v.Size());
- GenPhenMapping(v, phenotype);
- setPfaFromPheno(phenotype);
-}
 
 
 void Worm2Dosc::setPfaFromPheno(TVector<double> &phen)
@@ -248,19 +189,6 @@ n.pfa1.swap_all(pfa1);
 
 
 
-
-void Worm2DoscBase::setParsFromFile(const string & filename_)
-{
-    ifstream ifs;
-    ifs.open(filename_);
-    TVector<double> bestVector(1, getVectSize());
-    //assert(0);
-    ifs >> bestVector;
-    ifs.close();
-    setParsFromGeno(bestVector);
-}
-
-
 void Worm2Dosc::setParsFromPheno(TVector<double> &phen)
 {
     pars1.NMJweight = phen[4];
@@ -279,19 +207,6 @@ void Worm2DoscHalf::setParsFromPheno(TVector<double> &phen)
 
 
 
-
-
-void Worm2DoscBase::setParsFromGeno(TVector<double> &v)
-{
-    
-    //cout << v << endl;
-    TVector<double> phenotype(1, v.Size());
-    //cout << phenotype.Size() << endl;
-    GenPhenMapping(v, phenotype);
- 
-    setParsFromPheno(phenotype);
- 
-}
 
 vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
 {
@@ -438,9 +353,9 @@ void Worm2DoscHalf::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 //void Worm2DoscBase::writeJson(TVector<double> &){}
 
-evoPars Worm2DoscBase::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+/* evoPars Worm2DoscBase::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};}
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};} */
 
 
 

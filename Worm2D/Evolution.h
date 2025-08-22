@@ -113,7 +113,7 @@ class Evolution
 };
 
 
-class EvolutionFull : public Evolution
+/* class EvolutionFull : public Evolution
 {
 public:
 Evolvable * const evolvable1;
@@ -146,7 +146,7 @@ virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
 void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 
-};
+}; */
 
 
 template<class T>
@@ -154,14 +154,14 @@ class EvolutionFullW2 : public Evolution
 {
 public:
 EvolutionFullW2(int argc, const char* argv[]):
-Evolution(argc,argv,evoPars1,T::evoVectSize){}
+Evolution(argc,argv,evoPars1,T::getVectSize()){}
 void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) {return T::GenPhenMapping(gen,phen);}
 
 static inline evoPars evoPars1 =  {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::evoVectSize};
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::getVectSize()};
 };
 
 
@@ -178,7 +178,7 @@ void writeJson(TVector<double> & pheno){T w(pheno);writeJson1(w);}
 }; */
 
 template<class T>
-double EvolutionFullW<T>::EvaluationFunction(TVector<double> &genotype, RandomState &rs){
+double EvolutionFullW2<T>::EvaluationFunction(TVector<double> &genotype, RandomState &rs){
 
     const double & Duration = evoPars1.Duration;
     const int & VectSize = evoPars1.VectSize;
