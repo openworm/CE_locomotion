@@ -83,8 +83,23 @@ void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j); Evolparameters::a
 class Worm2Dosc21pars : public Evolparameters
 {
 public:
+
 TVector<double> NMJ_Gain;
-double NMJ_VN, NMJ_DN;
+double NMJ_VN, NMJ_DN, NMJ_Gain_Map;
+void setParsFromJson(json & j)
+{
+    NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
+    NMJ_VN =  j["NMJ_VN"]["value"];
+    NMJ_DN =  j["NMJ_DN"]["value"];
+
+} 
+void addParsToJson(json & j)
+{
+    j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
+    j["NMJ_VN"]["value"] = NMJ_VN;
+    j["NMJ_DN"]["value"] = NMJ_DN;
+
+}
 };
 
 

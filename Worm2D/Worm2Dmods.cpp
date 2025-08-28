@@ -568,11 +568,11 @@ n.pfa1.swap_all(pfa1);
 
 void Worm2Dosc21::setParsFromPheno(TVector<double> &phen)
 {
-    double NMJ_Gain_Map = phen[4];
+    pars1.NMJ_Gain_Map = phen[4];
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
     for (int i=1; i<=par1.N_muscles; i++)
     {
-    pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1.NMJ_Gain_Map)/par1.N_muscles));
     }
     
     pars1.NMJ_VN = phen[5];
