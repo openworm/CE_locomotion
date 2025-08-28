@@ -91,15 +91,18 @@ void setParsFromJson(json & j)
     NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
     NMJ_VN =  j["NMJ_VN"]["value"];
     NMJ_DN =  j["NMJ_DN"]["value"];
-
+    Evolparameters::setParsFromJson(j);
 } 
+
 void addParsToJson(json & j)
 {
     j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
     j["NMJ_VN"]["value"] = NMJ_VN;
     j["NMJ_DN"]["value"] = NMJ_DN;
-
+    Evolparameters::addParsToJson(j);
 }
+
+
 };
 
 
@@ -272,9 +275,34 @@ const string getModelName() {return "Worm2DoscH";}
 
 };
 
+class Worm2Dosc21base
+{
+public:
+Worm2Dosc21base(const wormIzqParams & par1_, Worm2Dosc21pars & pars1_):pars1(pars1_), par1ref(par1_){}
+vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
+vector<toFromWeight> makeDorsalMuscleConn();
+vector<toFromWeight> makeVentralMuscleConn();
+
+protected:
+Worm2Dosc21pars & pars1;
+const wormIzqParams & par1ref;
+};
 
 
-class Worm2Dosc21 : public Worm2DoscBase<Worm2Dosc21>, virtual public Evolvable<Worm2Dosc21>
+class Worm2Dosc21NML: public Worm2DPars, public Worm2Dosc21base
+{
+    public:
+    Worm2Dosc21NML();
+    Worm2Dosc21NML(const string & jsonfile_);
+    protected:
+    vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
+    vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
+    const string getModelName() {return "Worm2Dosc21NML";}
+
+};
+
+
+class Worm2Dosc21 : public Worm2DoscBase<Worm2Dosc21>, virtual public Evolvable<Worm2Dosc21>, public Worm2Dosc21base
 {
 
 public:
@@ -287,16 +315,16 @@ static int getVectSize() {return 6;}
 
 
 protected:
-vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
-vector<toFromWeight> makeDorsalMuscleConn();
-vector<toFromWeight> makeVentralMuscleConn();
+//vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
+vector<toFromWeight> makeDorsalMuscleConn() {return Worm2Dosc21base::makeDorsalMuscleConn();}
+vector<toFromWeight> makeVentralMuscleConn() {return Worm2Dosc21base::makeVentralMuscleConn();}
 
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
 
 const string getModelName() {return "Worm2Dosc21";}
 
-Worm2Dosc21pars & pars1;
+//Worm2Dosc21pars & pars1;
 
 };
 

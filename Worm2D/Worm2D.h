@@ -18,8 +18,9 @@
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
 extern string main_directoryname, main_modelname;
-
-
+int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain, int);
 //string main_directoryname;
 //string main_modelname;
 

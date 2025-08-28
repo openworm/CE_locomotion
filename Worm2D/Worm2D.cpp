@@ -172,9 +172,16 @@ void Worm2D::InitializeState(RandomState &rs)
 
 int Worm2Dbase::nn(int neuronNumber, int unitNumber)
 {   
-    if (unitNumber==1) return neuronNumber;
-    return neuronNumber+((unitNumber-1)*par1.N_neuronsperunit);
+    return nn1(neuronNumber,unitNumber,par1.N_neuronsperunit);
+    
 }
+
+int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit)
+{   
+    if (unitNumber==1) return neuronNumber;
+    return neuronNumber+((unitNumber-1)*N_neuronsperunit);
+}
+
 
 void Worm2Dbody::writeData()
 {
@@ -754,16 +761,22 @@ void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1,
     vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)
 {
 
+    return makeMuscleConnHelp1(vec1, neurons, NMJs, unit, to_muscle, NMJ_Gain, par1.N_neuronsperunit);
+}
+
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, 
+    TVector<double> & NMJ_Gain, int N_neuronsperunit)
+{
+
     for (int j = 0; j<neurons.size();j++){
         double weight = NMJs[j]*NMJ_Gain(to_muscle); 
-        int from_neuron = nn(neurons[j],unit);
+        int from_neuron = nn1(neurons[j],unit,N_neuronsperunit);
         toFromWeight tv({from_neuron,weight},to_muscle);
         vec1.push_back(tv);
 
 }
 }
-
-
 
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}

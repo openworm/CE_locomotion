@@ -47,6 +47,7 @@ int main (int argc, const char* argv[])
     }else{
 
     if (model_name == "W2Dosc") w2 = new Worm2DoscNML(evo->rename_file("worm_data_evo.json"));
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(evo->rename_file("worm_data_evo.json"));
 
     }
     ofstream json_out(evo->rename_file("worm_data_worm.json"));

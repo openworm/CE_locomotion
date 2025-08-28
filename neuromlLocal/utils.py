@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import copy
 
 from neuroml import (
     ElectricalProjection,
@@ -59,6 +60,15 @@ default_cells["Worm2Dosc"]["default parameters"] = {
     "state0": 0,
 }
 default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
+
+
+default_cells["Worm2Dosc21"] = copy.deepcopy(default_cells["Worm2Dosc"])
+namelist = []
+for i in range(7):
+    namelist.append("ND" + str(i))
+    namelist.append("NV" + str(i))
+
+default_cells["Worm2Dosc21"]["names"] = namelist
 
 
 def process_args():
