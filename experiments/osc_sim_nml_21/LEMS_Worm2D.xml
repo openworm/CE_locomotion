@@ -1,0 +1,92 @@
+<Lems>
+
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v1.3.21 (libNeuroML v0.6.7)
+
+     -->
+
+    <!-- Specify which component to run -->
+    <Target component="Worm2D" reportFile="report.txt"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+
+    <Include file="cell_W2Dosc.xml"/>
+    <Include file="cell_W2Dosc_cells.xml"/>
+    <Include file="Worm2D.net.nml"/>
+
+    <Simulation id="Worm2D" length="50000.0ms" step="1.0ms" target="Worm2DNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        <Display id="display0" title="States" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-15" ymax="10">
+            <Line id="ND0_0_ND0" quantity="PopND0/0/ND0/state" scale="1" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="NV0_0_NV0" quantity="PopNV0/0/NV0/state" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="ND1_0_ND1" quantity="PopND1/0/ND1/state" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV1_0_NV1" quantity="PopNV1/0/NV1/state" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="ND2_0_ND2" quantity="PopND2/0/ND2/state" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="NV2_0_NV2" quantity="PopNV2/0/NV2/state" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="ND3_0_ND3" quantity="PopND3/0/ND3/state" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="NV3_0_NV3" quantity="PopNV3/0/NV3/state" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="ND4_0_ND4" quantity="PopND4/0/ND4/state" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="NV4_0_NV4" quantity="PopNV4/0/NV4/state" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="ND5_0_ND5" quantity="PopND5/0/ND5/state" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="NV5_0_NV5" quantity="PopNV5/0/NV5/state" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="ND6_0_ND6" quantity="PopND6/0/ND6/state" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="NV6_0_NV6" quantity="PopNV6/0/NV6/state" scale="1" color="#5F9EA0" timeScale="1ms"/>
+        </Display>
+
+        <Display id="display1" title="Outputs" timeScale="1ms" xmin="-5000.0" xmax="55000.00000000001" ymin="-.1" ymax="1">
+            <Line id="ND0_0_ND0" quantity="PopND0/0/ND0/output" scale="1" color="#F0F8FF" timeScale="1ms"/>
+            <Line id="NV0_0_NV0" quantity="PopNV0/0/NV0/output" scale="1" color="#FAEBD7" timeScale="1ms"/>
+            <Line id="ND1_0_ND1" quantity="PopND1/0/ND1/output" scale="1" color="#00FFFF" timeScale="1ms"/>
+            <Line id="NV1_0_NV1" quantity="PopNV1/0/NV1/output" scale="1" color="#7FFFD4" timeScale="1ms"/>
+            <Line id="ND2_0_ND2" quantity="PopND2/0/ND2/output" scale="1" color="#F0FFFF" timeScale="1ms"/>
+            <Line id="NV2_0_NV2" quantity="PopNV2/0/NV2/output" scale="1" color="#F5F5DC" timeScale="1ms"/>
+            <Line id="ND3_0_ND3" quantity="PopND3/0/ND3/output" scale="1" color="#FFE4C4" timeScale="1ms"/>
+            <Line id="NV3_0_NV3" quantity="PopNV3/0/NV3/output" scale="1" color="#000000" timeScale="1ms"/>
+            <Line id="ND4_0_ND4" quantity="PopND4/0/ND4/output" scale="1" color="#FFEBCD" timeScale="1ms"/>
+            <Line id="NV4_0_NV4" quantity="PopNV4/0/NV4/output" scale="1" color="#0000FF" timeScale="1ms"/>
+            <Line id="ND5_0_ND5" quantity="PopND5/0/ND5/output" scale="1" color="#8A2BE2" timeScale="1ms"/>
+            <Line id="NV5_0_NV5" quantity="PopNV5/0/NV5/output" scale="1" color="#A52A2A" timeScale="1ms"/>
+            <Line id="ND6_0_ND6" quantity="PopND6/0/ND6/output" scale="1" color="#DEB887" timeScale="1ms"/>
+            <Line id="NV6_0_NV6" quantity="PopNV6/0/NV6/output" scale="1" color="#5F9EA0" timeScale="1ms"/>
+        </Display>
+
+        <OutputFile id="states_file" fileName="Worm2D.states.dat">
+            <OutputColumn id="ND0_0_ND0" quantity="PopND0/0/ND0/state"/>
+            <OutputColumn id="NV0_0_NV0" quantity="PopNV0/0/NV0/state"/>
+            <OutputColumn id="ND1_0_ND1" quantity="PopND1/0/ND1/state"/>
+            <OutputColumn id="NV1_0_NV1" quantity="PopNV1/0/NV1/state"/>
+            <OutputColumn id="ND2_0_ND2" quantity="PopND2/0/ND2/state"/>
+            <OutputColumn id="NV2_0_NV2" quantity="PopNV2/0/NV2/state"/>
+            <OutputColumn id="ND3_0_ND3" quantity="PopND3/0/ND3/state"/>
+            <OutputColumn id="NV3_0_NV3" quantity="PopNV3/0/NV3/state"/>
+            <OutputColumn id="ND4_0_ND4" quantity="PopND4/0/ND4/state"/>
+            <OutputColumn id="NV4_0_NV4" quantity="PopNV4/0/NV4/state"/>
+            <OutputColumn id="ND5_0_ND5" quantity="PopND5/0/ND5/state"/>
+            <OutputColumn id="NV5_0_NV5" quantity="PopNV5/0/NV5/state"/>
+            <OutputColumn id="ND6_0_ND6" quantity="PopND6/0/ND6/state"/>
+            <OutputColumn id="NV6_0_NV6" quantity="PopNV6/0/NV6/state"/>
+        </OutputFile>
+
+        <OutputFile id="outputs_file" fileName="Worm2D.outputs.dat">
+            <OutputColumn id="ND0_0_ND0" quantity="PopND0/0/ND0/output"/>
+            <OutputColumn id="NV0_0_NV0" quantity="PopNV0/0/NV0/output"/>
+            <OutputColumn id="ND1_0_ND1" quantity="PopND1/0/ND1/output"/>
+            <OutputColumn id="NV1_0_NV1" quantity="PopNV1/0/NV1/output"/>
+            <OutputColumn id="ND2_0_ND2" quantity="PopND2/0/ND2/output"/>
+            <OutputColumn id="NV2_0_NV2" quantity="PopNV2/0/NV2/output"/>
+            <OutputColumn id="ND3_0_ND3" quantity="PopND3/0/ND3/output"/>
+            <OutputColumn id="NV3_0_NV3" quantity="PopNV3/0/NV3/output"/>
+            <OutputColumn id="ND4_0_ND4" quantity="PopND4/0/ND4/output"/>
+            <OutputColumn id="NV4_0_NV4" quantity="PopNV4/0/NV4/output"/>
+            <OutputColumn id="ND5_0_ND5" quantity="PopND5/0/ND5/output"/>
+            <OutputColumn id="NV5_0_NV5" quantity="PopNV5/0/NV5/output"/>
+            <OutputColumn id="ND6_0_ND6" quantity="PopND6/0/ND6/output"/>
+            <OutputColumn id="NV6_0_NV6" quantity="PopNV6/0/NV6/output"/>
+        </OutputFile>
+
+    </Simulation>
+
+</Lems>

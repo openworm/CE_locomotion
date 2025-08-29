@@ -1,0 +1,810 @@
+{
+    "Body": {
+        "C_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "C_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "C_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "C_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "L_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "Medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "N_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "R_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        },
+        "beta_D": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_L": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_M0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "delta_M": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_D": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_L": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_M0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        }
+    },
+    "Dorsal NMJ": {
+        "Cell name": {
+            "value": [
+                "not implemented"
+            ]
+        },
+        "NumConns": {
+            "value": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Dorsal NMJ weights weights in sparse format",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 2.734425752348301
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 2.6401893078666445
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 2.5459528633849877
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 2.451716418903331
+                },
+                {
+                    "from": 3,
+                    "to": 5,
+                    "weight": 2.3574799744216746
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 2.2632435299400178
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 2.169007085458361
+                },
+                {
+                    "from": 5,
+                    "to": 8,
+                    "weight": 2.0747706409767046
+                },
+                {
+                    "from": 5,
+                    "to": 9,
+                    "weight": 1.980534196495048
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 1.886297752013391
+                },
+                {
+                    "from": 7,
+                    "to": 11,
+                    "weight": 1.7920613075317344
+                },
+                {
+                    "from": 7,
+                    "to": 12,
+                    "weight": 1.697824863050078
+                },
+                {
+                    "from": 7,
+                    "to": 13,
+                    "weight": 1.6035884185684213
+                },
+                {
+                    "from": 9,
+                    "to": 14,
+                    "weight": 1.5093519740867642
+                },
+                {
+                    "from": 9,
+                    "to": 15,
+                    "weight": 1.4151155296051081
+                },
+                {
+                    "from": 9,
+                    "to": 16,
+                    "weight": 1.320879085123451
+                },
+                {
+                    "from": 11,
+                    "to": 17,
+                    "weight": 1.2266426406417947
+                },
+                {
+                    "from": 11,
+                    "to": 18,
+                    "weight": 1.1324061961601377
+                },
+                {
+                    "from": 11,
+                    "to": 19,
+                    "weight": 1.0381697516784814
+                },
+                {
+                    "from": 11,
+                    "to": 20,
+                    "weight": 0.9439333071968247
+                },
+                {
+                    "from": 13,
+                    "to": 21,
+                    "weight": 0.8496968627151679
+                },
+                {
+                    "from": 13,
+                    "to": 22,
+                    "weight": 0.7554604182335113
+                },
+                {
+                    "from": 13,
+                    "to": 23,
+                    "weight": 0.6612239737518547
+                },
+                {
+                    "from": 13,
+                    "to": 24,
+                    "weight": 0.5669875292701978
+                }
+            ]
+        },
+        "weights_vec": {
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": 2.734425752348301
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 2.6401893078666445
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 2.5459528633849877
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": 2.451716418903331
+                },
+                {
+                    "from": 3,
+                    "to": 5,
+                    "weight": 2.3574799744216746
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "weight": 2.2632435299400178
+                },
+                {
+                    "from": 3,
+                    "to": 7,
+                    "weight": 2.169007085458361
+                },
+                {
+                    "from": 5,
+                    "to": 8,
+                    "weight": 2.0747706409767046
+                },
+                {
+                    "from": 5,
+                    "to": 9,
+                    "weight": 1.980534196495048
+                },
+                {
+                    "from": 5,
+                    "to": 10,
+                    "weight": 1.886297752013391
+                },
+                {
+                    "from": 7,
+                    "to": 11,
+                    "weight": 1.7920613075317344
+                },
+                {
+                    "from": 7,
+                    "to": 12,
+                    "weight": 1.697824863050078
+                },
+                {
+                    "from": 7,
+                    "to": 13,
+                    "weight": 1.6035884185684213
+                },
+                {
+                    "from": 9,
+                    "to": 14,
+                    "weight": 1.5093519740867642
+                },
+                {
+                    "from": 9,
+                    "to": 15,
+                    "weight": 1.4151155296051081
+                },
+                {
+                    "from": 9,
+                    "to": 16,
+                    "weight": 1.320879085123451
+                },
+                {
+                    "from": 11,
+                    "to": 17,
+                    "weight": 1.2266426406417947
+                },
+                {
+                    "from": 11,
+                    "to": 18,
+                    "weight": 1.1324061961601377
+                },
+                {
+                    "from": 11,
+                    "to": 19,
+                    "weight": 1.0381697516784814
+                },
+                {
+                    "from": 11,
+                    "to": 20,
+                    "weight": 0.9439333071968247
+                },
+                {
+                    "from": 13,
+                    "to": 21,
+                    "weight": 0.8496968627151679
+                },
+                {
+                    "from": 13,
+                    "to": 22,
+                    "weight": 0.7554604182335113
+                },
+                {
+                    "from": 13,
+                    "to": 23,
+                    "weight": 0.6612239737518547
+                },
+                {
+                    "from": 13,
+                    "to": 24,
+                    "weight": 0.5669875292701978
+                }
+            ]
+        }
+    },
+    "Evolutionary Optimization Parameters": {
+        "CheckpointInterval": {
+            "value": 5
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 50.0
+        },
+        "ElitistFraction": {
+            "value": 0.04
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 200
+        },
+        "MutationVariance": {
+            "value": 0.1
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "PopulationSize": {
+            "value": 22
+        },
+        "ReEvaluationFlag": {
+            "value": 0
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "StepSize": {
+            "value": 0.005
+        },
+        "Transient": {
+            "value": 10.0
+        },
+        "VectSize": {
+            "value": 6
+        },
+        "randomseed": {
+            "value": 4012128
+        },
+        "skip_steps": {
+            "value": 10
+        }
+    },
+    "Muscle": {
+        "Nmuscles": {
+            "value": 24
+        },
+        "T_muscle": {
+            "value": 0.1
+        }
+    },
+    "Nervous system": {
+        "Cell name": {
+            "value": [
+                "not implemented"
+            ]
+        },
+        "Model name": {
+            "value": "Worm2Dosc21"
+        },
+        "amp": {
+            "value": [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "freq": {
+            "value": [
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821,
+                0.4394970364986821
+            ]
+        },
+        "phase": {
+            "value": [
+                0.0,
+                3.644976566200049,
+                5.964075454994395,
+                9.609052021194444,
+                11.92815090998879,
+                15.573127476188839,
+                17.892226364983188,
+                21.537202931183238,
+                23.85630181997758,
+                27.50127838617763,
+                29.820377274971975,
+                33.465353841172025,
+                35.784452729966375,
+                39.429429296166425
+            ]
+        },
+        "size": {
+            "value": 14
+        }
+    },
+    "Ventral NMJ": {
+        "Cell name": {
+            "value": [
+                "not implemented"
+            ]
+        },
+        "NumConns": {
+            "value": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        "maxcons": {
+            "value": 100
+        },
+        "size": {
+            "value": 24
+        },
+        "weights": {
+            "message": "Ventral NMJ weights weights in sparse format",
+            "value": [
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 2.406084744024746
+                },
+                {
+                    "from": 2,
+                    "to": 2,
+                    "weight": 2.3231639072809704
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 2.2402430705371947
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 2.1573222337934195
+                },
+                {
+                    "from": 4,
+                    "to": 5,
+                    "weight": 2.074401397049644
+                },
+                {
+                    "from": 4,
+                    "to": 6,
+                    "weight": 1.9914805603058683
+                },
+                {
+                    "from": 4,
+                    "to": 7,
+                    "weight": 1.9085597235620926
+                },
+                {
+                    "from": 6,
+                    "to": 8,
+                    "weight": 1.8256388868183175
+                },
+                {
+                    "from": 6,
+                    "to": 9,
+                    "weight": 1.7427180500745418
+                },
+                {
+                    "from": 6,
+                    "to": 10,
+                    "weight": 1.6597972133307661
+                },
+                {
+                    "from": 8,
+                    "to": 11,
+                    "weight": 1.5768763765869906
+                },
+                {
+                    "from": 8,
+                    "to": 12,
+                    "weight": 1.4939555398432154
+                },
+                {
+                    "from": 8,
+                    "to": 13,
+                    "weight": 1.4110347030994397
+                },
+                {
+                    "from": 10,
+                    "to": 14,
+                    "weight": 1.328113866355664
+                },
+                {
+                    "from": 10,
+                    "to": 15,
+                    "weight": 1.2451930296118887
+                },
+                {
+                    "from": 10,
+                    "to": 16,
+                    "weight": 1.162272192868113
+                },
+                {
+                    "from": 12,
+                    "to": 17,
+                    "weight": 1.0793513561243377
+                },
+                {
+                    "from": 12,
+                    "to": 18,
+                    "weight": 0.9964305193805619
+                },
+                {
+                    "from": 12,
+                    "to": 19,
+                    "weight": 0.9135096826367866
+                },
+                {
+                    "from": 12,
+                    "to": 20,
+                    "weight": 0.8305888458930111
+                },
+                {
+                    "from": 14,
+                    "to": 21,
+                    "weight": 0.7476680091492355
+                },
+                {
+                    "from": 14,
+                    "to": 22,
+                    "weight": 0.66474717240546
+                },
+                {
+                    "from": 14,
+                    "to": 23,
+                    "weight": 0.5818263356616845
+                },
+                {
+                    "from": 14,
+                    "to": 24,
+                    "weight": 0.49890549891790875
+                }
+            ]
+        },
+        "weights_vec": {
+            "value": [
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 2.406084744024746
+                },
+                {
+                    "from": 2,
+                    "to": 2,
+                    "weight": 2.3231639072809704
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 2.2402430705371947
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": 2.1573222337934195
+                },
+                {
+                    "from": 4,
+                    "to": 5,
+                    "weight": 2.074401397049644
+                },
+                {
+                    "from": 4,
+                    "to": 6,
+                    "weight": 1.9914805603058683
+                },
+                {
+                    "from": 4,
+                    "to": 7,
+                    "weight": 1.9085597235620926
+                },
+                {
+                    "from": 6,
+                    "to": 8,
+                    "weight": 1.8256388868183175
+                },
+                {
+                    "from": 6,
+                    "to": 9,
+                    "weight": 1.7427180500745418
+                },
+                {
+                    "from": 6,
+                    "to": 10,
+                    "weight": 1.6597972133307661
+                },
+                {
+                    "from": 8,
+                    "to": 11,
+                    "weight": 1.5768763765869906
+                },
+                {
+                    "from": 8,
+                    "to": 12,
+                    "weight": 1.4939555398432154
+                },
+                {
+                    "from": 8,
+                    "to": 13,
+                    "weight": 1.4110347030994397
+                },
+                {
+                    "from": 10,
+                    "to": 14,
+                    "weight": 1.328113866355664
+                },
+                {
+                    "from": 10,
+                    "to": 15,
+                    "weight": 1.2451930296118887
+                },
+                {
+                    "from": 10,
+                    "to": 16,
+                    "weight": 1.162272192868113
+                },
+                {
+                    "from": 12,
+                    "to": 17,
+                    "weight": 1.0793513561243377
+                },
+                {
+                    "from": 12,
+                    "to": 18,
+                    "weight": 0.9964305193805619
+                },
+                {
+                    "from": 12,
+                    "to": 19,
+                    "weight": 0.9135096826367866
+                },
+                {
+                    "from": 12,
+                    "to": 20,
+                    "weight": 0.8305888458930111
+                },
+                {
+                    "from": 14,
+                    "to": 21,
+                    "weight": 0.7476680091492355
+                },
+                {
+                    "from": 14,
+                    "to": 22,
+                    "weight": 0.66474717240546
+                },
+                {
+                    "from": 14,
+                    "to": 23,
+                    "weight": 0.5818263356616845
+                },
+                {
+                    "from": 14,
+                    "to": 24,
+                    "weight": 0.49890549891790875
+                }
+            ]
+        }
+    },
+    "Worm": {
+        "NMJ_DN": {
+            "value": 3.906322503354716
+        },
+        "NMJ_Gain_Map": {
+            "value": 0.827111383667102
+        },
+        "NMJ_VN": {
+            "value": 3.4372639200353516
+        },
+        "N_muscles": {
+            "value": 24
+        },
+        "N_neuronsperunit": {
+            "value": 2
+        },
+        "N_size": {
+            "value": 14
+        },
+        "N_units": {
+            "value": 7
+        },
+        "T_muscle": {
+            "value": 0.1
+        },
+        "dbunit": {
+            "value": 5
+        },
+        "vbunit": {
+            "value": 6
+        }
+    }
+}

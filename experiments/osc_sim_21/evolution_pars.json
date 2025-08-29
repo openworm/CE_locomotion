@@ -1,0 +1,8 @@
+{
+    "Duration": 50,
+    "PopulationSize": 22,
+    "randomseed": 4012128,
+    "MaxGenerations": 200,
+    "Transient": 10,
+    "CheckpointInterval": 5
+}
