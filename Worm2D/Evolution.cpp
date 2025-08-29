@@ -57,7 +57,7 @@ void Evolution::setFromCPT()
     popsize = evoPars1.PopulationSize;
     s->cptfilename = rename_file("search.cpt");
     struct stat buffer;   
-    if (evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
+    if (doCPT && evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
         s->ReadCheckpointFile();
         cout << "setFromCPT " << s->cptfilename << endl;
         doResume = true;
@@ -80,12 +80,19 @@ void Evolution::setUp()
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
         fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
     }
-    evolfile.open(rename_file("fitness.dat"), std::ios_base::app);
-    evolfile << setprecision(10);
+
+    auto ioflag = std::ios_base::out;
+    if (doCPT) ioflag = std::ios_base::app;
+
+
+    evolfile.open(rename_file("fitness.dat"), ioflag);
+    
     //setFromCPT();
-    genhistfile.open(rename_file("genhistory.dat"), std::ios_base::app);
-    genhistfile2.open(rename_file("gendiffhistory.dat"), std::ios_base::app);
+    genhistfile.open(rename_file("genhistory.dat"), ioflag);
+    genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
     doneFirst = false;
+    evolfile << setprecision(10);
+
 }
 
 void Evolution::setFromEvol(const Evolution & er, int offset)
@@ -186,7 +193,9 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string pre
      {cout << "The arguments are not configured correctly." << endl;exit(1);}
     
     bool seed_flag = 1;
-    
+
+    doCPT = true;
+
     for (int arg = 1; arg<argc; arg+=2)
     { 
     if (strcmp(argv[arg],"--maxgens")==0) ep1.MaxGenerations = atoi(argv[arg+1]);
@@ -217,6 +226,9 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string pre
     if (strcmp(argv[arg],"-t")==0) ep1.Transient = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-cpt")==0) ep1.CheckpointInterval = atoi(argv[arg+1]);
 
+    if (strcmp(argv[arg],"-docpt")==0) doCPT = atoi(argv[arg+1]);
+
+    //cout << "doCPT " << doCPT << endl;
     //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
     
     }

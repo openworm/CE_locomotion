@@ -104,6 +104,7 @@ DEFAULTS = {
     "modelName": None,
     "reRand": False,
     "checkPointInterval": 0,
+    "doCPT": True,
 }
 
 
@@ -197,6 +198,17 @@ def process_args():
         default=DEFAULTS["doNML"],
         help=(
             "Run the equivalent neuroML simulation without muscles instead of C++ simulation if True."
+        ),
+    )
+
+    parser.add_argument(
+        "-cpt",
+        "--doCPT",
+        action="store_true",
+        # metavar="<run NML>",
+        default=DEFAULTS["doCPT"],
+        help=(
+            "Start evolution from checkpoint file if found, default true. Remove checkpoint file if false."
         ),
     )
 
@@ -411,6 +423,11 @@ def setDict(dictval, keyval, parval, default_val):
 def getValFromJson(dictval, keyval):
     return dictval[keyval]["value"]
 
+def TFtoInt(val):
+    if val is True: return 1
+    if val is False: return 0
+    print("TFtoInt error")
+    sys.exit(1)
 
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
@@ -632,6 +649,9 @@ def run(a=None, **kwargs):
         else:
             do_nml = 0
 
+    
+    
+
     do_muscsim = None
     if a.doMuscSim is not None:
         if a.doMuscSim:
@@ -715,6 +735,10 @@ def run(a=None, **kwargs):
     cmd += ["--folder", str(a.outputFolderName)]
     cmd += ["--modelname", str(model_name)]
     cmd += ["--domusc", str(sim_data["doMuscSim"])]
+    cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+
+    print(cmd)
+    #sys.exit(1)
 
     # Run the C++
     if True:

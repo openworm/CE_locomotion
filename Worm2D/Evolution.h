@@ -107,7 +107,7 @@ class Evolution
     TVector<double> phenotype, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, doneFirst, setFromCPTflag;
+    bool doResume, doneFirst, setFromCPTflag, doCPT;
     int popsize;
 
 };
