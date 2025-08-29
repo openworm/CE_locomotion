@@ -48,17 +48,18 @@ default_cells["Worm2Dosc"]["default parameters"] = {
     "amp": 1,
     "freq": 1,
     "phase": 1,
-    "timestep": {"value": 1, "dim": "s"},
+    #"timestep": {"value": 1, "dim": "s"},
     "tau": {"value": 1, "dim": "s"},
-    "state0": 0,
+    #"state0": 0,
 }
 default_cells["Worm2Dosc"]["default parameters"] = {
     "amp": 1,
     "freq": 1,
     "phase": 1,
-    "timestep": 1,
-    "state0": 0,
+    #"timestep": 1,
+    #"state0": 0,
 }
+
 default_cells["Worm2Dosc"]["XML cell name"] = "cellW2Dosc"
 
 

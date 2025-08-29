@@ -8,7 +8,7 @@
     <Parameter name="amp" dimension="none" description="..."/>
     <Parameter name="freq" dimension="none" description="..."/>
     <Parameter name="phase" dimension="none" description="..."/>
-    <Parameter name="timestep" dimension="none" description="..."/>
+    <!--<Parameter name="timestep" dimension="none" description="..."/>-->
     
 
     <Constant name="TSCALE" dimension="time" value ="1s"/>
@@ -24,7 +24,7 @@
   
 
     <!-- Initial Conditions -->
-    <Parameter name="state0" dimension="none"/>
+    <!--<Parameter name="state0" dimension="none"/>-->
 
 
    
@@ -46,7 +46,8 @@
         <TimeDerivative variable="v" value="PAMP / C" />
 
         <OnStart>
-            <StateAssignment variable="v" value="state0*MVOLT"/>
+            <!--<StateAssignment variable="v" value="state0*MVOLT"/>-->
+            <StateAssignment variable="v" value="0"/>
         </OnStart>
         
     
