@@ -315,17 +315,34 @@ static int getVectSize() {return 6;}
 
 
 protected:
+void setPhenoNames(); 
 //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
 vector<toFromWeight> makeDorsalMuscleConn() {return Worm2Dosc21base::makeDorsalMuscleConn();}
 vector<toFromWeight> makeVentralMuscleConn() {return Worm2Dosc21base::makeVentralMuscleConn();}
 
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
+void setParsFromPheno(TVector<double> &phen, int offset);
 
 const string getModelName() {return "Worm2Dosc21";}
 
 //Worm2Dosc21pars & pars1;
 
+};
+
+class Worm2Dosc21all : public Worm2Dosc21, virtual public Evolvable<Worm2Dosc21all>
+{
+public:
+Worm2Dosc21all(const string & filename_);
+Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno);
+//static inline int evoVectSize = 6;
+static void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+static int getVectSize() {return 18;}
+protected:
+void setPfaFromPheno(TVector<double> &phen);
+void setParsFromPheno(TVector<double> &phen);
+const string getModelName() {return "Worm2Dosc21all";}
+void setPhenoNames(); 
 };
 
 
