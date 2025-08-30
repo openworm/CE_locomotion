@@ -532,12 +532,8 @@ def run(a=None, **kwargs):
 
     doW2D = False
     model_name = None
-    if (
-        a.modelFolder == "Worm2D"
-        or a.modelFolder == "../Worm2D"
-        or a.modelFolder == "Worm2D/CO18"
-        or a.modelFolder == "W2Dmoddev/src"
-    ):
+    model_folder_list = ["Worm2D", "../Worm2D", "Worm2D/CO18", "W2Dmoddev/src", "../W2Dmoddev/src"]
+    if (a.modelFolder in model_folder_list):
         if a.modelName is None:
             print(
                 "'modelName' parameter is required if `Worm2D' or subfolder is the model folder.\n"

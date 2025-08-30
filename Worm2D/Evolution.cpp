@@ -25,14 +25,14 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
     genprev(1, VectSize_),setFromCPTflag(false)
-    {//setFromCPT();
+    {setFromCPT();
     }
   
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
     genprev(1, VectSize_),setFromCPTflag(false)
-    {//setFromCPT();
+    {setFromCPT();
     }
 
 
@@ -74,7 +74,7 @@ void Evolution::setFromCPT()
 void Evolution::setUp()
 {   
 
-    setFromCPT();
+    //setFromCPT();
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
@@ -120,7 +120,8 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
 }
 
 }
-    
+ 
+//assert(0);
 //doResume = true;
 
 }
