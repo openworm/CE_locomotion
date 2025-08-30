@@ -60,12 +60,6 @@ pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),Worm2Dm({size_,24,0.1,1,size_},n
     construct(pheno);
 }
 
-Worm2Dosc21::Worm2Dosc21():
-Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{
-    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-}
 
 Worm2Dosc21NML::Worm2Dosc21NML():Worm2DPars({2,24,0.1,7,14}, 0, new Worm2Dosc21pars()),
 Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14}, new c302ForW2D())
@@ -92,30 +86,32 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
     setUpMuscleConn(j);
 }
 
-Worm2Dosc21::Worm2Dosc21(const string & filename_):
-Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{
-    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    construct(filename_);
-}
 
-Worm2Dosc21::Worm2Dosc21(TVector<double> & pheno, const bool & isPheno):
-Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{
-    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    if (isPheno) construct(pheno);
-    else constructFromGeno(pheno);
-}
-
-Worm2Dosc21all::Worm2Dosc21all(const string & filename_):
-Worm2Dosc21(filename_),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{}
-Worm2Dosc21all::Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno):
-Worm2Dosc21(pheno,isPheno),Worm2Dm({2,24,0.1,7,14},new NSosc())
+Worm2Dosc21D::Worm2Dosc21D(const string & filename_):
+Worm2Dosc21<Worm2Dosc21D>::Worm2Dosc21(filename_),
+Worm2DoscBase<Worm2Dosc21D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dm({2,24,0.1,7,14},new NSosc())
 {}
 
+Worm2Dosc21D::Worm2Dosc21D(TVector<double> & pheno, const bool & isPheno):
+Worm2Dosc21<Worm2Dosc21D>::Worm2Dosc21(pheno,isPheno),
+Worm2DoscBase<Worm2Dosc21D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dm({2,24,0.1,7,14},new NSosc())
+{}
+
+
+
+
+Worm2Dosc21allD::Worm2Dosc21allD(const string & filename_):
+Worm2Dosc21all<Worm2Dosc21allD>::Worm2Dosc21all(filename_),
+Worm2DoscBase<Worm2Dosc21allD>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dm({2,24,0.1,7,14},new NSosc())
+{}
+Worm2Dosc21allD::Worm2Dosc21allD(TVector<double> & pheno, const bool & isPheno):
+Worm2Dosc21all<Worm2Dosc21allD>::Worm2Dosc21all(pheno,isPheno),
+Worm2DoscBase<Worm2Dosc21allD>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dm({2,24,0.1,7,14},new NSosc())
+{}
 
 Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
 
@@ -384,162 +380,6 @@ void Worm2DoscHalf::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 }
 
-//void Worm2DoscBase::writeJson(TVector<double> &){}
-
-/* evoPars Worm2DoscBase::getDefaultEvoPars(){ return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, getVectSize()};} */
-
-
-
-/* double Worm2DoscBase::EvaluationFunction(TVector<double> &geno, RandomState &rs){
-
-  
-    cout << "Worm2Dosc::EvaluationFunction" << endl;
-
-    const double OSCT = 0.25 * ep_ptr->Duration; // Cap for oscillation evaluation
-    const double agarfreq = 0.44;
-    const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    const double    BBCfit = AvgSpeed*ep_ptr->Duration;
-
-    const double & Duration = ep_ptr->Duration;
-    assert(ep_ptr->VectSize == getVectSize());
-    const int & VectSize = ep_ptr->VectSize ;
-    const double & StepSize = ep_ptr->StepSize;
-    const int & N_curvs = ep_ptr->N_curvs;
-    const double & Transient = ep_ptr->Transient;
-    //const int & skip_steps = ep_ptr->skip_steps;
-
-   
-    TVector<double> phenotype(1, VectSize);
-    GenPhenMapping(geno, phenotype);
-    //setPfaFromPheno(phenotype);
-    //setParsFromPheno(phenotype);
-    construct(phenotype);
-    //setUpMuscleConn();
-    InitializeState(rs);
-    initForSimulation(rs);
-    setStepSize(StepSize);
-
-        // Fitness
-        double fitness_tr = 0.0;
-        double bodyorientation, anglediff;
-        double movementorientation, distancetravelled = 0, displacement, temp;
-        TVector<double> curvature(1, N_curvs);
-        TVector<double> antpostcurv(1, 2);
-        antpostcurv.FillContents(0.0);
-    
-        // Evaluation of B-class neuron oscillation,and frequency in segment 2.
-        // The index of B class in this segment correspond to DBs2 = 10; VBs2 = 13
-        double DBp, VBp, dDB, dVB;
-        double oscDB = 0, oscVB = 0;
-        double FoDB, FoVB, FfDB, FfVB;
-    
-        double freqDB=0, freqVB=0;
-        int pDB = 0, pVB = 0, signtagDB, signtagVB, signDB, signVB;
-        TVector<double> peaksDB(1, 2*Duration);
-        TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
-    
-        
-        // Genotype-Phenotype Mapping
-        //Worm21 w(phenotype);
-        
-        
-
-        // Transient XXX
-        //SetAVB(0.0);
-        //SetAVA(0.0);
-        
-        for (double t = 0.0; t <= Transient; t += StepSize){
-            Step();
-        }    
-        
-        DBp = n.NeuronOutput(Epars1.dbunit);
-        VBp = n.NeuronOutput(Epars1.vbunit);
-    
-        Step(); // determine sign of derivative
-    
-        dDB = n.NeuronOutput(Epars1.dbunit) - DBp;
-        dVB = n.NeuronOutput(Epars1.vbunit) - VBp;
-        signtagDB = (dDB  > 0) ? 1 : -1;
-        signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = n.NeuronOutput(Epars1.dbunit);
-        VBp = n.NeuronOutput(Epars1.vbunit);
-        
-        double xt = CoMx(), xtp;
-        double yt = CoMy(), ytp;
-    
-        // Time loop
-        for (double t = 0.0; t <= Duration; t += StepSize) {
-            // Step simulation
-            Step();
-            
-            ///// Oscilation
-            // check changes in sign of derivative
-            dDB = n.NeuronOutput(Epars1.dbunit) - DBp;
-            dVB = n.NeuronOutput(Epars1.vbunit) - VBp;
-            signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
-            signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
-    
-            oscDB += abs(DBp - n.NeuronOutput(Epars1.dbunit));
-            oscVB += abs(VBp - n.NeuronOutput(Epars1.vbunit));
-    
-            if ((signDB == -1) and (signtagDB >= 0)){
-                pDB +=1;
-                peaksDB[pDB] = t;
-                if (pDB >= 2*Duration){return 0;};
-            }
-            if ((signVB == -1) and (signtagVB >= 0)){
-                pVB +=1;
-                peaksVB[pVB] = t;
-                if (pVB >= 2*Duration){return 0;};
-            }
-    
-            signtagDB = signDB;
-            signtagVB = signVB;
-            DBp = n.NeuronOutput(Epars1.dbunit);
-            VBp = n.NeuronOutput(Epars1.vbunit);
-            
-            //// Locomotion
-            // Current and past centroid position
-            xtp = xt; ytp = yt;
-            xt = CoMx(); yt = CoMy();
-            
-            // Integration error check
-            if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
-                return 0;
-            }
-            
-            // Fitness
-            bodyorientation = Orientation();                  // Orientation of the body position
-            movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
-            anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
-    
-        }
-        // B Oscillation evaluation
-        if ((pDB < 2) or (pVB < 2)){return 0;};
-        for (int i = 1; i<pDB; i+=1){freqDB += (1./(pDB-1))*(1./(peaksDB[i+1]- peaksDB[i]));} 
-        for (int i = 1; i<pVB; i+=1){freqVB += (1./(pVB-1))*(1./(peaksVB[i+1]- peaksVB[i]));} 
-    
-        FfDB = fabs(freqDB - agarfreq)/agarfreq < 1 ? fabs(freqDB - agarfreq)/agarfreq : 1;
-        FfVB = fabs(freqVB - agarfreq)/agarfreq < 1 ? fabs(freqVB - agarfreq)/agarfreq : 1;
-    
-        FoDB = oscDB > OSCT ? 1 : oscDB / OSCT;
-        FoVB = oscVB > OSCT ? 1 : oscVB / OSCT;
-    
-        // Locomotion evaluation
-        fitness_tr = (1 - (fabs(BBCfit-distancetravelled)/BBCfit));
-    
-   
-        return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
-    } */
-
-
-
-
-
 
 vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
 {
@@ -578,152 +418,3 @@ vector<double> ventralNMJ({pars1.NMJ_VN});
 return makeMuscleConn(ventralNeurons, ventralNMJ);
 }
 
-
-void Worm2Dosc21::setPfaFromPheno(TVector<double> &phen)
-{
-
-pfa pfa1;
-pfa1.size = 14;
-vector<double> phase_1(14,0);
-
-for (int unit = 1; unit<=7; unit++){
-const int neuron_d = nn(1,unit) - 1;
-phase_1[neuron_d] = phen[1]*(unit-1);
-const int neuron_v = nn(2,unit) - 1;
-phase_1[neuron_v] = phen[1]*(unit-1) + phen[2];
-}
-pfa1.phase.swap(phase_1);
-
-for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
-n.pfa1.swap_all(pfa1);
-
-}
-
-void Worm2Dosc21all::setPfaFromPheno(TVector<double> &phen)
-{
-
-pfa pfa1;
-pfa1.size = 14;
-vector<double> phase_1(14,0);
-
-for (int unit = 1; unit<=7; unit++){
-const int neuron_d = nn(1,unit) - 1;
-phase_1[neuron_d] = phen[unit];
-const int neuron_v = nn(2,unit) - 1;
-phase_1[neuron_v] = phen[unit+7];
-}
-pfa1.phase.swap(phase_1);
-
-for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[15]);pfa1.amp.push_back(1);}
-n.pfa1.swap_all(pfa1);
-
-}
-
-void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
-{
-    pars1.NMJ_Gain_Map = phen[offset];
-    //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    for (int i=1; i<=par1.N_muscles; i++)
-    {
-    pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1.NMJ_Gain_Map)/par1.N_muscles));
-    }
-    
-    pars1.NMJ_VN = phen[offset+1];
-    pars1.NMJ_DN = phen[offset+2];
-    pars1.dbunit = nn(1,3);
-    pars1.vbunit = nn(2,3);
-   
-}
-
-
-void Worm2Dosc21::setParsFromPheno(TVector<double> &phen)
-{
-    setParsFromPheno(phen,4);
-
-}
-
-void Worm2Dosc21all::setParsFromPheno(TVector<double> &phen)
-{
-    Worm2Dosc21::setParsFromPheno(phen,16);
-   
-}
-
-void Worm2Dosc21::setPhenoNames(){
-    addPhenoName("phase offset", 1);
-    addPhenoName("DV phase offset", 2);
-    addPhenoName("freq", 3);
-    addPhenoName("NMJ Gain map", 4);
-    addPhenoName("D_NMJ weight", 5);
-    addPhenoName("V_NMJ weight", 6);
-}
-
-
-void Worm2Dosc21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
-{
-    
-    cout << "GenPhenMapping" << endl;
-    //assert(0);
-    const double NMJweight_top = 10;
-    const double freq_lo = 0.01;
-    const double freq_hi = 4;
-    //phases_lag
-    
-    phen(1) = MapSearchParameter(gen(1), 0, pi2);
-    
-    phen(2) = MapSearchParameter(gen(2), 0, pi2);
-    
-    phen(3) = MapSearchParameter(gen(3), freq_lo, freq_hi);
-    //weight
-    
-    phen(4) = MapSearchParameter(gen(4), 0.2, 1.0); //from Net21
-    //phen(4) = MapSearchParameter(gen(4), 0.0, 0.1);
-
-    //phen(5) = MapSearchParameter(gen(5), NMJweight_top*-1, NMJweight_top);
-    phen(5) = MapSearchParameter(gen(5), 0, NMJweight_top);
-
-
-    //phen(6) = MapSearchParameter(gen(6), NMJweight_top*-1, NMJweight_top);
-    phen(6) = MapSearchParameter(gen(6), 0, NMJweight_top);
-    
-   cout << "GenPhenMapping" << endl;
-
-}
-
-void Worm2Dosc21all::setPhenoNames(){
-    for (int unit=1; unit<=7; unit++)
-    addPhenoName("D phase offset", unit);
-    for (int unit=8; unit<=14; unit++)
-    addPhenoName("V phase offset", unit);
-    
-    addPhenoName("freq", 15);
-    addPhenoName("NMJ Gain map", 16);
-    addPhenoName("D_NMJ weight", 17);
-    addPhenoName("V_NMJ weight", 18);
-}
-
-
-
-void Worm2Dosc21all::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
-{
-    
-    cout << "GenPhenMapping" << endl;
-    //assert(0);
-    const double NMJweight_top = 10;
-    const double freq_lo = 0.01;
-    const double freq_hi = 4;
-    //phases_lag
-    
-    for (int unit=1;unit<=14;unit++) 
-    phen(unit) = MapSearchParameter(gen(unit), 0, pi2);
-    
-    phen(15) = MapSearchParameter(gen(15), freq_lo, freq_hi);
-    //weight
-    
-
-    phen(16) = MapSearchParameter(gen(16), 0.2, 1.0); //from Net21
-    phen(17) = MapSearchParameter(gen(17), 0, NMJweight_top);
-    phen(18) = MapSearchParameter(gen(18), 0, NMJweight_top);
-    
-   cout << "GenPhenMapping" << endl;
-
-}
