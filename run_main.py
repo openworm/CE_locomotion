@@ -545,8 +545,9 @@ def run(a=None, **kwargs):
     else:
         model_name = model_names[a.modelFolder]
 
+    model_name_list = ["W2Dosc", "W2DoscH", "W2Dosc21", "W2Dosc21all"]
     mainProcessName = a.mainProcessName
-    if a.modelName == "W2Dosc" or a.modelName == "W2DoscH" or a.modelName == "W2Dosc21":
+    if a.modelName in model_name_list:
         mainProcessName = "main_osc"
 
     defaults_bases = {
@@ -559,6 +560,7 @@ def run(a=None, **kwargs):
         "W2Dosc": defaults_base_CO18,
         "W2DoscH": defaults_base_CO18,
         "W2Dosc21": defaults_base_CO18,
+        "W2Dosc21all": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
