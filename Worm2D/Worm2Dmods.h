@@ -544,7 +544,7 @@ void Worm2Dosc21<D>::setPhenoNames(){
 template<typename D>
 void Worm2Dosc21<D>::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
-    
+
     cout << "GenPhenMapping" << endl;
     //assert(0);
     const double NMJweight_top = 10;
@@ -589,7 +589,7 @@ void Worm2Dosc21all<D>::setPhenoNames(){
 template<typename D>
 void Worm2Dosc21all<D>::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
-    
+   
     cout << "GenPhenMapping" << endl;
     //assert(0);
     const double NMJweight_top = 10;
@@ -612,34 +612,6 @@ void Worm2Dosc21all<D>::GenPhenMapping(TVector<double> &gen, TVector<double> &ph
 
 }
 
-template<typename D>
-Worm2Dosc21all<D>::Worm2Dosc21all(const string & filename_):
-Worm2Dosc21<D>(filename_),Worm2Dm({2,24,0.1,7,14},new NSosc()),
-Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars())
-{}
-template<typename D>
-Worm2Dosc21all<D>::Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno):
-Worm2Dosc21<D>(pheno,isPheno),Worm2Dm({2,24,0.1,7,14},new NSosc()),
-Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars())
-{}
-
-template<typename D>
-Worm2Dosc21<D>::Worm2Dosc21(const string & filename_):
-Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dosc21base(this->par1, dynamic_cast<Worm2Dosc21pars&>(*(this->pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{
-    pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
-    this->construct(filename_);
-}
-template<typename D>
-Worm2Dosc21<D>::Worm2Dosc21(TVector<double> & pheno, const bool & isPheno):
-Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dosc21base(this->par1, dynamic_cast<Worm2Dosc21pars&>(*(this->pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
-{
-    pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
-    if (isPheno) this->construct(pheno);
-    else this->constructFromGeno(pheno);
-}
 
 template<typename D>
 Worm2Dosc21<D>::Worm2Dosc21():
@@ -647,4 +619,46 @@ Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
 Worm2Dosc21base(this->par1, dynamic_cast<Worm2Dosc21pars&>(*(this->pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
 {
     pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
+}
+
+
+
+
+template<typename D>
+Worm2Dosc21<D>::Worm2Dosc21(const string & filename_):
+Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dosc21base(this->par1, dynamic_cast<Worm2Dosc21pars&>(*(this->pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    this->pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
+    this->construct(filename_);
+}
+template<typename D>
+Worm2Dosc21<D>::Worm2Dosc21(TVector<double> & pheno, const bool & isPheno):
+Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dosc21base(this->par1, dynamic_cast<Worm2Dosc21pars&>(*(this->pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    this->pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
+    if (isPheno) this->construct(pheno);
+    else this->constructFromGeno(pheno);
+}
+
+template<typename D>
+Worm2Dosc21all<D>::Worm2Dosc21all(const string & filename_):
+Worm2Dosc21<D>(),Worm2Dm({2,24,0.1,7,14},new NSosc()),
+Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars())
+{
+    this->pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
+    this->construct(filename_);
+
+}
+
+template<typename D>
+Worm2Dosc21all<D>::Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno):
+Worm2Dosc21<D>(),Worm2Dm({2,24,0.1,7,14},new NSosc()),
+Worm2DoscBase<D>({2,24,0.1,7,14}, new Worm2Dosc21pars())
+{
+    this->pars1.NMJ_Gain.SetBounds(1, this->par1.N_muscles);
+    if (isPheno) this->construct(pheno);
+    else this->constructFromGeno(pheno);
+
 }
