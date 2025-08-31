@@ -22,6 +22,19 @@ j["amp"]["value"] = amp;
 }
 
 
+
+void CoupledOsc::EulerStep(double stepsize)
+{  
+    vector<double> phase_inc = pfa1.freq;
+
+    for (int i=0;i<weights.size();i++){
+    toFromWeight & w = weights[i];
+    phase_inc[w.to-1] += sin(pfa1.phase[w.w.from-1] - pfa1.phase[w.to-1])*w.w.weight;
+    }
+    for (int i=0;i<phase_inc.size();i++) pfa1.phase[i] += phase_inc[i]*stepsize;
+
+}
+
 Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr):
 Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
@@ -570,6 +583,57 @@ for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[15]);pfa1.amp.push_back(1)
 n.pfa1.swap_all(pfa1);
 
 }
+
+void CoupledOsc::setFromPheno(TVector<double> &pheno)
+{
+for (int i = 0; i<=weights.size(); i++) weights[i].w.weight = pheno[i+1];
+
+}
+
+vector<toFromWeight> Worm2Dosc21Coup::getWeightVec()
+{
+vector<toFromWeight> vec;
+for (int i=1;i<=6;i++){
+{toFromWeight w;
+w.w.from = i;
+w.to = i+1;
+w.w.weight = 0;
+vec.push_back(w);}
+{toFromWeight w;
+w.w.from = i;
+w.to = i+7;
+w.w.weight = 0;
+vec.push_back(w);}
+
+
+}
+
+
+}
+
+void Worm2Dosc21Coup::setPfaFromPheno(TVector<double> &phen)
+{
+
+pfa pfa1;
+pfa1.size = 14;
+vector<double> phase_1(14,0);
+
+for (int unit = 1; unit<=7; unit++){
+const int neuron_d = nn(1,unit) - 1;
+phase_1[neuron_d] = phen[unit];
+const int neuron_v = nn(2,unit) - 1;
+phase_1[neuron_v] = phen[unit+7];
+}
+pfa1.phase.swap(phase_1);
+
+
+
+for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[15]);pfa1.amp.push_back(1);}
+n.pfa1.swap_all(pfa1);
+
+}
+
+
 
 void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
 {

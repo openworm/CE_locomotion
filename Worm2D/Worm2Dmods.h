@@ -23,14 +23,15 @@ public:
 NSosc(const pfa & pfa_);
 NSosc(){}
 
-double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
+virtual double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
 double NeuronState(int i) {return 0;}
 void SetNeuronExternalInput(int i, double value) {return;}
-void EulerStep(double stepsize) {t+=stepsize;}
+virtual void EulerStep(double stepsize) {t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
 const pfa & itsPfa() const {return pfa1;}
- 
+virtual void setFromPheno(TVector<double> &pheno){}
+
 //friend class Worm2DoscBase<Worm2Dosc>;
 friend class Worm2Dosc;
 friend class Worm2Dosc21;
@@ -48,9 +49,13 @@ double t;
 
 class CoupledOsc : public NSosc
 {
-    
-    private:
-    vector<weightentry> weights;
+    public:
+    CoupledOsc(vector<toFromWeight> weights_):weights(weights_){}
+    void EulerStep(double stepsize);
+    double NeuronOutput(int i){return pfa1.amp[i-1]*sin(pfa1.phase[i-1]);}
+    void setFromPheno(TVector<double> &pheno);
+    protected:
+    vector<toFromWeight> weights;
 
 };
 
@@ -355,6 +360,26 @@ void setParsFromPheno(TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21all";}
 void setPhenoNames(); 
 };
+
+class Worm2Dosc21Coup : public Worm2Dosc21
+{
+public:
+Worm2Dosc21Coup();
+Worm2Dosc21Coup(const string & filename_);
+Worm2Dosc21Coup(TVector<double> & pheno, const bool & isPheno);
+//static inline int evoVectSize = 6;
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+int getVectSize() {return 18;}
+protected:
+void setPfaFromPheno(TVector<double> &phen);
+void setParsFromPheno(TVector<double> &phen);
+const string getModelName() {return "Worm2Dosc21all";}
+void setPhenoNames(); 
+vector<toFromWeight> getWeightVec();
+
+};
+
+
 
 
 
