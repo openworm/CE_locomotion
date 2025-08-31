@@ -12,12 +12,12 @@ int main (int argc, const char* argv[])
     cout << "Model name is required." << endl;
     return 0;
     }
-    Evolution * evo = 0;
+
+    evoPars ep1;
+    ep1.setFromArgs(argc,argv);
+    ep1.StepSize = 0.005;
+    ep1.skip_steps = 10;
     
-    if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
-    if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
-    if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
-    if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
 
     //assert(0);
 
@@ -28,35 +28,55 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DoscH") w1 = new Worm2DoscHalf();
 
     EvolutionFull evo(argc,argv,w1); */
+    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
+    //json_out << setprecision(32);
+    json j;
+
+
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
     if (do_evol) 
     {
+        Evolution * evo = 0;
+    
+        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
+        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
+
+        ep1.StepSize = evo->itsEvoPars().StepSize;
+        ep1.skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
+        evo->addParsToJson(j);
+        delete evo;
+
     }
+
+    
+
    //delete w1;
     
     
-    cout << evo->rename_file("best.gen.dat") << " " << model_name << endl;
+    cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
 
     bool do_nml =  atoi(getParameter(argc,argv,"--donml","0"));
 
     Worm2Dbase * w2;
     if (!do_nml){
-    if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo->rename_file("best.gen.dat"));
-    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo->rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(evo->rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(evo->rename_file("best.gen.dat"));
+
+    if (model_name == "W2Dosc") w2 = new Worm2Dosc(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(ep1.rename_file("best.gen.dat"));
     }else{
 
-    if (model_name == "W2Dosc") w2 = new Worm2DoscNML(evo->rename_file("worm_data_evo.json"));
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(evo->rename_file("worm_data_evo.json"));
+    if (model_name == "W2Dosc") w2 = new Worm2DoscNML(ep1.rename_file("worm_data_evo.json"));
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(ep1.rename_file("worm_data_evo.json"));
 
     }
-    ofstream json_out(evo->rename_file("worm_data_worm.json"));
-    //json_out << setprecision(32);
-    json j;
+
+
+
     w2->addParsToJson(j);
-    if (do_evol) evo->addParsToJson(j);
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
 
@@ -75,25 +95,23 @@ int main (int argc, const char* argv[])
     double simtransient = atof(getParameter(argc,argv,"-st","50"));
 
     
-    simPars sp1 = {evo->itsEvoPars().directoryName,
-        //er->itsEvoPars().skip_steps, 
-        simduration, simtransient, evo->itsEvoPars().StepSize};
+    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     
     cout << "const 1" << endl;
 
     w2->initForSimulation(rs);
-    w2->setStepSize(evo->itsEvoPars().StepSize);
-    w2->setDataskips(evo->itsEvoPars().skip_steps);
+    w2->setStepSize(ep1.StepSize);
+    w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
-    w2->InitializeData(evo->itsEvoPars().directoryName);
+    w2->InitializeData(ep1.directoryName);
 
     cout << "const 1" << endl;
 
     s1.runSimulation(*w2);
     cout << "const 1" << endl;
 
-    delete evo;
+    
     delete w2;
     return 0;
 }

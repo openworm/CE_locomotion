@@ -153,12 +153,12 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs);
 class EvolutionFull : public Evolution
 {
 public:
-EvolvableS * const evolvable1;
+EvolvableS * const evolvable1  = nullptr;
 
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
 
-virtual ~EvolutionFull(){}
+virtual ~EvolutionFull(){if (evolvable1) delete evolvable1;}
 
 protected:
 EvolutionFull(int argc, const char* argv[], EvolvableS * evol1_)
@@ -167,7 +167,7 @@ EvolutionFull(int argc, const char* argv[], EvolvableS * evol1_)
 evoPars getDefaultEvoPars(EvolvableS * evol1_) 
 {return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize()};}
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), ""};}
 
 };
 
@@ -176,7 +176,7 @@ class EvolutionFullW : public EvolutionFull
 {
 public:
 EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
-virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
+virtual ~EvolutionFullW(){}
 void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 };
@@ -194,7 +194,7 @@ void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) {return T::GenP
 
 static inline evoPars evoPars1 =  {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::getVectSize()};
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::getVectSize(), ""};
 };
 
 

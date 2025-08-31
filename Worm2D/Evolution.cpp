@@ -187,51 +187,19 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1)
 {
 return setPars(argc,argv,ep1,"");
 }
+
 evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string prefix_){
 
+    ep1.setFromArgs(argc,argv);
 
-    if (((argc-1) % 2) != 0)
-     {cout << "The arguments are not configured correctly." << endl;exit(1);}
     
-    bool seed_flag = 1;
-
     doCPT = true;
 
     for (int arg = 1; arg<argc; arg+=2)
     { 
-    if (strcmp(argv[arg],"--maxgens")==0) ep1.MaxGenerations = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
-
-
-    if (strcmp(argv[arg],"--folder")==0) {
-      ep1.directoryName= argv[arg+1];
-      struct stat sb;
-      if (stat(ep1.directoryName.c_str(), &sb) != 0) 
-      {cout << "Directory doesn't exist." << endl;exit(1);}
-    }
-
-    if (seed_flag){ 
-    if (strcmp(argv[arg],"-R")==0) ep1.randomseed = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-r")==0) 
-    {long randomseed1 = static_cast<long>(time(NULL));
-           ep1.randomseed = randomseed1 + atoi(argv[arg+1]);
-    }
-    seed_flag = 0;
-    }
-    //if (strcmp(argv[arg], "--modelname")==0) model_name = argv[arg+1];
-    if (strcmp(argv[arg],"-p")==0) ep1.PopulationSize = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-d")==0) ep1.Duration = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-t")==0) ep1.Transient = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-cpt")==0) ep1.CheckpointInterval = atoi(argv[arg+1]);
-
+    
     if (strcmp(argv[arg],"-docpt")==0) doCPT = atoi(argv[arg+1]);
 
-    //cout << "doCPT " << doCPT << endl;
-    //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
-    
     }
 
     ep1.fileprefix = prefix_;
