@@ -14,10 +14,10 @@ int main (int argc, const char* argv[])
     }
     Evolution * evo = 0;
     
-    if (model_name == "W2Dosc") evo = new EvolutionFullW2<Worm2Dosc>(argc,argv);
-    if (model_name == "W2DoscH") evo = new EvolutionFullW2<Worm2DoscHalf>(argc,argv);
-    if (model_name == "W2Dosc21") evo = new EvolutionFullW2<Worm2Dosc21D>(argc,argv);
-    if (model_name == "W2Dosc21all") evo = new EvolutionFullW2<Worm2Dosc21allD>(argc,argv);
+    if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
+    if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
+    if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
+    if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
 
     //assert(0);
 
@@ -44,8 +44,8 @@ int main (int argc, const char* argv[])
     if (!do_nml){
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(evo->rename_file("best.gen.dat"));
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(evo->rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21D(evo->rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21allD(evo->rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(evo->rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(evo->rename_file("best.gen.dat"));
     }else{
 
     if (model_name == "W2Dosc") w2 = new Worm2DoscNML(evo->rename_file("worm_data_evo.json"));

@@ -87,31 +87,9 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
 }
 
 
-Worm2Dosc21D::Worm2Dosc21D(const string & filename_):
-Worm2Dosc21<Worm2Dosc21D>::Worm2Dosc21(filename_),
-Worm2DoscBase<Worm2Dosc21D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dm({2,24,0.1,7,14},new NSosc())
-{}
-
-Worm2Dosc21D::Worm2Dosc21D(TVector<double> & pheno, const bool & isPheno):
-Worm2Dosc21<Worm2Dosc21D>::Worm2Dosc21(pheno,isPheno),
-Worm2DoscBase<Worm2Dosc21D>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dm({2,24,0.1,7,14},new NSosc())
-{}
 
 
 
-
-Worm2Dosc21allD::Worm2Dosc21allD(const string & filename_):
-Worm2Dosc21all<Worm2Dosc21allD>::Worm2Dosc21all(filename_),
-Worm2DoscBase<Worm2Dosc21allD>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dm({2,24,0.1,7,14},new NSosc())
-{}
-Worm2Dosc21allD::Worm2Dosc21allD(TVector<double> & pheno, const bool & isPheno):
-Worm2Dosc21all<Worm2Dosc21allD>::Worm2Dosc21all(pheno,isPheno),
-Worm2DoscBase<Worm2Dosc21allD>({2,24,0.1,7,14}, new Worm2Dosc21pars()),
-Worm2Dm({2,24,0.1,7,14},new NSosc())
-{}
 
 Worm2DoscHalf::Worm2DoscHalf():Worm2Dosc(24),Worm2Dm({24,24,0.1,1,24},new NSosc()){}
 
@@ -188,7 +166,55 @@ Worm2Dosc(pfa_,pars1_),Worm2Dm({pfa_.size,24,0.1,1,pfa_.size}, new NSosc(pfa_), 
     return;    
 } */
 
+Worm2Dosc21::Worm2Dosc21():
+Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*(pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+}
 
+
+Worm2Dosc21::Worm2Dosc21(const string & filename_):
+Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*(pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    construct(filename_);
+}
+
+
+Worm2Dosc21::Worm2Dosc21(TVector<double> & pheno, const bool & isPheno):
+Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*(pars1_ptr))),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    if (isPheno) construct(pheno);
+    else constructFromGeno(pheno);
+}
+
+Worm2Dosc21all::Worm2Dosc21all():
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+}
+
+Worm2Dosc21all::Worm2Dosc21all(const string & filename_):
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    construct(filename_);
+
+}
+
+
+Worm2Dosc21all::Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno):
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc())
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    if (isPheno) construct(pheno);
+    else constructFromGeno(pheno);
+
+}
 
 void Worm2Dosc::setPfaFromPheno(TVector<double> &phen)
 {
@@ -417,4 +443,241 @@ vector<int> ventralNeurons({VN});
 vector<double> ventralNMJ({pars1.NMJ_VN});
 return makeMuscleConn(ventralNeurons, ventralNMJ);
 }
+
+void Worm2DoscBase::addParsToJson(json & j)
+{
+    Worm2DPars::addParsToJson(j);
+    n.pfa1.addParsToJson(j["Nervous system"]);
+
+}
+
+void Worm2DoscBase::construct(const string & filename_)
+{
+    setPfaFromFile(filename_);
+    setParsFromFile(filename_);
+    setUpMuscleConn();
+    n.setTime(t);
+}
+
+void Worm2DoscBase::constructFromGeno(TVector<double> &geno)
+{
+    setPfaFromGeno(geno);
+    setParsFromGeno(geno);
+    setUpMuscleConn();
+    n.setTime(t);
+
+}
+
+void Worm2DoscBase::construct(TVector<double> &pheno)
+{
+    setPfaFromPheno(pheno);
+    setParsFromPheno(pheno);
+    setUpMuscleConn();
+    n.setTime(t);
+
+}
+
+
+Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
+Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc()),
+Epars1(dynamic_cast<Evolparameters&>(*pars1_ptr)),
+n(dynamic_cast<NSosc&>(*n_ptr)){}
+
+
+void Worm2DoscBase::setPfaFromFile(const string & genofilename_)
+{
+ 
+    ifstream ifs;
+    ifs.open(genofilename_);
+    TVector<double> bestVector(1, getVectSize());
+    ifs >> bestVector;
+    ifs.close();
+  
+    setPfaFromGeno(bestVector);
+
+}
+
+void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
+{ 
+ TVector<double> phenotype(1, v.Size());
+ GenPhenMapping(v, phenotype);
+ setPfaFromPheno(phenotype);
+}
+
+
+void Worm2DoscBase::setParsFromFile(const string & filename_)
+{
+    ifstream ifs;
+    ifs.open(filename_);
+    TVector<double> bestVector(1, getVectSize());
+    //assert(0);
+    ifs >> bestVector;
+    ifs.close();
+    setParsFromGeno(bestVector);
+}
+
+
+void Worm2DoscBase::setParsFromGeno(TVector<double> &v)
+{
+    
+    //cout << v << endl;
+    TVector<double> phenotype(1, v.Size());
+    //cout << phenotype.Size() << endl;
+    GenPhenMapping(v, phenotype);
+ 
+    setParsFromPheno(phenotype);
+ 
+}
+
+
+void Worm2Dosc21::setPfaFromPheno(TVector<double> &phen)
+{
+
+pfa pfa1;
+pfa1.size = 14;
+vector<double> phase_1(14,0);
+
+for (int unit = 1; unit<=7; unit++){
+const int neuron_d = nn(1,unit) - 1;
+phase_1[neuron_d] = phen[1]*(unit-1);
+const int neuron_v = nn(2,unit) - 1;
+phase_1[neuron_v] = phen[1]*(unit-1) + phen[2];
+}
+pfa1.phase.swap(phase_1);
+
+for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[3]);pfa1.amp.push_back(1);}
+n.pfa1.swap_all(pfa1);
+
+}
+
+
+void Worm2Dosc21all::setPfaFromPheno(TVector<double> &phen)
+{
+
+pfa pfa1;
+pfa1.size = 14;
+vector<double> phase_1(14,0);
+
+for (int unit = 1; unit<=7; unit++){
+const int neuron_d = nn(1,unit) - 1;
+phase_1[neuron_d] = phen[unit];
+const int neuron_v = nn(2,unit) - 1;
+phase_1[neuron_v] = phen[unit+7];
+}
+pfa1.phase.swap(phase_1);
+
+for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[15]);pfa1.amp.push_back(1);}
+n.pfa1.swap_all(pfa1);
+
+}
+
+void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
+{
+    pars1.NMJ_Gain_Map = phen[offset];
+    //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+    pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1.NMJ_Gain_Map)/par1.N_muscles));
+    }
+    
+    pars1.NMJ_VN = phen[offset+1];
+    pars1.NMJ_DN = phen[offset+2];
+    pars1.dbunit = nn(1,3);
+    pars1.vbunit = nn(2,3);
+   
+}
+
+
+void Worm2Dosc21::setParsFromPheno(TVector<double> &phen)
+{
+    setParsFromPheno(phen,4);
+
+}
+
+void Worm2Dosc21all::setParsFromPheno(TVector<double> &phen)
+{
+    Worm2Dosc21::setParsFromPheno(phen,16);
+   
+}
+
+void Worm2Dosc21::setPhenoNames(){
+    addPhenoName("phase offset", 1);
+    addPhenoName("DV phase offset", 2);
+    addPhenoName("freq", 3);
+    addPhenoName("NMJ Gain map", 4);
+    addPhenoName("D_NMJ weight", 5);
+    addPhenoName("V_NMJ weight", 6);
+}
+
+
+void Worm2Dosc21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+
+    cout << "GenPhenMapping" << endl;
+    //assert(0);
+    const double NMJweight_top = 10;
+    const double freq_lo = 0.01;
+    const double freq_hi = 4;
+    //phases_lag
+    
+    phen(1) = MapSearchParameter(gen(1), 0, pi2);
+    
+    phen(2) = MapSearchParameter(gen(2), 0, pi2);
+    
+    phen(3) = MapSearchParameter(gen(3), freq_lo, freq_hi);
+    //weight
+    
+    phen(4) = MapSearchParameter(gen(4), 0.2, 1.0); //from Net21
+    //phen(4) = MapSearchParameter(gen(4), 0.0, 0.1);
+
+    //phen(5) = MapSearchParameter(gen(5), NMJweight_top*-1, NMJweight_top);
+    phen(5) = MapSearchParameter(gen(5), 0, NMJweight_top);
+
+
+    //phen(6) = MapSearchParameter(gen(6), NMJweight_top*-1, NMJweight_top);
+    phen(6) = MapSearchParameter(gen(6), 0, NMJweight_top);
+    
+   cout << "GenPhenMapping" << endl;
+
+}
+
+void Worm2Dosc21all::setPhenoNames(){
+    for (int unit=1; unit<=7; unit++)
+    addPhenoName("D phase offset", unit);
+    for (int unit=8; unit<=14; unit++)
+    addPhenoName("V phase offset", unit);
+    
+    addPhenoName("freq", 15);
+    addPhenoName("NMJ Gain map", 16);
+    addPhenoName("D_NMJ weight", 17);
+    addPhenoName("V_NMJ weight", 18);
+}
+
+
+
+void Worm2Dosc21all::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+   
+    cout << "GenPhenMapping" << endl;
+    //assert(0);
+    const double NMJweight_top = 10;
+    const double freq_lo = 0.01;
+    const double freq_hi = 4;
+    //phases_lag
+    
+    for (int unit=1;unit<=14;unit++) 
+    phen(unit) = MapSearchParameter(gen(unit), 0, pi2);
+    
+    phen(15) = MapSearchParameter(gen(15), freq_lo, freq_hi);
+    //weight
+    
+
+    phen(16) = MapSearchParameter(gen(16), 0.2, 1.0); //from Net21
+    phen(17) = MapSearchParameter(gen(17), 0, NMJweight_top);
+    phen(18) = MapSearchParameter(gen(18), 0, NMJweight_top);
+    
+   cout << "GenPhenMapping" << endl;
+
+}
+
 
