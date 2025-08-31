@@ -97,3 +97,22 @@ class Evolvable
   //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
   //const evoPars * ep_ptr;
 };
+
+
+class Evolvable2
+{
+  public:
+  //Evolvable():ep_ptr(nullptr){}
+  virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+  
+  virtual void writeJson(TVector<double> &) = 0;
+  //virtual evoPars getDefaultEvoPars() = 0;
+  virtual void getVectSize() = 0;
+  
+
+  friend class EvolutionFull;
+  protected:
+  //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
+  //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
+  //const evoPars * ep_ptr;
+};

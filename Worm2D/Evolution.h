@@ -113,6 +113,9 @@ class Evolution
 };
 
 
+
+
+
 /* class EvolutionFull : public Evolution
 {
 public:
@@ -164,6 +167,30 @@ static inline evoPars evoPars1 =  {".", 42, RANK_BASED, GENETIC_ALGORITHM,
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::getVectSize()};
 };
 
+
+class EvolutionFull2 : public Evolution
+{
+public:
+Evolvable2 * const evolvable1;
+
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+{return evolvable1->GenPhenMapping(gen,phen);}
+double EvaluationFunction(TVector<double> &v, RandomState &rs);
+
+void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
+//void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
+
+virtual ~EvolutionFull2(){}
+
+protected:
+EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
+:Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize()),evolvable1(evol1_)
+{
+//evolvable1->ep_ptr = &evoPars1;
+}
+
+
+};
 
 
 /* template<class T>
