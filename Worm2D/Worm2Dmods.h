@@ -16,8 +16,6 @@ void addParsToJson(json & j);
 };
 
 
-
-
 class NSosc : public NSForW2D {
 
 public:
@@ -47,6 +45,15 @@ double t;
 
 
 };
+
+class CoupledOsc : public NSosc
+{
+    
+    private:
+    vector<weightentry> weights;
+
+};
+
 
 class W2Dparameters
 {
