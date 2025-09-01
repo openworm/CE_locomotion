@@ -423,11 +423,15 @@ def setDict(dictval, keyval, parval, default_val):
 def getValFromJson(dictval, keyval):
     return dictval[keyval]["value"]
 
+
 def TFtoInt(val):
-    if val is True: return 1
-    if val is False: return 0
+    if val is True:
+        return 1
+    if val is False:
+        return 0
     print("TFtoInt error")
     sys.exit(1)
+
 
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
@@ -532,8 +536,14 @@ def run(a=None, **kwargs):
 
     doW2D = False
     model_name = None
-    model_folder_list = ["Worm2D", "../Worm2D", "Worm2D/CO18", "W2Dmoddev/src", "../W2Dmoddev/src"]
-    if (a.modelFolder in model_folder_list):
+    model_folder_list = [
+        "Worm2D",
+        "../Worm2D",
+        "Worm2D/CO18",
+        "W2Dmoddev/src",
+        "../W2Dmoddev/src",
+    ]
+    if a.modelFolder in model_folder_list:
         if a.modelName is None:
             print(
                 "'modelName' parameter is required if `Worm2D' or subfolder is the model folder.\n"
@@ -545,7 +555,7 @@ def run(a=None, **kwargs):
     else:
         model_name = model_names[a.modelFolder]
 
-    model_name_list = ["W2Dosc", "W2DoscH", "W2Dosc21", "W2Dosc21all"]
+    model_name_list = ["W2Dosc", "W2DoscH", "W2Dosc21", "W2Dosc21all", "W2Dosc21Coup"]
     mainProcessName = a.mainProcessName
     if a.modelName in model_name_list:
         mainProcessName = "main_osc"
@@ -561,6 +571,7 @@ def run(a=None, **kwargs):
         "W2DoscH": defaults_base_CO18,
         "W2Dosc21": defaults_base_CO18,
         "W2Dosc21all": defaults_base_CO18,
+        "W2Dosc21Coup": defaults_base_CO18,
     }
 
     defaults_base = defaults_bases[model_name]
@@ -646,9 +657,6 @@ def run(a=None, **kwargs):
             do_nml = 1
         else:
             do_nml = 0
-
-    
-    
 
     do_muscsim = None
     if a.doMuscSim is not None:
@@ -736,7 +744,7 @@ def run(a=None, **kwargs):
     cmd += ["-docpt", str(TFtoInt(a.doCPT))]
 
     print(cmd)
-    #sys.exit(1)
+    # sys.exit(1)
 
     # Run the C++
     if True:

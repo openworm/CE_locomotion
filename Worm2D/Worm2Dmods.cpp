@@ -229,6 +229,33 @@ Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc())
 
 }
 
+Worm2Dosc21Coup::Worm2Dosc21Coup():
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec())),
+cn(dynamic_cast<CoupledOsc&>(*n_ptr))
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+}
+
+Worm2Dosc21Coup::Worm2Dosc21Coup(const string & filename_):
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec())),
+cn(dynamic_cast<CoupledOsc&>(*n_ptr))
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    construct(filename_);
+
+}
+
+
+Worm2Dosc21Coup::Worm2Dosc21Coup(TVector<double> & pheno, const bool & isPheno):
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec())),
+cn(dynamic_cast<CoupledOsc&>(*n_ptr))
+{
+    pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
+    if (isPheno) construct(pheno);
+    else constructFromGeno(pheno);
+
+}
+
 void Worm2Dosc::setPfaFromPheno(TVector<double> &phen)
 {
     
@@ -600,40 +627,51 @@ w.to = i+1;
 w.w.weight = 0;
 vec.push_back(w);}
 {toFromWeight w;
+w.w.from = i+1;
+w.to = i;
+w.w.weight = 0;
+vec.push_back(w);}
+{toFromWeight w;
 w.w.from = i;
 w.to = i+7;
 w.w.weight = 0;
 vec.push_back(w);}
-
-
+{toFromWeight w;
+w.w.from = i+7;
+w.to = i;
+w.w.weight = 0;
+vec.push_back(w);}
+{toFromWeight w;
+w.w.from = i+7;
+w.to = i+8;
+w.w.weight = 0;
+vec.push_back(w);}
+{toFromWeight w;
+w.w.from = i+8;
+w.to = i+7;
+w.w.weight = 0;
+vec.push_back(w);}
 }
-
 
 }
 
 void Worm2Dosc21Coup::setPfaFromPheno(TVector<double> &phen)
 {
 
-pfa pfa1;
-pfa1.size = 14;
-vector<double> phase_1(14,0);
-
-for (int unit = 1; unit<=7; unit++){
-const int neuron_d = nn(1,unit) - 1;
-phase_1[neuron_d] = phen[unit];
-const int neuron_v = nn(2,unit) - 1;
-phase_1[neuron_v] = phen[unit+7];
-}
-pfa1.phase.swap(phase_1);
-
-
-
-for (int i = 1; i<=14; i++) {pfa1.freq.push_back(phen[15]);pfa1.amp.push_back(1);}
-n.pfa1.swap_all(pfa1);
+const int & weisize = cn.weights.size();
+vector<double> freq, amp;
+for (int i = 1; i<=14; i++) {freq.push_back(phen[weisize+1]);amp.push_back(1);}
+n.pfa1.freq.swap(freq);
+n.pfa1.amp.swap(amp);
 
 }
 
+void Worm2Dosc21Coup::setParsFromPheno(TVector<double> &phen)
+{
+    const int & weisize = cn.weights.size();
+    Worm2Dosc21::setParsFromPheno(phen,weisize+2);
 
+}
 
 void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
 {
@@ -717,7 +755,16 @@ void Worm2Dosc21all::setPhenoNames(){
     addPhenoName("V_NMJ weight", 18);
 }
 
-
+void Worm2Dosc21Coup::setPhenoNames(){
+    const int & size1 = cn.weights.size(); 
+    for (int unit=1;unit<=size1;unit++) 
+    addPhenoName("connection weight", unit);
+    
+    addPhenoName("freq", size1+1);
+    addPhenoName("NMJ Gain map", size1+2);
+    addPhenoName("D_NMJ weight", size1+3);
+    addPhenoName("V_NMJ weight", size1+4);
+}
 
 void Worm2Dosc21all::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
@@ -745,3 +792,29 @@ void Worm2Dosc21all::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 }
 
 
+void Worm2Dosc21Coup::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+   
+    cout << "GenPhenMapping" << endl;
+    //assert(0);
+    const double NMJweight_top = 10, weight_top = 1;
+    const double freq_lo = 0.01;
+    const double freq_hi = 4;
+    //phases_lag
+    
+    const int & size1 = cn.weights.size();
+    for (int unit=1;unit<=size1;unit++) 
+    phen(unit) = MapSearchParameter(gen(unit), 0, weight_top);
+    
+
+    phen(size1+1) = MapSearchParameter(gen(size1+1), freq_lo, freq_hi);
+    //weight
+    
+
+    phen(size1+2) = MapSearchParameter(gen(size1+2), 0.2, 1.0); //from Net21
+    phen(size1+3) = MapSearchParameter(gen(size1+3), 0, NMJweight_top);
+    phen(size1+4) = MapSearchParameter(gen(size1+4), 0, NMJweight_top);
+    
+   cout << "GenPhenMapping" << endl;
+
+}

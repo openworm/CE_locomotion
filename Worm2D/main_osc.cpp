@@ -42,7 +42,9 @@ int main (int argc, const char* argv[])
         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
         if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
         if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
+        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
 
+        assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;
         ep1.skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
@@ -67,6 +69,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(ep1.rename_file("best.gen.dat"));
+
     }else{
 
     if (model_name == "W2Dosc") w2 = new Worm2DoscNML(ep1.rename_file("worm_data_evo.json"));

@@ -50,10 +50,12 @@ double t;
 class CoupledOsc : public NSosc
 {
     public:
-    CoupledOsc(vector<toFromWeight> weights_):weights(weights_){}
+    CoupledOsc(const vector<toFromWeight> & weights_):weights(weights_){}
     void EulerStep(double stepsize);
     double NeuronOutput(int i){return pfa1.amp[i-1]*sin(pfa1.phase[i-1]);}
     void setFromPheno(TVector<double> &pheno);
+    virtual ~CoupledOsc(){};
+    friend class Worm2Dosc21Coup;
     protected:
     vector<toFromWeight> weights;
 
@@ -367,15 +369,19 @@ public:
 Worm2Dosc21Coup();
 Worm2Dosc21Coup(const string & filename_);
 Worm2Dosc21Coup(TVector<double> & pheno, const bool & isPheno);
-//static inline int evoVectSize = 6;
+
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
-int getVectSize() {return 18;}
+int getVectSize() {return cn.weights.size()+4;}
+
+
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
-const string getModelName() {return "Worm2Dosc21all";}
-void setPhenoNames(); 
+const string getModelName() {return "Worm2Dosc21allCoup";}
+void setPhenoNames();
 vector<toFromWeight> getWeightVec();
+
+CoupledOsc & cn;
 
 };
 
