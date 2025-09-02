@@ -31,7 +31,7 @@ virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
 const pfa & itsPfa() const {return pfa1;}
 virtual void setFromPheno(TVector<double> &pheno){}
-
+virtual void addParsToJson(json & j){pfa1.addParsToJson(j);}
 //friend class Worm2DoscBase<Worm2Dosc>;
 friend class Worm2Dosc;
 friend class Worm2Dosc21;
@@ -50,12 +50,14 @@ double t;
 class CoupledOsc : public NSosc
 {
     public:
+    CoupledOsc(){}
     CoupledOsc(const vector<toFromWeight> & weights_):weights(weights_){}
     void EulerStep(double stepsize);
     double NeuronOutput(int i){return pfa1.amp[i-1]*sin(pfa1.phase[i-1]);}
-    void setFromPheno(TVector<double> &pheno);
+    void setFromPheno(TVector<double> &pheno, int offset = 0);
     virtual ~CoupledOsc(){};
     friend class Worm2Dosc21Coup;
+    void addParsToJson(json & j){NSosc::addParsToJson(j);j["weights"]["value"]=weights;}
     protected:
     vector<toFromWeight> weights;
 
@@ -377,7 +379,7 @@ int getVectSize() {return cn.weights.size()+4;}
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
-const string getModelName() {return "Worm2Dosc21allCoup";}
+const string getModelName() {return "Worm2Dosc21Coup";}
 void setPhenoNames();
 vector<toFromWeight> getWeightVec();
 

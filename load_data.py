@@ -118,7 +118,7 @@ plot_formats["W2Dosc21"]["data_sizes"] = [14, 48]
 plot_formats["W2Dosc21all"] = plot_formats["W2Dosc21"]
 # plot_formats["W2DoscH"] = plot_formats["W2Dosc"]
 # plot_formats["W2DoscH"]["data_sizes"] = [24, 48]
-
+plot_formats["W2Dosc21Coup"] = plot_formats["W2Dosc21"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 

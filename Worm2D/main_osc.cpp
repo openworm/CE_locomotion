@@ -28,7 +28,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DoscH") w1 = new Worm2DoscHalf();
 
     EvolutionFull evo(argc,argv,w1); */
-    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
+    
     //json_out << setprecision(32);
     json j;
 
@@ -44,7 +44,7 @@ int main (int argc, const char* argv[])
         if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
         if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
 
-        assert(0);
+        
         ep1.StepSize = evo->itsEvoPars().StepSize;
         ep1.skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
@@ -81,6 +81,7 @@ int main (int argc, const char* argv[])
 
 
     w2->addParsToJson(j);
+    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
 
