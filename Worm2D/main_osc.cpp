@@ -41,9 +41,10 @@ int main (int argc, const char* argv[])
         if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
         if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
+        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv);
         if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
         if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
-
+        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv);
         
         ep1.StepSize = evo->itsEvoPars().StepSize;
         ep1.skip_steps = evo->itsEvoPars().skip_steps;
@@ -68,8 +69,10 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(ep1.rename_file("best.gen.dat"));
 
     }else{
 

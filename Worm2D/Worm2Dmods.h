@@ -6,10 +6,10 @@ const double pi2 = 3.14159265*2.0;
 //struct evoPars;
 
 class pfa{
-
-    public:
+     public:
+pfa(int size_):size(size_){}//,phase(size_,0),freq(size_,0),amp(size_,0){}
 vector<double> phase, freq, amp;
-int size;
+const int size;
 void swap_all(pfa & pfa_);
 void addParsToJson(json & j);
 
@@ -20,8 +20,8 @@ class NSosc : public NSForW2D {
 
 public:
 
-NSosc(const pfa & pfa_);
-NSosc(){}
+//NSosc(const pfa & pfa_);
+NSosc(int size_):pfa1(size_){}
 
 virtual double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
 double NeuronState(int i) {return 0;}
@@ -50,13 +50,15 @@ double t;
 class CoupledOsc : public NSosc
 {
     public:
-    CoupledOsc(){}
-    CoupledOsc(const vector<toFromWeight> & weights_):weights(weights_){}
+    CoupledOsc(int size_):NSosc(size_){}
+    CoupledOsc(const vector<toFromWeight> & weights_, int size_):weights(weights_),NSosc(size_){}
     void EulerStep(double stepsize);
     double NeuronOutput(int i){return pfa1.amp[i-1]*sin(pfa1.phase[i-1]);}
     void setFromPheno(TVector<double> &pheno, int offset = 0);
     virtual ~CoupledOsc(){};
     friend class Worm2Dosc21Coup;
+    friend class Worm2Dosc21CF;
+
     void addParsToJson(json & j){NSosc::addParsToJson(j);j["weights"]["value"]=weights;}
     protected:
     vector<toFromWeight> weights;
@@ -365,6 +367,23 @@ const string getModelName() {return "Worm2Dosc21all";}
 void setPhenoNames(); 
 };
 
+class Worm2Dosc21S : public Worm2Dosc21
+{
+public:
+Worm2Dosc21S();
+Worm2Dosc21S(const string & filename_);
+Worm2Dosc21S(TVector<double> & pheno, const bool & isPheno);
+//static inline int evoVectSize = 6;
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+int getVectSize() {return 5;}
+protected:
+//void setPfaFromPheno(TVector<double> &phen);
+void setParsFromPheno(TVector<double> &phen);
+const string getModelName() {return "Worm2Dosc21S";}
+void setPhenoNames(); 
+};
+
+
 class Worm2Dosc21Coup : public Worm2Dosc21
 {
 public:
@@ -387,7 +406,19 @@ CoupledOsc & cn;
 
 };
 
-
+class Worm2Dosc21CF : public Worm2Dosc21Coup
+{
+public:
+Worm2Dosc21CF();
+Worm2Dosc21CF(const string & filename_);
+Worm2Dosc21CF(TVector<double> & pheno, const bool & isPheno);
+void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+int getVectSize() {return cn.weights.size() + 14 + 3;}
+void setPfaFromPheno(TVector<double> &phen);
+void setParsFromPheno(TVector<double> &phen);
+const string getModelName() {return "Worm2Dosc21CF";}
+void setPhenoNames();
+};
 
 
 
