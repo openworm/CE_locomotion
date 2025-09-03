@@ -157,9 +157,10 @@ void Evolution::writeJson1(Worm2Dbase & w)
 void Evolution::addParsToJson(json & j)
 {  
     
-    doubIntParamsHead par1pars = evoPars1.getParams();
-    appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
-    appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
+    //doubIntParamsHead par1pars = evoPars1.getParams();
+    //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
+    //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
+    evoPars1.addParsToJson(j["Evolutionary Optimization Parameters"]);
 
     addExtraParsToJson(j);
 }

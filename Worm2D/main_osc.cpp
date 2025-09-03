@@ -17,8 +17,8 @@ int main (int argc, const char* argv[])
     ep1.setFromArgs(argc,argv);
     ep1.StepSize = 0.005;
     ep1.skip_steps = 10;
-    
 
+   
     //assert(0);
 
     //EvolutionFullW<Worm2Dosc> evo(argc,argv);
@@ -32,6 +32,7 @@ int main (int argc, const char* argv[])
     //json_out << setprecision(32);
     json j;
 
+    
 
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
     if (do_evol) 

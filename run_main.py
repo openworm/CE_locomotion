@@ -26,6 +26,7 @@ defaults_base_CO = {
     "doRandInit": 0,
     "maxGens": 40,
     "doMuscSim": 0,
+    "evoType": "Evo18"
 }
 
 defaults_base_celoc = {
@@ -39,6 +40,7 @@ defaults_base_celoc = {
     "doRandInit": 0,
     "maxGens": 10,
     "doMuscSim": 0,
+    "evoType": "EvoCE"
 }
 
 defaults_base_2018 = {
@@ -52,6 +54,7 @@ defaults_base_2018 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
+    "evoType": "Evo18"
 }
 
 defaults_base_CO18 = {
@@ -65,6 +68,7 @@ defaults_base_CO18 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
+     "evoType": "Evo18"
 }
 
 
@@ -79,6 +83,7 @@ defaults_base_2021 = {
     "doRandInit": 0,
     "maxGens": 2000,
     "doMuscSim": 0,
+    "evoType": "Evo21"
 }
 
 
@@ -105,6 +110,7 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 0,
     "doCPT": True,
+    "evoType": "Evo21"
 }
 
 
@@ -129,6 +135,20 @@ def process_args():
             # "Default is: %s" % DEFAULTS["modelName"]
         ),
     )
+
+    parser.add_argument(
+        "-ET",
+        "--evoType",
+        type=str,
+        metavar="<evoType>",
+        default=DEFAULTS["evoType"],
+        help=(
+            "Name of evolution function.\n"
+            "Options include: Evo21, Evo18"
+            # "Default is: %s" % DEFAULTS["modelName"]
+        ),
+    )
+
 
     parser.add_argument(
         "-M",
@@ -568,13 +588,13 @@ def run(a=None, **kwargs):
         "CO": defaults_base_CO,
         "CO18": defaults_base_CO18,
         "CO18Full": defaults_base_CO18,
-        "W2Dosc": defaults_base_CO18,
-        "W2DoscH": defaults_base_CO18,
-        "W2Dosc21": defaults_base_CO18,
-        "W2Dosc21all": defaults_base_CO18,
-        "W2Dosc21Coup": defaults_base_CO18,
-        "W2Dosc21CF": defaults_base_CO18,
-        "W2Dosc21S": defaults_base_CO18,
+        "W2Dosc": defaults_base_2021,
+        "W2DoscH": defaults_base_2021,
+        "W2Dosc21": defaults_base_2021,
+        "W2Dosc21all": defaults_base_2021,
+        "W2Dosc21Coup": defaults_base_2021,
+        "W2Dosc21CF": defaults_base_2021,
+        "W2Dosc21S": defaults_base_2021,
     }
 
     defaults_base = defaults_bases[model_name]
@@ -595,6 +615,7 @@ def run(a=None, **kwargs):
         "MaxGenerations",
         "Transient",
         "CheckpointInterval",
+        "EvolutionType"
     ]
 
     evol_args = [
@@ -604,6 +625,7 @@ def run(a=None, **kwargs):
         a.maxGens,
         a.transient,
         a.checkPointInterval,
+        a.evoType
     ]
     evol_defaults = [
         defaults_base["duration"],
@@ -612,6 +634,7 @@ def run(a=None, **kwargs):
         defaults_base["maxGens"],
         defaults_base["transient"],
         0,
+        defaults_base["evoType"],
     ]
 
     for parameter_key in evol_extra_parameters:
@@ -745,6 +768,7 @@ def run(a=None, **kwargs):
     cmd += ["--modelname", str(model_name)]
     cmd += ["--domusc", str(sim_data["doMuscSim"])]
     cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+    cmd += ["--evoType", str(a.evoType)]
 
     print(cmd)
     # sys.exit(1)

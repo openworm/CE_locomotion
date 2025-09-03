@@ -414,6 +414,7 @@ Worm2Dosc21CF(const string & filename_);
 Worm2Dosc21CF(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size() + 14 + 3;}
+protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21CF";}

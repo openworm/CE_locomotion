@@ -31,8 +31,33 @@ struct evoPars{
    int N_curvs;
    int VectSize;
    string fileprefix ;
+   string evoType;
    
+  void addParsToJson(json &j) const
+  {
 
+    {vector<string> names = {"MutationVariance", "CrossoverProbability", 
+         "MaxExpectedOffspring", "ElitistFraction",
+         "Duration", "Transient", "StepSize"};
+    vector<double> vals = {MutationVariance, CrossoverProbability, 
+         MaxExpectedOffspring, ElitistFraction,
+         Duration, Transient, StepSize};
+    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+    {vector<string> names = {"randomseed", "SelectionMode", "ReproductionMode", 
+         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
+         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize"};
+    vector<int> vals = {(int) randomseed, SelectionMode, ReproductionMode, 
+         PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
+         ReEvaluationFlag, skip_steps, N_curvs, VectSize};
+    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+      {vector<string> names = {"fileprefix", "evoType"};
+      vector<string> vals = {fileprefix, evoType};
+       for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+
+  }
 
    const doubIntParamsHead getParams() const
    {
@@ -103,7 +128,7 @@ void setFromArgs(int argc, const char* argv[])
     if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-t")==0) Transient = atoi(argv[arg+1]);
     if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = atoi(argv[arg+1]);
-
+    if (strcmp(argv[arg],"--evoType")==0) evoType = argv[arg+1];
     
 
     //cout << "doCPT " << doCPT << endl;
