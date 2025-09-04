@@ -43,6 +43,8 @@ Evolution21.o: Evolution21.cpp Evolution21.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution21.cpp
 Evolution.o: Evolution.cpp Evolution.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution.cpp
+Evolvable.o: Evolvable.cpp Evolvable.h 
+	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolvable.cpp
 NSToMuscles.o: NSToMuscles.cpp NSToMuscles.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto NSToMuscles.cpp
 WormRS18.o: WormRS18.cpp WormRS18.h 
@@ -79,7 +81,7 @@ main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h 
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 main_osc.o: main_osc.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
 	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main_osc.cpp
-main_osc: main_osc.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main_osc c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
+main_osc: main_osc.o c302ForW2D.o Evolvable.o owSignalSimulator.o owSignalSimulatorForWorm2D.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main_osc c302ForW2D.o Evolvable.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
 clean:
 	rm -f *.o main

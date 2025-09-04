@@ -65,14 +65,11 @@ class CoupledOsc : public NSosc
 
 };
 
+//////////////////////////////////////
+////////////////////////////////////
+/////////////////////////////////////
 
-class W2Dparameters
-{
-public:
-virtual ~W2Dparameters(){}
-virtual void setParsFromJson(json & j){}
-virtual void addParsToJson(json & j){}
-};
+
 class Worm2Doscpars1 : virtual public W2Dparameters
 {
 public:
@@ -81,14 +78,6 @@ void setParsFromJson(json & j){NMJweight = j["NMJWeight"]["value"];}
 void addParsToJson(json & j){j["NMJWeight"]["value"] = NMJweight;}
 };
 
-class Evolparameters : virtual public W2Dparameters
-{
-public:
-int dbunit;
-int vbunit;
-void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
-void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
-};
 
 class Worm2Doscpars : public Worm2Doscpars1, public Evolparameters
 {
@@ -124,6 +113,9 @@ void addParsToJson(json & j)
 
 };
 
+/////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
 
 
 class Worm2DPars : public Worm2D
@@ -135,10 +127,12 @@ protected:
 
 void Step1();
 
-Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr);
+Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dparameters> w2par_ptr);
 
-virtual ~Worm2DPars(){if (pars1_ptr) delete pars1_ptr;}
-W2Dparameters * const pars1_ptr = nullptr;
+//virtual ~Worm2DPars(){if (pars1_ptr) delete pars1_ptr;}
+//W2Dparameters * const pars1_ptr = nullptr;
+
+shared_ptr<W2Dparameters> pars1_ptr;
 
 void addParsToJson(json & j){Worm2D::addParsToJson(j);pars1_ptr->addParsToJson(j["Worm"]);}
 
@@ -162,9 +156,9 @@ public:
 //double EvaluationFunction(TVector<double> &v, RandomState &rs);
 //void writeJson(TVector<double> &);
 //evoPars getDefaultEvoPars();
-virtual void setParsFromPheno(TVector<double> &v) = 0;
-void setParsFromFile(const string & genofilename_);
-void setParsFromGeno(TVector<double> &v);
+//virtual void setParsFromPheno(TVector<double> &v) = 0;
+//void setParsFromFile(const string & genofilename_);
+//void setParsFromGeno(TVector<double> &v);
 virtual void setPfaFromPheno(TVector<double> &v) = 0;
 //virtual void setParsFromPheno(TVector<double> &v) = 0;
 void setPfaFromGeno(TVector<double> &v);
@@ -175,7 +169,7 @@ void setPfaFromFile(const string & genofilename_);
 
 NSosc & n;
 //Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
-Evolparameters & Epars1;
+//Evolparameters & Epars1;
 
 protected:
 
@@ -187,7 +181,7 @@ void constructFromGeno(TVector<double> &geno);
 void construct(TVector<double> &pheno);
 void construct(const string & filename_);
 
-Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr);
+Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dparameters> w2par_ptr);
 
 void addParsToJson(json & j);
 

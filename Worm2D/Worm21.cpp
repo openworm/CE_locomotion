@@ -47,13 +47,33 @@ void Worm21::setPhenoNames()
 
 }
 
+Worm21::Worm21():Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),//, Worm2D21(pheno, isPheno),
+n(dynamic_cast<NervousSystem&>(*n_ptr)),EvolvableS(shared_ptr<Evolparameters>(new Evolparameters())){}
 
+Worm21::Worm21(TVector<double> &pheno):Worm21(pheno, true){}
+
+
+Worm21::Worm21(const string & filename_):Worm21()
+{
+    setParsFromFile(filename_);
+}
 
 // The constructor
-Worm21::Worm21(TVector<double> &v):Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles), Worm2D21(v),
-n(dynamic_cast<NervousSystem&>(*n_ptr))
+Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
 {
-    // Muscles
+
+    if (isPheno) setParsFromPheno(phengen);
+    else setParsFromGeno(phengen);
+
+}
+
+void Worm21::setParsFromPheno(TVector<double> &pheno)
+{
+
+    Epars1.dbunit = 10;
+    Epars1.vbunit = 13;
+
+// Muscles
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
     // Nervous system // Ventral cord
@@ -79,67 +99,88 @@ n(dynamic_cast<NervousSystem&>(*n_ptr))
         vaNext = nn(VA, u+1);
         
         // Bias, Time Constant and Self Connections
-        n.SetNeuronBias(as, v(1));
-        n.SetNeuronBias(da, v(2));
-        n.SetNeuronBias(db, v(3));
-        n.SetNeuronBias(dd, v(4));
-        n.SetNeuronBias(vd, v(5));
-        n.SetNeuronBias(vb, v(6));
-        n.SetNeuronBias(va, v(7));
+        n.SetNeuronBias(as, pheno(1));
+        n.SetNeuronBias(da, pheno(2));
+        n.SetNeuronBias(db, pheno(3));
+        n.SetNeuronBias(dd, pheno(4));
+        n.SetNeuronBias(vd, pheno(5));
+        n.SetNeuronBias(vb, pheno(6));
+        n.SetNeuronBias(va, pheno(7));
 
-        n.SetNeuronTimeConstant(as, v(8));
-        n.SetNeuronTimeConstant(da, v(9));
-        n.SetNeuronTimeConstant(db, v(10));
-        n.SetNeuronTimeConstant(dd, v(11));
-        n.SetNeuronTimeConstant(vd, v(12));
-        n.SetNeuronTimeConstant(vb, v(13));
-        n.SetNeuronTimeConstant(va, v(14));
+        n.SetNeuronTimeConstant(as, pheno(8));
+        n.SetNeuronTimeConstant(da, pheno(9));
+        n.SetNeuronTimeConstant(db, pheno(10));
+        n.SetNeuronTimeConstant(dd, pheno(11));
+        n.SetNeuronTimeConstant(vd, pheno(12));
+        n.SetNeuronTimeConstant(vb, pheno(13));
+        n.SetNeuronTimeConstant(va, pheno(14));
         
-        n.SetChemicalSynapseWeight(as, as, v(15));
-        n.SetChemicalSynapseWeight(da, da, v(16));
-        n.SetChemicalSynapseWeight(db, db, v(17));
-        n.SetChemicalSynapseWeight(dd, dd, v(18));
-        n.SetChemicalSynapseWeight(vd, vd, v(19));
-        n.SetChemicalSynapseWeight(vb, vb, v(20));
-        n.SetChemicalSynapseWeight(va, va, v(21));
+        n.SetChemicalSynapseWeight(as, as, pheno(15));
+        n.SetChemicalSynapseWeight(da, da, pheno(16));
+        n.SetChemicalSynapseWeight(db, db, pheno(17));
+        n.SetChemicalSynapseWeight(dd, dd, pheno(18));
+        n.SetChemicalSynapseWeight(vd, vd, pheno(19));
+        n.SetChemicalSynapseWeight(vb, vb, pheno(20));
+        n.SetChemicalSynapseWeight(va, va, pheno(21));
         
         // --------
         // Chemical Synapses minimal network
-        n.SetChemicalSynapseWeight(as, da, v(22));
-        n.SetChemicalSynapseWeight(as, vd, v(23));
-        n.SetChemicalSynapseWeight(da, db, v(24));
-        n.SetChemicalSynapseWeight(db, as, v(25));
-        n.SetChemicalSynapseWeight(vd, va, v(26));
-        n.SetChemicalSynapseWeight(vd, vb, v(27));
+        n.SetChemicalSynapseWeight(as, da, pheno(22));
+        n.SetChemicalSynapseWeight(as, vd, pheno(23));
+        n.SetChemicalSynapseWeight(da, db, pheno(24));
+        n.SetChemicalSynapseWeight(db, as, pheno(25));
+        n.SetChemicalSynapseWeight(vd, va, pheno(26));
+        n.SetChemicalSynapseWeight(vd, vb, pheno(27));
 
-        n.SetChemicalSynapseWeight(da, dd, v(28));
-        n.SetChemicalSynapseWeight(vb, dd, v(29));
-        n.SetChemicalSynapseWeight(va, dd, v(30));
+        n.SetChemicalSynapseWeight(da, dd, pheno(28));
+        n.SetChemicalSynapseWeight(vb, dd, pheno(29));
+        n.SetChemicalSynapseWeight(va, dd, pheno(30));
 
         // Electrical Synapse minimal network
-        n.SetElectricalSynapseWeight(vd, dd, v(31));
+        n.SetElectricalSynapseWeight(vd, dd, pheno(31));
 
 //        // Intersegment connections
 //        // Chemicals
         if (u < par1.N_units){
-            n.SetChemicalSynapseWeight(db, ddNext, v(40));
-            n.SetChemicalSynapseWeight(vaNext, dd, v(41));
+            n.SetChemicalSynapseWeight(db, ddNext, pheno(40));
+            n.SetChemicalSynapseWeight(vaNext, dd, pheno(41));
         }
 //        // Electricals
         if (u < par1.N_units){
 //        // Interclasses
-            n.SetElectricalSynapseWeight(as, vaNext, v(42));
-            n.SetElectricalSynapseWeight(da, asNext, v(43));
-            n.SetElectricalSynapseWeight(vb, dbNext, v(44));
+            n.SetElectricalSynapseWeight(as, vaNext, pheno(42));
+            n.SetElectricalSynapseWeight(da, asNext, pheno(43));
+            n.SetElectricalSynapseWeight(vb, dbNext, pheno(44));
         // Intraclasses
-//            n.SetElectricalSynapseWeight(db, dbNext, v(32));
-//            n.SetElectricalSynapseWeight(vb, vbNext, v(32));
-//            n.SetElectricalSynapseWeight(vd, vdNext, v(32));
-//            n.SetElectricalSynapseWeight(dd, ddNext, v(32));
+//            n.SetElectricalSynapseWeight(db, dbNext, pheno(32));
+//            n.SetElectricalSynapseWeight(vb, vbNext, pheno(32));
+//            n.SetElectricalSynapseWeight(vd, vdNext, pheno(32));
+//            n.SetElectricalSynapseWeight(dd, ddNext, pheno(32));
         }
     }
    
+    NMJ_AS = pheno(32);
+   NMJ_DA = pheno(33);
+   NMJ_DB = pheno(34);
+   NMJ_DD = pheno(35);
+   NMJ_VD = pheno(36);
+   NMJ_VB = pheno(37);
+   NMJ_VA = pheno(38);
+   
+   // NMJ Gain XXX
+   NMJ_Gain_Map = pheno(39);
+   NMJ_Gain.SetBounds(1, par1.N_muscles);
+   for (int i=1; i<=par1.N_muscles; i++)
+   {
+       NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+   }
+
+   setUpMuscleConn();
+
+
+
 }
+
 
 void Worm21::InitializeState(RandomState &rs)
 {    
@@ -163,3 +204,60 @@ void Worm21::addParsToJson(json & j)
         appendAllNSJson(j[nsHead], n);
         Worm2D21::addParsToJson(j);    
     }
+
+
+
+void Worm21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+
+    const double	BiasRange				= 15.0;
+     const double    SCRange                 = 15.0;
+     const double    CSRange                 = 15.0;
+     const double    TauMin                 = 0.1;
+     const double    TauMax                 = 2.5;
+     const double    ESRange                 = 2.0;
+     const double    NMJmax                  = 1.2;
+     //const double    IIRange                 = 15.0;    
+
+
+  // Bias
+  for (int i = 1; i <= 7; i++){
+    phen(i) = MapSearchParameter(gen(i), -BiasRange, BiasRange);
+}
+// Time Constant
+for (int i = 8; i <= 14; i++){
+    phen(i) = MapSearchParameter(gen(i), TauMin, TauMax);
+}
+// Self connections
+for (int i = 15; i <= 21; i++){
+    phen(i) = MapSearchParameter(gen(i), -SCRange, SCRange);
+}
+// Chemical synapses
+for (int i = 22; i <=30; i++){
+    phen(i) = MapSearchParameter(gen(i), -CSRange, CSRange);
+}
+
+// Gap junctions
+phen(31) = MapSearchParameter(gen(31), 0.0, ESRange);
+
+
+// NMJ Weight
+phen(32) = MapSearchParameter(gen(32), 0.0, NMJmax);       // AS
+phen(33) = MapSearchParameter(gen(33), 0.0, NMJmax);       // DA
+phen(34) = MapSearchParameter(gen(34), NMJmax, NMJmax);       // DB
+phen(35) = MapSearchParameter(gen(35), -NMJmax, 0.0);      // DD
+phen(36) = MapSearchParameter(gen(36), -NMJmax, 0.0);      // VD
+phen(37) = MapSearchParameter(gen(37), NMJmax, NMJmax);      // VB
+phen(38) = MapSearchParameter(gen(38), 0.0, NMJmax);      // VA
+
+phen(39) = MapSearchParameter(gen(39), 0.2, 1.0);       // Used to be 0.4/0.6 XXX NMJ_Gain Mapping
+
+// Intersegment synapse tested
+phen(40) = MapSearchParameter(gen(40), -CSRange, CSRange);  // DB to DDnext
+phen(41) = MapSearchParameter(gen(41), -CSRange, CSRange);  // VAnext to DD
+phen(42) = MapSearchParameter(gen(42), 0.0, ESRange);       // AS -- VAnext
+phen(43) = MapSearchParameter(gen(43), 0.0, ESRange);       // DA -- ASnext
+phen(44) = MapSearchParameter(gen(44), 0.0, ESRange);       // VB -- DBnext
+
+
+}    

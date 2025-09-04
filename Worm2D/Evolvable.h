@@ -179,6 +179,22 @@ class Evolvable
   //const evoPars * ep_ptr;
 };
 
+class W2Dparameters
+{
+public:
+virtual ~W2Dparameters(){}
+virtual void setParsFromJson(json & j){}
+virtual void addParsToJson(json & j){}
+};
+
+class Evolparameters : virtual public W2Dparameters
+{
+public:
+int dbunit;
+int vbunit;
+void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
+void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
+};
 
 class EvolvableS
 {
@@ -186,9 +202,19 @@ class EvolvableS
   
   virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
   virtual int getVectSize() = 0;
+  //static int getVectSize();
   virtual ~EvolvableS(){}
+  virtual void setParsFromPheno(TVector<double> &pheno) = 0;
+  void setParsFromFile(const string & genofilename_);
+  void setParsFromGeno(TVector<double> &geno);
 
+  Evolparameters & Epars1;
   friend class EvolutionFull;
   protected:
+  EvolvableS(shared_ptr<W2Dparameters> w2par_ptr);
+  
   
 };
+
+
+

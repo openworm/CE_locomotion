@@ -39,21 +39,21 @@ AVB = 0;
 }
 
 
-Worm2D21::Worm2D21(TVector<double> & v):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
+Worm2D21::Worm2D21(TVector<double> & pheno):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
 Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
   
    // NMJ Weight
-   NMJ_AS = v(32);
-   NMJ_DA = v(33);
-   NMJ_DB = v(34);
-   NMJ_DD = v(35);
-   NMJ_VD = v(36);
-   NMJ_VB = v(37);
-   NMJ_VA = v(38);
+   NMJ_AS = pheno(32);
+   NMJ_DA = pheno(33);
+   NMJ_DB = pheno(34);
+   NMJ_DD = pheno(35);
+   NMJ_VD = pheno(36);
+   NMJ_VB = pheno(37);
+   NMJ_VA = pheno(38);
    
    // NMJ Gain XXX
-   NMJ_Gain_Map = v(39);
+   NMJ_Gain_Map = pheno(39);
    NMJ_Gain.SetBounds(1, par1.N_muscles);
    for (int i=1; i<=par1.N_muscles; i++)
    {
@@ -64,6 +64,9 @@ Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 }
 
 
+
+Worm2D21::Worm2D21():Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
+Worm2D({7,24,0.1,7,49},0),Worm2D21m(){}
 
 
 Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),Worm2D({7,24,0.1,7,49},0),Worm2D21m()

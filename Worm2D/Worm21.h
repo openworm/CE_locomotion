@@ -31,11 +31,15 @@ using namespace std;
 //const int Head = 1;
 //const int Tail = N_segments;
 
-class Worm21 : public Worm2D21 {
+class Worm21 : public Worm2D21, public EvolvableS
+{
 public:
     
-    Worm21(TVector<double> &v);
-    
+    Worm21(TVector<double> &pheno);
+    Worm21(TVector<double> &pheno, bool isPheno);
+    Worm21();
+    Worm21(const string & filename_);
+
     void InitializeState(RandomState &rs);
     void DumpParams(ofstream &ofs);
     NervousSystem & n;
@@ -43,5 +47,8 @@ public:
     protected:
     void addParsToJson(json & j);
     void setPhenoNames();
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    int getVectSize(){return 44;}
+    void setParsFromPheno(TVector<double> &pheno);
 
 };

@@ -37,12 +37,14 @@ void CoupledOsc::EulerStep(double stepsize)
 
 }
 
-Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr):
+//shared_ptr<W2Dparameters> w2par_ptr(new Worm2Doscpars1());
+
+Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dparameters> w2par_ptr):
 Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
 
 Worm2DoscNML::Worm2DoscNML(int size_):Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D()),
-Worm2DPars({size_,24,0.1,1,size_}, 0, new Worm2Doscpars1()),
+Worm2DPars({size_,24,0.1,1,size_}, 0, shared_ptr<Worm2Doscpars1>(new Worm2Doscpars1())),
 Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
@@ -59,7 +61,7 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
     setUpMuscleConn(j);
 }
 
-Worm2Dosc21NML::Worm2Dosc21NML():Worm2DPars({2,24,0.1,7,14}, 0, new Worm2Dosc21pars()),
+Worm2Dosc21NML::Worm2Dosc21NML():Worm2DPars({2,24,0.1,7,14}, 0, shared_ptr<Worm2Dosc21pars>(new Worm2Dosc21pars())),
 Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14}, new c302ForW2D())
 {
     pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -84,15 +86,16 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
     setUpMuscleConn(j);
 }
 
+//Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr):
+//Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
-Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, W2Dparameters * w2par_ptr):
-Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),
-Epars1(dynamic_cast<Evolparameters&>(*pars1_ptr)),
+Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dparameters> w2par_ptr):
+Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),EvolvableS(w2par_ptr),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
 Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)),
-Worm2DoscBase({size_,24,0.1,1,size_}, new Worm2Doscpars()),
+Worm2DoscBase({size_,24,0.1,1,size_}, shared_ptr<Worm2Doscpars>(new Worm2Doscpars())),
 pars1(dynamic_cast<Worm2Doscpars&>(*pars1_ptr)),
 Worm2Dm({size_,24,0.1,1,size_},new NSosc(size_))
 {
@@ -139,7 +142,7 @@ Worm2Dm({24,24,0.1,1,24},new NSosc(24))
 
 
 Worm2Dosc21::Worm2Dosc21():
-Worm2DoscBase({2,24,0.1,7,14}, new Worm2Dosc21pars()),
+Worm2DoscBase({2,24,0.1,7,14}, shared_ptr<Worm2Dosc21pars>(new Worm2Dosc21pars())),
 Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*(pars1_ptr))),
 Worm2Dm({2,24,0.1,7,14},new NSosc(14))
 {
@@ -564,29 +567,7 @@ void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
 }
 
 
-void Worm2DoscBase::setParsFromFile(const string & filename_)
-{
-    ifstream ifs;
-    ifs.open(filename_);
-    TVector<double> bestVector(1, getVectSize());
-    //assert(0);
-    ifs >> bestVector;
-    ifs.close();
-    setParsFromGeno(bestVector);
-}
 
-
-void Worm2DoscBase::setParsFromGeno(TVector<double> &v)
-{
-    
-    //cout << v << endl;
-    TVector<double> phenotype(1, v.Size());
-    //cout << phenotype.Size() << endl;
-    GenPhenMapping(v, phenotype);
- 
-    setParsFromPheno(phenotype);
- 
-}
 
 
 void Worm2Dosc21::setPfaFromPheno(TVector<double> &phen)

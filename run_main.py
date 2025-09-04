@@ -26,7 +26,7 @@ defaults_base_CO = {
     "doRandInit": 0,
     "maxGens": 40,
     "doMuscSim": 0,
-    "evoType": "Evo18"
+    "evoType": "Evo18",
 }
 
 defaults_base_celoc = {
@@ -40,7 +40,7 @@ defaults_base_celoc = {
     "doRandInit": 0,
     "maxGens": 10,
     "doMuscSim": 0,
-    "evoType": "EvoCE"
+    "evoType": "EvoCE",
 }
 
 defaults_base_2018 = {
@@ -54,7 +54,7 @@ defaults_base_2018 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-    "evoType": "Evo18"
+    "evoType": "Evo18",
 }
 
 defaults_base_CO18 = {
@@ -68,7 +68,7 @@ defaults_base_CO18 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-     "evoType": "Evo18"
+    "evoType": "Evo18",
 }
 
 
@@ -83,7 +83,7 @@ defaults_base_2021 = {
     "doRandInit": 0,
     "maxGens": 2000,
     "doMuscSim": 0,
-    "evoType": "Evo21"
+    "evoType": "Evo21",
 }
 
 
@@ -110,7 +110,7 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 0,
     "doCPT": True,
-    "evoType": "Evo21"
+    "evoType": "Evo21",
 }
 
 
@@ -143,12 +143,10 @@ def process_args():
         metavar="<evoType>",
         default=DEFAULTS["evoType"],
         help=(
-            "Name of evolution function.\n"
-            "Options include: Evo21, Evo18"
+            "Name of evolution function.\nOptions include: Evo21, Evo18"
             # "Default is: %s" % DEFAULTS["modelName"]
         ),
     )
-
 
     parser.add_argument(
         "-M",
@@ -575,8 +573,15 @@ def run(a=None, **kwargs):
     else:
         model_name = model_names[a.modelFolder]
 
-    model_name_list = ["W2Dosc", "W2DoscH", "W2Dosc21", "W2Dosc21all", 
-                       "W2Dosc21Coup", "W2Dosc21CF", "W2Dosc21S"]
+    model_name_list = [
+        "W2Dosc",
+        "W2DoscH",
+        "W2Dosc21",
+        "W2Dosc21all",
+        "W2Dosc21Coup",
+        "W2Dosc21CF",
+        "W2Dosc21S",
+    ]
     mainProcessName = a.mainProcessName
     if a.modelName in model_name_list:
         mainProcessName = "main_osc"
@@ -615,7 +620,7 @@ def run(a=None, **kwargs):
         "MaxGenerations",
         "Transient",
         "CheckpointInterval",
-        "EvolutionType"
+        "EvolutionType",
     ]
 
     evol_args = [
@@ -625,7 +630,7 @@ def run(a=None, **kwargs):
         a.maxGens,
         a.transient,
         a.checkPointInterval,
-        a.evoType
+        a.evoType,
     ]
     evol_defaults = [
         defaults_base["duration"],

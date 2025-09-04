@@ -36,7 +36,6 @@ run(
     reRand=True,
     doPlotEvol=True,
     doNML=False,
-
 )
 print(output_folder_nml)
 regenerate_run(folder=output_folder, doMuscles=doMuscles)

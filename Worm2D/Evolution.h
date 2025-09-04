@@ -45,7 +45,8 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
 class Evolution
 {
     public:
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    {cout << "no GenPhenMapping" << endl; return;}
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
     {cout << "RunSim not implemented" << endl; assert(0);}
@@ -171,8 +172,41 @@ evoPars getDefaultEvoPars(EvolvableS * evol1_)
 
 };
 
+/* evoPars ep21 = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 0, "", "Evo21"};
+
+evoPars epCE = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        96, 10, 0.05, 0.5, UNIFORM, 
+        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, 0, "", "EvoCE"};
+
+evoPars ep18 = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        96, 1000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 0, "", "Evo18"};         */
 
 //enum Evotype{Evo18,Evo21};
+
+class EvolutionFull2 : public Evolution
+{
+public:
+virtual ~EvolutionFull2(){}
+
+protected:
+EvolutionFull2(int argc, const char* argv[], EvolvableS * evol1_)
+:Evolution(argc,argv,getDefaultEvoPars(evol1_),evol1_->getVectSize())
+{
+if (evol1_)delete evol1_;
+}
+
+evoPars getDefaultEvoPars(EvolvableS * evol1_) 
+{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), "", "Evo21"};}
+
+};
+
+
+
 template<class T>
 class EvolutionFullW : public EvolutionFull
 {
@@ -184,10 +218,42 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs);
 protected:
 double Evaluation21(TVector<double> &v, RandomState &rs);
 double Evaluation18(TVector<double> &v, RandomState &rs);
+//double EvaluationCE(TVector<double> &v, RandomState &rs);
+//double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+
 //void addExtraParsToJson(json & j)
 //{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
 //enum Evotype etype;
 };
+
+template<class T>
+class EvolutionFullW3 : public Evolution
+{
+public:
+EvolutionFullW3(int argc, const char* argv[]):
+Evolution(argc,argv,getDefaultEvoPars(T::getVectSize()),T::getVectSize()){}
+
+virtual ~EvolutionFullW3(){}
+
+
+void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
+double EvaluationFunction(TVector<double> &v, RandomState &rs);
+protected:
+double Evaluation21(TVector<double> &v, RandomState &rs);
+double Evaluation18(TVector<double> &v, RandomState &rs);
+//double EvaluationCE(TVector<double> &v, RandomState &rs);
+//double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+
+evoPars getDefaultEvoPars(const int & vectsize_) 
+{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, vectsize_, "", "Evo21"};}
+
+//void addExtraParsToJson(json & j)
+//{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
+//enum Evotype etype;
+};
+
 
 
 /* template<class T>
@@ -212,7 +278,7 @@ double EvolutionFullW<T>::EvaluationFunction(TVector<double> &genotype, RandomSt
 {
     if (evoPars1.evoType=="Evo21") return Evaluation21(genotype,rs);
     if (evoPars1.evoType=="Evo18") return Evaluation18(genotype,rs);
-
+    //if (evoPars1.evoType=="EvoCE") return EvaluationCE(genotype,rs);
     
 }
 
@@ -440,3 +506,113 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
     return fitness;
 }
+
+/* template<class T>
+double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
+{
+
+    const int SR_A = 1;
+    const int SR_B = 2;
+
+
+    double sra = genotype(SR_A);
+    double srb = genotype(SR_B);
+    double fitnessForward, fitnessBackward;
+    genotype(SR_A)= -1.0;
+    genotype(SR_B)= srb;
+    fitnessForward = EvaluationCEp1(genotype, rs, 1);
+    //  v(SR_A)= sra;
+    //  v(SR_B)= -1.0;
+    //  fitnessBackward = Evaluation(v, rs, -1);
+    //  return (fitnessForward + fitnessBackward)/2;
+    return fitnessForward;
+    // return fitnessBackward;
+}
+
+
+template<class T>
+double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState &rs, int direction){
+
+  const double & Duration = evoPars1.Duration;
+  const int & VectSize = evoPars1.VectSize;
+  const double & StepSize = evoPars1.StepSize;
+  const double & Transient = evoPars1.Transient;
+
+  const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
+    const double    BBCfit = AvgSpeed*evoPars1.Duration;
+
+    double fitA,fitB;
+    double bodyorientation, anglediff;
+    double movementorientation, distancetravelled = 0, temp;
+    double distance;
+    double xt, xtp, oxt, fxt;
+    double yt, ytp, oyt, fyt;
+
+    // Genotype-Phenotype Mapping
+    //TVector<double> phenotype(1, VectSize);
+    //GenPhenMapping(v, phenotype);
+    //WormCE w(phenotype, 1);
+    //w.InitializeState(rs);
+
+    T w(genotype, false);
+
+        //TVector<double> phenotype(1, VectSize);
+        //GenPhenMapping(geno, phenotype);
+        //setPfaFromPheno(phenotype);
+        //setParsFromPheno(phenotype);
+        //construct(phenotype);
+        //setUpMuscleConn();
+    w.InitializeState(rs);
+    w.initForSimulation(rs);
+    w.setStepSize(StepSize);
+
+    if (direction == 1){
+        w.AVA_output =  0.0;
+        w.AVB_output =  1.0;
+    }
+    else{
+        w.AVA_output =  1.0;
+        w.AVB_output =  0.0; // Command Interneuron Activation Backward
+    }
+
+    // Transient
+    for (double t = 0.0; t <= Transient; t += StepSize){
+        w.Step(StepSize);
+    }
+    xt = w.CoMx(); yt = w.CoMy();
+    oxt = w.CoMx(); oyt = w.CoMy();
+    // Run
+    for (double t = 0.0; t <= Duration; t += StepSize) {
+        w.Step(StepSize);
+        // Current and past centroid position
+        xtp = xt; ytp = yt;
+        xt = w.CoMx(); yt = w.CoMy();
+        // Integration error check
+        if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 10*AvgSpeed*StepSize) {return 0.0;}
+        // Velocity Fitness
+        bodyorientation = w.Orientation();                  // Orientation of the body position
+        movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
+        anglediff = movementorientation - bodyorientation;  // Check how orientations align
+        if (direction == 1){
+            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+        }
+        else{
+            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+        }
+        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
+    }
+    fxt = w.CoMx(); fyt = w.CoMy();
+    distance = sqrt(pow(oxt-fxt,2)+pow(oyt-fyt,2));
+    fitA = 1 - (fabs(BBCfit - distance)/BBCfit);
+    fitA = (fitA > 0)? fitA : 0.0;
+
+    fitB = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
+    fitB = (fitB > 0)? fitB : 0.0;
+    return fitB;
+
+
+}
+
+
+
+ */

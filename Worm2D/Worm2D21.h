@@ -79,9 +79,10 @@ class Worm2D21 : public Worm2D21m, public Worm2D {
 public:
     
     //Worm21(TVector<double> &v);
-    Worm2D21(TVector<double> &v);
+    Worm2D21(TVector<double> &pheno);
+    Worm2D21();
     Worm2D21(json & j);
-    
+    //Worm2D21(TVector<double> &pheno, bool isPheno);
     void InitializeState(RandomState &rs);
    
    
