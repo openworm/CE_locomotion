@@ -753,6 +753,7 @@ vMuscConnvec1.swap(vMuscConnvec);
 dMuscConnvec1.swap(dMuscConnvec);
 
 
+
 //vMuscConn.setWeights(vMuscConnvec);
 //dMuscConn.setWeights(dMuscConnvec);
 }

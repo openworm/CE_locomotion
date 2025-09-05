@@ -47,7 +47,7 @@ void Worm21::setPhenoNames()
 
 }
 
-Worm21::Worm21():Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),//, Worm2D21(pheno, isPheno),
+Worm21::Worm21():Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),Worm2D21(),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),EvolvableS(shared_ptr<Evolparameters>(new Evolparameters())){}
 
 Worm21::Worm21(TVector<double> &pheno):Worm21(pheno, true){}
@@ -210,6 +210,7 @@ void Worm21::addParsToJson(json & j)
 void Worm21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 {
 
+   
     const double	BiasRange				= 15.0;
      const double    SCRange                 = 15.0;
      const double    CSRange                 = 15.0;

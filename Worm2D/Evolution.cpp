@@ -213,6 +213,7 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string pre
 
 void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar)
 {
+    
     cout << "EvolutionaryRunDisplay" << endl;
     evolfile << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
     if (writeBestFlag) ResultsDisplay(*s);

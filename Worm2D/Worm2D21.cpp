@@ -93,6 +93,7 @@ for (int i=1; i<=par1.N_muscles; i++)
 
 void Worm2D21m::initForSimulation(RandomState &rs)
 {
+  
     SetAVB(0.0);
     SetAVA(0.0);
 }
@@ -127,7 +128,9 @@ vector<toFromWeight> Worm2D21::makeVentralMuscleConn()
 {
 vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
+
 return makeMuscleConn(ventralNeurons, ventralNMJ);
+
 }
 
 

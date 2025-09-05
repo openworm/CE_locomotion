@@ -221,6 +221,9 @@ double Evaluation18(TVector<double> &v, RandomState &rs);
 //double EvaluationCE(TVector<double> &v, RandomState &rs);
 //double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
 
+//void configure_p12_RS18();
+//void configure_p2_Net21();
+
 //void addExtraParsToJson(json & j)
 //{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
 //enum Evotype etype;
@@ -243,6 +246,7 @@ double Evaluation21(TVector<double> &v, RandomState &rs);
 double Evaluation18(TVector<double> &v, RandomState &rs);
 //double EvaluationCE(TVector<double> &v, RandomState &rs);
 //double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+
 
 evoPars getDefaultEvoPars(const int & vectsize_) 
 {return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
@@ -278,6 +282,8 @@ double EvolutionFullW<T>::EvaluationFunction(TVector<double> &genotype, RandomSt
 {
     if (evoPars1.evoType=="Evo21") return Evaluation21(genotype,rs);
     if (evoPars1.evoType=="Evo18") return Evaluation18(genotype,rs);
+   
+    assert(0 && "Type not implemented");
     //if (evoPars1.evoType=="EvoCE") return EvaluationCE(genotype,rs);
     
 }
@@ -322,7 +328,10 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(v, phenotype);
 
+        
         T w(genotype, false);
+
+       
 
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
@@ -338,10 +347,16 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         //w.SetAVB(0.0);
         //w.SetAVA(0.0);
         
+       
+     
         for (double t = 0.0; t <= Transient; t += StepSize){
             w.Step();
         }    
-        
+
+        cout << "w.Epars1.dbunit " << w.Epars1.dbunit << endl;
+        cout << "w.Epars1.vbunit " << w.Epars1.vbunit << endl;
+       
+       
         DBp = w.n.NeuronOutput(w.Epars1.dbunit);
         VBp = w.n.NeuronOutput(w.Epars1.vbunit);
     
@@ -357,7 +372,7 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         
         double xt = w.CoMx(), xtp;
         double yt = w.CoMy(), ytp;
-    
+      
         // Time loop
         for (double t = 0.0; t <= Duration; t += StepSize) {
             // Step simulation
@@ -421,11 +436,13 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         // Locomotion evaluation
         fitness_tr = (1 - (fabs(BBCfit-distancetravelled)/BBCfit));
     
-   
+    
+
         return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
     
 
 }
+
 template<class T>
 double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &rs)
 {
@@ -506,6 +523,75 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
     return fitness;
 }
+
+
+/* int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar){
+    if (BestPerf > 0.99) return 1;
+    else return 0;
+}
+ */
+/* template<class T>
+void EvolutionFullW<T>::configure_p2_Net21()
+{
+  
+    // Stage 1 //
+    {typedef int (*callback_t)(int, double, double, double);
+        Callback<int(int, double, double, double)>::func 
+        = std::bind(&finish_Bosc, this, 
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+        callback_t func = static_cast<callback_t>(Callback<int(int, double, double, double)>::callback); 
+        s->SetSearchTerminationFunction(func);}
+
+    //s->SetSearchTerminationFunction(finish_Bosc);
+
+    {typedef double (*callback_t)(TVector<double> &, RandomState &);
+        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction1, this, 
+                std::placeholders::_1, std::placeholders::_2);
+        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
+    s->SetEvaluationFunction(func);}
+
+    //s->SetEvaluationFunction(EvaluationFunction1);
+  
+
+    s->ExecuteSearch();
+
+    // Stage 2 //
+    s->SetSearchTerminationFunction(NULL);
+
+    {typedef double (*callback_t)(TVector<double> &, RandomState &);
+        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction2, this, 
+                std::placeholders::_1, std::placeholders::_2);
+        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
+    s->SetEvaluationFunction(func);}
+
+    //s->SetEvaluationFunction(EvaluationFunction2);
+    InitializeBodyConstants();
+    s->ExecuteSearch();
+}
+
+
+template<class T>
+void EvolutionFullW<T>::configure_p12_RS18()
+{
+   // configure_p1();
+    if (evo_seed)
+    {
+        ifstream BestIndividualFile;
+        TVector<double> bestVector(1, evoPars1.VectSize);
+        BestIndividualFile.open(rename_file("best.gen.dat"));
+        BestIndividualFile >> bestVector;
+        s->InitializeSearch();
+        for (int i = 1; i <= s->PopulationSize(); i++){
+            for (int j = 1; j <= evoPars1.VectSize; j++)
+            {
+                s->Individual(i)[j] = bestVector[j];
+            }
+        }
+    }
+   // configure_p2();
+
+}
+ */
 
 /* template<class T>
 double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)

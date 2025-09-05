@@ -208,10 +208,11 @@ class EvolvableS
   void setParsFromFile(const string & genofilename_);
   void setParsFromGeno(TVector<double> &geno);
 
+  shared_ptr<W2Dparameters> w2par_ptr;
   Evolparameters & Epars1;
   friend class EvolutionFull;
   protected:
-  EvolvableS(shared_ptr<W2Dparameters> w2par_ptr);
+  EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_);
   
   
 };
