@@ -42,6 +42,20 @@ WormCE::WormCE():Worm2Dm({6,24,0.1,10,60},new NervousSystem(), new Muscles),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0),
 EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())){}
 
+void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+{
+
+  if (evotype_=="EvoCE"){
+  EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*(w2par_ptr_));
+  AVA_output = Epars1.AVA_output;
+  AVB_output = Epars1.AVB_output;
+  return;
+  }
+  cout << "evotype is " << evotype_ << endl;
+  assert(0 && "Evotype not implemented");
+
+}
+
 
 void WormCE::setParsFromPheno(TVector<double> &pheno)
 {
@@ -131,10 +145,6 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   NMJ_DD = pheno(17);
   NMJ_VD = pheno(17);
 
-  EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*(w2par_ptr));
-  Epars1.AVA_output = 0.0;
-  Epars1.AVB_output = 0.0;
-  
   AVA_output = 0.0;
   AVB_output = 0.0;
 }

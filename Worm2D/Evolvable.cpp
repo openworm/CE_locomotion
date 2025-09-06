@@ -1,6 +1,6 @@
 #include "Evolvable.h"
 
-EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):w2par_ptr(w2par_ptr_)
+EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)
 //, Epars1(dynamic_cast<Evolparameters&>(*w2par_ptr))
 {}
 

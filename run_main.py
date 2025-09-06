@@ -582,6 +582,7 @@ def run(a=None, **kwargs):
         "W2Dosc21CF",
         "W2Dosc21S",
         "W2D21",
+        "W2DCE",
     ]
     mainProcessName = a.mainProcessName
     if a.modelName in model_name_list:
@@ -602,6 +603,7 @@ def run(a=None, **kwargs):
         "W2Dosc21CF": defaults_base_2021,
         "W2Dosc21S": defaults_base_2021,
         "W2D21": defaults_base_2021,
+        "W2DCE": defaults_base_celoc,
     }
 
     defaults_base = defaults_bases[model_name]

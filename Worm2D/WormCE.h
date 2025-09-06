@@ -85,11 +85,13 @@ public:
     NervousSystem & n;
     void addParsToJson(json & j);
 
+    template<class T> friend class EvolutionFullW;
+
     protected:
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
-    void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_){}
+    void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 
     //double CoMx();
     //double CoMy();

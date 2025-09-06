@@ -219,7 +219,7 @@ class EvolvableS
   virtual void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_) = 0;
 
 
-  shared_ptr<W2Dparameters> w2par_ptr;
+  shared_ptr<W2Dparameters> evolvable_w2par_ptr;
   //Evolparameters & Epars1;
   //friend class EvolutionFull;
   //protected:

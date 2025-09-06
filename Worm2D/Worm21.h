@@ -44,7 +44,7 @@ public:
     void DumpParams(ofstream &ofs);
     NervousSystem & n;
 
-    template<class T> friend class EvolutionFullW21v2;
+    template<class T> friend class EvolutionFullW;
 
     protected:
     void addParsToJson(json & j);

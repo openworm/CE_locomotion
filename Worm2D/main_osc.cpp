@@ -1,5 +1,6 @@
 #include "Worm2Dmods.h"
 #include "Worm21.h"
+#include "WormCE.h"
 #include "Evolution.h"
 
 
@@ -33,20 +34,21 @@ int main (int argc, const char* argv[])
     //json_out << setprecision(32);
     json j;
 
-
+    string evoType = getParameter(argc,argv,"--evoType","0");
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
     if (do_evol) 
     {
         Evolution * evo = 0;
     
-        if (model_name == "W2Dosc") evo = new EvolutionFullW21v2<Worm2Dosc>(argc,argv);
-         if (model_name == "W2DoscH") evo = new EvolutionFullW21v2<Worm2DoscHalf>(argc,argv);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullW21v2<Worm2Dosc21>(argc,argv);
-        if (model_name == "W2Dosc21S") evo = new EvolutionFullW21v2<Worm2Dosc21S>(argc,argv);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullW21v2<Worm2Dosc21all>(argc,argv);
-        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW21v2<Worm2Dosc21Coup>(argc,argv);
-        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW21v2<Worm2Dosc21CF>(argc,argv);
-       if (model_name == "W2D21") evo = new EvolutionFullW21v2<Worm21>(argc,argv); 
+        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv,evoType);
+         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv,evoType);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv,evoType);
+        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv,evoType);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv,evoType);
+        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv,evoType);
+        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv,evoType);
+        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv,evoType); 
+        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(argc,argv,evoType); 
 
         //assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;
@@ -77,6 +79,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2D21") w2 = new Worm21(ep1.rename_file("best.gen.dat"));
+    if (model_name == "W2DCE") w2 = new WormCE(ep1.rename_file("best.gen.dat"));
+
 
     }else{
 
