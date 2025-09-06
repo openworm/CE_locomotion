@@ -61,7 +61,8 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
     setUpMuscleConn(j);
 }
 
-Worm2Dosc21NML::Worm2Dosc21NML():Worm2DPars({2,24,0.1,7,14}, 0, shared_ptr<Worm2Dosc21pars>(new Worm2Dosc21pars())),
+Worm2Dosc21NML::Worm2Dosc21NML():
+Worm2DPars({2,24,0.1,7,14}, 0, shared_ptr<Worm2Dosc21pars>(new Worm2Dosc21pars())),
 Worm2Dosc21base(par1, dynamic_cast<Worm2Dosc21pars&>(*pars1_ptr)),Worm2Dm({2,24,0.1,7,14}, new c302ForW2D())
 {
     pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -90,7 +91,7 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
 //Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
 Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dparameters> w2par_ptr):
-Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),EvolvableS(w2par_ptr),
+Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
@@ -305,22 +306,43 @@ n.pfa1.swap_all(pfa1);
 
 }
 
+void Worm2Dosc::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+{
 
+    if (evotype_=="Evo21"){
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Epars1.dbunit = 6;
+    Epars1.vbunit = 30;
+    }
+
+}
 
 void Worm2Dosc::setParsFromPheno(TVector<double> &phen)
 {
     pars1.NMJweight = phen[4];
-    pars1.dbunit = 6;
-    pars1.vbunit = 30;
+    //pars1.dbunit = 6;
+    //pars1.vbunit = 30;
     cout << "Worm2Dosc::getParsFromPheno" << endl;
 }
 
 
+
+void Worm2DoscHalf::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+{
+
+    if (evotype_=="Evo21"){
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Epars1.dbunit = 1;
+    Epars1.vbunit = 1;
+    }
+
+}
+
 void Worm2DoscHalf::setParsFromPheno(TVector<double> &phen)
 {
     pars1.NMJweight = phen[3];
-    pars1.dbunit = 1;
-    pars1.vbunit = 1;
+    //pars1.dbunit = 1;
+    //pars1.vbunit = 1;
 }
 
 
@@ -686,7 +708,15 @@ n.pfa1.phase.swap(phase);
 }
 
 
+void Worm2Dosc21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+{
+    if (evotype_=="Evo21"){
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Epars1.dbunit = nn(1,3);
+    Epars1.vbunit = nn(2,3);
+    }
 
+}
 
 
 void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
@@ -700,8 +730,8 @@ void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
     
     pars1.NMJ_VN = phen[offset+1];
     pars1.NMJ_DN = phen[offset+2];
-    pars1.dbunit = nn(1,3);
-    pars1.vbunit = nn(2,3);
+    //pars1.dbunit = nn(1,3);
+    //pars1.vbunit = nn(2,3);
    
 }
 
@@ -723,8 +753,8 @@ void Worm2Dosc21S::setParsFromPheno(TVector<double> &phen)
     }
     pars1.NMJ_DN = phen[5];
     pars1.NMJ_VN = phen[5];
-    pars1.dbunit = nn(1,3);
-    pars1.vbunit = nn(2,3);
+    //pars1.dbunit = nn(1,3);
+    //pars1.vbunit = nn(2,3);
 
 }
 

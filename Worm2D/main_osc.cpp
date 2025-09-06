@@ -39,14 +39,14 @@ int main (int argc, const char* argv[])
     {
         Evolution * evo = 0;
     
-        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
-        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
-        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
-        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
-        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv);
-        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv);
+        if (model_name == "W2Dosc") evo = new EvolutionFullW21v2<Worm2Dosc>(argc,argv);
+         if (model_name == "W2DoscH") evo = new EvolutionFullW21v2<Worm2DoscHalf>(argc,argv);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullW21v2<Worm2Dosc21>(argc,argv);
+        if (model_name == "W2Dosc21S") evo = new EvolutionFullW21v2<Worm2Dosc21S>(argc,argv);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullW21v2<Worm2Dosc21all>(argc,argv);
+        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW21v2<Worm2Dosc21Coup>(argc,argv);
+        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW21v2<Worm2Dosc21CF>(argc,argv);
+       if (model_name == "W2D21") evo = new EvolutionFullW21v2<Worm21>(argc,argv); 
 
         //assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;

@@ -70,7 +70,7 @@ class CoupledOsc : public NSosc
 /////////////////////////////////////
 
 
-class Worm2Doscpars1 : virtual public W2Dparameters
+class Worm2Doscpars1 : public W2Dparameters
 {
 public:
 double NMJweight;
@@ -79,16 +79,16 @@ void addParsToJson(json & j){j["NMJWeight"]["value"] = NMJweight;}
 };
 
 
-class Worm2Doscpars : public Worm2Doscpars1, public Evolparameters
+class Worm2Doscpars : public Worm2Doscpars1
 {
 public:
-void setParsFromJson(json & j){Worm2Doscpars1::setParsFromJson(j); Evolparameters::setParsFromJson(j);}
-void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j); Evolparameters::addParsToJson(j);}
+void setParsFromJson(json & j){Worm2Doscpars1::setParsFromJson(j);}
+void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j);}
 
 };
 
 
-class Worm2Dosc21pars : public Evolparameters
+class Worm2Dosc21pars : public W2Dparameters
 {
 public:
 
@@ -99,7 +99,7 @@ void setParsFromJson(json & j)
     NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
     NMJ_VN =  j["NMJ_VN"]["value"];
     NMJ_DN =  j["NMJ_DN"]["value"];
-    Evolparameters::setParsFromJson(j);
+    //Evolparameters::setParsFromJson(j);
 } 
 
 void addParsToJson(json & j)
@@ -107,7 +107,7 @@ void addParsToJson(json & j)
     j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
     j["NMJ_VN"]["value"] = NMJ_VN;
     j["NMJ_DN"]["value"] = NMJ_DN;
-    Evolparameters::addParsToJson(j);
+    //Evolparameters::addParsToJson(j);
 }
 
 
@@ -224,7 +224,7 @@ vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleC
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 void setPhenoNames(); //{return;}
 int getVectSize(){return 4;}
-
+void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 
 //static inline int evoVectSize = 4;
 protected:
@@ -272,7 +272,7 @@ Worm2DoscHalf(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 //static inline int evoVectSize = 3;
 int getVectSize() {return 3;}
-
+void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
@@ -325,7 +325,7 @@ Worm2Dosc21(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 6;}
-
+void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 
 protected:
 void setPhenoNames(); 
@@ -359,6 +359,8 @@ void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21all";}
 void setPhenoNames(); 
+//void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+
 };
 
 class Worm2Dosc21S : public Worm2Dosc21

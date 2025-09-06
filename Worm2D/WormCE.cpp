@@ -20,12 +20,32 @@ return new c302NervousSystem();
 }
  */
 
+WormCE::WormCE(TVector<double> &pheno):WormCE(pheno, true){}
 
-WormCE::WormCE(TVector<double> &v,double output):Worm2Dm({6,24,0.1,10,60},
-new NervousSystem(), new Muscles),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
+
+WormCE::WormCE(const string & filename_):WormCE()
+{
+    setParsFromFile(filename_);
+}
+
+// The constructor
+WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 {
 
-  // PG: Setting these to zero as they were not initialised before use!
+    if (isPheno) setParsFromPheno(phengen);
+    else setParsFromGeno(phengen);
+
+}
+
+
+WormCE::WormCE():Worm2Dm({6,24,0.1,10,60},new NervousSystem(), new Muscles),
+n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0),
+EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())){}
+
+
+void WormCE::setParsFromPheno(TVector<double> &pheno)
+{
+// PG: Setting these to zero as they were not initialised before use!
   // Note: the usage of these needs to be further investigated!
   AVA_act = 0;
   AVA_inact = 0;
@@ -41,7 +61,7 @@ new NervousSystem(), new Muscles),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D
   int ddNext, vdNext, vbNext, dbNext;
 
   // Stretch receptor
-  sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(1), v(2));
+  sr.SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
 
   for (int u = 1; u <= par1.N_units; u++){
     // Find the numbers that identify each neuron within a certain repeating unit
@@ -59,12 +79,12 @@ new NervousSystem(), new Muscles),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D
     dbNext = nn(DB, u+1);
 
     // Biases
-    n.SetNeuronBias(da, v(3));
-    n.SetNeuronBias(va, v(3));
-    n.SetNeuronBias(db, v(4));
-    n.SetNeuronBias(vb, v(4));
-    n.SetNeuronBias(dd, v(5));
-    n.SetNeuronBias(vd, v(5));
+    n.SetNeuronBias(da, pheno(3));
+    n.SetNeuronBias(va, pheno(3));
+    n.SetNeuronBias(db, pheno(4));
+    n.SetNeuronBias(vb, pheno(4));
+    n.SetNeuronBias(dd, pheno(5));
+    n.SetNeuronBias(vd, pheno(5));
 
     // Time-constants fixed to 1.0
     for (int i = 1; i <= par1.N_neuronsperunit; i++){
@@ -72,48 +92,53 @@ new NervousSystem(), new Muscles),n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2D
     }
 
     // Self-connections
-    n.SetChemicalSynapseWeight(da,da, v(6));
-    n.SetChemicalSynapseWeight(va,va, v(6));
-    n.SetChemicalSynapseWeight(db,db, v(7));
-    n.SetChemicalSynapseWeight(vb,vb, v(7));
-    n.SetChemicalSynapseWeight(dd,dd, v(8));
-    n.SetChemicalSynapseWeight(vd,vd, v(8));
+    n.SetChemicalSynapseWeight(da,da, pheno(6));
+    n.SetChemicalSynapseWeight(va,va, pheno(6));
+    n.SetChemicalSynapseWeight(db,db, pheno(7));
+    n.SetChemicalSynapseWeight(vb,vb, pheno(7));
+    n.SetChemicalSynapseWeight(dd,dd, pheno(8));
+    n.SetChemicalSynapseWeight(vd,vd, pheno(8));
 
     // Cross-connections
     // Excitatory Chemical Synapses intraunit
-    n.SetChemicalSynapseWeight(da, vd, v(9));
-    n.SetChemicalSynapseWeight(va, dd, v(9));
-    n.SetChemicalSynapseWeight(vb, dd, v(10));
-    n.SetChemicalSynapseWeight(db, vd, v(10));
+    n.SetChemicalSynapseWeight(da, vd, pheno(9));
+    n.SetChemicalSynapseWeight(va, dd, pheno(9));
+    n.SetChemicalSynapseWeight(vb, dd, pheno(10));
+    n.SetChemicalSynapseWeight(db, vd, pheno(10));
 
     // Inhibitory Chemical Synapses intraunit
-    n.SetChemicalSynapseWeight(vd, va, v(11));
-    n.SetChemicalSynapseWeight(dd, da, v(11));
-    n.SetChemicalSynapseWeight(vd, vb, v(12));
-    n.SetChemicalSynapseWeight(dd, db, v(12));
+    n.SetChemicalSynapseWeight(vd, va, pheno(11));
+    n.SetChemicalSynapseWeight(dd, da, pheno(11));
+    n.SetChemicalSynapseWeight(vd, vb, pheno(12));
+    n.SetChemicalSynapseWeight(dd, db, pheno(12));
 
     // Electrical Synapse Intersegment connections
     if (u < par1.N_units){
-      n.SetElectricalSynapseWeight(dd, ddNext, v(13));
-      n.SetElectricalSynapseWeight(vd, vdNext, v(13));
-      n.SetElectricalSynapseWeight(vb, vbNext, v(14));
-      n.SetElectricalSynapseWeight(db, dbNext, v(14));
+      n.SetElectricalSynapseWeight(dd, ddNext, pheno(13));
+      n.SetElectricalSynapseWeight(vd, vdNext, pheno(13));
+      n.SetElectricalSynapseWeight(vb, vbNext, pheno(14));
+      n.SetElectricalSynapseWeight(db, dbNext, pheno(14));
     }
   }
 
   // Excitatory VNC NMJ Weight
-  NMJ_DA = v(15);
-  NMJ_VA = v(15);
-  NMJ_DB = v(16);
-  NMJ_VB = v(16);
+  NMJ_DA = pheno(15);
+  NMJ_VA = pheno(15);
+  NMJ_DB = pheno(16);
+  NMJ_VB = pheno(16);
 
   // Inhibitory VNC NMJ Weight
-  NMJ_DD = v(17);
-  NMJ_VD = v(17);
+  NMJ_DD = pheno(17);
+  NMJ_VD = pheno(17);
 
+  EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*(w2par_ptr));
+  Epars1.AVA_output = 0.0;
+  Epars1.AVB_output = 0.0;
+  
   AVA_output = 0.0;
   AVB_output = 0.0;
 }
+
 
 void WormCE::InitializeState(RandomState &rs)
 {
@@ -211,4 +236,57 @@ void WormCE::DumpParams(ofstream &ofs) {
 
   Worm2DCE::DumpParams(ofs);
  
+}
+
+void WormCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+
+    // Genotype -> Phenotype Mapping Ranges
+    const double    BiasRange               = 16.0; //15.0;
+    const double    SCRange                 = 16.0; //15.0;
+    const double    CSRange                 = 16.0; //15.0;
+    const double    ESRange                 = 2.0;
+    const double    SRmax                   = 200.0;
+    const double    NMJmax                  = 0.8; //1.2;
+    const double    NMJmin                  = 0.0;
+    
+    const int SR_A = 1;
+    const int SR_B = 2;
+
+
+     // Parameters for the Stretch Receptors
+  phen(SR_A) = MapSearchParameter(gen(SR_A), 0.0, SRmax);
+  phen(SR_B) = MapSearchParameter(gen(SR_B), 0.0, SRmax);
+
+  // Bias
+  int k=3;
+  for (int i = 1; i <= 3; i++){
+    phen(k) = MapSearchParameter(gen(k), -BiasRange, BiasRange);k++;
+  }
+  // Self connections
+  for (int i = 1; i <= 3; i++){
+    phen(k) = MapSearchParameter(gen(k), -SCRange, SCRange);k++;
+  }
+  // DA, DB, VA, VB Chemical synapses (excitatory)
+  for (int i = 1; i <= 2; i++){
+    phen(k) = MapSearchParameter(gen(k), 0.0, CSRange);k++;
+  }
+  // VD Chemical synapses (Inhibitory)
+  for (int i = 1; i <= 2; i++){
+    phen(k) = MapSearchParameter(gen(k), -CSRange, 0.0);k++;
+  }
+  // Interunits Gap junctions
+  for (int i = 1; i <= 2; i++){
+    phen(k) = MapSearchParameter(gen(k), 0.0, ESRange);k++;
+  }
+  // Excitatory NMJ Weight
+  for (int i = 1; i <= 2; i++){
+    phen(k) = MapSearchParameter(gen(k), NMJmin, NMJmax);k++;
+  }
+  // Inhibitory NMJ Weight
+  for (int i = 1; i <= 1; i++){
+    phen(k) = MapSearchParameter(gen(k), -NMJmax, -NMJmin);k++;
+  }
+
+
 }

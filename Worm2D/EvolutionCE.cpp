@@ -2,7 +2,7 @@
 #include <math.h>
 #include "WormCE.h"
 
-void EvolutionCE::writeJson(TVector<double> &v) {WormCE w(v,0); writeJson1(w);}
+void EvolutionCE::writeJson(TVector<double> &v) {WormCE w(v); writeJson1(w);}
 
 void EvolutionCE::addExtraParsToJson(json & j)
 {
@@ -97,7 +97,7 @@ double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int directio
     // Genotype-Phenotype Mapping
     TVector<double> phenotype(1, VectSize);
     GenPhenMapping(v, phenotype);
-    WormCE w(phenotype, 1);
+    WormCE w(phenotype);
     w.InitializeState(rs);
 
     if (direction == 1){
@@ -173,7 +173,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   double srb = phenotype(SR_B);
   
   
-  WormCE w(phenotype, 1);
+  WormCE w(phenotype);
   w.setBasename(itsEvoPars().directoryName);
   w.setDataskips(itsEvoPars().skip_steps);
   w.dataReset();

@@ -48,7 +48,7 @@ void Worm21::setPhenoNames()
 }
 
 Worm21::Worm21():Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),Worm2D21(),
-n(dynamic_cast<NervousSystem&>(*n_ptr)),EvolvableS(shared_ptr<Evolparameters>(new Evolparameters())){}
+n(dynamic_cast<NervousSystem&>(*n_ptr)){}
 
 Worm21::Worm21(TVector<double> &pheno):Worm21(pheno, true){}
 
@@ -66,13 +66,19 @@ Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
     else setParsFromGeno(phengen);
 
 }
-
-void Worm21::setParsFromPheno(TVector<double> &pheno)
+void Worm21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
+    if (evotype_=="Evo21"){
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*w2par_ptr_);
 
     Epars1.dbunit = 10;
     Epars1.vbunit = 13;
+    }
 
+}
+void Worm21::setParsFromPheno(TVector<double> &pheno)
+{
+   
 // Muscles
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
