@@ -6,16 +6,6 @@
 #include <iostream>
 
 
-const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval)
-{    
-   const char* retval = defaultval;
-   if (((argc-1) % 2) != 0)
-   {cout << "The arguments are not configured correctly." << endl;exit(1);}
-   for (int arg = 1; arg<argc; arg+=2) 
-   if (strcmp(argv[arg],parName.c_str())==0) {retval = argv[arg+1];break;}
-   return retval;
-}
-
 
 string Evolution::rename_file(string filename){return evoPars1.directoryName + "/" + 
     evoPars1.fileprefix + filename;}
@@ -424,5 +414,4 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
        // velfile.close();
 
 }
-
 

@@ -3,6 +3,7 @@
 #include "jsonUtils.h"
 
 
+
 struct evoParsNonConst{
 string filePrefix;
 
@@ -199,11 +200,19 @@ void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"]
 class EvolparametersCE : virtual public W2Dparameters
 {
 public:
+EvolparametersCE(int argc, const char* argv[]);
+EvolparametersCE(){}
 double AVA_output, AVB_output;
-void setParsFromJson(json & j){AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; }
-void addParsToJson(json & j){j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;}
+int doReverse;
+void setParsFromJson(json & j){
+  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+  doReverse =  j["doReverse"]["value"];
+}
+void addParsToJson(json & j){
+  j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
+  j["doReverse"]["value"] = doReverse;
+}
 };
-
 
 class EvolvableS
 {
@@ -230,3 +239,4 @@ class EvolvableS
 
 
 
+const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);

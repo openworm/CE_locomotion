@@ -611,6 +611,7 @@ def run(a=None, **kwargs):
 
     evol_extra_parameters = {}
     evol_extra_parameters["network_size"] = 6
+    evol_extra_parameters["doReverse"] = 0
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
 

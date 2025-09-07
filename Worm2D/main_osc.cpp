@@ -34,21 +34,21 @@ int main (int argc, const char* argv[])
     //json_out << setprecision(32);
     json j;
 
-    string evoType = getParameter(argc,argv,"--evoType","0");
+  
     bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
     if (do_evol) 
     {
         Evolution * evo = 0;
     
-        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv,evoType);
-         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv,evoType);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv,evoType);
-        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv,evoType);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv,evoType);
-        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv,evoType);
-        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv,evoType);
-        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv,evoType); 
-        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(argc,argv,evoType); 
+        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
+         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
+        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
+        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
+        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv);
+        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv); 
+        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(argc,argv); 
 
         //assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;

@@ -38,7 +38,7 @@ std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
 
 
-const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
+
 
 
 
@@ -243,13 +243,15 @@ double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
 }; */
 
 
+
+
 template<class T>
 class EvolutionFullW: public Evolvable_ptr, public Evolution
 {
     public:
-    EvolutionFullW(int argc, const char* argv[], string evotype_):
-    Evolvable_ptr(shared_ptr<EvolvableS>(new T())),evopar_ptr(getParameters(evotype_)),
-    Evolution(argc,argv,getDefaultEvoPars(evolvable1, evotype_),evolvable1->getVectSize()){}
+    EvolutionFullW(int argc, const char* argv[]):
+    Evolvable_ptr(shared_ptr<EvolvableS>(new T())),evopar_ptr(getParameters(argc,argv)),
+    Evolution(argc,argv,getDefaultEvoPars(evolvable1,argc,argv),evolvable1->getVectSize()){}
     
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -263,26 +265,29 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
 
     protected:
-    evoPars getDefaultEvoPars(shared_ptr<EvolvableS> evol1_, string evotype_);
+    evoPars getDefaultEvoPars(shared_ptr<EvolvableS> evol1_,int argc, const char* argv[]);
     
-    shared_ptr<W2Dparameters> getParameters(string evotype_);
+    shared_ptr<W2Dparameters> getParameters(int argc, const char* argv[]);
 
     private:
     shared_ptr<W2Dparameters> evopar_ptr;
 };
 
 template<class T>
-shared_ptr<W2Dparameters> EvolutionFullW<T>::getParameters(string evotype_)
+shared_ptr<W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const char* argv[])
 {
-if (evotype_=="Evo21") return shared_ptr<Evolparameters>(new Evolparameters());
-if (evotype_=="Evo18") return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
-if (evotype_=="EvoCE") return shared_ptr<EvolparametersCE>(new EvolparametersCE());
+    string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
+    if (evotype_=="Evo21") return shared_ptr<Evolparameters>(new Evolparameters());
+    if (evotype_=="Evo18") return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
+    if (evotype_=="EvoCE") return shared_ptr<EvolparametersCE>(new EvolparametersCE(argc,argv));
 
 }
 
 template<class T>
-evoPars EvolutionFullW<T>::getDefaultEvoPars(shared_ptr<EvolvableS> evol1_, string evotype_) 
+evoPars EvolutionFullW<T>::getDefaultEvoPars(shared_ptr<EvolvableS> evol1_,int argc, const char* argv[]) 
     {
+
+        string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
 
     if (evotype_=="Evo21")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
@@ -846,6 +851,8 @@ template<class T>
 double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
 {
 
+    EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+
     const int SR_A = 1;
     const int SR_B = 2;
 
@@ -853,14 +860,22 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
     double fitnessForward, fitnessBackward;
+
+    if (Epars1.doReverse==0 || Epars1.doReverse==2){
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
     fitnessForward = EvaluationCEp1(genotype, rs, 1);
-    /* genotype(SR_A)= sra;
+    }
+    if (Epars1.doReverse==1 || Epars1.doReverse==2){
+    genotype(SR_A)= sra;
     genotype(SR_B)= -1.0;
     fitnessBackward = EvaluationCEp1(genotype, rs, -1);
-    return (fitnessForward + fitnessBackward)/2; */
-    return fitnessForward;
+    }
+    if (Epars1.doReverse==0) return fitnessForward;
+    if (Epars1.doReverse==1) return fitnessBackward;
+    if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+
+    assert(0 && "doReverse not set properly");
     // return fitnessBackward;
 }
 
