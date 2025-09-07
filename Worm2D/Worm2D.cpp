@@ -79,7 +79,7 @@ string DataWriter::getName(string name_){
 
 void  DataWriter::InitializeData(string basename_)
 {
-    cout << "DataWriter init state" << endl;
+    //cout << "DataWriter init state" << endl;
     setBasename(basename_);
     //if (doFirstCall) dataReset();
 }
@@ -123,7 +123,7 @@ m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
-    cout << "Worm2Dbody init state" << endl;
+    //cout << "Worm2Dbody init state" << endl;
     InitializeBodyConstants();
     b.InitializeBodyState();
     //writeDataCheck();
@@ -132,7 +132,7 @@ void Worm2Dbody::InitializeState(RandomState &rs)
 
 void Worm2Dbase::InitializeState(RandomState &rs)
 {  
-    cout << "Worm2Dbase init state" << endl;
+    //cout << "Worm2Dbase init state" << endl;
     t = 0.0;
     datatime =  0.0;
     //writeDataCheck();
@@ -144,7 +144,7 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 void Worm2Dm::InitializeState(RandomState &rs)
 {
     //if (W2Dminitcalled) return;
-    cout << "Worm2Dm init state" << endl;
+    //cout << "Worm2Dm init state" << endl;
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
 
@@ -163,7 +163,7 @@ void Worm2D::setUp()
 
 void Worm2D::InitializeState(RandomState &rs)
 {
-    cout << "Worm2D init state" << endl;
+    //cout << "Worm2D init state" << endl;
     Worm2Dm::InitializeState(rs);
     m.InitializeMuscleState();
    
