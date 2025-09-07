@@ -1,8 +1,8 @@
 from run_main import run
 
 run(
-    simduration = 20,
-    simtransient = 0,
+    simduration=20,
+    simtransient=0,
     popSize=96,
     RandSeed=1233,
     modelName="W2DCE",

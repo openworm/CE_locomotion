@@ -37,6 +37,7 @@ cd ..
 cd Worm2D
 make clean
 make
+make main_osc
 cd ..
 
 ruff format *.py */*.py
@@ -55,6 +56,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRun21W2D_nml
     rm -rf exampleRunCOW2D
     rm -rf exampleRunCO
+    rm -rf exampleRunW2DCE
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -65,6 +67,7 @@ if [ "$quick_test" == 0 ]; then
         python test2018W2D.py
     fi;
 
+    omv test -V .test.W2DCE.omt
     omv test -V .test.CO.omt
     omv test -V .test.COW2D.omt
     omv test -V .test.example.omt
