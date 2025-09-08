@@ -105,27 +105,36 @@ int main (int argc, const char* argv[])
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
     w2->InitializeState(rs);
-    cout << "const 1" << endl;
-
-    double simduration = atof(getParameter(argc,argv,"-sd","60"));
-    double simtransient = atof(getParameter(argc,argv,"-st","50"));
-
-    
-    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
-    Simulation s1(sp1);
-    
-    cout << "const 1" << endl;
-
+    //cout << "const 1" << endl;
     w2->initForSimulation(rs);
     w2->setStepSize(ep1.StepSize);
     w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
-    cout << "const 1" << endl;
+    if (model_name == "W2DCE") 
+    {
+        WormCE & w = dynamic_cast<WormCE&>(*w2);
+        w.setBackward();
+    }
 
+    double simduration = atof(getParameter(argc,argv,"-sd","10"));
+    double simtransient = atof(getParameter(argc,argv,"-st","10"));    
+    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
+    Simulation s1(sp1);
     s1.runSimulation(*w2);
-    cout << "const 1" << endl;
+
+    if (model_name == "W2DCE") 
+    {
+        s1.sp.Transient = 0;
+        WormCE & w = dynamic_cast<WormCE&>(*w2);
+        w.setForward();
+        s1.runSimulation(*w2);
+    }
+
+
+
+    //cout << "const 1" << endl;
 
     
     delete w2;

@@ -49,6 +49,9 @@ AVB_output = 0.0;
 
 cout << "Worm2DCE const" << endl;
 
+pheno_A_gain = sr.SR_A_gain;
+pheno_B_gain = sr.SR_B_gain;
+
 }
 
 void Worm2DCE::initForSimulation(RandomState & rs)
@@ -67,8 +70,11 @@ void Worm2DCE::initForSimulation(RandomState & rs)
  
 }
 
+
 void Worm2DCE::setForward()
 {
+  sr.SR_A_gain = pheno_A_gain;
+  sr.SR_B_gain = pheno_B_gain;
 
   sr.SR_A_gain = 0.0;
   AVA_output =  0;
@@ -77,6 +83,8 @@ void Worm2DCE::setForward()
 
 void Worm2DCE::setBackward()
 {
+  sr.SR_A_gain = pheno_A_gain;
+  sr.SR_B_gain = pheno_B_gain;
 
   sr.SR_B_gain = 0.0;
   AVA_output =  1;

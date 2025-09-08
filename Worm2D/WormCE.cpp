@@ -147,6 +147,9 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
 
   AVA_output = 0.0;
   AVB_output = 0.0;
+
+  pheno_A_gain = sr.SR_A_gain;
+  pheno_B_gain = sr.SR_B_gain;
 }
 
 

@@ -34,9 +34,13 @@ public:
         //bodyfile.close(); 
         //velfile.close(); nsfile.close();
         }
+
+        simPars sp;
+   
     
 private:
-const simPars sp;
+//const simPars sp;
+//const simPars sp;
 //string rename_file(string filename);
 //ofstream velfile, nsfile;
 
