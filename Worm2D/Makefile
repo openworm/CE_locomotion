@@ -84,4 +84,4 @@ main_osc.o: main_osc.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Mu
 main_osc: main_osc.o c302ForW2D.o Evolvable.o Worm21.o Worm2D21.o Worm2DCE.o WormCE.o owSignalSimulator.o owSignalSimulatorForWorm2D.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
 	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main_osc c302ForW2D.o Evolvable.o Worm2DCE.o WormCE.o Worm21.o Worm2D21.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
 clean:
-	rm -f *.o main
+	rm -f *.o main main_osc
