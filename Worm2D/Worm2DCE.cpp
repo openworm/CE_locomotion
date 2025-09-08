@@ -54,16 +54,35 @@ cout << "Worm2DCE const" << endl;
 void Worm2DCE::initForSimulation(RandomState & rs)
 {
 
-  cout << "initForSimulation" << endl;
+  return;
+
+  /* cout << "initForSimulation" << endl;
   cout << sr.SR_A_gain << " " << sr.SR_B_gain 
   << " " << AVA_output << " " << AVB_output << " " << AVA_inact << " " << AVB_act << endl;
 
   sr.SR_A_gain = 0.0;
   AVA_output =  AVA_inact;
   AVB_output =  AVB_act;
-
+ */
  
 }
+
+void Worm2DCE::setForward()
+{
+
+  sr.SR_A_gain = 0.0;
+  AVA_output =  0;
+  AVB_output =  1;
+}
+
+void Worm2DCE::setBackward()
+{
+
+  sr.SR_B_gain = 0.0;
+  AVA_output =  1;
+  AVB_output =  0;
+}
+
 
 void Worm2DCE::InitializeState(RandomState &rs)
 {

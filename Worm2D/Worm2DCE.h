@@ -82,6 +82,8 @@ class Worm2DCE: public Worm2D{
     StretchReceptorCE sr;
     void DumpParams(ofstream &ofs);
     virtual void initForSimulation(RandomState&);
+    void setForward();
+    void setBackward();
 
     friend class EvolutionCE;
 
