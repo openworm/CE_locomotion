@@ -92,6 +92,13 @@ void Worm2DCE::setBackward()
 }
 
 
+void Worm2DCE::setSRtype(string sr_type_)
+{
+  sr_type = sr_type_;
+  assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
+    || sr_type == "SR_TRANS_ABS" ||  sr_type == "SR_TRANS_NEG" || sr_type == "None");
+}
+
 void Worm2DCE::InitializeState(RandomState &rs)
 {
   Worm2D::InitializeState(rs);
@@ -115,6 +122,7 @@ void Worm2DCE::Step1()
     ds = (b.DorsalSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
     vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
 
+    
     if (sr_type == "SR_TRANS_STRETCH")
     {
     ds = ds < 0.0 ? 0.0 : ds;

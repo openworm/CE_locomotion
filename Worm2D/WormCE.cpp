@@ -49,6 +49,7 @@ void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
   EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*(w2par_ptr_));
   AVA_output = Epars1.AVA_output;
   AVB_output = Epars1.AVB_output;
+  sr_type = Epars1.sr_type;
   return;
   }
   cout << "evotype is " << evotype_ << endl;

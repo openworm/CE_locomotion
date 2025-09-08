@@ -115,6 +115,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DCE") 
     {
         WormCE & w = dynamic_cast<WormCE&>(*w2);
+        string SRType = getParameter(argc,argv,"--SRType","None");
+        w.setSRtype(SRType);
         w.setBackward();
     }
 

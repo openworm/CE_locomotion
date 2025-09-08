@@ -84,7 +84,8 @@ class Worm2DCE: public Worm2D{
     virtual void initForSimulation(RandomState&);
     void setForward();
     void setBackward();
-
+    void setSRtype(string sr_type_);
+    
     friend class EvolutionCE;
 
     protected:

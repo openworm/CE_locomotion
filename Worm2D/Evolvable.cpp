@@ -16,6 +16,7 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[])
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = atoi(getParameter(argc,argv,"--doReverse","0"));
+    sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
 EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)

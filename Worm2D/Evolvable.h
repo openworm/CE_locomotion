@@ -202,19 +202,22 @@ class EvolparametersCE : virtual public W2Dparameters
 public:
 EvolparametersCE(int argc, const char* argv[]);
 EvolparametersCE(){}
-double AVA_output, AVB_output;
-int doReverse;
+double AVA_output = 0, AVB_output = 0;
+int doReverse = 0;
 //bool doAlternateEvo;
+string sr_type = "None";
 
 void setParsFromJson(json & j){
   AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
   doReverse =  j["doReverse"]["value"];
+  sr_type = j["SRType"]["value"];
   //doAlternateEvo = j["doAlternateEvo"]["value"];
 }
 
 void addParsToJson(json & j){
   j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
   j["doReverse"]["value"] = doReverse;
+  j["SRType"]["value"] = sr_type;
   //j["doAlternateEvo"]["value"] = doAlternateEvo;
 }
 
