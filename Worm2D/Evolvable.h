@@ -204,14 +204,20 @@ EvolparametersCE(int argc, const char* argv[]);
 EvolparametersCE(){}
 double AVA_output, AVB_output;
 int doReverse;
+//bool doAlternateEvo;
+
 void setParsFromJson(json & j){
   AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
   doReverse =  j["doReverse"]["value"];
+  //doAlternateEvo = j["doAlternateEvo"]["value"];
 }
+
 void addParsToJson(json & j){
   j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
   j["doReverse"]["value"] = doReverse;
+  //j["doAlternateEvo"]["value"] = doAlternateEvo;
 }
+
 };
 
 class EvolvableS

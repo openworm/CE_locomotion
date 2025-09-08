@@ -117,6 +117,9 @@ class Worm2DCE: public Worm2D{
     const int VB = 6;
 
     double pheno_A_gain, pheno_B_gain; 
+
+    string sr_type = "None";
+    //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    
 };
 

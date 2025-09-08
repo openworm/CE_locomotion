@@ -114,22 +114,28 @@ void Worm2DCE::Step1()
   for(int i = 1; i <= N_segments; ++i){
     ds = (b.DorsalSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
     vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
-    #ifdef SR_TRANS_STRETCH
+
+    if (sr_type == "SR_TRANS_STRETCH")
+    {
     ds = ds < 0.0 ? 0.0 : ds;
     vs = vs < 0.0 ? 0.0 : vs;
-    #endif
-    #ifdef SR_TRANS_CONTRACT
+    }
+    else if (sr_type == "SR_TRANS_CONTRACT")
+    {
     ds = ds < 0.0 ? ds : 0.0;
     vs = vs < 0.0 ? vs : 0.0;
-    #endif
-    #ifdef SR_TRANS_ABS
+    }
+    else if (sr_type == "SR_TRANS_ABS")
+    {
     ds = ds < 0.0 ? -ds : ds;
     vs = vs < 0.0 ? -vs : vs;
-    #endif
-    #ifdef SR_TRANS_NEG
+    }
+    else if (sr_type == "SR_TRANS_NEG")
+    {
     ds = -ds;
     vs = -vs;
-    #endif
+    }
+
     sr.SetDorsalInput(i, ds);
     sr.SetVentralInput(i, vs);
   }

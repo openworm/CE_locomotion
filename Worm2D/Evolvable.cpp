@@ -14,7 +14,7 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
 
 EvolparametersCE::EvolparametersCE(int argc, const char* argv[])
 {
-
+    //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = atoi(getParameter(argc,argv,"--doReverse","0"));
 }
 

@@ -855,27 +855,42 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     const int SR_A = 1;
     const int SR_B = 2;
+ 
+    const int gen_num = s->Generation();
+    //evoPars1.MaxGenerations;
+    //Epars1.doAlternateEvo;
+
+    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations);
+    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations);
+    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
+    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
 
 
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
-    double fitnessForward, fitnessBackward;
+    //double fitnessForward, fitnessBackward;
 
-    if (Epars1.doReverse==0 || Epars1.doReverse==2){
+    double fitness = 0;
+    int count = 0;
+    if (Epars1.doReverse==0 || doalt1f){
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
-    fitnessForward = EvaluationCEp1(genotype, rs, 1);
+    fitness += EvaluationCEp1(genotype, rs, 1);
+    count++;
     }
-    if (Epars1.doReverse==1 || Epars1.doReverse==2){
+    if (Epars1.doReverse==1 || doalt2f){
     genotype(SR_A)= sra;
     genotype(SR_B)= -1.0;
-    fitnessBackward = EvaluationCEp1(genotype, rs, -1);
+    fitness += EvaluationCEp1(genotype, rs, -1);
+    count++;
     }
-    if (Epars1.doReverse==0) return fitnessForward;
-    if (Epars1.doReverse==1) return fitnessBackward;
-    if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+    return fitness/count;
 
-    assert(0 && "doReverse not set properly");
+    //if (Epars1.doReverse==0) return fitnessForward;
+    //if (Epars1.doReverse==1) return fitnessBackward;
+    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+
+    //assert(0 && "doReverse not set properly");
     // return fitnessBackward;
 }
 
