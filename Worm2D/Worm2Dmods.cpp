@@ -306,11 +306,12 @@ n.pfa1.swap_all(pfa1);
 
 }
 
-void Worm2Dosc::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+void Worm2Dosc::setEvolPars(W2Dparameters & w2par_, string evotype_)
+//void Worm2Dosc::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
 
     if (evotype_=="Evo21"){
-    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
     Epars1.dbunit = 6;
     Epars1.vbunit = 30;
     }
@@ -326,12 +327,12 @@ void Worm2Dosc::setParsFromPheno(TVector<double> &phen)
 }
 
 
-
-void Worm2DoscHalf::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+void Worm2DoscHalf::setEvolPars(W2Dparameters & w2par_, string evotype_)
+//void Worm2DoscHalf::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
 
     if (evotype_=="Evo21"){
-    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
     Epars1.dbunit = 1;
     Epars1.vbunit = 1;
     }
@@ -707,11 +708,11 @@ n.pfa1.phase.swap(phase);
 
 }
 
-
-void Worm2Dosc21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+void Worm2Dosc21::setEvolPars(W2Dparameters & w2par_, string evotype_)
+//void Worm2Dosc21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
     if (evotype_=="Evo21"){
-    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w2par_ptr_));
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
     Epars1.dbunit = nn(1,3);
     Epars1.vbunit = nn(2,3);
     }

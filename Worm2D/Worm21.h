@@ -52,5 +52,6 @@ public:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 44;}
     void setParsFromPheno(TVector<double> &pheno);
-    void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+    //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+    void setEvolPars(W2Dparameters & w2par_, string evotype_);
 };

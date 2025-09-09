@@ -224,7 +224,8 @@ vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleC
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 void setPhenoNames(); //{return;}
 int getVectSize(){return 4;}
-void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+//void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
 //static inline int evoVectSize = 4;
 protected:
@@ -272,7 +273,9 @@ Worm2DoscHalf(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 //static inline int evoVectSize = 3;
 int getVectSize() {return 3;}
-void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+//void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+//void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
@@ -325,7 +328,8 @@ Worm2Dosc21(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 6;}
-void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+//void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
 protected:
 void setPhenoNames(); 

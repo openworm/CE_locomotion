@@ -114,9 +114,11 @@ int main (int argc, const char* argv[])
 
     if (model_name == "W2DCE") 
     {
+        //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
         WormCE & w = dynamic_cast<WormCE&>(*w2);
-        string SRType = getParameter(argc,argv,"--SRType","None");
-        w.setSRtype(SRType);
+        w.setPars(argc,argv);
+        //string SRType = getParameter(argc,argv,"--SRType","None");
+        //w.setW2DCEpars(W2DCEpars1);
         w.setBackward();
     }
 

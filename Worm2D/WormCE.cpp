@@ -20,6 +20,13 @@ return new c302NervousSystem();
 }
  */
 
+
+WormCE::WormCE():Worm2Dm({6,24,0.1,10,60},new NervousSystem(), new Muscles),
+//EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())),
+n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
+  //dynamic_cast<shared_ptr<W2DCEpars> &>(*evolvable_w2par_ptr))
+  {}
+
 WormCE::WormCE(TVector<double> &pheno):WormCE(pheno, true){}
 
 
@@ -37,25 +44,29 @@ WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 
 }
 
+void WormCE::setWormPars(W2Dparameters & w2par_)
+{W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);}
 
-WormCE::WormCE():Worm2Dm({6,24,0.1,10,60},new NervousSystem(), new Muscles),
-n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0),
-EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())){}
-
-void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+/* void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
 
   if (evotype_=="EvoCE"){
+  
   EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*(w2par_ptr_));
-  AVA_output = Epars1.AVA_output;
-  AVB_output = Epars1.AVB_output;
-  sr_type = Epars1.sr_type;
+
+  //W2DCEpars1 = dynamic_cast<shared_ptr<W2DCEpars> &> (*w2par_ptr_);
+
+  //W2DCEpars1 = shared_ptr<W2DCEpars>(w2par_ptr_);
+
+  //AVA_output = Epars1.AVA_output;
+  //AVB_output = Epars1.AVB_output;
+  //sr_type = Epars1.sr_type;
   return;
   }
   cout << "evotype is " << evotype_ << endl;
   assert(0 && "Evotype not implemented");
 
-}
+} */
 
 
 void WormCE::setParsFromPheno(TVector<double> &pheno)
@@ -146,8 +157,8 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   NMJ_DD = pheno(17);
   NMJ_VD = pheno(17);
 
-  AVA_output = 0.0;
-  AVB_output = 0.0;
+  W2DCEpars1.AVA_output = 0.0;
+  W2DCEpars1.AVB_output = 0.0;
 
   pheno_A_gain = sr.SR_A_gain;
   pheno_B_gain = sr.SR_B_gain;

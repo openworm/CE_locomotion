@@ -63,7 +63,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-class WormCE : public Worm2DCE , public EvolvableS
+class WormCE : public EvolvableS, public Worm2DCE
 {
 public:
 
@@ -91,15 +91,15 @@ public:
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
-    void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
+    void setEvolPars(W2Dparameters & w2par_, string evotype_) {}
+    //W2Dparameters & getWormPars() {return W2DCEpars1;}
+    void setWormPars(W2Dparameters & w2par_);
 
     //double CoMx();
     //double CoMy();
     //void Curvature(TVector<double> &c);
     //void AngleCurvature(TVector<double> &c);
     //double Orientation();
-
-    
 
    
 };

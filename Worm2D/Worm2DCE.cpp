@@ -10,7 +10,10 @@
 //#include "../argUtils.h"
 #include "../neuromlLocal/c302ForW2D.h"
 
- 
+
+
+
+
 Worm2DCE::Worm2DCE(json & j):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
@@ -44,8 +47,8 @@ NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
 NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
 NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
 
-AVA_output = 0.0;
-AVB_output = 0.0;
+W2DCEpars1.AVA_output = 0.0;
+W2DCEpars1.AVB_output = 0.0;
 
 cout << "Worm2DCE const" << endl;
 
@@ -77,8 +80,10 @@ void Worm2DCE::setForward()
   sr.SR_B_gain = pheno_B_gain;
 
   sr.SR_A_gain = 0.0;
-  AVA_output =  0;
-  AVB_output =  1;
+  //AVA_output =  1;
+  //AVB_output =  0;
+  W2DCEpars1.AVA_output =  0;
+  W2DCEpars1.AVB_output =  1;
 }
 
 void Worm2DCE::setBackward()
@@ -87,17 +92,21 @@ void Worm2DCE::setBackward()
   sr.SR_B_gain = pheno_B_gain;
 
   sr.SR_B_gain = 0.0;
-  AVA_output =  1;
-  AVB_output =  0;
+  //AVA_output =  0;
+  //AVB_output =  1;
+  W2DCEpars1.AVA_output =  1;
+  W2DCEpars1.AVB_output =  0;
 }
-
-
-void Worm2DCE::setSRtype(string sr_type_)
+void Worm2DCE::setPars(int argc, const char* argv[])
 {
-  sr_type = sr_type_;
-  assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
-    || sr_type == "SR_TRANS_ABS" ||  sr_type == "SR_TRANS_NEG" || sr_type == "None");
+  W2DCEpars1 = W2DCEpars(argc,argv);
+  assert(W2DCEpars1.sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1.sr_type ==  "SR_TRANS_CONTRACT" 
+    || W2DCEpars1.sr_type == "SR_TRANS_ABS" 
+    ||  W2DCEpars1.sr_type == "SR_TRANS_NEG" || W2DCEpars1.sr_type == "None");
+
 }
+
+
 
 void Worm2DCE::InitializeState(RandomState &rs)
 {
@@ -123,22 +132,22 @@ void Worm2DCE::Step1()
     vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
 
     
-    if (sr_type == "SR_TRANS_STRETCH")
+    if (W2DCEpars1.sr_type == "SR_TRANS_STRETCH")
     {
     ds = ds < 0.0 ? 0.0 : ds;
     vs = vs < 0.0 ? 0.0 : vs;
     }
-    else if (sr_type == "SR_TRANS_CONTRACT")
+    else if (W2DCEpars1.sr_type == "SR_TRANS_CONTRACT")
     {
     ds = ds < 0.0 ? ds : 0.0;
     vs = vs < 0.0 ? vs : 0.0;
     }
-    else if (sr_type == "SR_TRANS_ABS")
+    else if (W2DCEpars1.sr_type == "SR_TRANS_ABS")
     {
     ds = ds < 0.0 ? -ds : ds;
     vs = vs < 0.0 ? -vs : vs;
     }
-    else if (sr_type == "SR_TRANS_NEG")
+    else if (W2DCEpars1.sr_type == "SR_TRANS_NEG")
     {
     ds = -ds;
     vs = -vs;
@@ -154,13 +163,13 @@ void Worm2DCE::Step1()
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + W2DCEpars1.AVA_output*W2DCEpars1.AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + W2DCEpars1.AVA_output*W2DCEpars1.AB_output_level);
   }
   ////   To B_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + AVB_output);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + AVB_output);
+    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + W2DCEpars1.AVB_output*W2DCEpars1.AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + W2DCEpars1.AVB_output*W2DCEpars1.AB_output_level);
   }
 
   // Update Nervous System
@@ -248,7 +257,7 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   append<string>(var1.parDoub.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
   append<string>(var1.parDoub.names,{"AVA_output", "AVB_output"});
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
-  append<double>(var1.parDoub.vals,{AVA_output, AVB_output});
+  append<double>(var1.parDoub.vals,{W2DCEpars1.AVA_output, W2DCEpars1.AVB_output});
 
   var1.parInt.head = "Worm";
   var1.parInt.vals = {N_stretchrec, NmusclePerNU};

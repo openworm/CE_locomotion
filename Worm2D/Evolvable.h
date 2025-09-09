@@ -197,27 +197,53 @@ void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit
 void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
 
-class EvolparametersCE : virtual public W2Dparameters
+struct W2DCEpars : virtual public W2Dparameters
+{
+public:
+W2DCEpars(){}
+W2DCEpars(int argc, const char* argv[]);
+
+string sr_type = "None";
+double AVA_output = 0, AVB_output = 0;
+double AB_output_level;
+
+void setParsFromJson(json & j){
+  sr_type = j["SRType"]["value"]; 
+  AB_output_level = j["AB_output_level"]["value"];
+  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+}
+void addParsToJson(json & j){
+  j["SRType"]["value"] = sr_type; 
+  j["AB_output_level"]["value"] = AB_output_level;
+  j["AVB_output"]["value"] = AVB_output; 
+  j["AVB_output"]["value"] = AVB_output;
+}
+
+};
+
+
+
+class EvolparametersCE : public W2DCEpars
 {
 public:
 EvolparametersCE(int argc, const char* argv[]);
 EvolparametersCE(){}
-double AVA_output = 0, AVB_output = 0;
 int doReverse = 0;
+//double SR_B_gain = 0, SR_A_gain = 0;
 //bool doAlternateEvo;
-string sr_type = "None";
+//string sr_type = "None";
 
 void setParsFromJson(json & j){
-  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+  //AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
   doReverse =  j["doReverse"]["value"];
-  sr_type = j["SRType"]["value"];
+  //sr_type = j["SRType"]["value"];
   //doAlternateEvo = j["doAlternateEvo"]["value"];
 }
 
 void addParsToJson(json & j){
-  j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
+  //j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
   j["doReverse"]["value"] = doReverse;
-  j["SRType"]["value"] = sr_type;
+  //j["SRType"]["value"] = sr_type;
   //j["doAlternateEvo"]["value"] = doAlternateEvo;
 }
 
@@ -234,15 +260,16 @@ class EvolvableS
   virtual void setParsFromPheno(TVector<double> &pheno) = 0;
   void setParsFromFile(const string & genofilename_);
   void setParsFromGeno(TVector<double> &geno);
-  virtual void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_) = 0;
+  virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
+  //virtual W2Dparameters & getWormPars() {return;}
+  virtual void setWormPars(W2Dparameters & w2par_) {}
 
-
-  shared_ptr<W2Dparameters> evolvable_w2par_ptr;
+  //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
   //Evolparameters & Epars1;
   //friend class EvolutionFull;
   //protected:
-  EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_);
-  EvolvableS();
+  //EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_);
+
   
 };
 

@@ -10,20 +10,26 @@ const char* getParameter(int argc, const char* argv[], string parName, const cha
    return retval;
 }
 
+W2DCEpars::W2DCEpars(int argc, const char* argv[])
+{
+
+  AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1"));
+  sr_type = getParameter(argc,argv,"--SRType","None");
+}
 
 
-EvolparametersCE::EvolparametersCE(int argc, const char* argv[])
+EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):W2DCEpars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = atoi(getParameter(argc,argv,"--doReverse","0"));
-    sr_type = getParameter(argc,argv,"--SRType","None");
+    //sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
-EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)
+//EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)
 //, Epars1(dynamic_cast<Evolparameters&>(*w2par_ptr))
-{}
+//{}
 
-EvolvableS::EvolvableS(){}
+//EvolvableS::EvolvableS(){}
 
 
 void EvolvableS::setParsFromFile(const string & filename_)

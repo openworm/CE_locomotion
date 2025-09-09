@@ -66,10 +66,12 @@ Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
     else setParsFromGeno(phengen);
 
 }
-void Worm21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
+
+void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
+//void Worm21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
     if (evotype_=="Evo21"){
-    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*w2par_ptr_);
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
 
     Epars1.dbunit = 10;
     Epars1.vbunit = 13;

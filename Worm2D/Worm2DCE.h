@@ -63,6 +63,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
+
 class Worm2DCE: public Worm2D{
     
     public:
@@ -84,14 +85,22 @@ class Worm2DCE: public Worm2D{
     virtual void initForSimulation(RandomState&);
     void setForward();
     void setBackward();
-    void setSRtype(string sr_type_);
-    
+    //void setW2DCEpars(const W2DCEpars & W2DCEpars_);//{W2DCEpars1 = W2DCEpars_;}
+    //void setW2DCEpars(const W2DCEpars & W2DCEpars_);
+    void setPars(int argc, const char* argv[]);
+
     friend class EvolutionCE;
 
     protected:
     //void Step1();
     void Step1();
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0){}
+
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
+    Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0){}
+
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, const W2DCEpars & W2DCEpars1_):
+    Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0),W2DCEpars1(W2DCEpars1_){}
+
 
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
     vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}
@@ -101,7 +110,7 @@ class Worm2DCE: public Worm2D{
    
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
-    double AVA_output, AVB_output;
+    //double AVA_output, AVB_output;
     double AVA_act, AVA_inact, AVB_act, AVB_inact;
 
     
@@ -118,8 +127,9 @@ class Worm2DCE: public Worm2D{
     const int VB = 6;
 
     double pheno_A_gain, pheno_B_gain; 
+    W2DCEpars W2DCEpars1;
 
-    string sr_type = "None";
+    //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    
 };

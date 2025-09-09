@@ -425,10 +425,11 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 
        
         T w(genotype, false);
-        w.setEvolPars(evopar_ptr,evoPars1.evoType);
+
+        
 
         Evolparameters & EparsR = dynamic_cast<Evolparameters&>(*evopar_ptr);
-       
+        w.setEvolPars(EparsR,evoPars1.evoType);
 
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
@@ -921,7 +922,9 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     T w(genotype, false);
 
-    EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+    //EvolparametersCE & Epars1 = w.getWormPars();
+
+    //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
         //setPfaFromPheno(phenotype);
@@ -932,6 +935,8 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
+    EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+
     if (direction == 1){
         Epars1.AVA_output =  0.0;
         Epars1.AVB_output =  1.0;
@@ -941,7 +946,9 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         Epars1.AVB_output =  0.0; // Command Interneuron Activation Backward
     }
 
-    w.setEvolPars(evopar_ptr, evoPars1.evoType);
+    w.setWormPars(Epars1);
+
+    //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize){
