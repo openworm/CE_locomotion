@@ -6,7 +6,7 @@
 #include <iomanip> 
 #include <string.h>
 //#include "jsonUtils.h"
-#include "Worm2D.h"
+#include "WormCE.h"
 #include "Simulation.h"
 //#include "../utils.h"
 //#include "Evolvable.h"
@@ -861,8 +861,8 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //evoPars1.MaxGenerations;
     //Epars1.doAlternateEvo;
 
-    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations);
-    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations);
+    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
     const bool doalt1f = Epars1.doReverse==2 || (doalt1);
     const bool doalt2f = Epars1.doReverse==2 || (doalt2);
 
@@ -870,13 +870,16 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
     //double fitnessForward, fitnessBackward;
+    genotype(SR_A)= -1.0;
+    genotype(SR_B)= srb;
+    return EvaluationCEp1(genotype, rs, 1);
 
     double fitness = 0;
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
-    fitness += EvaluationCEp1(genotype, rs, 1);
+    fitness = EvaluationCEp1(genotype, rs, 1);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
@@ -885,7 +888,7 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     fitness += EvaluationCEp1(genotype, rs, -1);
     count++;
     }
-    return fitness/count;
+    return fitness; ///count;
 
     //if (Epars1.doReverse==0) return fitnessForward;
     //if (Epars1.doReverse==1) return fitnessBackward;
@@ -936,18 +939,27 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     w.setStepSize(StepSize);
 
     EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+    WormCE & w2 = dynamic_cast<WormCE&>(w);
+    
 
     if (direction == 1){
-        Epars1.AVA_output =  0.0;
-        Epars1.AVB_output =  1.0;
+        //Epars1.AVA_output =  0.0;
+        //Epars1.AVB_output =  1.0;
+    w2.AVA_output =  0.0;
+    w2.AVB_output =  1.0;
+
     }
     else{
-        Epars1.AVA_output =  1.0;
-        Epars1.AVB_output =  0.0; // Command Interneuron Activation Backward
+    //    Epars1.AVA_output =  1.0;
+    //    Epars1.AVB_output =  0.0; // Command Interneuron Activation Backward
+
+    w2.AVA_output =  1.0;
+    w2.AVB_output =  0.0;
+
     }
 
-    w.setWormPars(Epars1);
-
+    //w.setWormPars(Epars1);
+    
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
     // Transient

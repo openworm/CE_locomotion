@@ -3,15 +3,15 @@ from run_main import run
 run(
     simduration=10,
     simtransient=10,
-    duration=20,
+    duration=10,
     transient=10,
-    maxGens=200,
-    popSize=32,
-    RandSeed=48611,
-    modelName="W2Dosc21all",
+    maxGens=20,
+    popSize=96,
+    RandSeed=33981,
+    modelName="W2DCE",
     modelFolder="Worm2D",
-    # inputFolderName="exampleRunW2Dosc_t1",
-    outputFolderName="exampleRunW2Dosc21_t1",
+    #inputFolderName="exampleRunW2DCE_reverse",
+    outputFolderName="exampleRunW2DCE_test",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
     overwrite=True,
@@ -19,5 +19,12 @@ run(
     reRand=True,
     doPlotEvol=True,
     doNML=False,
-    doCPT = True
+    doCPT=True,
+    evoType="EvoCE",
+    doReverse = 2,
+    SRType = "None"
+    #SRType = "SR_TRANS_CONTRACT",
+    #SRType = "SR_TRANS_STRETCH",  
+    #SRType = "SR_TRANS_ABS", 
+    #SRType = "SR_TRANS_NEG"
 )

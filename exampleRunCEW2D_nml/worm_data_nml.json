@@ -194,6 +194,12 @@
         "VectSize": {
             "value": 17
         },
+        "evoType": {
+            "value": "Evo21"
+        },
+        "fileprefix": {
+            "value": ""
+        },
         "randomseed": {
             "value": 1233
         },

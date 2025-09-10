@@ -4,5 +4,6 @@
     "randomseed": 95166,
     "MaxGenerations": 30,
     "Transient": 10,
-    "CheckpointInterval": 0
+    "CheckpointInterval": 0,
+    "EvolutionType": "Evo21"
 }

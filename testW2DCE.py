@@ -18,4 +18,5 @@ run(
     doNML=False,
     doCPT=True,
     evoType="EvoCE",
+    doTestRun = 1
 )

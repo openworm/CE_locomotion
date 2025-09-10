@@ -96,7 +96,10 @@ void setFromArgs(int argc, const char* argv[])
 {
 
   if (((argc-1) % 2) != 0)
-     {cout << "The arguments are not configured correctly." << endl;exit(1);}
+     {
+      cout << "The arguments are not configured correctly." << endl;
+      exit(1);
+    }
     
     bool seed_flag = 1;
 
@@ -205,7 +208,12 @@ W2DCEpars(int argc, const char* argv[]);
 
 string sr_type = "None";
 double AVA_output = 0, AVB_output = 0;
-double AB_output_level;
+double AB_output_level = 1;
+
+void show(){cout << "srtype " << sr_type << 
+  " AVA_output_level "  << AB_output_level << " AVA_output " << 
+  AVA_output << " AVB_output " << AVB_output << endl;}
+
 
 void setParsFromJson(json & j){
   sr_type = j["SRType"]["value"]; 

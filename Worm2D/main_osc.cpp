@@ -1,6 +1,6 @@
 #include "Worm2Dmods.h"
 #include "Worm21.h"
-#include "WormCE.h"
+//#include "WormCE.h"
 #include "Evolution.h"
 
 
@@ -112,6 +112,20 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
+    int dotest = atoi(getParameter(argc,argv,"--doTestRun","0"));
+
+    if (false){
+
+    double simduration = atof(getParameter(argc,argv,"-sd","10"));
+    double simtransient = atof(getParameter(argc,argv,"-st","10"));    
+    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
+    Simulation s1(sp1);
+    s1.runSimulation(*w2);
+    delete w2;
+    return 0;
+    }
+
+    if (false){
     if (model_name == "W2DCE") 
     {
         //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
@@ -121,6 +135,7 @@ int main (int argc, const char* argv[])
         //w.setW2DCEpars(W2DCEpars1);
         w.setBackward();
     }
+}
 
     double simduration = atof(getParameter(argc,argv,"-sd","10"));
     double simtransient = atof(getParameter(argc,argv,"-st","10"));    
@@ -128,6 +143,7 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
+    if (false){   
     if (model_name == "W2DCE") 
     {
         s1.sp.Transient = 0;
@@ -135,7 +151,7 @@ int main (int argc, const char* argv[])
         w.setForward();
         s1.runSimulation(*w2);
     }
-
+}
 
 
     //cout << "const 1" << endl;

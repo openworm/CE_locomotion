@@ -1182,6 +1182,12 @@
         "agarfreq": {
             "value": 0.44
         },
+        "evoType": {
+            "value": "Evo21"
+        },
+        "fileprefix": {
+            "value": ""
+        },
         "randomseed": {
             "value": 95166
         },

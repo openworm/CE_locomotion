@@ -5,7 +5,7 @@ run(
     simtransient=10,
     duration=10,
     transient=10,
-    maxGens=20,
+    maxGens=10,
     popSize=96,
     RandSeed=33981,
     modelName="W2DCE",
@@ -21,9 +21,9 @@ run(
     doNML=False,
     doCPT=True,
     evoType="EvoCE",
-    doReverse = 2,
-    SRType = "None"
-    #SRType = "SR_TRANS_CONTRACT",
+    doReverse = 0,
+    #SRType = "None"
+    SRType = "SR_TRANS_CONTRACT",
     #SRType = "SR_TRANS_STRETCH",  
     #SRType = "SR_TRANS_ABS", 
     #SRType = "SR_TRANS_NEG"

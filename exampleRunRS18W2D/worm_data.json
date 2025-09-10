@@ -676,8 +676,14 @@
         "VectSize": {
             "value": 30
         },
+        "evoType": {
+            "value": "Evo21"
+        },
         "evo_seed": {
             "value": 0
+        },
+        "fileprefix": {
+            "value": ""
         },
         "fps": {
             "value": 25.0

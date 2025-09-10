@@ -21,7 +21,7 @@ return new c302NervousSystem();
  */
 
 
-WormCE::WormCE():Worm2Dm({6,24,0.1,10,60},new NervousSystem(), new Muscles),
+WormCE::WormCE():Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), new Muscles),
 //EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
   //dynamic_cast<shared_ptr<W2DCEpars> &>(*evolvable_w2par_ptr))
@@ -45,7 +45,11 @@ WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 }
 
 void WormCE::setWormPars(W2Dparameters & w2par_)
-{W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);}
+{
+  W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);
+  //W2DCEpars1.show();
+  //assert(0);
+}
 
 /* void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {

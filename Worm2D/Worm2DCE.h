@@ -110,7 +110,7 @@ class Worm2DCE: public Worm2D{
    
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
-    //double AVA_output, AVB_output;
+    double AVA_output, AVB_output;
     double AVA_act, AVA_inact, AVB_act, AVB_inact;
 
     
