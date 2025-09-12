@@ -18,7 +18,7 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[])
 }
 
 
-EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):W2DCEpars(argc,argv)
+EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = atoi(getParameter(argc,argv,"--doReverse","0"));

@@ -194,6 +194,7 @@ virtual void addParsToJson(json & j){}
 class Evolparameters : virtual public W2Dparameters
 {
 public:
+Evolparameters(EvolvableS & evol1_, string evotype_){evol1_.setEvolPars(*this, evotype_);}
 int dbunit;
 int vbunit;
 void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
@@ -270,7 +271,11 @@ class EvolvableS
   void setParsFromGeno(TVector<double> &geno);
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
   //virtual W2Dparameters & getWormPars() {return;}
-  virtual void setWormPars(W2Dparameters & w2par_) {}
+  virtual void setWormPars(const W2Dparameters & w2par_) {assert(0);}
+  //virtual void setWormPars(int argc, const char* argv[]) {assert(0);}
+  //virtual shared_ptr<const W2Dparameters> getWormPars() {return nullptr;}
+  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
+
 
   //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
   //Evolparameters & Epars1;
@@ -278,7 +283,8 @@ class EvolvableS
   //protected:
   //EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_);
 
-  
+  //protected:
+  //shared_ptr<W2Dparameters> evolvable_worm_pars_ptr;
 };
 
 

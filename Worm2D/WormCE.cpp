@@ -44,11 +44,25 @@ WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 
 }
 
-void WormCE::setWormPars(W2Dparameters & w2par_)
+shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[])
 {
-  W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);
+  W2DCEpars w1(argc,argv);
+  *W2DCEpars1 = w1; 
+  return W2DCEpars1;
+
+  //evolvable_worm_pars_ptr = W2DCEpars1;
+  //dynamic_cast<W2DCEpars&>(w2par_);
   //W2DCEpars1.show();
   //assert(0);
+}
+
+//shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
+
+void WormCE::setWormPars(W2Dparameters & w2par_)
+{
+  *W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);
+  W2DCEpars1->show();
+  assert(0);
 }
 
 /* void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
@@ -161,8 +175,8 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   NMJ_DD = pheno(17);
   NMJ_VD = pheno(17);
 
-  W2DCEpars1.AVA_output = 0.0;
-  W2DCEpars1.AVB_output = 0.0;
+  W2DCEpars1->AVA_output = 0.0;
+  W2DCEpars1->AVB_output = 0.0;
 
   pheno_A_gain = sr.SR_A_gain;
   pheno_B_gain = sr.SR_B_gain;

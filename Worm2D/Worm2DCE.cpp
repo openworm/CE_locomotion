@@ -25,7 +25,7 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0)
+  } ,0),W2DCEpars1(new W2DCEpars())
 {
   cout << "Worm2DCE const" << endl;
 
@@ -47,8 +47,8 @@ NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
 NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
 NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
 
-W2DCEpars1.AVA_output = 0.0;
-W2DCEpars1.AVB_output = 0.0;
+W2DCEpars1->AVA_output = 0.0;
+W2DCEpars1->AVB_output = 0.0;
 
 cout << "Worm2DCE const" << endl;
 
@@ -82,8 +82,8 @@ void Worm2DCE::setForward()
   sr.SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
-  W2DCEpars1.AVA_output =  0;
-  W2DCEpars1.AVB_output =  1;
+  W2DCEpars1->AVA_output =  0;
+  W2DCEpars1->AVB_output =  1;
 }
 
 void Worm2DCE::setBackward()
@@ -94,18 +94,18 @@ void Worm2DCE::setBackward()
   sr.SR_B_gain = 0.0;
   //AVA_output =  0;
   //AVB_output =  1;
-  W2DCEpars1.AVA_output =  1;
-  W2DCEpars1.AVB_output =  0;
+  W2DCEpars1->AVA_output =  1;
+  W2DCEpars1->AVB_output =  0;
 }
 
 
 void Worm2DCE::setPars(int argc, const char* argv[])
 {
   
-  W2DCEpars1 = W2DCEpars(argc,argv);
-  assert(W2DCEpars1.sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1.sr_type ==  "SR_TRANS_CONTRACT" 
-    || W2DCEpars1.sr_type == "SR_TRANS_ABS" 
-    ||  W2DCEpars1.sr_type == "SR_TRANS_NEG" || W2DCEpars1.sr_type == "None");
+  *W2DCEpars1 = W2DCEpars(argc,argv);
+  assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
+    || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
+    ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
 
 }
 
@@ -133,22 +133,22 @@ void Worm2DCE::Step1()
     vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
 
     
-    if (W2DCEpars1.sr_type == "SR_TRANS_STRETCH")
+    if (W2DCEpars1->sr_type == "SR_TRANS_STRETCH")
     {
     ds = ds < 0.0 ? 0.0 : ds;
     vs = vs < 0.0 ? 0.0 : vs;
     }
-    else if (W2DCEpars1.sr_type == "SR_TRANS_CONTRACT")
+    else if (W2DCEpars1->sr_type == "SR_TRANS_CONTRACT")
     {
     ds = ds < 0.0 ? ds : 0.0;
     vs = vs < 0.0 ? vs : 0.0;
     }
-    else if (W2DCEpars1.sr_type == "SR_TRANS_ABS")
+    else if (W2DCEpars1->sr_type == "SR_TRANS_ABS")
     {
     ds = ds < 0.0 ? -ds : ds;
     vs = vs < 0.0 ? -vs : vs;
     }
-    else if (W2DCEpars1.sr_type == "SR_TRANS_NEG")
+    else if (W2DCEpars1->sr_type == "SR_TRANS_NEG")
     {
     ds = -ds;
     vs = -vs;
@@ -262,7 +262,7 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   append<string>(var1.parDoub.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
   append<string>(var1.parDoub.names,{"AVA_output", "AVB_output"});
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
-  append<double>(var1.parDoub.vals,{W2DCEpars1.AVA_output, W2DCEpars1.AVB_output});
+  append<double>(var1.parDoub.vals,{W2DCEpars1->AVA_output, W2DCEpars1->AVB_output});
 
   var1.parInt.head = "Worm";
   var1.parInt.vals = {N_stretchrec, NmusclePerNU};

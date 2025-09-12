@@ -251,7 +251,9 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     public:
     EvolutionFullW(int argc, const char* argv[]):
     Evolvable_ptr(shared_ptr<EvolvableS>(new T())),evopar_ptr(getParameters(argc,argv)),
-    Evolution(argc,argv,getDefaultEvoPars(evolvable1,argc,argv),evolvable1->getVectSize()){}
+    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize()),
+    wormpar_ptr(evolvable1->setWormPars(argc,argv)){}
+    //{evolvable1->setWormPars(argc,argv); wormpar_ptr = evolvable1->getWormPars();}
     
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -265,26 +267,30 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
 
     protected:
-    evoPars getDefaultEvoPars(shared_ptr<EvolvableS> evol1_,int argc, const char* argv[]);
+    evoPars getDefaultEvoPars(int argc, const char* argv[]);
     
-    shared_ptr<W2Dparameters> getParameters(int argc, const char* argv[]);
+    shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
 
     private:
-    shared_ptr<W2Dparameters> evopar_ptr;
+    const shared_ptr<const W2Dparameters> evopar_ptr;
+    const shared_ptr<const W2Dparameters> wormpar_ptr;
 };
 
 template<class T>
-shared_ptr<W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const char* argv[])
+shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const char* argv[])
 {
     string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
-    if (evotype_=="Evo21") return shared_ptr<Evolparameters>(new Evolparameters());
-    if (evotype_=="Evo18") return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
-    if (evotype_=="EvoCE") return shared_ptr<EvolparametersCE>(new EvolparametersCE(argc,argv));
+    if (evotype_=="Evo21") 
+    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,"Evo21"));
+    if (evotype_=="Evo18") 
+    return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
+    if (evotype_=="EvoCE") 
+    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
 
 }
 
 template<class T>
-evoPars EvolutionFullW<T>::getDefaultEvoPars(shared_ptr<EvolvableS> evol1_,int argc, const char* argv[]) 
+evoPars EvolutionFullW<T>::getDefaultEvoPars(int argc, const char* argv[]) 
     {
 
         string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
@@ -292,17 +298,17 @@ evoPars EvolutionFullW<T>::getDefaultEvoPars(shared_ptr<EvolvableS> evol1_,int a
     if (evotype_=="Evo21")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), "", "Evo21"};
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", "Evo21"};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evol1_->getVectSize(), "", "Evo18"};
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", "Evo18"};
     
     if (evotype_== "EvoCE")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evol1_->getVectSize(), "", "EvoCE"};
+        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", "EvoCE"};
 
     assert(0 && "evotype not implemented");
     
@@ -428,8 +434,8 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 
         
 
-        Evolparameters & EparsR = dynamic_cast<Evolparameters&>(*evopar_ptr);
-        w.setEvolPars(EparsR,evoPars1.evoType);
+        const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
+        //w.setEvolPars(EparsR,evoPars1.evoType);
 
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
@@ -852,7 +858,7 @@ template<class T>
 double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
 {
 
-    EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
 
     const int SR_A = 1;
     const int SR_B = 2;
@@ -869,17 +875,19 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
+
     //double fitnessForward, fitnessBackward;
+
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
-    return EvaluationCEp1(genotype, rs, 1);
+    return EvaluationCEp1(genotype, rs, 1); 
 
     double fitness = 0;
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
-    fitness = EvaluationCEp1(genotype, rs, 1);
+    fitness += EvaluationCEp1(genotype, rs, 1);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
@@ -888,7 +896,7 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     fitness += EvaluationCEp1(genotype, rs, -1);
     count++;
     }
-    return fitness; ///count;
+    return fitness/count;
 
     //if (Epars1.doReverse==0) return fitnessForward;
     //if (Epars1.doReverse==1) return fitnessBackward;
@@ -938,28 +946,30 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
-    EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
-    WormCE & w2 = dynamic_cast<WormCE&>(w);
+    //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
+    //WormCE & w2 = dynamic_cast<WormCE&>(w);
     
-
+    W2DCEpars w1 = *wormpar_ptr;
     if (direction == 1){
-        //Epars1.AVA_output =  0.0;
-        //Epars1.AVB_output =  1.0;
-    w2.AVA_output =  0.0;
-    w2.AVB_output =  1.0;
+    w1.AVA_output =  0.0;
+    w1.AVB_output =  1.0;
+
+    //w2.AVA_output =  0.0;
+    //w2.AVB_output =  1.0;
 
     }
     else{
-    //    Epars1.AVA_output =  1.0;
-    //    Epars1.AVB_output =  0.0; // Command Interneuron Activation Backward
+        w1.AVA_output =  1.0;
+        w1.AVB_output =  0.0; // Command Interneuron Activation Backward
 
-    w2.AVA_output =  1.0;
-    w2.AVB_output =  0.0;
+    //w2.AVA_output =  1.0;
+    //w2.AVB_output =  0.0;
 
     }
 
     //w.setWormPars(Epars1);
-    
+    w.setWormPars(w1);
+
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
     // Transient

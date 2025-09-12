@@ -95,11 +95,11 @@ class Worm2DCE: public Worm2D{
     //void Step1();
     void Step1();
 
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):W2DCEpars1(new W2DCEpars()),
     Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0){}
 
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, const W2DCEpars & W2DCEpars1_):
-    Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0),W2DCEpars1(W2DCEpars1_){}
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, const W2DCEpars & W2DCEpars1_):
+    //Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0),W2DCEpars1(W2DCEpars1_){}
 
 
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
@@ -127,8 +127,8 @@ class Worm2DCE: public Worm2D{
     const int VB = 6;
 
     double pheno_A_gain, pheno_B_gain; 
-    W2DCEpars W2DCEpars1;
-
+    //W2DCEpars W2DCEpars1;
+    shared_ptr<W2DCEpars> W2DCEpars1;
     //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    
