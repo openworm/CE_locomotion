@@ -19,5 +19,5 @@ run(
     doCPT=True,
     evoType="EvoCE",
     # SRType = "SR_TRANS_STRETCH"
-    # doTestRun = 1
+    #doTestRun = True
 )

@@ -7,6 +7,14 @@
 int main (int argc, const char* argv[])
 {
 
+
+    for (int i=0; i<argc; i++)
+    {
+        cout << i << " " << argv[i] << endl;
+
+    }
+//assert(0);
+
     std::cout << std::setprecision(10);
     string model_name =  getParameter(argc,argv,"--modelname","");
     if (model_name == "")
@@ -35,7 +43,7 @@ int main (int argc, const char* argv[])
     json j;
 
   
-    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
+    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0").c_str());
     if (do_evol) 
     {
         Evolution * evo = 0;
@@ -66,7 +74,7 @@ int main (int argc, const char* argv[])
     
     cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
 
-    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0"));
+    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
 
     Worm2Dbase * w2;
     if (!do_nml){
@@ -100,7 +108,7 @@ int main (int argc, const char* argv[])
     cout << "const 1" << endl;
     //assert(0);
 
-    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1"));
+    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1").c_str());
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -112,12 +120,12 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
-    int dotest = atoi(getParameter(argc,argv,"--doTestRun","1"));
+    int dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
 
-    if (true){
-
-    double simduration = atof(getParameter(argc,argv,"-sd","60"));
-    double simtransient = atof(getParameter(argc,argv,"-st","50"));    
+    if (false){
+        
+    double simduration = atof(getParameter(argc,argv,"-sd","60").c_str());
+    double simtransient = atof(getParameter(argc,argv,"-st","50").c_str());    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
@@ -137,8 +145,8 @@ int main (int argc, const char* argv[])
     }
 
 
-    double simduration = atof(getParameter(argc,argv,"-sd","10"));
-    double simtransient = atof(getParameter(argc,argv,"-st","10"));    
+    double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
+    double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);

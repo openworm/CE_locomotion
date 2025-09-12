@@ -83,7 +83,7 @@ void Worm2DCE::setForward()
   //AVA_output =  1;
   //AVB_output =  0;
   W2DCEpars1->AVA_output =  0;
-  W2DCEpars1->AVB_output =  1;
+  W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
 }
 
 void Worm2DCE::setBackward()
@@ -94,7 +94,7 @@ void Worm2DCE::setBackward()
   sr.SR_B_gain = 0.0;
   //AVA_output =  0;
   //AVB_output =  1;
-  W2DCEpars1->AVA_output =  1;
+  W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
   W2DCEpars1->AVB_output =  0;
 }
 

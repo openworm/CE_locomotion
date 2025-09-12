@@ -1,19 +1,19 @@
 #include "Evolvable.h"
 
-const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval)
+string getParameter(int argc, const char* argv[], string parName, const string defaultval)
 {    
-   const char* retval = defaultval;
+   string retval = defaultval;
    if (((argc-1) % 2) != 0)
    {cout << "The arguments are not configured correctly." << endl;exit(1);}
    for (int arg = 1; arg<argc; arg+=2) 
-   if (strcmp(argv[arg],parName.c_str())==0) {retval = argv[arg+1];break;}
+   if (strcmp(argv[arg],parName.c_str())==0) {retval = (string) argv[arg+1];break;}
    return retval;
 }
 
 W2DCEpars::W2DCEpars(int argc, const char* argv[])
 {
 
-  AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1"));
+  AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1").c_str());
   sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
@@ -21,7 +21,7 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[])
 EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
-    doReverse = atoi(getParameter(argc,argv,"--doReverse","0"));
+    doReverse = atoi(getParameter(argc,argv,"--doReverse","0").c_str());
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
 

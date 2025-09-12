@@ -294,5 +294,5 @@ void addParsToJson(json & j){
 
 
 
-
-const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
+string getParameter(int argc, const char* argv[], string parName, const string defaultval);
+//const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);
