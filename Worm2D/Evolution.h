@@ -281,7 +281,7 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
 {
     string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,"Evo21"));
+    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,(const string &)"Evo21"));
     if (evotype_=="Evo18") 
     return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
     if (evotype_=="EvoCE") 
@@ -949,7 +949,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
     
-    W2DCEpars w1 = *wormpar_ptr;
+    W2DCEpars w1 = dynamic_cast<const W2DCEpars&>(*wormpar_ptr);
     if (direction == 1){
     w1.AVA_output =  0.0;
     w1.AVB_output =  1.0;

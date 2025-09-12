@@ -48,6 +48,11 @@ shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[]
 {
   W2DCEpars w1(argc,argv);
   *W2DCEpars1 = w1; 
+
+  assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
+    || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
+    ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
+
   return W2DCEpars1;
 
   //evolvable_worm_pars_ptr = W2DCEpars1;
@@ -58,11 +63,11 @@ shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[]
 
 //shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
 
-void WormCE::setWormPars(W2Dparameters & w2par_)
+void WormCE::setWormPars(const W2Dparameters & w2par_)
 {
-  *W2DCEpars1 = dynamic_cast<W2DCEpars&>(w2par_);
-  W2DCEpars1->show();
-  assert(0);
+  *W2DCEpars1 = dynamic_cast< const W2DCEpars&>(w2par_);
+  //W2DCEpars1->show();
+  //assert(0);
 }
 
 /* void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)

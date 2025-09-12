@@ -41,7 +41,7 @@ int main (int argc, const char* argv[])
         Evolution * evo = 0;
     
         if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
-         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
+        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
         if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
         if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv);
         if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
@@ -112,12 +112,12 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
-    int dotest = atoi(getParameter(argc,argv,"--doTestRun","0"));
+    int dotest = atoi(getParameter(argc,argv,"--doTestRun","1"));
 
-    if (false){
+    if (true){
 
-    double simduration = atof(getParameter(argc,argv,"-sd","10"));
-    double simtransient = atof(getParameter(argc,argv,"-st","10"));    
+    double simduration = atof(getParameter(argc,argv,"-sd","60"));
+    double simtransient = atof(getParameter(argc,argv,"-st","50"));    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
@@ -125,17 +125,17 @@ int main (int argc, const char* argv[])
     return 0;
     }
 
-    if (false){
+  
     if (model_name == "W2DCE") 
     {
         //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
         WormCE & w = dynamic_cast<WormCE&>(*w2);
-        w.setPars(argc,argv);
+        w.setWormPars(argc,argv);
         //string SRType = getParameter(argc,argv,"--SRType","None");
         //w.setW2DCEpars(W2DCEpars1);
         w.setBackward();
     }
-}
+
 
     double simduration = atof(getParameter(argc,argv,"-sd","10"));
     double simtransient = atof(getParameter(argc,argv,"-st","10"));    
@@ -143,7 +143,7 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
-    if (false){   
+      
     if (model_name == "W2DCE") 
     {
         s1.sp.Transient = 0;
@@ -151,7 +151,7 @@ int main (int argc, const char* argv[])
         w.setForward();
         s1.runSimulation(*w2);
     }
-}
+
 
 
     //cout << "const 1" << endl;

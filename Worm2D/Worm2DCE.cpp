@@ -99,7 +99,7 @@ void Worm2DCE::setBackward()
 }
 
 
-void Worm2DCE::setPars(int argc, const char* argv[])
+/* void Worm2DCE::setPars(int argc, const char* argv[])
 {
   
   *W2DCEpars1 = W2DCEpars(argc,argv);
@@ -107,7 +107,7 @@ void Worm2DCE::setPars(int argc, const char* argv[])
     || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
     ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
 
-}
+} */
 
 void Worm2DCE::InitializeState(RandomState &rs)
 {
@@ -164,17 +164,17 @@ void Worm2DCE::Step1()
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + W2DCEpars1.AVA_output*W2DCEpars1.AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + AVA_output);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + W2DCEpars1.AVA_output*W2DCEpars1.AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + AVA_output);
   }
   ////   To B_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + W2DCEpars1.AVB_output*W2DCEpars1.AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + W2DCEpars1.AVB_output*W2DCEpars1.AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + AVB_output);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + AVB_output);
+    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + AVB_output);
   }
 
   // Update Nervous System
