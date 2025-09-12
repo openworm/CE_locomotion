@@ -10,7 +10,7 @@ run(
     RandSeed=33981,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    #inputFolderName="exampleRunW2DCE_reverse",
+    # inputFolderName="exampleRunW2DCE_reverse",
     outputFolderName="exampleRunW2DCE_test",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
@@ -21,10 +21,10 @@ run(
     doNML=False,
     doCPT=True,
     evoType="EvoCE",
-    doReverse = 2,
-    SRType = "None"
-    #SRType = "SR_TRANS_CONTRACT",
-    #SRType = "SR_TRANS_STRETCH",  
-    #SRType = "SR_TRANS_ABS", 
-    #SRType = "SR_TRANS_NEG"
+    doReverse=2,
+    SRType="None",
+    # SRType = "SR_TRANS_CONTRACT",
+    # SRType = "SR_TRANS_STRETCH",
+    # SRType = "SR_TRANS_ABS",
+    # SRType = "SR_TRANS_NEG"
 )

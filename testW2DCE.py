@@ -18,6 +18,6 @@ run(
     doNML=False,
     doCPT=True,
     evoType="EvoCE",
-   # SRType = "SR_TRANS_STRETCH"
-    #doTestRun = 1
+    # SRType = "SR_TRANS_STRETCH"
+    # doTestRun = 1
 )

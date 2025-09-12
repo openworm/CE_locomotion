@@ -615,7 +615,6 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doReverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
     evol_extra_parameters["SRType"] = "None"
-    
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
@@ -658,7 +657,7 @@ def run(a=None, **kwargs):
             evol_pars.append(parameter_key)
             evol_args.append(getattr(a, parameter_key))
             evol_defaults.append(evol_extra_parameters[parameter_key])
-            #cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
+            # cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
             cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
     evol_data = {}
@@ -732,7 +731,7 @@ def run(a=None, **kwargs):
             sim_pars.append(parameter_key)
             sim_args.append(getattr(a, parameter_key))
             sim_defaults.append(sim_extra_parameters[parameter_key])
-            #cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
+            # cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
             cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
     doPlotEvol = False

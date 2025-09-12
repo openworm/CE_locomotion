@@ -6,7 +6,7 @@
 #include <iomanip> 
 #include <string.h>
 //#include "jsonUtils.h"
-#include "WormCE.h"
+//#include "WormCE.h"
 #include "Simulation.h"
 //#include "../utils.h"
 //#include "Evolvable.h"

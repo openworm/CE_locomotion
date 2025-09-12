@@ -101,12 +101,12 @@ double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int directio
     w.InitializeState(rs);
 
     if (direction == 1){
-        w.AVA_output =  0.0;
-        w.AVB_output =  1.0;
+        w.W2DCEpars1->AVA_output =  0.0;
+        w.W2DCEpars1->AVB_output =  1.0;
     }
     else{
-        w.AVA_output =  1.0;
-        w.AVB_output =  0.0; // Command Interneuron Activation Backward
+        w.W2DCEpars1->AVA_output =  1.0;
+        w.W2DCEpars1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
 
     // Transient
@@ -187,8 +187,8 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   w.InitializeState(rs);
   w.sr.SR_A_gain = 0.0;
   w.sr.SR_B_gain = srb;
-  w.AVA_output =  w.AVA_inact;
-  w.AVB_output =  w.AVB_act;
+  w.W2DCEpars1->AVA_output =  w.AVA_inact;
+  w.W2DCEpars1->AVB_output =  w.AVB_act;
 
 
 
@@ -213,8 +213,8 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    w.sr.SR_A_gain = sra;
    w.sr.SR_B_gain = 0.0;
-   w.AVA_output =  w.AVA_act;
-   w.AVB_output =  w.AVB_inact;
+   w.W2DCEpars1->AVA_output =  w.AVA_act;
+   w.W2DCEpars1->AVB_output =  w.AVB_inact;
 
    for (double t = 0.0; t <= (20); t += StepSize){
       w.Step(StepSize);
@@ -262,16 +262,16 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   double sra = w.sr.SR_A_gain;
   double srb = w.sr.SR_B_gain;
-  double wao = w.AVA_output;
-  double wbo = w.AVB_output;
+  double wao = w.W2DCEpars1->AVA_output;
+  double wbo = w.W2DCEpars1->AVB_output;
 
   cout << "ce evo" << sra << " " << srb << " " << wao << " " << wbo << endl;
 
   w.InitializeState(rs);
   w.sr.SR_A_gain = 0.0;
   w.sr.SR_B_gain = srb;
-  w.AVA_output =  w.AVA_inact;
-  w.AVB_output =  w.AVB_act;
+  w.W2DCEpars1->AVA_output =  w.AVA_inact;
+  w.W2DCEpars1->AVB_output =  w.AVB_act;
 
 
 
@@ -296,8 +296,8 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    w.sr.SR_A_gain = sra;
    w.sr.SR_B_gain = 0.0;
-   w.AVA_output =  w.AVA_act;
-   w.AVB_output =  w.AVB_inact;
+   w.W2DCEpars1->AVA_output =  w.AVA_act;
+   w.W2DCEpars1->AVB_output =  w.AVB_inact;
 
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
@@ -322,8 +322,8 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   w.sr.SR_A_gain = sra;
   w.sr.SR_B_gain = srb;
-  w.AVA_output =  wao;
-  w.AVB_output =  wbo;
+  w.W2DCEpars1->AVA_output =  wao;
+  w.W2DCEpars1->AVB_output =  wbo;
 
   //bodyfile.close();
   //curvfile.close();

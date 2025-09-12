@@ -1,6 +1,6 @@
 #include "Worm2Dmods.h"
 #include "Worm21.h"
-//#include "WormCE.h"
+#include "WormCE.h"
 #include "Evolution.h"
 
 
