@@ -620,6 +620,7 @@ def run(a=None, **kwargs):
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = 0
+    sim_extra_parameters["doForwardFirst"] = True
 
     main_cmd = a.modelFolder + "/" + mainProcessName
     cmd = [main_cmd]

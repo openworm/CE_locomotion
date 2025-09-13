@@ -7,7 +7,7 @@ run(
     transient=10,
     maxGens=10,
     popSize=96,
-    RandSeed=39812,
+    RandSeed=39712,
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2DCE_reverse",
@@ -23,9 +23,10 @@ run(
     evoType="EvoCE",
     doReverse = 1,
     SRType = "None",
-    ABLevel = 1
-    # SRType="SR_TRANS_CONTRACT",
-    # SRType = "SR_TRANS_STRETCH",
+    ABLevel = 1,
+    doForwardFirst = True
+    #SRType="SR_TRANS_CONTRACT",
+    #SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
 )

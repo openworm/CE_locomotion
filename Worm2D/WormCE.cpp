@@ -67,7 +67,7 @@ void WormCE::setWormPars(const W2Dparameters & w2par_)
 {
   *W2DCEpars1 = dynamic_cast< const W2DCEpars&>(w2par_);
   //W2DCEpars1->show();
-  //assert(0);
+    //assert(0);
 }
 
 /* void WormCE::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)

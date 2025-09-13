@@ -7,13 +7,13 @@
 int main (int argc, const char* argv[])
 {
 
-
+/* 
     for (int i=0; i<argc; i++)
     {
         cout << i << " " << argv[i] << endl;
 
     }
-//assert(0);
+//assert(0); */
 
     std::cout << std::setprecision(10);
     string model_name =  getParameter(argc,argv,"--modelname","");
@@ -77,6 +77,7 @@ int main (int argc, const char* argv[])
     bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
 
     Worm2Dbase * w2;
+
     if (!do_nml){
 
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(ep1.rename_file("best.gen.dat"));
@@ -96,7 +97,6 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(ep1.rename_file("worm_data_evo.json"));
 
     }
-
 
 
     w2->addParsToJson(j);
@@ -120,20 +120,9 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
-    int dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
 
-    if (false){
-        
-    double simduration = atof(getParameter(argc,argv,"-sd","60").c_str());
-    double simtransient = atof(getParameter(argc,argv,"-st","50").c_str());    
-    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
-    Simulation s1(sp1);
-    s1.runSimulation(*w2);
-    delete w2;
-    return 0;
-    }
-
-  
+    const bool forwardfirst = atoi(getParameter(argc,argv,"--doForwardFirst","0").c_str());
+   
     if (model_name == "W2DCE") 
     {
         //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
@@ -141,9 +130,12 @@ int main (int argc, const char* argv[])
         w.setWormPars(argc,argv);
         //string SRType = getParameter(argc,argv,"--SRType","None");
         //w.setW2DCEpars(W2DCEpars1);
+        if (forwardfirst){
+        w.setForward();}
+        else{
         w.setBackward();
+        }
     }
-
 
     double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
     double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
@@ -151,12 +143,26 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
+    const bool dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
+
+    if (dotest)
+    {
+    delete w2;
+    return 0;
+    }
+
       
     if (model_name == "W2DCE") 
     {
         s1.sp.Transient = 0;
         WormCE & w = dynamic_cast<WormCE&>(*w2);
+        if (forwardfirst){
+        w.setBackward();}
+        else{
         w.setForward();
+        }
+
+      
         s1.runSimulation(*w2);
     }
 

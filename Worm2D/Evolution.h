@@ -872,25 +872,31 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     const bool doalt1f = Epars1.doReverse==2 || (doalt1);
     const bool doalt2f = Epars1.doReverse==2 || (doalt2);
 
+    //cout << "reverse is " << Epars1.doReverse << endl;
+
 
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
 
+    //assert(0);
+
     //double fitnessForward, fitnessBackward;
 
-    genotype(SR_A)= -1.0;
-    genotype(SR_B)= srb;
-    return EvaluationCEp1(genotype, rs, 1); 
+    //genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+    //return EvaluationCEp1(genotype, rs, 1); 
 
     double fitness = 0;
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
+        //  assert(0 && "dorev0");
     genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
     fitness += EvaluationCEp1(genotype, rs, 1);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
+       // assert(0 && "dorev1");
     genotype(SR_A)= sra;
     genotype(SR_B)= -1.0;
     fitness += EvaluationCEp1(genotype, rs, -1);
@@ -949,7 +955,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
     
-    W2DCEpars w1 = dynamic_cast<const W2DCEpars&>(*wormpar_ptr);
+    W2DCEpars w1(dynamic_cast<const W2DCEpars&>(*wormpar_ptr));
     if (direction == 1){
     w1.AVA_output =  0.0;
     w1.AVB_output =  1.0;
