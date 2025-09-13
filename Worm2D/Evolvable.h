@@ -225,6 +225,18 @@ class EvolvableS
 
 
 
+class W2Dbaseparameters : virtual public W2Dparameters
+{
+
+public:
+W2Dbaseparameters(){}
+W2Dbaseparameters(int argc, const char* argv[]);
+bool randomInitialState;
+void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
+void addParsToJson(json & j){j["randomInitialState"]["value"] = randomInitialState;}
+
+};
+
 class Evolparameters : virtual public W2Dparameters
 {
 public:
@@ -235,7 +247,7 @@ void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit
 void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
 
-struct W2DCEpars : virtual public W2Dparameters
+struct W2DCEpars : public W2Dbaseparameters
 {
 public:
 W2DCEpars(){}
@@ -247,7 +259,7 @@ double AB_output_level = 1;
 
 void show(){cout << "srtype " << sr_type << 
   " AVA_output_level "  << AB_output_level << " AVA_output " << 
-  AVA_output << " AVB_output " << AVB_output << endl;}
+  AVA_output << " AVB_output " << AVB_output << " randInitState " << randomInitialState << endl;}
 
 
 void setParsFromJson(json & j){

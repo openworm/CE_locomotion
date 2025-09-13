@@ -205,6 +205,9 @@ const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber);
 double settedStepSize;
 
+
+
+
 };
 
 
@@ -230,9 +233,11 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
+    Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
     void writeData();
 
     bool W2Dmparscalled, W2Dminitcalled;
+    shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
 };
 

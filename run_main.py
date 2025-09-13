@@ -616,6 +616,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doAlternateEvo"] = 0
     evol_extra_parameters["SRType"] = "None"
     evol_extra_parameters["ABLevel"] = 1
+    evol_extra_parameters["randInitState"] = False
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0

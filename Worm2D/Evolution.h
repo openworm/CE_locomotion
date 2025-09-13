@@ -939,6 +939,9 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     T w(genotype, false);
 
+    W2DCEpars w1(dynamic_cast<const W2DCEpars&>(*wormpar_ptr));
+    w.setWormPars(w1);
+
     //EvolparametersCE & Epars1 = w.getWormPars();
 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
@@ -955,7 +958,8 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
     
-    W2DCEpars w1(dynamic_cast<const W2DCEpars&>(*wormpar_ptr));
+   
+
     if (direction == 1){
     w1.AVA_output =  0.0;
     w1.AVB_output =  1.0;

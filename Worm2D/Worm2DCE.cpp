@@ -11,7 +11,13 @@
 #include "../neuromlLocal/c302ForW2D.h"
 
 
+Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1(new W2DCEpars()),
+    //W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+    W2DCEpars1(new W2DCEpars()),Worm2Dm(par1_,nullptr),Worm2D(par1_,0)
+    {W2Dbaseparameters1 = W2DCEpars1;}
 
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, const W2DCEpars & W2DCEpars1_):
+    //Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0),W2DCEpars1(W2DCEpars1_){}
 
 
 Worm2DCE::Worm2DCE(json & j):Worm2Dm(

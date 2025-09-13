@@ -21,7 +21,8 @@ return new c302NervousSystem();
  */
 
 
-WormCE::WormCE():Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), new Muscles),
+WormCE::WormCE()://Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), new Muscles),
+Worm2Dm({6,24,0.1,10,60}, new NervousSystem()),
 //EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
   //dynamic_cast<shared_ptr<W2DCEpars> &>(*evolvable_w2par_ptr))
@@ -48,6 +49,9 @@ shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[]
 {
   W2DCEpars w1(argc,argv);
   *W2DCEpars1 = w1; 
+
+  //W2DCEpars1->show();
+  //assert(0);
 
   assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
     || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
@@ -192,8 +196,18 @@ void WormCE::InitializeState(RandomState &rs)
 {
   
   Worm2DCE::InitializeState(rs);
-  //n.RandomizeCircuitState(-1.0, 1.0, rs);
+
+  //cout << "sss " << W2Dbaseparameters1->randomInitialState << endl;
+  //cout << "sss2 " << W2DCEpars1->randomInitialState << endl;
   
+  //assert(0);
+
+
+
+  if (W2Dbaseparameters1->randomInitialState) 
+    n.RandomizeCircuitState(-1.0, 1.0, rs);
+  
+  else{
   for (int u = 1; u <= par1.N_units; u++)
   {
     // Dorsal neurons
@@ -205,7 +219,7 @@ void WormCE::InitializeState(RandomState &rs)
     n.SetNeuronOutput(nn(VB,u), 0.9);
     n.SetNeuronOutput(nn(VD,u), 0.1);
   }
-
+  }
 
 }
 

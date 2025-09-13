@@ -24,9 +24,10 @@ run(
     doReverse = 1,
     SRType = "None",
     ABLevel = 1,
-    doForwardFirst = True
+    doForwardFirst = True,
     #SRType="SR_TRANS_CONTRACT",
     #SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
+    randInitState = True
 )

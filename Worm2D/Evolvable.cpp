@@ -10,9 +10,16 @@ string getParameter(int argc, const char* argv[], string parName, const string d
    return retval;
 }
 
-W2DCEpars::W2DCEpars(int argc, const char* argv[])
+W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 {
+    randomInitialState = atoi(getParameter(argc,argv,"--randInitState","0").c_str());
+    //cout << "ran " << randomInitialState << endl;
+    //assert(0);
+}
 
+
+W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
+{
   AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1").c_str());
   sr_type = getParameter(argc,argv,"--SRType","None");
 }
