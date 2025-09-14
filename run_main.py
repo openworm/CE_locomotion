@@ -41,6 +41,8 @@ defaults_base_celoc = {
     "maxGens": 10,
     "doMuscSim": 0,
     "evoType": "EvoCE",
+    "MutVar" : 0.05,
+    "CrossProb" : 0.5
 }
 
 defaults_base_2018 = {
@@ -111,6 +113,8 @@ DEFAULTS = {
     "checkPointInterval": 0,
     "doCPT": True,
     "evoType": "Evo21",
+    #"MutVar" : 0.1,
+    #"CrossProb" : 0.5
 }
 
 
@@ -233,7 +237,7 @@ def process_args():
     parser.add_argument(
         "-cpti",
         "--checkPointInterval",
-        type=float,
+        type=int,
         metavar="<checkPointInterval>",
         default=DEFAULTS["checkPointInterval"],
         help=(
@@ -373,6 +377,25 @@ def process_args():
         help="Seed value relative to system time, (do not use: only included for consistency with original code).",
         # % DEFAULTS["crandSeed"],
     )
+
+    """     parser.add_argument(
+        "-muva",
+        "--MutVar",
+        type=float,
+        metavar="<MutVar>",
+        default=DEFAULTS["MutVar"],
+        help="Mutation Variance for evolution.",
+    )
+
+    parser.add_argument(
+        "-crpr",
+        "--CrossProb",
+        type=float,
+        metavar="<CrossProb>",
+        default=DEFAULTS["CrossProb"],
+        help="Crossover probability for evolution.",
+    ) """
+
 
     return parser.parse_args()
 
@@ -617,6 +640,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SRType"] = "None"
     evol_extra_parameters["ABLevel"] = 1
     evol_extra_parameters["randInitState"] = False
+    evol_extra_parameters["MutVar"] = 0.1
+    evol_extra_parameters["CrossProb"] = 0.5
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0

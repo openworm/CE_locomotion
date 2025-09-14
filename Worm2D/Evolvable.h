@@ -106,7 +106,9 @@ void setFromArgs(int argc, const char* argv[])
     for (int arg = 1; arg<argc; arg+=2)
     { 
     if (strcmp(argv[arg],"--maxgens")==0) MaxGenerations = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--doevol")==0) do_evol = atoi(argv[arg+1]);
+
+    if (strcmp(argv[arg],"--MutVar")==0) MutationVariance = atof(argv[arg+1]);
+    if (strcmp(argv[arg],"--CrossProb")==0) CrossoverProbability = atof(argv[arg+1]);
     //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = atoi(argv[arg+1]);
     //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
     //if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
