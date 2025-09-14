@@ -3,10 +3,10 @@ from run_main import run
 run(
     simduration=10,
     simtransient=10,
-    duration=50,
+    duration=10,
     transient=10,
-    maxGens=100,
-    popSize=36,
+    maxGens=10,
+    popSize=126,
     RandSeed=939712,
     modelName="W2DCE",
     modelFolder="Worm2D",
@@ -21,14 +21,14 @@ run(
     doNML=False,
     doCPT=True,
     evoType="EvoCE",
-    doReverse = 2,
-    SRType = "None",
-    ABLevel = 1,
-    doForwardFirst = False,
-    #SRType="SR_TRANS_CONTRACT",
-    #SRType = "SR_TRANS_STRETCH",
+    doReverse=2,
+    SRType="None",
+    ABLevel=3,
+    doForwardFirst=False,
+    # SRType="SR_TRANS_CONTRACT",
+    # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
-    randInitState = True,
-    MutVar = 0.5
+    randInitState=True,
+    # MutVar = 0.5
 )

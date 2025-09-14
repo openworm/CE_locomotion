@@ -209,10 +209,21 @@ class EvolvableS
   void setParsFromGeno(TVector<double> &geno);
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
   //virtual W2Dparameters & getWormPars() {return;}
-  virtual void setWormPars(const W2Dparameters & w2par_) {assert(0);}
+  
+  virtual void setWormPars(const W2Dparameters & w2par_) = 0; //{assert(0);}
+
+  //{ return T::setWormPars(w2par_);}
+
   //virtual void setWormPars(int argc, const char* argv[]) {assert(0);}
   //virtual shared_ptr<const W2Dparameters> getWormPars() {return nullptr;}
-  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
+  
+  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0; //{return nullptr;}
+
+  //{return T::setWormPars(argc,argv);}
+
+  //shared_ptr<const W2Dparameters> setItsWormPars(int argc, const char* argv[])
+  //{return this->setWormPars(argc,argv);}
+  
 
 
   //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
@@ -226,6 +237,14 @@ class EvolvableS
 };
 
 
+template<typename T>
+class EvolvableST : public EvolvableS
+{
+  public:
+void setWormPars(const W2Dparameters & w2par_) override { return T::setWormPars(w2par_);}
+shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) override 
+{return T::setWormPars(argc,argv);}
+};
 
 class W2Dbaseparameters : virtual public W2Dparameters
 {
@@ -233,7 +252,7 @@ class W2Dbaseparameters : virtual public W2Dparameters
 public:
 W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
-bool randomInitialState;
+bool randomInitialState = 0;
 void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
 void addParsToJson(json & j){j["randomInitialState"]["value"] = randomInitialState;}
 

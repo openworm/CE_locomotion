@@ -112,6 +112,8 @@ int main (int argc, const char* argv[])
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
+
+    w2->setWormPars(argc,argv);
     w2->InitializeState(rs);
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
@@ -120,6 +122,19 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
+    const bool dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
+
+    if (true)
+    {
+    double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
+    double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
+    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
+    Simulation s1(sp1);
+    s1.runSimulation(*w2);
+
+    delete w2;
+    return 0;
+    }
 
     const bool forwardfirst = atoi(getParameter(argc,argv,"--doForwardFirst","0").c_str());
    
@@ -127,7 +142,7 @@ int main (int argc, const char* argv[])
     {
         //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
         WormCE & w = dynamic_cast<WormCE&>(*w2);
-        w.setWormPars(argc,argv);
+        //w.setWormPars(argc,argv);
         //string SRType = getParameter(argc,argv,"--SRType","None");
         //w.setW2DCEpars(W2DCEpars1);
         if (forwardfirst){
@@ -142,14 +157,6 @@ int main (int argc, const char* argv[])
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
-
-    const bool dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
-
-    if (dotest)
-    {
-    delete w2;
-    return 0;
-    }
 
       
     if (model_name == "W2DCE") 

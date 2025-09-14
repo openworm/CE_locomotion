@@ -41,8 +41,8 @@ defaults_base_celoc = {
     "maxGens": 10,
     "doMuscSim": 0,
     "evoType": "EvoCE",
-    "MutVar" : 0.05,
-    "CrossProb" : 0.5
+    "MutVar": 0.05,
+    "CrossProb": 0.5,
 }
 
 defaults_base_2018 = {
@@ -113,8 +113,8 @@ DEFAULTS = {
     "checkPointInterval": 0,
     "doCPT": True,
     "evoType": "Evo21",
-    #"MutVar" : 0.1,
-    #"CrossProb" : 0.5
+    # "MutVar" : 0.1,
+    # "CrossProb" : 0.5
 }
 
 
@@ -395,7 +395,6 @@ def process_args():
         default=DEFAULTS["CrossProb"],
         help="Crossover probability for evolution.",
     ) """
-
 
     return parser.parse_args()
 
@@ -687,7 +686,7 @@ def run(a=None, **kwargs):
             evol_args.append(getattr(a, parameter_key))
             evol_defaults.append(evol_extra_parameters[parameter_key])
             cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
-            #cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
+            # cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
     evol_data = {}
     evol_par_file_base = a.outputFolderName + "/evolution_pars.json"
@@ -761,7 +760,7 @@ def run(a=None, **kwargs):
             sim_args.append(getattr(a, parameter_key))
             sim_defaults.append(sim_extra_parameters[parameter_key])
             cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
-            #cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
+            # cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
     doPlotEvol = False
     if hasattr(a, "doPlotEvol"):

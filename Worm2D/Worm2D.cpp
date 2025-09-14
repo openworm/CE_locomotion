@@ -94,27 +94,31 @@ void DataWriter::dataReset(){closeAll();
 
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),//W2Dbaseparameters1(new W2Dbaseparameters()),
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(new W2Dbaseparameters()),
 muscForWDconst(false){}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),//W2Dbaseparameters1(new W2Dbaseparameters()),
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(new W2Dbaseparameters()),
 muscForWDconst(mfwc){}
 
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+    shared_ptr<W2Dbaseparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
+    W2Dbaseparameters1(w2dpar_),//W2Dbaseparameters1(new W2Dbaseparameters()),
+muscForWDconst(false){}
+
+
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-W2Dbaseparameters1(new W2Dbaseparameters()),
 Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):W2Dbaseparameters1(new W2Dbaseparameters()),
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){} 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
-W2Dbaseparameters1(w2dpar_),Worm2Dbase(par1_,new NervousSystem(),new Muscles()),
+Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
 W2Dmparscalled(false),W2Dminitcalled(false){} 
 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-W2Dbaseparameters1(new W2Dbaseparameters()),
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
 
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}

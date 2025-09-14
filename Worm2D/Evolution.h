@@ -172,32 +172,20 @@ evoPars getDefaultEvoPars(EvolvableS * evol1_)
 
 };
 
+
 class Evolvable_ptr 
 {
 protected:
 shared_ptr<EvolvableS> evolvable1;
+
 //virtual ~Evolvable_ptr(){if (evolvable1) delete evolvable1;}
 Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_){}
+
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 {return evolvable1->GenPhenMapping(gen,phen);}
+
 };
 
-
-/* 
-evoPars ep21 = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 0, "", "Evo21"};
-
-evoPars epCE = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, 0, "", "EvoCE"};
-
-evoPars ep18 = {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 0, "", "Evo18"};         
-
-enum Evotype{Evo18,Evo21};
- */
 
 class EvolutionFull2 : public Evolution
 {
@@ -250,7 +238,7 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 {
     public:
     EvolutionFullW(int argc, const char* argv[]):
-    Evolvable_ptr(shared_ptr<EvolvableS>(new T())),evopar_ptr(getParameters(argc,argv)),
+    Evolvable_ptr(shared_ptr<EvolvableS> (new T())),evopar_ptr(getParameters(argc,argv)),
     Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize()),
     wormpar_ptr(evolvable1->setWormPars(argc,argv)){}
     //{evolvable1->setWormPars(argc,argv); wormpar_ptr = evolvable1->getWormPars();}
@@ -281,7 +269,7 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
 {
     string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,(const string &)"Evo21"));
+    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,(const string)"Evo21"));
     if (evotype_=="Evo18") 
     return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
     if (evotype_=="EvoCE") 
@@ -431,8 +419,6 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 
        
         T w(genotype, false);
-
-        
 
         const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
         //w.setEvolPars(EparsR,evoPars1.evoType);

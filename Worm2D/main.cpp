@@ -56,7 +56,7 @@ int main (int argc, const char* argv[])
 
     InitializeBodyConstants();
 
-    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0"));
+    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0").c_str());
     if (do_evol) 
     {
         er->configure();
@@ -128,12 +128,12 @@ int main (int argc, const char* argv[])
         
     }
 
-    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0"));
-    bool do_musclesim = atoi(getParameter(argc,argv,"--domusc","0"));
+    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
+    bool do_musclesim = atoi(getParameter(argc,argv,"--domusc","0").c_str());
 
     //run simulation with possibly different seed
     
-    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1"));
+    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1").c_str());
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     
     if (!do_nml){
