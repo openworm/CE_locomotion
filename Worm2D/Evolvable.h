@@ -262,8 +262,8 @@ class Evolparameters : virtual public W2Dparameters
 {
 public:
 Evolparameters(shared_ptr<EvolvableS> & evol1_, string evotype_){evol1_->setEvolPars(*this, evotype_);}
-int dbunit;
-int vbunit;
+int dbunit = 0;
+int vbunit = 0;
 void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
 void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
