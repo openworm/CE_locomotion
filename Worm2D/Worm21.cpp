@@ -48,7 +48,7 @@ void Worm21::setPhenoNames()
 }
 
 Worm21::Worm21():
-Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEpars>()),
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEparsA>()),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
 Worm2D21(), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
 

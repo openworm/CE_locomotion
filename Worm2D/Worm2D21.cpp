@@ -333,7 +333,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
 
 void Worm2D21m::addParsToJson(json & j){
         Worm2Dm::addParsToJson(j);
-        
+       // W2DCEpars1->addParsToJson(j);
     }
 
 

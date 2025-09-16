@@ -190,7 +190,7 @@ class W2Dparameters
 public:
 virtual ~W2Dparameters(){}
 virtual void setParsFromJson(json & j){}
-virtual void addParsToJson(json & j){}
+virtual void addParsToJson(json & j) const {}
 };
 
 
@@ -254,7 +254,7 @@ W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
 bool randomInitialState = 0;
 void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
-void addParsToJson(json & j){j["randomInitialState"]["value"] = randomInitialState;}
+void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomInitialState;}
 
 };
 
@@ -265,7 +265,7 @@ Evolparameters(shared_ptr<EvolvableS> & evol1_, string evotype_){evol1_->setEvol
 int dbunit = 0;
 int vbunit = 0;
 void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
-void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
+void addParsToJson(json & j) const {j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
 
 
@@ -291,9 +291,9 @@ void setParsFromJson(json & j){
   AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
   W2Dbaseparameters::setParsFromJson(j);
 }
-void addParsToJson(json & j){
+void addParsToJson(json & j) const {
   j["AB_output_level"]["value"] = AB_output_level;
-  j["AVB_output"]["value"] = AVB_output; 
+  j["AVA_output"]["value"] = AVA_output; 
   j["AVB_output"]["value"] = AVB_output;
   W2Dbaseparameters::addParsToJson(j);
 }
@@ -314,7 +314,7 @@ void show(){cout << "srtype " << sr_type <<  endl;}
 void setParsFromJson(json & j){sr_type = j["SRType"]["value"]; 
   W2DCEparsA::setParsFromJson(j);
 }
-void addParsToJson(json & j){j["SRType"]["value"] = sr_type;
+void addParsToJson(json & j) const {j["SRType"]["value"] = sr_type;
    W2DCEparsA::addParsToJson(j);
 }
 
@@ -338,7 +338,7 @@ void setParsFromJson(json & j){
   //doAlternateEvo = j["doAlternateEvo"]["value"];
 }
 
-void addParsToJson(json & j){
+void addParsToJson(json & j) const {
   //j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
   j["doReverse"]["value"] = doReverse;
   //j["SRType"]["value"] = sr_type;

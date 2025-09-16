@@ -84,6 +84,32 @@ void Evolution::setUp()
     evolfile << setprecision(10);
 
 }
+void Evolution::setPopFromBestGenoFile(int vecincsize, int offset)
+{
+    assert(offset<=vecincsize);
+
+    if (!setFromCPTflag) setFromCPT();
+    if (doResume) return;
+    ifstream ifs;
+    ifs.open(rename_file("best.gen.dat"));
+    double val;
+    vector<double> bestgenvec;
+    while (ifs >> val)
+    {
+        bestgenvec.push_back(val);
+    }
+    ifs.close();
+    assert(bestgenvec.size()+vecincsize==evoPars1.VectSize);
+   
+
+    for (int i = 1; i <= s->PopulationSize(); i++) 
+    for (int j = 1; j <= s->Individual(i).Size(); j++)
+    s->Individual(i)(j+offset) = bestgenvec[i-1];
+    
+
+
+}
+
 
 void Evolution::setFromEvol(const Evolution & er, int offset)
 {
@@ -119,6 +145,12 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
 
 
 void Evolution::writeJson1(Worm2Dbase & w)
+{
+json j;
+writeJson1(w,j);
+}
+
+void Evolution::writeJson1(Worm2Dbase & w, json & j)
 {   
     
     RandomState rs;
@@ -135,7 +167,6 @@ void Evolution::writeJson1(Worm2Dbase & w)
     
 
     ofstream json_out(rename_file("worm_data_evo.json"));
-    json j;
     w.addParsToJson(j);   
     addParsToJson(j);
    

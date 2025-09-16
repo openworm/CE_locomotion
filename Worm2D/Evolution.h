@@ -77,7 +77,7 @@ class Evolution
 
     protected:
     void writeJson1(Worm2Dbase & w);
-    
+    void writeJson1(Worm2Dbase & w, json & j);
 
     //void writeJson(Worm2Dbase &);
     evoPars setPars(int argc, const char* argv[], evoPars ep1);
@@ -85,6 +85,7 @@ class Evolution
     simPars setSimPars(int argc, const char* argv[]);
     void setUp();
     void setFromEvol(const Evolution & er, int offset);
+    void setPopFromBestGenoFile(int vecincsize, int offset);
 
     virtual void configure_p12(){return;}
 
@@ -249,7 +250,8 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     double EvaluationCE(TVector<double> &genotype, RandomState &rs);
     double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
 
-    void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
+    void writeJson(TVector<double> & pheno);
+
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {return Evolvable_ptr::GenPhenMapping(gen,phen);}
 
@@ -263,6 +265,13 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     const shared_ptr<const W2Dparameters> evopar_ptr;
     const shared_ptr<const W2Dparameters> wormpar_ptr;
 };
+
+template<class T>
+void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
+        T w(pheno, true);json j;evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        wormpar_ptr->addParsToJson(j["Worm"]);
+        writeJson1(w,j);
+    }
 
 template<class T>
 shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const char* argv[])

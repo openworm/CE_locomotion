@@ -43,10 +43,10 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(arg
 //EvolvableS::EvolvableS(){}
 
 
-void EvolvableS::setParsFromFile(const string & filename_)
+void EvolvableS::setParsFromFile(const string & genofilename_)
 {
     ifstream ifs;
-    ifs.open(filename_);
+    ifs.open(genofilename_);
     TVector<double> bestVector(1, getVectSize());
     //assert(0);
     ifs >> bestVector;
