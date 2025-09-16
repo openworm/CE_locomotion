@@ -45,10 +45,14 @@ public:
     NervousSystem & n;
 
     template<class T> friend class EvolutionFullW;
-    virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
-    {return Worm2Dbase::setWormPars(argc,argv);}
-    virtual void setWormPars(const W2Dparameters & w2par_)
-    {return Worm2Dbase::setWormPars(w2par_);}
+
+    //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
+    //{return Worm2Dbase::setWormPars(argc,argv);}
+    //virtual void setWormPars(const W2Dparameters & w2par_)
+    //{return Worm2Dbase::setWormPars(w2par_);}
+
+    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
+    void setWormPars(const W2Dparameters & w2par_);
 
     protected:
     void addParsToJson(json & j);
@@ -58,4 +62,19 @@ public:
     void setParsFromPheno(TVector<double> &pheno);
     //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
     void setEvolPars(W2Dparameters & w2par_, string evotype_);
+};
+
+class Worm21R : public Worm21
+{
+public:
+    
+    Worm21R(TVector<double> &pheno);
+    Worm21R(TVector<double> &pheno, bool isPheno);
+    Worm21R();
+    Worm21R(const string & filename_);
+
+    protected:
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    int getVectSize(){return 44;}
+
 };

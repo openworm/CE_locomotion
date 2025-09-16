@@ -922,10 +922,13 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //GenPhenMapping(v, phenotype);
     //WormCE w(phenotype, 1);
     //w.InitializeState(rs);
+    //assert(0);
 
     T w(genotype, false);
 
-    W2DCEpars w1(dynamic_cast<const W2DCEpars&>(*wormpar_ptr));
+
+
+    W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
     w.setWormPars(w1);
 
     //EvolparametersCE & Epars1 = w.getWormPars();

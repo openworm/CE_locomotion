@@ -126,6 +126,7 @@ class Worm2DCE: public Worm2D{
     double pheno_A_gain, pheno_B_gain; 
     //W2DCEpars W2DCEpars1;
     shared_ptr<W2DCEpars> W2DCEpars1;
+    //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    

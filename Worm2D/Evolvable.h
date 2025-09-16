@@ -268,35 +268,57 @@ void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit
 void addParsToJson(json & j){j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
 };
 
-struct W2DCEpars : public W2Dbaseparameters
+
+
+
+struct W2DCEparsA : public W2Dbaseparameters
+{
+public:
+W2DCEparsA(){}
+W2DCEparsA(int argc, const char* argv[]);
+
+
+double AVA_output = 0, AVB_output = 0;
+double AB_output_level = 1;
+
+void show(){cout << 
+  " AVA_output_level "  << AB_output_level << " AVA_output " << 
+  AVA_output << " AVB_output " << AVB_output << " randInitState " << randomInitialState << endl;}
+
+
+void setParsFromJson(json & j){
+  AB_output_level = j["AB_output_level"]["value"];
+  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+  W2Dbaseparameters::setParsFromJson(j);
+}
+void addParsToJson(json & j){
+  j["AB_output_level"]["value"] = AB_output_level;
+  j["AVB_output"]["value"] = AVB_output; 
+  j["AVB_output"]["value"] = AVB_output;
+  W2Dbaseparameters::addParsToJson(j);
+}
+
+};
+
+
+struct W2DCEpars : public W2DCEparsA
 {
 public:
 W2DCEpars(){}
 W2DCEpars(int argc, const char* argv[]);
 
 string sr_type = "None";
-double AVA_output = 0, AVB_output = 0;
-double AB_output_level = 1;
 
-void show(){cout << "srtype " << sr_type << 
-  " AVA_output_level "  << AB_output_level << " AVA_output " << 
-  AVA_output << " AVB_output " << AVB_output << " randInitState " << randomInitialState << endl;}
+void show(){cout << "srtype " << sr_type <<  endl;}
 
-
-void setParsFromJson(json & j){
-  sr_type = j["SRType"]["value"]; 
-  AB_output_level = j["AB_output_level"]["value"];
-  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+void setParsFromJson(json & j){sr_type = j["SRType"]["value"]; 
+  W2DCEparsA::setParsFromJson(j);
 }
-void addParsToJson(json & j){
-  j["SRType"]["value"] = sr_type; 
-  j["AB_output_level"]["value"] = AB_output_level;
-  j["AVB_output"]["value"] = AVB_output; 
-  j["AVB_output"]["value"] = AVB_output;
+void addParsToJson(json & j){j["SRType"]["value"] = sr_type;
+   W2DCEparsA::addParsToJson(j);
 }
 
 };
-
 
 
 class EvolparametersCE : virtual public W2Dparameters   //: public W2DCEpars

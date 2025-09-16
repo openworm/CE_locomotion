@@ -47,8 +47,10 @@ void Worm21::setPhenoNames()
 
 }
 
-Worm21::Worm21():Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),Worm2D21(),
-n(dynamic_cast<NervousSystem&>(*n_ptr)){}
+Worm21::Worm21():
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEpars>()),
+//Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
+Worm2D21(), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
 
 Worm21::Worm21(TVector<double> &pheno):Worm21(pheno, true){}
 
@@ -78,6 +80,38 @@ void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
     }
 
 }
+
+shared_ptr<const W2Dparameters> Worm21::setWormPars(int argc, const char* argv[])
+{
+  
+  W2DCEparsA w1(argc,argv);
+  *W2DCEpars1 = w1; 
+
+  //assert(0);
+
+  //W2DCEpars1->show();
+  //assert(0);
+
+  
+  return W2Dbaseparameters1;
+
+  //evolvable_worm_pars_ptr = W2DCEpars1;
+  //dynamic_cast<W2DCEpars&>(w2par_);
+  //W2DCEpars1->show();
+  //assert(0);
+}
+
+//shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
+
+void Worm21::setWormPars(const W2Dparameters & w2par_)
+{
+  *W2DCEpars1 = dynamic_cast< const W2DCEparsA&>(w2par_);
+  //W2DCEpars1->show();
+    //assert(0);
+}
+
+
+
 void Worm21::setParsFromPheno(TVector<double> &pheno)
 {
    

@@ -190,6 +190,8 @@ protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters>);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
+    shared_ptr<W2Dbaseparameters> w2dpar_);
 void writeData();
 virtual void setPhenoNames() {return;}
 
@@ -235,9 +237,13 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+    bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
-    Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
+    //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
+
     void writeData();
 
     bool W2Dmparscalled, W2Dminitcalled;

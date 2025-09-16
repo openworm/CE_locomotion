@@ -18,9 +18,13 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 }
 
 
-W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
+W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
 {
   AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1").c_str());
+}
+
+W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
+{
   sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
