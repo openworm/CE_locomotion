@@ -120,7 +120,17 @@ void Worm2D21::InitializeState(RandomState &rs)
     return;    
 }
 
+void Worm2D21m::setForward()
+{
+  W2DCEpars1->AVA_output =  0;
+  W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
+}
 
+void Worm2D21m::setBackward()
+{
+  W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
+  W2DCEpars1->AVB_output =  0;
+}
 
 vector<toFromWeight> Worm2D21::makeDorsalMuscleConn()
 {

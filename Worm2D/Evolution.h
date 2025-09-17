@@ -85,7 +85,8 @@ class Evolution
     simPars setSimPars(int argc, const char* argv[]);
     void setUp();
     void setFromEvol(const Evolution & er, int offset);
-    void setPopFromBestGenoFile(int vecincsize, int offset);
+    //void setPopFromBestGenoFile(int vecincsize, int offset);
+    void setPopFromBestGenoFile(int offset = 0);
 
     virtual void configure_p12(){return;}
 
@@ -249,6 +250,8 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     double Evaluation18(TVector<double> &genotype, RandomState &rs);
     double EvaluationCE(TVector<double> &genotype, RandomState &rs);
     double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+    double Evaluation21R(TVector<double> &genotype, RandomState &rs);
+    double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
 
     void writeJson(TVector<double> & pheno);
 
@@ -278,12 +281,13 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
 {
     string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(evolvable1,(const string)"Evo21"));
+    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1,(const string) "Evo21"));
     if (evotype_=="Evo18") 
-    return nullptr; //shared_ptr<Evolparameters>(new Evolparameters());
+    return shared_ptr<const AgarPars>(new AgarPars(argc,argv));
     if (evotype_=="EvoCE") 
     return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
-
+    if (evotype_=="Evo21R") 
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1,(const string) "Evo21"));
 }
 
 template<class T>
@@ -292,7 +296,7 @@ evoPars EvolutionFullW<T>::getDefaultEvoPars(int argc, const char* argv[])
 
         string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
 
-    if (evotype_=="Evo21")
+    if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", "Evo21"};
@@ -326,34 +330,6 @@ class EvolutionFullW21 : public EvolutionFullW<T>
 };
  */
 
-template<class T>
-class EvolutionFullW3 : public Evolution
-{
-public:
-EvolutionFullW3(int argc, const char* argv[]):
-Evolution(argc,argv,getDefaultEvoPars(T::getVectSize()),T::getVectSize()){}
-
-virtual ~EvolutionFullW3(){}
-
-
-void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-protected:
-double Evaluation21(TVector<double> &v, RandomState &rs);
-double Evaluation18(TVector<double> &v, RandomState &rs);
-//double EvaluationCE(TVector<double> &v, RandomState &rs);
-//double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
-
-
-evoPars getDefaultEvoPars(const int & vectsize_) 
-{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, vectsize_, "", "Evo21"};}
-
-//void addExtraParsToJson(json & j)
-//{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
-//enum Evotype etype;
-};
 
 
 
@@ -380,15 +356,70 @@ double EvolutionFullW<T>::EvaluationFunction(TVector<double> &genotype, RandomSt
     if (evoPars1.evoType=="Evo21") return Evaluation21(genotype,rs);
     if (evoPars1.evoType=="Evo18") return Evaluation18(genotype,rs);
     if (evoPars1.evoType=="EvoCE") return EvaluationCE(genotype,rs);
+    if (evoPars1.evoType=="Evo21R") return Evaluation21R(genotype,rs);
 
     assert(0 && "Type not implemented");
     //if (evoPars1.evoType=="EvoCE") return EvaluationCE(genotype,rs);
     
 }
 
+template<class T>
+double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &rs)
+{
+
+    return Evaluation21Rp1(genotype,rs,1);
+
+}
 
 template<class T>
-double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &rs){
+double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &rs)
+{
+
+    const EvolparametersCER & Epars1 = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+
+    
+    const int gen_num = s->Generation();
+    //evoPars1.MaxGenerations;
+    //Epars1.doAlternateEvo;
+
+    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
+    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+
+    //cout << "reverse is " << Epars1.doReverse << endl;
+   // assert(0);
+
+    //double fitnessForward, fitnessBackward;
+
+    //genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+    //return EvaluationCEp1(genotype, rs, 1); 
+
+    double fitness = 0;
+    int count = 0;
+    if (Epars1.doReverse==0 || doalt1f){
+        //  assert(0 && "dorev0");
+    fitness += Evaluation21Rp1(genotype, rs, 1);
+    count++;
+    }
+    if (Epars1.doReverse==1 || doalt2f){
+    fitness += Evaluation21Rp1(genotype, rs, -1);
+    count++;
+    }
+    return fitness/count;
+
+    //if (Epars1.doReverse==0) return fitnessForward;
+    //if (Epars1.doReverse==1) return fitnessBackward;
+    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+
+    //assert(0 && "doReverse not set properly");
+    // return fitnessBackward;
+}
+
+
+template<class T>
+double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState &rs, int direction){
 
     const double & Duration = evoPars1.Duration;
     const int & VectSize = evoPars1.VectSize;
@@ -397,10 +428,18 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
-    const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
-    const double agarfreq = 0.44;
-    const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    const double    BBCfit = AvgSpeed*Duration;
+
+    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+
+    const double OSCT =  EparsR.OSCTbase* Duration;
+
+    //const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
+    //const double agarfreq = 0.44;
+    //const double    AvgSpeed = 0.00022;
+    const double AvgSpeed = EparsR.AvgSpeed;    // Average speed of the worm in meters per seconds
+    const double BBCfit = AvgSpeed*Duration;
+    const double agarfreq = EparsR.agarfreq;
+
 
         // Fitness
         double fitness_tr = 0.0;
@@ -429,7 +468,9 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
        
         T w(genotype, false);
 
-        const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
+        W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+        w.setWormPars(*wormpar_ptr);
+        
         //w.setEvolPars(EparsR,evoPars1.evoType);
 
         //TVector<double> phenotype(1, VectSize);
@@ -447,6 +488,16 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         //w.SetAVA(0.0);
         
        
+        if (direction == 1){
+        w1.AVA_output =  0.0;
+        w1.AVB_output =  1.0;
+        }
+        else{
+        w1.AVA_output =  1.0;
+        w1.AVB_output =  0.0; // Command Interneuron Activation Backward
+        }
+
+        w.setWormPars(*wormpar_ptr);
      
         for (double t = 0.0; t <= Transient; t += StepSize){
             w.Step();
@@ -455,6 +506,7 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
         cout << "EparsR.dbunit " << EparsR.dbunit << endl;
         cout << "EparsR.vbunit " << EparsR.vbunit << endl;
        
+        //assert(0);
        
         DBp = w.n.NeuronOutput(EparsR.dbunit);
         VBp = w.n.NeuronOutput(EparsR.vbunit);
@@ -542,160 +594,6 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 
 }
 
-/* template<class T>
-double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &rs){
-
-    const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
-    const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
-    const double & Transient = evoPars1.Transient;
-    const int & skip_steps = evoPars1.skip_steps;
-
-    const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
-    const double agarfreq = 0.44;
-    const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    const double    BBCfit = AvgSpeed*Duration;
-
-        // Fitness
-        double fitness_tr = 0.0;
-        double bodyorientation, anglediff;
-        double movementorientation, distancetravelled = 0, displacement, temp;
-        TVector<double> curvature(1, N_curvs);
-        TVector<double> antpostcurv(1, 2);
-        antpostcurv.FillContents(0.0);
-    
-        // Evaluation of B-class neuron oscillation,and frequency in segment 2.
-        // The index of B class in this segment correspond to DBs2 = 10; VBs2 = 13
-        double DBp, VBp, dDB, dVB;
-        double oscDB = 0, oscVB = 0;
-        double FoDB, FoVB, FfDB, FfVB;
-    
-        double freqDB=0, freqVB=0;
-        int pDB = 0, pVB = 0, signtagDB, signtagVB, signDB, signVB;
-        TVector<double> peaksDB(1, 2*Duration);
-        TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
-    
-        
-        // Genotype-Phenotype Mapping
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(v, phenotype);
-
-       
-        T w(genotype, false);
-        Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*(w.w2par_ptr));
-       
-
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(geno, phenotype);
-        //setPfaFromPheno(phenotype);
-        //setParsFromPheno(phenotype);
-        //construct(phenotype);
-        //setUpMuscleConn();
-        w.InitializeState(rs);
-        w.initForSimulation(rs);
-        w.setStepSize(StepSize);
-        
-        // Transient XXX
-        //w.SetAVB(0.0);
-        //w.SetAVA(0.0);
-        
-       
-     
-        for (double t = 0.0; t <= Transient; t += StepSize){
-            w.Step();
-        }    
-
-        cout << "Epars1.dbunit " << Epars1.dbunit << endl;
-        cout << "Epars1.vbunit " << Epars1.vbunit << endl;
-       
-       
-        DBp = w.n.NeuronOutput(Epars1.dbunit);
-        VBp = w.n.NeuronOutput(Epars1.vbunit);
-    
-        w.Step(); // determine sign of derivative
-    
-
-        dDB = w.n.NeuronOutput(Epars1.dbunit) - DBp;
-        dVB = w.n.NeuronOutput(Epars1.vbunit) - VBp;
-        signtagDB = (dDB  > 0) ? 1 : -1;
-        signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n.NeuronOutput(Epars1.dbunit);
-        VBp = w.n.NeuronOutput(Epars1.vbunit);
-        
-        double xt = w.CoMx(), xtp;
-        double yt = w.CoMy(), ytp;
-      
-        // Time loop
-        for (double t = 0.0; t <= Duration; t += StepSize) {
-            // Step simulation
-            w.Step();
-            
-            ///// Oscilation
-            // check changes in sign of derivative
-            dDB = w.n.NeuronOutput(Epars1.dbunit) - DBp;
-            dVB = w.n.NeuronOutput(Epars1.vbunit) - VBp;
-            signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
-            signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
-    
-            oscDB += abs(DBp - w.n.NeuronOutput(Epars1.dbunit));
-            oscVB += abs(VBp - w.n.NeuronOutput(Epars1.vbunit));
-    
-            if ((signDB == -1) and (signtagDB >= 0)){
-                pDB +=1;
-                peaksDB[pDB] = t;
-                if (pDB >= 2*Duration){return 0;};
-            }
-            if ((signVB == -1) and (signtagVB >= 0)){
-                pVB +=1;
-                peaksVB[pVB] = t;
-                if (pVB >= 2*Duration){return 0;};
-            }
-    
-            signtagDB = signDB;
-            signtagVB = signVB;
-            DBp = w.n.NeuronOutput(Epars1.dbunit);
-            VBp = w.n.NeuronOutput(Epars1.vbunit);
-            
-            //// Locomotion
-            // Current and past centroid position
-            xtp = xt; ytp = yt;
-            xt = w.CoMx(); yt = w.CoMy();
-            
-            // Integration error check
-            if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
-                return 0.0;
-            }
-            
-            // Fitness
-            bodyorientation = w.Orientation();                  // Orientation of the body position
-            movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
-            anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
-    
-        }
-        // B Oscillation evaluation
-        if ((pDB < 2) or (pVB < 2)){return 0;};
-        for (int i = 1; i<pDB; i+=1){freqDB += (1./(pDB-1))*(1./(peaksDB[i+1]- peaksDB[i]));} 
-        for (int i = 1; i<pVB; i+=1){freqVB += (1./(pVB-1))*(1./(peaksVB[i+1]- peaksVB[i]));} 
-    
-        FfDB = fabs(freqDB - agarfreq)/agarfreq < 1 ? fabs(freqDB - agarfreq)/agarfreq : 1;
-        FfVB = fabs(freqVB - agarfreq)/agarfreq < 1 ? fabs(freqVB - agarfreq)/agarfreq : 1;
-    
-        FoDB = oscDB > OSCT ? 1 : oscDB / OSCT;
-        FoVB = oscVB > OSCT ? 1 : oscVB / OSCT;
-    
-        // Locomotion evaluation
-        fitness_tr = (1 - (fabs(BBCfit-distancetravelled)/BBCfit));
-    
-    
-
-        return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
-    
-
-}
- */
 
 template<class T>
 double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &rs)
@@ -710,8 +608,13 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     const double & Transient = evoPars1.Transient;
     //const int & skip_steps = evoPars1.skip_steps;
 
-    const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    const double    BBCfit = AvgSpeed*Duration;
+
+    const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
+    const double AvgSpeed = EparsR.AvgSpeed;
+    const double BBCfit = AvgSpeed*Duration;
+
+    //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
+    //const double    BBCfit = AvgSpeed*Duration;
     // Fitness
     fitness = 0.0;
     double bodyorientation, anglediff;
@@ -869,11 +772,10 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     //cout << "reverse is " << Epars1.doReverse << endl;
 
-
     double sra = genotype(SR_A);
     double srb = genotype(SR_B);
 
-    //assert(0);
+   // assert(0);
 
     //double fitnessForward, fitnessBackward;
 
@@ -916,7 +818,10 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
 
-  const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
+  const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
+
+    const double AvgSpeed = EparsR.AvgSpeed;
+  //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
     const double    BBCfit = AvgSpeed*evoPars1.Duration;
 
     double fitA,fitB;
@@ -938,7 +843,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
 
     W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
-    w.setWormPars(w1);
+    w.setWormPars(*wormpar_ptr);
 
     //EvolparametersCE & Epars1 = w.getWormPars();
 
@@ -956,27 +861,17 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
     
-   
 
     if (direction == 1){
     w1.AVA_output =  0.0;
     w1.AVB_output =  1.0;
-
-    //w2.AVA_output =  0.0;
-    //w2.AVB_output =  1.0;
-
     }
     else{
         w1.AVA_output =  1.0;
         w1.AVB_output =  0.0; // Command Interneuron Activation Backward
-
-    //w2.AVA_output =  1.0;
-    //w2.AVB_output =  0.0;
-
     }
 
-    //w.setWormPars(Epars1);
-    w.setWormPars(w1);
+    w.setWormPars(*wormpar_ptr);
 
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
@@ -1020,3 +915,31 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
 
 
+template<class T>
+class EvolutionFullW3 : public Evolution
+{
+public:
+EvolutionFullW3(int argc, const char* argv[]):
+Evolution(argc,argv,getDefaultEvoPars(T::getVectSize()),T::getVectSize()){}
+
+virtual ~EvolutionFullW3(){}
+
+
+void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
+double EvaluationFunction(TVector<double> &v, RandomState &rs);
+protected:
+double Evaluation21(TVector<double> &v, RandomState &rs);
+double Evaluation18(TVector<double> &v, RandomState &rs);
+//double EvaluationCE(TVector<double> &v, RandomState &rs);
+//double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+
+
+evoPars getDefaultEvoPars(const int & vectsize_) 
+{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, vectsize_, "", "Evo21"};}
+
+//void addExtraParsToJson(json & j)
+//{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
+//enum Evotype etype;
+};

@@ -28,8 +28,16 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
   sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
+AgarPars::AgarPars(int argc, const char* argv[])
+{
 
-EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(argc,argv)
+    OSCTbase = atof(getParameter(argc,argv,"--OSCTbase","0.25").c_str());
+    agarfreq = atof(getParameter(argc,argv,"--agarfreq","0.44").c_str());
+    AvgSpeed = atof(getParameter(argc,argv,"--AvgSpeed","0.00022").c_str());
+
+}
+
+EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = atoi(getParameter(argc,argv,"--doReverse","0").c_str());
@@ -41,6 +49,10 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(arg
 //{}
 
 //EvolvableS::EvolvableS(){}
+
+Evolparameters::Evolparameters(int argc, const char* argv[], 
+    shared_ptr<EvolvableS> & evol1_, string evotype_):AgarPars(argc,argv)
+{evol1_->setEvolPars(*this, evotype_);}
 
 
 void EvolvableS::setParsFromFile(const string & genofilename_)

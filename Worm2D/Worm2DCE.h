@@ -64,7 +64,7 @@ using json = nlohmann::json;
 
 
 
-class Worm2DCE: public Worm2D{
+class Worm2DCE: public Worm2D, public WormFR{
     
     public:
     //void Step(double StepSize);

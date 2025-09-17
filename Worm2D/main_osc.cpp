@@ -62,6 +62,7 @@ int main (int argc, const char* argv[])
         ep1.StepSize = evo->itsEvoPars().StepSize;
         ep1.skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
+       
         evo->addParsToJson(j);
         delete evo;
 
@@ -124,8 +125,12 @@ int main (int argc, const char* argv[])
 
     const bool dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
 
-    if (true)
+    
+    WormFR* const w = dynamic_cast<WormFR*>(w2);
+
+    if (dotest || w==nullptr)
     {
+
     double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
     double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
@@ -135,22 +140,25 @@ int main (int argc, const char* argv[])
     delete w2;
     return 0;
     }
+     
+    bool forwardfirst = 0;
+    forwardfirst = atoi(getParameter(argc,argv,"--doForwardFirst","0").c_str());
 
-    const bool forwardfirst = atoi(getParameter(argc,argv,"--doForwardFirst","0").c_str());
-   
-    if (model_name == "W2DCE") 
+    if (forwardfirst) w->setForward();
+    else w->setBackward();
+
+
+    /*  if (model_name == "W2DCE") 
     {
         //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
         WormCE & w = dynamic_cast<WormCE&>(*w2);
         //w.setWormPars(argc,argv);
         //string SRType = getParameter(argc,argv,"--SRType","None");
         //w.setW2DCEpars(W2DCEpars1);
-        if (forwardfirst){
-        w.setForward();}
-        else{
-        w.setBackward();
-        }
-    }
+        if (forwardfirst) w.setForward();
+        else w.setBackward();
+    } */
+
 
     double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
     double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
@@ -158,22 +166,25 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
-      
+    if (forwardfirst) w->setBackward();
+        else w->setForward();
+
+    s1.sp.Transient = 0; 
+    s1.runSimulation(*w2);
+    
+
+    /* 
     if (model_name == "W2DCE") 
     {
         s1.sp.Transient = 0;
         WormCE & w = dynamic_cast<WormCE&>(*w2);
-        if (forwardfirst){
-        w.setBackward();}
-        else{
-        w.setForward();
-        }
+        if (forwardfirst) w.setBackward();
+        else w.setForward();
 
       
         s1.runSimulation(*w2);
     }
-
-
+    */
 
     //cout << "const 1" << endl;
 

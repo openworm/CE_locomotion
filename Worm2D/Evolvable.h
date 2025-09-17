@@ -258,18 +258,90 @@ void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomIni
 
 };
 
-class Evolparameters : virtual public W2Dparameters
+
+class AgarPars : virtual public W2Dparameters
+{
+  public:
+  AgarPars(int argc, const char* argv[]);
+
+double OSCTbase = 0.25; // Cap for oscillation evaluation
+double agarfreq = 0.44;
+double AvgSpeed = 0.00022; 
+void setParsFromJson(json & j){
+
+  OSCTbase = j["OSCTbase"]["value"]; 
+  agarfreq = j["agarfreq"]["value"];
+  AvgSpeed = j["AvgSpeed"]["value"];
+
+}
+void addParsToJson(json & j) const {
+  j["OSCTbase"]["value"] = OSCTbase;
+  j["agarfreq"]["value"] = agarfreq;
+  j["AvgSpeed"]["value"] = AvgSpeed;
+  
+}
+
+
+};
+
+
+class Evolparameters : virtual public AgarPars
 {
 public:
-Evolparameters(shared_ptr<EvolvableS> & evol1_, string evotype_){evol1_->setEvolPars(*this, evotype_);}
+Evolparameters(int argc, const char* argv[], shared_ptr<EvolvableS> & evol1_, string evotype_);
+
 int dbunit = 0;
 int vbunit = 0;
-void setParsFromJson(json & j){dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"]; }
-void addParsToJson(json & j) const {j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;}
+void setParsFromJson(json & j){
+  dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
+  AgarPars::setParsFromJson(j);
+}
+void addParsToJson(json & j) const {
+  j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;
+  AgarPars::addParsToJson(j);
+}
 };
 
 
 
+class EvolparametersCE : virtual public AgarPars   //: public W2DCEpars
+{
+public:
+EvolparametersCE(int argc, const char* argv[]);
+
+int doReverse = 0;
+
+void setParsFromJson(json & j){
+  doReverse =  j["doReverse"]["value"];
+  AgarPars::setParsFromJson(j);
+}
+void addParsToJson(json & j) const {
+  j["doReverse"]["value"] = doReverse;
+  AgarPars::addParsToJson(j);
+}
+
+};
+
+
+class EvolparametersCER : public EvolparametersCE, public Evolparameters
+{
+public:
+EvolparametersCER(int argc, const char* argv[], shared_ptr<EvolvableS> & evol1_, string evotype_):
+Evolparameters(argc,argv,evol1_,evotype_),EvolparametersCE(argc,argv),AgarPars(argc,argv){}
+
+void setParsFromJson(json & j){
+  doReverse =  j["doReverse"]["value"];
+  dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
+  AgarPars::setParsFromJson(j);
+}
+void addParsToJson(json & j) const {
+  j["doReverse"]["value"] = doReverse;
+  j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;
+  AgarPars::addParsToJson(j);
+}
+
+};
+ 
 
 struct W2DCEparsA : public W2Dbaseparameters
 {
@@ -320,32 +392,6 @@ void addParsToJson(json & j) const {j["SRType"]["value"] = sr_type;
 
 };
 
-
-class EvolparametersCE : virtual public W2Dparameters   //: public W2DCEpars
-{
-public:
-EvolparametersCE(int argc, const char* argv[]);
-EvolparametersCE(){}
-int doReverse = 0;
-//double SR_B_gain = 0, SR_A_gain = 0;
-//bool doAlternateEvo;
-//string sr_type = "None";
-
-void setParsFromJson(json & j){
-  //AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
-  doReverse =  j["doReverse"]["value"];
-  //sr_type = j["SRType"]["value"];
-  //doAlternateEvo = j["doAlternateEvo"]["value"];
-}
-
-void addParsToJson(json & j) const {
-  //j["AVB_output"]["value"] = AVB_output; j["AVB_output"]["value"] = AVB_output;
-  j["doReverse"]["value"] = doReverse;
-  //j["SRType"]["value"] = sr_type;
-  //j["doAlternateEvo"]["value"] = doAlternateEvo;
-}
-
-};
 
 
 

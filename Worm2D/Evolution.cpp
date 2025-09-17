@@ -15,14 +15,18 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
     genprev(1, VectSize_),setFromCPTflag(false)
-    {setFromCPT();
+    {
+        //setFromCPT();
+        setPopFromBestGenoFile();
     }
   
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
     genprev(1, VectSize_),setFromCPTflag(false)
-    {setFromCPT();
+    {
+        //setFromCPT();
+        setPopFromBestGenoFile();
     }
 
 
@@ -53,8 +57,6 @@ void Evolution::setFromCPT()
         doResume = true;
         //ResultsDisplay(*s);
         checkPars();
-
-
     }
     else doResume = false;
    
@@ -84,14 +86,19 @@ void Evolution::setUp()
     evolfile << setprecision(10);
 
 }
-void Evolution::setPopFromBestGenoFile(int vecincsize, int offset)
-{
-    assert(offset<=vecincsize);
 
+void Evolution::setPopFromBestGenoFile(int offset)
+{
+   
     if (!setFromCPTflag) setFromCPT();
     if (doResume) return;
+
+    string filename = rename_file("best.gen.dat");
+    struct stat buffer;   
+    if (doCPT && stat (filename.c_str(), &buffer) == 0) {
+
     ifstream ifs;
-    ifs.open(rename_file("best.gen.dat"));
+    ifs.open(filename);
     double val;
     vector<double> bestgenvec;
     while (ifs >> val)
@@ -99,16 +106,30 @@ void Evolution::setPopFromBestGenoFile(int vecincsize, int offset)
         bestgenvec.push_back(val);
     }
     ifs.close();
-    assert(bestgenvec.size()+vecincsize==evoPars1.VectSize);
-   
+
+    cout << "popsize " << s->PopulationSize() 
+    << " indsize " << s->Individual(1).Size() << " bestsize " << bestgenvec.size() << endl;
+   //assert(0);
 
     for (int i = 1; i <= s->PopulationSize(); i++) 
     for (int j = 1; j <= s->Individual(i).Size(); j++)
-    s->Individual(i)(j+offset) = bestgenvec[i-1];
+    s->Individual(i)(j+offset) = bestgenvec[j-1];
     
+    doResume = true;
+    s->Gen = 0;
+	// Set up the initial population
+	//RandomizePopulation();
+	// The search is now initialized
+	s->SearchInitialized = 1;
+
+     //assert(0);
+    }
+
+    else doResume = false;
 
 
 }
+
 
 
 void Evolution::setFromEvol(const Evolution & er, int offset)
@@ -133,6 +154,13 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
     for (int i = 1; i <= minsize; i++) {
     for (int j = 1; j <= er.s->Individual(i).Size(); j++){
     s->Individual(i)(j+offset) = er.s->Individual(i)(j);
+
+
+    s->Gen = 0;
+	// Set up the initial population
+	//RandomizePopulation();
+	// The search is now initialized
+	s->SearchInitialized = 1;
 }
 
 }

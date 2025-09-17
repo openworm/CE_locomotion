@@ -298,3 +298,10 @@ class Worm2D : virtual public Worm2Dm
  
 };
 
+class WormFR 
+{
+public:
+virtual void setForward() = 0;
+virtual void setBackward() = 0;
+
+};

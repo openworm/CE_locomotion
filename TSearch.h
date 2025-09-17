@@ -136,6 +136,8 @@ class TSearch {
 		//friend istream& operator>>(istream& is, TSearch& s);
 	string cptfilename; //added search filename
 
+	friend class Evolution;
+	
 	void DoSearch(int ResumeFlag); //make accessible
 	private:
 		// Helper Methods

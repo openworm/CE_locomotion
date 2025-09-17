@@ -28,6 +28,7 @@ Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
   //dynamic_cast<shared_ptr<W2DCEpars> &>(*evolvable_w2par_ptr))
   {}
+  //{assert(0);}
 
 WormCE::WormCE(TVector<double> &pheno):WormCE(pheno, true){}
 
@@ -73,7 +74,7 @@ shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[]
 
 void WormCE::setWormPars(const W2Dparameters & w2par_)
 {
-  *W2DCEpars1 = dynamic_cast< const W2DCEpars&>(w2par_);
+  *W2DCEpars1 = dynamic_cast<const W2DCEpars&>(w2par_);
   //W2DCEpars1->show();
     //assert(0);
 }
@@ -211,9 +212,10 @@ void WormCE::InitializeState(RandomState &rs)
 
 
 
-  if (W2Dbaseparameters1->randomInitialState) 
-    n.RandomizeCircuitState(-1.0, 1.0, rs);
-  
+  if (W2Dbaseparameters1->randomInitialState) {
+    n.RandomizeCircuitState(-1, 1, rs);
+    n.RandomizeCircuitOutput(0.2, 0.8, rs);
+  }
   else{
   for (int u = 1; u <= par1.N_units; u++)
   {

@@ -30,7 +30,7 @@ using namespace std;
 //const int Head = 1;
 //const int Tail = N_segments;
 
-class Worm2D21m : virtual public Worm2Dm {
+class Worm2D21m : virtual public Worm2Dm, public WormFR {
 public:
     
     //Worm21(TVector<double> &v);
@@ -43,6 +43,8 @@ public:
     //void DumpActState(ofstream &ofs, int skips);
     //void DumpActStateState(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
+    void setForward();
+    void setBackward();
 
     void setPhenoNames();
 

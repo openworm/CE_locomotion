@@ -227,10 +227,14 @@ void Worm21::setParsFromPheno(TVector<double> &pheno)
 void Worm21::InitializeState(RandomState &rs)
 {    
     Worm2D21::InitializeState(rs);
-    //n.RandomizeCircuitOutput(0.2, 0.8, rs); //fix this error?? adam (should be -0.5?)
+
+    if (W2Dbaseparameters1->randomInitialState)
+    {
+        n.RandomizeCircuitState(-1, 1, rs);
+        n.RandomizeCircuitOutput(0.2, 0.8, rs);
+    }
+    else
     n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
-    //n.RandomizeCircuitOutput(0, 0, rs); //fix this error?? adam (should be -0.5?)
-    //cout << "Worm21 init state" << endl;
     return;
 }
 
