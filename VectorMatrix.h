@@ -63,8 +63,8 @@ public:
 	inline TVector<EltType> &operator=(TVector<EltType> &v);
 	
 protected:
-	int lb, ub;
-	EltType *Vector;
+	int lb = 1 , ub = 0;
+	EltType *Vector = nullptr;
 };
 
 
@@ -323,8 +323,8 @@ public:
 	void InitializeContents(EltType v1,...);
 	
 protected:
-	int lb1, ub1, lb2, ub2, collen, rowlen;
-	EltType **Matrix;
+	int lb1 = 1, ub1 = 0, lb2 = 1, ub2 = 0, collen = 0, rowlen = 0;
+	EltType **Matrix = nullptr;
 };
 
 
