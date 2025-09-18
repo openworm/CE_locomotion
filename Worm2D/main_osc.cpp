@@ -57,6 +57,7 @@ int main (int argc, const char* argv[])
         if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv);
         if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv); 
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(argc,argv); 
+        if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(argc,argv); 
 
         //assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;
@@ -90,7 +91,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2D21") w2 = new Worm21(ep1.rename_file("best.gen.dat"));
     if (model_name == "W2DCE") w2 = new WormCE(ep1.rename_file("best.gen.dat"));
-
+    if (model_name == "W2D21R") w2 = new Worm21R(ep1.rename_file("best.gen.dat"));
 
     }else{
 

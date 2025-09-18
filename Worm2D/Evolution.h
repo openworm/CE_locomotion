@@ -279,15 +279,17 @@ void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
 template<class T>
 shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const char* argv[])
 {
-    string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
+    //string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
+    const string & evotype_ = evoPars1.evoType;
+
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1,(const string) "Evo21"));
+    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1,evotype_));
     if (evotype_=="Evo18") 
     return shared_ptr<const AgarPars>(new AgarPars(argc,argv));
     if (evotype_=="EvoCE") 
     return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
     if (evotype_=="Evo21R") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1,(const string) "Evo21"));
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1, evotype_));
 }
 
 template<class T>
@@ -299,17 +301,17 @@ evoPars EvolutionFullW<T>::getDefaultEvoPars(int argc, const char* argv[])
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", "Evo21"};
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", "Evo18"};
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", evotype_ };
     
     if (evotype_== "EvoCE")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", "EvoCE"};
+        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
 
     assert(0 && "evotype not implemented");
     
@@ -367,7 +369,7 @@ template<class T>
 double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &rs)
 {
 
-    return Evaluation21Rp1(genotype,rs,1);
+    return Evaluation21Rp1(genotype,rs,2);
 
 }
 
@@ -487,15 +489,22 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         //w.SetAVB(0.0);
         //w.SetAVA(0.0);
         
-       
-        if (direction == 1){
+       if (direction == 1){
         w1.AVA_output =  0.0;
         w1.AVB_output =  1.0;
         }
-        else{
+        else if (direction == -1) {
         w1.AVA_output =  1.0;
         w1.AVB_output =  0.0; // Command Interneuron Activation Backward
         }
+        else if (direction == 2)
+        {
+
+        w1.AVA_output =  0.0;
+        w1.AVB_output =  0.0; 
+        }
+    else assert(0 && "direction not set properly");
+       
 
         w.setWormPars(*wormpar_ptr);
      
@@ -569,10 +578,16 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             bodyorientation = w.Orientation();                  // Orientation of the body position
             movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
+            if (direction == 1){
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
-    
+            }
+            else{
+            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            }
+        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
         }
+
+
         // B Oscillation evaluation
         if ((pDB < 2) or (pVB < 2)){return 0;};
         for (int i = 1; i<pDB; i+=1){freqDB += (1./(pDB-1))*(1./(peaksDB[i+1]- peaksDB[i]));} 
@@ -866,10 +881,17 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     w1.AVA_output =  0.0;
     w1.AVB_output =  1.0;
     }
-    else{
+    else if  (direction == -1) {
         w1.AVA_output =  1.0;
         w1.AVB_output =  0.0; // Command Interneuron Activation Backward
     }
+    else if  (direction == 2)
+    {
+
+    w1.AVA_output =  0.0;
+    w1.AVB_output =  0.0; 
+    }
+    else assert(0 && "direction not set properly");
 
     w.setWormPars(*wormpar_ptr);
 

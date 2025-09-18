@@ -12,40 +12,7 @@
 
 //extern SuppliedArgs2021 supArgs1;
 
-void Worm21::setPhenoNames()
-{
- 
-    Worm2D21::setPhenoNames();
 
-	for (int i = 1; i <= 7; i++){	
-		phenoNamesNums.push_back(i);
-		phenoNames.push_back("bias");
-	}
-        
-    for (int i = 8; i <= 14; i++){	
-		phenoNamesNums.push_back(i);
-		phenoNames.push_back("tau");
-	}
-
-    for (int i = 15; i <= 30; i++){	
-		phenoNamesNums.push_back(i);
-		phenoNames.push_back("chemsyn");
-	}
-       
-    phenoNamesNums.push_back(31);
-	phenoNames.push_back("electsyn");
-    
-    for (int i = 40; i <= 41; i++){	
-		phenoNamesNums.push_back(i);
-		phenoNames.push_back("chemsyn");
-	}
-    
-    for (int i = 42; i <= 44; i++){	
-		phenoNamesNums.push_back(i);
-		phenoNames.push_back("electsyn");
-	}
-
-}
 
 Worm21::Worm21():
 Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEparsA>()),
@@ -69,10 +36,30 @@ Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
 
 }
 
+Worm21R::Worm21R():Worm21(),
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEparsA>()){}
+
+Worm21R::Worm21R(TVector<double> &phengen, bool isPheno):Worm21R()
+{
+
+    if (isPheno) setParsFromPheno(phengen);
+    else setParsFromGeno(phengen);
+}
+
+
+Worm21R::Worm21R(TVector<double> &pheno):Worm21R(pheno, true){}
+
+
+Worm21R::Worm21R(const string & filename_):Worm21R()
+{
+    setParsFromFile(filename_);
+}
+
+
 void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 //void Worm21::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
-    if (evotype_=="Evo21"){
+    if (evotype_=="Evo21" || evotype_=="Evo21R"){
     Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
 
     Epars1.dbunit = 10;
@@ -86,19 +73,9 @@ shared_ptr<const W2Dparameters> Worm21::setWormPars(int argc, const char* argv[]
   
   W2DCEparsA w1(argc,argv);
   *W2DCEpars1 = w1; 
-
-  //assert(0);
-
-  //W2DCEpars1->show();
-  //assert(0);
-
   
   return W2Dbaseparameters1;
 
-  //evolvable_worm_pars_ptr = W2DCEpars1;
-  //dynamic_cast<W2DCEpars&>(w2par_);
-  //W2DCEpars1->show();
-  //assert(0);
 }
 
 //shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
@@ -106,8 +83,7 @@ shared_ptr<const W2Dparameters> Worm21::setWormPars(int argc, const char* argv[]
 void Worm21::setWormPars(const W2Dparameters & w2par_)
 {
   *W2DCEpars1 = dynamic_cast< const W2DCEparsA&>(w2par_);
-  //W2DCEpars1->show();
-    //assert(0);
+  
 }
 
 
@@ -308,3 +284,82 @@ phen(44) = MapSearchParameter(gen(44), 0.0, ESRange);       // VB -- DBnext
 
 
 }    
+
+void Worm21::setPhenoNames()
+{
+ 
+    Worm2D21::setPhenoNames();
+
+	for (int i = 1; i <= 7; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("bias");
+	}
+        
+    for (int i = 8; i <= 14; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("tau");
+	}
+
+    for (int i = 15; i <= 30; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("chemsyn");
+	}
+       
+    phenoNamesNums.push_back(31);
+	phenoNames.push_back("electsyn");
+    
+    for (int i = 40; i <= 41; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("chemsyn");
+	}
+    
+    for (int i = 42; i <= 44; i++){	
+		phenoNamesNums.push_back(i);
+		phenoNames.push_back("electsyn");
+	}
+
+}
+
+
+void Worm21R::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+
+const double wAV_top = 10;
+
+Worm21::GenPhenMapping(gen,phen);
+
+phen(45) = MapSearchParameter(gen(45), 0.0, wAV_top);
+phen(46) = MapSearchParameter(gen(46), 0.0, wAV_top);
+phen(47) = MapSearchParameter(gen(47), 0.0, wAV_top);
+phen(48) = MapSearchParameter(gen(48), 0.0, wAV_top);
+
+
+}
+
+void Worm21R::setParsFromPheno(TVector<double> &pheno)
+{
+
+      wAVA_DA = pheno(45); 
+      wAVA_VA = pheno(46);
+      wAVB_DB = pheno(47);
+      wAVB_VB = pheno(48);
+
+    Worm21::setParsFromPheno(pheno);
+}
+
+void Worm21R::setPhenoNames()
+{
+ 
+    Worm21::setPhenoNames();
+
+    phenoNamesNums.push_back(45);
+    phenoNames.push_back("wAVA_DA");
+    phenoNamesNums.push_back(46);
+    phenoNames.push_back("wAVA_VA");
+    phenoNamesNums.push_back(47);
+    phenoNames.push_back("wAVB_DB");
+    phenoNamesNums.push_back(48);
+    phenoNames.push_back("wAVB_VB");
+
+
+}

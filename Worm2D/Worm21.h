@@ -75,6 +75,8 @@ public:
 
     protected:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
-    int getVectSize(){return 44;}
+    int getVectSize(){return 48;}
+    void setParsFromPheno(TVector<double> &pheno);
+    void setPhenoNames();
 
 };
