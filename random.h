@@ -44,9 +44,12 @@ int ProbabilisticChoice(double prob);
 class RandomState {
 public:
   // The constructor
-  RandomState(long seed = 0) {SetRandomSeed(seed); gaussian_flag = 0;};
+  RandomState(long seed = 0) {
+    SetRandomSeed(seed); gaussian_flag = 0;
+    for (int i=0;i<NTAB; i++ ) iv[i]=0;
+  }
   // The destructor
-  ~RandomState() {};
+  ~RandomState() {}
   
   // Accessors
   void SetRandomSeed(long seed);
@@ -70,7 +73,7 @@ public:
   void BinaryReadRandomState(ifstream& bifs);
   
 
-  long seed, idum, iy, iv[NTAB];
-  int gaussian_flag;
-  double gX1, gX2;
+  long seed = 0, idum = 0, iy = 0, iv[NTAB];
+  int gaussian_flag = 0;
+  double gX1 = 0, gX2 = 0;
 };
