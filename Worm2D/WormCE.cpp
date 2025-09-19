@@ -23,7 +23,7 @@ return new c302NervousSystem();
 
 WormCE::WormCE()://Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), new Muscles),
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
-//Worm2Dm({6,24,0.1,10,60}, new NervousSystem()),
+//Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), nullptr),
 //EvolvableS(shared_ptr<EvolparametersCE>(new EvolparametersCE())),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0)
   //dynamic_cast<shared_ptr<W2DCEpars> &>(*evolvable_w2par_ptr))

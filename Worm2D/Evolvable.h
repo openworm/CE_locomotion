@@ -105,13 +105,14 @@ void setFromArgs(int argc, const char* argv[])
 
     for (int arg = 1; arg<argc; arg+=2)
     { 
-    if (strcmp(argv[arg],"--maxgens")==0) MaxGenerations = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--maxgens")==0) MaxGenerations = stoi(argv[arg+1]);
 
-    if (strcmp(argv[arg],"--MutVar")==0) MutationVariance = atof(argv[arg+1]);
-    if (strcmp(argv[arg],"--CrossProb")==0) CrossoverProbability = atof(argv[arg+1]);
-    //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = atoi(argv[arg+1]);
-    //if (strcmp(argv[arg],"--donml")==0) do_nml = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--MutVar")==0) MutationVariance = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"--CrossProb")==0) CrossoverProbability = stod(argv[arg+1]);
+
+    //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = stol(argv[arg+1]);
+    //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = stol(argv[arg+1]);
+    //if (strcmp(argv[arg],"--donml")==0) do_nml = stol(argv[arg+1]);
 
 
     if (strcmp(argv[arg],"--folder")==0) {
@@ -122,19 +123,19 @@ void setFromArgs(int argc, const char* argv[])
     }
 
     if (seed_flag){ 
-    if (strcmp(argv[arg],"-R")==0) randomseed = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-R")==0) randomseed = stol(argv[arg+1]);
     if (strcmp(argv[arg],"-r")==0) 
     {long randomseed1 = static_cast<long>(time(NULL));
-           randomseed = randomseed1 + atoi(argv[arg+1]);
+           randomseed = randomseed1 + stol(argv[arg+1]);
     }
     seed_flag = 0;
     }
     //if (strcmp(argv[arg], "--modelname")==0) model_name = argv[arg+1];
-    if (strcmp(argv[arg],"-p")==0) PopulationSize = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-d")==0) Duration = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-t")==0) Transient = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"--evoType")==0) evoType = argv[arg+1];
+    if (strcmp(argv[arg],"-p")==0) PopulationSize = stoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-d")==0) Duration = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"-t")==0) Transient = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = stoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--evoType")==0) evoType = (string) argv[arg+1];
     
 
     //cout << "doCPT " << doCPT << endl;
@@ -395,5 +396,10 @@ void addParsToJson(json & j) const {j["SRType"]["value"] = sr_type;
 
 
 
-string getParameter(int argc, const char* argv[], string parName, const string defaultval);
+double getParameterDouble(int argc, const char* argv[], string parName, const string defaultval);
+long getParameterLong(int argc, const char* argv[], string parName, const string defaultval);
+int getParameterInt(int argc, const char* argv[], string parName, const string defaultval);
+string getParameterString(int argc, const char* argv[], string parName, const string defaultval);
+
+
 //const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);

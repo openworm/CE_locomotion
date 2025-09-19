@@ -35,7 +35,7 @@ int main (int argc, const char* argv[])
 {
 
     std::cout << std::setprecision(10);
-    string model_name =  getParameter(argc,argv,"--modelname","");
+    string model_name =  getParameterString(argc,argv,"--modelname","");
     if (model_name == "")
     {
     cout << "Model name required for Worm2D. Exiting." << endl;
@@ -56,7 +56,7 @@ int main (int argc, const char* argv[])
 
     InitializeBodyConstants();
 
-    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0").c_str());
+    bool do_evol = getParameterInt(argc,argv,"--doevol","0");
     if (do_evol) 
     {
         er->configure();
@@ -128,12 +128,12 @@ int main (int argc, const char* argv[])
         
     }
 
-    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
-    bool do_musclesim = atoi(getParameter(argc,argv,"--domusc","0").c_str());
+    bool do_nml =  getParameterInt(argc,argv,"--donml","0");
+    bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
 
     //run simulation with possibly different seed
     
-    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1").c_str());
+    const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     
     if (!do_nml){

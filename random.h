@@ -45,8 +45,9 @@ class RandomState {
 public:
   // The constructor
   RandomState(long seed = 0) {
-    SetRandomSeed(seed); gaussian_flag = 0;
-    for (int i=0;i<NTAB; i++ ) iv[i]=0;
+    SetRandomSeed(seed); 
+    gaussian_flag = 0;
+   
   }
   // The destructor
   ~RandomState() {}

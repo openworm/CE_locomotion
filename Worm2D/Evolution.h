@@ -285,18 +285,21 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
     if (evotype_=="Evo21") 
     return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1,evotype_));
     if (evotype_=="Evo18") 
-    return shared_ptr<const AgarPars>(new AgarPars(argc,argv));
+    return shared_ptr<const AgarPars>(new const AgarPars(argc,argv));
     if (evotype_=="EvoCE") 
     return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
     if (evotype_=="Evo21R") 
     return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1, evotype_));
+
+    assert(0 && "evotype not implemented");
+    return nullptr;
 }
 
 template<class T>
 evoPars EvolutionFullW<T>::getDefaultEvoPars(int argc, const char* argv[]) 
     {
 
-        string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
+        string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
@@ -836,7 +839,15 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
   const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
 
     const double AvgSpeed = EparsR.AvgSpeed;
-  //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
+    
+    //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
+    
+
+    //cout << "AS " << AvgSpeed << endl;
+    //assert(0);
+    //const double    AvgSpeed = 0.0001;
+
+
     const double    BBCfit = AvgSpeed*evoPars1.Duration;
 
     double fitA,fitB;

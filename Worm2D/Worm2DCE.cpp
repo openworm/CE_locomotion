@@ -14,12 +14,16 @@
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1(new W2DCEpars()),
     //W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
     //W2DCEpars1(new W2DCEpars()),Worm2Dm(par1_,nullptr),Worm2D(par1_,0)
+    
     Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)){}
+
    // {assert(0);}
     //Worm2Dm(par1_,(shared_ptr<W2DCEpars>) new W2DCEpars()),Worm2D(par1_,0),
     //Worm2Dm(par1_,dynamic_pointer_cast<W2Dbaseparameters>(new W2DCEpars())),Worm2D(par1_,0)
     //W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)){}
+
+    //W2DCEpars1(new W2DCEpars()),Worm2Dm(par1_,n_ptr_, nullptr),Worm2D(par1_,0)
     //{W2Dbaseparameters1 = W2DCEpars1;}
 
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, const W2DCEpars & W2DCEpars1_):

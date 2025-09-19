@@ -16,7 +16,7 @@ int main (int argc, const char* argv[])
 //assert(0); */
 
     std::cout << std::setprecision(10);
-    string model_name =  getParameter(argc,argv,"--modelname","");
+    string model_name =  getParameterString(argc,argv,"--modelname","");
     if (model_name == "")
     {
     cout << "Model name is required." << endl;
@@ -43,7 +43,7 @@ int main (int argc, const char* argv[])
     json j;
 
   
-    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0").c_str());
+    bool do_evol = getParameterInt(argc,argv,"--doevol","0");
     if (do_evol) 
     {
         Evolution * evo = 0;
@@ -76,7 +76,7 @@ int main (int argc, const char* argv[])
     
     cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
 
-    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
+    bool do_nml =  getParameterInt(argc,argv,"--donml","0");
 
     Worm2Dbase * w2;
 
@@ -110,7 +110,7 @@ int main (int argc, const char* argv[])
     cout << "const 1" << endl;
     //assert(0);
 
-    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1").c_str());
+    const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -124,7 +124,7 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
 
-    const bool dotest = atoi(getParameter(argc,argv,"--doTestRun","0").c_str());
+    const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
     
     WormFR* const w = dynamic_cast<WormFR*>(w2);
@@ -132,8 +132,8 @@ int main (int argc, const char* argv[])
     if (dotest || w==nullptr)
     {
 
-    double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
-    double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
+    double simduration = getParameterDouble(argc,argv,"-sd","10");
+    double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
@@ -143,7 +143,7 @@ int main (int argc, const char* argv[])
     }
      
     bool forwardfirst = 0;
-    forwardfirst = atoi(getParameter(argc,argv,"--doForwardFirst","0").c_str());
+    forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
 
     if (forwardfirst) w->setForward();
     else w->setBackward();
@@ -161,8 +161,8 @@ int main (int argc, const char* argv[])
     } */
 
 
-    double simduration = atof(getParameter(argc,argv,"-sd","10").c_str());
-    double simtransient = atof(getParameter(argc,argv,"-st","10").c_str());    
+    double simduration = getParameterDouble(argc,argv,"-sd","10");
+    double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);

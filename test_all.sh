@@ -69,13 +69,13 @@ if [ "$quick_test" == 0 ]; then
         python testCOW2D.py
     fi;
 
-    omv test -V .test.W2DCE.omt
+    
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
     omv test -V .test.CEW2D.omt
     omv test -V .test.2021.omt
     omv test -V .test.2021W2D.omt
-    
+    omv test -V .test.W2DCE.omt
 
     cd neuromlLocal
     ./regenerate.sh # regenerated NML & runs omv all -V

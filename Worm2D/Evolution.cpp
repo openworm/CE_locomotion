@@ -225,8 +225,8 @@ sp1.Transient = evoPars1.Transient;
      {cout << "The arguments are not configured correctly." << endl;exit(1);}
 
  for (int arg = 1; arg<argc; arg+=2){
-    if (strcmp(argv[arg],"-sd")==0) sp1.Duration = atoi(argv[arg+1]);
-    if (strcmp(argv[arg],"-st")==0) sp1.Transient = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-sd")==0) sp1.Duration = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"-st")==0) sp1.Transient = stod(argv[arg+1]);
 }
 
 return sp1;
@@ -248,7 +248,7 @@ evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string pre
     for (int arg = 1; arg<argc; arg+=2)
     { 
     
-    if (strcmp(argv[arg],"-docpt")==0) doCPT = atoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-docpt")==0) doCPT = stoi(argv[arg+1]);
 
     }
 
