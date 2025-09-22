@@ -10,29 +10,29 @@ string filePrefix;
 };
 
 struct evoPars{
-   string directoryName = "";
-   long randomseed = 0;
-   TSelectionMode SelectionMode = RANK_BASED;
-   TReproductionMode ReproductionMode = GENETIC_ALGORITHM;
-   int PopulationSize = 0;
-   int MaxGenerations = 0;
-   double MutationVariance = 0;
-   double CrossoverProbability = 0;
-   TCrossoverMode CrossoverMode = UNIFORM;
-   double MaxExpectedOffspring = 0;
-   double ElitistFraction  = 0;
-   int SearchConstraint = 0;
-   int CheckpointInterval = 0;
-   bool ReEvaluationFlag = 0;
-   int skip_steps = 0;
+   string directoryName;
+   long randomseed;
+   TSelectionMode SelectionMode;
+   TReproductionMode ReproductionMode;
+   int PopulationSize;
+   int MaxGenerations;
+   double MutationVariance;
+   double CrossoverProbability;
+   TCrossoverMode CrossoverMode;
+   double MaxExpectedOffspring;
+   double ElitistFraction;
+   int SearchConstraint;
+   int CheckpointInterval;
+   bool ReEvaluationFlag;
+   int skip_steps;
    // Integration parameters
-   double Duration = 0;       //
-   double Transient = 0;    //
-   double StepSize = 0;
-   int N_curvs = 0;
-   int VectSize = 0;
-   string fileprefix = "" ;
-   string evoType = "";
+   double Duration;       //
+   double Transient;    //
+   double StepSize;
+   int N_curvs ;
+   int VectSize ;
+   string fileprefix  ;
+   string evoType ;
    
   void addParsToJson(json &j) const
   {

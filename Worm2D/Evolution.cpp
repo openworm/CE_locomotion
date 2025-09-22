@@ -107,20 +107,25 @@ void Evolution::setPopFromBestGenoFile(int offset)
     }
     ifs.close();
 
+    s->InitializeSearch();
+
+
     cout << "popsize " << s->PopulationSize() 
     << " indsize " << s->Individual(1).Size() << " bestsize " << bestgenvec.size() << endl;
    //assert(0);
 
+    //s->InitializeSearch();
+
     for (int i = 1; i <= s->PopulationSize(); i++) 
-    for (int j = 1; j <= s->Individual(i).Size(); j++)
-    s->Individual(i)(j+offset) = bestgenvec[j-1];
+    for (int j = 1 + offset; j <= s->Individual(i).Size(); j++)
+    s->Individual(i)(j) = bestgenvec[j-1];
     
     doResume = true;
-    s->Gen = 0;
+    //s->Gen = 0;
 	// Set up the initial population
 	//RandomizePopulation();
 	// The search is now initialized
-	s->SearchInitialized = 1;
+	//s->SearchInitialized = 1;
 
      //assert(0);
     }

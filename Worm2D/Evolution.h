@@ -283,7 +283,7 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
     const string & evotype_ = evoPars1.evoType;
 
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1,evotype_));
+    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1, evotype_));
     if (evotype_=="Evo18") 
     return shared_ptr<const AgarPars>(new const AgarPars(argc,argv));
     if (evotype_=="EvoCE") 
@@ -433,8 +433,11 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
+   
 
-    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+    const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
+
+//    assert(0);
 
     const double OSCT =  EparsR.OSCTbase* Duration;
 
@@ -473,6 +476,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
        
         T w(genotype, false);
 
+
         W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
         w.setWormPars(*wormpar_ptr);
         
@@ -509,8 +513,10 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     else assert(0 && "direction not set properly");
        
 
-        w.setWormPars(*wormpar_ptr);
+        w.setWormPars(w1);
      
+        //assert(0);
+
         for (double t = 0.0; t <= Transient; t += StepSize){
             w.Step();
         }    
@@ -581,7 +587,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             bodyorientation = w.Orientation();                  // Orientation of the body position
             movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            if (direction == 1){
+            if (direction == 1 || direction == 2){
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             }
             else{
@@ -904,7 +910,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     }
     else assert(0 && "direction not set properly");
 
-    w.setWormPars(*wormpar_ptr);
+    w.setWormPars(w1);
 
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
@@ -926,7 +932,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         bodyorientation = w.Orientation();                  // Orientation of the body position
         movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
         anglediff = movementorientation - bodyorientation;  // Check how orientations align
-        if (direction == 1){
+        if (direction == 1 || direction == 2){
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
         }
         else{
@@ -948,7 +954,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
 
 
-template<class T>
+/* template<class T>
 class EvolutionFullW3 : public Evolution
 {
 public:
@@ -975,4 +981,4 @@ evoPars getDefaultEvoPars(const int & vectsize_)
 //void addExtraParsToJson(json & j)
 //{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
 //enum Evotype etype;
-};
+}; */
