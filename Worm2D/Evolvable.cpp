@@ -77,6 +77,7 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     doReverse = getParameterInt(argc,argv,"--doReverse","0");
+    fitType = getParameterInt(argc,argv,"--fitType","0");
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
 

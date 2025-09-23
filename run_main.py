@@ -644,6 +644,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["MutVar"] = 0.1
     evol_extra_parameters["CrossProb"] = 0.5
     evol_extra_parameters["AvgSpeed"] = 0.00022
+    evol_extra_parameters["fitType"] = 0
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0

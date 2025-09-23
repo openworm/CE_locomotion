@@ -434,8 +434,8 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     const int & skip_steps = evoPars1.skip_steps;
 
    
-
-    const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
+    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+    //const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
 
 //    assert(0);
 
@@ -509,11 +509,11 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         }
         else if (direction == 2)
         {
-
         w1.AVA_output =  0.0;
         w1.AVB_output =  0.0; 
         }
-    else assert(0 && "direction not set properly");
+
+        else assert(0 && "direction not set properly");
        
 
         w.setWormPars(&w1);
@@ -591,12 +591,14 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
             if (direction == 1 || direction == 2){
-            //temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            temp = cos(anglediff);
+            if (EparsR.fitType == 0)
+            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            else temp = cos(anglediff);
             }
             else{
-            //temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
-            temp = cos(anglediff)*-1;
+            if (EparsR.fitType == 0) 
+            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            else temp = cos(anglediff)*-1;
             }
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
         }
@@ -851,7 +853,8 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
 
-  const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
+  //const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
+    const EvolparametersCE & EparsR = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
 
     const double AvgSpeed = EparsR.AvgSpeed;
     
@@ -948,14 +951,17 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         bodyorientation = w.Orientation();                  // Orientation of the body position
         movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
         anglediff = movementorientation - bodyorientation;  // Check how orientations align
-        if (direction == 1 || direction == 2){
-            //temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            temp = cos(anglediff);
-        }
-        else{
-            //temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
-            temp = cos(anglediff)*-1.0;
-        }
+         if (direction == 1 || direction == 2){
+            if (EparsR.fitType == 0)
+            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            else temp = cos(anglediff);
+            }
+            else{
+            if (EparsR.fitType == 0) 
+            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            else temp = cos(anglediff)*-1;
+            }
+
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
     }
     fxt = w.CoMx(); fyt = w.CoMy();

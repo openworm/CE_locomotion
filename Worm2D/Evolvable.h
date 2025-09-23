@@ -314,13 +314,16 @@ public:
 EvolparametersCE(int argc, const char* argv[]);
 
 int doReverse = 0;
+int fitType = 0;
 
 void setParsFromJson(json & j){
   doReverse =  j["doReverse"]["value"];
+  fitType = j["fitType"]["value"];
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
   j["doReverse"]["value"] = doReverse;
+  j["fitType"]["value"] = fitType;
   AgarPars::addParsToJson(j);
 }
 
