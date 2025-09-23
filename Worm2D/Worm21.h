@@ -52,7 +52,7 @@ public:
     //{return Worm2Dbase::setWormPars(w2par_);}
 
     shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
-    void setWormPars(const W2Dparameters & w2par_);
+    void setWormPars(const W2Dparameters * w2par_);
 
     protected:
     void addParsToJson(json & j);

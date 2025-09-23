@@ -173,7 +173,7 @@ NSosc & n;
 
 virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
 {return Worm2Dbase::setWormPars(argc,argv);}
-virtual void setWormPars(const W2Dparameters & w2par_)
+virtual void setWormPars(const W2Dparameters * w2par_)
 {return Worm2Dbase::setWormPars(w2par_);}
 
 

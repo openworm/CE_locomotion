@@ -211,7 +211,7 @@ class EvolvableS
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
   //virtual W2Dparameters & getWormPars() {return;}
   
-  virtual void setWormPars(const W2Dparameters & w2par_) = 0; //{assert(0);}
+  virtual void setWormPars(const W2Dparameters * w2par_) = 0; //{assert(0);}
 
   //{ return T::setWormPars(w2par_);}
 
@@ -281,7 +281,7 @@ void addParsToJson(json & j) const {
   j["AvgSpeed"]["value"] = AvgSpeed;
   
 }
-
+void show() const {cout << "agar pars " << OSCTbase  << " " << agarfreq << " " << AvgSpeed << endl;}
 
 };
 
@@ -300,6 +300,9 @@ void setParsFromJson(json & j){
 void addParsToJson(json & j) const {
   j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;
   AgarPars::addParsToJson(j);
+
+  
+
 }
 };
 
@@ -320,6 +323,8 @@ void addParsToJson(json & j) const {
   j["doReverse"]["value"] = doReverse;
   AgarPars::addParsToJson(j);
 }
+
+void show() const {cout << " eparsCE doReverse " <<  doReverse << endl; AgarPars::show();}
 
 };
 
@@ -354,7 +359,7 @@ W2DCEparsA(int argc, const char* argv[]);
 double AVA_output = 0, AVB_output = 0;
 double AB_output_level = 1;
 
-void show(){cout << 
+void show() const {cout << 
   " AVA_output_level "  << AB_output_level << " AVA_output " << 
   AVA_output << " AVB_output " << AVB_output << " randInitState " << randomInitialState << endl;}
 
@@ -382,7 +387,7 @@ W2DCEpars(int argc, const char* argv[]);
 
 string sr_type = "None";
 
-void show(){cout << "srtype " << sr_type <<  endl;}
+void show(){cout << "srtype " << sr_type <<  endl;  W2DCEparsA::show();}
 
 void setParsFromJson(json & j){sr_type = j["SRType"]["value"]; 
   W2DCEparsA::setParsFromJson(j);

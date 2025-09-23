@@ -184,7 +184,7 @@ const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
 virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
-virtual void setWormPars(const W2Dparameters & w2par_) {assert(0);}
+virtual void setWormPars(const W2Dparameters * w2par_) {assert(0);}
 
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);

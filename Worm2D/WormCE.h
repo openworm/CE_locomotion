@@ -87,7 +87,7 @@ public:
 
     template<class T> friend class EvolutionFullW;
     shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
-    void setWormPars(const W2Dparameters & w2par_);
+    void setWormPars(const W2Dparameters * w2par_);
 
     protected:
     void setParsFromPheno(TVector<double> &pheno);

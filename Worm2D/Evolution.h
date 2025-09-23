@@ -475,10 +475,10 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
 
        
         T w(genotype, false);
+        w.setWormPars(&*wormpar_ptr);
 
-
-        W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
-        w.setWormPars(*wormpar_ptr);
+        
+        
         
         //w.setEvolPars(EparsR,evoPars1.evoType);
 
@@ -491,7 +491,10 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         w.InitializeState(rs);
         w.initForSimulation(rs);
         w.setStepSize(StepSize);
-        
+
+        W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+
+
         // Transient XXX
         //w.SetAVB(0.0);
         //w.SetAVA(0.0);
@@ -513,7 +516,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     else assert(0 && "direction not set properly");
        
 
-        w.setWormPars(w1);
+        w.setWormPars(&w1);
      
         //assert(0);
 
@@ -588,10 +591,12 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
             if (direction == 1 || direction == 2){
-            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            //temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            temp = cos(anglediff);
             }
             else{
-            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            //temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            temp = cos(anglediff)*-1;
             }
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
         }
@@ -782,6 +787,10 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
 
+    //Epars1.show();
+    //assert(0);
+
+
     const int SR_A = 1;
     const int SR_B = 2;
  
@@ -871,11 +880,11 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //assert(0);
 
     T w(genotype, false);
+    w.setWormPars(&*wormpar_ptr);
 
 
-
-    W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
-    w.setWormPars(*wormpar_ptr);
+   
+    
 
     //EvolparametersCE & Epars1 = w.getWormPars();
 
@@ -892,7 +901,11 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
-    
+
+    W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+
+    //w1.show();
+    //assert(0);
 
     if (direction == 1){
     w1.AVA_output =  0.0;
@@ -910,7 +923,10 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     }
     else assert(0 && "direction not set properly");
 
-    w.setWormPars(w1);
+    //w1.show();
+    //assert(0);
+
+    w.setWormPars(&w1);
 
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
@@ -933,10 +949,12 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
         anglediff = movementorientation - bodyorientation;  // Check how orientations align
         if (direction == 1 || direction == 2){
-            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            //temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            temp = cos(anglediff);
         }
         else{
-            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            //temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            temp = cos(anglediff)*-1.0;
         }
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
     }

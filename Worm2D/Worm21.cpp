@@ -80,9 +80,9 @@ shared_ptr<const W2Dparameters> Worm21::setWormPars(int argc, const char* argv[]
 
 //shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
 
-void Worm21::setWormPars(const W2Dparameters & w2par_)
+void Worm21::setWormPars(const W2Dparameters * w2par_)
 {
-  *W2DCEpars1 = dynamic_cast< const W2DCEparsA&>(w2par_);
+  *W2DCEpars1 = dynamic_cast< const W2DCEparsA&>(*w2par_);
   
 }
 
