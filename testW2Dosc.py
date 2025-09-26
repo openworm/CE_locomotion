@@ -3,11 +3,11 @@ from run_main import run
 run(
     simduration=60,
     simtransient=50,
-    duration=40,
+    duration=20,
     transient=10,
-    maxGens=1000,
-    popSize=92,
-    RandSeed=408,
+    maxGens=50,
+    popSize=96,
+    RandSeed=40098,
     #modelName="W2D21R",
     modelName="W2DCE",
     modelFolder="Worm2D",
@@ -24,21 +24,21 @@ run(
     evoType= "EvoCE",
     #evoType="Evo21R",
     #evoType="Evo21",
-    doReverse=2,
-    doForwardFirst=False,
+    doReverse=0,
+    doForwardFirst=True,
     randInitState=True,
-    doTestRun=False,
+    doTestRun= False,
     doCPT=True,
-    #AvgSpeed = 0.0001, #CE
-    AvgSpeed=0.00022,  # 21
+    AvgSpeed = 0.0001, #CE
+    #AvgSpeed=0.00022,  # 21
     #SRType="None",
-    SRType = "SR_TRANS_CONTRACT",
+    #SRType = "SR_TRANS_CONTRACT",
     # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
     # ABLevel  = 1,
     # MutVar = 0.1,
     # CrossProb = 0.5
-    fitType = 0
-
+    fitType = 0,
+    SRForm = 1
 )

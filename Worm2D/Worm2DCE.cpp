@@ -16,7 +16,17 @@ Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1
     //W2DCEpars1(new W2DCEpars()),Worm2Dm(par1_,nullptr),Worm2D(par1_,0)
     
     Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
-    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)){}
+    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1))
+    {
+
+      W2DCEpars1->AVA_output = 0.0;
+      W2DCEpars1->AVB_output = 0.0;
+
+      sr.SRForm = W2DCEpars1->SRForm;
+      pheno_A_gain = sr.SR_A_gain;
+      pheno_B_gain = sr.SR_B_gain;
+
+    }
 
    // {assert(0);}
     //Worm2Dm(par1_,(shared_ptr<W2DCEpars>) new W2DCEpars()),Worm2D(par1_,0),
@@ -45,6 +55,7 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
   } ,0),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1))
 {
 
+  W2DCEpars1->setParsFromJson(j);
   //W2Dbaseparameters1 = W2DCEpars1;
   cout << "Worm2DCE const" << endl;
 
@@ -66,13 +77,14 @@ NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
 NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
 NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
 
-W2DCEpars1->AVA_output = 0.0;
-W2DCEpars1->AVB_output = 0.0;
+//W2DCEpars1->AVA_output = 0.0;
+//W2DCEpars1->AVB_output = 0.0;
 
 cout << "Worm2DCE const" << endl;
 
 pheno_A_gain = sr.SR_A_gain;
 pheno_B_gain = sr.SR_B_gain;
+sr.SRForm = W2DCEpars1->SRForm;
 
 }
 
@@ -127,6 +139,84 @@ void Worm2DCE::setBackward()
     ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
 
 } */
+
+
+
+shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(int argc, const char* argv[])
+{
+  
+  W2DCEpars w1(argc,argv);
+  *W2DCEpars1 = w1; 
+  sr.SRForm = W2DCEpars1->SRForm;
+
+ 
+
+  //W2DCEpars1->show();
+  //assert(0);
+
+  assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
+    || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
+    ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
+
+  return W2Dbaseparameters1;
+
+  //evolvable_worm_pars_ptr = W2DCEpars1;
+  //dynamic_cast<W2DCEpars&>(w2par_);
+  //W2DCEpars1->show();
+  //assert(0);
+}
+
+//shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
+
+void Worm2DCE::setWormPars(const W2Dparameters * w2par_)
+{
+
+//assert(0);
+
+{ const W2DCEpars * const w1 = dynamic_cast<const W2DCEpars*>(w2par_);
+  if (w1 != nullptr){
+  *W2DCEpars1 = *w1;
+  sr.SRForm = W2DCEpars1->SRForm;
+
+  return;
+  }
+}
+
+{ const W2DCEparsA * const w1 = dynamic_cast<const W2DCEparsA*>(w2par_);
+  if (w1 != nullptr){
+  W2DCEpars1->AVA_output = w1->AVA_output;
+  W2DCEpars1->AVB_output = w1->AVB_output;
+  W2DCEpars1->AB_output_level =  w1->AB_output_level;
+
+
+  /* if (W2DCEpars1->AVB_output>0.5){
+  cout << " xxx " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
+  //assert(0);
+  }
+  if (W2DCEpars1->AVB_output<0.5) {
+  cout << " yyy " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
+  assert(0);
+  }  */
+
+  return;
+  }
+
+}
+
+assert(0 && "not correct cast");
+
+  //W2DCEpars1->show();
+    //assert(0);
+}
+
+
+
+
+
+
+
+
+
 
 void Worm2DCE::InitializeState(RandomState &rs)
 {
@@ -302,6 +392,7 @@ void Worm2DCE::addParsToJson(json & j)
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
     Worm2D::addParsToJson(j);
+    //W2DCEpars1->addParsToJson(j);
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 }

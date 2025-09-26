@@ -86,8 +86,10 @@ public:
     void addParsToJson(json & j);
 
     template<class T> friend class EvolutionFullW;
-    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
-    void setWormPars(const W2Dparameters * w2par_);
+    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
+    {return Worm2DCE::setWormPars(argc,argv);}
+    void setWormPars(const W2Dparameters * w2par_)
+    {return Worm2DCE::setWormPars(w2par_);}
 
     protected:
     void setParsFromPheno(TVector<double> &pheno);

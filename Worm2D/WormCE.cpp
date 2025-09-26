@@ -47,75 +47,6 @@ WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 
 }
 
-shared_ptr<const W2Dparameters> WormCE::setWormPars(int argc, const char* argv[])
-{
-  
-  W2DCEpars w1(argc,argv);
-  *W2DCEpars1 = w1; 
-
- 
-
-  //W2DCEpars1->show();
-  //assert(0);
-
-  assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
-    || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
-    ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
-
-  return W2Dbaseparameters1;
-
-  //evolvable_worm_pars_ptr = W2DCEpars1;
-  //dynamic_cast<W2DCEpars&>(w2par_);
-  //W2DCEpars1->show();
-  //assert(0);
-}
-
-//shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
-
-void WormCE::setWormPars(const W2Dparameters * w2par_)
-{
-
-//assert(0);
-
-{ const W2DCEpars * const w1 = dynamic_cast<const W2DCEpars*>(w2par_);
-  if (w1 != nullptr){
-  *W2DCEpars1 = *w1;
-  //W2DCEpars1->AVA_output = w1->AVA_output;
-  //W2DCEpars1->AVB_output = w1->AVB_output;
-  //W2DCEpars1->AB_output_level =  w1->AB_output_level;
-
-  //W2DCEpars1->show();
-  //assert(0);
-  return;
-  }
-}
-
-{ const W2DCEparsA * const w1 = dynamic_cast<const W2DCEparsA*>(w2par_);
-  if (w1 != nullptr)
-  W2DCEpars1->AVA_output = w1->AVA_output;
-  W2DCEpars1->AVB_output = w1->AVB_output;
-  W2DCEpars1->AB_output_level =  w1->AB_output_level;
-
-  /* if (W2DCEpars1->AVB_output>0.5){
-  cout << " xxx " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
-  //assert(0);
-  }
-  if (W2DCEpars1->AVB_output<0.5) {
-  cout << " yyy " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
-  assert(0);
-  }  */
-
-  return;
-
-}
-
-assert(0 && "not correct cast");
-
-  //W2DCEpars1->show();
-    //assert(0);
-}
-
-
 
 
 
@@ -230,8 +161,8 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   NMJ_DD = pheno(17);
   NMJ_VD = pheno(17);
 
-  W2DCEpars1->AVA_output = 0.0;
-  W2DCEpars1->AVB_output = 0.0;
+  //W2DCEpars1->AVA_output = 0.0;
+  //W2DCEpars1->AVB_output = 0.0;
 
   pheno_A_gain = sr.SR_A_gain;
   pheno_B_gain = sr.SR_B_gain;

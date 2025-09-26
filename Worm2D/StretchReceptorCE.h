@@ -47,6 +47,7 @@ public:
     TVector<double> A_V_sr;
     TVector<double> B_D_sr;
     TVector<double> B_V_sr;
+    int SRForm = 0;
     
 };
 

@@ -8,6 +8,8 @@
 // Added SR for class A motorneurons
 
 #include "StretchReceptorCE.h"
+#include <cassert>
+
 
 StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain)
 {
@@ -49,6 +51,8 @@ void StretchReceptorCE::Update()
     //////////////////////////////
     // A-class Stretch Receptors
     // first unit (head) receive same input as Unit 2
+
+    if (SRForm == 0){
     d = 0.0;
     v = 0.0;
     for (int j = 1; j <= NSEGSSR; j++){
@@ -95,54 +99,70 @@ void StretchReceptorCE::Update()
     B_D_sr(10) = SR_B_gain*(d/NSEGSSR);
     B_V_sr(10) = SR_B_gain*(v/NSEGSSR);
 
+    return;
+    }
+
 //        //////////////////////////////
 //    // A-class Stretch Receptors
 //    // Units 1 to 9 (first segment sense by unit 1 is segment 13)
-//    for (int i = 1; i <= 9; i++){
-//        d = 0.0;
-//        v = 0.0;
-//        for (int j = 1; j <= NSEGSSR; j++)
-//        {
-//            d += normSegLenD(12+j+(i-1)*4);
-//            v += normSegLenV(12+j+(i-1)*4);
-//        }
-//        A_D_sr(i) = SR_A_gain*(d/NSEGSSR);
-//        A_V_sr(i) = SR_A_gain*(v/NSEGSSR);
-//    }
+
+else if (SRForm == 1)
+{
+    for (int i = 1; i <= 9; i++){
+        d = 0.0;
+        v = 0.0;
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+            d += normSegLenD(12+j+(i-1)*4);
+            v += normSegLenV(12+j+(i-1)*4);
+        }
+        A_D_sr(i) = SR_A_gain*(d/NSEGSSR);
+        A_V_sr(i) = SR_A_gain*(v/NSEGSSR);
+    }
+
 //    // Unit 10 (tail), receive same input as Unit 9
-//    d = 0.0;
-//    v = 0.0;
-//    for (int j = 1; j <= NSEGSSR; j++){
-//        d += normSegLenD(j+44);
-//        v += normSegLenV(j+44);
-//    }
-//    A_D_sr(10) = SR_A_gain*(d/NSEGSSR);
-//    A_V_sr(10) = SR_A_gain*(v/NSEGSSR);
-//    
+
+    d = 0.0;
+    v = 0.0;
+    for (int j = 1; j <= NSEGSSR; j++){
+        d += normSegLenD(j+44);
+        v += normSegLenV(j+44);
+    }
+    A_D_sr(10) = SR_A_gain*(d/NSEGSSR);
+    A_V_sr(10) = SR_A_gain*(v/NSEGSSR);
+    
 //    //////////////////////////////
 //    // B-class Stretch Receptors
 //    // first unit (head) receive same input as Unit 2
-//    d = 0.0;
-//    v = 0.0;
-//    for (int j = 1; j <= NSEGSSR; j++){
-//        d += normSegLenD(j);
-//        v += normSegLenV(j);
-//    }
-//    B_D_sr(1) = SR_B_gain*(d/NSEGSSR);
-//    B_V_sr(1) = SR_B_gain*(v/NSEGSSR);
+
+    d = 0.0;
+    v = 0.0;
+    for (int j = 1; j <= NSEGSSR; j++){
+        d += normSegLenD(j);
+        v += normSegLenV(j);
+    }
+    B_D_sr(1) = SR_B_gain*(d/NSEGSSR);
+    B_V_sr(1) = SR_B_gain*(v/NSEGSSR);
 
 //    // Units 2 to 10 
-//    for (int i = 2; i <= 10; i++){
-//        d = 0.0;
-//        v = 0.0;
-//        for (int j = 1; j <= NSEGSSR; j++)
-//        {
-//            d += normSegLenD(j+(i-2)*4);
-//            v += normSegLenV(j+(i-2)*4);
-//        }
-//        B_D_sr(i) = SR_B_gain*(d/NSEGSSR);
-//        B_V_sr(i) = SR_B_gain*(v/NSEGSSR);
-//    }
-    
+
+    for (int i = 2; i <= 10; i++){
+        d = 0.0;
+        v = 0.0;
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+            d += normSegLenD(j+(i-2)*4);
+            v += normSegLenV(j+(i-2)*4);
+        }
+        B_D_sr(i) = SR_B_gain*(d/NSEGSSR);
+        B_V_sr(i) = SR_B_gain*(v/NSEGSSR);
+    }
+ 
+    return;
+}
+
+    cout << "SRForm " << SRForm << endl;
+
+    assert(0 && "SRForm not set correctly");
 
 }

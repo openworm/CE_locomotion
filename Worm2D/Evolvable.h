@@ -211,18 +211,21 @@ class EvolvableS
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
   //virtual W2Dparameters & getWormPars() {return;}
   
-  virtual void setWormPars(const W2Dparameters * w2par_) = 0; //{assert(0);}
+  virtual void setWormPars(const W2Dparameters * w2par_) = 0; 
+  //{
+  //return this->setWormPars(w2par_);
+  //}
 
   //{ return T::setWormPars(w2par_);}
 
   //virtual void setWormPars(int argc, const char* argv[]) {assert(0);}
   //virtual shared_ptr<const W2Dparameters> getWormPars() {return nullptr;}
   
-  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0; //{return nullptr;}
+  //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0; //{return nullptr;}
 
   //{return T::setWormPars(argc,argv);}
 
-  //shared_ptr<const W2Dparameters> setItsWormPars(int argc, const char* argv[])
+  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0;
   //{return this->setWormPars(argc,argv);}
   
 
@@ -242,7 +245,7 @@ template<typename T>
 class EvolvableST : public EvolvableS
 {
   public:
-void setWormPars(const W2Dparameters & w2par_) override { return T::setWormPars(w2par_);}
+void setWormPars(const W2Dparameters * w2par_) override { return T::setWormPars(w2par_);}
 shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) override 
 {return T::setWormPars(argc,argv);}
 };
@@ -332,6 +335,8 @@ void show() const {cout << " eparsCE doReverse " <<  doReverse << endl; AgarPars
 };
 
 
+
+
 class EvolparametersCER : public EvolparametersCE, public Evolparameters
 {
 public:
@@ -389,13 +394,18 @@ W2DCEpars(){}
 W2DCEpars(int argc, const char* argv[]);
 
 string sr_type = "None";
+int SRForm = 0;
 
 void show(){cout << "srtype " << sr_type <<  endl;  W2DCEparsA::show();}
 
-void setParsFromJson(json & j){sr_type = j["SRType"]["value"]; 
+void setParsFromJson(json & j){
+  sr_type = j["SRType"]["value"]; 
+  SRForm = j["SRForm"]["value"];
   W2DCEparsA::setParsFromJson(j);
 }
-void addParsToJson(json & j) const {j["SRType"]["value"] = sr_type;
+void addParsToJson(json & j) const {
+  j["SRType"]["value"] = sr_type;
+  j["SRForm"]["value"] = SRForm;
    W2DCEparsA::addParsToJson(j);
 }
 

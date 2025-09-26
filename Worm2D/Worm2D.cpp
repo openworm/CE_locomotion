@@ -513,6 +513,8 @@ void Worm2Dbody::addParsToJson(json & j)
 
 void Worm2Dbase::addParsToJson(json & j)
 {  
+
+
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
@@ -542,6 +544,9 @@ void Worm2Dbase::addParsToJson(json & j)
         appendVectorToJson<string>(j["PhenoNames"], phenoNames);
         appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
     }
+
+
+    W2Dbaseparameters1->addParsToJson(j);
 
 }
 

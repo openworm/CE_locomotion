@@ -88,6 +88,9 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);//{W2DCEpars1 = W2DCEpars_;}
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);
     //void setPars(int argc, const char* argv[]);
+    
+    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
+    void setWormPars(const W2Dparameters * w2par_);
 
     friend class EvolutionCE;
 

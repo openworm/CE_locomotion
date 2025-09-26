@@ -62,6 +62,7 @@ W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv
 W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
 {
   sr_type = getParameterString(argc,argv,"--SRType","None");
+  SRForm = getParameterInt(argc,argv,"--SRForm","0");
 }
 
 AgarPars::AgarPars(int argc, const char* argv[])
@@ -80,6 +81,8 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
     fitType = getParameterInt(argc,argv,"--fitType","0");
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
+
+
 
 //EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)
 //, Epars1(dynamic_cast<Evolparameters&>(*w2par_ptr))

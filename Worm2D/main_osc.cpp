@@ -82,16 +82,18 @@ int main (int argc, const char* argv[])
 
     if (!do_nml){
 
-    if (model_name == "W2Dosc") w2 = new Worm2Dosc(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2D21") w2 = new Worm21(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2DCE") w2 = new WormCE(ep1.rename_file("best.gen.dat"));
-    if (model_name == "W2D21R") w2 = new Worm21R(ep1.rename_file("best.gen.dat"));
+    const string gen_filename =  ep1.rename_file("best.gen.dat");
+
+    if (model_name == "W2Dosc") w2 = new Worm2Dosc(gen_filename);
+    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(gen_filename);
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(gen_filename);
+    if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(gen_filename);
+    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename);
+    if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
+    if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
+    if (model_name == "W2D21") w2 = new Worm21(gen_filename);
+    if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
+    if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
 
     }else{
 
@@ -123,9 +125,10 @@ int main (int argc, const char* argv[])
     w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
+    
 
     const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
-
+   
     
     WormFR* const w = dynamic_cast<WormFR*>(w2);
 
