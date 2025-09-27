@@ -45,6 +45,7 @@ public:
     void DumpParams(ofstream &ofs);
     void setForward();
     void setBackward();
+    void randomizeNS(RandomState &rs){return;}
 
     void setPhenoNames();
 

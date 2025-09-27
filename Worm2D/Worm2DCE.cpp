@@ -102,11 +102,15 @@ void Worm2DCE::initForSimulation(RandomState & rs)
   AVB_output =  AVB_act;
  */
  
+
 }
+
+
 
 
 void Worm2DCE::setForward()
 {
+  //assert(0);
   sr.SR_A_gain = pheno_A_gain;
   sr.SR_B_gain = pheno_B_gain;
 
@@ -119,6 +123,7 @@ void Worm2DCE::setForward()
 
 void Worm2DCE::setBackward()
 {
+  //assert(0);
   sr.SR_A_gain = pheno_A_gain;
   sr.SR_B_gain = pheno_B_gain;
 

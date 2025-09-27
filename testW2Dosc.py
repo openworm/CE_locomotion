@@ -5,9 +5,9 @@ run(
     simtransient=50,
     duration=20,
     transient=10,
-    maxGens=50,
+    maxGens=10,
     popSize=96,
-    RandSeed=40098,
+    RandSeed=4918,
     #modelName="W2D21R",
     modelName="W2DCE",
     modelFolder="Worm2D",
@@ -15,7 +15,7 @@ run(
     #inputFolderName="exampleRunW2DCE_FR",
     outputFolderName="exampleRunW2Dosc",
     #outputFolderName="exampleRunW2Dosc_t1_nml",
-    doEvol= True,
+    doEvol= False,
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
@@ -25,7 +25,7 @@ run(
     #evoType="Evo21R",
     #evoType="Evo21",
     doReverse=0,
-    doForwardFirst=True,
+    doForwardFirst=False,
     randInitState=True,
     doTestRun= False,
     doCPT=True,
@@ -39,6 +39,6 @@ run(
     # ABLevel  = 1,
     # MutVar = 0.1,
     # CrossProb = 0.5
-    fitType = 0,
-    SRForm = 1
+    fitType = 1,
+    SRForm = 0
 )

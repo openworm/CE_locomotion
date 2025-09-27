@@ -77,6 +77,7 @@ public:
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
     //void Step(double StepSize, double output);
+    void randomizeNS(RandomState &rs);
 
     //void DumpBodyState(ofstream &ofs, int skips);
     //void DumpActState(ofstream &ofs, int skips);

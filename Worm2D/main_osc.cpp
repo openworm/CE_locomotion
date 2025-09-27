@@ -125,7 +125,7 @@ int main (int argc, const char* argv[])
     w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
-    
+    w2->setWormPars(argc,argv);
 
     const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
    
@@ -174,6 +174,7 @@ int main (int argc, const char* argv[])
         else w->setForward();
 
     s1.sp.Transient = 0; 
+    w->randomizeNS(rs);
     s1.runSimulation(*w2);
     
 
@@ -196,3 +197,4 @@ int main (int argc, const char* argv[])
     delete w2;
     return 0;
 }
+

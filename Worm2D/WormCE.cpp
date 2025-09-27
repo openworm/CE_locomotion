@@ -169,6 +169,16 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
 }
 
 
+void WormCE::randomizeNS(RandomState &rs)
+{
+ 
+  if (W2Dbaseparameters1->randomInitialState) {
+  n.RandomizeCircuitState(-1, 1, rs);
+  n.RandomizeCircuitOutput(0.2, 0.8, rs);
+  }
+
+}
+
 void WormCE::InitializeState(RandomState &rs)
 {
   
@@ -182,8 +192,7 @@ void WormCE::InitializeState(RandomState &rs)
 
 
   if (W2Dbaseparameters1->randomInitialState) {
-    n.RandomizeCircuitState(-1, 1, rs);
-    n.RandomizeCircuitOutput(0.2, 0.8, rs);
+    randomizeNS(rs);
   }
   else{
   for (int u = 1; u <= par1.N_units; u++)

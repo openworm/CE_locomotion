@@ -303,5 +303,6 @@ class WormFR
 public:
 virtual void setForward() = 0;
 virtual void setBackward() = 0;
+virtual void randomizeNS(RandomState &rs)  = 0;
 
 };
