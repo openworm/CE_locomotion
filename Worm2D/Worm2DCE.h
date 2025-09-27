@@ -88,7 +88,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);//{W2DCEpars1 = W2DCEpars_;}
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);
     //void setPars(int argc, const char* argv[]);
-    
+
     shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
     void setWormPars(const W2Dparameters * w2par_);
 
@@ -134,5 +134,57 @@ class Worm2DCE: public Worm2D, public WormFR{
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    
 };
+
+
+class WormCE : public EvolvableS, public Worm2DCE
+{
+public:
+
+    WormCE(TVector<double> &pheno);
+    WormCE(const string & filename_);
+    WormCE(TVector<double> &phengen, bool isPheno);
+    WormCE();
+
+    //Worm::Worm(TVector<double> &v,double output);
+
+    void InitializeState(RandomState &rs);
+    //void HeadStep(double StepSize, double output);
+    //void Step(double StepSize, double output);
+    void randomizeNS(RandomState &rs);
+
+    //void DumpBodyState(ofstream &ofs, int skips);
+    //void DumpActState(ofstream &ofs, int skips);
+    void DumpVoltage(ofstream &ofs, int skips);
+    void DumpParams(ofstream &ofs);
+    NervousSystem & n;
+    void addParsToJson(json & j);
+
+    template<class T> friend class EvolutionFullW;
+    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
+    {return Worm2DCE::setWormPars(argc,argv);}
+    void setWormPars(const W2Dparameters * w2par_)
+    {return Worm2DCE::setWormPars(w2par_);}
+
+    protected:
+    void setParsFromPheno(TVector<double> &pheno);
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    int getVectSize(){return 17;}
+    void setEvolPars(W2Dparameters & w2par_, string evotype_){}
+    //W2Dparameters & getWormPars() {return W2DCEpars1;}
+  
+    
+    //shared_ptr<const W2Dparameters> getWormPars();
+
+
+    //double CoMx();
+    //double CoMy();
+    //void Curvature(TVector<double> &c);
+    //void AngleCurvature(TVector<double> &c);
+    //double Orientation();
+
+   
+};
+
+//class wormForJson : public Worm<NervousSystem> {};
 
 
