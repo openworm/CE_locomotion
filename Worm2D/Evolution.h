@@ -271,8 +271,10 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
 template<class T>
 void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
-        T w(pheno, true);json j;evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
-        wormpar_ptr->addParsToJson(j["Worm"]);
+        T w(pheno, true);
+        json j;
+        evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(w,j);
     }
 

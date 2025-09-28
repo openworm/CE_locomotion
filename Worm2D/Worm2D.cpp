@@ -546,7 +546,8 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
 
-    W2Dbaseparameters1->addParsToJson(j);
+    W2Dbaseparameters1->addParsToJson(j["Worm"]);
+    //W2Dbaseparameters1->addParsToJson(j);
 
 }
 

@@ -1,6 +1,6 @@
 #include "EvolutionCE.h"
 #include <math.h>
-#include "WormCE.h"
+#include "Worm2DCE.h"
 
 void EvolutionCE::writeJson(TVector<double> &v) {WormCE w(v); writeJson1(w);}
 

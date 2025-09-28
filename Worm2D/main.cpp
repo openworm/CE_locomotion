@@ -1,6 +1,6 @@
 //#include "VectorMatrix.h"
 #include "WormRS18.h"
-#include "WormCE.h"
+#include "Worm2DCE.h"
 #include "Worm21.h"
 #include "WormAgent.h"
 //#include "Worm2DCE.h"

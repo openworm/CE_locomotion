@@ -55,7 +55,7 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
   } ,0),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1))
 {
 
-  W2DCEpars1->setParsFromJson(j);
+  W2DCEpars1->setParsFromJson(j["Worm"]);
   //W2Dbaseparameters1 = W2DCEpars1;
   cout << "Worm2DCE const" << endl;
 
