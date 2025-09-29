@@ -171,8 +171,12 @@ NSosc & n;
 //Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
 //Evolparameters & Epars1;
 
-virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
-{return Worm2Dbase::setWormPars(argc,argv);}
+virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) 
+{return Worm2Dbase::setWormPars(cmd);}
+
+//virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
+//{return Worm2Dbase::setWormPars(argc,argv);}
+
 virtual void setWormPars(const W2Dparameters * w2par_)
 {return Worm2Dbase::setWormPars(w2par_);}
 

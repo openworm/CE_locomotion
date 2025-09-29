@@ -2,6 +2,71 @@
 #include "../VectorMatrix.h"
 #include "jsonUtils.h"
 
+class CmdArgs {
+    vector<string> args;
+public:
+    CmdArgs(int argc, const char* argv[]) 
+        : args(argv, argv + argc) 
+        {
+          if (((argc-1) % 2) != 0)
+         {cout << "The arguments are not configured correctly." << endl;exit(1);}
+        }
+
+    //int size() const { return static_cast<int>(args.size()); }
+
+    //const string& operator[](int i) const { return args[i]; }
+
+    //const vector<string>& all() const { return args; }
+
+    const string getArgVal(const string & str, const  string & defaultstr) const
+    { 
+      for (int i = 1; i<args.size(); i+=2)
+      //for (int i =0;i<args.size();i++)
+        if (args[i]==str) return args[i+1];
+      return defaultstr;
+    }
+
+    const int getArgVal(const string & str) const
+    {
+      for (int i = 1; i<args.size(); i+=2)
+      //for (int i=0;i<args.size();i++)
+        if (args[i]==str) return i;
+      return -1;
+    }
+
+    const double getArgValDoub(const string & str, const double & val) const
+    {
+      const int arg = getArgVal(str);
+      if (arg==-1) return val;
+      return stod(args[arg+1].c_str());
+    }
+
+    const int getArgValInt(const string & str, const int & val) const
+    {
+      const int arg = getArgVal(str);
+      if (arg==-1) return val;
+      return stoi(args[arg+1].c_str());
+    }
+
+    const long getArgValLong(const string & str, const long & val) const
+    {
+      const int arg = getArgVal(str);
+      if (arg==-1) return val;
+      return stol(args[arg+1].c_str());
+    }
+
+
+    /* const double getArgValLong(const string & str, const string & defaultstr) const
+    {
+      return stol(getArgVal(str,defaultstr).c_str());
+    }
+
+    const double getArgValInt(const string & str, const string & defaultstr) const
+    {
+      return stoi(getArgVal(str,defaultstr).c_str());
+    } */
+
+};
 
 
 struct evoParsNonConst{
@@ -91,6 +156,41 @@ struct evoPars{
 
 string rename_file(string filename){return directoryName + "/" + 
     fileprefix + filename;}
+
+
+void setFromArgs(shared_ptr<const CmdArgs> cmd)
+{
+
+bool seed_flag = 1;
+
+MaxGenerations = cmd->getArgValInt("--maxgens", MaxGenerations);
+MutationVariance = cmd->getArgValDoub("--MutVar", MutationVariance);
+CrossoverProbability = cmd->getArgValDoub("--CrossProb", CrossoverProbability);
+directoryName = cmd->getArgVal("--folder","HJUYGYT");
+struct stat sb;
+if (stat(directoryName.c_str(), &sb) != 0) 
+{cout << "Directory doesn't exist." << endl;exit(1);}
+
+PopulationSize = cmd->getArgValInt("-p",PopulationSize);
+CheckpointInterval = cmd->getArgValInt("-cpt", CheckpointInterval);
+Duration = cmd->getArgValDoub("-d", Duration);
+Transient = cmd->getArgValDoub("-t", Transient);
+evoType = cmd->getArgVal("--evoType", evoType);
+
+if (seed_flag){ 
+  long randomseed1 = cmd->getArgValLong("-R",-1);
+  if (randomseed1!=-1)
+  {seed_flag = 0;randomseed = randomseed1;}
+}
+
+if (seed_flag){ 
+  long randomseed1 = cmd->getArgValLong("-r",-1);
+  if (randomseed1!=-1)
+  {seed_flag = 0;randomseed = randomseed1 + static_cast<long>(time(NULL));}
+}
+
+
+}
 
 void setFromArgs(int argc, const char* argv[])
 {
@@ -225,9 +325,10 @@ class EvolvableS
 
   //{return T::setWormPars(argc,argv);}
 
-  virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0;
+  //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0;
   //{return this->setWormPars(argc,argv);}
   
+  virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
 
 
   //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
@@ -256,6 +357,7 @@ class W2Dbaseparameters : virtual public W2Dparameters
 public:
 W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
+W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
 bool randomInitialState = 0;
 void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
 void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomInitialState;}
@@ -267,6 +369,8 @@ class AgarPars : virtual public W2Dparameters
 {
   public:
   AgarPars(int argc, const char* argv[]);
+  AgarPars(shared_ptr<const CmdArgs> cmd);
+
 
 double OSCTbase = 0.25; // Cap for oscillation evaluation
 double agarfreq = 0.44;
@@ -293,6 +397,8 @@ class Evolparameters : virtual public AgarPars
 {
 public:
 Evolparameters(int argc, const char* argv[], shared_ptr<EvolvableS> & evol1_, string evotype_);
+Evolparameters(shared_ptr<const CmdArgs> cmd, shared_ptr<EvolvableS> & evol1_, string evotype_);
+
 
 int dbunit = 0;
 int vbunit = 0;
@@ -315,6 +421,7 @@ class EvolparametersCE : virtual public AgarPars   //: public W2DCEpars
 {
 public:
 EvolparametersCE(int argc, const char* argv[]);
+EvolparametersCE(shared_ptr<const CmdArgs> cmd);
 
 int doReverse = 0;
 int fitType = 0;
@@ -342,6 +449,10 @@ class EvolparametersCER : public EvolparametersCE, public Evolparameters
 public:
 EvolparametersCER(int argc, const char* argv[], shared_ptr<EvolvableS> & evol1_, string evotype_):
 Evolparameters(argc,argv,evol1_,evotype_),EvolparametersCE(argc,argv),AgarPars(argc,argv){}
+EvolparametersCER(shared_ptr<const CmdArgs> cmd, shared_ptr<EvolvableS> & evol1_, string evotype_):
+Evolparameters(cmd,evol1_,evotype_),EvolparametersCE(cmd),AgarPars(cmd){}
+
+
 
 void setParsFromJson(json & j){
   doReverse =  j["doReverse"]["value"];
@@ -362,7 +473,7 @@ struct W2DCEparsA : public W2Dbaseparameters
 public:
 W2DCEparsA(){}
 W2DCEparsA(int argc, const char* argv[]);
-
+W2DCEparsA(shared_ptr<const CmdArgs> cmd);
 
 double AVA_output = 0, AVB_output = 0;
 double AB_output_level = 1;
@@ -392,20 +503,24 @@ struct W2DCEpars : public W2DCEparsA
 public:
 W2DCEpars(){}
 W2DCEpars(int argc, const char* argv[]);
+W2DCEpars(shared_ptr<const CmdArgs> cmd);
 
 string sr_type = "None";
 int SRForm = 0;
+double SREvoBot = 0;
 
 void show(){cout << "srtype " << sr_type <<  endl;  W2DCEparsA::show();}
 
 void setParsFromJson(json & j){
   sr_type = j["SRType"]["value"]; 
   SRForm = j["SRForm"]["value"];
+  SREvoBot = j["SREvoBot"]["value"];
   W2DCEparsA::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
   j["SRType"]["value"] = sr_type;
   j["SRForm"]["value"] = SRForm;
+  j["SREvoBot"]["value"] = SREvoBot;
    W2DCEparsA::addParsToJson(j);
 }
 

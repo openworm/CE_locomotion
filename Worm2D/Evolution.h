@@ -83,6 +83,10 @@ class Evolution
     evoPars setPars(int argc, const char* argv[], evoPars ep1);
     evoPars setPars(int argc, const char* argv[], evoPars ep1, string prefix_);
     simPars setSimPars(int argc, const char* argv[]);
+    simPars setSimPars(shared_ptr<const CmdArgs> cmd);
+    evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1);
+    evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
+
     void setUp();
     void setFromEvol(const Evolution & er, int offset);
     //void setPopFromBestGenoFile(int vecincsize, int offset);
@@ -97,6 +101,7 @@ class Evolution
     
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_);
 
     virtual void addExtraParsToJson(json & j) {return;}
     TSearch* const s; 
@@ -241,10 +246,15 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     public:
     EvolutionFullW(int argc, const char* argv[]):
     Evolvable_ptr(shared_ptr<EvolvableS> (new T())),evopar_ptr(getParameters(argc,argv)),
-    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize()),
-    wormpar_ptr(evolvable1->setWormPars(argc,argv)){}
+    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize()){}
+
+    //,wormpar_ptr(evolvable1->setWormPars(argc_,argv_))
     //{evolvable1->setWormPars(argc,argv); wormpar_ptr = evolvable1->getWormPars();}
     
+    EvolutionFullW(shared_ptr<const CmdArgs> cmd_):cmd(cmd_),
+    Evolvable_ptr(shared_ptr<EvolvableS> (new T())),evopar_ptr(getParameters(cmd_)),
+    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize()){}
+
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
     double Evaluation18(TVector<double> &genotype, RandomState &rs);
@@ -261,20 +271,28 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
     protected:
     evoPars getDefaultEvoPars(int argc, const char* argv[]);
-    
+    evoPars getDefaultEvoPars(const string &);
+    evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
+
     shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
+    shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd);
 
     private:
+    shared_ptr<const CmdArgs> cmd;
     const shared_ptr<const W2Dparameters> evopar_ptr;
-    const shared_ptr<const W2Dparameters> wormpar_ptr;
+    //const shared_ptr<const W2Dparameters> wormpar_ptr;
+    //const int argc;
+    //const char* argv[];
 };
 
 template<class T>
 void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
         T w(pheno, true);
+        //w.setWormPars(argc,argv);
+        w.setWormPars(cmd);
         json j;
         evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
-        wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
+        //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(w,j);
     }
 
@@ -298,10 +316,48 @@ shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(int argc, const
 }
 
 template<class T>
+shared_ptr<const W2Dparameters> EvolutionFullW<T>::getParameters(shared_ptr<const CmdArgs> cmd)
+{
+    //string evotype_ = getParameter(argc,argv,"--evoType","Evo21");
+    const string & evotype_ = evoPars1.evoType;
+
+    if (evotype_=="Evo21") 
+    return shared_ptr<const Evolparameters>(new const Evolparameters(cmd, evolvable1, evotype_));
+    if (evotype_=="Evo18") 
+    return shared_ptr<const AgarPars>(new const AgarPars(cmd));
+    if (evotype_=="EvoCE") 
+    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(cmd));
+    if (evotype_=="Evo21R") 
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd, evolvable1, evotype_));
+
+    assert(0 && "evotype not implemented");
+    return nullptr;
+}
+
+template<class T>
 evoPars EvolutionFullW<T>::getDefaultEvoPars(int argc, const char* argv[]) 
+{
+
+    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    return getDefaultEvoPars(evotype_); 
+
+}
+
+template<class T>
+evoPars EvolutionFullW<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd) 
+{
+
+    string evotype_ = cmd->getArgVal("--evoType","Evo21");
+    
+   // getParameterString(argc,argv,"--evoType","Evo21");
+    return getDefaultEvoPars(evotype_); 
+
+}
+
+template<class T>
+evoPars EvolutionFullW<T>::getDefaultEvoPars(const string & evotype_) 
     {
 
-        string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
@@ -477,11 +533,11 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
 
        
         T w(genotype, false);
-        w.setWormPars(&*wormpar_ptr);
+        //w.setWormPars(argc,argv);
+        w.setWormPars(cmd);
+        //w.setWormPars(&*wormpar_ptr);
 
-        
-        
-        
+    
         //w.setEvolPars(EparsR,evoPars1.evoType);
 
         //TVector<double> phenotype(1, VectSize);
@@ -494,7 +550,11 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         w.initForSimulation(rs);
         w.setStepSize(StepSize);
 
-        W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+        
+        shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1);
+
+        //shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2)
+        //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
 
 
         // Transient XXX
@@ -502,23 +562,23 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         //w.SetAVA(0.0);
         
        if (direction == 1){
-        w1.AVA_output =  0.0;
-        w1.AVB_output =  1.0;
+        w1->AVA_output =  0.0;
+        w1->AVB_output =  1.0;
         }
         else if (direction == -1) {
-        w1.AVA_output =  1.0;
-        w1.AVB_output =  0.0; // Command Interneuron Activation Backward
+        w1->AVA_output =  1.0;
+        w1->AVB_output =  0.0; // Command Interneuron Activation Backward
         }
         else if (direction == 2)
         {
-        w1.AVA_output =  0.0;
-        w1.AVB_output =  0.0; 
+        w1->AVA_output =  0.0;
+        w1->AVB_output =  0.0; 
         }
 
         else assert(0 && "direction not set properly");
        
 
-        w.setWormPars(&w1);
+        //w.setWormPars(&w1);
      
         //assert(0);
 
@@ -662,7 +722,8 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
      
     T w(genotype, false);
-  
+    //w.setWormPars(argc,argv);
+    w.setWormPars(cmd);
 
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
@@ -856,9 +917,12 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
   const double & Transient = evoPars1.Transient;
 
   //const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
-    const EvolparametersCE & EparsR = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
+    //const EvolparametersCE & EparsR = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
+    shared_ptr<const EvolparametersCE> EparsR = dynamic_pointer_cast<const EvolparametersCE>(evopar_ptr);
+  
+    
 
-    const double AvgSpeed = EparsR.AvgSpeed;
+    const double AvgSpeed = EparsR->AvgSpeed;
     
     //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
     
@@ -884,11 +948,12 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //w.InitializeState(rs);
     //assert(0);
 
+    //T w(argc,argv,genotype);
+
     T w(genotype, false);
-    w.setWormPars(&*wormpar_ptr);
-
-
-   
+    //w.setWormPars(&*wormpar_ptr);
+    //w.setWormPars(argc,argv);
+    w.setWormPars(cmd);
     
 
     //EvolparametersCE & Epars1 = w.getWormPars();
@@ -900,6 +965,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         //setParsFromPheno(phenotype);
         //construct(phenotype);
         //setUpMuscleConn();
+
     w.InitializeState(rs);
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
@@ -907,31 +973,32 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
 
-    W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+    //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+
+    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1);
 
     //w1.show();
     //assert(0);
 
     if (direction == 1){
-    w1.AVA_output =  0.0;
-    w1.AVB_output =  1.0;
+    w1->AVA_output =  0.0;
+    w1->AVB_output =  1.0;
     }
     else if  (direction == -1) {
-        w1.AVA_output =  1.0;
-        w1.AVB_output =  0.0; // Command Interneuron Activation Backward
+        w1->AVA_output =  1.0;
+        w1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
     else if  (direction == 2)
     {
-
-    w1.AVA_output =  0.0;
-    w1.AVB_output =  0.0; 
+    w1->AVA_output =  0.0;
+    w1->AVB_output =  0.0; 
     }
     else assert(0 && "direction not set properly");
 
     //w1.show();
     //assert(0);
 
-    w.setWormPars(&w1);
+    //w.setWormPars(&w1);
 
     //w.setEvolPars(evopar_ptr, evoPars1.evoType);
 
@@ -954,12 +1021,12 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
         anglediff = movementorientation - bodyorientation;  // Check how orientations align
          if (direction == 1 || direction == 2){
-            if (EparsR.fitType == 0)
+            if (EparsR->fitType == 0)
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             else temp = cos(anglediff);
             }
             else{
-            if (EparsR.fitType == 0) 
+            if (EparsR->fitType == 0) 
             temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
             else temp = cos(anglediff)*-1;
             }

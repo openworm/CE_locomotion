@@ -5,7 +5,7 @@ run(
     simtransient=0,
     popSize=96,
     RandSeed=1233,
-    maxGens=2,
+    maxGens=10,
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2Dosc_t1",

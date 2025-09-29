@@ -21,6 +21,15 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
         setPopFromBestGenoFile();
     }
   
+Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
+    :evoPars1(setPars(cmd_,ep1)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(cmd_)),writeBestFlag(true),phenotype(1, VectSize_),
+    setFromCPTflag(false)
+    {
+        //setFromCPT();
+        setPopFromBestGenoFile();
+    }
+
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),
@@ -240,10 +249,43 @@ return sp1;
 
 }
 
+simPars Evolution::setSimPars(shared_ptr<const CmdArgs> cmd)
+{
+
+simPars sp1;
+sp1.Duration = evoPars1.Duration;
+sp1.Transient = evoPars1.Transient;
+
+sp1.Duration = cmd->getArgValDoub("-sd", evoPars1.Duration);
+sp1.Transient = cmd->getArgValDoub("-st", evoPars1.Transient);
+
+return sp1;
+
+}
+
+
+
+
 evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1)
 {
 return setPars(argc,argv,ep1,"");
 }
+
+evoPars Evolution::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1)
+{
+return setPars(cmd,ep1,"");
+}
+
+evoPars Evolution::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_)
+{
+ep1.setFromArgs(cmd);
+doCPT = (bool) cmd->getArgValInt("-docpt",1);
+
+ep1.fileprefix = prefix_;
+
+return ep1;
+}
+
 
 evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string prefix_){
 

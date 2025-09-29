@@ -53,16 +53,51 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
     //assert(0);
 }
 
+W2Dbaseparameters::W2Dbaseparameters(shared_ptr<const CmdArgs> cmd)
+{
+    randomInitialState = cmd->getArgValInt("--randInitState",0);
+
+    //randomInitialState = getParameterInt(argc,argv,"--randInitState","0");;
+    //cout << "ran " << randomInitialState << endl;
+    //assert(0);
+}
+
+W2DCEparsA::W2DCEparsA(shared_ptr<const CmdArgs> cmd):W2Dbaseparameters(cmd)
+{
+
+    AB_output_level =  cmd->getArgValDoub("--ABLevel",1);
+
+  //AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
+}
+
 
 W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
 {
   AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
 }
 
+
+W2DCEpars::W2DCEpars(shared_ptr<const CmdArgs> cmd):W2DCEparsA(cmd)
+{
+  sr_type = cmd->getArgVal("--SRType","None");
+  SRForm = cmd->getArgValInt("--SRForm",0);
+  SREvoBot = cmd->getArgValDoub("--SREvoBot",0);
+}
+
 W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
 {
   sr_type = getParameterString(argc,argv,"--SRType","None");
   SRForm = getParameterInt(argc,argv,"--SRForm","0");
+  SREvoBot = getParameterDouble(argc,argv,"--SREvoBot","0");
+}
+
+AgarPars::AgarPars(shared_ptr<const CmdArgs> cmd)
+{
+
+    OSCTbase = cmd->getArgValDoub("--OSCTbase",0.25);
+    agarfreq = cmd->getArgValDoub("--agarfreq",0.44);
+    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",0.00022);
+
 }
 
 AgarPars::AgarPars(int argc, const char* argv[])
@@ -77,8 +112,20 @@ AgarPars::AgarPars(int argc, const char* argv[])
 EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
+    
     doReverse = getParameterInt(argc,argv,"--doReverse","0");
     fitType = getParameterInt(argc,argv,"--fitType","0");
+
+    //sr_type = getParameter(argc,argv,"--SRType","None");
+}
+
+EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
+{
+    //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
+
+    doReverse = cmd->getArgValInt("--doReverse",0);
+    fitType = cmd->getArgValInt("--fitType",0);
+
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
 
@@ -92,6 +139,10 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
 
 Evolparameters::Evolparameters(int argc, const char* argv[], 
     shared_ptr<EvolvableS> & evol1_, string evotype_):AgarPars(argc,argv)
+{evol1_->setEvolPars(*this, evotype_);}
+
+Evolparameters::Evolparameters(shared_ptr<const CmdArgs> cmd, 
+    shared_ptr<EvolvableS> & evol1_, string evotype_):AgarPars(cmd)
 {evol1_->setEvolPars(*this, evotype_);}
 
 

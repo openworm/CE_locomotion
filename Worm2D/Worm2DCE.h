@@ -90,8 +90,10 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);
     //void setPars(int argc, const char* argv[]);
 
-    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
+    //shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
     void setWormPars(const W2Dparameters * w2par_);
+    shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd);
+
 
     friend class EvolutionCE;
 
@@ -140,11 +142,12 @@ class Worm2DCE: public Worm2D, public WormFR{
 class WormCE : public EvolvableS, public Worm2DCE
 {
 public:
-
+    WormCE(int argc, const char* argv[]);
     WormCE(TVector<double> &pheno);
     WormCE(const string & filename_);
     WormCE(TVector<double> &phengen, bool isPheno);
     WormCE();
+    WormCE(int argc, const char* argv[], TVector<double> &geno);
 
     //Worm::Worm(TVector<double> &v,double output);
 
@@ -163,8 +166,10 @@ public:
     void setPhenoNames();
 
     template<class T> friend class EvolutionFullW;
-    shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
-    {return Worm2DCE::setWormPars(argc,argv);}
+   
+    shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
+   // shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
+    {return Worm2DCE::setWormPars(cmd);}
     void setWormPars(const W2Dparameters * w2par_)
     {return Worm2DCE::setWormPars(w2par_);}
 

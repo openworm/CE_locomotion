@@ -4,16 +4,19 @@
 #include "Evolution.h"
 
 
+#include <vector>
+#include <string>
+#include <iostream>
+
+
+
+
 int main (int argc, const char* argv[])
 {
 
-/* 
-    for (int i=0; i<argc; i++)
-    {
-        cout << i << " " << argv[i] << endl;
+    shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
 
-    }
-//assert(0); */
+
 
     std::cout << std::setprecision(10);
     string model_name =  getParameterString(argc,argv,"--modelname","");
@@ -48,16 +51,17 @@ int main (int argc, const char* argv[])
     {
         Evolution * evo = 0;
     
-        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(argc,argv);
-        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(argc,argv);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(argc,argv);
-        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(argc,argv);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(argc,argv);
-        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(argc,argv);
-        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(argc,argv);
-        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(argc,argv); 
-        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(argc,argv); 
-        if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(argc,argv); 
+        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
+
+        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(cmd);
+        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(cmd);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(cmd);
+        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(cmd);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(cmd);
+        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(cmd);
+        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(cmd);
+        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
+        if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
 
         //assert(0);
         ep1.StepSize = evo->itsEvoPars().StepSize;
@@ -117,7 +121,7 @@ int main (int argc, const char* argv[])
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
 
-    w2->setWormPars(argc,argv);
+    w2->setWormPars(cmd);
     w2->InitializeState(rs);
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
@@ -125,7 +129,7 @@ int main (int argc, const char* argv[])
     w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
-    w2->setWormPars(argc,argv);
+    w2->setWormPars(cmd);
 
     const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
    

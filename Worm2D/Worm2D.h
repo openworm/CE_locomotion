@@ -183,8 +183,11 @@ void setTime(double t_){t=t_;}
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
-virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
+//virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
 virtual void setWormPars(const W2Dparameters * w2par_) {assert(0);}
+virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
+
+shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -211,7 +214,7 @@ const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber);
 double settedStepSize;
 
-shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+
 
 
 };
