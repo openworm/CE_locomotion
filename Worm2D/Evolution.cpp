@@ -316,8 +316,13 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     evolfile << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
     if (writeBestFlag) ResultsDisplay(*s);
 
-    TVector<double> & phencur =  getBestPhenotype();
+    //TVector<double> & phencur =  getBestPhenotype();
     TVector<double> & gencur =  getBestGenotype();
+
+    TVector<double> phencur(1, evoPars1.VectSize);
+    GenPhenMapping(gencur, phencur);
+
+
 
     genhistfile << Generation << " " << gencur << " " << phencur;
 
@@ -357,7 +362,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
 }
 
-TVector<double> & Evolution::getBestPhenotype()
+/* TVector<double> & Evolution::getBestPhenotype()
 {
 
 //TVector<double> phenotype(1, itsEvoPars().VectSize);   
@@ -366,6 +371,8 @@ GenPhenMapping(bestVector, phenotype);
 return phenotype;
 
 }
+ */
+
 
 TVector<double> & Evolution::getBestGenotype()
 {
@@ -376,10 +383,11 @@ TVector<double> & Evolution::getBestGenotype()
 
 void Evolution::ResultsDisplay(TSearch &s)
 {
-    {TVector<double> bestVector;
-    ofstream BestIndividualFile;
-
+    TVector<double> bestVector;
     bestVector = s.BestIndividual();
+
+    {ofstream BestIndividualFile;
+    //bestVector = s.BestIndividual();
     BestIndividualFile.open(rename_file("best.gen.dat"));
     //BestIndividualFile.open(bestfilename);
     BestIndividualFile << setprecision(32);
@@ -389,9 +397,11 @@ void Evolution::ResultsDisplay(TSearch &s)
     {
     ofstream BestIndividualFile;
     BestIndividualFile.open(rename_file("best.phen.dat"));
+    TVector<double> bestPheno(1,bestVector.Size());
+    GenPhenMapping(bestVector,bestPheno);
     //BestIndividualFile.open(bestfilename);
     BestIndividualFile << setprecision(32);
-    BestIndividualFile << getBestPhenotype() << endl;
+    BestIndividualFile << bestPheno << endl;
     BestIndividualFile.close();
     }
 

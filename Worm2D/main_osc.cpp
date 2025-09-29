@@ -19,7 +19,8 @@ int main (int argc, const char* argv[])
 
 
     std::cout << std::setprecision(10);
-    string model_name =  getParameterString(argc,argv,"--modelname","");
+    string model_name = cmd->getArgVal("--modelname","");
+    //string model_name =  getParameterString(argc,argv,"--modelname","");
     if (model_name == "")
     {
     cout << "Model name is required." << endl;
@@ -27,7 +28,8 @@ int main (int argc, const char* argv[])
     }
 
     evoPars ep1;
-    ep1.setFromArgs(argc,argv);
+    //ep1.setFromArgs(argc,argv);
+    ep1.setFromArgs(cmd);
     ep1.StepSize = 0.005;
     ep1.skip_steps = 10;
 
@@ -45,8 +47,8 @@ int main (int argc, const char* argv[])
     //json_out << setprecision(32);
     json j;
 
-  
-    bool do_evol = getParameterInt(argc,argv,"--doevol","0");
+    bool do_evol = cmd->getArgValInt("--doevol",0);
+    //bool do_evol = getParameterInt(argc,argv,"--doevol","0");
     if (do_evol) 
     {
         Evolution * evo = 0;
@@ -80,7 +82,8 @@ int main (int argc, const char* argv[])
     
     cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
 
-    bool do_nml =  getParameterInt(argc,argv,"--donml","0");
+    //bool do_nml =  getParameterInt(argc,argv,"--donml","0");
+    bool do_nml =  cmd->getArgValInt("--donml",0);
 
     Worm2Dbase * w2;
 
@@ -115,8 +118,8 @@ int main (int argc, const char* argv[])
     
     cout << "const 1" << endl;
     //assert(0);
-
-    const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
+    const long simrandseed =  cmd->getArgValLong("-R",-1);
+    //const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -131,7 +134,8 @@ int main (int argc, const char* argv[])
     w2->InitializeData(ep1.directoryName);
     w2->setWormPars(cmd);
 
-    const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
+    const bool dotest = cmd->getArgValInt("--doTestRun",0);
+    //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
    
     
     WormFR* const w = dynamic_cast<WormFR*>(w2);
@@ -139,8 +143,11 @@ int main (int argc, const char* argv[])
     if (dotest || w==nullptr)
     {
 
-    double simduration = getParameterDouble(argc,argv,"-sd","10");
-    double simtransient = getParameterDouble(argc,argv,"-st","10");    
+        double simduration = cmd->getArgValDoub("-sd",10);
+        double simtransient = cmd->getArgValDoub("-st",10);   
+
+    //double simduration = getParameterDouble(argc,argv,"-sd","10");
+    //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
@@ -149,8 +156,9 @@ int main (int argc, const char* argv[])
     return 0;
     }
      
-    bool forwardfirst = 0;
-    forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
+    bool forwardfirst = cmd->getArgValInt("--doForwardFirst",0);
+    //forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
+
 
     if (forwardfirst) w->setForward();
     else w->setBackward();
@@ -167,9 +175,12 @@ int main (int argc, const char* argv[])
         else w.setBackward();
     } */
 
+    double simduration = cmd->getArgValDoub("-sd",10);
+    double simtransient = cmd->getArgValDoub("-st",10);   
 
-    double simduration = getParameterDouble(argc,argv,"-sd","10");
-    double simtransient = getParameterDouble(argc,argv,"-st","10");    
+    //double simduration = getParameterDouble(argc,argv,"-sd","10");
+    //double simtransient = getParameterDouble(argc,argv,"-st","10");    
+    
     simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);

@@ -24,7 +24,7 @@ run(
     evoType="EvoCE",
     # evoType="Evo21R",
     # evoType="Evo21",
-    doReverse=1,
+    doReverse=0,
     doForwardFirst=True,
     randInitState=True,
     doTestRun=True,
@@ -41,4 +41,5 @@ run(
     # CrossProb = 0.5
     fitType=1,
     SRForm=0,
+    SREvoBot = 50.0
 )

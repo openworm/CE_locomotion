@@ -173,7 +173,9 @@ public:
     void setWormPars(const W2Dparameters * w2par_)
     {return Worm2DCE::setWormPars(w2par_);}
 
+    
     protected:
+    
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}

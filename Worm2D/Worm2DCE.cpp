@@ -476,6 +476,10 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   // Stretch receptor
   sr.SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
 
+  //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
+
+  //assert(0);
+
   for (int u = 1; u <= par1.N_units; u++){
     // Find the numbers that identify each neuron within a certain repeating unit
     da = nn(DA, u);
@@ -692,6 +696,9 @@ void WormCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
      // Parameters for the Stretch Receptors
   phen(SR_A) = MapSearchParameter(gen(SR_A), w1->SREvoBot, SRmax);
   phen(SR_B) = MapSearchParameter(gen(SR_B), w1->SREvoBot, SRmax);
+
+  //cout << "mms " << MapSearchParameter(-1.0, w1->SREvoBot, SRmax) << endl;
+  //assert(0);
 
   // Bias
   int k=3;

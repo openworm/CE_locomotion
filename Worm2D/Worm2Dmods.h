@@ -237,6 +237,7 @@ int getVectSize(){return 4;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
+template<class T> friend class EvolutionFullW;
 //static inline int evoVectSize = 4;
 protected:
 
@@ -286,6 +287,8 @@ int getVectSize() {return 3;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
+
+template<class T> friend class EvolutionFullW;
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
@@ -341,6 +344,8 @@ int getVectSize() {return 6;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
+template<class T> friend class EvolutionFullW;
+
 protected:
 void setPhenoNames(); 
 //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
@@ -368,6 +373,8 @@ Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 18;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -386,6 +393,8 @@ Worm2Dosc21S(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 5;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 //void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -404,7 +413,7 @@ Worm2Dosc21Coup(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size()+4;}
 
-
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -424,6 +433,8 @@ Worm2Dosc21CF(const string & filename_);
 Worm2Dosc21CF(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size() + 14 + 3;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);

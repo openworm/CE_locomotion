@@ -55,6 +55,8 @@ public:
     //shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
     void setWormPars(const W2Dparameters * w2par_);
 
+    template<class T> friend class EvolutionFullW;
+
     protected:
     void addParsToJson(json & j);
     void setPhenoNames();
@@ -73,6 +75,8 @@ public:
     Worm21R(TVector<double> &pheno, bool isPheno);
     Worm21R();
     Worm21R(const string & filename_);
+
+    template<class T> friend class EvolutionFullW;
 
     protected:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);

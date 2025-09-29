@@ -46,7 +46,7 @@ class Evolution
 {
     public:
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    {cout << "no GenPhenMapping" << endl; return;}
+    {cout << "no GenPhenMapping" << endl; assert(0); return;}
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
     {cout << "RunSim not implemented" << endl; assert(0);}
@@ -188,8 +188,8 @@ shared_ptr<EvolvableS> evolvable1;
 //virtual ~Evolvable_ptr(){if (evolvable1) delete evolvable1;}
 Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_){}
 
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-{return evolvable1->GenPhenMapping(gen,phen);}
+//void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+//{return evolvable1->GenPhenMapping(gen,phen);}
 
 };
 
@@ -244,16 +244,24 @@ template<class T>
 class EvolutionFullW: public Evolvable_ptr, public Evolution
 {
     public:
-    EvolutionFullW(int argc, const char* argv[]):
-    Evolvable_ptr(shared_ptr<EvolvableS> (new T())),evopar_ptr(getParameters(argc,argv)),
-    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize()){}
+
+    /* EvolutionFullW(int argc, const char* argv[]):
+    Evolvable_ptr(make_shared<T>()),evopar_ptr(getParameters(argc,argv)),
+    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize())
+    {
+        evolvable1->setWormPars(argc,argv);
+    } */
 
     //,wormpar_ptr(evolvable1->setWormPars(argc_,argv_))
     //{evolvable1->setWormPars(argc,argv); wormpar_ptr = evolvable1->getWormPars();}
     
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_):cmd(cmd_),
-    Evolvable_ptr(shared_ptr<EvolvableS> (new T())),evopar_ptr(getParameters(cmd_)),
-    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize()){}
+    //Evolvable_ptr(shared_ptr<EvolvableS> (new T())),
+    Evolvable_ptr(make_shared<T>()), evopar_ptr(getParameters(cmd_)),
+    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
+    {
+        evolvable1->setWormPars(cmd_);
+    }
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -265,8 +273,11 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
     void writeJson(TVector<double> & pheno);
 
+    //void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    //{return Evolvable_ptr::GenPhenMapping(gen,phen);}
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    {return Evolvable_ptr::GenPhenMapping(gen,phen);}
+    {evolvable1->GenPhenMapping(gen,phen);}
+
 
 
     protected:
@@ -287,9 +298,11 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
 template<class T>
 void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
-        T w(pheno, true);
+        //T w(pheno, true);
+        T w;
         //w.setWormPars(argc,argv);
         w.setWormPars(cmd);
+        w.setParsFromPheno(pheno);
         json j;
         evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
@@ -950,11 +963,14 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     //T w(argc,argv,genotype);
 
-    T w(genotype, false);
+    T w;
+
+    //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
     //w.setWormPars(argc,argv);
     w.setWormPars(cmd);
-    
+    w.setParsFromGeno(genotype);
+
 
     //EvolparametersCE & Epars1 = w.getWormPars();
 
