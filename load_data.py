@@ -298,18 +298,27 @@ def plot_evols(a=None, **kwargs):
     )
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
     evol_data_fin = sign(evol_data[-1]) * np.log(np.abs(evol_data[-1]))
+    
+    evol_data_fin_actual = evol_data[-1]
     evol_data_init = sign(evol_data[0]) * np.log(np.abs(evol_data[0]))
     evol_data_list = [
         evol_data_full_diff,
         evol_data_full_diff2,
         evol_data_fin,
         evol_data_init,
+        evol_data_fin_actual
     ]
+
+    for data_val in evol_data_list:
+        data_val[np.isnan(data_val)] = 0
+        data_val[np.isinf(data_val)] = 0
+
     evol_data_avs_titles = [
         "Relative variation",
         "Variation",
         "Final value",
         "Initial value",
+        "Actual Final value",
     ]
 
     if doPhenNames:
@@ -399,7 +408,7 @@ def plot_evols(a=None, **kwargs):
     if doPhenNames:
         plot_cols = 1
         plot_rows = len(evol_data_avs)
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 10), squeeze=False)
+        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
         for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
             row_num, col_num = getRowsCols(ind, plot_cols)
             axs[row_num, col_num].set_title(title, fontsize=title_font_size)
@@ -411,9 +420,9 @@ def plot_evols(a=None, **kwargs):
             axs[row_num, col_num].grid(axis="x")
             axs[row_num, col_num].grid(axis="y")
 
-        axs[3, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
+        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
         # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-        axs[3, 0].set_xticklabels(phen_name_list, rotation="vertical")
+        axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
 
         fig.tight_layout()
         # fig.subplots_adjust(hspace=0.5)
@@ -421,6 +430,24 @@ def plot_evols(a=None, **kwargs):
         filename = hf.rename_file("Evolution_averages.png")
         plt.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
+
+        if (False):
+            fig, axs = plt.subplots(1, 1, figsize=(20, 10), squeeze=False)
+            axs[0, 0].set_title("Actual final value", fontsize=title_font_size)
+            val = evol_data_fin_actual
+            axs[0, 0].plot(range(len(val)), val)
+            axs[0, 0].set_xticks(range(len(val)))
+            axs[0, 0].grid(axis="x")
+            axs[0, 0].grid(axis="y")
+            axs[0, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
+            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+            axs[0, 0].set_xticklabels(phen_name_list, rotation="vertical")
+            fig.tight_layout()
+            # fig.subplots_adjust(hspace=0.5)
+
+            filename = hf.rename_file("Actual_values.png")
+            plt.savefig(filename, bbox_inches="tight", dpi=300)
+            print("Saved plot image to: %s" % filename)
 
 
 # def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):

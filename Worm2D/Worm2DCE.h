@@ -160,6 +160,8 @@ public:
     NervousSystem & n;
     void addParsToJson(json & j);
 
+    void setPhenoNames();
+
     template<class T> friend class EvolutionFullW;
     shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
     {return Worm2DCE::setWormPars(argc,argv);}

@@ -782,3 +782,57 @@ void WormCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 
 }
+
+void WormCE::setPhenoNames()
+{
+ 
+  int k = 1;
+  phenoNamesNums.push_back(k);k++;
+  phenoNames.push_back("SR_A");
+  phenoNamesNums.push_back(k);k++;
+  phenoNames.push_back("SR_B");
+
+
+  for (int i = 1; i <= 3; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("Bias");
+  }
+
+  for (int i = 1; i <= 3; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("Self_cons");
+  }
+
+
+  // DA, DB, VA, VB Chemical synapses (excitatory)
+  for (int i = 1; i <= 2; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("Syn_E");
+    
+  }
+
+  for (int i = 1; i <= 2; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("Syn_I");
+    
+  }
+
+  for (int i = 1; i <= 2; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("Gap");
+    
+  }
+
+  for (int i = 1; i <= 2; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("NMJ_E");
+    
+  }
+
+  for (int i = 1; i <= 1; i++){
+    phenoNamesNums.push_back(k);k++;
+    phenoNames.push_back("NMJ_I");
+    
+  }
+  
+}

@@ -107,10 +107,10 @@ class Evolution
     private:
 
     
-    TVector<double> phenotype, phenprev, genprev; //(1, itsEvoPars().VectSize);   
-    ofstream evolfile, genhistfile, genhistfile2;
+    TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
+    ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, doneFirst, setFromCPTflag, doCPT;
+    bool doResume, setFromCPTflag, doCPT;//, doneFirst
     int popsize;
 
 };

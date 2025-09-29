@@ -13,8 +13,9 @@ string Evolution::rename_file(string filename){return evoPars1.directoryName + "
 
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
-    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
-    genprev(1, VectSize_),setFromCPTflag(false)
+    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),
+    //phenprev(1, VectSize_),genprev(1, VectSize_),
+    setFromCPTflag(false)
     {
         //setFromCPT();
         setPopFromBestGenoFile();
@@ -22,8 +23,9 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
   
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
-    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),phenprev(1, VectSize_),
-    genprev(1, VectSize_),setFromCPTflag(false)
+    simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),
+    //phenprev(1, VectSize_),genprev(1, VectSize_),
+    setFromCPTflag(false)
     {
         //setFromCPT();
         setPopFromBestGenoFile();
@@ -70,7 +72,7 @@ void Evolution::setUp()
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
-        fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
+        //fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
     }
 
     auto ioflag = std::ios_base::out;
@@ -81,8 +83,8 @@ void Evolution::setUp()
     
     //setFromCPT();
     genhistfile.open(rename_file("genhistory.dat"), ioflag);
-    genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
-    doneFirst = false;
+    //genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
+    //doneFirst = false;
     evolfile << setprecision(10);
 
 }
@@ -277,7 +279,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
     genhistfile << Generation << " " << gencur << " " << phencur;
 
-    if (doneFirst){
+    /* if (doneFirst){
     genhistfile2 << Generation;
 
     {vector<double> val = TVectorRatio<double>(gencur, genprev);
@@ -288,11 +290,11 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
 
     genhistfile2 << endl;
-    }
+    } */
 
-    doneFirst = true;
-    phenprev = phencur;
-    genprev = gencur;
+    //doneFirst = true;
+    //phenprev = phencur;
+    //genprev = gencur;
 
     TVector<double> avphen(1, evoPars1.VectSize);
     for (int j = 1; j <= avphen.Size(); j++) avphen(j)=0;
@@ -415,7 +417,7 @@ void Evolution::configure()
     configure_p2();
     evolfile.close();
     genhistfile.close();
-    genhistfile2.close();
+   // genhistfile2.close();
 }
 
    
