@@ -34,6 +34,8 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
 int main (int argc, const char* argv[])
 {
 
+    shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
+
     std::cout << std::setprecision(10);
     string model_name =  getParameterString(argc,argv,"--modelname","");
     if (model_name == "")
@@ -44,13 +46,13 @@ int main (int argc, const char* argv[])
 
     
     Evolution* er = 0;
-    if (model_name == "CE") er = new EvolutionCE(argc,argv);
-    if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
-    if (model_name == "Net21") er = new Evolution21(argc,argv);
+    if (model_name == "CE") er = new EvolutionCE(cmd);
+    if (model_name == "RS18") er = new EvolutionRS18(cmd);
+    if (model_name == "Net21") er = new Evolution21(cmd);
     if (model_name == "CO") {
      double stepsize = 0.01;
      int circuitsize = 10;   
-        er = new EvolutionCO(argc,argv,stepsize,circuitsize);
+        er = new EvolutionCO(cmd,stepsize,circuitsize);
     }
     const evoPars & ep1 = er->itsEvoPars();
 

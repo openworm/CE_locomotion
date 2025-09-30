@@ -298,7 +298,7 @@ def plot_evols(a=None, **kwargs):
     )
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
     evol_data_fin = sign(evol_data[-1]) * np.log(np.abs(evol_data[-1]))
-    
+
     evol_data_fin_actual = evol_data[-1]
     evol_data_init = sign(evol_data[0]) * np.log(np.abs(evol_data[0]))
     evol_data_list = [
@@ -306,7 +306,7 @@ def plot_evols(a=None, **kwargs):
         evol_data_full_diff2,
         evol_data_fin,
         evol_data_init,
-        evol_data_fin_actual
+        evol_data_fin_actual,
     ]
 
     for data_val in evol_data_list:
@@ -431,7 +431,7 @@ def plot_evols(a=None, **kwargs):
         plt.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
 
-        if (False):
+        if False:
             fig, axs = plt.subplots(1, 1, figsize=(20, 10), squeeze=False)
             axs[0, 0].set_title("Actual final value", fontsize=title_font_size)
             val = evol_data_fin_actual

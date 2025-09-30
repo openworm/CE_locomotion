@@ -41,5 +41,5 @@ run(
     # CrossProb = 0.5
     fitType=1,
     SRForm=0,
-    SREvoBot = 50.0
+    SREvoBot=50.0,
 )

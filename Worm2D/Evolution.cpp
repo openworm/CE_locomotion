@@ -40,6 +40,15 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, s
         setPopFromBestGenoFile();
     }
 
+Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_)
+    :evoPars1(setPars(cmd_,ep1,prefix_)),s(new TSearch(VectSize_)),
+    simPars1(setSimPars(cmd_)),writeBestFlag(true),phenotype(1, VectSize_),
+    //phenprev(1, VectSize_),genprev(1, VectSize_),
+    setFromCPTflag(false)
+    {
+        //setFromCPT();
+        setPopFromBestGenoFile();
+    }
 
 
 void Evolution::checkPars()

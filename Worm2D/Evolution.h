@@ -102,6 +102,7 @@ class Evolution
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
     Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_);
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_);
 
     virtual void addExtraParsToJson(json & j) {return;}
     TSearch* const s; 
