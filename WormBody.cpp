@@ -77,7 +77,7 @@ void WormBody::InitializeBodyState(void)
 }
 
 // YYY
-double WormBody::RestingLength(int i)
+double WormBody::RestingLength(int i) const
 {
     return L_L0[i-1];
 }

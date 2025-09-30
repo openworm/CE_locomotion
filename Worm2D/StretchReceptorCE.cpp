@@ -11,7 +11,8 @@
 #include <cassert>
 
 
-StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain)
+StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain):
+SR(nSegs,nSR)
 {
     SetStretchReceptorParams(nSegs, nSR, ASRgain, BSRgain);
 }
@@ -42,6 +43,101 @@ par.messages = {"Number of stretch receptor in DA, DB, VA and VB, equal to numbe
                                 "Number of segments sensed by each stretch receptor"};
 par.messages_inds = {0,1,2}; //must be ordered
 return par;
+}
+
+SRWeights StretchReceptorCE::makeSRWeights() const
+{
+
+    SRWeights srw;
+
+    if (SRForm == 0){
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j, to = 1;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+    }
+    for (int i = 2; i <= 10; i++)
+         for (int j = 1; j <= NSEGSSR; j++){
+        int from = j+(i-2)*4, to = i;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+        }
+    
+    for (int i = 1; i <= 9; i++)
+        for (int j = 1; j <= NSEGSSR; j++){
+        int from = 12+j+(i-1)*4, to = i;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+        }
+
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j + 44, to = 10;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+    }
+
+}
+
+    if (SRForm == 1){
+  
+    for (int i = 1; i <= 9; i++)   
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+        int from = 12+j+(i-1)*4, to = i;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+        }
+
+//    // Unit 10 (tail), receive same input as Unit 9
+
+    for (int j = 1; j <= NSEGSSR; j++){
+    int from = j+44, to = 10;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+    }
+   
+    
+//    //////////////////////////////
+//    // B-class Stretch Receptors
+//    // first unit (head) receive same input as Unit 2
+
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j, to = 1;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+    }
+    
+
+//    // Units 2 to 10 
+
+    for (int i = 2; i <= 10; i++)
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+        int from = j+(i-2)*4, to = i;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+        }
+
+}
+
+return srw;
+
 }
 
 

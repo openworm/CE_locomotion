@@ -189,7 +189,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   w.sr.SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-
+  w.sr.setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -202,6 +202,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    w.sr.SR_A_gain = 0.0;
    w.sr.SR_B_gain = 0.0;
+    w.sr.setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -215,6 +216,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
    w.sr.SR_B_gain = 0.0;
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
+   w.sr.setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
       w.Step(StepSize);
@@ -226,6 +228,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    w.sr.SR_A_gain = 0.0;
    w.sr.SR_B_gain = 0.0;
+   w.sr.setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -272,7 +275,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
   w.sr.SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-
+  w.sr.setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -285,6 +288,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    w.sr.SR_A_gain = 0.0;
    w.sr.SR_B_gain = 0.0;
+    w.sr.setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -299,6 +303,8 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
 
+   w.sr.setWeights();
+
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
        w.writeDataCheck();
@@ -309,6 +315,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    w.sr.SR_A_gain = 0.0;
    w.sr.SR_B_gain = 0.0;
+   w.sr.setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -324,7 +331,7 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
   w.sr.SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  wao;
   w.W2DCEpars1->AVB_output =  wbo;
-
+   w.sr.setWeights();
   //bodyfile.close();
   //curvfile.close();
   //actfile.close();

@@ -80,7 +80,10 @@ class Worm2DCE: public Worm2D, public WormFR{
     const string getModelName() {return {"CE"};}
 
     vector<doubIntParamsHead> getWormParams();
-    StretchReceptorCE sr;
+
+    //StretchReceptorCE sr;
+    SRCE sr;
+
     void DumpParams(ofstream &ofs);
     virtual void initForSimulation(RandomState&);
     void setForward();
@@ -100,6 +103,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     protected:
     //void Step1();
     void Step1();
+    void Step1_old();
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
 
    

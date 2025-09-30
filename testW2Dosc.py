@@ -5,7 +5,7 @@ run(
     simtransient=50,
     duration=20,
     transient=10,
-    maxGens=5,
+    maxGens=20,
     popSize=96,
     RandSeed=4918,
     # modelName="W2D21R",
@@ -24,10 +24,10 @@ run(
     evoType="EvoCE",
     # evoType="Evo21R",
     # evoType="Evo21",
-    doReverse=0,
+    doReverse=2,
     doForwardFirst=True,
     randInitState=True,
-    doTestRun=True,
+    doTestRun=False,
     doCPT=True,
     AvgSpeed=0.0001,  # CE
     # AvgSpeed=0.00022,  # 21
@@ -41,5 +41,5 @@ run(
     # CrossProb = 0.5
     fitType=1,
     SRForm=0,
-    SREvoBot=50.0,
+    SREvoBot=0.0,
 )

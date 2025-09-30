@@ -7,13 +7,13 @@
 // Modified by Erick Olivares, Feb 2019
 // Added SR for class A motorneurons
 #pragma once
-#include "../VectorMatrix.h"
-#include "../random.h"
-#include <cmath>
+//#include "../VectorMatrix.h"
+//#include "../random.h"
+//#include <cmath>
 #include "StretchReceptor.h"
 using namespace std;
 
-class StretchReceptorCE : public StretchReceptor{
+class StretchReceptorCE : public StretchReceptor, public SR{
 public:
     
     StretchReceptorCE(int nSegs = 50, int nSR = 10, double A_SR_gain = 0.0, double B_SR_gain = 0.0);
@@ -48,6 +48,10 @@ public:
     TVector<double> B_D_sr;
     TVector<double> B_V_sr;
     int SRForm = 0;
+
+
+    protected:
+    SRWeights makeSRWeights() const;
     
 };
 

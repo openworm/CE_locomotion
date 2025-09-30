@@ -6,9 +6,8 @@
 //  Copyright © 2015 Eduardo Izquierdo. All rights reserved.
 //
 
-#include "../VectorMatrix.h"
-#include "../random.h"
-#include <cmath>
+#pragma once
+//#include <cmath>
 #include "StretchReceptor.h"
 using namespace std;
 
