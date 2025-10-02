@@ -124,6 +124,7 @@ plot_formats["W2Dosc21CF"] = plot_formats["W2Dosc21"]
 plot_formats["W2D21"] = plot_formats["Net21"]
 plot_formats["W2DCE"] = plot_formats["CE"]
 plot_formats["W2D21R"] = plot_formats["Net21"]
+plot_formats["W2DCESR"] = plot_formats["CE"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 

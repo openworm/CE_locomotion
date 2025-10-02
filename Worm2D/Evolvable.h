@@ -525,7 +525,7 @@ void addParsToJson(json & j) const {
 
 
 
-class SRCEpars 
+class SRCEpars : public W2Dparameters
 {
 public:
 SRCEpars();
@@ -540,24 +540,38 @@ virtual void setPars(shared_ptr<const CmdArgs> cmd);
 void setParsFromJson(json & j){
   sr_type = j["SRType"]["value"]; 
   SRForm = j["SRForm"]["value"];
-  nsegperstr = j["nsegperstr"]["value"];
+  nsegperstr = j["SRSegPerSR"]["value"];
   
 }
 void addParsToJson(json & j) const {
   j["SRType"]["value"] = sr_type;
   j["SRForm"]["value"] = SRForm;
-  j["nsegperstr"]["value"] = nsegperstr;
+  j["SRSegPerSR"]["value"] = nsegperstr;
 }
 };
 
 class SRRegpars :  public SRCEpars
 {
 public:
-SRRegpars(){}
+SRRegpars();//{}
 SRRegpars(shared_ptr<const CmdArgs> cmd);
 void setPars(shared_ptr<const CmdArgs> cmd);
 
 int offset = 0;
+
+void setParsFromJson(json & j){
+  SRCEpars::setParsFromJson(j);
+  offset = j["SROffset"]["value"];
+}
+
+void addParsToJson(json & j) const {
+
+  SRCEpars::addParsToJson(j);
+  j["SROffset"]["value"] = offset;
+ 
+}
+
+
 
 };
 

@@ -205,7 +205,9 @@ SRWeights SRReg::makeSRWeights() const
         }
     }
 
-
+   //cout << " nsegperstr " << srcepars->nsegperstr << " " << srregpars->offset << endl;
+   
+return srw;
 
 }
 

@@ -5,11 +5,12 @@ run(
     simtransient=50,
     duration=20,
     transient=10,
-    maxGens=20,
+    maxGens=10,
     popSize=96,
     RandSeed=4918,
     # modelName="W2D21R",
-    modelName="W2DCE",
+    #modelName="W2DCE",
+    modelName="W2DCESR",
     modelFolder="Worm2D",
     # inputFolderName="experiments/izq_runs_nets/23",
     # inputFolderName="exampleRunW2DCE_FR",
@@ -41,5 +42,7 @@ run(
     # CrossProb = 0.5
     fitType=1,
     SRForm=0,
-    SREvoBot=0.0,
+    SREvoBot=50.0,
+    SRSegPerSR = 5,
+    SROffset = 0
 )

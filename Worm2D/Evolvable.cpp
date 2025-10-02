@@ -76,14 +76,34 @@ W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv
   AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
 }
 
-SRCEpars::SRCEpars(){}
+SRCEpars::SRCEpars()
+{
+    sr_type = "None";
+    SRForm = 0;
+    nsegperstr = 6;
+
+}
+
+SRCEpars::SRCEpars(shared_ptr<const CmdArgs> cmd){
+setPars(cmd);
+}
+
+SRRegpars::SRRegpars()
+{
+    offset = 0;
+    nsegperstr = 5;
+}
+
+SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
+
+
 
 void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
 sr_type = cmd->getArgVal("--SRType","None");
 SRForm = cmd->getArgValInt("--SRForm",0);
-nsegperstr = cmd->getArgValInt("--NSegPerSR",6);
+nsegperstr = cmd->getArgValInt("--SRSegPerSR",6);
 
   assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
     || sr_type == "SR_TRANS_ABS" 
@@ -93,17 +113,15 @@ nsegperstr = cmd->getArgValInt("--NSegPerSR",6);
 
 void SRRegpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
+
+
 SRCEpars::setPars(cmd);
+nsegperstr = cmd->getArgValInt("--SRSegPerSR",5);
 offset = cmd->getArgValInt("--SROffset",0);
 
 }
 
 
-SRCEpars::SRCEpars(shared_ptr<const CmdArgs> cmd){
-setPars(cmd);
-}
-
-SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
 
 
 

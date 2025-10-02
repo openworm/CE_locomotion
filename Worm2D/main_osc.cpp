@@ -54,6 +54,7 @@ int main (int argc, const char* argv[])
         Evolution * evo = 0;
     
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
+        if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
 
         if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(cmd);
         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(cmd);
@@ -101,6 +102,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);
     if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
+    if (model_name == "W2DCESR") w2 = new WormCESR(gen_filename);
 
     }else{
 

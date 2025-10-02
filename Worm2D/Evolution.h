@@ -261,7 +261,9 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     Evolvable_ptr(make_shared<T>()), evopar_ptr(getParameters(cmd_)),
     Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
     {
+        
         evolvable1->setWormPars(cmd_);
+       //  assert(0);
     }
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
@@ -968,6 +970,8 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //T w(argc,argv,genotype);
 
     T w;
+
+   
 
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);

@@ -137,6 +137,8 @@ class Worm2DCE: public Worm2D, public WormFR{
     double pheno_A_gain, pheno_B_gain; 
     //W2DCEpars W2DCEpars1;
     shared_ptr<W2DCEpars> W2DCEpars1;
+
+    
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
@@ -182,7 +184,9 @@ public:
 
     
     protected:
-    
+    WormCE(shared_ptr<SRCE> sr_ptr_);
+
+
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
@@ -204,4 +208,11 @@ public:
 
 //class wormForJson : public Worm<NervousSystem> {};
 
+class WormCESR : public WormCE
+{
+public:
+WormCESR();
+WormCESR(const string & filename_);
+
+};
 

@@ -69,7 +69,13 @@ void addParsToJson(json & j);
 void setParsFromJson(json & j);
 double transformSegs(const double & val);
 
-void setPars(shared_ptr<const CmdArgs> cmd){srcepars->setPars(cmd); setWeights();}
+void setPars(shared_ptr<const CmdArgs> cmd){
+
+    //assert(0);
+    srcepars->setPars(cmd); 
+    setWeights();
+
+}
 
 
 shared_ptr<SRCEpars> srcepars;

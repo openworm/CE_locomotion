@@ -606,6 +606,7 @@ def run(a=None, **kwargs):
         "W2Dosc21S",
         "W2D21",
         "W2DCE",
+        "W2DCESR",
         "W2D21R",
     ]
     mainProcessName = a.mainProcessName
@@ -628,6 +629,7 @@ def run(a=None, **kwargs):
         "W2Dosc21S": defaults_base_2021,
         "W2D21": defaults_base_2021,
         "W2DCE": defaults_base_celoc,
+        "W2DCESR": defaults_base_celoc,
         "W2D21R": defaults_base_2021,
     }
 
@@ -647,7 +649,9 @@ def run(a=None, **kwargs):
     evol_extra_parameters["fitType"] = 0
     evol_extra_parameters["SRForm"] = 0
     evol_extra_parameters["SREvoBot"] = 0
-
+    evol_extra_parameters["SROffset"] = 0
+    evol_extra_parameters["SRSegPerSR"] = 6
+    
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = 0
