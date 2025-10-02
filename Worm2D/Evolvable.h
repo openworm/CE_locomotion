@@ -328,8 +328,8 @@ class EvolvableS
   //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0;
   //{return this->setWormPars(argc,argv);}
   
-  virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
-
+  //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
+  virtual void setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
 
   //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
   //Evolparameters & Epars1;

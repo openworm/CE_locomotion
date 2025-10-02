@@ -181,29 +181,40 @@ return srw;
 SRWeights SRReg::makeSRWeights() const
 {
 
+    double full_len = nsegs/srvars.nstretch ;//+ 1;
+    //const int half_len = (int) (nsegs/(2*srvars.nstretch));
+
+
     SRWeights srw;
 
-   for (int i = 1; i <= srvars.nstretch; i++)
-    for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++){
-        int from = j-srregpars->offset, to = i;
-        if (from>0){
+   for (int i = 1; i <= srvars.nstretch; i++){
+ 
+    double midpoint = full_len*(i-0.5); 
+    int start = (int) (midpoint - (srcepars->nsegperstr/2.0));
+    int end = (int) (midpoint + (srcepars->nsegperstr/2.0));
+
+    for (int j = start + 1; j< end + 1; j++)
+       
+   //for (int j = (i-1)*full_len - half_len + 1; j <= (i-1)*full_len + half_len + 1; j++)
+    //for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++)
+    {
+        {int from = j-srregpars->offset, to = i;
+        if (from>0 && from<=nsegs){
         double weight = SR_B_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
-        }
-    }
-
-    for (int i = 1; i <= srvars.nstretch; i++)
-    for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++){
-        int from = j+srregpars->offset, to = i;
-        if (from<=nsegs){
+        }}
+        {int from = j+srregpars->offset, to = i;
+        if (from<=nsegs && from>0){
         double weight = SR_A_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
-        }
+        }}
     }
+
+}
 
    //cout << " nsegperstr " << srcepars->nsegperstr << " " << srregpars->offset << endl;
    

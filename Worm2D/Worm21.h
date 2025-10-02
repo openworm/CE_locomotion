@@ -51,7 +51,7 @@ public:
     //virtual void setWormPars(const W2Dparameters & w2par_)
     //{return Worm2Dbase::setWormPars(w2par_);}
 
-    shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd);
+    void setWormPars(shared_ptr<const CmdArgs> cmd);
     //shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
     void setWormPars(const W2Dparameters * w2par_);
 

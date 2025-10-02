@@ -96,8 +96,8 @@ class Worm2DCE: public Worm2D, public WormFR{
     //shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
     //void setWormPars(const W2Dparameters * w2par_);
 
-    shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd);
-
+    //shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd);
+    void setWormPars(shared_ptr<const CmdArgs> cmd);
 
     friend class EvolutionCE;
 
@@ -138,7 +138,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     //W2DCEpars W2DCEpars1;
     shared_ptr<W2DCEpars> W2DCEpars1;
 
-    
+
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
@@ -173,8 +173,9 @@ public:
     void setPhenoNames();
 
     template<class T> friend class EvolutionFullW;
-   
-    shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
+
+    void setWormPars(shared_ptr<const CmdArgs> cmd)
+    //shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
    // shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
     {return Worm2DCE::setWormPars(cmd);}
 

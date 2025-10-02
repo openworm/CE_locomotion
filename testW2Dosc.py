@@ -5,7 +5,7 @@ run(
     simtransient=50,
     duration=20,
     transient=10,
-    maxGens=10,
+    maxGens=50,
     popSize=96,
     RandSeed=4918,
     # modelName="W2D21R",
@@ -16,7 +16,7 @@ run(
     # inputFolderName="exampleRunW2DCE_FR",
     outputFolderName="exampleRunW2Dosc",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
-    doEvol=True,
+    doEvol=False,
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
@@ -25,14 +25,14 @@ run(
     evoType="EvoCE",
     # evoType="Evo21R",
     # evoType="Evo21",
-    doReverse=2,
+    doReverse=0,
     doForwardFirst=True,
     randInitState=True,
     doTestRun=False,
     doCPT=True,
     AvgSpeed=0.0001,  # CE
     # AvgSpeed=0.00022,  # 21
-    # SRType="None",
+    SRType="None",
     # SRType = "SR_TRANS_CONTRACT",
     # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
@@ -42,7 +42,7 @@ run(
     # CrossProb = 0.5
     fitType=1,
     SRForm=0,
-    SREvoBot=50.0,
-    SRSegPerSR = 5,
-    SROffset = 0
+    SREvoBot=0.0,
+    SRSegPerSR = 6,
+    SROffset = -4
 )

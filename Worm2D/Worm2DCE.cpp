@@ -241,8 +241,8 @@ void Worm2DCE::setBackward()
 } */
 
 
-
-shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
+void Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
+//shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
 {
   
   //W2DCEpars w1(argc,argv);
@@ -259,7 +259,7 @@ shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(shared_ptr<const CmdArgs> 
   //assert(0);
 
   
-  return W2Dbaseparameters1;
+  //return W2Dbaseparameters1;
 
   //evolvable_worm_pars_ptr = W2DCEpars1;
   //dynamic_cast<W2DCEpars&>(w2par_);
