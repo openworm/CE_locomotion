@@ -185,11 +185,11 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   } 
   
   w.InitializeState(rs);
-  w.sr.SR_A_gain = 0.0;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = 0.0;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-  w.sr.setWeights();
+  w.sr_ptr->setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -200,9 +200,9 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
       //w.DumpActState(actfile, skip_steps);
   }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
-    w.sr.setWeights();
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+    w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -212,11 +212,11 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = sra;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = sra;
+   w.sr_ptr->SR_B_gain = 0.0;
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
-   w.sr.setWeights();
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
       w.Step(StepSize);
@@ -226,9 +226,9 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
-   w.sr.setWeights();
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -263,19 +263,19 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
   //ofstream actfile(rename_file("act.dat"));
   
 
-  double sra = w.sr.SR_A_gain;
-  double srb = w.sr.SR_B_gain;
+  double sra = w.sr_ptr->SR_A_gain;
+  double srb = w.sr_ptr->SR_B_gain;
   double wao = w.W2DCEpars1->AVA_output;
   double wbo = w.W2DCEpars1->AVB_output;
 
   cout << "ce evo" << sra << " " << srb << " " << wao << " " << wbo << endl;
 
   w.InitializeState(rs);
-  w.sr.SR_A_gain = 0.0;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = 0.0;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-  w.sr.setWeights();
+  w.sr_ptr->setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -286,9 +286,9 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
       //w.DumpActState(actfile, skip_steps);
   }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
-    w.sr.setWeights();
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+    w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -298,12 +298,12 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = sra;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = sra;
+   w.sr_ptr->SR_B_gain = 0.0;
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
 
-   w.sr.setWeights();
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
@@ -313,9 +313,9 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
-   w.sr.setWeights();
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -327,11 +327,11 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   // reset worm parameters to presimulation values
 
-  w.sr.SR_A_gain = sra;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = sra;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  wao;
   w.W2DCEpars1->AVB_output =  wbo;
-   w.sr.setWeights();
+   w.sr_ptr->setWeights();
   //bodyfile.close();
   //curvfile.close();
   //actfile.close();

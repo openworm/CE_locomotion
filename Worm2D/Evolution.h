@@ -546,11 +546,12 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         //GenPhenMapping(v, phenotype);
 
        
-        T w(genotype, false);
+        T w; //(genotype, false);
         //w.setWormPars(argc,argv);
-        w.setWormPars(cmd);
+       
         //w.setWormPars(&*wormpar_ptr);
-
+        w.setWormPars(cmd);
+        w.setParsFromGeno(genotype);
     
         //w.setEvolPars(EparsR,evoPars1.evoType);
 
@@ -735,9 +736,11 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //GenPhenMapping(v, phenotype);
 
      
-    T w(genotype, false);
+    T w;//(genotype, false);
     //w.setWormPars(argc,argv);
+    
     w.setWormPars(cmd);
+    w.setParsFromGeno(genotype);
 
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);

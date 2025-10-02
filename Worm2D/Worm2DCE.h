@@ -82,7 +82,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     vector<doubIntParamsHead> getWormParams();
 
     //StretchReceptorCE sr;
-    SRCE sr;
+    shared_ptr<SRCE> sr_ptr;
 
     void DumpParams(ofstream &ofs);
     virtual void initForSimulation(RandomState&);
@@ -94,7 +94,8 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void setPars(int argc, const char* argv[]);
 
     //shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]);
-    void setWormPars(const W2Dparameters * w2par_);
+    //void setWormPars(const W2Dparameters * w2par_);
+
     shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd);
 
 
@@ -103,10 +104,10 @@ class Worm2DCE: public Worm2D, public WormFR{
     protected:
     //void Step1();
     void Step1();
-    void Step1_old();
+    //void Step1_old();
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
-
-   
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
+    Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_);
 
 
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
@@ -174,8 +175,10 @@ public:
     shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
    // shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[])
     {return Worm2DCE::setWormPars(cmd);}
-    void setWormPars(const W2Dparameters * w2par_)
-    {return Worm2DCE::setWormPars(w2par_);}
+
+
+    //void setWormPars(const W2Dparameters * w2par_)
+    //{return Worm2DCE::setWormPars(w2par_);}
 
     
     protected:

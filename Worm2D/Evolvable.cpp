@@ -76,20 +76,54 @@ W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv
   AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
 }
 
+SRCEpars::SRCEpars(){}
 
-W2DCEpars::W2DCEpars(shared_ptr<const CmdArgs> cmd):W2DCEparsA(cmd)
+void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
-  sr_type = cmd->getArgVal("--SRType","None");
-  SRForm = cmd->getArgValInt("--SRForm",0);
+
+sr_type = cmd->getArgVal("--SRType","None");
+SRForm = cmd->getArgValInt("--SRForm",0);
+nsegperstr = cmd->getArgValInt("--NSegPerSR",6);
+
+  assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
+    || sr_type == "SR_TRANS_ABS" 
+    || sr_type == "SR_TRANS_NEG" || sr_type == "None");
+
+}
+
+void SRRegpars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+SRCEpars::setPars(cmd);
+offset = cmd->getArgValInt("--SROffset",0);
+
+}
+
+
+SRCEpars::SRCEpars(shared_ptr<const CmdArgs> cmd){
+setPars(cmd);
+}
+
+SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
+
+
+
+
+W2DCEpars::W2DCEpars(shared_ptr<const CmdArgs> cmd):W2DCEparsA(cmd)//,SRCEpars(cmd)
+{
   SREvoBot = cmd->getArgValDoub("--SREvoBot",0);
 }
 
+
+
 W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
 {
-  sr_type = getParameterString(argc,argv,"--SRType","None");
-  SRForm = getParameterInt(argc,argv,"--SRForm","0");
+  //sr_type = getParameterString(argc,argv,"--SRType","None");
+  //SRForm = getParameterInt(argc,argv,"--SRForm","0");
   SREvoBot = getParameterDouble(argc,argv,"--SREvoBot","0");
 }
+
+
+
 
 AgarPars::AgarPars(shared_ptr<const CmdArgs> cmd)
 {

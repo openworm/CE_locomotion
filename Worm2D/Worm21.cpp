@@ -82,6 +82,7 @@ shared_ptr<const W2Dparameters> Worm21::setWormPars(shared_ptr<const CmdArgs> cm
 
 void Worm21::setWormPars(const W2Dparameters * w2par_)
 {
+    assert(0);
   *W2DCEpars1 = dynamic_cast< const W2DCEparsA&>(*w2par_);
   
 }

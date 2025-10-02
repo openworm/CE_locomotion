@@ -311,7 +311,7 @@ class EvolvableS
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
   //virtual W2Dparameters & getWormPars() {return;}
   
-  virtual void setWormPars(const W2Dparameters * w2par_) = 0; 
+  //virtual void setWormPars(const W2Dparameters * w2par_) = 0; 
   //{
   //return this->setWormPars(w2par_);
   //}
@@ -468,7 +468,7 @@ void addParsToJson(json & j) const {
 };
  
 
-struct W2DCEparsA : public W2Dbaseparameters
+class W2DCEparsA : public W2Dbaseparameters
 {
 public:
 W2DCEparsA(){}
@@ -498,33 +498,70 @@ void addParsToJson(json & j) const {
 };
 
 
-struct W2DCEpars : public W2DCEparsA
+class W2DCEpars : public W2DCEparsA //, public SRCEpars
 {
 public:
 W2DCEpars(){}
 W2DCEpars(int argc, const char* argv[]);
 W2DCEpars(shared_ptr<const CmdArgs> cmd);
 
-string sr_type = "None";
-int SRForm = 0;
+
 double SREvoBot = 0;
 
-void show(){cout << "srtype " << sr_type <<  endl;  W2DCEparsA::show();}
+void show(){ W2DCEparsA::show();}
+
+void setParsFromJson(json & j){
+  SREvoBot = j["SREvoBot"]["value"];
+  W2DCEparsA::setParsFromJson(j);
+  //SRCEpars::setParsFromJson(j);
+}
+void addParsToJson(json & j) const {
+  j["SREvoBot"]["value"] = SREvoBot;
+   W2DCEparsA::addParsToJson(j);
+   //SRCEpars::addParsToJson(j);
+}
+
+};
+
+
+
+class SRCEpars 
+{
+public:
+SRCEpars();
+SRCEpars(shared_ptr<const CmdArgs> cmd);
+string sr_type = "None";
+int SRForm = 0;
+int nsegperstr = 6;
+
+virtual ~SRCEpars(){}
+virtual void setPars(shared_ptr<const CmdArgs> cmd);
 
 void setParsFromJson(json & j){
   sr_type = j["SRType"]["value"]; 
   SRForm = j["SRForm"]["value"];
-  SREvoBot = j["SREvoBot"]["value"];
-  W2DCEparsA::setParsFromJson(j);
+  nsegperstr = j["nsegperstr"]["value"];
+  
 }
 void addParsToJson(json & j) const {
   j["SRType"]["value"] = sr_type;
   j["SRForm"]["value"] = SRForm;
-  j["SREvoBot"]["value"] = SREvoBot;
-   W2DCEparsA::addParsToJson(j);
+  j["nsegperstr"]["value"] = nsegperstr;
 }
+};
+
+class SRRegpars :  public SRCEpars
+{
+public:
+SRRegpars(){}
+SRRegpars(shared_ptr<const CmdArgs> cmd);
+void setPars(shared_ptr<const CmdArgs> cmd);
+
+int offset = 0;
 
 };
+
+
 
 
 

@@ -6,8 +6,8 @@ void SR::setFromBody(const WormBody & b)
     for(int i = 1; i <= nsegs; ++i){
     const double ds = (b.DorsalSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
     const double vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
-    nslD[i-1] = ds;
-    nslV[i-1] = vs;
+    nslD[i-1] = transformSegs(ds);
+    nslV[i-1] = transformSegs(vs);
     }
 
 }
@@ -58,12 +58,27 @@ void SR::addParsToJson(json & j)
 void SRCE::addParsToJson(json & j)
 {
 
+    srcepars->addParsToJson(j["Stretch receptor"]);
     SR::addParsToJson(j);
-    j["Stretch receptor"]["NSegsforanSR"]["value"] = NSEGSSR;
-    j["Stretch receptor"]["SR Form"]["value"] = SRForm;
+    //j["Stretch receptor"]["NSegsforanSR"]["value"] = srcepars->nsegperstr;
+    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
 
     j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
     j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
+}
+
+void SRCE::setParsFromJson(json & j)
+{
+
+    srcepars->setParsFromJson(j["Stretch receptor"]);
+    //SR::addParsToJson(j);
+    //srcepars->nsegperstr = j["Stretch receptor"]["NSegsforanSR"]["value"];
+    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
+
+    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
+    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
+
+
 }
 
 
@@ -72,35 +87,35 @@ SRWeights SRCE::makeSRWeights() const
 
     SRWeights srw;
 
-    if (SRForm == 0){
-    for (int j = 1; j <= NSEGSSR; j++){
+    if (srcepars->SRForm == 0){
+    for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j, to = 1;
-        double weight = SR_A_gain/NSEGSSR;
+        double weight = SR_A_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
     }
     for (int i = 2; i <= 10; i++)
-         for (int j = 1; j <= NSEGSSR; j++){
+         for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j+(i-2)*4, to = i;
-        double weight = SR_A_gain/NSEGSSR;
+        double weight = SR_A_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
         }
     
     for (int i = 1; i <= 9; i++)
-        for (int j = 1; j <= NSEGSSR; j++){
+        for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = 12+j+(i-1)*4, to = i;
-        double weight = SR_B_gain/NSEGSSR;
+        double weight = SR_B_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
         }
 
-    for (int j = 1; j <= NSEGSSR; j++){
+    for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j + 44, to = 10;
-        double weight = SR_B_gain/NSEGSSR;
+        double weight = SR_B_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -108,13 +123,13 @@ SRWeights SRCE::makeSRWeights() const
 
 }
 
-    if (SRForm == 1){
+    if (srcepars->SRForm == 1){
   
     for (int i = 1; i <= 9; i++)   
-        for (int j = 1; j <= NSEGSSR; j++)
+        for (int j = 1; j <= srcepars->nsegperstr; j++)
         {
         int from = 12+j+(i-1)*4, to = i;
-        double weight = SR_A_gain/NSEGSSR;
+        double weight = SR_A_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -122,9 +137,9 @@ SRWeights SRCE::makeSRWeights() const
 
 //    // Unit 10 (tail), receive same input as Unit 9
 
-    for (int j = 1; j <= NSEGSSR; j++){
+    for (int j = 1; j <= srcepars->nsegperstr; j++){
     int from = j+44, to = 10;
-        double weight = SR_A_gain/NSEGSSR;
+        double weight = SR_A_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -135,9 +150,9 @@ SRWeights SRCE::makeSRWeights() const
 //    // B-class Stretch Receptors
 //    // first unit (head) receive same input as Unit 2
 
-    for (int j = 1; j <= NSEGSSR; j++){
+    for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j, to = 1;
-        double weight = SR_B_gain/NSEGSSR;
+        double weight = SR_B_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -147,10 +162,10 @@ SRWeights SRCE::makeSRWeights() const
 //    // Units 2 to 10 
 
     for (int i = 2; i <= 10; i++)
-        for (int j = 1; j <= NSEGSSR; j++)
+        for (int j = 1; j <= srcepars->nsegperstr; j++)
         {
         int from = j+(i-2)*4, to = i;
-        double weight = SR_B_gain/NSEGSSR;
+        double weight = SR_B_gain/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -159,5 +174,63 @@ SRWeights SRCE::makeSRWeights() const
 }
 
 return srw;
+
+}
+
+
+SRWeights SRReg::makeSRWeights() const
+{
+
+    SRWeights srw;
+
+   for (int i = 1; i <= srvars.nstretch; i++)
+    for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++){
+        int from = j-srregpars->offset, to = i;
+        if (from>0){
+        double weight = SR_B_gain/srcepars->nsegperstr;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+        }
+    }
+
+    for (int i = 1; i <= srvars.nstretch; i++)
+    for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++){
+        int from = j+srregpars->offset, to = i;
+        if (from<=nsegs){
+        double weight = SR_A_gain/srcepars->nsegperstr;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+        }
+    }
+
+
+
+}
+
+
+double SRCE::transformSegs(const double & val){
+
+    double val1 = val;
+
+    if (srcepars->sr_type == "SR_TRANS_STRETCH")
+    {
+    val1 = val < 0.0 ? 0.0 : val;
+    }
+    else if (srcepars->sr_type == "SR_TRANS_CONTRACT")
+    {
+    val1 = val < 0.0 ? val : 0.0;
+    }
+    else if (srcepars->sr_type == "SR_TRANS_ABS")
+    {
+    val1 = val < 0.0 ? -val : val;
+    }
+    else if (srcepars->sr_type == "SR_TRANS_NEG")
+    {
+    val1 = -val;
+    }
+
+return val1;
 
 }

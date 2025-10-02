@@ -11,23 +11,47 @@
 #include "../neuromlLocal/c302ForW2D.h"
 
 
-Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1(new W2DCEpars()),
+/* Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1(new W2DCEpars()),
     //W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
     //W2DCEpars1(new W2DCEpars()),Worm2Dm(par1_,nullptr),Worm2D(par1_,0)
     
     Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
-    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),sr(N_segments,10)
+    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+    sr_ptr(make_shared<SRCE>(N_segments,10))
     {
 
       W2DCEpars1->AVA_output = 0.0;
       W2DCEpars1->AVB_output = 0.0;
 
-      sr.SRForm = W2DCEpars1->SRForm;
-      pheno_A_gain = sr.SR_A_gain;
-      pheno_B_gain = sr.SR_B_gain;
-      sr.setWeights();
+      //sr_ptr->SRForm = W2DCEpars1->SRForm;
+      pheno_A_gain = sr_ptr->SR_A_gain;
+      pheno_B_gain = sr_ptr->SR_B_gain;
+      sr_ptr->setWeights();
+      //assert(0);
+    } */
+
+
+Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
+Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10)){}
+
+
+Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
+Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
+    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+    sr_ptr(sr_ptr_)
+{
+
+      W2DCEpars1->AVA_output = 0.0;
+      W2DCEpars1->AVB_output = 0.0;
+
+      //sr_ptr->SRForm = W2DCEpars1->SRForm;
+      pheno_A_gain = sr_ptr->SR_A_gain;
+      pheno_B_gain = sr_ptr->SR_B_gain;
+      sr_ptr->setWeights();
       //assert(0);
     }
+
+
 
    // {assert(0);}
     //Worm2Dm(par1_,(shared_ptr<W2DCEpars>) new W2DCEpars()),Worm2D(par1_,0),
@@ -42,9 +66,9 @@ Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_)://W2Dbaseparameters1
 
 
 
+Worm2DCE::Worm2DCE(json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
 
-
-Worm2DCE::Worm2DCE(json & j):Worm2Dm(
+Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
@@ -56,7 +80,8 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),sr(N_segments,10)
+  } ,0),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+  sr_ptr(sr_ptr_)
 {
 
   W2DCEpars1->setParsFromJson(j["Worm"]);
@@ -68,12 +93,13 @@ Worm2DCE::Worm2DCE(json & j):Worm2Dm(
   AVB_act = 0;
   AVB_inact = 0;
  
-  sr.SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
-  sr.SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
-      
+  //sr_ptr->SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
+  //sr_ptr->SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
+  
+  sr_ptr->setParsFromJson(j);
   
 
-  //sr.SetStretchReceptorParams(N_segments, N_stretchrec,
+  //sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec,
     //j["Stretch receptor"]["SR_A_gain"]["value"] , j["Stretch receptor"]["SR_B_gain"]["value"]);
 
 // Excitatory VNC NMJ Weight
@@ -91,10 +117,10 @@ NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
 
 cout << "Worm2DCE const" << endl;
 
-pheno_A_gain = sr.SR_A_gain;
-pheno_B_gain = sr.SR_B_gain;
-sr.SRForm = W2DCEpars1->SRForm;
-sr.setWeights();
+pheno_A_gain = sr_ptr->SR_A_gain;
+pheno_B_gain = sr_ptr->SR_B_gain;
+//sr_ptr->SRForm = W2DCEpars1->SRForm;
+sr_ptr->setWeights();
 }
 
 
@@ -136,20 +162,16 @@ WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 }
 
 
-
-
-
-
 void Worm2DCE::initForSimulation(RandomState & rs)
 {
 
   return;
 
   /* cout << "initForSimulation" << endl;
-  cout << sr.SR_A_gain << " " << sr.SR_B_gain 
+  cout << sr_ptr->SR_A_gain << " " << sr_ptr->SR_B_gain 
   << " " << AVA_output << " " << AVB_output << " " << AVA_inact << " " << AVB_act << endl;
 
-  sr.SR_A_gain = 0.0;
+  sr_ptr->SR_A_gain = 0.0;
   AVA_output =  AVA_inact;
   AVB_output =  AVB_act;
  */
@@ -158,18 +180,16 @@ void Worm2DCE::initForSimulation(RandomState & rs)
 }
 
 
-
-
 void Worm2DCE::setForward()
 {
   //assert(0);
-  sr.SR_A_gain = pheno_A_gain;
-  sr.SR_B_gain = pheno_B_gain;
+  sr_ptr->SR_A_gain = pheno_A_gain;
+  sr_ptr->SR_B_gain = pheno_B_gain;
 
-  sr.SR_A_gain = 0.0;
+  sr_ptr->SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
-  sr.setWeights();
+  sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  0;
   W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
 }
@@ -177,14 +197,14 @@ void Worm2DCE::setForward()
 void Worm2DCE::setBackward()
 {
   //assert(0);
-  sr.SR_A_gain = pheno_A_gain;
-  sr.SR_B_gain = pheno_B_gain;
+  sr_ptr->SR_A_gain = pheno_A_gain;
+  sr_ptr->SR_B_gain = pheno_B_gain;
 
-  sr.SR_B_gain = 0.0;
+  sr_ptr->SR_B_gain = 0.0;
   //AVA_output =  0;
   //AVB_output =  1;
 
-  sr.setWeights();
+  sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
   W2DCEpars1->AVB_output =  0;
 }
@@ -208,18 +228,16 @@ shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(shared_ptr<const CmdArgs> 
   //W2DCEpars w1(argc,argv);
   W2DCEpars w1(cmd);
   *W2DCEpars1 = w1; 
-  sr.SRForm = W2DCEpars1->SRForm;
-  sr.setWeights();
+  sr_ptr->setPars(cmd);
+  //sr_ptr->SRForm = W2DCEpars1->SRForm;
+  //sr_ptr->setWeights();
  
   //assert(0);
 
   //W2DCEpars1->show();
   //assert(0);
 
-  assert(W2DCEpars1->sr_type == "SR_TRANS_STRETCH" ||  W2DCEpars1->sr_type ==  "SR_TRANS_CONTRACT" 
-    || W2DCEpars1->sr_type == "SR_TRANS_ABS" 
-    ||  W2DCEpars1->sr_type == "SR_TRANS_NEG" || W2DCEpars1->sr_type == "None");
-
+  
   return W2Dbaseparameters1;
 
   //evolvable_worm_pars_ptr = W2DCEpars1;
@@ -230,7 +248,7 @@ shared_ptr<const W2Dparameters> Worm2DCE::setWormPars(shared_ptr<const CmdArgs> 
 
 //shared_ptr<const W2Dparameters> WormCE::getWormPars() {return W2DCEpars1;}
 
-void Worm2DCE::setWormPars(const W2Dparameters * w2par_)
+/* void Worm2DCE::setWormPars(const W2Dparameters * w2par_)
 {
 
 assert(0);
@@ -238,8 +256,8 @@ assert(0);
 { const W2DCEpars * const w1 = dynamic_cast<const W2DCEpars*>(w2par_);
   if (w1 != nullptr){
   *W2DCEpars1 = *w1;
-  sr.SRForm = W2DCEpars1->SRForm;
-  sr.setWeights();
+  sr_ptr->SRForm = W2DCEpars1->SRForm;
+  sr_ptr->setWeights();
   return;
   }
 }
@@ -250,17 +268,7 @@ assert(0);
   W2DCEpars1->AVB_output = w1->AVB_output;
   W2DCEpars1->AB_output_level =  w1->AB_output_level;
 
-  //assert(0);
-  //sr.setWeights();  
 
-  /* if (W2DCEpars1->AVB_output>0.5){
-  cout << " xxx " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
-  //assert(0);
-  }
-  if (W2DCEpars1->AVB_output<0.5) {
-  cout << " yyy " << W2DCEpars1->AVA_output << " " << W2DCEpars1->AVB_output << " " << W2DCEpars1->AB_output_level << endl;
-  assert(0);
-  }  */
 
   return;
   }
@@ -272,7 +280,7 @@ assert(0 && "not correct cast");
   //W2DCEpars1->show();
     //assert(0);
 }
-
+ */
 
 
 void Worm2DCE::InitializeState(RandomState &rs)
@@ -293,7 +301,7 @@ void Worm2DCE::Step1()
   // Update Body
   b.StepBody(settedStepSize);
 
-  sr.updateAll(b);
+  sr_ptr->updateAll(b);
 
   // Set input to Stretch Receptors from Body
   // Input to SR only if the segment stretch
@@ -301,17 +309,17 @@ void Worm2DCE::Step1()
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.srvars.A_V_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->srvars.A_V_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
   }
   ////   To B_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.srvars.B_D_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.srvars.B_V_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + AVB_output);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + AVB_output);
+    n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->srvars.B_D_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->srvars.B_V_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
   }
 
   // Update Nervous System
@@ -428,27 +436,27 @@ void Worm2DCE::Step1()
     vs = -vs;
     }
 
-    sr.SetDorsalInput(i, ds);
-    sr.SetVentralInput(i, vs);
+    sr_ptr->SetDorsalInput(i, ds);
+    sr_ptr->SetVentralInput(i, vs);
   }
 
   // Update Stretch Receptors
-  sr.Update();
+  sr_ptr->Update();
 
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr.A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr.A_V_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
   }
   ////   To B_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr.B_D_sr(i) + AVB_output);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr.B_V_sr(i) + AVB_output);
+    n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
   }
 
   // Update Nervous System
@@ -569,10 +577,10 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   int ddNext, vdNext, vbNext, dbNext;
 
   // Stretch receptor
-//  sr.SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
+//  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
 
-  sr.SR_A_gain = pheno(1);
-  sr.SR_B_gain = pheno(2);
+  sr_ptr->SR_A_gain = pheno(1);
+  sr_ptr->SR_B_gain = pheno(2);
 
   //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
 
@@ -649,9 +657,9 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
   //W2DCEpars1->AVA_output = 0.0;
   //W2DCEpars1->AVB_output = 0.0;
 
-  pheno_A_gain = sr.SR_A_gain;
-  pheno_B_gain = sr.SR_B_gain;
-  sr.setWeights();
+  pheno_A_gain = sr_ptr->SR_A_gain;
+  pheno_B_gain = sr_ptr->SR_B_gain;
+  sr_ptr->setWeights();
 }
 
 
@@ -814,10 +822,10 @@ void WormCE::setPhenoNames()
 
 void Worm2DCE::addParsToJson(json & j)
 {
-    //Params<double> par = sr.getStretchReceptorParams();
+    //Params<double> par = sr_ptr->getStretchReceptorParams();
     //appendToJson<double>(j["Stretch receptor"], par);
 
-    sr.addParsToJson(j);
+    sr_ptr->addParsToJson(j);
     Worm2D::addParsToJson(j);
     //W2DCEpars1->addParsToJson(j);
     //string nsHead = "Nervous system";
@@ -853,9 +861,9 @@ void Worm2DCE::writeAct()
     //ofs << "\nSR: ";
     // Stretch receptors
     for (int i = 1; i <= N_stretchrec; i++) {
-      //ofs <<  " " << sr.A_D_sr(i) << " " << sr.A_V_sr(i) << " " << sr.B_D_sr(i) << " " << sr.B_V_sr(i);
-      ofs <<  " " << sr.srvars.A_D_sr[i-1] << " " << sr.srvars.A_V_sr[i-1] << " " 
-      << sr.srvars.B_D_sr[i-1] << " " << sr.srvars.B_V_sr[i-1];
+      //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
+      ofs <<  " " << sr_ptr->srvars.A_D_sr[i-1] << " " << sr_ptr->srvars.A_V_sr[i-1] << " " 
+      << sr_ptr->srvars.B_D_sr[i-1] << " " << sr_ptr->srvars.B_V_sr[i-1];
     }
     // Ventral Cord Motor Neurons
     //ofs << "\nV: ";
@@ -877,8 +885,8 @@ void Worm2DCE::writeAct()
 
 void Worm2DCE::DumpParams(ofstream &ofs) {
   
-  ofs << "Stretch Receptors Gains: \n A-class SR: " << sr.SR_A_gain <<
-  "\n B-class SR: " << sr.SR_B_gain <<  endl;
+  ofs << "Stretch Receptors Gains: \n A-class SR: " << sr_ptr->SR_A_gain <<
+  "\n B-class SR: " << sr_ptr->SR_B_gain <<  endl;
 
   ofs << "NMJ weights: \n" <<
   "\n DA: " << NMJ_DA <<

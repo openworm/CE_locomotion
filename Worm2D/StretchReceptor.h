@@ -32,11 +32,7 @@ vector<toFromWeight> segToA_D, segToA_V, segToB_D, segToB_V;
 class SR{
 public:
 SR(int nsegs_, int nstretch_):
-nsegs(nsegs_),srvars(nstretch_),nslD(nsegs_,0),nslV(nsegs_,0)
-{
-    //normSegLenD.SetBounds(1,nsegs_);
-    //normSegLenV.SetBounds(1,nsegs_);
-}
+nsegs(nsegs_),srvars(nstretch_),nslD(nsegs_,0),nslV(nsegs_,0){}
 
 void setFromBody(const WormBody & b);
 void updateSegs();
@@ -46,13 +42,17 @@ void setWeights(){srweights = makeSRWeights();}
 virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
 virtual void addParsToJson(json & j);
+virtual double transformSegs(const double & val){return val;}
 
 SRVars srvars;
+protected:
+const int nsegs;
+
 private:
 SRWeights srweights;
 vector<double> nslD, nslV;
 
-const int nsegs;
+
 
 };
 
@@ -60,13 +60,39 @@ class SRCE : public SR
 {
 
 public:
-SRCE(int nsegs_, int nstretch_):SR(nsegs_,nstretch_){}
+SRCE(int nsegs_, int nstretch_):
+SR(nsegs_,nstretch_),srcepars(make_shared<SRCEpars>()){}
+
+
 SRWeights makeSRWeights() const;
 void addParsToJson(json & j);
+void setParsFromJson(json & j);
+double transformSegs(const double & val);
 
-int SRForm = 0;
+void setPars(shared_ptr<const CmdArgs> cmd){srcepars->setPars(cmd); setWeights();}
+
+
+shared_ptr<SRCEpars> srcepars;
+//int SRForm = 0;
 double SR_A_gain;
 double SR_B_gain;
-const int NSEGSSR = 6;
+
+protected:
+SRCE(int nsegs_, int nstretch_,shared_ptr<SRCEpars> srcepars_):
+SR(nsegs_,nstretch_),srcepars(srcepars_){}
+
+//int nsegperstr;
+
+
+};
+
+class SRReg : public SRCE
+{
+public:
+SRReg(int nsegs_, int nstretch_)
+:SRCE(nsegs_,nstretch_,make_shared<SRRegpars>()),
+srregpars(dynamic_pointer_cast<SRRegpars>(srcepars)){}
+SRWeights makeSRWeights() const;
+shared_ptr<SRRegpars> srregpars;
 
 };
