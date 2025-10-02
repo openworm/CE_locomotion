@@ -25,7 +25,7 @@ run(
     evoType="EvoCE",
     # evoType="Evo21R",
     # evoType="Evo21",
-    doReverse=0,
+    doReverse=2,
     doForwardFirst=True,
     randInitState=True,
     doTestRun=False,

@@ -89,7 +89,7 @@ int main (int argc, const char* argv[])
         Worm2Dbase* w = 0;
         
 
-        if (model_name == "CE") w = new WormCE(phenotype);
+        if (model_name == "CE") w = new WormCE(cmd,phenotype);
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
         if (model_name == "CO") {
@@ -147,7 +147,7 @@ int main (int argc, const char* argv[])
 
     cout << "making worm" << endl;
 
-    if (model_name == "CE") w = new WormCE(phenotype);
+    if (model_name == "CE") w = new WormCE(cmd,phenotype);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
     if (model_name == "CO") w = new WormAgent(phenotype,10);
@@ -179,7 +179,7 @@ int main (int argc, const char* argv[])
 
     cout << "making worm 2" << endl;
 
-    if (model_name == "CE") w = new WormCE(phenotype);
+    if (model_name == "CE") w = new WormCE(cmd,phenotype);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
     if (model_name == "CO") w = new WormAgent(phenotype,10);

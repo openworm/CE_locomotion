@@ -100,9 +100,9 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);
-    if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
+    if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
-    if (model_name == "W2DCESR") w2 = new WormCESR(gen_filename);
+    if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
 
     }else{
 
@@ -110,12 +110,6 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(ep1.rename_file("worm_data_evo.json"));
 
     }
-
-
-    w2->addParsToJson(j);
-    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
-    json_out << std::setw(4) << j << std::endl;
-    json_out.close();
 
     
     cout << "const 1" << endl;
@@ -135,6 +129,12 @@ int main (int argc, const char* argv[])
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
     w2->setWormPars(cmd);
+
+    w2->addParsToJson(j);
+    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
+    json_out << std::setw(4) << j << std::endl;
+    json_out.close();
+
 
     const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
