@@ -917,8 +917,8 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     count++;
     }
 
-    genotype(SR_A) = sra;
-    genotype(SR_B) = srb;
+    //genotype(SR_A) = sra;
+    //genotype(SR_B) = srb;
 
 
     return fitness/count;

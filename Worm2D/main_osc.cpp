@@ -88,6 +88,7 @@ int main (int argc, const char* argv[])
 
     Worm2Dbase * w2;
 
+    const string json_filename = ep1.rename_file("worm_data_evo.json");
     if (!do_nml){
 
     const string gen_filename =  ep1.rename_file("best.gen.dat");
@@ -100,16 +101,17 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);
-    //if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
-    if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
+    if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
+    //if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
-    if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
+    //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
+    if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
 
     }else{
 
-    if (model_name == "W2Dosc") w2 = new Worm2DoscNML(ep1.rename_file("worm_data_evo.json"));
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(ep1.rename_file("worm_data_evo.json"));
+    if (model_name == "W2Dosc") w2 = new Worm2DoscNML(json_filename);
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(json_filename);
 
     }
 
@@ -122,7 +124,8 @@ int main (int argc, const char* argv[])
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
 
-    w2->setWormPars(cmd);
+    if (!(model_name == "W2DCE" || model_name == "W2DCESR")) w2->setWormPars(cmd);
+
     w2->InitializeState(rs);
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
@@ -130,7 +133,7 @@ int main (int argc, const char* argv[])
     w2->setDataskips(ep1.skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(ep1.directoryName);
-    w2->setWormPars(cmd);
+    //w2->setWormPars(cmd);
 
     w2->addParsToJson(j);
     ofstream json_out(ep1.rename_file("worm_data_worm.json"));
