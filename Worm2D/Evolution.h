@@ -916,7 +916,14 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     fitness += EvaluationCEp1(genotype, rs, -1);
     count++;
     }
+
+    genotype(SR_A) = sra;
+    genotype(SR_B) = srb;
+
+
     return fitness/count;
+
+
 
     //if (Epars1.doReverse==0) return fitnessForward;
     //if (Epars1.doReverse==1) return fitnessBackward;
