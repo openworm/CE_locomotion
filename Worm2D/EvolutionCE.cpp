@@ -75,6 +75,9 @@ double EvolutionCE::EvaluationFunction(TVector<double> &v, RandomState &rs)
     //  v(SR_B)= -1.0;
     //  fitnessBackward = Evaluation(v, rs, -1);
     //  return (fitnessForward + fitnessBackward)/2;
+
+    v(SR_A)= sra;
+    v(SR_B)= srb;
     return fitnessForward;
     // return fitnessBackward;
 }
