@@ -455,14 +455,21 @@ Evolparameters(cmd,evol1_,evotype_),EvolparametersCE(cmd),AgarPars(cmd){}
 
 
 void setParsFromJson(json & j){
-  doReverse =  j["doReverse"]["value"];
-  dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
-  AgarPars::setParsFromJson(j);
+  EvolparametersCE::setParsFromJson(j);
+  Evolparameters::setParsFromJson(j);
+
+  //doReverse =  j["doReverse"]["value"];
+  //dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
+  //AgarPars::setParsFromJson(j);
 }
+
 void addParsToJson(json & j) const {
-  j["doReverse"]["value"] = doReverse;
-  j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;
-  AgarPars::addParsToJson(j);
+  EvolparametersCE::addParsToJson(j);
+  Evolparameters::addParsToJson(j);
+
+  //j["doReverse"]["value"] = doReverse;
+  //j["dbunit"]["value"] = dbunit; j["vbunit"]["value"] = vbunit;
+  //AgarPars::addParsToJson(j);
 }
 
 };

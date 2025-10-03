@@ -159,7 +159,7 @@ void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
 double EvaluationFunction(TVector<double> &v, RandomState &rs);
 
 }; */
-class EvolutionFull : public Evolution
+/* class EvolutionFull : public Evolution
 {
 public:
 EvolvableS * const evolvable1  = nullptr;
@@ -178,7 +178,7 @@ evoPars getDefaultEvoPars(EvolvableS * evol1_)
         100, 2000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), "", "Evo21"};}
 
-};
+}; */
 
 
 class Evolvable_ptr 
@@ -195,7 +195,7 @@ Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_){}
 };
 
 
-class EvolutionFull2 : public Evolution
+/* class EvolutionFull2 : public Evolution
 {
 public:
 virtual ~EvolutionFull2(){}
@@ -212,7 +212,7 @@ evoPars getDefaultEvoPars(EvolvableS * evol1_)
         100, 2000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), "", "Evo21"};}
 
-};
+}; */
 
 
 

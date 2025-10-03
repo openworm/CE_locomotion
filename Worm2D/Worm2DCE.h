@@ -200,7 +200,7 @@ public:
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
-    void setEvolPars(W2Dparameters & w2par_, string evotype_){}
+    void setEvolPars(W2Dparameters & w2par_, string evotype_);
     //W2Dparameters & getWormPars() {return W2DCEpars1;}
   
     
