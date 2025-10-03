@@ -37,16 +37,20 @@ Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10),cmd){}
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10)){}
 
-Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, 
-  shared_ptr<SRCE> sr_ptr_):
+
+Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
 Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
     sr_ptr(sr_ptr_)
 {
-     
+      AVA_act = 0;
+      AVA_inact = 0;
+      AVB_act = 0;
+      AVB_inact = 0;
+
   //assert(0);
-      W2DCEpars1->AVA_output = 0.0;
-      W2DCEpars1->AVB_output = 0.0;
+      //W2DCEpars1->AVA_output = 0.0;
+      //W2DCEpars1->AVB_output = 0.0;
 
       //sr_ptr->SRForm = W2DCEpars1->SRForm;
       pheno_A_gain = sr_ptr->SR_A_gain;
@@ -64,15 +68,23 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
 {
       
   //assert(0);
-      W2DCEpars1->AVA_output = 0.0;
-      W2DCEpars1->AVB_output = 0.0;
+      //W2DCEpars1->AVA_output = 0.0;
+      //W2DCEpars1->AVB_output = 0.0;
 
       //sr_ptr->SRForm = W2DCEpars1->SRForm;
-      pheno_A_gain = sr_ptr->SR_A_gain;
-      pheno_B_gain = sr_ptr->SR_B_gain;
+      
+      AVA_act = 0;
+      AVA_inact = 0;
+      AVB_act = 0;
+      AVB_inact = 0;
 
       setWormPars(cmd);
+      pheno_A_gain = sr_ptr->SR_A_gain;
+      pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
+
+      //setWormPars(cmd);
+
      
 }
 
@@ -157,9 +169,13 @@ WormCE::WormCE(shared_ptr<SRCE> sr_ptr_):
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_){}
 
+
 WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10)){}
 
+
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRCE>(N_segments,10), cmd){}
+
+
 
 /* WormCE::WormCE()://Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), new Muscles),
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
@@ -206,8 +222,20 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(c
     setParsFromFile(filename_);
 }
 
+WormCE::WormCE(const string & filename_):WormCE()
+{
+    setParsFromFile(filename_);
+}
 
+WormCE::WormCE(json j, const string & filename_):WormCE()
+{
+    W2DCEpars1->setParsFromJson(j["Worm"]);
+    sr_ptr->setParsFromJson(j);
+    setParsFromFile(filename_);
+}
 
+WormCE::WormCE(const string & jsonfilename_, const string & filename_):
+WormCE((json) getJsonFromFile(jsonfilename_),filename_){}
 
 WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10),cmd),
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
@@ -224,8 +252,16 @@ WormCESR(cmd)
 setParsFromFile(filename_);
 }
 
+WormCESR::WormCESR(json  j, const string & filename_):
+WormCESR()
+{
+  W2DCEpars1->setParsFromJson(j["Worm"]);
+  sr_ptr->setParsFromJson(j);
+  setParsFromFile(filename_);
+}
 
-
+WormCESR::WormCESR(const string & jsonfilename_, const string & filename_):
+WormCESR((json) getJsonFromFile(jsonfilename_),filename_){}
 
 void Worm2DCE::initForSimulation(RandomState & rs)
 {

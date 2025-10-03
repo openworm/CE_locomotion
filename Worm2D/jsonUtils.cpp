@@ -5,6 +5,14 @@
 
 using json = nlohmann::json;
 
+json getJsonFromFile(const string & jsonfile_){
+        ifstream json_in(jsonfile_);
+        json j;
+        //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
+        json_in >> j;
+        json_in.close();
+        return j;
+}
 
 
 

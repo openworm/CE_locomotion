@@ -12,6 +12,7 @@
 using json = nlohmann::json;
 using std::vector;
 
+json getJsonFromFile(const string & jsonfile_);
 
 
 

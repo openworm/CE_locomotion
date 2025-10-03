@@ -158,6 +158,9 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     WormCE(TVector<double> &phengen, bool isPheno);
+    WormCE(json j, const string & filename_);
+    WormCE(const string & jsonfilename_, const string & filename_);
+    WormCE(const string & filename_);
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);
@@ -224,6 +227,8 @@ public:
 WormCESR();
 WormCESR(shared_ptr<const CmdArgs> cmd);
 WormCESR(shared_ptr<const CmdArgs> cmd, const string & filename_);
+WormCESR(json j, const string & filename_);
+WormCESR(const string & jsonfilename_, const string & filename_);
 
 };
 
