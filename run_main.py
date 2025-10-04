@@ -533,6 +533,7 @@ def run(a=None, **kwargs):
             "best.pheno.dat",
             "search.cpt",
             "worm_data_evo.json",
+            "genhistory.dat"
         ]
 
         for file in files:

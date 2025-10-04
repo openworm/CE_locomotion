@@ -15,6 +15,19 @@ using std::vector;
 json getJsonFromFile(const string & jsonfile_);
 
 
+template<class T>
+T getJsonVal(json & j, const string & key, const T & default_, bool doValue = false)
+{
+
+if (j.contains(key)){
+
+        if (doValue) if (j[key].contains("value")) return j[key]["value"];
+        return j[key];
+ }
+return default_;
+
+
+}
 
 template<class T>
 vector<T> & append(vector<T> & v1, const vector<T> & v2)

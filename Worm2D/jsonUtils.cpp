@@ -16,6 +16,7 @@ json getJsonFromFile(const string & jsonfile_){
 
 
 
+
 void to_json(json & j, const weightentry & w)
 {
   j = json{{"from", w.from}, {"weight", w.weight}};

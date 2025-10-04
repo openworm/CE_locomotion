@@ -491,10 +491,13 @@ void show() const {cout <<
 
 
 void setParsFromJson(json & j){
-  AB_output_level = j["AB_output_level"]["value"];
+  AB_output_level = getJsonVal<double>(j, "AB_output_level", AB_output_level, true);
+  //AB_output_level = j["AB_output_level"]["value"];
   AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
   W2Dbaseparameters::setParsFromJson(j);
+  
 }
+
 void addParsToJson(json & j) const {
   j["AB_output_level"]["value"] = AB_output_level;
   j["AVA_output"]["value"] = AVA_output; 
@@ -518,7 +521,14 @@ double SREvoBot = 0;
 void show(){ W2DCEparsA::show();}
 
 void setParsFromJson(json & j){
-  SREvoBot = j["SREvoBot"]["value"];
+  //assert(0);
+  SREvoBot = getJsonVal<double>(j, "SREvoBot", SREvoBot, true);
+
+  //if (j.contains("SREvoBot"))
+  //SREvoBot = j["SREvoBot"]["value"];
+  
+ // assert(0);
+  
   W2DCEparsA::setParsFromJson(j);
   //SRCEpars::setParsFromJson(j);
 }
@@ -545,10 +555,14 @@ virtual ~SRCEpars(){}
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
 
 void setParsFromJson(json & j){
-  sr_type = j["SRType"]["value"]; 
-  SRForm = j["SRForm"]["value"];
-  nsegperstr = j["SRSegPerSR"]["value"];
-  
+  sr_type = getJsonVal<string>(j, "SRType" , sr_type, true);
+  SRForm = getJsonVal<int>(j, "SRForm" , SRForm , true);
+  //sr_type = j["SRType"]["value"]; 
+  //SRForm = j["SRForm"]["value"];
+  nsegperstr = getJsonVal<int>(j, "SRSegPerSR"  , nsegperstr , true);
+
+  //nsegperstr = j["SRSegPerSR"]["value"];
+  //assert(0);
 }
 void addParsToJson(json & j) const {
   j["SRType"]["value"] = sr_type;
