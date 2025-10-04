@@ -136,22 +136,21 @@ int main (int argc, const char* argv[])
     //w2->setWormPars(cmd);
 
     w2->addParsToJson(j);
-    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
-    json_out << std::setw(4) << j << std::endl;
-    json_out.close();
+    
 
 
     const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
-   
+
+    double simduration = cmd->getArgValDoub("-sd",10);
+    double simtransient = cmd->getArgValDoub("-st",10);   
     
     WormFR* const w = dynamic_cast<WormFR*>(w2);
+
 
     if (dotest || w==nullptr)
     {
 
-        double simduration = cmd->getArgValDoub("-sd",10);
-        double simtransient = cmd->getArgValDoub("-st",10);   
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
@@ -159,10 +158,15 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
-    delete w2;
-    return 0;
+    j["Simulation"]["transient"]["value"] = simtransient;
+    j["Simulation"]["duration"]["value"] = simduration;
     }
-     
+    
+    else{
+
+    j["Simulation"]["transient"]["value"] = simtransient;
+    j["Simulation"]["duration"]["value"] = simduration*2;
+
     bool forwardfirst = cmd->getArgValInt("--doForwardFirst",0);
     //forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
 
@@ -182,8 +186,7 @@ int main (int argc, const char* argv[])
         else w.setBackward();
     } */
 
-    double simduration = cmd->getArgValDoub("-sd",10);
-    double simtransient = cmd->getArgValDoub("-st",10);   
+   
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
@@ -199,6 +202,7 @@ int main (int argc, const char* argv[])
     w->randomizeNS(rs);
     s1.runSimulation(*w2);
     
+    }
 
     /* 
     if (model_name == "W2DCE") 
@@ -215,7 +219,10 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
 
-    
+    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
+    json_out << std::setw(4) << j << std::endl;
+    json_out.close();
+
     delete w2;
     return 0;
 }

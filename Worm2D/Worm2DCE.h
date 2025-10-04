@@ -77,7 +77,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     const vector<string> getCellNames() {return 
         getCellNamesAll( {"DA", "DB", "DD", "VD", "VA", "VB"}, par1.N_units);}
     
-    const string getModelName() {return {"CE"};}
+    const string getModelName() {return {"W2DCE"};}
 
     vector<doubIntParamsHead> getWormParams();
 
@@ -178,6 +178,7 @@ public:
     void DumpParams(ofstream &ofs);
     NervousSystem & n;
     void addParsToJson(json & j);
+    
 
     void setPhenoNames();
 
@@ -229,6 +230,7 @@ WormCESR(shared_ptr<const CmdArgs> cmd);
 WormCESR(shared_ptr<const CmdArgs> cmd, const string & filename_);
 WormCESR(json j, const string & filename_);
 WormCESR(const string & jsonfilename_, const string & filename_);
+const string getModelName() {return {"W2DCESR"};}
 
 };
 

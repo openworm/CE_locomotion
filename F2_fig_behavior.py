@@ -9,8 +9,12 @@ import neuromlLocal.utils as utils
 
 
 def make_fig(plot_format):
-    if not os.path.isfile(hf.rename_file("sim_body.dat")):
-        return
+
+    file_prefix = "sim_"
+    if not os.path.isfile(hf.rename_file(file_prefix + "ns.dat")):
+        file_prefix = ""
+        if not os.path.isfile(hf.rename_file(file_prefix + "ns.dat")):
+            return
 
     nrods = 51
     mpl.rcParams["xtick.labelsize"] = 24
@@ -38,11 +42,18 @@ def make_fig(plot_format):
     ################################################
     ###################### CURVATURE  ################
 
-    body = np.loadtxt(hf.rename_file("sim_body.dat"))  ## first 50 seconds of simulation
-    curv = np.loadtxt(hf.rename_file("sim_curv.dat"))
-    act_data = np.loadtxt(hf.rename_file("sim_ns.dat")).T
+    body = np.loadtxt(hf.rename_file(file_prefix +"body.dat"))  ## first 50 seconds of simulation
+    curv = np.loadtxt(hf.rename_file(file_prefix +"curv.dat"))
+    act_data = np.loadtxt(hf.rename_file(file_prefix +"ns.dat")).T
 
-    network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
+
+    worm_file = hf.rename_file("worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data_evo.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data.json")
+
+    network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
     pop_plot_names = plot_format["plot_cell_names"]
     plot_col_divs = plot_format["plot_col_divs"]
@@ -53,7 +64,11 @@ def make_fig(plot_format):
     skip_steps = network_json_data["Evolutionary Optimization Parameters"][
         "skip_steps"
     ]["value"]
+
     plot_time = plot_format["plot_time"]
+    if "Simulation" in network_json_data:
+        plot_time = network_json_data["Simulation"]["duration"]["value"]
+    
     worm_plot_time = plot_format["worm_plot_time"]
     AvgSpeed = (
         network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"]["value"]
@@ -136,9 +151,9 @@ def make_fig(plot_format):
     # s = np.where(np.array(sel) == 23)[0]
 
     plot_velocity = True
-    plot_transient = 50.0
+    plot_transient = act_data[0,0]
     if plot_velocity:
-        vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
+        vel = np.loadtxt(hf.rename_file(file_prefix +"vel.dat")).T
         # ax2.plot(np.linspace(0, 10, len(vel[s][0])), 1000*vel[s][0], 'k', linewidth = 3)
         ax2.plot(vel[0][1:] - plot_transient, 1000 * vel[1][1:], "k", linewidth=3)
         ax2.axhline(y=AvgSpeed, linestyle="--", color="r")
