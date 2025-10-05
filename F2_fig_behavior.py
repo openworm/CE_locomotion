@@ -3,7 +3,7 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 import helper_funcs as hf
 import matplotlib as mpl
-import os
+import os, sys
 
 import neuromlLocal.utils as utils
 
@@ -68,10 +68,15 @@ def make_fig(plot_format):
         "skip_steps"
     ]["value"]
 
+    plot_transient = act_data[0,0]
     plot_time = plot_format["plot_time"]
     if "Simulation" in worm_sim_data:
         plot_time = worm_sim_data["Simulation"]["duration"]["value"]
     
+    plot_ex = max(0,plot_time - 40)
+    plot_transient =  plot_transient + plot_ex/2
+    plot_time = plot_time - plot_ex
+
     worm_plot_time = plot_format["worm_plot_time"]
     AvgSpeed = (
         network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"]["value"]
@@ -129,19 +134,28 @@ def make_fig(plot_format):
 
     ################################################
     fzl = 26
-    ############ Curvature  #######
+    ############ Curvature  ######
     ###############################
+    low_lim = int(plot_ex / (2.0*step_size * skip_steps))
+    hi_lim = int(plot_time / (step_size * skip_steps))
+    #print("lsls ", plot_ex, step_size, skip_steps, low_lim, hi_lim)
+    #sys.exit(0)
     imcurv = ax1.imshow(
-        curv.T[1:, :],
+        #curv.T[1:, :],
+        curv.T[1:, low_lim:hi_lim + low_lim],
         cmap=plt.get_cmap("seismic"),
         aspect="auto",
         vmin=-10,
         vmax=10,
         origin="lower",
     )
-    ax1.set_xlim(0, int(plot_time / (step_size * skip_steps)))
+    #ax1.set_xlim(low_lim, hi_lim + low_lim)
+    #ax1.set_xlim(int(plot_transient / (step_size * skip_steps)), 
+    #             int((plot_transient + plot_time) / (step_size * skip_steps)))
     # ax1.set_xticks([0, 40, 80, 120])
-    ax1.set_xticks(np.linspace(0, int(plot_time / (step_size * skip_steps)), 4))
+    #ax1.set_xticks(np.linspace(low_lim, hi_lim + low_lim, 4))
+    #ax1.set_xticks(np.linspace(int(plot_transient / (step_size * skip_steps)), 
+    #                           int((plot_transient + plot_time) / (step_size * skip_steps)), 4))
     ax1.set_xticklabels([])
     ax1.set_yticks([1, 21])
     ax1.set_yticklabels(["", ""])
@@ -154,15 +168,16 @@ def make_fig(plot_format):
     # s = np.where(np.array(sel) == 23)[0]
 
     plot_velocity = True
-    plot_transient = act_data[0,0]
+   
     if plot_velocity:
         vel = np.loadtxt(hf.rename_file(file_prefix +"vel.dat")).T
         # ax2.plot(np.linspace(0, 10, len(vel[s][0])), 1000*vel[s][0], 'k', linewidth = 3)
-        ax2.plot(vel[0][1:] - plot_transient, 1000 * vel[1][1:], "k", linewidth=3)
+        ax2.plot(vel[0][1:], 1000 * vel[1][1:], "k", linewidth=3)
         ax2.axhline(y=AvgSpeed, linestyle="--", color="r")
         ax2.set_ylim(AvgSpeed * 0.5, AvgSpeed * 1.5)
         ax2.set_xticklabels([])
-        ax2.set_xlim(0, plot_time)
+        ax2.set_xlim(plot_transient, plot_transient + plot_time)
+        #ax2.set_xlim(0, plot_time)
         # ax2.set_yticks([0.1, 0.2, 0.3])
         ax2.set_yticks(np.linspace(AvgSpeed * 0.5, AvgSpeed * 1.5, 3))
         ax2.set_ylabel("Velocity (mm/s)", fontsize=fzl, labelpad=24)
@@ -178,8 +193,9 @@ def make_fig(plot_format):
         zip(pop_plot_names[: int(plot_col_divs[0])], cols)
     ):
         ind1 = cell_names.index(cell)
-        ax3.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
-        ax3.set_xlim(0, plot_time)
+        ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
+        ax3.set_xlim(plot_transient, plot_transient + plot_time)
+        #ax3.set_xlim(0, plot_time)
         ax3.set_ylim(-0.1, 1.1)
         ax3.set_xticklabels([])
         # ax3.set_ylabel('Activity', fontsize = fzl, labelpad = 24)
@@ -203,9 +219,12 @@ def make_fig(plot_format):
         )
     ):
         ind1 = cell_names.index(cell)
-        ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
-        ax4.set_xlim(0, plot_time)
+        #ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
+        ax4.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
+        ax4.set_xlim(plot_transient, plot_transient + plot_time)
         ax4.set_ylim(-0.1, 1.1)
+        #ax4.set_xticks(np.linspace(int(plot_transient / (step_size * skip_steps)), 
+        #                       int((plot_transient + plot_time) / (step_size * skip_steps)), 4))
         # ax4.set_ylabel('Activity', fontsize = fzl, labelpad = 24)
         ax4.set_xlabel("Time (s)", fontsize=fzl, labelpad=22)
         plt.figtext(
