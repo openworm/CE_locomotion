@@ -1,9 +1,10 @@
 import sys
-import utils
+from . import utils
 import os
 
-from build_network import run as build_network_run
-from create_new_lems_file import run as create_new_lems_run
+from .build_network import run as build_network_run
+#from build_network import run as build_network_run
+from .create_new_lems_file import run as create_new_lems_run
 
 
 def run_main(args=None):

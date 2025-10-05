@@ -26,7 +26,7 @@ from neuroml import (
 )
 # from neuroml import IncludeType
 
-import utils
+from . import utils
 from pyneuroml.modelgraphs import generate_nmlgraph
 from neuromllite.MatrixHandler import MatrixHandler
 from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
@@ -649,7 +649,8 @@ def run(a=None, **kwargs):
     if not output_folder_name == cur_wkd_dir:
         shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
         shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
-        shutil.copyfile("Worm2D.net.nml", output_folder_name + "/Worm2D.net.nml")
+    if not output_folder_name == this_file_dir:
+        shutil.copyfile(nml_file, output_folder_name + "/Worm2D.net.nml")
 
     if add_PG:
         handler = MatrixHandler(
