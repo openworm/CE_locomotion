@@ -47,12 +47,15 @@ def make_fig(plot_format):
     act_data = np.loadtxt(hf.rename_file(file_prefix +"ns.dat")).T
 
 
-    worm_file = hf.rename_file("worm_data_worm.json")
+    worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_evo.json")
+        worm_file = hf.rename_file("worm_data_worm.json")
     if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data.json")
 
+    worm_sim_file = hf.rename_file("worm_data_worm.json")
+
+    worm_sim_data = utils.getJsonFile(worm_sim_file)
     network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
     pop_plot_names = plot_format["plot_cell_names"]
@@ -66,8 +69,8 @@ def make_fig(plot_format):
     ]["value"]
 
     plot_time = plot_format["plot_time"]
-    if "Simulation" in network_json_data:
-        plot_time = network_json_data["Simulation"]["duration"]["value"]
+    if "Simulation" in worm_sim_data:
+        plot_time = worm_sim_data["Simulation"]["duration"]["value"]
     
     worm_plot_time = plot_format["worm_plot_time"]
     AvgSpeed = (

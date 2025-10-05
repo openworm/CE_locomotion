@@ -70,7 +70,8 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void Step(double StepSize);
     //void DumpActState(ofstream &ofs, int skips);
     void InitializeState(RandomState &rs);
-    Worm2DCE(json & j);
+    Worm2DCE(json j);
+    Worm2DCE(const string & jsonfilename);
     void addParsToJson(json & j);
     void writeAct();
 
@@ -110,7 +111,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
     Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_);
-
+    
 
     vector<toFromWeight> makeVentralMuscleConn(){return dummyVec();}
     vector<toFromWeight> makeDorsalMuscleConn(){return dummyVec();}

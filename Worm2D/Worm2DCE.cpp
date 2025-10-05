@@ -102,8 +102,10 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
     //Worm2Dm(par1_,n_ptr_),Worm2D(par1_,0),W2DCEpars1(W2DCEpars1_){}
 
 
+Worm2DCE::Worm2DCE(const string & jsonfilename_):
+Worm2DCE(getJsonFromFile(jsonfilename_)){}
 
-Worm2DCE::Worm2DCE(json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
+Worm2DCE::Worm2DCE(json j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
 
 Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 

@@ -112,6 +112,7 @@ int main (int argc, const char* argv[])
 
     if (model_name == "W2Dosc") w2 = new Worm2DoscNML(json_filename);
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21NML(json_filename);
+    if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
 
     }
 
