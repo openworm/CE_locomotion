@@ -650,6 +650,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["fitType"] = 0
     evol_extra_parameters["SRForm"] = 0
     evol_extra_parameters["SREvoBot"] = 0
+    evol_extra_parameters["SREvoTop"] = 200
     evol_extra_parameters["SROffset"] = 0
     evol_extra_parameters["SRSegPerSR"] = 6
     

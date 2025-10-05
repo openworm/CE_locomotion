@@ -8,7 +8,7 @@ doOrig = True
 doNML = True
 doMuscles = False
 
-args = dict(simduration=30,
+args = dict(simduration=50,
     simtransient=30,
     duration=20,
     transient=10,

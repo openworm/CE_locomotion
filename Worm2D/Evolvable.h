@@ -516,13 +516,15 @@ W2DCEpars(int argc, const char* argv[]);
 W2DCEpars(shared_ptr<const CmdArgs> cmd);
 
 
-double SREvoBot = 0;
+double SREvoBot = 0, SREvoTop = 200;
+
 
 void show(){ W2DCEparsA::show();}
 
 void setParsFromJson(json & j){
   //assert(0);
   SREvoBot = getJsonVal<double>(j, "SREvoBot", SREvoBot, true);
+  SREvoTop = getJsonVal<double>(j, "SREvoTop", SREvoTop, true);
 
   //if (j.contains("SREvoBot"))
   //SREvoBot = j["SREvoBot"]["value"];
@@ -534,6 +536,7 @@ void setParsFromJson(json & j){
 }
 void addParsToJson(json & j) const {
   j["SREvoBot"]["value"] = SREvoBot;
+  j["SREvoTop"]["value"] = SREvoTop;
    W2DCEparsA::addParsToJson(j);
    //SRCEpars::addParsToJson(j);
 }

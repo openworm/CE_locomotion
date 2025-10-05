@@ -129,6 +129,7 @@ offset = cmd->getArgValInt("--SROffset",0);
 W2DCEpars::W2DCEpars(shared_ptr<const CmdArgs> cmd):W2DCEparsA(cmd)//,SRCEpars(cmd)
 {
   SREvoBot = cmd->getArgValDoub("--SREvoBot",0);
+  SREvoTop = cmd->getArgValDoub("--SREvoTop",200);
 }
 
 
@@ -138,6 +139,7 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
   //sr_type = getParameterString(argc,argv,"--SRType","None");
   //SRForm = getParameterInt(argc,argv,"--SRForm","0");
   SREvoBot = getParameterDouble(argc,argv,"--SREvoBot","0");
+  SREvoTop = getParameterDouble(argc,argv,"--SREvoTop","200");
 }
 
 

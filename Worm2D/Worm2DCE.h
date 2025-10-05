@@ -162,6 +162,7 @@ public:
     WormCE(json j, const string & filename_);
     WormCE(const string & jsonfilename_, const string & filename_);
     WormCE(const string & filename_);
+    WormCE();
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);
@@ -194,7 +195,7 @@ public:
     //void setWormPars(const W2Dparameters * w2par_)
     //{return Worm2DCE::setWormPars(w2par_);}
 
-    WormCE();
+    
     protected:
    
     WormCE(shared_ptr<SRCE> sr_ptr_);
