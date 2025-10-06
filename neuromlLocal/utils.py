@@ -73,6 +73,7 @@ default_cells["Worm2Dosc21"]["names"] = namelist
 
 default_cells["W2DCE"] = default_cells["CE"]
 
+
 def process_args():
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")

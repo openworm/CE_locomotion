@@ -533,7 +533,7 @@ def run(a=None, **kwargs):
             "best.pheno.dat",
             "search.cpt",
             "worm_data_evo.json",
-            "genhistory.dat"
+            "genhistory.dat",
         ]
 
         for file in files:
@@ -653,7 +653,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SREvoTop"] = 200
     evol_extra_parameters["SROffset"] = 0
     evol_extra_parameters["SRSegPerSR"] = 6
-    
+
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = 0

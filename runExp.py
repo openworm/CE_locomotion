@@ -1,14 +1,16 @@
-import os, sys
+import os
+import sys
 from run_main import run
 from neuromlLocal.regenerate import run as regenerate_run
-#sys.path.append("./neuromlLocal")
+# sys.path.append("./neuromlLocal")
 
 
 doOrig = True
 doNML = True
 doMuscles = False
 
-args = dict(simduration=50,
+args = dict(
+    simduration=50,
     simtransient=30,
     duration=20,
     transient=10,
@@ -17,10 +19,10 @@ args = dict(simduration=50,
     RandSeed=4918,
     # modelName="W2D21R",
     modelName="W2DCE",
-    #modelName="W2DCESR",
+    # modelName="W2DCESR",
     modelFolder="Worm2D",
     # inputFolderName="experiments/izq_runs_nets/23",
-    #inputFolderName="exampleRunW2DCE_FR",
+    # inputFolderName="exampleRunW2DCE_FR",
     outputFolderName="exW2DCE_FR",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=False,
@@ -37,7 +39,7 @@ args = dict(simduration=50,
     randInitState=True,
     doTestRun=False,
     doCPT=True,
-    #AvgSpeed=0.0001,  # CE
+    # AvgSpeed=0.0001,  # CE
     AvgSpeed=0.00022,  # 21
     SRType="None",
     # SRType = "SR_TRANS_CONTRACT",
@@ -50,15 +52,16 @@ args = dict(simduration=50,
     fitType=1,
     SRForm=0,
     SREvoBot=0.0,
-    SRSegPerSR = 6,
-    SROffset = -4)
+    SRSegPerSR=6,
+    SROffset=-4,
+)
 
 if doOrig:
     run(**args)
 
 if False:
     regenerate_run(folder=args["outputFolderName"], doMuscles=doMuscles)
-    #regenerate_run(folder="../" + args["outputFolderName"], doMuscles=doMuscles)
+    # regenerate_run(folder="../" + args["outputFolderName"], doMuscles=doMuscles)
     args["inputFolderName"] = args["outputFolderName"]
     args["outputFolderName"] = args["outputFolderName"] + "_nml"
     args["doNML"] = True
@@ -67,10 +70,10 @@ if False:
 if doNML:
     try:
         os.chdir("./neuromlLocal")
-    except: 
+    except Exception:
         print("Can't change to neuromlLocal.")
-        print(sys.exc_info()) 
-    
+        print(sys.exc_info())
+
     regenerate_run(folder="../" + args["outputFolderName"], doMuscles=doMuscles)
     os.chdir("../")
 
