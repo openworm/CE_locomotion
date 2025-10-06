@@ -841,7 +841,7 @@ void WormCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 
 
      // Parameters for the Stretch Receptors
-  phen(SR_A) = MapSearchParameter(gen(SR_A), w1->SREvoBot, w1->SREvoTop);
+  phen(SR_A) = MapSearchParameter(gen(SR_A), w1->SREvoBotA, w1->SREvoTopA);
   phen(SR_B) = MapSearchParameter(gen(SR_B), w1->SREvoBot, w1->SREvoTop);
 
   //cout << "mms " << MapSearchParameter(-1.0, w1->SREvoBot, SRmax) << endl;

@@ -1,22 +1,22 @@
 from run_main import run
 
 run(
-    simduration=60,
-    simtransient=50,
+    simduration=30,
+    simtransient=30,
     duration=20,
     transient=10,
-    maxGens=50,
+    maxGens=100,
     popSize=96,
     RandSeed=4918,
     # modelName="W2D21R",
-    #modelName="W2DCE",
-    modelName="W2DCESR",
+    modelName="W2DCE",
+    #modelName="W2DCESR",
     modelFolder="Worm2D",
     # inputFolderName="experiments/izq_runs_nets/23",
     # inputFolderName="exampleRunW2DCE_FR",
+    # outputFolderName="exW2DCE_FR",
     outputFolderName="exampleRunW2Dosc",
-    # outputFolderName="exampleRunW2Dosc_t1_nml",
-    doEvol=False,
+    doEvol=True,
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
@@ -31,7 +31,7 @@ run(
     doTestRun=False,
     doCPT=True,
     AvgSpeed=0.0001,  # CE
-    # AvgSpeed=0.00022,  # 21
+    #AvgSpeed=0.00022,  # 21
     SRType="None",
     # SRType = "SR_TRANS_CONTRACT",
     # SRType = "SR_TRANS_STRETCH",
@@ -43,6 +43,9 @@ run(
     fitType=1,
     SRForm=0,
     SREvoBot=0.0,
-    SRSegPerSR = 6,
-    SROffset = -4
+    SREvoTop=200.0,
+    SREvoBotA=0.0,
+    SREvoTopA=0.0,
+    SRSegPerSR=7,
+    SROffset=-6,
 )
