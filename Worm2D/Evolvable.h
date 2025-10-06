@@ -266,7 +266,7 @@ double EvaluationFunction(TVector<double> &v, RandomState &rs);
 evoPars getDefaultEvoPars();
 }; */
 
-template<typename Derived>
+/* template<typename Derived>
 class Evolvable
 {
   public:
@@ -284,7 +284,7 @@ class Evolvable
   //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
   //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
   //const evoPars * ep_ptr;
-};
+}; */
 
 class W2Dparameters
 {
@@ -342,14 +342,14 @@ class EvolvableS
 };
 
 
-template<typename T>
+/* template<typename T>
 class EvolvableST : public EvolvableS
 {
   public:
 void setWormPars(const W2Dparameters * w2par_) override { return T::setWormPars(w2par_);}
 shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) override 
 {return T::setWormPars(argc,argv);}
-};
+}; */
 
 class W2Dbaseparameters : virtual public W2Dparameters
 {
