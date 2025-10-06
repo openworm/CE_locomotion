@@ -56,6 +56,9 @@ def make_fig(plot_format):
     network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
     pop_plot_names = plot_format["plot_cell_names"]
+    plot_cell_unit = 1
+    if "plot_cell_unit" in plot_format:
+        plot_cell_unit = plot_format["plot_cell_unit"]
     plot_col_divs = plot_format["plot_col_divs"]
     cell_names = utils.getCellNames(network_json_data)
     step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
@@ -193,7 +196,12 @@ def make_fig(plot_format):
     for ind, (cell, col) in enumerate(
         zip(pop_plot_names[: int(plot_col_divs[0])], cols)
     ):
-        ind1 = cell_names.index(cell)
+        ind1 = utils.getIndOfNthVal(cell,cell_names,plot_cell_unit)
+        if ind1 is None:
+            print("Index error")
+            exit()
+        print("cell ind is ", ind1)
+        #ind1 = cell_names.index(cell)
         ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax3.set_xlim(plot_transient, plot_transient + plot_time)
         # ax3.set_xlim(0, plot_time)
@@ -219,7 +227,12 @@ def make_fig(plot_format):
             cols[int(plot_col_divs[0] - plot_col_divs[1]) :],
         )
     ):
-        ind1 = cell_names.index(cell)
+        #ind1 = cell_names.index(cell)
+        ind1 = utils.getIndOfNthVal(cell,cell_names,plot_cell_unit)
+        if ind1 is None:
+            print("Index error")
+            exit()
+        print("cell ind is ", ind1)
         # ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
         ax4.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax4.set_xlim(plot_transient, plot_transient + plot_time)

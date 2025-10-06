@@ -220,6 +220,13 @@ def getModelName(network_json_data):
     return None
 
 
+def getIndOfNthVal(val, vals_list, n):
+    l1 = [i for i, val1 in enumerate(vals_list) if val1==val]
+    if len(l1)>n:
+        return l1[n]
+    return None
+
+
 def getCellNames(network_json_data):
     return network_json_data["Nervous system"]["Cell name"]["value"]
 

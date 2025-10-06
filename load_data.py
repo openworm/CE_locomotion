@@ -68,6 +68,7 @@ plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
 plot_formats["CE"]["data_sizes"] = [40, 60, 48]
 plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"]
 plot_formats["CE"]["plot_cell_names"] = ["DA", "DB", "DD", "VA", "VB", "VD"]
+plot_formats["CE"]["plot_cell_unit"] = 4
 plot_formats["CE"]["plot_col_divs"] = [3, 3]
 plot_formats["CE"]["plot_time"] = 10
 plot_formats["CE"]["worm_plot_time"] = 5
