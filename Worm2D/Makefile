@@ -66,11 +66,11 @@ WormBody.o: ../WormBody.cpp ../WormBody.h
 NervousSystem.o: ../NervousSystem.cpp ../NervousSystem.h #VectorMatrix.h random.h ../neuromlLocal/NervousSystemBase.h
 	$(CC) -c -O3 -std=c++11 -flto ../NervousSystem.cpp
 StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
-	$(CC) -c -O3 -std=c++11 -flto StretchReceptor.cpp
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptor.cpp
 StretchReceptor18.o: StretchReceptor18.cpp StretchReceptor18.h
-	$(CC) -c -O3 -std=c++11 -flto StretchReceptor18.cpp
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptor18.cpp
 StretchReceptorCE.o: StretchReceptorCE.cpp StretchReceptorCE.h
-	$(CC) -c -O3 -std=c++11 -flto StretchReceptorCE.cpp	
+	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptorCE.cpp	
 Muscles.o: ../Muscles.cpp ../Muscles.h #VectorMatrix.h random.h
 	$(CC) -c -O3 -flto ../Muscles.cpp
 CTRNN.o: CTRNN.cpp CTRNN.h #random.h
