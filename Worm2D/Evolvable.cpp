@@ -44,6 +44,17 @@ string getParameterString(int argc, const char* argv[], string parName, const st
    return defaultval;
 }
 
+string rename_file(const string & filename, const string & directoryName, const string & fileprefix)
+{return directoryName + "/" + fileprefix + filename;}
+
+
+bool directoryExists(const string & directoryName)
+{
+  struct stat sb;
+  if (stat(directoryName.c_str(), &sb) != 0) return false;
+  return true;
+  //{cout << "Directory doesn't exist." << endl;exit(1);}
+}
 
 
 W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
@@ -53,26 +64,26 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
     //assert(0);
 }
 
-W2Dbaseparameters::W2Dbaseparameters(shared_ptr<const CmdArgs> cmd)
-{
-    randomInitialState = cmd->getArgValInt("--randInitState",0);
 
-    //randomInitialState = getParameterInt(argc,argv,"--randInitState","0");;
-    //cout << "ran " << randomInitialState << endl;
-    //assert(0);
-}
 
-W2DCEparsA::W2DCEparsA(shared_ptr<const CmdArgs> cmd):W2Dbaseparameters(cmd)
+void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-    AB_output_level =  cmd->getArgValDoub("--ABLevel",1);
-
-  //AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
+    randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
 }
 
+void W2DCEparsA::setPars(shared_ptr<const CmdArgs> cmd)
+{
+
+    AB_output_level =  cmd->getArgValDoub("--ABLevel",AB_output_level );
+    AVA_output = cmd->getArgValDoub("--AVAOutputLevel", AVA_output);
+    AVB_output = cmd->getArgValDoub("--AVBOutputLevel", AVB_output);
+    W2Dbaseparameters::setPars(cmd);
+}
 
 W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
 {
+
   AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
 }
 
@@ -101,38 +112,40 @@ SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
 void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-sr_type = cmd->getArgVal("--SRType","None");
-SRForm = cmd->getArgValInt("--SRForm",0);
-nsegperstr = cmd->getArgValInt("--SRSegPerSR",6);
+sr_type = cmd->getArgVal("--SRType",sr_type);
+SRForm = cmd->getArgValInt("--SRForm",SRForm);
+//nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
+zeroGainsType = cmd->getArgValInt("--SRZeroGainsType",zeroGainsType);
 
-  assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
+
+assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
     || sr_type == "SR_TRANS_ABS" 
     || sr_type == "SR_TRANS_NEG" || sr_type == "None");
 
 }
 
+
 void SRRegpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-
 SRCEpars::setPars(cmd);
-nsegperstr = cmd->getArgValInt("--SRSegPerSR",5);
-offset = cmd->getArgValInt("--SROffset",0);
+nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
+//nsegperstr = cmd->getArgValInt("--SRSegPerSR",5);
+offset = cmd->getArgValInt("--SROffset",offset);
 
 }
 
 
 
 
-
-
-W2DCEpars::W2DCEpars(shared_ptr<const CmdArgs> cmd):W2DCEparsA(cmd)//,SRCEpars(cmd)
+void W2DCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
-  SREvoBot = cmd->getArgValDoub("--SREvoBot",0);
-  SREvoTop = cmd->getArgValDoub("--SREvoTop",200);
-  SREvoBotA = cmd->getArgValDoub("--SREvoBotA",SREvoBot);
-  SREvoTopA = cmd->getArgValDoub("--SREvoTopA",SREvoTop);
 
+  SREvoBot = cmd->getArgValDoub("--SREvoBot",SREvoBot);
+  SREvoTop = cmd->getArgValDoub("--SREvoTop",SREvoTop);
+  SREvoBotA = cmd->getArgValDoub("--SREvoBotA",SREvoBotA);
+  SREvoTopA = cmd->getArgValDoub("--SREvoTopA",SREvoTopA);
+  W2DCEparsA::setPars(cmd);
 }
 
 
@@ -148,17 +161,20 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
   
 }
 
-
-
-
 AgarPars::AgarPars(shared_ptr<const CmdArgs> cmd)
 {
+setPars(cmd);
+}
 
-    OSCTbase = cmd->getArgValDoub("--OSCTbase",0.25);
-    agarfreq = cmd->getArgValDoub("--agarfreq",0.44);
-    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",0.00022);
+void AgarPars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    OSCTbase = cmd->getArgValDoub("--OSCTbase",OSCTbase);
+    agarfreq = cmd->getArgValDoub("--agarfreq",agarfreq);
+    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",AvgSpeed);
 
 }
+
+
 
 AgarPars::AgarPars(int argc, const char* argv[])
 {
@@ -181,10 +197,18 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
 
 EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
 {
+
+    doReverse = cmd->getArgValInt("--doReverse",doReverse);
+    fitType = cmd->getArgValInt("--fitType",fitType);
+}
+
+void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    AgarPars::setPars(cmd);
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
 
-    doReverse = cmd->getArgValInt("--doReverse",0);
-    fitType = cmd->getArgValInt("--fitType",0);
+    doReverse = cmd->getArgValInt("--doReverse",doReverse);
+    fitType = cmd->getArgValInt("--fitType",fitType);
 
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }

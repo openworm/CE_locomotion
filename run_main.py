@@ -655,11 +655,14 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SREvoTopA"] = 200
     evol_extra_parameters["SROffset"] = 0
     evol_extra_parameters["SRSegPerSR"] = 6
+    
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = 0
     sim_extra_parameters["doForwardFirst"] = True
+    sim_extra_parameters["SRZeroGainsType"] = 0
+    sim_extra_parameters["prioritizeCmd"] = 0
 
     main_cmd = a.modelFolder + "/" + mainProcessName
     cmd = [main_cmd]

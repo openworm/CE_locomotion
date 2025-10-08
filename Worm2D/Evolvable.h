@@ -357,10 +357,11 @@ class W2Dbaseparameters : virtual public W2Dparameters
 public:
 W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
-W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
+//W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
 bool randomInitialState = 0;
 void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
 void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomInitialState;}
+void setPars(shared_ptr<const CmdArgs> cmd);
 
 };
 
@@ -368,13 +369,16 @@ void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomIni
 class AgarPars : virtual public W2Dparameters
 {
   public:
+  AgarPars(){}
   AgarPars(int argc, const char* argv[]);
   AgarPars(shared_ptr<const CmdArgs> cmd);
 
+  void setPars(shared_ptr<const CmdArgs> cmd);
 
 double OSCTbase = 0.25; // Cap for oscillation evaluation
 double agarfreq = 0.44;
 double AvgSpeed = 0.00022; 
+
 void setParsFromJson(json & j){
 
   OSCTbase = j["OSCTbase"]["value"]; 
@@ -420,8 +424,11 @@ void addParsToJson(json & j) const {
 class EvolparametersCE : virtual public AgarPars   //: public W2DCEpars
 {
 public:
+EvolparametersCE(){}
 EvolparametersCE(int argc, const char* argv[]);
 EvolparametersCE(shared_ptr<const CmdArgs> cmd);
+
+void setPars(shared_ptr<const CmdArgs> cmd);
 
 int doReverse = 0;
 int fitType = 0;
@@ -475,12 +482,17 @@ void addParsToJson(json & j) const {
 };
  
 
+
+
+
 class W2DCEparsA : public W2Dbaseparameters
 {
 public:
 W2DCEparsA(){}
 W2DCEparsA(int argc, const char* argv[]);
-W2DCEparsA(shared_ptr<const CmdArgs> cmd);
+//W2DCEparsA(shared_ptr<const CmdArgs> cmd);
+
+void setPars(shared_ptr<const CmdArgs> cmd);
 
 double AVA_output = 0, AVB_output = 0;
 double AB_output_level = 1;
@@ -493,7 +505,8 @@ void show() const {cout <<
 void setParsFromJson(json & j){
   AB_output_level = getJsonVal<double>(j, "AB_output_level", AB_output_level, true);
   //AB_output_level = j["AB_output_level"]["value"];
-  AVA_output = j["AVA_output"]["value"]; AVB_output = j["AVB_output"]["value"]; 
+  AVA_output = j["AVA_output"]["value"]; 
+  AVB_output = j["AVB_output"]["value"]; 
   W2Dbaseparameters::setParsFromJson(j);
   
 }
@@ -513,8 +526,9 @@ class W2DCEpars : public W2DCEparsA //, public SRCEpars
 public:
 W2DCEpars(){}
 W2DCEpars(int argc, const char* argv[]);
-W2DCEpars(shared_ptr<const CmdArgs> cmd);
+//W2DCEpars(shared_ptr<const CmdArgs> cmd);
 
+void setPars(shared_ptr<const CmdArgs> cmd);
 
 double SREvoBot = 0, SREvoTop = 200;
 double SREvoBotA = 0, SREvoTopA = 200;
@@ -558,6 +572,7 @@ SRCEpars(shared_ptr<const CmdArgs> cmd);
 string sr_type = "None";
 int SRForm = 0;
 int nsegperstr = 6;
+int zeroGainsType = 0;
 
 virtual ~SRCEpars(){}
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
@@ -568,6 +583,7 @@ void setParsFromJson(json & j){
   //sr_type = j["SRType"]["value"]; 
   //SRForm = j["SRForm"]["value"];
   nsegperstr = getJsonVal<int>(j, "SRSegPerSR"  , nsegperstr , true);
+  zeroGainsType = getJsonVal<int>(j, "SRZeroGainsType"  , zeroGainsType , true);
 
   //nsegperstr = j["SRSegPerSR"]["value"];
   //assert(0);
@@ -576,6 +592,8 @@ void addParsToJson(json & j) const {
   j["SRType"]["value"] = sr_type;
   j["SRForm"]["value"] = SRForm;
   j["SRSegPerSR"]["value"] = nsegperstr;
+  j["SRZeroGainsType"]["value"] = zeroGainsType;
+
 }
 };
 
@@ -613,6 +631,10 @@ double getParameterDouble(int argc, const char* argv[], string parName, const st
 long getParameterLong(int argc, const char* argv[], string parName, const string defaultval);
 int getParameterInt(int argc, const char* argv[], string parName, const string defaultval);
 string getParameterString(int argc, const char* argv[], string parName, const string defaultval);
+
+string rename_file(const string & filename, const string & directoryName, const string & fileprefix = "");
+bool directoryExists(const string & directoryName);
+
 
 
 //const char* getParameter(int argc, const char* argv[], string parName, const char* defaultval);

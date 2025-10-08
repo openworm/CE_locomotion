@@ -71,8 +71,8 @@ void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 void Worm21::setWormPars(shared_ptr<const CmdArgs> cmd_)
 {
   
-  W2DCEparsA w1(cmd_);
-  *W2DCEpars1 = w1; 
+  //W2DCEparsA w1(cmd_);
+  W2DCEpars1->setPars(cmd_); 
   
   //return W2Dbaseparameters1;
 

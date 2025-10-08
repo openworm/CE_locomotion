@@ -200,18 +200,14 @@ WormCE(argc,argv){setParsFromGeno(geno);} */
 // The constructor
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno):WormCE(cmd)
 {
-
     if (isPheno) setParsFromPheno(phengen);
     else setParsFromGeno(phengen);
-
 }
 
 WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 {
-
     if (isPheno) setParsFromPheno(phengen);
     else setParsFromGeno(phengen);
-
 }
 
 WormCE::WormCE(TVector<double> &pheno):WormCE(pheno, true){}
@@ -289,7 +285,7 @@ void Worm2DCE::setForward()
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
 
-  sr_ptr->SR_A_gain = 0.0;
+  if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
   sr_ptr->setWeights();
@@ -303,7 +299,7 @@ void Worm2DCE::setBackward()
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
 
-  sr_ptr->SR_B_gain = 0.0;
+  if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
   //AVA_output =  0;
   //AVB_output =  1;
 
@@ -329,8 +325,8 @@ void Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
 {
   
   //W2DCEpars w1(argc,argv);
-  W2DCEpars w1(cmd);
-  *W2DCEpars1 = w1; 
+  //W2DCEpars w1(cmd);
+  W2DCEpars1->setPars(cmd);
   sr_ptr->setPars(cmd);
 
   //sr_ptr->SRForm = W2DCEpars1->SRForm;

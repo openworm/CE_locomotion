@@ -16,22 +16,48 @@ int main (int argc, const char* argv[])
 
     shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
 
+    
+    
+   
+    string directoryName = cmd->getArgVal("--folder","HJUYGYT");
+    if (!directoryExists(directoryName))
+    {cout << "Directory doesn't exist." << endl;exit(1);}
 
+    
+    string model_name;
+    double StepSize;
+    int skip_steps;
 
-    std::cout << std::setprecision(10);
-    string model_name = cmd->getArgVal("--modelname","");
-    //string model_name =  getParameterString(argc,argv,"--modelname","");
+    const string json_filename = rename_file("worm_data_evo.json", directoryName);
+
+    if (directoryExists(json_filename)){
+        json j = getJsonFromFile(json_filename);
+        model_name =  j["Nervous system"]["Model name"]["value"];
+        StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"];
+        skip_steps = j["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
+    }
+    else
+    {
+    model_name = cmd->getArgVal("--modelname","");
     if (model_name == "")
     {
     cout << "Model name is required." << endl;
     return 0;
     }
+    StepSize = 0.005;
+    skip_steps = 10;
+    }
 
-    evoPars ep1;
+    if (model_name == "CE") model_name = "W2DCE";
+
+    //if (!do_evol)
+
+
+    //evoPars ep1;
     //ep1.setFromArgs(argc,argv);
-    ep1.setFromArgs(cmd);
-    ep1.StepSize = 0.005;
-    ep1.skip_steps = 10;
+    //ep1.setFromArgs(cmd);
+    //ep1.StepSize = 0.005;
+    //ep1.skip_steps = 10;
 
    
     //assert(0);
@@ -45,10 +71,14 @@ int main (int argc, const char* argv[])
     EvolutionFull evo(argc,argv,w1); */
     
     //json_out << setprecision(32);
+    //json j;
+
+    //bool do_evol = cmd->getArgValInt("--doevol",0);
+    //bool do_evol = getParameterInt(argc,argv,"--doevol","0");
+
     json j;
 
-    bool do_evol = cmd->getArgValInt("--doevol",0);
-    //bool do_evol = getParameterInt(argc,argv,"--doevol","0");
+    bool do_evol = cmd->getArgValInt("--doevol", 0);
     if (do_evol) 
     {
         Evolution * evo = 0;
@@ -67,8 +97,8 @@ int main (int argc, const char* argv[])
         if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
 
         //assert(0);
-        ep1.StepSize = evo->itsEvoPars().StepSize;
-        ep1.skip_steps = evo->itsEvoPars().skip_steps;
+        StepSize = evo->itsEvoPars().StepSize;
+        skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
        
         evo->addParsToJson(j);
@@ -80,18 +110,21 @@ int main (int argc, const char* argv[])
 
    //delete w1;
     
-    
-    cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
+    //cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
 
     //bool do_nml =  getParameterInt(argc,argv,"--donml","0");
+
+    
     bool do_nml =  cmd->getArgValInt("--donml",0);
 
     Worm2Dbase * w2;
+   
 
-    const string json_filename = ep1.rename_file("worm_data_evo.json");
+    //const string json_filename = ep1.rename_file("worm_data_evo.json");
+
     if (!do_nml){
 
-    const string gen_filename =  ep1.rename_file("best.gen.dat");
+    const string gen_filename =  rename_file("best.gen.dat", directoryName);
 
     if (model_name == "W2Dosc") w2 = new Worm2Dosc(gen_filename);
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(gen_filename);
@@ -116,24 +149,34 @@ int main (int argc, const char* argv[])
 
     }
 
+    const json j_evo = getJsonFromFile(json_filename);
+    long simrandseed = j_evo["Evolutionary Optimization Parameters"]["randomseed"]["value"];
+    StepSize = j_evo["Evolutionary Optimization Parameters"]["StepSize"]["value"];
+    skip_steps = j_evo["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
+
+    const bool prioritizeCmd = cmd->getArgValInt("--prioritizeCmd",0);
     
-    cout << "const 1" << endl;
-    //assert(0);
-    const long simrandseed =  cmd->getArgValLong("-R",-1);
-    //const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
+
+    if (!(model_name == "W2DCE" || model_name == "W2DCESR") || prioritizeCmd)
+    {
+    simrandseed =  cmd->getArgValLong("-R",-1);
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
+    w2->setWormPars(cmd);
+    }
+
+    
+
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
-
-    if (!(model_name == "W2DCE" || model_name == "W2DCESR")) w2->setWormPars(cmd);
+    
 
     w2->InitializeState(rs);
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
-    w2->setStepSize(ep1.StepSize);
-    w2->setDataskips(ep1.skip_steps);
+    w2->setStepSize(StepSize);
+    w2->setDataskips(skip_steps);
     //w->setPrefix("sim");
-    w2->InitializeData(ep1.directoryName);
+    w2->InitializeData(directoryName);
     //w2->setWormPars(cmd);
 
     w2->addParsToJson(j);
@@ -155,7 +198,7 @@ int main (int argc, const char* argv[])
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
-    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
+    simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
@@ -192,7 +235,7 @@ int main (int argc, const char* argv[])
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     
-    simPars sp1 = {ep1.directoryName, simduration, simtransient, ep1.StepSize};
+    simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
@@ -220,7 +263,7 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
 
-    ofstream json_out(ep1.rename_file("worm_data_worm.json"));
+    ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
 

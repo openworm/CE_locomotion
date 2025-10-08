@@ -245,19 +245,8 @@ template<class T>
 class EvolutionFullW: public Evolvable_ptr, public Evolution
 {
     public:
-
-    /* EvolutionFullW(int argc, const char* argv[]):
-    Evolvable_ptr(make_shared<T>()),evopar_ptr(getParameters(argc,argv)),
-    Evolution(argc,argv,getDefaultEvoPars(argc,argv),evolvable1->getVectSize())
-    {
-        evolvable1->setWormPars(argc,argv);
-    } */
-
-    //,wormpar_ptr(evolvable1->setWormPars(argc_,argv_))
-    //{evolvable1->setWormPars(argc,argv); wormpar_ptr = evolvable1->getWormPars();}
     
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_):cmd(cmd_),
-    //Evolvable_ptr(shared_ptr<EvolvableS> (new T())),
     Evolvable_ptr(make_shared<T>()), evopar_ptr(getParameters(cmd_)),
     Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
     {
