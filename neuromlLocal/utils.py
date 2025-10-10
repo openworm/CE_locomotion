@@ -221,8 +221,8 @@ def getModelName(network_json_data):
 
 
 def getIndOfNthVal(val, vals_list, n):
-    l1 = [i for i, val1 in enumerate(vals_list) if val1==val]
-    if len(l1)>n:
+    l1 = [i for i, val1 in enumerate(vals_list) if val1 == val]
+    if len(l1) > n:
         return l1[n]
     return None
 
@@ -260,6 +260,8 @@ def get_pop_id(population_structure, name=None, ind=None):
 
 
 def getJsonFile(json_file):
+    if not os.path.isfile(json_file):
+        return None
     with open(json_file, "r") as file:
         return json.load(file)
 

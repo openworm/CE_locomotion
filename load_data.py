@@ -238,6 +238,12 @@ def plot_evols(a=None, **kwargs):
     file = hf.rename_file("genhistory.dat")
     if not os.path.isfile(file):
         hf.file_prefix = None
+    file = hf.rename_file("genhistory.dat")
+    if not os.path.isfile(file):
+        print(
+            "doPlotEvol is True, but genhistory.dat file is necessary for evolution plots."
+        )
+        return
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
     worm_file = hf.rename_file("worm_data.json")
@@ -304,13 +310,18 @@ def plot_evols(a=None, **kwargs):
 
     evol_data_fin_actual = evol_data[-1]
     evol_data_init = sign(evol_data[0]) * np.log(np.abs(evol_data[0]))
+    evol_data_init_actual = evol_data[0]
+
     evol_data_list = [
         evol_data_full_diff,
         evol_data_full_diff2,
-        evol_data_fin,
         evol_data_init,
+        evol_data_fin,
+        evol_data_init_actual,
         evol_data_fin_actual,
     ]
+
+    evol_data_list_inds = [0, 1, 2, 2, 3, 3]
 
     for data_val in evol_data_list:
         data_val[np.isnan(data_val)] = 0
@@ -319,8 +330,8 @@ def plot_evols(a=None, **kwargs):
     evol_data_avs_titles = [
         "Relative variation",
         "Variation",
-        "Final value",
-        "Initial value",
+        "Inital and Final value",
+        # "Initial value",
         "Actual Final value",
     ]
 
@@ -410,18 +421,22 @@ def plot_evols(a=None, **kwargs):
 
     if doPhenNames:
         plot_cols = 1
-        plot_rows = len(evol_data_avs)
+        plot_rows = len(evol_data_avs_titles)
         fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
-        for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
+        # for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
+        for ind, val in zip(evol_data_list_inds, evol_data_avs):
             row_num, col_num = getRowsCols(ind, plot_cols)
-            axs[row_num, col_num].set_title(title, fontsize=title_font_size)
             axs[row_num, col_num].plot(range(len(val)), val)
-            # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-            axs[row_num, col_num].set_xticks(range(len(val)))
-            # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
-            axs[row_num, col_num].grid(axis="x")
-            axs[row_num, col_num].grid(axis="y")
+            if axs[row_num, col_num].get_title() == "":
+                axs[row_num, col_num].set_title(
+                    evol_data_avs_titles[ind], fontsize=title_font_size
+                )
+                # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+                # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+                axs[row_num, col_num].set_xticks(range(len(val)))
+                # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
+                axs[row_num, col_num].grid(axis="x")
+                axs[row_num, col_num].grid(axis="y")
 
         axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
         # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))

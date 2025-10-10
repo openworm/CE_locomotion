@@ -189,6 +189,8 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
     
+    assert(0 && "This is depreciated.");
+
     doReverse = getParameterInt(argc,argv,"--doReverse","0");
     fitType = getParameterInt(argc,argv,"--fitType","0");
 
@@ -200,6 +202,7 @@ EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
 
     doReverse = cmd->getArgValInt("--doReverse",doReverse);
     fitType = cmd->getArgValInt("--fitType",fitType);
+    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
 }
 
 void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
@@ -209,6 +212,7 @@ void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
 
     doReverse = cmd->getArgValInt("--doReverse",doReverse);
     fitType = cmd->getArgValInt("--fitType",fitType);
+    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
 
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }

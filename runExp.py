@@ -10,63 +10,16 @@ doNML = True
 doMuscles = False
 
 args = dict(
-   simduration=30,
+    simduration=50,
     simtransient=30,
-    duration=20,
-    transient=10,
-    maxGens=100,
-    popSize=96,
-    RandSeed=4918,
-    # modelName="W2D21R",
-    modelName="W2DCE",
-    # modelName="W2DCESR",
-    modelFolder="Worm2D",
-    # inputFolderName="experiments/izq_runs_nets/23",
-    # inputFolderName="exampleRunW2DCE_FR",
-    outputFolderName="exW2DCE_FR_3",
-    #outputFolderName="exampleRunW2Dosc",
-    doEvol=False,
-    overwrite=True,
-    checkPointInterval=5,
+    inputFolderName="exW2DCE_FR",
+    outputFolderName="experiments/demoRun_1",
     reRand=True,
-    doPlotEvol=True,
-    doNML=False,
-    evoType="EvoCE",
-    # evoType="Evo21R",
-    # evoType="Evo21",
-    doReverse=2,
-    doForwardFirst=True,
-    randInitState=True,
-    doTestRun=False,
-    doCPT=True,
-    AvgSpeed=0.0001,  # CE
-    #AvgSpeed=0.00022,  # 21
-    SRType="None",
-    # SRType = "SR_TRANS_CONTRACT",
-    # SRType = "SR_TRANS_STRETCH",
-    # SRType = "SR_TRANS_ABS",
-    # SRType = "SR_TRANS_NEG"
-    ABLevel=1,
-    # MutVar = 0.1,
-    # CrossProb = 0.5
-    fitType=1,
-    SRForm=0,
-    SREvoBot=0.0,
-    #SREvoTop=100.0,
-    SRSegPerSR=6,
-    SROffset=-4,
 )
 
 if doOrig:
     run(**args)
 
-if False:
-    regenerate_run(folder=args["outputFolderName"], doMuscles=doMuscles)
-    # regenerate_run(folder="../" + args["outputFolderName"], doMuscles=doMuscles)
-    args["inputFolderName"] = args["outputFolderName"]
-    args["outputFolderName"] = args["outputFolderName"] + "_nml"
-    args["doNML"] = True
-    run(**args)
 
 if doNML:
     try:
@@ -81,4 +34,5 @@ if doNML:
     args["inputFolderName"] = args["outputFolderName"]
     args["outputFolderName"] = args["outputFolderName"] + "_nml"
     args["doNML"] = True
+    args["reRand"] = False
     run(**args)

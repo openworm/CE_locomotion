@@ -188,6 +188,8 @@ shared_ptr<EvolvableS> evolvable1;
 
 //virtual ~Evolvable_ptr(){if (evolvable1) delete evolvable1;}
 Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_){}
+Evolvable_ptr(shared_ptr<EvolvableS> evol1_, shared_ptr<const CmdArgs> cmd_):evolvable1(evol1_)
+{evolvable1->setWormPars(cmd_);}
 
 //void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
 //{return evolvable1->GenPhenMapping(gen,phen);}
@@ -247,11 +249,11 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     public:
     
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_):cmd(cmd_),
-    Evolvable_ptr(make_shared<T>()), evopar_ptr(getParameters(cmd_)),
+    Evolvable_ptr(make_shared<T>(),cmd_), evopar_ptr(getParameters(cmd_)),
     Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
     {
         
-        evolvable1->setWormPars(cmd_);
+       // evolvable1->setWormPars(cmd_);
        //  assert(0);
     }
 
@@ -441,6 +443,9 @@ double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 
 }
 
+
+
+
 template<class T>
 double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &rs)
 {
@@ -466,17 +471,28 @@ double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     //genotype(SR_B)= srb;
     //return EvaluationCEp1(genotype, rs, 1); 
 
+    double sra = genotype(1);
+    double srb = genotype(2);
+
+
     double fitness = 0;
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
-        //  assert(0 && "dorev0");
+    if (Epars1.zeroGainsType == 1) genotype(1)= -1.0;
+    genotype(2)= srb;
     fitness += Evaluation21Rp1(genotype, rs, 1);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
+    genotype(1)= sra;
+    if (Epars1.zeroGainsType == 1) genotype(2)= -1.0;
     fitness += Evaluation21Rp1(genotype, rs, -1);
     count++;
     }
+
+    genotype(1) = sra;
+    genotype(2) = srb;
+
     return fitness/count;
 
     //if (Epars1.doReverse==0) return fitnessForward;
@@ -895,7 +911,7 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
         //  assert(0 && "dorev0");
-    genotype(SR_A)= -1.0;
+    if (Epars1.zeroGainsType == 1) genotype(SR_A)= -1.0;
     genotype(SR_B)= srb;
     fitness += EvaluationCEp1(genotype, rs, 1);
     count++;
@@ -903,7 +919,7 @@ double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     if (Epars1.doReverse==1 || doalt2f){
        // assert(0 && "dorev1");
     genotype(SR_A)= sra;
-    genotype(SR_B)= -1.0;
+    if (Epars1.zeroGainsType == 1) genotype(SR_B)= -1.0;
     fitness += EvaluationCEp1(genotype, rs, -1);
     count++;
     }

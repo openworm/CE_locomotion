@@ -432,15 +432,18 @@ void setPars(shared_ptr<const CmdArgs> cmd);
 
 int doReverse = 0;
 int fitType = 0;
+int zeroGainsType = 1;
 
 void setParsFromJson(json & j){
   doReverse =  j["doReverse"]["value"];
   fitType = j["fitType"]["value"];
+  zeroGainsType = j["zeroGainsType"]["value"];
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
   j["doReverse"]["value"] = doReverse;
   j["fitType"]["value"] = fitType;
+  j["zeroGainsType"]["value"] = zeroGainsType;
   AgarPars::addParsToJson(j);
 }
 

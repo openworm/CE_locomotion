@@ -196,12 +196,12 @@ def make_fig(plot_format):
     for ind, (cell, col) in enumerate(
         zip(pop_plot_names[: int(plot_col_divs[0])], cols)
     ):
-        ind1 = utils.getIndOfNthVal(cell,cell_names,plot_cell_unit)
+        ind1 = utils.getIndOfNthVal(cell, cell_names, plot_cell_unit)
         if ind1 is None:
             print("Index error")
             exit()
         print("cell ind is ", ind1)
-        #ind1 = cell_names.index(cell)
+        # ind1 = cell_names.index(cell)
         ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax3.set_xlim(plot_transient, plot_transient + plot_time)
         # ax3.set_xlim(0, plot_time)
@@ -227,8 +227,8 @@ def make_fig(plot_format):
             cols[int(plot_col_divs[0] - plot_col_divs[1]) :],
         )
     ):
-        #ind1 = cell_names.index(cell)
-        ind1 = utils.getIndOfNthVal(cell,cell_names,plot_cell_unit)
+        # ind1 = cell_names.index(cell)
+        ind1 = utils.getIndOfNthVal(cell, cell_names, plot_cell_unit)
         if ind1 is None:
             print("Index error")
             exit()

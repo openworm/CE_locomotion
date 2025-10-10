@@ -41,7 +41,7 @@ int main (int argc, const char* argv[])
     model_name = cmd->getArgVal("--modelname","");
     if (model_name == "")
     {
-    cout << "Model name is required." << endl;
+    cout << "Model name is not in json file or the argument list. Exiting." << endl;
     return 0;
     }
     StepSize = 0.005;
@@ -211,7 +211,7 @@ int main (int argc, const char* argv[])
     j["Simulation"]["transient"]["value"] = simtransient;
     j["Simulation"]["duration"]["value"] = simduration*2;
 
-    bool forwardfirst = cmd->getArgValInt("--doForwardFirst",0);
+    bool forwardfirst = cmd->getArgValInt("--doForwardFirst",1);
     //forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
 
 

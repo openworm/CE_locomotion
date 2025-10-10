@@ -2,6 +2,7 @@ import subprocess
 import argparse
 import os
 import sys
+import neuromlLocal.utils as utils
 
 # import helper_funcs as hf
 # from importlib import import_module
@@ -576,8 +577,10 @@ def run(a=None, **kwargs):
         # "Worm2D/CO18": "CO18",
     }
 
-    doW2D = False
+    doW2D = True
     model_name = None
+    model_folder = a.modelFolder
+
     model_folder_list = [
         "Worm2D",
         "../Worm2D",
@@ -585,17 +588,33 @@ def run(a=None, **kwargs):
         "W2Dmoddev/src",
         "../W2Dmoddev/src",
     ]
-    if a.modelFolder in model_folder_list:
-        if a.modelName is None:
-            print(
-                "'modelName' parameter is required if `Worm2D' or subfolder is the model folder.\n"
-                # "Options are 'CE', 'RS18', 'Net21'.\n"
-            )
-            sys.exit(1)
-        model_name = a.modelName
-        doW2D = True
+
+    if a.modelName is None:
+        worm_data = utils.getJsonFile(a.outputFolderName + "/worm_data_evo.json")
+        if worm_data is not None:
+            model_name = utils.getModelName(worm_data)
+            if model_name == "CE":
+                model_name = "W2DCE"
+            model_folder = "Worm2D"
+        if model_name is None:
+            if a.modelFolder in model_names:
+                model_name = model_names[a.modelFolder]
+                doW2D = False
+                model_folder = a.modelFolder
+            if a.modelFolder in model_folder_list:
+                print(
+                    "'modelName' parameter is required if `Worm2D' or subfolder is the model folder.\n"
+                )
+                sys.exit(1)
+        print("'modelName' parameter is not set, so will use the json file value.\n")
     else:
-        model_name = model_names[a.modelFolder]
+        model_name = a.modelName
+
+    if a.modelFolder in model_names:
+        if model_name is None:
+            model_name = model_names[a.modelFolder]
+        doW2D = False
+        # model_folder = a.modelFolder
 
     model_name_list = [
         "W2Dosc",
@@ -610,8 +629,9 @@ def run(a=None, **kwargs):
         "W2DCESR",
         "W2D21R",
     ]
+
     mainProcessName = a.mainProcessName
-    if a.modelName in model_name_list:
+    if model_name in model_name_list:
         mainProcessName = "main_osc"
 
     defaults_bases = {
@@ -655,16 +675,17 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SREvoTopA"] = 200
     evol_extra_parameters["SROffset"] = 0
     evol_extra_parameters["SRSegPerSR"] = 6
-    
+    evol_extra_parameters["SRZeroGainsTypeEvo"] = 1
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = 0
     sim_extra_parameters["doForwardFirst"] = True
     sim_extra_parameters["SRZeroGainsType"] = 0
+
     sim_extra_parameters["prioritizeCmd"] = 0
 
-    main_cmd = a.modelFolder + "/" + mainProcessName
+    main_cmd = model_folder + "/" + mainProcessName
     cmd = [main_cmd]
 
     evol_pars = [
@@ -779,7 +800,7 @@ def run(a=None, **kwargs):
             cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
             # cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
 
-    doPlotEvol = False
+    doPlotEvol = True
     if hasattr(a, "doPlotEvol"):
         doPlotEvol = getattr(a, "doPlotEvol")
 
@@ -856,7 +877,7 @@ def run(a=None, **kwargs):
     rsr = import_module(module_name).reload_single_run
     rsr(show_plot=False, plot_format = plot_format) """
 
-    if a.modelFolder != "CE_orientation":
+    if model_folder != "CE_orientation":
         from load_data import reload_single_run
 
         # reload_single_run(show_plot=False, plot_format=plot_format)
