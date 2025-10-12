@@ -24,6 +24,10 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 //string main_directoryname;
 //string main_modelname;
 
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
+    const vector<double> & NMJ_Gain, int N_neuronsperunit);
+
 //using json = nlohmann::json;
 
 #define PI 3.14159265

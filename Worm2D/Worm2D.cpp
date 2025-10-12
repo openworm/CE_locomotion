@@ -807,5 +807,18 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 }
 }
 
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
+    const vector<double> & NMJ_Gain, int N_neuronsperunit)
+{
+
+    for (int j = 0; j<neurons.size();j++){
+        double weight = NMJs[j]*NMJ_Gain[to_muscle-1]; 
+        int from_neuron = nn1(neurons[j],unit,N_neuronsperunit);
+        toFromWeight tv({from_neuron,weight},to_muscle);
+        vec1.push_back(tv);
+
+}
+}
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}

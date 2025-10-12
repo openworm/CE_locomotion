@@ -57,6 +57,8 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
       sr_ptr->setNSWeights(*this);
+
+      setUpMuscleConn();
       //assert(0);
 }
 
@@ -87,7 +89,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
       //setWormPars(cmd);
 
-     
+      setUpMuscleConn();
 }
 
 
@@ -164,6 +166,9 @@ pheno_B_gain = sr_ptr->SR_B_gain;
 sr_ptr->setWeights();
 sr_ptr->setNSWeights(*this);
 //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
+
+setUpMuscleConn();
+
 }
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):
@@ -392,15 +397,130 @@ void Worm2DCE::InitializeState(RandomState &rs)
   Worm2D::InitializeState(rs);
 }
 
+vector<toFromWeight> Worm2DCE::makeDorsalMuscleConn()
+{
+vector<int> dorsalNeurons({DA,DB,DD});
+vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
+return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+}
+
+vector<toFromWeight> Worm2DCE::makeVentralMuscleConn()
+{
+vector<int> ventralNeurons({VD,VA,VB});
+vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
+return makeMuscleConn(ventralNeurons, ventralNMJ);
+
+}
+
+vector<toFromWeight> Worm2DCE::makeMuscleConn(const vector<int> & neurons, const vector<double> & NMJ)
+{
+    vector<toFromWeight> vec1;
+    vector<double> NMJ_Gain(par1.N_muscles,1.0);
+
+    int unit = 1;
+    for (int to_musc = 1; to_musc <= 3; to_musc++) 
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+        
+    int to_musc = 4;
+    unit = 1;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+    unit = 2;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+    to_musc = 5;
+    unit = 2;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+    unit = 2; // Muscles 6-19
+    for (int to_musc=6; to_musc<=19; to_musc++){
+      makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+      makeMuscleConnHelp1(vec1, neurons, NMJ, unit+1, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+      unit += to_musc%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+    }
+
+    to_musc = 20;
+    unit = 9;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+    to_musc = 21;
+    unit = 9;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+    to_musc = 21;
+    unit = 10;
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+    unit = 10;
+    for (int to_musc=22; to_musc<=24; to_musc++)
+      makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, par1.N_neuronsperunit);
+
+  
+    //cout << "made muscle con" << endl;
+            //exit(1);
+    return vec1;
+
+}
+
+void Worm2DCE::setMuscleInputOrig()
+{
+
+  int mi;
+  int mt = 0;
+
+TVector<double> dorsalInput(1, par1.N_units);
+  TVector<double> ventralInput(1, par1.N_units);
+
+for (int i=1; i<=par1.N_units; i++){
+    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
+    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+  }
+  // Muscles 1-3
+  for (int mi=1; mi<=3; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(1));
+    m.SetDorsalMuscleInput(mi, dorsalInput(1));
+  }
+
+  mi = 4; // 4th muscle
+  m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
+  m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
+
+  mi = 5; // 5th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(2));
+  m.SetDorsalMuscleInput(mi, dorsalInput(2));
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
+    m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(9));
+  m.SetDorsalMuscleInput(mi, dorsalInput(9));
+
+  mi = 21; // 21st muscle
+  m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
+  m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(10));
+    m.SetDorsalMuscleInput(mi, dorsalInput(10));
+  }
+
+  // Update Muscle activation
+  m.EulerStep(settedStepSize);
+
+
+}
 
 
 void Worm2DCE::Step1()
 {
-  int mi;
-  int mt = 0;
-  double ds, vs;
-  TVector<double> dorsalInput(1, par1.N_units);
-  TVector<double> ventralInput(1, par1.N_units);
+  
+  //double ds, vs;
+  
 
   // Update Body
   b.StepBody(settedStepSize);
@@ -452,47 +572,9 @@ void Worm2DCE::Step1()
   // Set input to Muscles
   //  Each motor neuron innervates four muscles, overlap in muscles 4, 6-19 and 21)
   // Load motorneuron activity
-  for (int i=1; i<=par1.N_units; i++){
-    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
-    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
-  }
-  // Muscles 1-3
-  for (int mi=1; mi<=3; mi++){
-    m.SetVentralMuscleInput(mi, ventralInput(1));
-    m.SetDorsalMuscleInput(mi, dorsalInput(1));
-  }
-
-  mi = 4; // 4th muscle
-  m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
-  m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
-
-  mi = 5; // 5th muscle
-  m.SetVentralMuscleInput(mi, ventralInput(2));
-  m.SetDorsalMuscleInput(mi, dorsalInput(2));
-
-  mt = 2; // Muscles 6-19
-  for (int mi=6; mi<=19; mi++){
-    m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
-    m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
-    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
-  }
-
-  mi = 20; // 20th muscle
-  m.SetVentralMuscleInput(mi, ventralInput(9));
-  m.SetDorsalMuscleInput(mi, dorsalInput(9));
-
-  mi = 21; // 21st muscle
-  m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
-  m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
-
-  // Muscles 22-24
-  for (int mi=22; mi<=24; mi++){
-    m.SetVentralMuscleInput(mi, ventralInput(10));
-    m.SetDorsalMuscleInput(mi, dorsalInput(10));
-  }
-
-  // Update Muscle activation
-  m.EulerStep(settedStepSize);
+  
+  //setMuscleInputOrig();
+  setMuscleInput();
 
   // Set input to Mechanical Body
   //  First two segments receive special treatment because they are only affected by a single muscle
@@ -504,7 +586,7 @@ void Worm2DCE::Step1()
   //  All other segments receive force from two muscles
   for (int i = 3; i <= N_segments-2; i++)
   {
-    mi = (int) ((i-1)/2);
+    int mi = (int) ((i-1)/2);
     b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
     b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
   }
