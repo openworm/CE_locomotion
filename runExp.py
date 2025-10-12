@@ -16,7 +16,7 @@ args = dict(
     outputFolderName="experiments/demoRun_1_out",
     reRand=True,
     overwrite=True,
-    doTestRun = True
+    doTestRun=True,
 )
 
 if doOrig:

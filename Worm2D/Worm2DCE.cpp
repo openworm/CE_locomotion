@@ -56,8 +56,8 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       pheno_A_gain = sr_ptr->SR_A_gain;
       pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
-      sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
-     
+      sr_ptr->setNSWeights(*this);
+      //assert(0);
 }
 
 
@@ -83,7 +83,8 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       pheno_A_gain = sr_ptr->SR_A_gain;
       pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
-      sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
+      sr_ptr->setNSWeights(*this);
+      //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
       //setWormPars(cmd);
 
      
@@ -161,7 +162,8 @@ pheno_A_gain = sr_ptr->SR_A_gain;
 pheno_B_gain = sr_ptr->SR_B_gain;
 //sr_ptr->SRForm = W2DCEpars1->SRForm;
 sr_ptr->setWeights();
-sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
+sr_ptr->setNSWeights(*this);
+//sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
 }
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):
@@ -410,6 +412,24 @@ void Worm2DCE::Step1()
   
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
+  
+  for (int i = 1; i <= par1.N_units; i++){
+    n_ptr->SetNeuronExternalInput(nn(DA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
+  }
+  ////   To B_class motorneurons
+  for (int i = 1; i <= par1.N_units; i++){
+    n_ptr->SetNeuronExternalInput(nn(DB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
+  }
+  
+  sr_ptr->incNS(*n_ptr);
+
+  if (false){
   for (int i = 1; i <= par1.N_units; i++){
     n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
     //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
@@ -424,6 +444,7 @@ void Worm2DCE::Step1()
     //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
   }
 
+}
   // Update Nervous System
   n_ptr->EulerStep(settedStepSize);
   //cout << "step " << t << endl;

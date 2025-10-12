@@ -26,6 +26,7 @@ NSosc(int size_):pfa1(size_){}
 virtual double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
 double NeuronState(int i) {return 0;}
 void SetNeuronExternalInput(int i, double value) {return;}
+void IncNeuronExternalInput(int i, double value) {return;}
 virtual void EulerStep(double stepsize) {t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}

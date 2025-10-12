@@ -13,17 +13,21 @@ void SR::setFromBody(const WormBody & b)
 
 }
 
-void SR::incNS(NSForW2D & ns)
+void SR::incNS(NSForW2D & ns_)
 {
 
+updateNS(nssrweights.segToA_D, srvars.A_D_sr, ns_);
+updateNS(nssrweights.segToA_V, srvars.A_V_sr, ns_);
+updateNS(nssrweights.segToB_D, srvars.B_D_sr, ns_);
+updateNS(nssrweights.segToB_V, srvars.B_V_sr, ns_);
 
 }
 
-void SR::updateNS(const vector<toFromWeight> & seg_, NSForW2D & ns_)
+void SR::updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_)
 {
     for (int i=0;i<seg_.size();i++){
     const toFromWeight & tfw = seg_[i];
-
+    ns_.IncNeuronExternalInput(tfw.to, tfw.w.weight*sr_[tfw.w.from-1]);
 }
 
 }
@@ -99,31 +103,36 @@ void SRCE::setParsFromJson(json & j)
 
 }
 
-SRWeights SRCE::makeNSSRWeights(shared_ptr<const Worm2Dbase> w_ptr_) const
+SRWeights SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) const
 {
     SRWeights srw;
+    const Worm2DCE & w_ptr = dynamic_cast<const Worm2DCE&>(w_ptr_);
 
-    shared_ptr<const Worm2DCE> w_ptr = dynamic_pointer_cast<const Worm2DCE>(w_ptr_);
+    //shared_ptr<const Worm2DCE> w_ptr = dynamic_pointer_cast<const Worm2DCE>(w_ptr_);
 
-for (int i = 1; i <= w_ptr->par1.N_units; i++){
+    //cout << "ssd " << w_ptr->par1.N_units << " ds " << w_ptr->DA << endl;
+    //assert(0);
+
+
+for (int i = 1; i <= w_ptr.par1.N_units; i++){
     int from = i;
     {
-    int to = w_ptr->nn(w_ptr->DA,i);
+    int to = w_ptr.nn(w_ptr.DA,i);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_D.push_back(tfw);
     }
     {
-    int to = w_ptr->nn(w_ptr->VA,i);
+    int to = w_ptr.nn(w_ptr.VA,i);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_V.push_back(tfw);
     }
     {
-    int to = w_ptr->nn(w_ptr->DB,i);
+    int to = w_ptr.nn(w_ptr.DB,i);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_D.push_back(tfw);
     }
     {
-    int to = w_ptr->nn(w_ptr->VB,i);
+    int to = w_ptr.nn(w_ptr.VB,i);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_V.push_back(tfw);
     }

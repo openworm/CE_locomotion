@@ -40,15 +40,18 @@ void setFromBody(const WormBody & b);
 void updateSegs();
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
 virtual SRWeights makeSRWeights() const = 0;
-virtual SRWeights makeNSSRWeights(shared_ptr<const Worm2Dbase> w_ptr) const = 0;
+virtual SRWeights makeNSSRWeights(const Worm2Dbase & w_ptr) const = 0;
 void setWeights(){srweights = makeSRWeights();}
-void setNSWeights(shared_ptr<const Worm2Dbase> w_ptr){nssrweights = makeNSSRWeights(w_ptr);}
+void setNSWeights(const Worm2Dbase & w_ptr){
+    nssrweights = makeNSSRWeights(w_ptr);
+//assert(0);
+}
 virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
 virtual void addParsToJson(json & j);
 virtual double transformSegs(const double & val){return val;}
 void incNS(NSForW2D & ns);
-void updateNS(const vector<toFromWeight> & seg_, NSForW2D & ns_);
+void updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_);
 
 SRVars srvars;
 protected:
@@ -69,7 +72,7 @@ public:
 SRCE(int nsegs_, int nstretch_):
 SR(nsegs_,nstretch_),srcepars(make_shared<SRCEpars>()){}
 
-SRWeights makeNSSRWeights(shared_ptr<const Worm2Dbase> w_ptr) const;
+SRWeights makeNSSRWeights(const Worm2Dbase & w_ptr) const;
 SRWeights makeSRWeights() const;
 void addParsToJson(json & j);
 void setParsFromJson(json & j);

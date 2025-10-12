@@ -64,6 +64,7 @@ class Worm2DNRNSimulation:
 
     def set_up_j(self):
         import utils
+
         self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
 
     def get_neuron_number(self, pop, i):
@@ -166,11 +167,10 @@ class Worm2DNRNSimulation:
         return
 
     def inc_neuron_input_j(self, i, weight):
-        getattr(self.h,
-        "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
+        getattr(
+            self.h,
+            "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
         ).weight += weight
-        
-
 
     def set_neuron_input_j(self, i, weight):
         # self.h.ExtStimPopAS_6.weight = weight
