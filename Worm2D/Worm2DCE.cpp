@@ -864,7 +864,11 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
 
   pheno_A_gain = sr_ptr->SR_A_gain;
   pheno_B_gain = sr_ptr->SR_B_gain;
+  
   sr_ptr->setWeights();
+  sr_ptr->setNSWeights(*this);
+
+  setUpMuscleConn();
 }
 
 
