@@ -16,6 +16,7 @@ class c302ForW2D : virtual public NSForW2D
     c302ForW2D();
     c302ForW2D(const std::string & simFileName, const std::string & simDirName);
 
+    void IncNeuronExternalInput(int i, double value);
     void SetNeuronExternalInput(int i, double value);
     double NeuronOutput(int i);
     void EulerStep(double );
@@ -43,7 +44,8 @@ class c302ForW2D : virtual public NSForW2D
     //bool v_newstep  = true;
     //bool d_newstep  = true;
 
-    const std::string set_neuron_input_func, get_states_func, get_output_func;
+    const std::string set_neuron_input_func, get_states_func, 
+    get_output_func, inc_neuron_input_func;
 
 };
 

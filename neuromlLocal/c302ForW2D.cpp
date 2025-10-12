@@ -5,6 +5,7 @@
 const std::string defaultSimClassName = "Worm2DNRNSimulation";
 
 c302ForW2D::c302ForW2D(const std::string & simFileName):
+inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states"), get_output_func("get_outpus"),
 simulation(new SignalSimulatorForWorm2D(simFileName,defaultSimClassName,0.005))
@@ -14,12 +15,14 @@ simulation(new SignalSimulatorForWorm2D(simFileName,defaultSimClassName,0.005))
 //simulation(new SignalSimulatorForWorm2D("neuromlLocal.main_sim",defaultSimClassName,0.005)){}
 
 c302ForW2D::c302ForW2D():
+inc_neuron_input_func("inc_neuron_input_j"),
 set_neuron_input_func("set_neuron_input_j"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states_j"), get_output_func("get_outputs_j"),
 simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlLocal",0.005))
 {SetPopStructure(); std::cout << "c302ForW2D" << std::endl;}
 
 c302ForW2D::c302ForW2D(const std::string & popStruct, const int & popSize):
+inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states"), get_output_func("get_outputs"),
 simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlLocal",0.005))
@@ -27,6 +30,7 @@ simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlL
 
 c302ForW2D::c302ForW2D(const std::string & simFileName, 
 const std::string & simDirName):v_newstep(new bool(true)), d_newstep(new bool(true)), 
+inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), 
 get_states_func("get_states"), get_output_func("get_outputs"),
 simulation(new SignalSimulatorForWorm2D(simFileName,
@@ -48,6 +52,11 @@ void c302ForW2D::SetPopStructure(const std::string & popStruct, int popSize)
 void c302ForW2D::SetNeuronExternalInput(int i, double value)
 {
 simulation->oneValFunc(set_neuron_input_func,i-1,value);
+}
+
+void c302ForW2D::IncNeuronExternalInput(int i, double value)
+{
+simulation->oneValFunc(inc_neuron_input_func,i-1,value);
 }
 
 
