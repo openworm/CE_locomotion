@@ -1,5 +1,6 @@
 
 #include "StretchReceptor.h"
+#include "Worm2DCE.h"
 
 void SR::setFromBody(const WormBody & b)
 {
@@ -11,6 +12,23 @@ void SR::setFromBody(const WormBody & b)
     }
 
 }
+
+void SR::incNS(NSForW2D & ns)
+{
+
+
+}
+
+void SR::updateNS(const vector<toFromWeight> & seg_, NSForW2D & ns_)
+{
+    for (int i=0;i<seg_.size();i++){
+    const toFromWeight & tfw = seg_[i];
+
+}
+
+}
+
+
 vector<double> SR::updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_)
 {
     vector<double> sr(srvars.nstretch,0.0);
@@ -81,6 +99,53 @@ void SRCE::setParsFromJson(json & j)
 
 }
 
+SRWeights SRCE::makeNSSRWeights(shared_ptr<const Worm2Dbase> w_ptr_) const
+{
+    SRWeights srw;
+
+    shared_ptr<const Worm2DCE> w_ptr = dynamic_pointer_cast<const Worm2DCE>(w_ptr_);
+
+for (int i = 1; i <= w_ptr->par1.N_units; i++){
+    int from = i;
+    {
+    int to = w_ptr->nn(w_ptr->DA,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToA_D.push_back(tfw);
+    }
+    {
+    int to = w_ptr->nn(w_ptr->VA,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToA_V.push_back(tfw);
+    }
+    {
+    int to = w_ptr->nn(w_ptr->DB,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToB_D.push_back(tfw);
+    }
+    {
+    int to = w_ptr->nn(w_ptr->VB,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToB_V.push_back(tfw);
+    }
+    
+}
+
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->srvars.A_V_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
+  //}
+  ////   To B_class motorneurons
+  //for (int i = 1; i <= par1.N_units; i++){
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->srvars.B_D_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->srvars.B_V_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
+ // }
+
+return srw;
+
+}
 
 SRWeights SRCE::makeSRWeights() const
 {

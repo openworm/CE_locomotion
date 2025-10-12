@@ -12,9 +12,11 @@ doMuscles = False
 args = dict(
     simduration=50,
     simtransient=30,
-    inputFolderName="exW2DCE_FR",
-    outputFolderName="experiments/demoRun_1",
+    inputFolderName="experiments/demoRun_1",
+    outputFolderName="experiments/demoRun_1_out",
     reRand=True,
+    overwrite=True,
+    doTestRun = True
 )
 
 if doOrig:

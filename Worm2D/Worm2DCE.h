@@ -101,6 +101,7 @@ class Worm2DCE: public Worm2D, public WormFR{
     void setWormPars(shared_ptr<const CmdArgs> cmd);
 
     friend class EvolutionCE;
+    friend class SRCE;
 
     protected:
     //void Step1();

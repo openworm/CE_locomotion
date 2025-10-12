@@ -173,6 +173,9 @@ virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
 void DumpVal(string filename_, double val);
 virtual double getVelocity() = 0;
+const wormIzqParams par1;
+int nn(int neuronNumber, int unitNumber) const;
+
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
@@ -213,8 +216,8 @@ void addPhenoName(string name, int k);
 
 double t; // Time
 const bool muscForWDconst;
-const wormIzqParams par1;
-int nn(int neuronNumber, int unitNumber);
+
+
 double settedStepSize;
 
 

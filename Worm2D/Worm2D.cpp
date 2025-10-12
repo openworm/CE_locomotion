@@ -192,7 +192,7 @@ void Worm2D::InitializeState(RandomState &rs)
     return;
 }
 
-int Worm2Dbase::nn(int neuronNumber, int unitNumber)
+int Worm2Dbase::nn(int neuronNumber, int unitNumber) const
 {   
     return nn1(neuronNumber,unitNumber,par1.N_neuronsperunit);
     

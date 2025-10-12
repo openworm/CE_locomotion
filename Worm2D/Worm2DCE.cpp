@@ -56,6 +56,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       pheno_A_gain = sr_ptr->SR_A_gain;
       pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
+      sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
      
 }
 
@@ -82,7 +83,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       pheno_A_gain = sr_ptr->SR_A_gain;
       pheno_B_gain = sr_ptr->SR_B_gain;
       sr_ptr->setWeights();
-
+      sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
       //setWormPars(cmd);
 
      
@@ -160,6 +161,7 @@ pheno_A_gain = sr_ptr->SR_A_gain;
 pheno_B_gain = sr_ptr->SR_B_gain;
 //sr_ptr->SRForm = W2DCEpars1->SRForm;
 sr_ptr->setWeights();
+sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
 }
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):

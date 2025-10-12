@@ -195,6 +195,7 @@ int main (int argc, const char* argv[])
     if (dotest || w==nullptr)
     {
 
+    //if (w!=nullptr) w->setForward();
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
