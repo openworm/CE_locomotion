@@ -516,6 +516,33 @@ for (int i=1; i<=par1.N_units; i++){
 }
 
 
+
+
+void Worm2DCE::setBodyInputOrig(){
+
+// Set input to Mechanical Body
+  //  First two segments receive special treatment because they are only affected by a single muscle
+  b.SetDorsalSegmentActivation(1, m.DorsalMuscleOutput(1)/2);
+  b.SetVentralSegmentActivation(1, m.VentralMuscleOutput(1)/2);
+  b.SetDorsalSegmentActivation(2, m.DorsalMuscleOutput(1)/2);
+  b.SetVentralSegmentActivation(2, m.VentralMuscleOutput(1)/2);
+
+  //  All other segments receive force from two muscles
+  for (int i = 3; i <= N_segments-2; i++)
+  {
+    int mi = (int) ((i-1)/2);
+    b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
+    b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
+  }
+
+  //  Last two segments receive special treatment because they are only affected by a single muscle
+  b.SetDorsalSegmentActivation(N_segments-1, m.DorsalMuscleOutput(par1.N_muscles)/2);
+  b.SetVentralSegmentActivation(N_segments-1, m.VentralMuscleOutput(par1.N_muscles)/2);
+  b.SetDorsalSegmentActivation(N_segments, m.DorsalMuscleOutput(par1.N_muscles)/2);
+  b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
+
+}
+
 void Worm2DCE::Step1()
 {
   
@@ -576,27 +603,8 @@ void Worm2DCE::Step1()
   if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
-  // Set input to Mechanical Body
-  //  First two segments receive special treatment because they are only affected by a single muscle
-  b.SetDorsalSegmentActivation(1, m.DorsalMuscleOutput(1)/2);
-  b.SetVentralSegmentActivation(1, m.VentralMuscleOutput(1)/2);
-  b.SetDorsalSegmentActivation(2, m.DorsalMuscleOutput(1)/2);
-  b.SetVentralSegmentActivation(2, m.VentralMuscleOutput(1)/2);
-
-  //  All other segments receive force from two muscles
-  for (int i = 3; i <= N_segments-2; i++)
-  {
-    int mi = (int) ((i-1)/2);
-    b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
-    b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
-  }
-
-  //  Last two segments receive special treatment because they are only affected by a single muscle
-  b.SetDorsalSegmentActivation(N_segments-1, m.DorsalMuscleOutput(par1.N_muscles)/2);
-  b.SetVentralSegmentActivation(N_segments-1, m.VentralMuscleOutput(par1.N_muscles)/2);
-  b.SetDorsalSegmentActivation(N_segments, m.DorsalMuscleOutput(par1.N_muscles)/2);
-  b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
-
+  //setBodyInputOrig();
+  setBodyInput();
   // Time
   //t += StepSize;
 }

@@ -139,6 +139,7 @@ m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N
 {
     //cout << "Worm2D const" << endl;
     setUp();
+    setUpBodyConn();
 }
 
 
@@ -745,11 +746,35 @@ void Worm2D::setMuscleInputVec()
     }
     for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);}
 
-
-
     //m.EulerStep(settedStepSize);
 }
 
+void Worm2D::setBodyInput()
+{
+
+    {
+    vector<double> vtot(N_segments, 0.0);
+    for (int i=0;i<vBodyConnvec.size();i++)
+    {
+        const toFromWeight & tfw = vBodyConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*m.VentralMuscleOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) b.SetVentralSegmentActivation(i+1, vtot[i]);
+    }
+    
+    {
+    vector<double> vtot(N_segments, 0.0);
+    for (int i=0;i<dBodyConnvec.size();i++)
+    {
+        const toFromWeight & tfw = dBodyConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*m.DorsalMuscleOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) b.SetDorsalSegmentActivation(i+1, vtot[i]);
+    }
+    
+
+
+}
 
 void Worm2D::setMuscleInput()
 {
@@ -781,16 +806,24 @@ dMuscConnvec.swap(dMuscConnvec1);
 
 void Worm2D::setUpMuscleConn()
 {
+
 vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
 vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
 vMuscConnvec1.swap(vMuscConnvec);
 dMuscConnvec1.swap(dMuscConnvec);
 
-
-
-//vMuscConn.setWeights(vMuscConnvec);
-//dMuscConn.setWeights(dMuscConnvec);
 }
+
+void Worm2D::setUpBodyConn()
+{
+
+vector<toFromWeight> vBodyConnvec1 = makeVentralBodyConn();
+vector<toFromWeight> dBodyConnvec1 = makeDorsalBodyConn();
+vBodyConnvec1.swap(vBodyConnvec);
+dBodyConnvec1.swap(dBodyConnvec);
+
+}
+
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)
@@ -826,5 +859,54 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 
 }
 }
+
+
+vector<toFromWeight> Worm2D::makeDorsalBodyConn()
+{
+
+    return makeBodyConn();
+
+}
+
+vector<toFromWeight> Worm2D::makeVentralBodyConn()
+{
+
+    return makeBodyConn();
+
+}
+
+vector<toFromWeight> Worm2D::makeBodyConn()
+{
+vector<toFromWeight> vec1;
+
+for (int to_seg = 1; to_seg<=2; to_seg++){
+  int from_musc = 1;
+  double weight = 0.5;
+  toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);
+}
+
+for (int to_seg = 3; to_seg <= N_segments-2; to_seg++)
+  {
+  int from_musc = (int) ((to_seg-1)/2);
+  double weight = 0.5;
+  {toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);}
+  toFromWeight tv({from_musc+1,weight},to_seg);
+  vec1.push_back(tv);
+  }
+
+for (int to_seg = N_segments-1; to_seg<=N_segments; to_seg++){
+  int from_musc = par1.N_muscles;
+  double weight = 0.5;
+  toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);
+}
+
+return vec1;
+
+}
+
+
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}

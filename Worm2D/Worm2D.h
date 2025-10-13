@@ -290,12 +290,19 @@ class Worm2D : virtual public Worm2Dm
     //virtual void addExtraParsToJson(json & j) = 0;
     virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
     virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
+    virtual vector<toFromWeight> makeBodyConn();
+    virtual vector<toFromWeight> makeVentralBodyConn();
+    virtual vector<toFromWeight> makeDorsalBodyConn();
+
     void setUpMuscleConn();
     void setUpMuscleConn(json & j);
+    void setUpBodyConn();
+
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
     void setMuscleInput();
-    
+    void setBodyInput();
+
     void setMuscleInputVec();
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //void setMuscleInputVent();
@@ -306,7 +313,7 @@ class Worm2D : virtual public Worm2Dm
     Muscles & m;
    
     //NSToMuscles vMuscConn, dMuscConn;
-    vector<toFromWeight> vMuscConnvec, dMuscConnvec;
+    vector<toFromWeight> vMuscConnvec, dMuscConnvec, vBodyConnvec, dBodyConnvec;
     
  
 };
