@@ -676,11 +676,11 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SROffset"] = 0
     evol_extra_parameters["SRSegPerSR"] = 6
     evol_extra_parameters["SRZeroGainsTypeEvo"] = 1
-    evol_extra_parameters["doOrigMuscInput"] = 1
+    evol_extra_parameters["doOrigMuscInput"] = True
 
     sim_extra_parameters = {}
     sim_extra_parameters["orient"] = 0
-    sim_extra_parameters["doTestRun"] = 0
+    sim_extra_parameters["doTestRun"] = False
     sim_extra_parameters["doForwardFirst"] = True
     sim_extra_parameters["SRZeroGainsType"] = 0
 

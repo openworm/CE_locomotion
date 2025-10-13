@@ -22,4 +22,5 @@ run(
     AvgSpeed=0.0001,
     # SRType = "SR_TRANS_STRETCH"
     doTestRun=True,
+    doOrigMuscInput = True
 )

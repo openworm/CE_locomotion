@@ -69,7 +69,7 @@ double c302ForW2D::NeuronState(int i)
 return state_value[i-1];
 }
 
-double c302ForW2D::NeuronOutput(int i)
+const double & c302ForW2D::NeuronOutput(int i)
 {
     if (newstep){
     output_value =  simulation->vecValFunc(get_output_func);
