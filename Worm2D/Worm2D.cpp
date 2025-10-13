@@ -776,6 +776,23 @@ void Worm2D::setBodyInput()
 
 }
 
+void Worm2Dbase::setExternalInput()
+{
+
+    assignExternalInput();
+
+    vector<double> vtot(par1.N_size, 0.0);
+    for (int i=0;i<externalInputConn.size();i++)
+    {
+        const toFromWeight & tfw = externalInputConn[i];
+        vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
+    }
+
+    for (int i=0;i<vtot.size();i++) n_ptr->SetNeuronExternalInput(i+1, vtot[i]);
+
+}
+
+
 void Worm2D::setMuscleInput()
 {
 

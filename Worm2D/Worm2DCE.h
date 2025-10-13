@@ -145,6 +145,9 @@ class Worm2DCE: public Worm2D, public WormFR{
     //W2DCEpars W2DCEpars1;
     shared_ptr<W2DCEpars> W2DCEpars1;
 
+    void makeExternalInputConn();
+    void assignExternalInput();
+    void setExternalInputOrig();
 
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";

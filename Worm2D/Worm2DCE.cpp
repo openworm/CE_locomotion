@@ -59,6 +59,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       sr_ptr->setNSWeights(*this);
 
       setUpMuscleConn();
+      makeExternalInputConn();
       //assert(0);
 }
 
@@ -90,6 +91,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
       //setWormPars(cmd);
 
       setUpMuscleConn();
+      makeExternalInputConn();
 }
 
 
@@ -168,6 +170,7 @@ sr_ptr->setNSWeights(*this);
 //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
 
 setUpMuscleConn();
+makeExternalInputConn();
 
 }
 
@@ -543,6 +546,59 @@ void Worm2DCE::setBodyInputOrig(){
 
 }
 
+void Worm2DCE::assignExternalInput(){
+
+  externalInputs[0] = W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level;
+  externalInputs[1] = W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level;
+}
+
+
+void Worm2DCE::makeExternalInputConn()
+{
+
+  vector<toFromWeight>  vec1;
+  for (int i = 1; i <= par1.N_units; i++){
+    double weight = 1.0;
+    {int from_inp = 1;
+    {int to_neuron = nn(DA,i);
+    toFromWeight tv({from_inp,weight},to_neuron);
+    vec1.push_back(tv);}
+    {int to_neuron = nn(VA,i);
+    toFromWeight tv({from_inp,weight},to_neuron);
+    vec1.push_back(tv);}}
+    {int from_inp = 2;
+    {int to_neuron = nn(DB,i);
+    toFromWeight tv({from_inp,weight},to_neuron);
+    vec1.push_back(tv);}
+    {int to_neuron = nn(VB,i);
+    toFromWeight tv({from_inp,weight},to_neuron);
+    vec1.push_back(tv);}}
+  }
+
+  externalInputConn.swap(vec1);
+  //return vec1;
+}
+
+void Worm2DCE::setExternalInputOrig()
+{
+
+  for (int i = 1; i <= par1.N_units; i++){
+    n_ptr->SetNeuronExternalInput(nn(DA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
+  }
+  ////   To B_class motorneurons
+  for (int i = 1; i <= par1.N_units; i++){
+    n_ptr->SetNeuronExternalInput(nn(DB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
+    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
+  }
+
+}
+
+
 void Worm2DCE::Step1()
 {
   
@@ -560,19 +616,7 @@ void Worm2DCE::Step1()
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   
-  for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
-  }
-  ////   To B_class motorneurons
-  for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
-  }
+  setExternalInputOrig();
   
   sr_ptr->incNS(*n_ptr);
 

@@ -224,8 +224,11 @@ const bool muscForWDconst;
 
 double settedStepSize;
 
-
-
+virtual void makeExternalInputConn(){return;}
+vector<toFromWeight> externalInputConn;
+vector<double> externalInputs;
+void setExternalInput();
+virtual void assignExternalInput(){return;}
 
 };
 
