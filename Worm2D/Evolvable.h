@@ -359,8 +359,16 @@ W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
 //W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
 bool randomInitialState = 0;
-void setParsFromJson(json & j){randomInitialState = j["randomInitialState"]["value"];}
-void addParsToJson(json & j) const {j["randomInitialState"]["value"] = randomInitialState;}
+bool doOrigMuscInput = 1;
+void setParsFromJson(json & j){
+  randomInitialState = j["randomInitialState"]["value"];
+  doOrigMuscInput = j["doOrigMuscInput"]["value"];
+}
+void addParsToJson(json & j) const {
+  j["randomInitialState"]["value"] = randomInitialState;
+  j["doOrigMuscInput"]["value"] = doOrigMuscInput;
+}
+
 void setPars(shared_ptr<const CmdArgs> cmd);
 
 };

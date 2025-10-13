@@ -59,6 +59,7 @@ bool directoryExists(const string & directoryName)
 
 W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 {
+    assert(0 && "This is depreciated");
     randomInitialState = getParameterInt(argc,argv,"--randInitState","0");;
     //cout << "ran " << randomInitialState << endl;
     //assert(0);
@@ -68,8 +69,9 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 
 void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
-
+    doOrigMuscInput = cmd->getArgValInt("--doOrigMuscInput", doOrigMuscInput);
     randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+
 }
 
 void W2DCEparsA::setPars(shared_ptr<const CmdArgs> cmd)

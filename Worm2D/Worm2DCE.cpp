@@ -573,8 +573,8 @@ void Worm2DCE::Step1()
   //  Each motor neuron innervates four muscles, overlap in muscles 4, 6-19 and 21)
   // Load motorneuron activity
   
-  //setMuscleInputOrig();
-  setMuscleInput();
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
 
   // Set input to Mechanical Body
   //  First two segments receive special treatment because they are only affected by a single muscle
@@ -864,7 +864,7 @@ void WormCE::setParsFromPheno(TVector<double> &pheno)
 
   pheno_A_gain = sr_ptr->SR_A_gain;
   pheno_B_gain = sr_ptr->SR_B_gain;
-  
+
   sr_ptr->setWeights();
   sr_ptr->setNSWeights(*this);
 

@@ -721,23 +721,29 @@ void Worm2D::setMuscleInputDors()
 
 void Worm2D::setMuscleInputVec()
 {
-    vector<double> vtot(par1.N_muscles);
+    {vector<double> vtot(par1.N_muscles, 0.0);
 
-    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
     for (int i=0;i<vMuscConnvec.size();i++)
     {
         const toFromWeight & tfw = vMuscConnvec[i];
         vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
     }
-    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
     
-    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);}
+
+    
+    {vector<double> vtot(par1.N_muscles, 0.0);
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
+
     for (int i=0;i<dMuscConnvec.size();i++)
     {
         const toFromWeight & tfw = dMuscConnvec[i];
         vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
     }
-    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);
+    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);}
 
 
 
