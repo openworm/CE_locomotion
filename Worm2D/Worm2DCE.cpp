@@ -605,57 +605,22 @@ void Worm2DCE::setExternalInputOrig()
 
 void Worm2DCE::Step1()
 {
-  
-  //double ds, vs;
-  
 
-  // Update Body
   b.StepBody(settedStepSize);
 
   sr_ptr->updateAll(b);
 
-  // Set input to Stretch Receptors from Body
-  // Input to SR only if the segment stretch
-  
-  // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
-  ////   To A_class motorneurons
-  
-  //setExternalInputOrig();
   setExternalInput();
   
   sr_ptr->incNS(*n_ptr);
 
-  if (false){
-  for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->srvars.A_V_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
-  }
-  ////   To B_class motorneurons
-  for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->srvars.B_D_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->srvars.B_V_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
-  }
-
-}
-  // Update Nervous System
   n_ptr->EulerStep(settedStepSize);
-  //cout << "step " << t << endl;
-   
-  // Set input to Muscles
-  //  Each motor neuron innervates four muscles, overlap in muscles 4, 6-19 and 21)
-  // Load motorneuron activity
   
   if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
-  //setBodyInputOrig();
   setBodyInput();
-  // Time
-  //t += StepSize;
+  
 }
 
 /* void Worm2DCE::Step1_old()

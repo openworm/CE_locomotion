@@ -547,6 +547,11 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
 
+    appendVectorToJson<toFromWeight>(j["Driving input"]["weights"], externalInputConn);
+    j["Driving input"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
+    appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
+    j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
+
     W2Dbaseparameters1->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
@@ -573,15 +578,16 @@ void Worm2D::addParsToJson(json & j)
     Worm2Dm::addParsToJson(j);
 
     appendMuscleToJson(j,m);
+
     NSToMuscles vMuscConn(par1.N_muscles);
     NSToMuscles dMuscConn(par1.N_muscles);
     vMuscConn.setWeights(vMuscConnvec);
     dMuscConn.setWeights(dMuscConnvec);
    
     j["Ventral NMJ"]["weights"]["message"] = "Ventral NMJ weights weights in sparse format";
-    appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
+    //appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
     j["Dorsal NMJ"]["weights"]["message"] = "Dorsal NMJ weights weights in sparse format";
-    appendMatrixToJson(j["Dorsal NMJ"]["weights"], dMuscConn.weights, dMuscConn.numConns, dMuscConn.size);
+    //appendMatrixToJson(j["Dorsal NMJ"]["weights"], dMuscConn.weights, dMuscConn.numConns, dMuscConn.size);
     
     {Params<int> par;    
     par.names = {"size", "maxcons"};
@@ -610,10 +616,15 @@ void Worm2D::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
 
-    appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights_vec"], dMuscConnvec);
-    appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights_vec"], vMuscConnvec);
+    appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights"], dMuscConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights"], vMuscConnvec);
    
-    
+
+    appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral body"]["weights"], vBodyConnvec);
+    j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
+    j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
+
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    
