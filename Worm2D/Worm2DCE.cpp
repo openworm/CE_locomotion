@@ -575,7 +575,11 @@ void Worm2DCE::makeExternalInputConn()
     vec1.push_back(tv);}}
   }
 
+  vector<double> exvec(2,0.0);
+  externalInputs.swap(exvec);
   externalInputConn.swap(vec1);
+ 
+
   //return vec1;
 }
 
@@ -616,7 +620,8 @@ void Worm2DCE::Step1()
   // Set input to Nervous System (Ventral Cord) from Stretch Receptors AND Command Interneurons
   ////   To A_class motorneurons
   
-  setExternalInputOrig();
+  //setExternalInputOrig();
+  setExternalInput();
   
   sr_ptr->incNS(*n_ptr);
 
