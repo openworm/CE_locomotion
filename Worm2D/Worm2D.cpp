@@ -134,12 +134,12 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcall
 
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
-m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool call_init_):
+Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
 {
     //cout << "Worm2D const" << endl;
     setUp();
-    setUpBodyConn();
+    if (call_init_) setUpBodyConn();
 }
 
 
@@ -819,14 +819,8 @@ void Worm2D::setMuscleInput()
 void Worm2D::setUpMuscleConn(json & j)
 {
     
-//assert(0  && "Worm2D::setUpMuscleConn(json & j)");
-//json jns = j["Nervous system"];
-//auto outputs = jns["outputs"]["value"].template get< vector<double> >();
-//auto biases = jns["biases"]["value"].template get< vector<double> >();
-auto vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-auto dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-//vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"];
-//vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"];
+vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
 vMuscConnvec.swap(vMuscConnvec1);
 dMuscConnvec.swap(dMuscConnvec1);
 
@@ -852,6 +846,26 @@ dBodyConnvec1.swap(dBodyConnvec);
 
 }
 
+void Worm2D::setUpBodyConn(json & j)
+{
+    
+vector<toFromWeight> vBodyConnvec1 = j["Ventral body"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<toFromWeight> dBodyConnvec1 = j["Dorsal body"]["weights"]["value"].template get< vector<toFromWeight> >();
+vBodyConnvec.swap(vBodyConnvec1);
+dBodyConnvec.swap(dBodyConnvec1);
+
+}
+
+
+void Worm2Dbase::makeExternalInputConnFromJson(json & j)
+{
+
+vector<toFromWeight> vec1 = j["Driving input"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<double> exvec = j["Driving input"]["strengths"]["value"].template get< vector<double> >();
+externalInputs.swap(exvec);
+externalInputConn.swap(vec1);
+
+}
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)

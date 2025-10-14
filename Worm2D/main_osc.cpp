@@ -134,7 +134,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);
-    if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
+    //if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
+    if (model_name == "W2DCE") w2 = new WormCE(json_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);

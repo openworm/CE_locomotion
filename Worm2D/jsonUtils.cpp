@@ -200,6 +200,45 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 }
 
 
+void setNSFromJson(json & j, NervousSystem & n)
+{
+    json & j2 = j["Nervous system"];
+    
+    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+   
+    {vector<toFromWeight> weights = 
+    j2["Chemical weights"]["value"].template get< vector<toFromWeight> >();
+    for (int i = 0;i<weights.size();i++)
+        n.SetChemicalSynapseWeight(weights[i].w.from, weights[i].to, weights[i].w.weight);}
+    {vector<toFromWeight> weights = 
+    j2["Electrical weights"]["value"].template get< vector<toFromWeight> >();
+    for (int i = 0;i<weights.size();i++)
+        n.SetElectricalSynapseWeight(weights[i].w.from, weights[i].to, weights[i].w.weight);}    
+    {vector<double> vals = 
+        j2["biases"]["value"].template get< vector<double> >();
+        for (int i = 0;i<vals.size();i++)
+        n.SetNeuronBias(i+1, vals[i]);}
+    {vector<double> vals = 
+        j2["taus"]["value"].template get< vector<double> >();
+        for (int i = 0;i<vals.size();i++)
+        n.SetNeuronTimeConstant(i+1, vals[i]);}
+    {vector<double> vals = 
+        j2["states"]["value"].template get< vector<double> >();
+        for (int i = 0;i<vals.size();i++)
+        n.SetNeuronState(i+1, vals[i]);}
+    {vector<double> vals = 
+        j2["gains"]["value"].template get< vector<double> >();
+        for (int i = 0;i<vals.size();i++)
+        n.SetNeuronGain(i+1, vals[i]);}
+    {vector<double> vals = 
+        j2["externalinputs"]["value"].template get< vector<double> >();
+        for (int i = 0;i<vals.size();i++)
+        n.SetNeuronExternalInput(i+1, vals[i]);}
+    
+
+
+}
+
 void appendAllNSJson( json & j, NervousSystem & n)
 {
 

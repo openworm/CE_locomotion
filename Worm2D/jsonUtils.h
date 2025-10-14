@@ -74,7 +74,7 @@ return retvec;
 }
 
 template<class T> 
-void getTVector(vector<T> & vec, TVector<T> & retvec)
+void getTVector(const vector<T> & vec, TVector<T> & retvec)
 { 
 retvec.SetBounds(1,vec.size());    
 for (int i = 0; i < vec.size(); i++) retvec[i+1]=vec[i];
@@ -113,3 +113,4 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
+void setNSFromJson(json & j, NervousSystem & n);

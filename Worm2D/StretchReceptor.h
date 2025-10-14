@@ -41,14 +41,20 @@ void updateSegs();
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
 virtual SRWeights makeSRWeights() const = 0;
 virtual SRWeights makeNSSRWeights(const Worm2Dbase & w_ptr) const = 0;
+void makeWeightsFromJson(json & j);
+
+
 void setWeights(){srweights = makeSRWeights();}
+
 void setNSWeights(const Worm2Dbase & w_ptr){
     nssrweights = makeNSSRWeights(w_ptr);
 //assert(0);
 }
+
 virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
 virtual void addParsToJson(json & j);
+
 virtual double transformSegs(const double & val){return val;}
 void incNS(NSForW2D & ns);
 void updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_);

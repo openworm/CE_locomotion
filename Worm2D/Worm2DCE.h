@@ -107,12 +107,13 @@ class Worm2DCE: public Worm2D, public WormFR{
     //void Step1();
     void Step1();
     //void Step1_old();
+  
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, bool call_body_ = true);
     Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_);
-    
+    void initConst();
 
     //vector<toFromWeight> makeVentralBodyConn();//{return dummyVec();}
     //vector<toFromWeight> makeDorsalBodyConn();
@@ -160,16 +161,11 @@ class WormCE : public EvolvableS, public Worm2DCE
 {
 public:
     //WormCE(int argc, const char* argv[]);
-    WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
-    WormCE(TVector<double> &pheno);
-    //WormCE(const string & filename_);
-    WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
-    WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
-    WormCE(TVector<double> &phengen, bool isPheno);
-    WormCE(json j, const string & filename_);
+    
     WormCE(const string & jsonfilename_, const string & filename_);
     WormCE(const string & filename_);
-    WormCE();
+    WormCE(bool call_body_ = true);
+    WormCE(json j);
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);
@@ -204,12 +200,18 @@ public:
 
     
     protected:
-   
-    WormCE(shared_ptr<SRCE> sr_ptr_);
+    WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
+    WormCE(TVector<double> &pheno);
+    //WormCE(const string & filename_);
+    WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
+    WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
+    WormCE(TVector<double> &phengen, bool isPheno);
+    WormCE(json j, const string & filename_);
+    WormCE(shared_ptr<SRCE> sr_ptr_, bool call_body_ = true);
     WormCE(shared_ptr<const CmdArgs> cmd);
     WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
 
-
+    void setParsFromJson(json & j);
     void setParsFromPheno(TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}

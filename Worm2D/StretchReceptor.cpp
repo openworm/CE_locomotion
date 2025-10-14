@@ -71,6 +71,22 @@ void SR::addParsToJson(json & j)
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR B V"]["weights"], srweights.segToB_V);
 
 
+    j["Stretch receptor"]["SR A D"]["weights"]["message"] = "Weights from body segments to dorsal A SR";
+    j["Stretch receptor"]["SR A V"]["weights"]["message"] = "Weights from body segments to ventral A SR";
+    j["Stretch receptor"]["SR B D"]["weights"]["message"] = "Weights from body segments to dorsal B SR";
+    j["Stretch receptor"]["SR B V"]["weights"]["message"] = "Weights from body segments to ventral B SR";
+
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A D NS"]["weights"], nssrweights.segToA_D);
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A V NS"]["weights"], nssrweights.segToA_V);
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR B D NS"]["weights"], nssrweights.segToB_D);
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR B V NS"]["weights"], nssrweights.segToB_V);
+
+    j["Stretch receptor"]["SR A D NS"]["weights"]["message"] = "Weights from dorsal A SR to Nervous System";
+    j["Stretch receptor"]["SR A V NS"]["weights"]["message"] = "Weights from ventral A SR to Nervous System";
+    j["Stretch receptor"]["SR B D NS"]["weights"]["message"] = "Weights from dorsal B SR to Nervous System";
+    j["Stretch receptor"]["SR B V NS"]["weights"]["message"] = "Weights from ventral B SR to Nervous System";
+
+
     j["Stretch receptor"]["NSegs"]["value"] = nsegs;
     j["Stretch receptor"]["NStretch"]["value"] = srvars.nstretch;
 
@@ -102,6 +118,31 @@ void SRCE::setParsFromJson(json & j)
 
 
 }
+
+void SR::makeWeightsFromJson(json & j) 
+{
+    
+    nssrweights.segToA_D = 
+    j["Stretch receptor"]["SR A D NS"]["weights"]["value"].template get< vector<toFromWeight> >();
+    nssrweights.segToA_V = 
+    j["Stretch receptor"]["SR A V NS"]["weights"]["value"].template get< vector<toFromWeight> >();
+    nssrweights.segToB_D = 
+    j["Stretch receptor"]["SR B D NS"]["weights"]["value"].template get< vector<toFromWeight> >();
+    nssrweights.segToB_V = 
+    j["Stretch receptor"]["SR B V NS"]["weights"]["value"].template get< vector<toFromWeight> >();
+
+    srweights.segToA_D = 
+    j["Stretch receptor"]["SR A D"]["weights"]["value"].template get< vector<toFromWeight> >();
+    srweights.segToA_V = 
+    j["Stretch receptor"]["SR A V"]["weights"]["value"].template get< vector<toFromWeight> >();
+    srweights.segToB_D = 
+    j["Stretch receptor"]["SR B D"]["weights"]["value"].template get< vector<toFromWeight> >();
+    srweights.segToB_V = 
+    j["Stretch receptor"]["SR B V"]["weights"]["value"].template get< vector<toFromWeight> >();
+
+}
+
+
 
 SRWeights SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) const
 {
@@ -139,18 +180,6 @@ for (int i = 1; i <= w_ptr.par1.N_units; i++){
     
 }
 
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->srvars.A_D_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->srvars.A_V_sr[i-1] + W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
-  //}
-  ////   To B_class motorneurons
-  //for (int i = 1; i <= par1.N_units; i++){
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->srvars.B_D_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->srvars.B_V_sr[i-1] + W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
-    //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
- // }
 
 return srw;
 

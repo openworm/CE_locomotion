@@ -28,6 +28,9 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
     const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
     const vector<double> & NMJ_Gain, int N_neuronsperunit);
 
+
+
+
 //using json = nlohmann::json;
 
 #define PI 3.14159265
@@ -224,6 +227,7 @@ const bool muscForWDconst;
 
 double settedStepSize;
 
+void makeExternalInputConnFromJson(json & j);
 virtual void makeExternalInputConn(){return;}
 vector<toFromWeight> externalInputConn;
 vector<double> externalInputs;
@@ -300,6 +304,7 @@ class Worm2D : virtual public Worm2Dm
     void setUpMuscleConn();
     void setUpMuscleConn(json & j);
     void setUpBodyConn();
+    void setUpBodyConn(json & j);
 
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
@@ -307,7 +312,7 @@ class Worm2D : virtual public Worm2Dm
     void setBodyInput();
 
     void setMuscleInputVec();
-    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool call_init_ = true);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
     //Worm2D();
