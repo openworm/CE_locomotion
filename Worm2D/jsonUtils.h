@@ -14,6 +14,17 @@ using std::vector;
 
 json getJsonFromFile(const string & jsonfile_);
 
+//#include <vector>
+//#include <algorithm> // for std::transform
+
+template<class T>
+vector<T> multiply(const vector<T>& v, T scalar) {
+    vector<T> result(v.size());
+    transform(v.begin(), v.end(), result.begin(),
+                   [scalar](T x) { return x * scalar; });
+    return result;
+}
+
 
 template<class T>
 T getJsonVal(json & j, const string & key, const T & default_, bool doValue = false)

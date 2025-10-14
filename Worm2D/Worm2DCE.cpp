@@ -264,7 +264,7 @@ void Worm2DCE::setForward()
   if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
-  sr_ptr->setWeights();
+  //sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  0;
   W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
 }
@@ -279,7 +279,7 @@ void Worm2DCE::setBackward()
   //AVA_output =  0;
   //AVB_output =  1;
 
-  sr_ptr->setWeights();
+  //sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
   W2DCEpars1->AVB_output =  0;
 }

@@ -47,14 +47,19 @@ vector<double> SR::updateSegs1(const vector<toFromWeight> & seg_, vector<double>
 }
 
 void SR::updateSegs()
-{
-    {vector<double> vec = updateSegs1(srweights.segToA_D, nslD);
+{   
+    vector<double>  nslDA = multiply(nslD, SR_A_gain);
+    vector<double>  nslDB = multiply(nslD, SR_B_gain);
+    vector<double>  nslVA = multiply(nslV, SR_A_gain);
+    vector<double>  nslVB = multiply(nslV, SR_B_gain);
+
+    {vector<double> vec = updateSegs1(srweights.segToA_D, nslDA);
     srvars.A_D_sr.swap(vec);}
-    {vector<double> vec = updateSegs1(srweights.segToA_V, nslV);
+    {vector<double> vec = updateSegs1(srweights.segToA_V, nslVA);
     srvars.A_V_sr.swap(vec);}
-    {vector<double> vec = updateSegs1(srweights.segToB_D, nslD);
+    {vector<double> vec = updateSegs1(srweights.segToB_D, nslDB);
     srvars.B_D_sr.swap(vec);}
-    {vector<double> vec = updateSegs1(srweights.segToB_V, nslV);
+    {vector<double> vec = updateSegs1(srweights.segToB_V, nslVB);
     srvars.B_V_sr.swap(vec);}
 
 }
@@ -193,7 +198,7 @@ SRWeights SRCE::makeSRWeights() const
     if (srcepars->SRForm == 0){
     for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j, to = 1;
-        double weight = SR_A_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -201,7 +206,7 @@ SRWeights SRCE::makeSRWeights() const
     for (int i = 2; i <= 10; i++)
          for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j+(i-2)*4, to = i;
-        double weight = SR_A_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -210,7 +215,7 @@ SRWeights SRCE::makeSRWeights() const
     for (int i = 1; i <= 9; i++)
         for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = 12+j+(i-1)*4, to = i;
-        double weight = SR_B_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -218,7 +223,7 @@ SRWeights SRCE::makeSRWeights() const
 
     for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j + 44, to = 10;
-        double weight = SR_B_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -232,7 +237,7 @@ SRWeights SRCE::makeSRWeights() const
         for (int j = 1; j <= srcepars->nsegperstr; j++)
         {
         int from = 12+j+(i-1)*4, to = i;
-        double weight = SR_A_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -242,7 +247,7 @@ SRWeights SRCE::makeSRWeights() const
 
     for (int j = 1; j <= srcepars->nsegperstr; j++){
     int from = j+44, to = 10;
-        double weight = SR_A_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -255,7 +260,7 @@ SRWeights SRCE::makeSRWeights() const
 
     for (int j = 1; j <= srcepars->nsegperstr; j++){
         int from = j, to = 1;
-        double weight = SR_B_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -268,7 +273,7 @@ SRWeights SRCE::makeSRWeights() const
         for (int j = 1; j <= srcepars->nsegperstr; j++)
         {
         int from = j+(i-2)*4, to = i;
-        double weight = SR_B_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -303,14 +308,14 @@ SRWeights SRReg::makeSRWeights() const
     {
         {int from = j-srregpars->offset, to = i;
         if (from>0 && from<=nsegs){
-        double weight = SR_B_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
         }}
         {int from = j+srregpars->offset, to = i;
         if (from<=nsegs && from>0){
-        double weight = SR_A_gain/srcepars->nsegperstr;
+        double weight = 1.0/srcepars->nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);

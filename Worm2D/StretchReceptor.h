@@ -4,6 +4,8 @@
 //#include "../random.h"
 //#include <cmath>
 #include "Worm2D.h"
+
+
 class StretchReceptor {
     public:
         
@@ -59,6 +61,9 @@ virtual double transformSegs(const double & val){return val;}
 void incNS(NSForW2D & ns);
 void updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_);
 
+double SR_A_gain = 0;
+double SR_B_gain = 0;
+
 SRVars srvars;
 protected:
 const int nsegs;
@@ -95,8 +100,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 
 shared_ptr<SRCEpars> srcepars;
 //int SRForm = 0;
-double SR_A_gain;
-double SR_B_gain;
+
 
 protected:
 SRCE(int nsegs_, int nstretch_,shared_ptr<SRCEpars> srcepars_):
