@@ -64,7 +64,8 @@ public:
 	void PrintPath(ofstream &file);
 	void StepOrig();
 
-	VMCO::TVector<double> chemConHistory;
+	//VMCO::TVector<double> chemConHistory;
+	TVector<double> chemConHistory;
 	double sensorN, sensorM;
 	double dSensorN, dSensorM;
 	int iSensorN, iSensorM;
@@ -79,7 +80,8 @@ public:
 	int timer;
 	double NMdiff;
 	double pushCurv;
-	VMCO::TVector<double> histCurv,histTheta;
+	//VMCO::TVector<double> histCurv,histTheta;
+	TVector<double> histCurv,histTheta;
 	double px, py, vx, vy, orient, theta;
 	double distanceToCentre;
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;

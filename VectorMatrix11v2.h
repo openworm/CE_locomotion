@@ -58,11 +58,16 @@ public:
         std::fill(data.begin(), data.end(), value);
     }
 
-    void PushFront(const EltType& value) {
-        if (data.empty()) return;
-        for (int i = ub; i > lb; --i)
+    double PushFront(const EltType& value) {
+        if (data.empty()) return 0.0;
+        double sum = 0.0;
+        for (int i = ub; i > lb; --i){
             (*this)(i) = (*this)(i - 1);
+            sum+=(*this)(i);
+        }
         (*this)(lb) = value;
+        sum+=(*this)(lb);
+        return sum;
     }
 
     void InitializeContents(EltType v1, ...) {
