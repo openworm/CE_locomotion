@@ -163,7 +163,6 @@ virtual void InitializeState(RandomState &rs) = 0;
 virtual void initForSimulation(RandomState &) {return;}
 
 
-
 void Step(double StepSize_);
 void Step();
 virtual void setStepSize(double val_){settedStepSize=val_;}
@@ -219,11 +218,13 @@ muscForW2D * m_ptr = nullptr;
 vector<string> phenoNames;
 vector<int> phenoNamesNums;
 
+//vector<double> sjdkdsdjddssdsloe;
+
+
 void addPhenoName(string name, int k);
 
 double t; // Time
 const bool muscForWDconst;
-
 
 double settedStepSize;
 
@@ -231,6 +232,8 @@ void makeExternalInputConnFromJson(json & j);
 virtual void makeExternalInputConn(){return;}
 vector<toFromWeight> externalInputConn;
 vector<double> externalInputs;
+//vector<double> sjdkdsdjddssdsloe;
+//double sjdkdsdjddssdsloe;
 void setExternalInput();
 virtual void assignExternalInput(){return;}
 

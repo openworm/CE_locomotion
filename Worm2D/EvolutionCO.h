@@ -29,8 +29,15 @@ const double MaxNeckTurnGain = 2.0;
 
 class EvolutionCO : virtual public Evolution
 {
-    public:
+    protected:
+
+    const double TauMin; // = 10*evoPars1.StepSize;
+    const double MinDifSensor; // = 10*evoPars1.StepSize;
+    const int CircuitSize;
+
    
+    public:
+
     EvolutionCO(int argc, const char* argv[], double StepSize_, int circuitsize_):Evolution(argc,argv,
       {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
@@ -62,7 +69,7 @@ class EvolutionCO : virtual public Evolution
 
     double Behavior(TVector<double> &v, WormAgent * Worm);
     double EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm);
-    virtual int getVectSize(int circuitsize);
+    static int getVectSize(int circuitsize);
 
     void addExtraParsToJson(json & j);
     template<class T> double EvaluationFunction(TVector<double> &v, RandomState &rs);
@@ -70,9 +77,7 @@ class EvolutionCO : virtual public Evolution
     //template<class T> double Behavior<WormCO18Full>(TVector<double> &v);
 
 
-const double TauMin;// = 10*evoPars1.StepSize;
-const double MinDifSensor;// = 10*evoPars1.StepSize;
-const int CircuitSize;
+
 
 };
 
@@ -93,3 +98,19 @@ double val = Behavior(v, Worm);
 delete Worm;
 return val;
 }
+
+/* class A
+{
+  public:
+  A(int x_){x=x_;}
+
+  int x;
+};
+class B : public A
+{
+  public:
+  B():A(getVal()){}
+
+  int getVal(){return 1;}
+
+}; */

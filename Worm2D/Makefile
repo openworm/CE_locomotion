@@ -10,10 +10,12 @@ CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
 LDFLAGS += "-L/opt/homebrew/lib"
 #LDFLAGS += "-L$(brew --prefix nlohmann-json)/lib"
 CXXFLAGS += "-I/opt/homebrew/include"
+#SANFLAG = -fsanitize=address,undefined -g
+SANFLAG :=
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
 main: main.o WormAgent.o CTRNN.o EvolutionCO.o Evolvable.o TSearchCO.o c302ForW2D.o owSignalSimulator.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main main.o WormAgent.o Evolvable.o EvolutionCO.o CTRNN.o TSearchCO.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o main main.o WormAgent.o Evolvable.o EvolutionCO.o CTRNN.o TSearchCO.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
 c302ForW2D.o: ../neuromlLocal/c302ForW2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.h  #../NervousSystemBase.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/c302ForW2D.cpp 
 	@echo ' '
@@ -80,10 +82,10 @@ TSearchCO.o: TSearchCO.cpp TSearchCO.h
 WormAgent.o: WormAgent.cpp WormAgent.h #TSearchCO.h CTRNN.h #VectorMatrixCO.h
 	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormAgent.cpp	
 main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
+	$(CC) $(SANFLAG) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
 main_osc.o: main_osc.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main_osc.cpp
+	$(CC) $(SANFLAG) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main_osc.cpp
 main_osc: main_osc.o c302ForW2D.o Evolvable.o Worm21.o Worm2D21.o Worm2DCE.o owSignalSimulator.o owSignalSimulatorForWorm2D.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -pthread -o main_osc c302ForW2D.o Evolvable.o Worm2DCE.o Worm21.o Worm2D21.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o main_osc c302ForW2D.o Evolvable.o Worm2DCE.o Worm21.o Worm2D21.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
 clean:
 	rm -f *.o main main_osc

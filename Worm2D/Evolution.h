@@ -47,11 +47,13 @@ class Evolution
     public:
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {cout << "no GenPhenMapping" << endl; assert(0); return;}
-    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
     {cout << "RunSim not implemented" << endl; assert(0);}
     virtual void RunSimulation(Worm2Dbase & w, RandomState &rs)
     {cout << "RunSim not implemented" << endl; assert(0);}
+
+
+    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
     TVector<double> & getBestGenotype();
     TVector<double> & getBestPhenotype();

@@ -546,11 +546,12 @@ void Worm2Dbase::addParsToJson(json & j)
         appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
     }
 
-
+//if (false){
     appendVectorToJson<toFromWeight>(j["Driving input"]["weights"], externalInputConn);
     j["Driving input"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
     appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
     j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
+//}
 
     W2Dbaseparameters1->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
@@ -799,7 +800,7 @@ void Worm2Dbase::setExternalInput()
         vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
     }
 
-    for (int i=0;i<vtot.size();i++) n_ptr->SetNeuronExternalInput(i+1, vtot[i]);
+    for (int i=0;i<vtot.size();i++) n_ptr->SetNeuronExternalInput(i+1, vtot[i]); 
 
 }
 

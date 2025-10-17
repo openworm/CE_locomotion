@@ -168,6 +168,8 @@ WormCE((json) getJsonFromFile(jsonfilename_)){}
 WormCE::WormCE(json j):WormCE(false)
 {
 
+ 
+
     //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
     setNSFromJson(j,n);
     
@@ -179,7 +181,7 @@ WormCE::WormCE(json j):WormCE(false)
 
     W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
-  
+   
     
     AVA_act = 0;
     AVA_inact = 0;
@@ -204,13 +206,19 @@ WormCE::WormCE(json j):WormCE(false)
     pheno_B_gain = sr_ptr->SR_B_gain;
 
     sr_ptr->makeWeightsFromJson(j);
+  
+   
 
   //sr_ptr->setNSWeights(*this);
   //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
 
   setUpMuscleConn(j);
   setUpBodyConn(j);
+
+  
   makeExternalInputConnFromJson(j);
+
+  
 }
 
 
