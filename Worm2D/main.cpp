@@ -239,6 +239,7 @@ int main (int argc, const char* argv[])
     json_in >> j;
     json_in.close();
 
+
     if (model_name == "CE") w = new Worm2DCE(j);
     //if (model_name == "Net21") w = new Worm2D21(j);
     
@@ -255,7 +256,7 @@ int main (int argc, const char* argv[])
 
     }
 
-    
+   
     w->setDataskips(er->itsEvoPars().skip_steps);
     w->InitializeData(er->itsEvoPars().directoryName);
     w->setStepSize(er->itsEvoPars().StepSize);

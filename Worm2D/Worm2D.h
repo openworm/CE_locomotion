@@ -315,7 +315,8 @@ class Worm2D : virtual public Worm2Dm
     void setBodyInput();
 
     void setMuscleInputVec();
-    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool call_init_ = true);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
+    //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
     //Worm2D();

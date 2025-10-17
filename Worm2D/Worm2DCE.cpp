@@ -12,12 +12,12 @@
 
 
 
-Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, bool call_body_):
-Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0, call_body_),
+Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
+Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
     sr_ptr(sr_ptr_)
 {
-    if (call_body_) initConst(); 
+    initConst(); 
 }
 
 void Worm2DCE::initConst()
@@ -37,14 +37,13 @@ void Worm2DCE::initConst()
       sr_ptr->setWeights();
       sr_ptr->setNSWeights(*this);
 
+
       setUpMuscleConn();
+      setUpBodyConn();
       makeExternalInputConn();
       //assert(0);
 
 }
-
-
-
 
 
 Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
@@ -79,9 +78,14 @@ Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
 
 }
 
+
+/////////////////
+// W2DCE second const
+//////////////////
+
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, 
   shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):
-  Worm2DCE(par1_,n_ptr_,sr_ptr_,false)
+  Worm2DCE(par1_,n_ptr_,sr_ptr_)
 {
 
   setWormPars(cmd);
@@ -90,12 +94,12 @@ Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_,
 }
 
 
+
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10)){}
 
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd):
 Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10),cmd){}
-
 
 Worm2DCE::Worm2DCE(const string & jsonfilename_):
 Worm2DCE(getJsonFromFile(jsonfilename_)){}
@@ -103,7 +107,7 @@ Worm2DCE(getJsonFromFile(jsonfilename_)){}
 Worm2DCE::Worm2DCE(json j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
 
 //////////////////////////////////
-////////////////////////////////////
+//// CE const
 //////////////////////////////////
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):
@@ -111,26 +115,28 @@ Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_,cmd){}
 
 
-WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, bool call_body_):
+WormCE::WormCE(shared_ptr<SRCE> sr_ptr_):
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
-n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_,call_body_){}
+n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_){}
 
 
-WormCE::WormCE(bool call_body_):WormCE(make_shared<SRCE>(N_segments,10), call_body_){}
+//////////////////////////////////
+//// CE second const
+//////////////////////////////////
 
 
-WormCE::WormCE(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRCE>(N_segments,10), cmd){}
+WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10)){}
 
+WormCE::WormCE(shared_ptr<const CmdArgs> cmd):
+WormCE(make_shared<SRCE>(N_segments,10), cmd){}
 
-
-// The constructor
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno):WormCE(cmd)
 {
     if (isPheno) setParsFromPheno(phengen);
     else setParsFromGeno(phengen);
 }
 
-WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE(false)
+WormCE::WormCE(TVector<double> &phengen, bool isPheno):WormCE()
 {
     if (isPheno) setParsFromPheno(phengen);
     else setParsFromGeno(phengen);
@@ -151,7 +157,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(c
 //    setParsFromFile(filename_);
 //}
 
-WormCE::WormCE(json j, const string & filename_):WormCE(false)
+WormCE::WormCE(json j, const string & filename_):WormCE()
 {
     W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
@@ -165,61 +171,171 @@ WormCE::WormCE(const string & jsonfilename_):
 WormCE((json) getJsonFromFile(jsonfilename_)){}
 
 
-WormCE::WormCE(json j):WormCE(false)
+WormCE::WormCE(json j):WormCE()
 {
 
- 
-
-    //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
-    setNSFromJson(j,n);
-    
-
-    assert(n.size == par1.N_units*par1.N_neuronsperunit);
-    assert(n.maxchemconns == 3);
-    assert(n.maxelecconns == 2);
- 
-
-    W2DCEpars1->setParsFromJson(j["Worm"]);
-    sr_ptr->setParsFromJson(j);
-   
-    
-    AVA_act = 0;
-    AVA_inact = 0;
-    AVB_act = 0;
-    AVB_inact = 0;
-    
-    NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
-    NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
-    NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
-    NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
-
-    // Inhibitory VNC NMJ Weight
-    NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
-    NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
-
-    //W2DCEpars1->AVA_output = 0.0;
-    //W2DCEpars1->AVB_output = 0.0;
-
-    cout << "Worm2DCE const" << endl;
-
-    pheno_A_gain = sr_ptr->SR_A_gain;
-    pheno_B_gain = sr_ptr->SR_B_gain;
-
-    sr_ptr->makeWeightsFromJson(j);
+  //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
+  setNSFromJson(j,n);
   
-   
+
+  assert(n.size == par1.N_units*par1.N_neuronsperunit);
+  assert(n.maxchemconns == 3);
+  assert(n.maxelecconns == 2);
+
+
+  W2DCEpars1->setParsFromJson(j["Worm"]);
+  sr_ptr->setParsFromJson(j);
+  
+  
+  AVA_act = 0;
+  AVA_inact = 0;
+  AVB_act = 0;
+  AVB_inact = 0;
+  
+  NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
+  NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
+  NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
+  NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
+
+  // Inhibitory VNC NMJ Weight
+  NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
+  NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
+
+  //W2DCEpars1->AVA_output = 0.0;
+  //W2DCEpars1->AVB_output = 0.0;
+
+  cout << "Worm2DCE const" << endl;
+
+  pheno_A_gain = sr_ptr->SR_A_gain;
+  pheno_B_gain = sr_ptr->SR_B_gain;
+
+  sr_ptr->makeWeightsFromJson(j);
 
   //sr_ptr->setNSWeights(*this);
   //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
 
   setUpMuscleConn(j);
   setUpBodyConn(j);
-
-  
   makeExternalInputConnFromJson(j);
 
   
 }
+
+
+void WormCE::setParsFromPheno(TVector<double> &pheno)
+{
+// PG: Setting these to zero as they were not initialised before use!
+  // Note: the usage of these needs to be further investigated!
+  //AVA_act = 0;
+  //AVA_inact = 0;
+  //AVB_act = 0;
+  //AVB_inact = 0;
+
+  // Muscles
+  //m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
+  // Nervous system
+  n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
+
+  int da, db, dd, vd, vb, va;
+  int ddNext, vdNext, vbNext, dbNext;
+
+  // Stretch receptor
+//  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
+
+  sr_ptr->SR_A_gain = pheno(1);
+  sr_ptr->SR_B_gain = pheno(2);
+
+  //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
+
+  //assert(0);
+
+  for (int u = 1; u <= par1.N_units; u++){
+    // Find the numbers that identify each neuron within a certain repeating unit
+    da = nn(DA, u);
+    db = nn(DB, u);
+    dd = nn(DD, u);
+    vd = nn(VD, u);
+    va = nn(VA, u);
+    vb = nn(VB, u);
+
+    // neurons for interunit connections
+    ddNext = nn(DD, u+1);
+    vdNext = nn(VD, u+1);
+    vbNext = nn(VB, u+1);
+    dbNext = nn(DB, u+1);
+
+    // Biases
+    n.SetNeuronBias(da, pheno(3));
+    n.SetNeuronBias(va, pheno(3));
+    n.SetNeuronBias(db, pheno(4));
+    n.SetNeuronBias(vb, pheno(4));
+    n.SetNeuronBias(dd, pheno(5));
+    n.SetNeuronBias(vd, pheno(5));
+
+    // Time-constants fixed to 1.0
+    for (int i = 1; i <= par1.N_neuronsperunit; i++){
+      n.SetNeuronTimeConstant(nn(i,u), 1.0);
+    }
+
+    // Self-connections
+    n.SetChemicalSynapseWeight(da,da, pheno(6));
+    n.SetChemicalSynapseWeight(va,va, pheno(6));
+    n.SetChemicalSynapseWeight(db,db, pheno(7));
+    n.SetChemicalSynapseWeight(vb,vb, pheno(7));
+    n.SetChemicalSynapseWeight(dd,dd, pheno(8));
+    n.SetChemicalSynapseWeight(vd,vd, pheno(8));
+
+    // Cross-connections
+    // Excitatory Chemical Synapses intraunit
+    n.SetChemicalSynapseWeight(da, vd, pheno(9));
+    n.SetChemicalSynapseWeight(va, dd, pheno(9));
+    n.SetChemicalSynapseWeight(vb, dd, pheno(10));
+    n.SetChemicalSynapseWeight(db, vd, pheno(10));
+
+    // Inhibitory Chemical Synapses intraunit
+    n.SetChemicalSynapseWeight(vd, va, pheno(11));
+    n.SetChemicalSynapseWeight(dd, da, pheno(11));
+    n.SetChemicalSynapseWeight(vd, vb, pheno(12));
+    n.SetChemicalSynapseWeight(dd, db, pheno(12));
+
+    // Electrical Synapse Intersegment connections
+    if (u < par1.N_units){
+      n.SetElectricalSynapseWeight(dd, ddNext, pheno(13));
+      n.SetElectricalSynapseWeight(vd, vdNext, pheno(13));
+      n.SetElectricalSynapseWeight(vb, vbNext, pheno(14));
+      n.SetElectricalSynapseWeight(db, dbNext, pheno(14));
+    }
+  }
+
+  // Excitatory VNC NMJ Weight
+  NMJ_DA = pheno(15);
+  NMJ_VA = pheno(15);
+  NMJ_DB = pheno(16);
+  NMJ_VB = pheno(16);
+
+  // Inhibitory VNC NMJ Weight
+  NMJ_DD = pheno(17);
+  NMJ_VD = pheno(17);
+
+  //W2DCEpars1->AVA_output = 0.0;
+  //W2DCEpars1->AVB_output = 0.0;
+
+  initConst();
+
+  //pheno_A_gain = sr_ptr->SR_A_gain;
+  //pheno_B_gain = sr_ptr->SR_B_gain;
+
+  //sr_ptr->setWeights();
+  //sr_ptr->setNSWeights(*this);
+
+  //setUpBodyConn();
+  //setUpMuscleConn();
+  //makeExternalInputConn();
+}
+
+
+
+
 
 
 ///////////////////////////////
@@ -227,13 +343,13 @@ WormCE::WormCE(json j):WormCE(false)
 //////////////////////////////
 
 
-
-
-WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10),cmd),
+WormCESR::WormCESR():WormCE(make_shared<SRReg>(N_segments,10)),
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
 {}
 
-WormCESR::WormCESR():WormCE(make_shared<SRReg>(N_segments,10)),
+
+
+WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10),cmd),
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
 {}
 
@@ -532,118 +648,6 @@ void Worm2DCE::Step1()
   setBodyInput();
   
 }
-
-
-
-
-void WormCE::setParsFromPheno(TVector<double> &pheno)
-{
-// PG: Setting these to zero as they were not initialised before use!
-  // Note: the usage of these needs to be further investigated!
-  AVA_act = 0;
-  AVA_inact = 0;
-  AVB_act = 0;
-  AVB_inact = 0;
-
-  // Muscles
-  //m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
-  // Nervous system
-  n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
-
-  int da, db, dd, vd, vb, va;
-  int ddNext, vdNext, vbNext, dbNext;
-
-  // Stretch receptor
-//  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
-
-  sr_ptr->SR_A_gain = pheno(1);
-  sr_ptr->SR_B_gain = pheno(2);
-
-  //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
-
-  //assert(0);
-
-  for (int u = 1; u <= par1.N_units; u++){
-    // Find the numbers that identify each neuron within a certain repeating unit
-    da = nn(DA, u);
-    db = nn(DB, u);
-    dd = nn(DD, u);
-    vd = nn(VD, u);
-    va = nn(VA, u);
-    vb = nn(VB, u);
-
-    // neurons for interunit connections
-    ddNext = nn(DD, u+1);
-    vdNext = nn(VD, u+1);
-    vbNext = nn(VB, u+1);
-    dbNext = nn(DB, u+1);
-
-    // Biases
-    n.SetNeuronBias(da, pheno(3));
-    n.SetNeuronBias(va, pheno(3));
-    n.SetNeuronBias(db, pheno(4));
-    n.SetNeuronBias(vb, pheno(4));
-    n.SetNeuronBias(dd, pheno(5));
-    n.SetNeuronBias(vd, pheno(5));
-
-    // Time-constants fixed to 1.0
-    for (int i = 1; i <= par1.N_neuronsperunit; i++){
-      n.SetNeuronTimeConstant(nn(i,u), 1.0);
-    }
-
-    // Self-connections
-    n.SetChemicalSynapseWeight(da,da, pheno(6));
-    n.SetChemicalSynapseWeight(va,va, pheno(6));
-    n.SetChemicalSynapseWeight(db,db, pheno(7));
-    n.SetChemicalSynapseWeight(vb,vb, pheno(7));
-    n.SetChemicalSynapseWeight(dd,dd, pheno(8));
-    n.SetChemicalSynapseWeight(vd,vd, pheno(8));
-
-    // Cross-connections
-    // Excitatory Chemical Synapses intraunit
-    n.SetChemicalSynapseWeight(da, vd, pheno(9));
-    n.SetChemicalSynapseWeight(va, dd, pheno(9));
-    n.SetChemicalSynapseWeight(vb, dd, pheno(10));
-    n.SetChemicalSynapseWeight(db, vd, pheno(10));
-
-    // Inhibitory Chemical Synapses intraunit
-    n.SetChemicalSynapseWeight(vd, va, pheno(11));
-    n.SetChemicalSynapseWeight(dd, da, pheno(11));
-    n.SetChemicalSynapseWeight(vd, vb, pheno(12));
-    n.SetChemicalSynapseWeight(dd, db, pheno(12));
-
-    // Electrical Synapse Intersegment connections
-    if (u < par1.N_units){
-      n.SetElectricalSynapseWeight(dd, ddNext, pheno(13));
-      n.SetElectricalSynapseWeight(vd, vdNext, pheno(13));
-      n.SetElectricalSynapseWeight(vb, vbNext, pheno(14));
-      n.SetElectricalSynapseWeight(db, dbNext, pheno(14));
-    }
-  }
-
-  // Excitatory VNC NMJ Weight
-  NMJ_DA = pheno(15);
-  NMJ_VA = pheno(15);
-  NMJ_DB = pheno(16);
-  NMJ_VB = pheno(16);
-
-  // Inhibitory VNC NMJ Weight
-  NMJ_DD = pheno(17);
-  NMJ_VD = pheno(17);
-
-  //W2DCEpars1->AVA_output = 0.0;
-  //W2DCEpars1->AVB_output = 0.0;
-
-  pheno_A_gain = sr_ptr->SR_A_gain;
-  pheno_B_gain = sr_ptr->SR_B_gain;
-
-  sr_ptr->setWeights();
-  sr_ptr->setNSWeights(*this);
-
-  setUpMuscleConn();
-  makeExternalInputConn();
-}
-
 
 void WormCE::randomizeNS(RandomState &rs)
 {

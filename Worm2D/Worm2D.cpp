@@ -123,6 +123,7 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
 //Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
 //Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
 //W2Dmparscalled(false),W2Dminitcalled(false){} 
+
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
 
@@ -134,13 +135,14 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcall
 
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool call_init_):
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
 {
     //cout << "Worm2D const" << endl;
     setUp();
-    if (call_init_) setUpBodyConn();
+    //setUpBodyConn();
 }
+
 
 
 
