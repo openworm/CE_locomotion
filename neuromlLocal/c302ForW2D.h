@@ -18,7 +18,7 @@ class c302ForW2D : virtual public NSForW2D
 
     void IncNeuronExternalInput(int i, double value);
     void SetNeuronExternalInput(int i, double value);
-    const double & NeuronOutput(int i);
+    double NeuronOutput(int i);
     void EulerStep(double );
     
     double NeuronState(int i);

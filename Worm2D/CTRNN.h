@@ -71,7 +71,7 @@ class CTRNN : public NSForW2D{
         double &NeuronStateReference(int i) {return states[i];};
         void SetNeuronState(int i, double value) 
             {states[i] = value;outputs[i] = sigmoid(gains[i]*(states[i] + biases[i]));};
-        const double & NeuronOutput(int i) {return outputs[i];};
+        double NeuronOutput(int i) {return outputs[i];};
         double &NeuronOutputReference(int i) {return outputs[i];};
         void SetNeuronOutput(int i, double value) 
             {outputs[i] = value; states[i] = InverseSigmoid(value)/gains[i] - biases[i];};

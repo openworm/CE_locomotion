@@ -29,6 +29,7 @@ exit(0); */
 Worm::Worm(TVector<double> &v,double output):n_ptr(makeNervousSystem())
 {
 
+  //assert(0);
   // PG: Setting these to zero as they were not initialised before use!
   // Note: the usage of these needs to be further investigated!
   AVA_act = 0;

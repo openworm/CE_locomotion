@@ -23,7 +23,7 @@ public:
 //NSosc(const pfa & pfa_);
 NSosc(int size_):pfa1(size_),output(size_,0.0){}
 
-virtual const double & NeuronOutput(int i) {
+virtual double NeuronOutput(int i) {
     output[i-1] = pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);
     return output[i-1];
 }
@@ -60,7 +60,7 @@ class CoupledOsc : public NSosc
     CoupledOsc(int size_):NSosc(size_){}
     CoupledOsc(const vector<toFromWeight> & weights_, int size_):weights(weights_),NSosc(size_){}
     void EulerStep(double stepsize);
-    const double & NeuronOutput(int i){
+    double NeuronOutput(int i){
         output[i-1] = pfa1.amp[i-1]*sin(pfa1.phase[i-1]);
         return output[i-1];
     }

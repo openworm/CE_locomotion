@@ -4,7 +4,7 @@
 class NSForW2D {
     public:
     
-virtual const double & NeuronOutput(int i) = 0;
+virtual double NeuronOutput(int i) = 0;
 virtual double NeuronState(int i) = 0;
 virtual void SetNeuronExternalInput(int i, double value) = 0;
 virtual void IncNeuronExternalInput(int i, double value) = 0;
