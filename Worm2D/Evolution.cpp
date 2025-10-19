@@ -105,6 +105,7 @@ void Evolution::setUp()
     //doneFirst = false;
     evolfile << setprecision(10);
 
+    
 }
 
 void Evolution::setPopFromBestGenoFile(int offset)
@@ -451,6 +452,7 @@ void Evolution::configure_p1()
     s->SetCheckpointInterval(evoPars1.CheckpointInterval);
     s->SetReEvaluationFlag(evoPars1.ReEvaluationFlag);
 
+    
 }
 
 
@@ -468,6 +470,7 @@ void Evolution::configure_p2()
     if (doResume) {cout << "Resuming search" << endl; s->DoSearch(1);}
     else s->ExecuteSearch();
   
+   
 }
 
 void Evolution::configure()

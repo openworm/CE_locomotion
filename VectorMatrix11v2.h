@@ -44,8 +44,8 @@ public:
         //if (NewUB < NewLB){
         //std::cout << NewUB << " " << NewLB << std::endl;
         //assert(0);}
-       // if (NewUB < NewLB)
-         //   throw std::invalid_argument("Attempt to allocate a negative length TVector");
+        //if (NewUB < NewLB)
+        // 	throw std::invalid_argument("Attempt to allocate a negative length TVector");
         lb = NewLB;
         ub = NewUB;
         if (Size()<0)

@@ -44,7 +44,7 @@ int main (int argc, const char* argv[])
     return 0;
     }
 
-    
+  
     Evolution* er = 0;
     if (model_name == "CE") er = new EvolutionCE(cmd);
     if (model_name == "RS18") er = new EvolutionRS18(cmd);
@@ -56,7 +56,9 @@ int main (int argc, const char* argv[])
     }
     const evoPars & ep1 = er->itsEvoPars();
 
+    
     InitializeBodyConstants();
+   
 
     bool do_evol = getParameterInt(argc,argv,"--doevol","0");
     if (do_evol) 
@@ -67,7 +69,7 @@ int main (int argc, const char* argv[])
         seedfile << ep1.randomseed << endl;
         seedfile.close();
     }
-
+   
     
     //get vector of best individual
    
@@ -151,6 +153,7 @@ int main (int argc, const char* argv[])
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
     if (model_name == "CO") w = new WormAgent(phenotype,10);
+   
 
     //write_json(er,w, "worm_data_3.json");
     //w->setBasename(er->itsEvoPars().directoryName);
@@ -158,9 +161,20 @@ int main (int argc, const char* argv[])
     w->InitializeData(er->itsEvoPars().directoryName);
     //w->dataReset();
 
+    
+    w->setStepSize(er->itsEvoPars().StepSize);
+    
+    //w->setDataskips(er->itsEvoPars().skip_steps);
+    //w->setPrefix("sim");
+    //w->InitializeData(er->itsEvoPars().directoryName);
+
+
     cout << "making simulation simrandseed " << simrandseed << endl;
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
+    
+    w->initForSimulation(rs);
+
     er->RunSimulation(*w, rs);}
 
     {ofstream phenfile(er->rename_file("phenotype.dat"));

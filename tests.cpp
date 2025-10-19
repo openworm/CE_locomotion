@@ -12,7 +12,9 @@
 
 void testNervousSystem()
 {
+    
     NervousSystem n;
+    //assert(0);
     std::cout << "Created simple Nervous System..." << std::endl;
     int N_units = 2;
     int N_neuronsperunit = 2;
