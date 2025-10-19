@@ -92,7 +92,9 @@ public:
 	int		VelDelta;  //		=	(int) (HST/StepSize);
 
 	//using Worm2Dbase::Step;
-	RandomState * rs;
+
+	RandomState * rs = nullptr;
+
 	double gradSteep, orient_orig, RunDuration, HSStepSize;
 	int taxis, kinesis;
 	//double sjadd;	

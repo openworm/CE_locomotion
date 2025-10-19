@@ -175,13 +175,14 @@ int main (int argc, const char* argv[])
     
     w->initForSimulation(rs);
 
-    er->RunSimulation(*w, rs);}
+    er->RunSimulation(*w, rs);
 
     {ofstream phenfile(er->rename_file("phenotype.dat"));
     w->DumpParams(phenfile);
     phenfile.close();}
 
     delete w;
+    }
 
     }
 
