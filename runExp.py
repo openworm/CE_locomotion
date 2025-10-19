@@ -14,9 +14,13 @@ args = dict(
     simtransient=30,
     inputFolderName="experiments/demoRun_1",
     outputFolderName="experiments/demoRun_1_out",
-    reRand=True,
+    #reRand=True,
     overwrite=True,
-    doTestRun=True,
+    #doTestRun=True,
+    #doOrigMuscInput=True,
+    #randomInitialState = False
+    randInitState =  False,
+    prioritizeCmd = True
 )
 
 if doOrig:
