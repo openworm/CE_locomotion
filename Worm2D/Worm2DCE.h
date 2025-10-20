@@ -15,7 +15,7 @@
 #include "StretchReceptorCE.h"
 //#include "NervousSystemBase.h"
 
-#include "Worm2D.h"
+#include "Worm2DSR.h"
 #include "jsonUtils.h"
 
 
@@ -64,7 +64,7 @@ using json = nlohmann::json;
 
 
 
-class Worm2DCE: public Worm2D, public WormFR{
+class Worm2DCE: public Worm2DSR, public WormFR{
     
     public:
     //void Step(double StepSize);
@@ -104,8 +104,8 @@ class Worm2DCE: public Worm2D, public WormFR{
     friend class SRCE;
 
     protected:
+    
     //void Step1();
-    void Step1();
     //void Step1_old();
   
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd);

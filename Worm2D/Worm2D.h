@@ -9,6 +9,7 @@
 #include "../neuromlLocal/NSBaseForW2D.h"
 #include "Evolvable.h"
 
+
 //datawriter->worm2dbase (nervous system and muscle pointers)
 //datawriter->worm2dbody (just body plus functions)
 //worm2dbase + worm2dbody -> worm2dm (nn ptr + musc ptr + body)
@@ -304,23 +305,23 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeVentralBodyConn();
     virtual vector<toFromWeight> makeDorsalBodyConn();
 
-    void setUpMuscleConn();
+    void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(json & j);
     void setUpBodyConn();
     void setUpBodyConn(json & j);
 
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-    void setMuscleInput();
+    void setMuscleInput(); //calls setMuscleInputVec()
     void setBodyInput();
-
-    void setMuscleInputVec();
+    virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
+    void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
     //Worm2D();
-
+    virtual void Step1();
     void setUp();
     Muscles & m;
    
@@ -329,6 +330,10 @@ class Worm2D : virtual public Worm2Dm
     
  
 };
+
+
+
+
 
 class WormFR 
 {

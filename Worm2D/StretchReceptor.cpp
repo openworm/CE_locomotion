@@ -4,11 +4,14 @@
 
 void SR::setFromBody(const WormBody & b)
 {
+    
     for(int i = 1; i <= nsegs; ++i){
     const double ds = (b.DorsalSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
     const double vs = (b.VentralSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
+   
     nslD[i-1] = transformSegs(ds);
     nslV[i-1] = transformSegs(vs);
+    
     }
 
 }

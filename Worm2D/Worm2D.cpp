@@ -1,4 +1,5 @@
-#include "Worm2D.h"
+//#include "Worm2D.h"
+#include "Worm2DSR.h"
 #include <iomanip>
 
 //using json = nlohmann::json;
@@ -143,6 +144,9 @@ Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
     //setUpBodyConn();
 }
 
+Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
+Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_)
+{}
 
 
 
@@ -733,6 +737,48 @@ void Worm2D::setMuscleInputDors()
     }
 
 } */
+
+
+void Worm2D::Step1()
+{
+  
+  b.StepBody(settedStepSize);
+
+  setExternalInput();
+  //setExternalInputOrig();
+
+  n_ptr->EulerStep(settedStepSize);
+  
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
+
+  setBodyInput();
+  
+}
+
+void Worm2DSR::Step1()
+{
+  
+    
+  b.StepBody(settedStepSize);
+
+  w2dsr_ptr->updateAll(b);
+  
+
+  setExternalInput();
+  //setExternalInputOrig();
+
+  w2dsr_ptr->incNS(*n_ptr);
+
+  n_ptr->EulerStep(settedStepSize);
+  
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
+
+  setBodyInput();
+  
+}
+
 
 void Worm2D::setMuscleInputVec()
 {

@@ -13,7 +13,7 @@
 
 
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
-Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2D(par1_,0),
+Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,0, sr_ptr_),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
     sr_ptr(sr_ptr_)
 {
@@ -53,12 +53,12 @@ Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
   }, new c302ForW2D(), make_shared<W2DCEpars>()),
-  Worm2D({j["Worm"]["N_neuronsperunit"]["value"], 
+  Worm2DSR({j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+  } ,0, sr_ptr_),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
   sr_ptr(sr_ptr_)
 {
 
@@ -629,15 +629,17 @@ void Worm2DCE::setExternalInputOrig()
 }
 
 
-void Worm2DCE::Step1()
+/* void Worm2DCE::Step1()
 {
 
+  
   b.StepBody(settedStepSize);
 
   sr_ptr->updateAll(b);
 
   setExternalInput();
-  
+  //setExternalInputOrig();
+
   sr_ptr->incNS(*n_ptr);
 
   n_ptr->EulerStep(settedStepSize);
@@ -647,7 +649,7 @@ void Worm2DCE::Step1()
 
   setBodyInput();
   
-}
+}  */
 
 void WormCE::randomizeNS(RandomState &rs)
 {

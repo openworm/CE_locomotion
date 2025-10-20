@@ -1,7 +1,7 @@
 import sys
 import os
 
-#sys.path.append("..")
+# sys.path.append("..")
 # sys.path.append("../neuromlLocal")
 
 from run_main import run
@@ -28,7 +28,6 @@ duration = 40
 transient = 10
 
 
-
 path_list = []
 out_path_list = []
 out_path_list_nml = []
@@ -41,7 +40,7 @@ out_path_list_nml_musc = []
 # out_path = current + "/" + outFolderBase
 # path = inputFolderBase
 # out_path = outFolderBase
-#dir_list = sorted(os.listdir(inputFolderBase))
+# dir_list = sorted(os.listdir(inputFolderBase))
 dir_list = ["103"]
 # dir_list = dir_list[0:3]
 path_list += [inputFolderBase + "/" + dir for dir in dir_list]
@@ -77,7 +76,7 @@ for input_folder, output_folder, output_folder_nml in zip(
     regenerate_run(folder="../" + output_folder, doMuscles=doMuscles)
     os.chdir("../")
 
-    #regenerate_run(folder=output_folder, doMuscles=doMuscles)
+    # regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml,
         inputFolderName=output_folder,
@@ -104,7 +103,7 @@ for output_folder, output_folder_nml_musc in zip(out_path_list, out_path_list_nm
     regenerate_run(folder="../" + output_folder, doMuscles=doMuscles)
     os.chdir("../")
 
-    #regenerate_run(folder=output_folder, doMuscles=doMuscles)
+    # regenerate_run(folder=output_folder, doMuscles=doMuscles)
     run(
         outputFolderName=output_folder_nml_musc,
         inputFolderName=output_folder,
