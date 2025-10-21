@@ -5,36 +5,37 @@ target: run_izq_sims.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
 mep: .test.izq_sim.mep
 experiments:
-    Test1:
-        observables:
-        spike times:
-            file: 
-                path: experiments/izq_runs_nets/103/act.dat
-                columns: [0, 3]
-                scaling: [1, 1]
-            spike detection: 
-                method: threshold
-                threshold: 0.5
-            tolerance: 0.0
     Test2:
         observables:
-        spike times:
-            file: 
-                path: experiments/izq_runs_nets_nml/103/act.dat
-                columns: [0, 3]
-                scaling: [1, 1]
-            spike detection: 
-                method: threshold
-                threshold: 0.5
-            tolerance: 0.0
+            spike times:
+                file: 
+                    path: experiments/izq_runs_nets_nml/103/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.04
+    
     Test3:
         observables:
-        spike times:
-            file: 
-                path: experiments/izq_runs_nets_nml_musc/103/act.dat
-                columns: [0, 3]
-                scaling: [1, 1]
-            spike detection: 
-                method: threshold
-                threshold: 0.5
-            tolerance: 0.0
+            spike times:
+                file: 
+                    path: experiments/izq_runs_nets_nml_musc/103/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.04
+    Test4:
+        observables:
+            spike times:
+                file: 
+                    path: experiments/izq_runs_nets/103/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.0

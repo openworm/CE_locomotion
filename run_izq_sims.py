@@ -14,14 +14,14 @@ outFolderBase = "experiments/izq_runs_nets"
 # outFolderBase = "../experiments/test_nets"
 
 # popSize = 10
-if not make_directory(outFolderBase):
+if not make_directory(outFolderBase, True):
     sys.exit(1)
 outFolderBase_nml = "experiments/izq_runs_nets_nml"
 # outFolderBase_nml = "../experiments/test_nets_nml"
-if not make_directory(outFolderBase_nml):
+if not make_directory(outFolderBase_nml, True):
     sys.exit(1)
 outFolderBase_nml_musc = "experiments/izq_runs_nets_nml_musc"
-if not make_directory(outFolderBase_nml_musc):
+if not make_directory(outFolderBase_nml_musc, True):
     sys.exit(1)
 
 duration = 40
