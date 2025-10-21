@@ -37,18 +37,14 @@ class SR{
 public:
 SR(int nsegs_, int nstretch_):
 nsegs(nsegs_),srvars(nstretch_),nslD(nsegs_,0),nslV(nsegs_,0)
-{
-
-   
-
-}
+{}
 
 void setFromBody(const WormBody & b);
 void updateSegs();
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
 
-virtual SRWeights makeSRWeights() const = 0;
-virtual SRWeights makeNSSRWeights(const Worm2Dbase & w_ptr) const = 0;
+virtual SRWeights makeSRWeights() const {assert(0);}
+virtual SRWeights makeNSSRWeights(const Worm2Dbase & w_ptr) const {assert(0);}
 
 void makeWeightsFromJson(json & j);
 
@@ -64,7 +60,7 @@ virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
 virtual void addParsToJson(json & j);
 
-virtual double transformSegs(const double & val) = 0;
+virtual double transformSegs(const double & val) {return val;}
 void incNS(NSForW2D & ns);
 void updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_);
 

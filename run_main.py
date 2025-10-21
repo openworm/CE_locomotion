@@ -628,6 +628,7 @@ def run(a=None, **kwargs):
         "W2DCE",
         "W2DCESR",
         "W2D21R",
+        "W2DSR",
     ]
 
     mainProcessName = a.mainProcessName
@@ -652,6 +653,7 @@ def run(a=None, **kwargs):
         "W2DCE": defaults_base_celoc,
         "W2DCESR": defaults_base_celoc,
         "W2D21R": defaults_base_2021,
+        "W2DSR": defaults_base_celoc,
     }
 
     defaults_base = defaults_bases[model_name]

@@ -198,7 +198,8 @@ void incSimTimes();
 
 //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
 
-virtual void setWormPars(shared_ptr<const CmdArgs> cmd) {}
+virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
+{W2Dbaseparameters1->setPars(cmd);}
 
 shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
@@ -211,7 +212,7 @@ Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfw
 void writeData();
 virtual void setPhenoNames() {return;}
 
-virtual vector<doubIntParamsHead> getWormParams() = 0;
+virtual vector<doubIntParamsHead> getWormParams() {assert(0);}
 virtual void Step1() = 0;
 NSForW2D * const n_ptr = nullptr;
 muscForW2D * m_ptr = nullptr;
@@ -299,8 +300,8 @@ class Worm2D : virtual public Worm2Dm
     virtual const vector<string> getDMuscNames() {return {"not implemented"};}
 
     //virtual void addExtraParsToJson(json & j) = 0;
-    virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
-    virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
+    virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);}
+    virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}
     virtual vector<toFromWeight> makeBodyConn();
     virtual vector<toFromWeight> makeVentralBodyConn();
     virtual vector<toFromWeight> makeDorsalBodyConn();

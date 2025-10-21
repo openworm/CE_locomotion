@@ -24,29 +24,35 @@ int main (int argc, const char* argv[])
     {cout << "Directory doesn't exist." << endl;exit(1);}
 
     
-    string model_name;
+    string model_name = cmd->getArgVal("--modelname","");
     double StepSize;
     int skip_steps;
 
     const string json_filename = rename_file("worm_data_evo.json", directoryName);
-
+    
+    if (model_name == "") {  
     if (directoryExists(json_filename)){
         json j = getJsonFromFile(json_filename);
         model_name =  j["Nervous system"]["Model name"]["value"];
-        StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"];
-        skip_steps = j["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
     }
-    else
-    {
-    model_name = cmd->getArgVal("--modelname","");
-    if (model_name == "")
-    {
+    else{
     cout << "Model name is not in json file or the argument list. Exiting." << endl;
     return 0;
     }
+    }
+
+    if (directoryExists(json_filename)){
+        json j = getJsonFromFile(json_filename);
+        StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"];
+        skip_steps = j["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
+    }
+    else{
     StepSize = 0.005;
     skip_steps = 10;
+
     }
+
+
 
     if (model_name == "CE") model_name = "W2DCE";
 
@@ -141,6 +147,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
     if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
+    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename);
 
     }else{
 

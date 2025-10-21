@@ -127,6 +127,7 @@ plot_formats["W2DCE"] = copy.deepcopy(plot_formats["CE"])
 plot_formats["W2DCE"]["plot_time"] = 20
 plot_formats["W2D21R"] = plot_formats["Net21"]
 plot_formats["W2DCESR"] = plot_formats["W2DCE"]
+plot_formats["W2DSR"] = plot_formats["W2DCE"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
