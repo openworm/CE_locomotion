@@ -128,6 +128,9 @@ int main (int argc, const char* argv[])
 
     //const string json_filename = ep1.rename_file("worm_data_evo.json");
 
+
+    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename, cmd);
+
     if (!do_nml){
 
     const string gen_filename =  rename_file("best.gen.dat", directoryName);
@@ -147,7 +150,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
     if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
-    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename);
+    
 
     }else{
 

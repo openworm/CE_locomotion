@@ -1,8 +1,49 @@
 #include "Worm2DSR.h"
+//#include "../neuromlLocal/c302ForW2D.h"
+
+Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
+Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 
 
-Worm2DSR::Worm2DSR(const string & jsonfilename_):
-Worm2DSR(getJsonFromFile(jsonfilename_)){}
+Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
+Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
+
+Worm2DSR::Worm2DSR(json j, shared_ptr<const CmdArgs> cmd):Worm2Dm(
+  {j["Worm"]["N_neuronsperunit"]["value"], 
+    j["Worm"]["N_muscles"]["value"], 
+    j["Worm"]["T_muscle"]["value"],
+    j["Worm"]["N_units"]["value"],
+    j["Nervous system"]["size"]["value"]
+  }, getNS(cmd)),
+  Worm2D({j["Worm"]["N_neuronsperunit"]["value"], 
+    j["Worm"]["N_muscles"]["value"], 
+    j["Worm"]["T_muscle"]["value"],
+    j["Worm"]["N_units"]["value"],
+    j["Nervous system"]["size"]["value"]
+  } ,0),w2dsr_ptr(getSR(j))
+{
+
+    bool do_nml =  cmd->getArgValInt("--donml",0);
+    if (!do_nml){
+
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    setNSFromJson(j,n);
+    assert(n.size == par1.N_units*par1.N_neuronsperunit);
+    assert(n.maxchemconns == 3);
+    assert(n.maxelecconns == 2);
+
+    }
+
+    W2Dbaseparameters1->setParsFromJson(j["Worm"]);
+
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+   
+    setUpMuscleConn(j);
+    setUpBodyConn(j);
+    makeExternalInputConnFromJson(j);
+
+}
+
 
 Worm2DSR::Worm2DSR(json j):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 
@@ -20,20 +61,8 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
 {
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
-   
     W2Dbaseparameters1->setParsFromJson(j["Worm"]);
 
-  //W2DCEpars1->setParsFromJson(j["Worm"]);
-  //w2dsr_ptr->setParsFromJson(j);
-
-  //NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
-  //NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
-  //NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
-  //NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
-
-  // Inhibitory VNC NMJ Weight
-  //NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
-  //NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
 
     setNSFromJson(j,n);
   
@@ -45,9 +74,6 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
     if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
 
-  //sr_ptr->setNSWeights(*this);
-  //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
-
     setUpMuscleConn(j);
     setUpBodyConn(j);
     makeExternalInputConnFromJson(j);
@@ -55,6 +81,13 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
   
 }
 
+NSForW2D * Worm2DSR::getNS(shared_ptr<const CmdArgs> cmd)
+{
+  bool do_nml =  cmd->getArgValInt("--donml",0);
+  if (do_nml) return new c302ForW2D();
+  return new NervousSystem();
+
+}
 
 shared_ptr<SR> Worm2DSR::getSR(json & j)
 {
