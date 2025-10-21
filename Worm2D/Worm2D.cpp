@@ -756,28 +756,7 @@ void Worm2D::Step1()
   
 }
 
-void Worm2DSR::Step1()
-{
-  
-    
-  b.StepBody(settedStepSize);
 
-  w2dsr_ptr->updateAll(b);
-  
-
-  setExternalInput();
-  //setExternalInputOrig();
-
-  w2dsr_ptr->incNS(*n_ptr);
-
-  n_ptr->EulerStep(settedStepSize);
-  
-  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
-  else setMuscleInput();
-
-  setBodyInput();
-  
-}
 
 
 void Worm2D::setMuscleInputVec()

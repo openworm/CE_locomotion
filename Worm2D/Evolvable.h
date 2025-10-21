@@ -290,8 +290,9 @@ class W2Dparameters
 {
 public:
 virtual ~W2Dparameters(){}
-virtual void setParsFromJson(json & j){}
-virtual void addParsToJson(json & j) const {}
+virtual void setParsFromJson(json & j) = 0;
+virtual void addParsToJson(json & j) const = 0;
+virtual void setPars(shared_ptr<const CmdArgs> cmd) = 0;
 };
 
 
@@ -370,6 +371,8 @@ void addParsToJson(json & j) const {
 }
 
 void setPars(shared_ptr<const CmdArgs> cmd);
+
+
 
 };
 
@@ -470,7 +473,10 @@ Evolparameters(argc,argv,evol1_,evotype_),EvolparametersCE(argc,argv),AgarPars(a
 EvolparametersCER(shared_ptr<const CmdArgs> cmd, shared_ptr<EvolvableS> & evol1_, string evotype_):
 Evolparameters(cmd,evol1_,evotype_),EvolparametersCE(cmd),AgarPars(cmd){}
 
-
+void setPars(shared_ptr<const CmdArgs> cmd){
+  EvolparametersCE::setPars(cmd);
+  Evolparameters::setPars(cmd);
+}
 
 void setParsFromJson(json & j){
   EvolparametersCE::setParsFromJson(j);

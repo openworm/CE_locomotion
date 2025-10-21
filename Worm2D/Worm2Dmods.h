@@ -85,7 +85,8 @@ class Worm2Doscpars1 : public W2Dparameters
 public:
 double NMJweight;
 void setParsFromJson(json & j){NMJweight = j["NMJWeight"]["value"];}
-void addParsToJson(json & j){j["NMJWeight"]["value"] = NMJweight;}
+void addParsToJson(json & j) const {j["NMJWeight"]["value"] = NMJweight;}
+void setPars(shared_ptr<const CmdArgs> cmd){assert(0);}
 };
 
 
@@ -93,7 +94,7 @@ class Worm2Doscpars : public Worm2Doscpars1
 {
 public:
 void setParsFromJson(json & j){Worm2Doscpars1::setParsFromJson(j);}
-void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j);}
+void addParsToJson(json & j) const {Worm2Doscpars1::addParsToJson(j);}
 
 };
 
@@ -112,14 +113,14 @@ void setParsFromJson(json & j)
     //Evolparameters::setParsFromJson(j);
 } 
 
-void addParsToJson(json & j)
+void addParsToJson(json & j) const
 {
     j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
     j["NMJ_VN"]["value"] = NMJ_VN;
     j["NMJ_DN"]["value"] = NMJ_DN;
     //Evolparameters::addParsToJson(j);
 }
-
+void setPars(shared_ptr<const CmdArgs> cmd){assert(0);}
 
 };
 

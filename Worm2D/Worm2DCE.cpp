@@ -209,7 +209,7 @@ WormCE::WormCE(json j):WormCE()
   pheno_A_gain = sr_ptr->SR_A_gain;
   pheno_B_gain = sr_ptr->SR_B_gain;
 
-  sr_ptr->makeWeightsFromJson(j);
+  sr_ptr->setParsFromJson(j);
 
   //sr_ptr->setNSWeights(*this);
   //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
@@ -384,7 +384,8 @@ void Worm2DCE::setForward()
   //assert(0);
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
-
+  //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
+  //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
   if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
@@ -398,7 +399,7 @@ void Worm2DCE::setBackward()
   //assert(0);
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
-
+  //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
   //AVA_output =  0;
   //AVB_output =  1;
@@ -413,7 +414,8 @@ void Worm2DCE::setBackward()
 void Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
 {
   
-  W2DCEpars1->setPars(cmd);
+  //W2DCEpars1->setPars(cmd);
+  Worm2DSR::setWormPars(cmd);
   sr_ptr->setPars(cmd);
 
 }

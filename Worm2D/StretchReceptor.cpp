@@ -70,7 +70,7 @@ void SR::updateSegs()
 
 
 
-void SR::addParsToJson(json & j)
+void SR::addParsToJson(json & j) const
 {
 
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A D"]["weights"], srweights.segToA_D);
@@ -98,36 +98,34 @@ void SR::addParsToJson(json & j)
     j["Stretch receptor"]["NSegs"]["value"] = nsegs;
     j["Stretch receptor"]["NStretch"]["value"] = srvars.nstretch;
 
+    if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
+
+
+    j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
+    j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
+
 }
 
 
-void SRCE::addParsToJson(json & j)
+/* void SRCE::addParsToJson(json & j) const
 {
 
-    srcepars->addParsToJson(j["Stretch receptor"]);
+    //srcepars->addParsToJson(j["Stretch receptor"]);
     SR::addParsToJson(j);
     //j["Stretch receptor"]["NSegsforanSR"]["value"] = srcepars->nsegperstr;
     //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
 
-    j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
-    j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
+    //j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
+    //j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
 }
-
-void SRCE::setParsFromJson(json & j)
-{
-
-    srcepars->setParsFromJson(j["Stretch receptor"]);
-    //SR::addParsToJson(j);
-    //srcepars->nsegperstr = j["Stretch receptor"]["NSegsforanSR"]["value"];
-    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
-
-    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
-    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
+ */
 
 
-}
 
-void SR::makeWeightsFromJson(json & j) 
+
+
+
+void SR::setParsFromJson(json & j) 
 {
     
     nssrweights.segToA_D = 
@@ -148,9 +146,27 @@ void SR::makeWeightsFromJson(json & j)
     srweights.segToB_V = 
     j["Stretch receptor"]["SR B V"]["weights"]["value"].template get< vector<toFromWeight> >();
 
+    if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
+
+    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
+    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
+
+
 }
 
+/* void SRCE::setParsFromJson(json & j)
+{
 
+    srcepars->setParsFromJson(j["Stretch receptor"]);
+    //SR::addParsToJson(j);
+    //srcepars->nsegperstr = j["Stretch receptor"]["NSegsforanSR"]["value"];
+    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
+
+    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
+    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
+
+
+} */
 
 SRWeights SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) const
 {

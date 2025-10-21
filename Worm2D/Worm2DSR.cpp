@@ -16,14 +16,13 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0),w2dsr_ptr(make_shared<SR>(j["Stretch receptor"]["NSegs"]["value"],
-j["Stretch receptor"]["NStretch"]["value"]))
+  } ,0),w2dsr_ptr(getSR(j))
 {
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     
     W2Dbaseparameters1->setParsFromJson(j["Worm"]);
-    
+
   //W2DCEpars1->setParsFromJson(j["Worm"]);
   //w2dsr_ptr->setParsFromJson(j);
 
@@ -43,7 +42,7 @@ j["Stretch receptor"]["NStretch"]["value"]))
     assert(n.maxchemconns == 3);
     assert(n.maxelecconns == 2);
   
-    w2dsr_ptr->makeWeightsFromJson(j);
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
 
   //sr_ptr->setNSWeights(*this);
@@ -56,8 +55,42 @@ j["Stretch receptor"]["NStretch"]["value"]))
   
 }
 
+
+shared_ptr<SR> Worm2DSR::getSR(json & j)
+{
+
+    if (j.contains("Stretch receptor"))
+    return make_shared<SR>(j["Stretch receptor"]["NSegs"]["value"],j["Stretch receptor"]["NStretch"]["value"]);
+    else return nullptr;
+
+}
+
 //json j;
 //Worm2DSR w(j);
+
+void Worm2DSR::Step1()
+{
+  
+    
+  b.StepBody(settedStepSize);
+
+  if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
+  
+
+  setExternalInput();
+  //setExternalInputOrig();
+
+  if (w2dsr_ptr!=nullptr) w2dsr_ptr->incNS(*n_ptr);
+
+  n_ptr->EulerStep(settedStepSize);
+  
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
+
+  setBodyInput();
+  
+}
+
 
 
 vector<doubIntParamsHead> Worm2DSR::getWormParams(){
@@ -72,4 +105,62 @@ vector<doubIntParamsHead> Worm2DSR::getWormParams(){
     parvec.push_back(var1);
     return parvec;
 
+}
+
+
+void Worm2DSR::writeAct()
+{
+
+/* 
+  static bool firstcall = true;
+  static size_t pos;
+  static int tt;
+
+  if (resetStats(firstcall,pos,tt,"act.dat")) return;
+ */
+  /* if (firstcall || !isOpen[pos]){
+      ofsvec.push_back(ofstream(getName("act.dat")));
+      pos = ofsvec.size() - 1;
+      isOpen.push_back(true);
+      firstcall = false;
+      tt = dataskips;
+  } */
+  
+  size_t pos = getPos("act.dat");
+  ofstream & ofs = ofsvec[pos];  
+  int & tt = tts[pos];
+
+  if (++tt >= dataskips) {
+    tt = 0;
+
+    ofs << datatime;
+    //ofs << "\nSR: ";
+    // Stretch receptors
+
+     if (w2dsr_ptr!=nullptr){
+
+    for (int i = 1; i <= w2dsr_ptr->srvars.nstretch; i++) {
+      //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
+      ofs <<  " " << w2dsr_ptr->srvars.A_D_sr[i-1] << " " << w2dsr_ptr->srvars.A_V_sr[i-1] << " " 
+      << w2dsr_ptr->srvars.B_D_sr[i-1] << " " << w2dsr_ptr->srvars.B_V_sr[i-1];
+    }
+
+    }
+
+    // Ventral Cord Motor Neurons
+    //ofs << "\nV: ";
+    for (int i = 1; i <= par1.N_units; i++) {
+      for (int j = 1; j <= par1.N_neuronsperunit; j++) {
+        ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
+      }
+    }
+
+    // Muscles
+    //ofs << "\nM: ";
+    if (m_ptr){
+    for (int i = 1; i <= par1.N_muscles; i++) {
+      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+    }}
+    ofs << endl;
+  }
 }
