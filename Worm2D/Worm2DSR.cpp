@@ -20,7 +20,7 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
 {
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
-    
+   
     W2Dbaseparameters1->setParsFromJson(j["Worm"]);
 
   //W2DCEpars1->setParsFromJson(j["Worm"]);
@@ -76,7 +76,7 @@ void Worm2DSR::Step1()
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
   
-
+   
   setExternalInput();
   //setExternalInputOrig();
 
@@ -84,8 +84,10 @@ void Worm2DSR::Step1()
 
   n_ptr->EulerStep(settedStepSize);
   
-  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
-  else setMuscleInput();
+  setMuscleInput();
+
+  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  //else setMuscleInput();
 
   setBodyInput();
   
@@ -110,21 +112,6 @@ vector<doubIntParamsHead> Worm2DSR::getWormParams(){
 
 void Worm2DSR::writeAct()
 {
-
-/* 
-  static bool firstcall = true;
-  static size_t pos;
-  static int tt;
-
-  if (resetStats(firstcall,pos,tt,"act.dat")) return;
- */
-  /* if (firstcall || !isOpen[pos]){
-      ofsvec.push_back(ofstream(getName("act.dat")));
-      pos = ofsvec.size() - 1;
-      isOpen.push_back(true);
-      firstcall = false;
-      tt = dataskips;
-  } */
   
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
