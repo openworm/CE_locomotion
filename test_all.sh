@@ -60,7 +60,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/izq_runs_nets/103 
     rm -rf experiments/izq_runs_nets_nml/103 
     rm -rf experiments/izq_runs_nets_nml_musc/103
-    rm -r experiments/exW2DSR
+    rm -rf experiments/exW2DSR
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
