@@ -84,10 +84,10 @@ void Worm2DSR::Step1()
 
   n_ptr->EulerStep(settedStepSize);
   
-  setMuscleInput();
+  //setMuscleInput();
 
-  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
-  //else setMuscleInput();
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
 
   setBodyInput();
   

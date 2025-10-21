@@ -9,4 +9,5 @@ run(
     outputFolderName="experiments/exW2DSR",
     reRand=True,
     doTestRun=True,
+    doOrigMuscInput=False,
 )
