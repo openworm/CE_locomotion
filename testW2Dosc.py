@@ -10,7 +10,7 @@ run(
     RandSeed=4918,
     # modelName="W2D21R",
     modelName="W2DCE",
-    #modelName="W2DCESR",
+    # modelName="W2DCESR",
     modelFolder="Worm2D",
     # inputFolderName="experiments/izq_runs_nets/23",
     # inputFolderName="exampleRunW2DCE_FR",
@@ -31,7 +31,7 @@ run(
     doTestRun=False,
     doCPT=True,
     AvgSpeed=0.0001,  # CE
-    #AvgSpeed=0.00022,  # 21
+    # AvgSpeed=0.00022,  # 21
     SRType="None",
     # SRType = "SR_TRANS_CONTRACT",
     # SRType = "SR_TRANS_STRETCH",
