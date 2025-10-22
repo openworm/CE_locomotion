@@ -10,6 +10,7 @@
 // Uncomment the following line for table-based fast sigmoid w/ linear interpolation
 //#define FAST_SIGMOID
 
+//#include "../VectorMatrix11v2.h"
 #include "VectorMatrix.h"
 #include "random.h"
 #include <iostream>

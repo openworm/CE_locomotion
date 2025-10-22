@@ -18,7 +18,8 @@ void Worm2D21m::setPhenoNames()
 }
 
 
-Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0 , true)
+Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0 , true, make_shared<W2DCEparsA>()),
+W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1))
 {
 
     cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
@@ -33,13 +34,14 @@ wAVA_DA = 1;
 wAVA_VA = 1;
 
 //initialize these to zero, adam
-AVA = 0; 
-AVB = 0; 
+W2DCEpars1->AVA_output = 0; 
+W2DCEpars1->AVB_output = 0; 
 
 }
 
 
-Worm2D21::Worm2D21(TVector<double> & pheno):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
+Worm2D21::Worm2D21(TVector<double> & pheno):
+Worm2Dm({7,24,0.1,7,49},new c302ForW2D(),make_shared<W2DCEparsA>()),
 Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
   
@@ -65,11 +67,14 @@ Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 
 
 
-Worm2D21::Worm2D21():Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
+Worm2D21::Worm2D21():
+Worm2Dm({7,24,0.1,7,49},new c302ForW2D(),make_shared<W2DCEparsA>()),
 Worm2D({7,24,0.1,7,49},0),Worm2D21m(){}
 
 
-Worm2D21::Worm2D21(json & j):Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+Worm2D21::Worm2D21(json & j):
+Worm2Dm({7,24,0.1,7,49},new c302ForW2D(),make_shared<W2DCEparsA>()),
+Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 {
 
 // NMJ Weight
@@ -115,7 +120,17 @@ void Worm2D21::InitializeState(RandomState &rs)
     return;    
 }
 
+void Worm2D21m::setForward()
+{
+  W2DCEpars1->AVA_output =  0;
+  W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
+}
 
+void Worm2D21m::setBackward()
+{
+  W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
+  W2DCEpars1->AVB_output =  0;
+}
 
 vector<toFromWeight> Worm2D21::makeDorsalMuscleConn()
 {
@@ -206,10 +221,10 @@ void Worm2D21m::Step1()
     
     // Interneuron input  //////////////////////
     for (int i = 1; i <= par1.N_units; i++){
-        n_ptr->SetNeuronExternalInput(nn(DB, i), wAVB_DB * AVB);
-        n_ptr->SetNeuronExternalInput(nn(VB, i), wAVB_VB * AVB);
-        n_ptr->SetNeuronExternalInput(nn(DA, i), wAVA_DA * AVA);
-        n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA);
+        n_ptr->SetNeuronExternalInput(nn(DB, i), wAVB_DB * W2DCEpars1->AVB_output);
+        n_ptr->SetNeuronExternalInput(nn(VB, i), wAVB_VB * W2DCEpars1->AVB_output);
+        n_ptr->SetNeuronExternalInput(nn(DA, i), wAVA_DA * W2DCEpars1->AVA_output);
+        n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * W2DCEpars1->AVA_output);
         //n_ptr->SetNeuronExternalInput(nn(DB, i), 1);
         //n_ptr->SetNeuronExternalInput(nn(VB, i), 1);
         //n_ptr->SetNeuronExternalInput(nn(DA, i), 1);
@@ -254,7 +269,8 @@ vector<doubIntParamsHead> Worm2D21m::getWormParams(){
 
     var1.parDoub.head = "Worm";
     var1.parDoub.names = {"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"};
-    var1.parDoub.vals = {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB};
+    var1.parDoub.vals = {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, 
+        W2DCEpars1->AVA_output, W2DCEpars1->AVB_output};
 
     parvec.push_back(var1);
     return parvec;
@@ -273,7 +289,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
 
 
     append<string>(var1.parDoub.names,{"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"});
-    append<double>(var1.parDoub.vals, {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA, AVB});
+    append<double>(var1.parDoub.vals, {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, W2DCEpars1->AVA_output, W2DCEpars1->AVB_output});
    
   
     var1.parInt.head = "Worm";
@@ -327,7 +343,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
 
 void Worm2D21m::addParsToJson(json & j){
         Worm2Dm::addParsToJson(j);
-        
+       // W2DCEpars1->addParsToJson(j);
     }
 
 

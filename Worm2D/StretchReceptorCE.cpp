@@ -8,8 +8,11 @@
 // Added SR for class A motorneurons
 
 #include "StretchReceptorCE.h"
+#include <cassert>
 
-StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain)
+
+StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain):
+SR(nSegs,nSR)
 {
     SetStretchReceptorParams(nSegs, nSR, ASRgain, BSRgain);
 }
@@ -42,6 +45,101 @@ par.messages_inds = {0,1,2}; //must be ordered
 return par;
 }
 
+SRWeights StretchReceptorCE::makeSRWeights() const
+{
+
+    SRWeights srw;
+
+    if (SRForm == 0){
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j, to = 1;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+    }
+    for (int i = 2; i <= 10; i++)
+         for (int j = 1; j <= NSEGSSR; j++){
+        int from = j+(i-2)*4, to = i;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+        }
+    
+    for (int i = 1; i <= 9; i++)
+        for (int j = 1; j <= NSEGSSR; j++){
+        int from = 12+j+(i-1)*4, to = i;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+        }
+
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j + 44, to = 10;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+    }
+
+}
+
+    if (SRForm == 1){
+  
+    for (int i = 1; i <= 9; i++)   
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+        int from = 12+j+(i-1)*4, to = i;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+        }
+
+//    // Unit 10 (tail), receive same input as Unit 9
+
+    for (int j = 1; j <= NSEGSSR; j++){
+    int from = j+44, to = 10;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+    }
+   
+    
+//    //////////////////////////////
+//    // B-class Stretch Receptors
+//    // first unit (head) receive same input as Unit 2
+
+    for (int j = 1; j <= NSEGSSR; j++){
+        int from = j, to = 1;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+    }
+    
+
+//    // Units 2 to 10 
+
+    for (int i = 2; i <= 10; i++)
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+        int from = j+(i-2)*4, to = i;
+        double weight = SR_B_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToB_D.push_back(tfw);
+        srw.segToB_V.push_back(tfw);
+        }
+
+}
+
+return srw;
+
+}
+
 
 void StretchReceptorCE::Update()
 {
@@ -49,6 +147,8 @@ void StretchReceptorCE::Update()
     //////////////////////////////
     // A-class Stretch Receptors
     // first unit (head) receive same input as Unit 2
+
+    if (SRForm == 0){
     d = 0.0;
     v = 0.0;
     for (int j = 1; j <= NSEGSSR; j++){
@@ -95,54 +195,70 @@ void StretchReceptorCE::Update()
     B_D_sr(10) = SR_B_gain*(d/NSEGSSR);
     B_V_sr(10) = SR_B_gain*(v/NSEGSSR);
 
+    return;
+    }
+
 //        //////////////////////////////
 //    // A-class Stretch Receptors
 //    // Units 1 to 9 (first segment sense by unit 1 is segment 13)
-//    for (int i = 1; i <= 9; i++){
-//        d = 0.0;
-//        v = 0.0;
-//        for (int j = 1; j <= NSEGSSR; j++)
-//        {
-//            d += normSegLenD(12+j+(i-1)*4);
-//            v += normSegLenV(12+j+(i-1)*4);
-//        }
-//        A_D_sr(i) = SR_A_gain*(d/NSEGSSR);
-//        A_V_sr(i) = SR_A_gain*(v/NSEGSSR);
-//    }
+
+else if (SRForm == 1)
+{
+    for (int i = 1; i <= 9; i++){
+        d = 0.0;
+        v = 0.0;
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+            d += normSegLenD(12+j+(i-1)*4);
+            v += normSegLenV(12+j+(i-1)*4);
+        }
+        A_D_sr(i) = SR_A_gain*(d/NSEGSSR);
+        A_V_sr(i) = SR_A_gain*(v/NSEGSSR);
+    }
+
 //    // Unit 10 (tail), receive same input as Unit 9
-//    d = 0.0;
-//    v = 0.0;
-//    for (int j = 1; j <= NSEGSSR; j++){
-//        d += normSegLenD(j+44);
-//        v += normSegLenV(j+44);
-//    }
-//    A_D_sr(10) = SR_A_gain*(d/NSEGSSR);
-//    A_V_sr(10) = SR_A_gain*(v/NSEGSSR);
-//    
+
+    d = 0.0;
+    v = 0.0;
+    for (int j = 1; j <= NSEGSSR; j++){
+        d += normSegLenD(j+44);
+        v += normSegLenV(j+44);
+    }
+    A_D_sr(10) = SR_A_gain*(d/NSEGSSR);
+    A_V_sr(10) = SR_A_gain*(v/NSEGSSR);
+    
 //    //////////////////////////////
 //    // B-class Stretch Receptors
 //    // first unit (head) receive same input as Unit 2
-//    d = 0.0;
-//    v = 0.0;
-//    for (int j = 1; j <= NSEGSSR; j++){
-//        d += normSegLenD(j);
-//        v += normSegLenV(j);
-//    }
-//    B_D_sr(1) = SR_B_gain*(d/NSEGSSR);
-//    B_V_sr(1) = SR_B_gain*(v/NSEGSSR);
+
+    d = 0.0;
+    v = 0.0;
+    for (int j = 1; j <= NSEGSSR; j++){
+        d += normSegLenD(j);
+        v += normSegLenV(j);
+    }
+    B_D_sr(1) = SR_B_gain*(d/NSEGSSR);
+    B_V_sr(1) = SR_B_gain*(v/NSEGSSR);
 
 //    // Units 2 to 10 
-//    for (int i = 2; i <= 10; i++){
-//        d = 0.0;
-//        v = 0.0;
-//        for (int j = 1; j <= NSEGSSR; j++)
-//        {
-//            d += normSegLenD(j+(i-2)*4);
-//            v += normSegLenV(j+(i-2)*4);
-//        }
-//        B_D_sr(i) = SR_B_gain*(d/NSEGSSR);
-//        B_V_sr(i) = SR_B_gain*(v/NSEGSSR);
-//    }
-    
+
+    for (int i = 2; i <= 10; i++){
+        d = 0.0;
+        v = 0.0;
+        for (int j = 1; j <= NSEGSSR; j++)
+        {
+            d += normSegLenD(j+(i-2)*4);
+            v += normSegLenV(j+(i-2)*4);
+        }
+        B_D_sr(i) = SR_B_gain*(d/NSEGSSR);
+        B_V_sr(i) = SR_B_gain*(v/NSEGSSR);
+    }
+ 
+    return;
+}
+
+    cout << "SRForm " << SRForm << endl;
+
+    assert(0 && "SRForm not set correctly");
 
 }

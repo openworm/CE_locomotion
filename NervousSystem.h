@@ -45,6 +45,7 @@ class NervousSystem : public NervousSystemBase {
     public:
         // The constructor
         NervousSystem(int size = 0, int maxchemconns = -1, int maxelecconns = -1);
+        //NervousSystem(int size = 0, int maxchemconns = -1, int maxelecconns = -1);
         // The destructor
         ~NervousSystem();
         

@@ -12,8 +12,33 @@
 using json = nlohmann::json;
 using std::vector;
 
+json getJsonFromFile(const string & jsonfile_);
+
+//#include <vector>
+//#include <algorithm> // for std::transform
+
+template<class T>
+vector<T> multiply(const vector<T>& v, T scalar) {
+    vector<T> result(v.size());
+    transform(v.begin(), v.end(), result.begin(),
+                   [scalar](T x) { return x * scalar; });
+    return result;
+}
 
 
+template<class T>
+T getJsonVal(json & j, const string & key, const T & default_, bool doValue = false)
+{
+
+if (j.contains(key)){
+
+        if (doValue) if (j[key].contains("value")) return j[key]["value"];
+        return j[key];
+ }
+return default_;
+
+
+}
 
 template<class T>
 vector<T> & append(vector<T> & v1, const vector<T> & v2)
@@ -60,7 +85,7 @@ return retvec;
 }
 
 template<class T> 
-void getTVector(vector<T> & vec, TVector<T> & retvec)
+void getTVector(const vector<T> & vec, TVector<T> & retvec)
 { 
 retvec.SetBounds(1,vec.size());    
 for (int i = 0; i < vec.size(); i++) retvec[i+1]=vec[i];
@@ -99,3 +124,4 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
+void setNSFromJson(json & j, NervousSystem & n);

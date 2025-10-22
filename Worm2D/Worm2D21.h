@@ -30,19 +30,22 @@ using namespace std;
 //const int Head = 1;
 //const int Tail = N_segments;
 
-class Worm2D21m : virtual public Worm2Dm {
+class Worm2D21m : virtual public Worm2Dm, public WormFR {
 public:
     
     //Worm21(TVector<double> &v);
    
     Worm2D21m();
-    void SetAVA(double value) {AVA = value;};
-    void SetAVB(double value) {AVB = value;};
+    void SetAVA(double value) {W2DCEpars1->AVA_output = value;};
+    void SetAVB(double value) {W2DCEpars1->AVB_output = value;};
     void initForSimulation(RandomState &);
     void InitializeState(RandomState &rs);
     //void DumpActState(ofstream &ofs, int skips);
     //void DumpActStateState(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
+    void setForward();
+    void setBackward();
+    void randomizeNS(RandomState &rs){return;}
 
     void setPhenoNames();
 
@@ -63,7 +66,7 @@ protected:
     vector<doubIntParamsHead> getWormParams();
     double wAVA_DA, wAVA_VA;
     double wAVB_DB, wAVB_VB;
-    double AVA, AVB;
+   // double AVA, AVB;
 
     const int AS = 1;
     const int DA = 2;
@@ -72,6 +75,8 @@ protected:
     const int VD = 5;
     const int VB = 6;
     const int VA = 7;
+
+    shared_ptr<W2DCEparsA> W2DCEpars1;
 
 };
 
@@ -102,7 +107,7 @@ public:
     //vector<int> neurons, vector<double> NMJs, int mi, int to);
     vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
 
-    
+    void Step1(){return Worm2D21m::Step1();}
 
     const vector<string> getVMuscNames() {return {"MV1","MV2","MV3","MV4", 
         "MV1","MV2","MV3",  "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV4",

@@ -5,6 +5,7 @@ run(
     simtransient=0,
     popSize=96,
     RandSeed=1233,
+    maxGens=10,
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2Dosc_t1",
@@ -14,10 +15,12 @@ run(
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
-    doPlotEvol=True,
+    doPlotEvol=False,
     doNML=False,
-    doCPT=True,
+    # doCPT=True,
     evoType="EvoCE",
+    AvgSpeed=0.0001,
     # SRType = "SR_TRANS_STRETCH"
-    # doTestRun = True
+    doTestRun=True,
+    doOrigMuscInput=True,
 )

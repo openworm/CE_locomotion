@@ -1,6 +1,6 @@
 #include "EvolutionCE.h"
 #include <math.h>
-#include "WormCE.h"
+#include "Worm2DCE.h"
 
 void EvolutionCE::writeJson(TVector<double> &v) {WormCE w(v); writeJson1(w);}
 
@@ -75,6 +75,9 @@ double EvolutionCE::EvaluationFunction(TVector<double> &v, RandomState &rs)
     //  v(SR_B)= -1.0;
     //  fitnessBackward = Evaluation(v, rs, -1);
     //  return (fitnessForward + fitnessBackward)/2;
+
+    v(SR_A)= sra;
+    v(SR_B)= srb;
     return fitnessForward;
     // return fitnessBackward;
 }
@@ -185,11 +188,11 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   } 
   
   w.InitializeState(rs);
-  w.sr.SR_A_gain = 0.0;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = 0.0;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-
+  w.sr_ptr->setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -200,8 +203,9 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
       //w.DumpActState(actfile, skip_steps);
   }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+    w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -211,10 +215,11 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = sra;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = sra;
+   w.sr_ptr->SR_B_gain = 0.0;
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
       w.Step(StepSize);
@@ -224,8 +229,9 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -260,19 +266,19 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
   //ofstream actfile(rename_file("act.dat"));
   
 
-  double sra = w.sr.SR_A_gain;
-  double srb = w.sr.SR_B_gain;
+  double sra = w.sr_ptr->SR_A_gain;
+  double srb = w.sr_ptr->SR_B_gain;
   double wao = w.W2DCEpars1->AVA_output;
   double wbo = w.W2DCEpars1->AVB_output;
 
   cout << "ce evo" << sra << " " << srb << " " << wao << " " << wbo << endl;
 
   w.InitializeState(rs);
-  w.sr.SR_A_gain = 0.0;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = 0.0;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  w.AVA_inact;
   w.W2DCEpars1->AVB_output =  w.AVB_act;
-
+  w.sr_ptr->setWeights();
 
 
   for (double t = 0.0; t <= Transient + Duration; t += StepSize){
@@ -283,8 +289,9 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
       //w.DumpActState(actfile, skip_steps);
   }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+    w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -294,10 +301,12 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = sra;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = sra;
+   w.sr_ptr->SR_B_gain = 0.0;
    w.W2DCEpars1->AVA_output =  w.AVA_act;
    w.W2DCEpars1->AVB_output =  w.AVB_inact;
+
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
        w.Step(StepSize);
@@ -307,8 +316,9 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
        //w.DumpActState(actfile, skip_steps);
    }
 
-   w.sr.SR_A_gain = 0.0;
-   w.sr.SR_B_gain = 0.0;
+   w.sr_ptr->SR_A_gain = 0.0;
+   w.sr_ptr->SR_B_gain = 0.0;
+   w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (12); t += StepSize){
        w.Step(StepSize);
@@ -320,11 +330,11 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   // reset worm parameters to presimulation values
 
-  w.sr.SR_A_gain = sra;
-  w.sr.SR_B_gain = srb;
+  w.sr_ptr->SR_A_gain = sra;
+  w.sr_ptr->SR_B_gain = srb;
   w.W2DCEpars1->AVA_output =  wao;
   w.W2DCEpars1->AVB_output =  wbo;
-
+   w.sr_ptr->setWeights();
   //bodyfile.close();
   //curvfile.close();
   //actfile.close();

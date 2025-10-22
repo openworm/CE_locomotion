@@ -68,6 +68,7 @@ plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
 plot_formats["CE"]["data_sizes"] = [40, 60, 48]
 plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"]
 plot_formats["CE"]["plot_cell_names"] = ["DA", "DB", "DD", "VA", "VB", "VD"]
+plot_formats["CE"]["plot_cell_unit"] = 4
 plot_formats["CE"]["plot_col_divs"] = [3, 3]
 plot_formats["CE"]["plot_time"] = 10
 plot_formats["CE"]["worm_plot_time"] = 5
@@ -122,7 +123,11 @@ plot_formats["W2Dosc21Coup"] = plot_formats["W2Dosc21"]
 plot_formats["W2Dosc21S"] = plot_formats["W2Dosc21"]
 plot_formats["W2Dosc21CF"] = plot_formats["W2Dosc21"]
 plot_formats["W2D21"] = plot_formats["Net21"]
-plot_formats["W2DCE"] = plot_formats["CE"]
+plot_formats["W2DCE"] = copy.deepcopy(plot_formats["CE"])
+plot_formats["W2DCE"]["plot_time"] = 20
+plot_formats["W2D21R"] = plot_formats["Net21"]
+plot_formats["W2DCESR"] = plot_formats["W2DCE"]
+plot_formats["W2DSR"] = plot_formats["W2DCE"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
@@ -234,6 +239,12 @@ def plot_evols(a=None, **kwargs):
     file = hf.rename_file("genhistory.dat")
     if not os.path.isfile(file):
         hf.file_prefix = None
+    file = hf.rename_file("genhistory.dat")
+    if not os.path.isfile(file):
+        print(
+            "doPlotEvol is True, but genhistory.dat file is necessary for evolution plots."
+        )
+        return
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
     worm_file = hf.rename_file("worm_data.json")
@@ -297,18 +308,32 @@ def plot_evols(a=None, **kwargs):
     )
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
     evol_data_fin = sign(evol_data[-1]) * np.log(np.abs(evol_data[-1]))
+
+    evol_data_fin_actual = evol_data[-1]
     evol_data_init = sign(evol_data[0]) * np.log(np.abs(evol_data[0]))
+    evol_data_init_actual = evol_data[0]
+
     evol_data_list = [
         evol_data_full_diff,
         evol_data_full_diff2,
-        evol_data_fin,
         evol_data_init,
+        evol_data_fin,
+        evol_data_init_actual,
+        evol_data_fin_actual,
     ]
+
+    evol_data_list_inds = [0, 1, 2, 2, 3, 3]
+
+    for data_val in evol_data_list:
+        data_val[np.isnan(data_val)] = 0
+        data_val[np.isinf(data_val)] = 0
+
     evol_data_avs_titles = [
         "Relative variation",
         "Variation",
-        "Final value",
-        "Initial value",
+        "Inital and Final value",
+        # "Initial value",
+        "Actual Final value",
     ]
 
     if doPhenNames:
@@ -397,22 +422,26 @@ def plot_evols(a=None, **kwargs):
 
     if doPhenNames:
         plot_cols = 1
-        plot_rows = len(evol_data_avs)
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 10), squeeze=False)
-        for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
+        plot_rows = len(evol_data_avs_titles)
+        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
+        # for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
+        for ind, val in zip(evol_data_list_inds, evol_data_avs):
             row_num, col_num = getRowsCols(ind, plot_cols)
-            axs[row_num, col_num].set_title(title, fontsize=title_font_size)
             axs[row_num, col_num].plot(range(len(val)), val)
-            # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-            axs[row_num, col_num].set_xticks(range(len(val)))
-            # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
-            axs[row_num, col_num].grid(axis="x")
-            axs[row_num, col_num].grid(axis="y")
+            if axs[row_num, col_num].get_title() == "":
+                axs[row_num, col_num].set_title(
+                    evol_data_avs_titles[ind], fontsize=title_font_size
+                )
+                # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+                # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+                axs[row_num, col_num].set_xticks(range(len(val)))
+                # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
+                axs[row_num, col_num].grid(axis="x")
+                axs[row_num, col_num].grid(axis="y")
 
-        axs[3, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
+        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
         # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-        axs[3, 0].set_xticklabels(phen_name_list, rotation="vertical")
+        axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
 
         fig.tight_layout()
         # fig.subplots_adjust(hspace=0.5)
@@ -420,6 +449,24 @@ def plot_evols(a=None, **kwargs):
         filename = hf.rename_file("Evolution_averages.png")
         plt.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
+
+        if False:
+            fig, axs = plt.subplots(1, 1, figsize=(20, 10), squeeze=False)
+            axs[0, 0].set_title("Actual final value", fontsize=title_font_size)
+            val = evol_data_fin_actual
+            axs[0, 0].plot(range(len(val)), val)
+            axs[0, 0].set_xticks(range(len(val)))
+            axs[0, 0].grid(axis="x")
+            axs[0, 0].grid(axis="y")
+            axs[0, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
+            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
+            axs[0, 0].set_xticklabels(phen_name_list, rotation="vertical")
+            fig.tight_layout()
+            # fig.subplots_adjust(hspace=0.5)
+
+            filename = hf.rename_file("Actual_values.png")
+            plt.savefig(filename, bbox_inches="tight", dpi=300)
+            print("Saved plot image to: %s" % filename)
 
 
 # def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):

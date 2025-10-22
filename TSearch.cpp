@@ -310,9 +310,12 @@ void TSearch::SetCheckpointInterval(int NewInterval)
 
 void TSearch::DoSearch(int ResumeFlag)
 {
+
 	// Initialize search if necessary
 	if (!SearchInitialized) InitializeSearch();
 	// Make sure we have an evaluation function
+	
+	
 	if (EvaluationFunction == NULL)
 	{
 		cerr << "Error: NULL evaluation function\n";
@@ -320,13 +323,19 @@ void TSearch::DoSearch(int ResumeFlag)
 	}
 	// Unless we're resuming a checkpointed search, evalute the initial population and reset best
 	if (!ResumeFlag) {
+		
 		EvaluatePopulation();
+		
 		BestPerf = -1;
 		UpdateBestFlag = 0;
 	}
+
+	
 	// Update and display statistics of the initial population
 	UpdatePopulationStatistics();
 	DisplayPopulationStatistics();
+
+	
 	// If the best changed and there is a BestActionFunction, invoke it
 	if (UpdateBestFlag && BestActionFunction != NULL)
 		(*BestActionFunction)(Gen,bestVector);
@@ -345,6 +354,7 @@ void TSearch::DoSearch(int ResumeFlag)
 		if ((CheckpointInt > 0) && (Gen > 0) && ((Gen % CheckpointInt) == 0))
 			WriteCheckpointFile();
 	}
+
 	// Display results
 	DisplaySearchResults();
 }
@@ -510,6 +520,9 @@ void *EvaluatePopulationRange(void *arg)
 
 
 // Evaluate the current population, beginning with the STARTth individual
+
+
+
 
 void TSearch::EvaluatePopulation(int start)
 {

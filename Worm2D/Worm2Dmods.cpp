@@ -49,13 +49,15 @@ Worm2Dosc1(dynamic_cast<Worm2Doscpars1&>(*pars1_ptr)){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 {
+    json j = getJsonFromFile(jsonfile_);
 
-    ifstream json_in(jsonfile_);
-    json j;
+    //ifstream json_in(jsonfile_);
+    //json j;
     //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
-    json_in >> j;
-    json_in.close();
+    //json_in >> j;
+    //json_in.close();
     //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
+
     pars1.setParsFromJson(j["Worm"]);
 
     setUpMuscleConn(j);

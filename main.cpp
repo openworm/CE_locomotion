@@ -202,6 +202,7 @@ double save_traces(TVector<double> &v, RandomState &rs){
     phenfile.close();
     } */
     
+    //assert(0);
     w.InitializeState(rs);
     w.sr.SR_A_gain = 0.0;
     w.sr.SR_B_gain = srb;

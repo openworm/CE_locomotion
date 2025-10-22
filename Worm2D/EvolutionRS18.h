@@ -8,12 +8,22 @@ class EvolutionRS18 : public Evolution
     public:
     
     EvolutionRS18(int argc, const char* argv[]):EvolutionRS18(argc,argv,""){}
+    EvolutionRS18(shared_ptr<const CmdArgs> cmd_):EvolutionRS18(cmd_,""){}
+
     EvolutionRS18(int argc, const char* argv[], string modelname_)
     :Evolution(argc,argv, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
-    ),speedoutput(atoi(getParameter(argc,argv,"--speed_output", "0").c_str())),
-    evo_seed(atoi(getParameter(argc,argv,"--evo_seed", "0").c_str())){}
+    ),speedoutput(getParameterInt(argc,argv,"--speed_output", "0")),
+    evo_seed(getParameterInt(argc,argv,"--evo_seed", "0")){}
+
+    EvolutionRS18(shared_ptr<const CmdArgs> cmd_, string modelname_)
+    :Evolution(cmd_, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        96, 1000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
+    ),speedoutput(cmd_->getArgValInt("--speed_output", 0)),
+    evo_seed(cmd_->getArgValInt("--evo_seed", 0)){}
+
 
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);

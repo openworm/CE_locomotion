@@ -14,6 +14,12 @@ class Evolution21:public Evolution
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
     ){}
 
+    Evolution21(shared_ptr<const CmdArgs> cmd_):Evolution(cmd_,
+      {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
+    ){}
+
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     double EvaluationFunction1(TVector<double> &v, RandomState &rs);

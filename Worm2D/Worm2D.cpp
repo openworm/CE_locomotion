@@ -1,4 +1,5 @@
-#include "Worm2D.h"
+//#include "Worm2D.h"
+#include "Worm2DSR.h"
 #include <iomanip>
 
 //using json = nlohmann::json;
@@ -101,34 +102,51 @@ Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_pt
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(new W2Dbaseparameters()),
 muscForWDconst(mfwc){}
 
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
+    shared_ptr<W2Dbaseparameters> w2dpar_):
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(w2dpar_),
+muscForWDconst(mfwc){}
+
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
     shared_ptr<W2Dbaseparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
     W2Dbaseparameters1(w2dpar_),//W2Dbaseparameters1(new W2Dbaseparameters()),
 muscForWDconst(false){}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
+Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){}
+
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_):
+Worm2Dbase(par1_,n_ptr_,new Muscles(), w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){} 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
 Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){} 
-
-Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
-Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
-W2Dmparscalled(false),W2Dminitcalled(false){} 
-
+//Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
+//Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
+//W2Dmparscalled(false),W2Dminitcalled(false){} 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+    bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_):
+Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){}
+
+
+
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
-Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):Worm2Dm(par1_, n_ptr_, new Muscles),
-m(dynamic_cast<Muscles&>(*m_ptr))//,vMuscConn(par1_.N_muscles),dMuscConn(par1_.N_muscles)
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
+Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
 {
     //cout << "Worm2D const" << endl;
     setUp();
+    //setUpBodyConn();
 }
+
+Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
+Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_)
+{}
 
 
 
@@ -181,7 +199,7 @@ void Worm2D::InitializeState(RandomState &rs)
     return;
 }
 
-int Worm2Dbase::nn(int neuronNumber, int unitNumber)
+int Worm2Dbase::nn(int neuronNumber, int unitNumber) const
 {   
     return nn1(neuronNumber,unitNumber,par1.N_neuronsperunit);
     
@@ -502,6 +520,8 @@ void Worm2Dbody::addParsToJson(json & j)
 
 void Worm2Dbase::addParsToJson(json & j)
 {  
+
+
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
@@ -532,6 +552,16 @@ void Worm2Dbase::addParsToJson(json & j)
         appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
     }
 
+//if (false){
+    appendVectorToJson<toFromWeight>(j["Driving input"]["weights"], externalInputConn);
+    j["Driving input"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
+    appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
+    j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
+//}
+
+    W2Dbaseparameters1->addParsToJson(j["Worm"]);
+    //W2Dbaseparameters1->addParsToJson(j);
+
 }
 
 void Worm2Dm::addParsToJson(json & j)
@@ -555,15 +585,16 @@ void Worm2D::addParsToJson(json & j)
     Worm2Dm::addParsToJson(j);
 
     appendMuscleToJson(j,m);
+
     NSToMuscles vMuscConn(par1.N_muscles);
     NSToMuscles dMuscConn(par1.N_muscles);
     vMuscConn.setWeights(vMuscConnvec);
     dMuscConn.setWeights(dMuscConnvec);
    
     j["Ventral NMJ"]["weights"]["message"] = "Ventral NMJ weights weights in sparse format";
-    appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
+    //appendMatrixToJson(j["Ventral NMJ"]["weights"], vMuscConn.weights, vMuscConn.numConns, vMuscConn.size);
     j["Dorsal NMJ"]["weights"]["message"] = "Dorsal NMJ weights weights in sparse format";
-    appendMatrixToJson(j["Dorsal NMJ"]["weights"], dMuscConn.weights, dMuscConn.numConns, dMuscConn.size);
+    //appendMatrixToJson(j["Dorsal NMJ"]["weights"], dMuscConn.weights, dMuscConn.numConns, dMuscConn.size);
     
     {Params<int> par;    
     par.names = {"size", "maxcons"};
@@ -592,10 +623,15 @@ void Worm2D::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
 
-    appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights_vec"], dMuscConnvec);
-    appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights_vec"], vMuscConnvec);
+    appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights"], dMuscConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights"], vMuscConnvec);
    
-    
+
+    appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral body"]["weights"], vBodyConnvec);
+    j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
+    j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
+
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    
@@ -702,29 +738,97 @@ void Worm2D::setMuscleInputDors()
 
 } */
 
+
+void Worm2D::Step1()
+{
+  
+  b.StepBody(settedStepSize);
+
+  setExternalInput();
+  //setExternalInputOrig();
+
+  n_ptr->EulerStep(settedStepSize);
+  
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  else setMuscleInput();
+
+  setBodyInput();
+  
+}
+
+
+
+
 void Worm2D::setMuscleInputVec()
 {
-    vector<double> vtot(par1.N_muscles);
+    {vector<double> vtot(par1.N_muscles, 0.0);
 
-    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
     for (int i=0;i<vMuscConnvec.size();i++)
     {
         const toFromWeight & tfw = vMuscConnvec[i];
         vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
     }
-    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
     
-    for (int i=0;i<vtot.size();i++) vtot[i]=0;
+    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);}
+
+    
+    {vector<double> vtot(par1.N_muscles, 0.0);
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
+
     for (int i=0;i<dMuscConnvec.size();i++)
     {
         const toFromWeight & tfw = dMuscConnvec[i];
         vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
     }
-    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);
-
-
+    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);}
 
     //m.EulerStep(settedStepSize);
+}
+
+void Worm2D::setBodyInput()
+{
+
+    {
+    vector<double> vtot(N_segments, 0.0);
+    for (int i=0;i<vBodyConnvec.size();i++)
+    {
+        const toFromWeight & tfw = vBodyConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*m.VentralMuscleOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) b.SetVentralSegmentActivation(i+1, vtot[i]);
+    }
+    
+    {
+    vector<double> vtot(N_segments, 0.0);
+    for (int i=0;i<dBodyConnvec.size();i++)
+    {
+        const toFromWeight & tfw = dBodyConnvec[i];
+        vtot[tfw.to-1] += tfw.w.weight*m.DorsalMuscleOutput(tfw.w.from);
+    }
+    for (int i=0;i<vtot.size();i++) b.SetDorsalSegmentActivation(i+1, vtot[i]);
+    }
+    
+
+
+}
+
+void Worm2Dbase::setExternalInput()
+{
+
+    assignExternalInput();
+
+    vector<double> vtot(par1.N_size, 0.0);
+    for (int i=0;i<externalInputConn.size();i++)
+    {
+        const toFromWeight & tfw = externalInputConn[i];
+        vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
+    }
+
+    for (int i=0;i<vtot.size();i++) n_ptr->SetNeuronExternalInput(i+1, vtot[i]); 
+
 }
 
 
@@ -743,14 +847,8 @@ void Worm2D::setMuscleInput()
 void Worm2D::setUpMuscleConn(json & j)
 {
     
-//assert(0  && "Worm2D::setUpMuscleConn(json & j)");
-//json jns = j["Nervous system"];
-//auto outputs = jns["outputs"]["value"].template get< vector<double> >();
-//auto biases = jns["biases"]["value"].template get< vector<double> >();
-auto vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-auto dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-//vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"];
-//vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"];
+vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
 vMuscConnvec.swap(vMuscConnvec1);
 dMuscConnvec.swap(dMuscConnvec1);
 
@@ -758,15 +856,43 @@ dMuscConnvec.swap(dMuscConnvec1);
 
 void Worm2D::setUpMuscleConn()
 {
+
 vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
 vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
 vMuscConnvec1.swap(vMuscConnvec);
 dMuscConnvec1.swap(dMuscConnvec);
 
+}
+
+void Worm2D::setUpBodyConn()
+{
+
+vector<toFromWeight> vBodyConnvec1 = makeVentralBodyConn();
+vector<toFromWeight> dBodyConnvec1 = makeDorsalBodyConn();
+vBodyConnvec1.swap(vBodyConnvec);
+dBodyConnvec1.swap(dBodyConnvec);
+
+}
+
+void Worm2D::setUpBodyConn(json & j)
+{
+    
+vector<toFromWeight> vBodyConnvec1 = j["Ventral body"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<toFromWeight> dBodyConnvec1 = j["Dorsal body"]["weights"]["value"].template get< vector<toFromWeight> >();
+vBodyConnvec.swap(vBodyConnvec1);
+dBodyConnvec.swap(dBodyConnvec1);
+
+}
 
 
-//vMuscConn.setWeights(vMuscConnvec);
-//dMuscConn.setWeights(dMuscConnvec);
+void Worm2Dbase::makeExternalInputConnFromJson(json & j)
+{
+
+vector<toFromWeight> vec1 = j["Driving input"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<double> exvec = j["Driving input"]["strengths"]["value"].template get< vector<double> >();
+externalInputs.swap(exvec);
+externalInputConn.swap(vec1);
+
 }
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
@@ -789,6 +915,68 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 
 }
 }
+
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
+    const vector<double> & NMJ_Gain, int N_neuronsperunit)
+{
+
+    for (int j = 0; j<neurons.size();j++){
+        double weight = NMJs[j]*NMJ_Gain[to_muscle-1]; 
+        int from_neuron = nn1(neurons[j],unit,N_neuronsperunit);
+        toFromWeight tv({from_neuron,weight},to_muscle);
+        vec1.push_back(tv);
+
+}
+}
+
+
+vector<toFromWeight> Worm2D::makeDorsalBodyConn()
+{
+
+    return makeBodyConn();
+
+}
+
+vector<toFromWeight> Worm2D::makeVentralBodyConn()
+{
+
+    return makeBodyConn();
+
+}
+
+vector<toFromWeight> Worm2D::makeBodyConn()
+{
+vector<toFromWeight> vec1;
+
+for (int to_seg = 1; to_seg<=2; to_seg++){
+  int from_musc = 1;
+  double weight = 0.5;
+  toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);
+}
+
+for (int to_seg = 3; to_seg <= N_segments-2; to_seg++)
+  {
+  int from_musc = (int) ((to_seg-1)/2);
+  double weight = 0.5;
+  {toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);}
+  toFromWeight tv({from_musc+1,weight},to_seg);
+  vec1.push_back(tv);
+  }
+
+for (int to_seg = N_segments-1; to_seg<=N_segments; to_seg++){
+  int from_musc = par1.N_muscles;
+  double weight = 0.5;
+  toFromWeight tv({from_musc,weight},to_seg);
+  vec1.push_back(tv);
+}
+
+return vec1;
+
+}
+
 
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}

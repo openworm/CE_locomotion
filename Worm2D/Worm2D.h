@@ -5,9 +5,10 @@
 //#include "../WormBody.h"
 //#include "../NervousSystem.h"
 //#include <nlohmann/json.hpp>
-#include "jsonUtils.h"
+//#include "jsonUtils.h"
 #include "../neuromlLocal/NSBaseForW2D.h"
 #include "Evolvable.h"
+
 
 //datawriter->worm2dbase (nervous system and muscle pointers)
 //datawriter->worm2dbody (just body plus functions)
@@ -23,6 +24,13 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain, int);
 //string main_directoryname;
 //string main_modelname;
+
+void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
+    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
+    const vector<double> & NMJ_Gain, int N_neuronsperunit);
+
+
+
 
 //using json = nlohmann::json;
 
@@ -156,7 +164,6 @@ virtual void InitializeState(RandomState &rs) = 0;
 virtual void initForSimulation(RandomState &) {return;}
 
 
-
 void Step(double StepSize_);
 void Step();
 virtual void setStepSize(double val_){settedStepSize=val_;}
@@ -173,6 +180,9 @@ virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
 void DumpVal(string filename_, double val);
 virtual double getVelocity() = 0;
+const wormIzqParams par1;
+int nn(int neuronNumber, int unitNumber) const;
+
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
@@ -183,17 +193,26 @@ void setTime(double t_){t=t_;}
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
-virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
-virtual void setWormPars(const W2Dparameters & w2par_) {assert(0);}
+//virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) {return nullptr;}
+//virtual void setWormPars(const W2Dparameters * w2par_) {assert(0);}
+
+//virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
+
+virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
+{W2Dbaseparameters1->setPars(cmd);}
+
+shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters>);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
+    shared_ptr<W2Dbaseparameters> w2dpar_);
 void writeData();
 virtual void setPhenoNames() {return;}
 
-virtual vector<doubIntParamsHead> getWormParams() = 0;
+virtual vector<doubIntParamsHead> getWormParams() {assert(0);}
 virtual void Step1() = 0;
 NSForW2D * const n_ptr = nullptr;
 muscForW2D * m_ptr = nullptr;
@@ -201,16 +220,24 @@ muscForW2D * m_ptr = nullptr;
 vector<string> phenoNames;
 vector<int> phenoNamesNums;
 
+//vector<double> sjdkdsdjddssdsloe;
+
+
 void addPhenoName(string name, int k);
 
 double t; // Time
 const bool muscForWDconst;
-const wormIzqParams par1;
-int nn(int neuronNumber, int unitNumber);
+
 double settedStepSize;
 
-shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
-
+void makeExternalInputConnFromJson(json & j);
+virtual void makeExternalInputConn(){return;}
+vector<toFromWeight> externalInputConn;
+vector<double> externalInputs;
+//vector<double> sjdkdsdjddssdsloe;
+//double sjdkdsdjddssdsloe;
+void setExternalInput();
+virtual void assignExternalInput(){return;}
 
 };
 
@@ -235,9 +262,13 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+    bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
-    Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
+    //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
+
     void writeData();
 
     bool W2Dmparscalled, W2Dminitcalled;
@@ -269,26 +300,47 @@ class Worm2D : virtual public Worm2Dm
     virtual const vector<string> getDMuscNames() {return {"not implemented"};}
 
     //virtual void addExtraParsToJson(json & j) = 0;
-    virtual vector<toFromWeight> makeVentralMuscleConn() = 0;
-    virtual vector<toFromWeight> makeDorsalMuscleConn() = 0;
-    void setUpMuscleConn();
+    virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);}
+    virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}
+    virtual vector<toFromWeight> makeBodyConn();
+    virtual vector<toFromWeight> makeVentralBodyConn();
+    virtual vector<toFromWeight> makeDorsalBodyConn();
+
+    void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(json & j);
+    void setUpBodyConn();
+    void setUpBodyConn(json & j);
+
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-    void setMuscleInput();
-    
-    void setMuscleInputVec();
+    void setMuscleInput(); //calls setMuscleInputVec()
+    void setBodyInput();
+    virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
+    void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
+    //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
     //Worm2D();
-
+    virtual void Step1();
     void setUp();
     Muscles & m;
    
     //NSToMuscles vMuscConn, dMuscConn;
-    vector<toFromWeight> vMuscConnvec, dMuscConnvec;
+    vector<toFromWeight> vMuscConnvec, dMuscConnvec, vBodyConnvec, dBodyConnvec;
     
  
 };
 
+
+
+
+
+class WormFR 
+{
+public:
+virtual void setForward() = 0;
+virtual void setBackward() = 0;
+virtual void randomizeNS(RandomState &rs)  = 0;
+
+};

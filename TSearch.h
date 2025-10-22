@@ -136,6 +136,8 @@ class TSearch {
 		//friend istream& operator>>(istream& is, TSearch& s);
 	string cptfilename; //added search filename
 
+	friend class Evolution;
+
 	void DoSearch(int ResumeFlag); //make accessible
 	private:
 		// Helper Methods
@@ -171,31 +173,31 @@ class TSearch {
 		// Internal State
     RandomState rs;
     TVector<RandomState> RandomStates;
-		int Gen;
-		int SearchInitialized;
+		int Gen = 0;
+		int SearchInitialized = 0;
 		TVector<TVector<double> > Population;
 		TVector<double> Perf;
 		TVector<double> fitness;
-		int UpdateBestFlag;
+		int UpdateBestFlag = 0;
 		TVector<double> bestVector;
-		double BestPerf;
-		double MinPerf, MaxPerf, AvgPerf, PerfVar;
+		double BestPerf = 0 ;
+		double MinPerf  = 0, MaxPerf = 0, AvgPerf = 0, PerfVar = 0;
 		// Search Modes
-		TSelectionMode SelectMode;
-		TReproductionMode RepMode;
-		TCrossoverMode CrossMode;
+		TSelectionMode SelectMode = FITNESS_PROPORTIONATE;
+		TReproductionMode RepMode = HILL_CLIMBING;
+		TCrossoverMode CrossMode = UNIFORM;
 		// Search Parameters
-		int vectorSize;
-		int MaxGens;
-		double EFraction;
-		double MaxExpOffspring;
-		double MutationVar;
-		double CrossProb;
+		int vectorSize = 0;
+		int MaxGens = 0;
+		double EFraction = 0 ;
+		double MaxExpOffspring = 0;
+		double MutationVar = 0;
+		double CrossProb = 0;
 		TVector<int> crossTemplate;
 		TVector<int> crossPoints;
 		TVector<int> ConstraintVector;
-		int ReEvalFlag;
-		int CheckpointInt;
+		int ReEvalFlag = 0;
+		int CheckpointInt = 0;
 		// Function Pointers
 		double (*EvaluationFunction)(TVector<double> &v, RandomState &rs);
 		void (*BestActionFunction)(int Generation,TVector<double> &v);

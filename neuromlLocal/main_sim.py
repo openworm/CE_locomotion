@@ -160,6 +160,18 @@ class Worm2DNRNSimulation:
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
+    def inc_neuron_input(self, i, weight):
+        pop_name, nn = self.get_pop_number(i)
+        getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight += weight
+        # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
+        return
+
+    def inc_neuron_input_j(self, i, weight):
+        getattr(
+            self.h,
+            "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
+        ).weight += weight
+
     def set_neuron_input_j(self, i, weight):
         # self.h.ExtStimPopAS_6.weight = weight
 

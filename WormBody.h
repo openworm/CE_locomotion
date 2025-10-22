@@ -96,25 +96,25 @@ public:
             A_D_M[i-1] = fmax(0.0, fmin(a, 1.0));
         else {cerr << "SetDorsalSegmentActivation: " << i << " not in the range [1," << N_segments << "]" << endl; exit(EXIT_FAILURE);}
     }
-    inline void SetVentralSegmentActivation(int i, double a)
+    inline void SetVentralSegmentActivation(int i, double a) 
     {
         if (i > 0 && i <= N_segments)
              A_V_M[i-1] = fmax(0.0, fmin(a, 1.0));
         else {cerr << "SetVentralSegmentActivation: " << i << " not in the range [1," << N_segments << "]" << endl; exit(EXIT_FAILURE);}
     }
-    inline double DorsalSegmentLength(int i)
+    inline double DorsalSegmentLength(int i) const
     {
         if (i > 0 && i <= N_segments) return L_D_L[i-1];
         else {cerr << "DorsalSegmentLength: " << i << " not in the range [1," << N_segments << "]" << endl; exit(EXIT_FAILURE);}
     }
-    inline double VentralSegmentLength(int i)
+    inline double VentralSegmentLength(int i) const
     {
         if (i > 0 && i <= N_segments) return L_V_L[i-1];
         else {cerr << "VentralSegmentLength: " << i << " not in the range [1," << N_segments << "]" << endl; exit(EXIT_FAILURE);}
     }
     
     // YYY
-    double RestingLength(int i);
+    double RestingLength(int i) const;
     
     // Control
     void InitializeBodyState(void);

@@ -1,36 +1,225 @@
 #include "Evolvable.h"
 
-string getParameter(int argc, const char* argv[], string parName, const string defaultval)
+double getParameterDouble(int argc, const char* argv[], string parName, const string defaultval)
 {    
-   string retval = defaultval;
+
    if (((argc-1) % 2) != 0)
    {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
    for (int arg = 1; arg<argc; arg+=2) 
-   if (strcmp(argv[arg],parName.c_str())==0) {retval = (string) argv[arg+1];break;}
-   return retval;
+   if (strcmp(argv[arg], parName.c_str())==0) return stod(argv[arg+1]);
+   return stod(defaultval.c_str());
 }
+
+int getParameterInt(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return stoi(argv[arg+1]);
+   return stoi(defaultval.c_str());
+}
+
+long getParameterLong(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return stol(argv[arg+1]);
+   return stol(defaultval.c_str());
+}
+
+string getParameterString(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return (string) argv[arg+1];
+   return defaultval;
+}
+
+string rename_file(const string & filename, const string & directoryName, const string & fileprefix)
+{return directoryName + "/" + fileprefix + filename;}
+
+
+bool directoryExists(const string & directoryName)
+{
+  struct stat sb;
+  if (stat(directoryName.c_str(), &sb) != 0) return false;
+  return true;
+  //{cout << "Directory doesn't exist." << endl;exit(1);}
+}
+
 
 W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 {
-    randomInitialState = atoi(getParameter(argc,argv,"--randInitState","0").c_str());
+    assert(0 && "This is depreciated");
+    randomInitialState = getParameterInt(argc,argv,"--randInitState","0");;
     //cout << "ran " << randomInitialState << endl;
     //assert(0);
 }
 
 
-W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
+
+void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
-  AB_output_level = atoi(getParameter(argc,argv,"--ABLevel","1").c_str());
-  sr_type = getParameter(argc,argv,"--SRType","None");
+    doOrigMuscInput = cmd->getArgValInt("--doOrigMuscInput", doOrigMuscInput);
+    randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+
+}
+
+void W2DCEparsA::setPars(shared_ptr<const CmdArgs> cmd)
+{
+
+    AB_output_level =  cmd->getArgValDoub("--ABLevel",AB_output_level );
+    AVA_output = cmd->getArgValDoub("--AVAOutputLevel", AVA_output);
+    AVB_output = cmd->getArgValDoub("--AVBOutputLevel", AVB_output);
+    W2Dbaseparameters::setPars(cmd);
+}
+
+W2DCEparsA::W2DCEparsA(int argc, const char* argv[]):W2Dbaseparameters(argc,argv)
+{
+
+  AB_output_level = getParameterDouble(argc,argv,"--ABLevel","1");
+}
+
+SRCEpars::SRCEpars()
+{
+    sr_type = "None";
+    SRForm = 0;
+    nsegperstr = 6;
+
+}
+
+SRCEpars::SRCEpars(shared_ptr<const CmdArgs> cmd){
+setPars(cmd);
+}
+
+SRRegpars::SRRegpars()
+{
+    offset = 0;
+    nsegperstr = 5;
+}
+
+SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
+
+
+
+void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+
+sr_type = cmd->getArgVal("--SRType",sr_type);
+SRForm = cmd->getArgValInt("--SRForm",SRForm);
+//nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
+zeroGainsType = cmd->getArgValInt("--SRZeroGainsType",zeroGainsType);
+
+
+assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
+    || sr_type == "SR_TRANS_ABS" 
+    || sr_type == "SR_TRANS_NEG" || sr_type == "None");
+
 }
 
 
-EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(argc,argv)
+void SRRegpars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+
+SRCEpars::setPars(cmd);
+nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
+//nsegperstr = cmd->getArgValInt("--SRSegPerSR",5);
+offset = cmd->getArgValInt("--SROffset",offset);
+
+}
+
+
+
+
+void W2DCEpars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+
+  SREvoBot = cmd->getArgValDoub("--SREvoBot",SREvoBot);
+  SREvoTop = cmd->getArgValDoub("--SREvoTop",SREvoTop);
+  SREvoBotA = cmd->getArgValDoub("--SREvoBotA",SREvoBotA);
+  SREvoTopA = cmd->getArgValDoub("--SREvoTopA",SREvoTopA);
+  W2DCEparsA::setPars(cmd);
+}
+
+
+
+W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
+{
+  //sr_type = getParameterString(argc,argv,"--SRType","None");
+  //SRForm = getParameterInt(argc,argv,"--SRForm","0");
+
+  assert(0 && "This is depreciated.");
+  SREvoBot = getParameterDouble(argc,argv,"--SREvoBot","0");
+  SREvoTop = getParameterDouble(argc,argv,"--SREvoTop","200");
+  
+}
+
+AgarPars::AgarPars(shared_ptr<const CmdArgs> cmd)
+{
+setPars(cmd);
+}
+
+void AgarPars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    OSCTbase = cmd->getArgValDoub("--OSCTbase",OSCTbase);
+    agarfreq = cmd->getArgValDoub("--agarfreq",agarfreq);
+    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",AvgSpeed);
+
+}
+
+
+
+AgarPars::AgarPars(int argc, const char* argv[])
+{
+
+    OSCTbase = getParameterDouble(argc,argv,"--OSCTbase","0.25");
+    agarfreq = getParameterDouble(argc,argv,"--agarfreq","0.44");
+    AvgSpeed = getParameterDouble(argc,argv,"--AvgSpeed","0.00022");
+
+}
+
+EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,argv)
 {
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
-    doReverse = atoi(getParameter(argc,argv,"--doReverse","0").c_str());
+    
+    assert(0 && "This is depreciated.");
+
+    doReverse = getParameterInt(argc,argv,"--doReverse","0");
+    fitType = getParameterInt(argc,argv,"--fitType","0");
+
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
+
+EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
+{
+
+    doReverse = cmd->getArgValInt("--doReverse",doReverse);
+    fitType = cmd->getArgValInt("--fitType",fitType);
+    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
+}
+
+void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    AgarPars::setPars(cmd);
+    //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
+
+    doReverse = cmd->getArgValInt("--doReverse",doReverse);
+    fitType = cmd->getArgValInt("--fitType",fitType);
+    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
+
+    //sr_type = getParameter(argc,argv,"--SRType","None");
+}
+
+
 
 //EvolvableS::EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_):evolvable_w2par_ptr(w2par_ptr_)
 //, Epars1(dynamic_cast<Evolparameters&>(*w2par_ptr))
@@ -38,11 +227,19 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[])//:W2DCEpars(arg
 
 //EvolvableS::EvolvableS(){}
 
+Evolparameters::Evolparameters(int argc, const char* argv[], 
+    shared_ptr<EvolvableS> & evol1_, string evotype_):AgarPars(argc,argv)
+{evol1_->setEvolPars(*this, evotype_);}
 
-void EvolvableS::setParsFromFile(const string & filename_)
+Evolparameters::Evolparameters(shared_ptr<const CmdArgs> cmd, 
+    shared_ptr<EvolvableS> & evol1_, string evotype_):AgarPars(cmd)
+{evol1_->setEvolPars(*this, evotype_);}
+
+
+void EvolvableS::setParsFromFile(const string & genofilename_)
 {
     ifstream ifs;
-    ifs.open(filename_);
+    ifs.open(genofilename_);
     TVector<double> bestVector(1, getVectSize());
     //assert(0);
     ifs >> bestVector;

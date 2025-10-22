@@ -57,6 +57,10 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRunCOW2D
     rm -rf exampleRunCO
     rm -rf exampleRunW2DCE
+    rm -rf experiments/izq_runs_nets/103 
+    rm -rf experiments/izq_runs_nets_nml/103 
+    rm -rf experiments/izq_runs_nets_nml_musc/103
+    rm -rf experiments/exW2DSR
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -68,25 +72,57 @@ if [ "$quick_test" == 0 ]; then
         python test2018W2D.py
         python testCOW2D.py
     fi;
-
-    omv test -V .test.W2DCE.omt
+    
+    
+    omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
     omv test -V .test.CEW2D.omt
     omv test -V .test.2021.omt
     omv test -V .test.2021W2D.omt
-    
+    omv test -V .test.W2DCE.omt
+    omv test -V .test.W2DSR.omt
 
     cd neuromlLocal
-    ./regenerate.sh # regenerated NML & runs omv all -V
+    set -ex
+    ./clean.sh 
+    ruff format *py
     cd ..
+    python regenerate_folder.py --folder exampleRunCEW2D
+    cd neuromlLocal
+    omv test -V .test.w2d.nrn.omt
+    omv test -V .test.w2d.omt
+
+    cd testc302SigSim
+    make clean all
+    ./testc302NervousSystem --popString "DA DB DD VD VA VB" --popSize 10 --datString "CEOrig"
+    cd ..
+    cd ..
+
+    #./regenerate.sh # regenerated NML & runs omv all -V
+    #cd ..
     
     omv test -V .test.nmlNS.omt
     omv test -V .test.CEW2D_nml.omt
 
     cd neuromlLocal
-    ./regenerate_21.sh # regenerated NML & runs omv all -V
+    set -ex
+    ./clean.sh 
     cd ..
+
+    python regenerate_folder.py --folder exampleRun21W2D
+    cd neuromlLocal
+    omv test -V .test.21w2d.nrn.omt
+    omv test -V .test.21w2d.omt
+
+    cd testc302SigSim
+    make clean all
+    ./testc302NervousSystem --popString "AS DA DB DD VD VB VA" --popSize 7 --datString "21W2D"
+    cd ..
+    cd ..
+
+    #./regenerate_21.sh # regenerated NML & runs omv all -V
+    #cd ..
 
     python test2021W2D_nml.py
 

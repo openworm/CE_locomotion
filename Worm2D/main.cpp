@@ -1,6 +1,6 @@
 //#include "VectorMatrix.h"
 #include "WormRS18.h"
-#include "WormCE.h"
+#include "Worm2DCE.h"
 #include "Worm21.h"
 #include "WormAgent.h"
 //#include "Worm2DCE.h"
@@ -34,29 +34,33 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
 int main (int argc, const char* argv[])
 {
 
+    shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
+
     std::cout << std::setprecision(10);
-    string model_name =  getParameter(argc,argv,"--modelname","");
+    string model_name =  getParameterString(argc,argv,"--modelname","");
     if (model_name == "")
     {
     cout << "Model name required for Worm2D. Exiting." << endl;
     return 0;
     }
 
-    
+  
     Evolution* er = 0;
-    if (model_name == "CE") er = new EvolutionCE(argc,argv);
-    if (model_name == "RS18") er = new EvolutionRS18(argc,argv);
-    if (model_name == "Net21") er = new Evolution21(argc,argv);
+    if (model_name == "CE") er = new EvolutionCE(cmd);
+    if (model_name == "RS18") er = new EvolutionRS18(cmd);
+    if (model_name == "Net21") er = new Evolution21(cmd);
     if (model_name == "CO") {
      double stepsize = 0.01;
      int circuitsize = 10;   
-        er = new EvolutionCO(argc,argv,stepsize,circuitsize);
+        er = new EvolutionCO(cmd,stepsize,circuitsize);
     }
     const evoPars & ep1 = er->itsEvoPars();
 
+    
     InitializeBodyConstants();
+   
 
-    bool do_evol = atoi(getParameter(argc,argv,"--doevol","0").c_str());
+    bool do_evol = getParameterInt(argc,argv,"--doevol","0");
     if (do_evol) 
     {
         er->configure();
@@ -65,7 +69,7 @@ int main (int argc, const char* argv[])
         seedfile << ep1.randomseed << endl;
         seedfile.close();
     }
-
+   
     
     //get vector of best individual
    
@@ -87,7 +91,7 @@ int main (int argc, const char* argv[])
         Worm2Dbase* w = 0;
         
 
-        if (model_name == "CE") w = new WormCE(phenotype);
+        if (model_name == "CE") w = new WormCE(cmd,phenotype);
         if (model_name == "RS18") w = new Worm18(phenotype,0);
         if (model_name == "Net21") w = new Worm21(phenotype);
         if (model_name == "CO") {
@@ -128,12 +132,12 @@ int main (int argc, const char* argv[])
         
     }
 
-    bool do_nml =  atoi(getParameter(argc,argv,"--donml","0").c_str());
-    bool do_musclesim = atoi(getParameter(argc,argv,"--domusc","0").c_str());
+    bool do_nml =  getParameterInt(argc,argv,"--donml","0");
+    bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
 
     //run simulation with possibly different seed
     
-    const int simrandseed =  atoi(getParameter(argc,argv,"-R","-1").c_str());
+    const long simrandseed =  getParameterLong(argc,argv,"-R","-1");
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     
     if (!do_nml){
@@ -145,10 +149,11 @@ int main (int argc, const char* argv[])
 
     cout << "making worm" << endl;
 
-    if (model_name == "CE") w = new WormCE(phenotype);
+    if (model_name == "CE") w = new WormCE(cmd,phenotype);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
     if (model_name == "CO") w = new WormAgent(phenotype,10);
+   
 
     //write_json(er,w, "worm_data_3.json");
     //w->setBasename(er->itsEvoPars().directoryName);
@@ -156,16 +161,28 @@ int main (int argc, const char* argv[])
     w->InitializeData(er->itsEvoPars().directoryName);
     //w->dataReset();
 
+    
+    w->setStepSize(er->itsEvoPars().StepSize);
+    
+    //w->setDataskips(er->itsEvoPars().skip_steps);
+    //w->setPrefix("sim");
+    //w->InitializeData(er->itsEvoPars().directoryName);
+
+
     cout << "making simulation simrandseed " << simrandseed << endl;
     {RandomState rs;
     rs.SetRandomSeed(simrandseed);
-    er->RunSimulation(*w, rs);}
+    
+    w->initForSimulation(rs);
+
+    er->RunSimulation(*w, rs);
 
     {ofstream phenfile(er->rename_file("phenotype.dat"));
     w->DumpParams(phenfile);
     phenfile.close();}
 
     delete w;
+    }
 
     }
 
@@ -177,7 +194,7 @@ int main (int argc, const char* argv[])
 
     cout << "making worm 2" << endl;
 
-    if (model_name == "CE") w = new WormCE(phenotype);
+    if (model_name == "CE") w = new WormCE(cmd,phenotype);
     if (model_name == "RS18") w = new Worm18(phenotype,0);
     if (model_name == "Net21") w = new Worm21(phenotype);
     if (model_name == "CO") w = new WormAgent(phenotype,10);
@@ -237,6 +254,7 @@ int main (int argc, const char* argv[])
     json_in >> j;
     json_in.close();
 
+
     if (model_name == "CE") w = new Worm2DCE(j);
     //if (model_name == "Net21") w = new Worm2D21(j);
     
@@ -253,7 +271,7 @@ int main (int argc, const char* argv[])
 
     }
 
-    
+   
     w->setDataskips(er->itsEvoPars().skip_steps);
     w->InitializeData(er->itsEvoPars().directoryName);
     w->setStepSize(er->itsEvoPars().StepSize);

@@ -21,11 +21,15 @@ class NSosc : public NSForW2D {
 public:
 
 //NSosc(const pfa & pfa_);
-NSosc(int size_):pfa1(size_){}
+NSosc(int size_):pfa1(size_),output(size_,0.0){}
 
-virtual double NeuronOutput(int i) {return pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);}
+virtual double NeuronOutput(int i) {
+    output[i-1] = pfa1.amp[i-1]*sin(pi2*pfa1.freq[i-1]*t + pfa1.phase[i-1]);
+    return output[i-1];
+}
 double NeuronState(int i) {return 0;}
 void SetNeuronExternalInput(int i, double value) {return;}
+void IncNeuronExternalInput(int i, double value) {return;}
 virtual void EulerStep(double stepsize) {t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
@@ -39,8 +43,11 @@ friend class Worm2Dosc21all;
 friend class Worm2DoscHalf;
 
 pfa pfa1;
+protected:
+vector<double> output;
 private:
 double t;
+
 
 //vector<double> phase, freq, amp;
 
@@ -53,7 +60,10 @@ class CoupledOsc : public NSosc
     CoupledOsc(int size_):NSosc(size_){}
     CoupledOsc(const vector<toFromWeight> & weights_, int size_):weights(weights_),NSosc(size_){}
     void EulerStep(double stepsize);
-    double NeuronOutput(int i){return pfa1.amp[i-1]*sin(pfa1.phase[i-1]);}
+    double NeuronOutput(int i){
+        output[i-1] = pfa1.amp[i-1]*sin(pfa1.phase[i-1]);
+        return output[i-1];
+    }
     void setFromPheno(TVector<double> &pheno, int offset = 0);
     virtual ~CoupledOsc(){};
     friend class Worm2Dosc21Coup;
@@ -75,7 +85,8 @@ class Worm2Doscpars1 : public W2Dparameters
 public:
 double NMJweight;
 void setParsFromJson(json & j){NMJweight = j["NMJWeight"]["value"];}
-void addParsToJson(json & j){j["NMJWeight"]["value"] = NMJweight;}
+void addParsToJson(json & j) const {j["NMJWeight"]["value"] = NMJweight;}
+void setPars(shared_ptr<const CmdArgs> cmd){assert(0);}
 };
 
 
@@ -83,7 +94,7 @@ class Worm2Doscpars : public Worm2Doscpars1
 {
 public:
 void setParsFromJson(json & j){Worm2Doscpars1::setParsFromJson(j);}
-void addParsToJson(json & j){Worm2Doscpars1::addParsToJson(j);}
+void addParsToJson(json & j) const {Worm2Doscpars1::addParsToJson(j);}
 
 };
 
@@ -102,14 +113,14 @@ void setParsFromJson(json & j)
     //Evolparameters::setParsFromJson(j);
 } 
 
-void addParsToJson(json & j)
+void addParsToJson(json & j) const
 {
     j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
     j["NMJ_VN"]["value"] = NMJ_VN;
     j["NMJ_DN"]["value"] = NMJ_DN;
     //Evolparameters::addParsToJson(j);
 }
-
+void setPars(shared_ptr<const CmdArgs> cmd){assert(0);}
 
 };
 
@@ -171,10 +182,14 @@ NSosc & n;
 //Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
 //Evolparameters & Epars1;
 
-virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
-{return Worm2Dbase::setWormPars(argc,argv);}
-virtual void setWormPars(const W2Dparameters & w2par_)
-{return Worm2Dbase::setWormPars(w2par_);}
+virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
+{return Worm2Dbase::setWormPars(cmd);}
+
+//virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
+//{return Worm2Dbase::setWormPars(argc,argv);}
+
+//virtual void setWormPars(const W2Dparameters * w2par_)
+//{return Worm2Dbase::setWormPars(w2par_);}
 
 
 protected:
@@ -233,6 +248,7 @@ int getVectSize(){return 4;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
+template<class T> friend class EvolutionFullW;
 //static inline int evoVectSize = 4;
 protected:
 
@@ -282,6 +298,8 @@ int getVectSize() {return 3;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
+
+template<class T> friend class EvolutionFullW;
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
@@ -337,6 +355,8 @@ int getVectSize() {return 6;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
+template<class T> friend class EvolutionFullW;
+
 protected:
 void setPhenoNames(); 
 //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
@@ -364,6 +384,8 @@ Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 18;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -382,6 +404,8 @@ Worm2Dosc21S(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 5;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 //void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -400,7 +424,7 @@ Worm2Dosc21Coup(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size()+4;}
 
-
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);
@@ -420,6 +444,8 @@ Worm2Dosc21CF(const string & filename_);
 Worm2Dosc21CF(TVector<double> & pheno, const bool & isPheno);
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size() + 14 + 3;}
+
+template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(TVector<double> &phen);

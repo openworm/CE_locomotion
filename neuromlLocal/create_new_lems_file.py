@@ -14,7 +14,7 @@ import pprint
 from pyneuroml.runners import run_jneuroml  # ,run_lems_with_jneuroml_neuron
 import shutil
 
-import utils
+from . import utils
 import matplotlib
 
 colour_list = list(matplotlib.colors.cnames.values())

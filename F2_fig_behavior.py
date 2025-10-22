@@ -9,8 +9,11 @@ import neuromlLocal.utils as utils
 
 
 def make_fig(plot_format):
-    if not os.path.isfile(hf.rename_file("sim_body.dat")):
-        return
+    file_prefix = "sim_"
+    if not os.path.isfile(hf.rename_file(file_prefix + "ns.dat")):
+        file_prefix = ""
+        if not os.path.isfile(hf.rename_file(file_prefix + "ns.dat")):
+            return
 
     nrods = 51
     mpl.rcParams["xtick.labelsize"] = 24
@@ -38,13 +41,24 @@ def make_fig(plot_format):
     ################################################
     ###################### CURVATURE  ################
 
-    body = np.loadtxt(hf.rename_file("sim_body.dat"))  ## first 50 seconds of simulation
-    curv = np.loadtxt(hf.rename_file("sim_curv.dat"))
-    act_data = np.loadtxt(hf.rename_file("sim_ns.dat")).T
+    body = np.loadtxt(
+        hf.rename_file(file_prefix + "body.dat")
+    )  ## first 50 seconds of simulation
+    curv = np.loadtxt(hf.rename_file(file_prefix + "curv.dat"))
+    act_data = np.loadtxt(hf.rename_file(file_prefix + "ns.dat")).T
 
-    network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
+    worm_file = hf.rename_file("worm_data_evo.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data.json")
+
+    network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
     pop_plot_names = plot_format["plot_cell_names"]
+    plot_cell_unit = 1
+    if "plot_cell_unit" in plot_format:
+        plot_cell_unit = plot_format["plot_cell_unit"]
     plot_col_divs = plot_format["plot_col_divs"]
     cell_names = utils.getCellNames(network_json_data)
     step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
@@ -53,7 +67,20 @@ def make_fig(plot_format):
     skip_steps = network_json_data["Evolutionary Optimization Parameters"][
         "skip_steps"
     ]["value"]
+
+    plot_transient = act_data[0, 0]
     plot_time = plot_format["plot_time"]
+
+    worm_sim_file = hf.rename_file("worm_data_worm.json")
+    if os.path.isfile(worm_sim_file):
+        worm_sim_data = utils.getJsonFile(worm_sim_file)
+        if "Simulation" in worm_sim_data:
+            plot_time = worm_sim_data["Simulation"]["duration"]["value"]
+
+    plot_ex = max(0, plot_time - 40)
+    plot_transient = plot_transient + plot_ex / 2
+    plot_time = plot_time - plot_ex
+
     worm_plot_time = plot_format["worm_plot_time"]
     AvgSpeed = (
         network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"]["value"]
@@ -111,19 +138,28 @@ def make_fig(plot_format):
 
     ################################################
     fzl = 26
-    ############ Curvature  #######
+    ############ Curvature  ######
     ###############################
+    low_lim = int(plot_ex / (2.0 * step_size * skip_steps))
+    hi_lim = int(plot_time / (step_size * skip_steps))
+    # print("lsls ", plot_ex, step_size, skip_steps, low_lim, hi_lim)
+    # sys.exit(0)
     imcurv = ax1.imshow(
-        curv.T[1:, :],
+        # curv.T[1:, :],
+        curv.T[1:, low_lim : hi_lim + low_lim],
         cmap=plt.get_cmap("seismic"),
         aspect="auto",
         vmin=-10,
         vmax=10,
         origin="lower",
     )
-    ax1.set_xlim(0, int(plot_time / (step_size * skip_steps)))
+    # ax1.set_xlim(low_lim, hi_lim + low_lim)
+    # ax1.set_xlim(int(plot_transient / (step_size * skip_steps)),
+    #             int((plot_transient + plot_time) / (step_size * skip_steps)))
     # ax1.set_xticks([0, 40, 80, 120])
-    ax1.set_xticks(np.linspace(0, int(plot_time / (step_size * skip_steps)), 4))
+    # ax1.set_xticks(np.linspace(low_lim, hi_lim + low_lim, 4))
+    # ax1.set_xticks(np.linspace(int(plot_transient / (step_size * skip_steps)),
+    #                           int((plot_transient + plot_time) / (step_size * skip_steps)), 4))
     ax1.set_xticklabels([])
     ax1.set_yticks([1, 21])
     ax1.set_yticklabels(["", ""])
@@ -136,15 +172,16 @@ def make_fig(plot_format):
     # s = np.where(np.array(sel) == 23)[0]
 
     plot_velocity = True
-    plot_transient = 50.0
+
     if plot_velocity:
-        vel = np.loadtxt(hf.rename_file("sim_vel.dat")).T
+        vel = np.loadtxt(hf.rename_file(file_prefix + "vel.dat")).T
         # ax2.plot(np.linspace(0, 10, len(vel[s][0])), 1000*vel[s][0], 'k', linewidth = 3)
-        ax2.plot(vel[0][1:] - plot_transient, 1000 * vel[1][1:], "k", linewidth=3)
+        ax2.plot(vel[0][1:], 1000 * vel[1][1:], "k", linewidth=3)
         ax2.axhline(y=AvgSpeed, linestyle="--", color="r")
         ax2.set_ylim(AvgSpeed * 0.5, AvgSpeed * 1.5)
         ax2.set_xticklabels([])
-        ax2.set_xlim(0, plot_time)
+        ax2.set_xlim(plot_transient, plot_transient + plot_time)
+        # ax2.set_xlim(0, plot_time)
         # ax2.set_yticks([0.1, 0.2, 0.3])
         ax2.set_yticks(np.linspace(AvgSpeed * 0.5, AvgSpeed * 1.5, 3))
         ax2.set_ylabel("Velocity (mm/s)", fontsize=fzl, labelpad=24)
@@ -159,9 +196,15 @@ def make_fig(plot_format):
     for ind, (cell, col) in enumerate(
         zip(pop_plot_names[: int(plot_col_divs[0])], cols)
     ):
-        ind1 = cell_names.index(cell)
-        ax3.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
-        ax3.set_xlim(0, plot_time)
+        ind1 = utils.getIndOfNthVal(cell, cell_names, plot_cell_unit)
+        if ind1 is None:
+            print("Index error")
+            exit()
+        print("cell ind is ", ind1)
+        # ind1 = cell_names.index(cell)
+        ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
+        ax3.set_xlim(plot_transient, plot_transient + plot_time)
+        # ax3.set_xlim(0, plot_time)
         ax3.set_ylim(-0.1, 1.1)
         ax3.set_xticklabels([])
         # ax3.set_ylabel('Activity', fontsize = fzl, labelpad = 24)
@@ -184,10 +227,18 @@ def make_fig(plot_format):
             cols[int(plot_col_divs[0] - plot_col_divs[1]) :],
         )
     ):
-        ind1 = cell_names.index(cell)
-        ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
-        ax4.set_xlim(0, plot_time)
+        # ind1 = cell_names.index(cell)
+        ind1 = utils.getIndOfNthVal(cell, cell_names, plot_cell_unit)
+        if ind1 is None:
+            print("Index error")
+            exit()
+        print("cell ind is ", ind1)
+        # ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
+        ax4.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
+        ax4.set_xlim(plot_transient, plot_transient + plot_time)
         ax4.set_ylim(-0.1, 1.1)
+        # ax4.set_xticks(np.linspace(int(plot_transient / (step_size * skip_steps)),
+        #                       int((plot_transient + plot_time) / (step_size * skip_steps)), 4))
         # ax4.set_ylabel('Activity', fontsize = fzl, labelpad = 24)
         ax4.set_xlabel("Time (s)", fontsize=fzl, labelpad=22)
         plt.figtext(
