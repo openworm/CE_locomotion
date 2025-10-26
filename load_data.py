@@ -675,7 +675,8 @@ def reload_single_run(a=None, **kwargs):
     from F2_fig_behavior import make_fig
 
     if not (
-        a.modelName == "CO" or a.modelName == "W2Dosc" or a.modelName == "W2Dosc21"
+        a.modelName == "CO" or a.modelName == "W2Dosc" 
+        or a.modelName == "W2Dosc21" or a.modelName == "CO18Full"
     ):
         make_fig(plot_format=plot_format)
 

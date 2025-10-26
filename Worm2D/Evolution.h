@@ -56,7 +56,7 @@ class Evolution
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
     TVector<double> & getBestGenotype();
-    TVector<double> & getBestPhenotype();
+    TVector<double> getBestPhenotype();
 
     virtual void writeJson(TVector<double> &) = 0;
     
