@@ -124,8 +124,10 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //const vector<string> getVMuscNames(){ return {"dum1"};}
     //const vector<string> getDMuscNames(){ return {"dum1"};}
     vector<toFromWeight> makeMuscleConn(const vector<int> & neurons, const vector<double> & NMJ);
-    void setMuscleInputOrig();
-    void setBodyInputOrig();
+
+
+    
+
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
     //double AVA_output, AVB_output;
@@ -150,7 +152,11 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     void makeExternalInputConn();
     void assignExternalInput();
+
+    
     void setExternalInputOrig();
+    void setMuscleInputOrig();
+    void setBodyInputOrig();
 
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";
