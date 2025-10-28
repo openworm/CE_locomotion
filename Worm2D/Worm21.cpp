@@ -89,7 +89,7 @@ void Worm21::setWormPars(shared_ptr<const CmdArgs> cmd_)
 
 
 
-void Worm21::setParsFromPheno(TVector<double> &pheno)
+void Worm21::setParsFromPheno(const TVector<double> &pheno)
 {
    
 // Muscles

@@ -5,41 +5,6 @@
 
 
 
-/* class EvaluationFcn
-{
-public:
-virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-virtual evoPars getDefaultEvoPars() = 0;
-const evoPars * ep_ptr;
-};
-
-template<class T>
-class Evaluation21 : EvaluationFcn
-{
-public:
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-evoPars getDefaultEvoPars();
-}; */
-
-/* template<typename Derived>
-class Evolvable
-{
-  public:
-  //Evolvable():ep_ptr(nullptr){}
-  void itsGenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-  {return Derived::GenPhenMapping(gen,phen);}
-  
-  //virtual void writeJson(TVector<double> &) = 0;
-  //virtual evoPars getDefaultEvoPars() = 0;
-  int itsVectSize() {return Derived::getVectSize();};
-  virtual ~Evolvable(){}
-
-  friend class EvolutionFull;
-  protected:
-  //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-  //virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-  //const evoPars * ep_ptr;
-}; */
 
 class W2Dparameters
 {
@@ -59,53 +24,18 @@ class EvolvableS
   
   virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
   virtual int getVectSize() = 0;
-  //static int getVectSize();
-  virtual ~EvolvableS(){}
-  virtual void setParsFromPheno(TVector<double> &pheno) = 0;
-  void setParsFromFile(const string & genofilename_);
-  void setParsFromGeno(TVector<double> &geno);
+  virtual void setParsFromPheno(const TVector<double> &pheno) = 0;
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
-  //virtual W2Dparameters & getWormPars() {return;}
-  
-  //virtual void setWormPars(const W2Dparameters * w2par_) = 0; 
-  //{
-  //return this->setWormPars(w2par_);
-  //}
-
-  //{ return T::setWormPars(w2par_);}
-
-  //virtual void setWormPars(int argc, const char* argv[]) {assert(0);}
-  //virtual shared_ptr<const W2Dparameters> getWormPars() {return nullptr;}
-  
-  //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0; //{return nullptr;}
-
-  //{return T::setWormPars(argc,argv);}
-
-  //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) = 0;
-  //{return this->setWormPars(argc,argv);}
-  
-  //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
   virtual void setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
 
-  //shared_ptr<W2Dparameters> evolvable_w2par_ptr;
-  //Evolparameters & Epars1;
-  //friend class EvolutionFull;
-  //protected:
-  //EvolvableS(shared_ptr<W2Dparameters> w2par_ptr_);
+  virtual ~EvolvableS(){}
+  
+  void setParsFromFile(const string & genofilename_);
+  void setParsFromGeno(TVector<double> &geno);
+  
 
-  //protected:
-  //shared_ptr<W2Dparameters> evolvable_worm_pars_ptr;
 };
 
-
-/* template<typename T>
-class EvolvableST : public EvolvableS
-{
-  public:
-void setWormPars(const W2Dparameters * w2par_) override { return T::setWormPars(w2par_);}
-shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) override 
-{return T::setWormPars(argc,argv);}
-}; */
 
 class W2Dbaseparameters : virtual public W2Dparameters
 {

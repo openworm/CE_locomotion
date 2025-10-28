@@ -222,7 +222,7 @@ WormCE::WormCE(json j):WormCE()
 }
 
 
-void WormCE::setParsFromPheno(TVector<double> &pheno)
+void WormCE::setParsFromPheno(const TVector<double> &pheno)
 {
 // PG: Setting these to zero as they were not initialised before use!
   // Note: the usage of these needs to be further investigated!

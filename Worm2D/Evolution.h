@@ -267,6 +267,7 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     double Evaluation21R(TVector<double> &genotype, RandomState &rs);
     double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
     double EvaluationCENZ(TVector<double> &genotype, RandomState &rs);
+    double EvaluationC0(TVector<double> &genotype, RandomState &rs);
 
     void writeJson(TVector<double> & pheno);
 
@@ -387,40 +388,6 @@ evoPars EvolutionFullW<T>::getDefaultEvoPars(const string & evotype_)
     assert(0 && "evotype not implemented");
     
     }
-
-
-
-
-/* template<class T>
-class EvolutionFullW21 : public EvolutionFullW<T>
-{
-    public:
-    EvolutionFullW21(int argc, const char* argv[]):EvolutionFullW(argc,argv){}
-    double EvaluationFunction(TVector<double> &geno, RandomState &rs) 
-    {return EvolutionFullW::Evaluation21(geno,rs);}
-    virtual ~EvolutionFullW21(){}
-
-};
- */
-
-
-
-
-/* template<class T>
-class EvolutionFullW2 : public Evolution
-{
-public:
-EvolutionFullW2(int argc, const char* argv[]):
-Evolution(argc,argv,evoPars1,T::getVectSize()){}
-void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) {return T::GenPhenMapping(gen,phen);}
-
-static inline evoPars evoPars1 =  {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, T::getVectSize(), ""};
-}; */
 
 
 template<class T>
@@ -1151,31 +1118,87 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
 
 
-/* template<class T>
-class EvolutionFullW3 : public Evolution
+template<class T>
+double EvolutionFullW<T>::EvaluationC0(TVector<double> &genotype, RandomState &rs)
 {
-public:
-EvolutionFullW3(int argc, const char* argv[]):
-Evolution(argc,argv,getDefaultEvoPars(T::getVectSize()),T::getVectSize()){}
 
-virtual ~EvolutionFullW3(){}
+//	cout << "EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm)" << endl;
 
+	TVector<double> phenotype;
+	phenotype.SetBounds(1, evoPars1.VectSize);
+	GenPhenMapping(v, phenotype);
+	
+	//WormAgent Worm(CircuitSize);
 
-void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-protected:
-double Evaluation21(TVector<double> &v, RandomState &rs);
-double Evaluation18(TVector<double> &v, RandomState &rs);
-//double EvaluationCE(TVector<double> &v, RandomState &rs);
-//double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+	RandomState rs2 = rs;
+	Worm->InitializeState(rs2);
+	Worm->SetParameters(phenotype);
+	Worm->setStepSize(evoPars1.StepSize);
 
+	double f, accdist, totaldist;
+	int k = 0;
+	double fitness = 0.0;
+	int taxis,kinesis;
+	for (int mode = 1; mode <= 1; mode++)
+	{
+		if (mode==0){taxis = 0;kinesis = 1;}
+		else {taxis = 1;kinesis = 0;}
+		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
+		{
+			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
+			{
+				Worm->setSimPars(orient,
+					gradSteep,
+					evoPars1.Transient + evoPars1.Duration,
+					evoPars1.StepSize, taxis, kinesis);
+				//Worm->InitializeSimulation(rs);
+				Worm->initForSimulation(rs);
 
-evoPars getDefaultEvoPars(const int & vectsize_) 
-{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, vectsize_, "", "Evo21"};}
+				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
+				Worm->ResetAgentsBody(orient, rs);
+				Worm->ResetChemCon(gradSteep);
+				Worm->ResetAgentIntState(rs);
+				Worm->UpdateChemCon(gradSteep); */
 
-//void addExtraParsToJson(json & j)
-//{Evolution::addExtraParsToJson(j); j["Evolutionary Optimization Parameters"]["EvolutionType"]=etype;} 
-//enum Evotype etype;
-}; */
+				for (int repeats = 1; repeats <= 2; repeats++)
+				{
+					Worm->ResetAgentsBody();
+					Worm->setTime(0);
+					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						Worm->Step();
+
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+					}
+					accdist = 0.0;
+					Worm->setTime(0);
+					for (double t = evoPars1.StepSize; t <= evoPars1.Duration; t += evoPars1.StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						Worm->Step();
+						
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+
+						accdist += Worm->DistanceToCentre();
+						//cout << "D " << Worm->DistanceToCentre() << endl;
+					}
+					totaldist = (accdist/(evoPars1.Duration/evoPars1.StepSize));
+					f = (MaxDist - totaldist)/MaxDist;
+					f = f < 0 ? 0.0 : f;
+					fitness += f;
+					k++;
+					//cout << k << " " << totaldist << endl;
+				}
+			}
+		}
+	}
+	return fitness/k;
+}
+

@@ -320,9 +320,9 @@ void Worm2Dosc::setEvolPars(W2Dparameters & w2par_, string evotype_)
 
 }
 
-void Worm2Dosc::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc::setParsFromPheno(const TVector<double> &phen)
 {
-    pars1.NMJweight = phen[4];
+    pars1.NMJweight = phen(4);
     //pars1.dbunit = 6;
     //pars1.vbunit = 30;
     cout << "Worm2Dosc::getParsFromPheno" << endl;
@@ -636,9 +636,9 @@ n.pfa1.swap_all(pfa1);
 
 }
 
-void CoupledOsc::setFromPheno(TVector<double> &pheno, int offset)
+void CoupledOsc::setFromPheno(const TVector<double> &pheno, int offset)
 {
-for (int i = 0; i<weights.size(); i++) weights[i].w.weight = pheno[i+1+offset];
+for (int i = 0; i<weights.size(); i++) weights[i].w.weight = pheno(i+1+offset);
 
 }
 
@@ -722,40 +722,40 @@ void Worm2Dosc21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 }
 
 
-void Worm2Dosc21::setParsFromPheno(TVector<double> &phen, int offset)
+void Worm2Dosc21::setParsFromPheno(const TVector<double> &phen, int offset)
 {
-    pars1.NMJ_Gain_Map = phen[offset];
+    pars1.NMJ_Gain_Map = phen(offset);
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
     for (int i=1; i<=par1.N_muscles; i++)
     {
     pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1.NMJ_Gain_Map)/par1.N_muscles));
     }
     
-    pars1.NMJ_VN = phen[offset+1];
-    pars1.NMJ_DN = phen[offset+2];
+    pars1.NMJ_VN = phen(offset+1);
+    pars1.NMJ_DN = phen(offset+2);
     //pars1.dbunit = nn(1,3);
     //pars1.vbunit = nn(2,3);
    
 }
 
 
-void Worm2Dosc21::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc21::setParsFromPheno(const TVector<double> &phen)
 {
     setParsFromPheno(phen,4);
 
 }
 
-void Worm2Dosc21S::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc21S::setParsFromPheno(const TVector<double> &phen)
 {
-    pars1.NMJ_Gain_Map = phen[4];
+    pars1.NMJ_Gain_Map = phen(4);
 
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
     for (int i=1; i<=par1.N_muscles; i++)
     {
     pars1.NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1.NMJ_Gain_Map)/par1.N_muscles));
     }
-    pars1.NMJ_DN = phen[5];
-    pars1.NMJ_VN = phen[5];
+    pars1.NMJ_DN = phen(5);
+    pars1.NMJ_VN = phen(5);
     //pars1.dbunit = nn(1,3);
     //pars1.vbunit = nn(2,3);
 
@@ -764,13 +764,13 @@ void Worm2Dosc21S::setParsFromPheno(TVector<double> &phen)
 
 
 
-void Worm2Dosc21all::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc21all::setParsFromPheno(const TVector<double> &phen)
 {
     Worm2Dosc21::setParsFromPheno(phen,16);
    
 }
 
-void Worm2Dosc21Coup::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc21Coup::setParsFromPheno(const TVector<double> &phen)
 {
     
     cn.setFromPheno(phen);
@@ -779,7 +779,7 @@ void Worm2Dosc21Coup::setParsFromPheno(TVector<double> &phen)
 
 }
 
-void Worm2Dosc21CF::setParsFromPheno(TVector<double> &phen)
+void Worm2Dosc21CF::setParsFromPheno(const TVector<double> &phen)
 {
     assert(n.pfa1.size==14);
     cn.setFromPheno(phen);

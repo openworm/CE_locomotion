@@ -1,5 +1,6 @@
 #include "Worm2Dmods.h"
 #include "Worm21.h"
+#include "WormRS18.h"
 #include "Worm2DCE.h"
 #include "Evolution.h"
 
@@ -102,6 +103,8 @@ int main (int argc, const char* argv[])
         if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
         if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
 
+        if (model_name == "W2D18") evo = new EvolutionFullW<Worm18>(cmd); 
+
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
@@ -150,7 +153,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
     if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
-    
+    if (model_name == "W2D18") w2 = new Worm18(gen_filename);
 
     }else{
 

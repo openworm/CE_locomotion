@@ -222,7 +222,7 @@ public:
     WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
 
     void setParsFromJson(json & j);
-    void setParsFromPheno(TVector<double> &pheno);
+    void setParsFromPheno(const TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
     void setEvolPars(W2Dparameters & w2par_, string evotype_);
