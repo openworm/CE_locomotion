@@ -168,6 +168,12 @@ int main (int argc, const char* argv[])
 
     }
 
+    json_filename = rename_file("worm_data_evo.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
+
     const json j_evo = getJsonFromFile(json_filename);
     long simrandseed = j_evo["Evolutionary Optimization Parameters"]["randomseed"]["value"];
     StepSize = j_evo["Evolutionary Optimization Parameters"]["StepSize"]["value"];
