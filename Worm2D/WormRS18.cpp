@@ -30,13 +30,13 @@ return {headsr,vncsr};
 
 //Worm18::Worm18():Worm18(readPhenotype(), 0){setRs18output(1);} //for WormCO18
 
-Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles),
-rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0){setRs18output(1);} //for WormCO18Full
+Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
+n(dynamic_cast<NervousSystem&>(*n_ptr)),rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
+{setRs18output(1);} //for WormCO18Full
 
 // The constructor
 
-Worm18::Worm18(const TVector<double> & v1, double output):Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles),
-rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
+Worm18::Worm18(const TVector<double> & v1, double output):Worm18()
 {
      SetParameters(v1);
 }
@@ -45,8 +45,7 @@ Worm18::Worm18(const TVector<double> & v1):Worm18(v1,1){}
 
 //Worm18(getVector<double>(v1), 0){}
 
-Worm18::Worm18(vector<double> v1, double output):Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles),
-rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
+Worm18::Worm18(vector<double> v1, double output):Worm18()
 {
     //supArgs1.writeMessage();
 
@@ -150,7 +149,8 @@ void Worm18::SetParameters(const TVector<double> & v)
 
 void Worm18::setParsFromPheno(const TVector<double> &v)
 {
-NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+
+//NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     // Nervous system // Ventral cord
     n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
@@ -306,7 +306,7 @@ NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
 void Worm18::InitializeState(RandomState &rs)
 {
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     n.RandomizeCircuitState(-0.5, 0.5, rs);
     /* for (int i = 1; i <= n.size-4; i++)
         n.SetNeuronState(i, (i-0.5)/(n.size-4));
@@ -605,7 +605,7 @@ void Worm18::addParsToJson(json & j)
     //vector<string> cell_names = {"SMDD", "RMDD", "SMDV", "RMDV"};
     //appendCellNamesToJson(j[nsHead], cell_names, 1);
 
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);

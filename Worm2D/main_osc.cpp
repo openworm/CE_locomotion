@@ -29,8 +29,13 @@ int main (int argc, const char* argv[])
     double StepSize;
     int skip_steps;
 
-    const string json_filename = rename_file("worm_data_evo.json", directoryName);
-    
+
+    string json_filename = rename_file("worm_data_evo.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
+
     if (model_name == "") {  
     if (directoryExists(json_filename)){
         json j = getJsonFromFile(json_filename);

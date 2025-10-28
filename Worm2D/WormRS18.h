@@ -52,6 +52,8 @@ public:
 
     friend class WormCO18;
     
+    NervousSystem & n;
+
     protected:
     void Step1(); 
     virtual void preNStep();

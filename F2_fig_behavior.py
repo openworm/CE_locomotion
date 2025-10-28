@@ -49,14 +49,14 @@ def make_fig(plot_format):
 
     worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_worm.json")
-    if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data_worm.json")
 
     network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
     pop_plot_names = plot_format["plot_cell_names"]
-    plot_cell_unit = 1
+    plot_cell_unit = 0
     if "plot_cell_unit" in plot_format:
         plot_cell_unit = plot_format["plot_cell_unit"]
     plot_col_divs = plot_format["plot_col_divs"]
