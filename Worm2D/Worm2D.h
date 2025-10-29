@@ -153,6 +153,9 @@ class Worm2Dbody : virtual public DataWriter
     void writeData();
     WormBody b;
 
+    bool first_call = true;
+    double xtp = 0, ytp = 0;
+
 };
 
 class Worm2Dbase : virtual public DataWriter

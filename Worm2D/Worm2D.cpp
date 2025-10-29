@@ -332,8 +332,11 @@ void Worm2Dbase::Step(double StepSize_)
 
 double Worm2Dbody::getVelocity()
 {
-   static double xtp =  CoMx();
-   static double ytp =  CoMy();
+    if (first_call){
+    xtp =  CoMx();
+    ytp =  CoMy();
+    first_call = false;
+    }
 
     double xt = CoMx(); 
     double yt = CoMy();
