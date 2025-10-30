@@ -137,5 +137,7 @@ public:
   	void setDistanceToCentre();
 	void writeAct();
 
+
+	void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
 };
 

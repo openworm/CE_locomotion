@@ -563,3 +563,60 @@ void WormAgent::moveAgent()
 }
 
 	
+void WormAgent::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+	const double BiasRange = 15.0;
+const double SensorWeightRange = 1500.0;
+const double InterneuronWeightRange = 15.0;
+const double StretchReceptorRange = 15.0;
+
+const double MaxDifSensor = HST;
+
+const double TauMax = HST;
+
+const double MinNeckTurnGain = 1.0;
+const double MaxNeckTurnGain = 2.0;
+double TauMin; // = 10*evoPars1.StepSize;
+double MinDifSensor; // = 10*evoPars1.StepSize;
+
+
+//	cout << "EvolutionCO::GenPhenMapping " << endl;
+	int k = 1;
+
+	// Sensor to interneurons
+	for (int i = 1; i <= 2*(size-4); i++){
+		phen(k) = MapSearchParameter(gen(k), -SensorWeightRange, SensorWeightRange);
+		k++;
+	}
+
+	// Weights between interneurons (fully recurrent, non-symm)
+	for (int i = 1; i <= (size-4)*(size-4) + (size-2)*2 + (size-4) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -InterneuronWeightRange, InterneuronWeightRange);
+		k++;
+	}
+
+	// Biases interneurons
+	for (int i = 1; i <= (size-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -BiasRange, BiasRange);
+		k++;
+	}
+
+	//  Time-constants
+	for (int i = 1; i <= (size-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), TauMin, TauMax);
+		k++;
+	}
+
+	//		CPG to motorneurons
+	phen(k) = MapSearchParameter( gen(k), 0.0, StretchReceptorRange); // w_CPG_SMB
+	k++;
+
+	//      Difference sensor parameters
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // N
+	k++;
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // M
+	k++;
+
+	//      Weight of the connection between the motorneurons and the muscles
+	phen(k) = MapSearchParameter( gen(k), MinNeckTurnGain, MaxNeckTurnGain);
+}
