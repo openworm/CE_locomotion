@@ -261,8 +261,8 @@ void WormAgent::ResetAgentsBody()
 
 	//SetPositionX(cos(tempangle) * distanceToCentre);
 	//SetPositionY(sin(tempangle) * distanceToCentre);
-	px = cos(tempangle) * MaxDist*-1; //DistanceToCentre();
-	py = sin(tempangle) * MaxDist*-1; //DistanceToCentre();
+	px = cos(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
+	py = sin(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;

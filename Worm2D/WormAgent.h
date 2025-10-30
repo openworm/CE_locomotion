@@ -22,7 +22,7 @@ public:
 	// The constructor
 	//WormAgent();
 	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
-	WormAgent(int newsize = 4);	// Construct from evolutionary algorithm
+	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
 	// The destructor
 	~WormAgent();
