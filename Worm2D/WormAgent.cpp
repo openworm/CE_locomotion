@@ -235,7 +235,7 @@ void WormAgent::InitializeState(RandomState &rs_)
 
 void WormAgent::InitialiseAgent()
 {
-	VelDelta		=	(int) (HST/gradPars->HSStepSize);
+	VelDelta = (int) (HST/gradPars->HSStepSize);
 	iSensorN = (int) (sensorN/gradPars->HSStepSize);
 	dSensorN = (double) iSensorN;
 	iSensorM = (int) (sensorM/gradPars->HSStepSize);
@@ -255,7 +255,7 @@ void WormAgent::InitialiseAgent()
 
 void WormAgent::ResetAgentsBody()
 {
-	//distanceToCentre = -MaxDist;
+	distanceToCentre = -MaxDist;
 
 	double tempangle = 0.0;
 
@@ -273,8 +273,11 @@ void WormAgent::ResetAgentsBody()
 
 void WormAgent::ResetChemCon()
 {
-	double dist = distanceToCenter();
-	chemCon = -dist * gradPars->gradSteep;
+	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+
+	//double dist = distanceToCenter();
+	//chemCon = -dist * gradPars->gradSteep;
+
 	pastCon = chemCon;
 	timer = iSensorN + iSensorM + 1;
 	for (int i = 1; i <= timer; i++)
@@ -291,6 +294,11 @@ void WormAgent::ResetAgentIntState(RandomState &rs)
 }
 
 
+void WormAgent::setDistanceToCentre()
+{
+	distanceToCentre = sqrt(pow(PositionX(),2) + pow(PositionY(),2));
+
+}
 
 double WormAgent::distanceToCenter() const
 {
@@ -300,12 +308,14 @@ double WormAgent::distanceToCenter() const
 
 void WormAgent::UpdateChemCon()
 {
-	double dist = distanceToCenter();
-	//setDistanceToCentre();
+	//double dist = distanceToCenter();
+	setDistanceToCentre();
 	//distanceToCentre = sqrt(pow(px_,2) + pow(py_,2));
 	//distanceToCentre = sqrt(pow(px,2) + pow(py,2));
 	pastCon = chemCon;
-	chemCon = -dist * gradPars->gradSteep;
+	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+
+	//chemCon = -dist * gradPars->gradSteep;
 	chemConHistory(timer) = chemCon;
 	timer += 1;
 }

@@ -48,7 +48,7 @@ public:
 	void SetChemCon(double newc) {chemCon = newc;};
 	double OutputGain(void) {return outputGain;};
 	void SetOutputGain(double newdc) {outputGain = newdc;};
-	//double DistanceToCentre(void) {return distanceToCentre;};
+	double DistanceToCentre(void) {return distanceToCentre;};
 	double distanceToCenter(void) const;
 
 	//double DistanceToCentre(void){return sqrt(pow(PositionX(),2) + pow(PositionY(),2));}	
@@ -87,7 +87,7 @@ public:
 	TVector<double> histCurv,histTheta;
 	double px, py, vx, vy, orient, theta;
 
-	//double distanceToCentre;
+	double distanceToCentre;
 	
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
 	int size;
@@ -134,7 +134,7 @@ public:
 	double getVelocity(){return avgvel;}
 	void writeBodyPos();
 	void writeData();	
-  	//void setDistanceToCentre();
+  	void setDistanceToCentre();
 	void writeAct();
 
 };
