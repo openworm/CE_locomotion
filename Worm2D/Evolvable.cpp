@@ -19,6 +19,20 @@ void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 
 }
 
+void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    orient_orig = cmd->getArgValDoub("--orient", orient_orig);
+    gradSteep = cmd->getArgValDoub("--gradSteep", gradSteep);
+    RunDuration = cmd->getArgValDoub("--RunDuration", RunDuration);
+    HSStepSize = cmd->getArgValDoub("--HSStepSize", HSStepSize);
+    taxis = cmd->getArgValInt("--taxis", taxis);
+    kinesis = cmd->getArgValInt("--kinesis", kinesis);
+    W2Dbaseparameters::setPars(cmd);
+
+}
+
+
+
 void W2DCEparsA::setPars(shared_ptr<const CmdArgs> cmd)
 {
 

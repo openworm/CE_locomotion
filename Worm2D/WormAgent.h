@@ -17,11 +17,12 @@ const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Fer
 	
 
 // The WormAgent class declaration
-class WormAgent : public Worm2Dbase {
+class WormAgent : public Worm2Dbase, public WormGrad {
 public:
 	// The constructor
+	//WormAgent();
 	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
-	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
+	WormAgent(int newsize = 4);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
 	// The destructor
 	~WormAgent();
@@ -31,9 +32,9 @@ public:
 	void SetCircuitSize(int news) {size = news;};
 	void InitialiseCircuit(int newcs);
 	virtual void SetWormParametersFromFile(int newsize, const char* fnm);
-	virtual double PositionX(void) {return px;};
+	virtual double PositionX(void) const {return px;};
 	void SetPositionX(double newx) {px = newx;};
-	virtual double PositionY(void) {return py;};
+	virtual double PositionY(void) const {return py;};
 	void SetPositionY(double newy) {py = newy;};
 	double VelocityX(void) {return vx;};
 	void SetVelocityX(double newx) {vx = newx;};
@@ -47,7 +48,9 @@ public:
 	void SetChemCon(double newc) {chemCon = newc;};
 	double OutputGain(void) {return outputGain;};
 	void SetOutputGain(double newdc) {outputGain = newdc;};
-	double DistanceToCentre(void) {return distanceToCentre;};
+	//double DistanceToCentre(void) {return distanceToCentre;};
+	double distanceToCenter(void) const;
+
 	//double DistanceToCentre(void){return sqrt(pow(PositionX(),2) + pow(PositionY(),2));}	
 
 	// Control
@@ -83,11 +86,14 @@ public:
 	//VMCO::TVector<double> histCurv,histTheta;
 	TVector<double> histCurv,histTheta;
 	double px, py, vx, vy, orient, theta;
-	double distanceToCentre;
+
+	//double distanceToCentre;
+	
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
 	int size;
 	int forward;
 
+	shared_ptr<gradParameters> gradPars;
 
 	int		VelDelta;  //		=	(int) (HST/StepSize);
 
@@ -95,8 +101,10 @@ public:
 
 	RandomState * rs = nullptr;
 
-	double gradSteep, orient_orig, RunDuration, HSStepSize;
-	int taxis, kinesis;
+	//double gradSteep, orient_orig, RunDuration, HSStepSize;
+	//int taxis, kinesis;
+
+
 	//double sjadd;	
 	//int sdqqq;
 
@@ -126,7 +134,7 @@ public:
 	double getVelocity(){return avgvel;}
 	void writeBodyPos();
 	void writeData();	
-  	void setDistanceToCentre();
+  	//void setDistanceToCentre();
 	void writeAct();
 
 };

@@ -183,7 +183,7 @@ virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
 void DumpVal(string filename_, double val);
 virtual double getVelocity() = 0;
-const wormIzqParams par1;
+wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber) const;
 
 
@@ -350,5 +350,14 @@ public:
 virtual void setForward() = 0;
 virtual void setBackward() = 0;
 virtual void randomizeNS(RandomState &rs)  = 0;
+
+};
+
+class WormGrad
+{
+public:
+virtual void ResetAgentsBody()  = 0;
+virtual double distanceToCenter() const = 0;
+
 
 };

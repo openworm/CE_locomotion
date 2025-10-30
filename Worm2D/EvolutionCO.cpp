@@ -145,8 +145,10 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 						//Worm->UpdateSensors();
 						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
 						//Worm->UpdateChemCon(gradSteep);
+ 
+						accdist += Worm->distanceToCenter();
 
-						accdist += Worm->DistanceToCentre();
+						//accdist += Worm->DistanceToCentre();
 						//cout << "D " << Worm->DistanceToCentre() << endl;
 					}
 					totaldist = (accdist/(evoPars1.Duration/evoPars1.StepSize));
@@ -253,8 +255,8 @@ double EvolutionCO::Behavior(Worm2Dbase & w1)
 				
 						Worm.Step();
 				
-
-						accdist += Worm.DistanceToCentre();
+						accdist += Worm.distanceToCenter();
+						//accdist += Worm.DistanceToCentre();
 						if (mode==0){filek << t << " ";
 							Worm.PrintDetail(filek);}
 						else {filet << t << " ";

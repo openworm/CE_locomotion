@@ -4,6 +4,23 @@
 
 
 
+template<class T>
+void addParsToJson1(json & j, const vector<string> & names, const vector<T> & vals)
+{
+
+  assert(names.size() == vals.size());
+
+  for (int i=0; i<names.size(); i++) j[names[i]]["value"] = vals[i];
+
+}
+
+template<class T>
+T getParFromJson1(json & j, const string & name)
+{
+
+  return j[name]["value"];
+
+}
 
 
 class W2Dparameters
@@ -60,6 +77,7 @@ void setPars(shared_ptr<const CmdArgs> cmd);
 
 
 };
+
 
 
 class AgarPars : virtual public W2Dparameters
@@ -185,7 +203,40 @@ void addParsToJson(json & j) const {
  
 
 
+class gradParameters : public W2Dbaseparameters
+{
 
+  public:
+  gradParameters(){}
+  
+  void setPars(shared_ptr<const CmdArgs> cmd);
+
+  double orient_orig = 0, gradSteep = 0.5, RunDuration = 100, HSStepSize = 0.01, MaxDist = 4.5;
+  int taxis = 1, kinesis = 0;
+	
+  void setParsFromJson(json & j){
+
+  orient_orig = j["orient"]["value"]; 
+  gradSteep = j["gradSteep"]["value"];
+  RunDuration = j["RunDuration"]["value"];
+  HSStepSize = j["HSStepSize"]["value"];
+  taxis = j["taxis"]["value"];
+  kinesis = j["kinesis"]["value"];
+  MaxDist = j["MaxDist"]["value"];
+}
+
+void addParsToJson(json & j) const {
+
+  addParsToJson1<double>(j,{"orient", "gradSteep", "RunDuration", 
+    "HSStepSize", "MaxDist"},
+    {orient_orig,gradSteep,RunDuration,HSStepSize, MaxDist});
+
+  addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
+
+}
+
+
+};
 
 class W2DCEparsA : public W2Dbaseparameters
 {
