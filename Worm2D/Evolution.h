@@ -26,20 +26,6 @@ struct Callback<Ret(Params...)> {
 template <typename Ret, typename... Params>
 std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
-//struct evoPars;
-//struct simPars;
-
-/* struct simPars{
-
-  double Duration;       //
-  double Transient; 
-
-}; */
-
-
-
-
-
 
 
 class Evolution
@@ -252,12 +238,7 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_):cmd(cmd_),
     Evolvable_ptr(make_shared<T>(),cmd_), evopar_ptr(getParameters(cmd_)),
-    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
-    {
-        
-       // evolvable1->setWormPars(cmd_);
-       //  assert(0);
-    }
+    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize()){}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -267,7 +248,7 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
     double Evaluation21R(TVector<double> &genotype, RandomState &rs);
     double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
     double EvaluationCENZ(TVector<double> &genotype, RandomState &rs);
-    //double EvaluationC0(TVector<double> &genotype, RandomState &rs);
+    double EvaluationCO(TVector<double> &genotype, RandomState &rs);
 
     void writeJson(TVector<double> & pheno);
 
@@ -1116,6 +1097,119 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
 }
 
+template<class T>
+double EvolutionFullW<T>::EvaluationCO(TVector<double> &genotype, RandomState &rs)
+{
+
+//	cout << "EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm)" << endl;
+
+	//TVector<double> phenotype;
+	//phenotype.SetBounds(1, evoPars1.VectSize);
+	//GenPhenMapping(v, phenotype);
+	
+	//WormAgent Worm(CircuitSize);
+
+    T w;
+
+    w.setWormPars(cmd);
+    w.setParsFromGeno(genotype);
+
+
+    w.InitializeState(rs);
+    w.initForSimulation(rs);
+    w.setStepSize(evoPars1.StepSize);
+
+    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1);
+
+	//RandomState rs2 = rs;
+	//Worm->InitializeState(rs2);
+	//Worm->SetParameters(phenotype);
+	//Worm->setStepSize(evoPars1.StepSize);
+
+    WormGrad & wg = dynamic_cast<WormGrad&>(w);
+    
+    const double Pi	=	3.1415926;
+
+	double f, accdist, totaldist;
+	int k = 0;
+	double fitness = 0.0;
+	int taxis,kinesis;
+	for (int mode = 1; mode <= 1; mode++)
+	{
+		if (mode==0){taxis = 0;kinesis = 1;}
+		else {taxis = 1;kinesis = 0;}
+
+		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
+		{
+			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
+			{
+
+                w1->orient_orig = orient;
+                w1->gradSteep = gradSteep;
+                w1->RunDuration = evoPars1.Transient + evoPars1.Duration;
+                w1->HSStepSize = evoPars1.StepSize;
+                w1->taxis = taxis;
+                w1->kinesis = kinesis;
+
+				//Worm->setSimPars(orient,
+				//	gradSteep,
+				//	evoPars1.Transient + evoPars1.Duration,
+				//	evoPars1.StepSize, taxis, kinesis);
+
+				//Worm->InitializeSimulation(rs);
+				//Worm->initForSimulation(rs);
+
+                w.initForSimulation(rs);
+
+				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
+				Worm->ResetAgentsBody(orient, rs);
+				Worm->ResetChemCon(gradSteep);
+				Worm->ResetAgentIntState(rs);
+				Worm->UpdateChemCon(gradSteep); */
+
+				for (int repeats = 1; repeats <= 2; repeats++)
+				{
+					wg.ResetAgentsBody();
+					w.setTime(0);
+					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						w.Step();
+
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+					}
+					accdist = 0.0;
+					w.setTime(0);
+					for (double t = evoPars1.StepSize; t <= evoPars1.Duration; t += evoPars1.StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						w.Step();
+						
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+                    
+                        accdist += wg.distanceToCenter();
+
+						//accdist += Worm->DistanceToCentre();
+						//cout << "D " << Worm->DistanceToCentre() << endl;
+					}
+					totaldist = (accdist/(evoPars1.Duration/evoPars1.StepSize));
+					f = (w1->MaxDist - totaldist)/w1->MaxDist;
+					f = f < 0 ? 0.0 : f;
+					fitness += f;
+					k++;
+					//cout << k << " " << totaldist << endl;
+				}
+			}
+		}
+	}
+	return fitness/k;
+}
 
 
 
