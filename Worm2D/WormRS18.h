@@ -81,7 +81,7 @@ public:
     //friend class EvolutionRS18;
     
     template<class T> friend class EvolutionFullW;
-    void setWormPars(shared_ptr<const CmdArgs> cmd){}
+    void setWormPars(shared_ptr<const CmdArgs> cmd_){Worm2D::setWormPars(cmd_);}
 
     protected:
     void setEvolPars(W2Dparameters & w2par_, string evotype_){}

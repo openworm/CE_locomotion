@@ -307,7 +307,11 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
 void Worm18::InitializeState(RandomState &rs)
 {
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+
+    if (W2Dbaseparameters1->randomInitialState)
     n.RandomizeCircuitState(-0.5, 0.5, rs);
+    else n.RandomizeCircuitState(0.1, 0.1, rs);
+
     /* for (int i = 1; i <= n.size-4; i++)
         n.SetNeuronState(i, (i-0.5)/(n.size-4));
     for (int i = 1; i <= 4; i++)
@@ -483,12 +487,6 @@ void Worm18::setMuscleInputOrig()
     m.EulerStep(settedStepSize);
 
 }
-
-
-
-
-
-
 
 
 
