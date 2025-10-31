@@ -183,7 +183,7 @@ virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
 void DumpVal(string filename_, double val);
 virtual double getVelocity() = 0;
-wormIzqParams par1;
+const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber) const;
 
 

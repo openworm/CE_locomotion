@@ -12,38 +12,36 @@
 
 WormAgent::WormAgent(int newsize):
 Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
-gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1))
-{InitialiseCircuit(newsize);}
+gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
+{InitialiseCircuit();}
+
+WormAgent::WormAgent(shared_ptr<const CmdArgs> cmd_):
+WormAgent(cmd_->getArgValInt("--network_size", 10))
+{setWormPars(cmd_);}
 
 
 WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
 {SetParameters(v);}
 
 
-/* WormAgent::WormAgent(TVector<double> & v, int newsize)://WormAgent(newsize)
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
-{	
-	//setSimParsDefault();
-	
-	//cout << "WormAgent::WormAgent(TVector<double> & v, int newsize)" << endl;
-	InitialiseCircuit(newsize);
-	SetParameters(v);
-} */
+WormAgent::WormAgent(int newsize, const char* fnm):WormAgent(newsize)
+{SetWormParametersFromFile(fnm);}
 
 
-WormAgent::WormAgent(int newsize, const char* fnm):
+/* WormAgent::WormAgent(int newsize, const char* fnm):
 Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
-gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1))
+gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
 {
 	//setSimParsDefault();
+	InitialiseCircuit();
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
-}
+} */
 
 
 // The destructor
 WormAgent::~WormAgent()
 {
-	InitialiseCircuit(0);
+	//InitialiseCircuit(0);
 }
 
 
@@ -52,9 +50,15 @@ WormAgent::~WormAgent()
 // Setting parameters
 // *********
 
+int WormAgent::getVectSize()
+{
 
+return 2*(size-4) + (size-4)*(size-4) 
++ (size-2)*2 + (size-4) + 1 + 2*((size-2) + 1) + 4;
 
-void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
+}
+
+void WormAgent::SetWormParametersFromFile(const char* fnm)
 {
 	ifstream BestIndividualFile;
 	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -63,10 +67,10 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 	BestIndividualFile.open(fnm);
 
 	// sensory connections
-	for (int i = 1; i <= newsize-4; i++){
+	for (int i = 1; i <= size-4; i++){
 		BestIndividualFile >> w_ASER[i];
 	}
-	for (int i = 1; i <= newsize-4; i++){
+	for (int i = 1; i <= size-4; i++){
 		BestIndividualFile >> w_ASEL[i];
 	}
 
@@ -80,17 +84,28 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 	BestIndividualFile >> outputGain;
 
 	BestIndividualFile >> n;
-	size = n.CircuitSize();
+	//size = n.CircuitSize();
 
 	BestIndividualFile.close();
 }
 
 
 
+void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
+{
+	
+	Worm2Dbase::setWormPars(cmd_);
+	//size = cmd_->getArgValInt("--size", size);
+}
 
 
 
-void WormAgent::SetParameters(TVector<double> &v)
+void WormAgent::SetParameters(const TVector<double> &v)
+{
+setParsFromPheno(v);
+}
+
+void WormAgent::setParsFromPheno(const TVector<double> &v)
 {
 
 
@@ -179,11 +194,11 @@ void WormAgent::SetParameters(TVector<double> &v)
 
 
 
-void WormAgent::InitialiseCircuit(int CircuitSize_)
+void WormAgent::InitialiseCircuit()
 {
 
 	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-	size = CircuitSize_;
+	//size = CircuitSize_;
 	n.SetCircuitSize(size,300,300);
 	w_ASER.SetBounds(1, size);
 	w_ASER.FillContents(0.0);
@@ -191,6 +206,9 @@ void WormAgent::InitialiseCircuit(int CircuitSize_)
 	w_ASEL.FillContents(0.0);
 	forward = 1;
 }
+
+
+
 
 void WormAgent::setSimParsDefault()
 {
@@ -568,6 +586,9 @@ void WormAgent::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
 	const double BiasRange = 15.0;
 const double SensorWeightRange = 1500.0;
 const double InterneuronWeightRange = 15.0;
+
+const double HST =	4.2;			// Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997.
+
 const double StretchReceptorRange = 15.0;
 
 const double MaxDifSensor = HST;
@@ -576,8 +597,8 @@ const double TauMax = HST;
 
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;
-double TauMin; // = 10*evoPars1.StepSize;
-double MinDifSensor; // = 10*evoPars1.StepSize;
+const double TauMin = itsStepSize()*10; // = 10*evoPars1.StepSize;
+const double MinDifSensor = itsStepSize()*10; // = 10*evoPars1.StepSize;
 
 
 //	cout << "EvolutionCO::GenPhenMapping " << endl;

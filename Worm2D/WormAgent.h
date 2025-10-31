@@ -22,16 +22,18 @@ public:
 	// The constructor
 	//WormAgent();
 	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
-	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
+	WormAgent(int newsize);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
+	WormAgent(shared_ptr<const CmdArgs> cmd);
+
 	// The destructor
 	~WormAgent();
 
 	// Accessors
 	int CircuitSize(void) {return size;};
-	void SetCircuitSize(int news) {size = news;};
-	void InitialiseCircuit(int newcs);
-	virtual void SetWormParametersFromFile(int newsize, const char* fnm);
+	//void SetCircuitSize(int news) {size = news;};
+	void InitialiseCircuit();
+	virtual void SetWormParametersFromFile(const char* fnm);
 	virtual double PositionX(void) const {return px;};
 	void SetPositionX(double newx) {px = newx;};
 	virtual double PositionY(void) const {return py;};
@@ -60,7 +62,7 @@ public:
 	void UpdateSensors();
 	virtual void ResetAgentsBody();
 	void ResetAgentIntState(RandomState &rs);
-	virtual void SetParameters(TVector<double> &v);
+	virtual void SetParameters(const TVector<double> &v);
 	//void InitialiseAgent(double runduration, double stepsize);
 	void InitialiseAgent();
 	void PrintDetail(ofstream &file);
@@ -90,7 +92,7 @@ public:
 	double distanceToCentre;
 	
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
-	int size;
+	const int size;
 	int forward;
 
 	shared_ptr<gradParameters> gradPars;
@@ -139,5 +141,9 @@ public:
 
 
 	void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+	void setEvolPars(W2Dparameters & w2par_, string evotype_){}
+	void setParsFromPheno(const TVector<double> &pheno);
+	void setWormPars(shared_ptr<const CmdArgs> cmd);
+	int getVectSize();
 };
 
