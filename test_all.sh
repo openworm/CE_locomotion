@@ -74,7 +74,6 @@ if [ "$quick_test" == 0 ]; then
         python testCOW2D.py
     fi;
     
-    omv test -V .test.W2D18.omt
     omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
@@ -83,6 +82,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.2021W2D.omt
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DSR.omt
+    omv test -V .test.W2D18.omt
 
     cd neuromlLocal
     set -ex
