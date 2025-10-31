@@ -27,6 +27,11 @@ WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
 WormAgent::WormAgent(int newsize, const char* fnm):WormAgent(newsize)
 {SetWormParametersFromFile(fnm);}
 
+WormAgent::WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
+{
+    setParsFromFile(filename_);
+}
+
 
 /* WormAgent::WormAgent(int newsize, const char* fnm):
 Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),

@@ -17,7 +17,7 @@ const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Fer
 	
 
 // The WormAgent class declaration
-class WormAgent : public Worm2Dbase, public WormGrad {
+class WormAgent : public Worm2Dbase, public WormGrad, public EvolvableS {
 public:
 	// The constructor
 	//WormAgent();
@@ -25,6 +25,7 @@ public:
 	WormAgent(int newsize);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
 	WormAgent(shared_ptr<const CmdArgs> cmd);
+	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_);
 
 	// The destructor
 	~WormAgent();
