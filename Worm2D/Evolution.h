@@ -183,8 +183,7 @@ evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)){}
 //{evolvable1->setWormPars(cmd_);}
 
 
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    {evolvable1->GenPhenMapping(gen,phen);}
+
 
 //evoPars getDefaultEvoPars(int argc, const char* argv[]);
 //evoPars getDefaultEvoPars(const string &);
@@ -306,9 +305,9 @@ class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
 
     void writeJson(TVector<double> & pheno);
 
-    //void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    //{return Evolvable_ptr::GenPhenMapping(gen,phen);}
-    
+  
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    {this->evolvable1->GenPhenMapping(gen,phen);}
 
 
 
@@ -337,6 +336,9 @@ public:
     double EvaluationCO(TVector<double> &genotype, RandomState &rs);
     void writeJson(TVector<double> & pheno);
 
+
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    {this->evolvable1->GenPhenMapping(gen,phen);}
 };
 
 template<class T>
@@ -838,7 +840,7 @@ void EvolutionFullW<T>::configure_p12_RS18()
 template<class T>
 double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
 {
-
+  
     const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
 
     //Epars1.show();
@@ -1018,6 +1020,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
     //w.setWormPars(argc,argv);
+  
     w.setWormPars(this->cmd);
     w.setParsFromGeno(genotype);
 
