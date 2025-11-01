@@ -122,6 +122,21 @@ W2DCEpars::W2DCEpars(int argc, const char* argv[]):W2DCEparsA(argc,argv)
   
 }
 
+gradEvoPars::gradEvoPars(shared_ptr<const CmdArgs> cmd)
+{
+setPars(cmd);
+}
+
+
+
+void gradEvoPars::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    
+    HSStepSize = cmd->getArgValDoub("--HSStepSize", HSStepSize);
+    
+}
+
+
 AgarPars::AgarPars(shared_ptr<const CmdArgs> cmd)
 {
 setPars(cmd);

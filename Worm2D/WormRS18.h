@@ -83,6 +83,8 @@ public:
     template<class T> friend class EvolutionFullW;
     void setWormPars(shared_ptr<const CmdArgs> cmd_){Worm2D::setWormPars(cmd_);}
 
+    template<class T> friend class Evolvable_ptr;
+
     protected:
     void setEvolPars(W2Dparameters & w2par_, string evotype_){}
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);

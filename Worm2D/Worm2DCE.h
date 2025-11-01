@@ -197,7 +197,9 @@ public:
 
     void setPhenoNames();
 
+    template<class T> friend class EvolutionFullWC;
     template<class T> friend class EvolutionFullW;
+    template<class T> friend class Evolvable_ptr;
 
     void setWormPars(shared_ptr<const CmdArgs> cmd)
     //shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)

@@ -169,28 +169,30 @@ evoPars getDefaultEvoPars(EvolvableS * evol1_)
 }; */
 
 
+template<class T>
 class Evolvable_ptr 
 {
 protected:
-shared_ptr<EvolvableS> evolvable1;
+shared_ptr<T> evolvable1;
 
 //virtual ~Evolvable_ptr(){if (evolvable1) delete evolvable1;}
 //Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_),{}
 
-Evolvable_ptr(shared_ptr<EvolvableS> evol1_, shared_ptr<const CmdArgs> cmd_):
-evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_)){}
+Evolvable_ptr(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
+evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)){}
 //{evolvable1->setWormPars(cmd_);}
 
 
 void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {evolvable1->GenPhenMapping(gen,phen);}
 
-evoPars getDefaultEvoPars(int argc, const char* argv[]);
-evoPars getDefaultEvoPars(const string &);
+//evoPars getDefaultEvoPars(int argc, const char* argv[]);
+//evoPars getDefaultEvoPars(const string &);
 evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
 
-shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
-shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd);
+//shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
+static shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
+    shared_ptr<T> evol1_);
 
 shared_ptr<const CmdArgs> cmd;
 const shared_ptr<const W2Dparameters> evopar_ptr;
@@ -198,18 +200,99 @@ const shared_ptr<const W2Dparameters> evopar_ptr;
 };
 
 
+/* template<class T>
+shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(int argc, const char* argv[])
+{
+    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    //const string & evotype_ = evoPars1.evoType;
 
+    if (evotype_=="Evo21") 
+    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1, evotype_));
+    if (evotype_=="Evo18") 
+    return shared_ptr<const AgarPars>(new const AgarPars(argc,argv));
+    if (evotype_=="EvoCE"|| evotype_=="EvoCENZ") 
+    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
+    if (evotype_=="Evo21R") 
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1, evotype_));
+
+    assert(0 && "evotype not implemented");
+    return nullptr;
+}
+ */
 
 
 template<class T>
-class EvolutionFullW: public Evolvable_ptr, public Evolution
+shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const CmdArgs> cmd_, 
+    shared_ptr<T> evol1T_)
+{
+    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    //const string & evotype_ = evoPars1.evoType;
+
+    shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
+
+    if (evotype_=="EvoCO") 
+    return shared_ptr<const gradEvoPars>(new const gradEvoPars(cmd_));
+    if (evotype_=="Evo21") 
+    return shared_ptr<const Evolparameters>(new const Evolparameters(cmd_, evol1_, evotype_));
+    if (evotype_=="Evo18") 
+    return shared_ptr<const AgarPars>(new const AgarPars(cmd_));
+    if (evotype_=="EvoCE" || evotype_=="EvoCENZ") 
+    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(cmd_));
+    if (evotype_=="Evo21R") 
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd_, evol1_, evotype_));
+
+    assert(0 && "evotype not implemented");
+    return nullptr;
+}
+
+
+/* evoPars Evolvable_ptr::getDefaultEvoPars(int argc, const char* argv[]) 
+{
+
+    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    return getDefaultEvoPars(evotype_); 
+
+} */
+
+template<class T>
+evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_) 
+{
+
+    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    
+    if (evotype_=="EvoCO")
+    return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
+        26, 40, 0.05, 0.5, UNIFORM, 
+        1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, evolvable1->getVectSize(), "", evotype_};
+
+    if (evotype_=="Evo21" || evotype_=="Evo21R")
+        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        100, 2000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
+
+    if (evotype_=="Evo18")
+        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        96, 1000, 0.1, 0.5, UNIFORM, 
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", evotype_ };
+    
+    if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
+        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
+        96, 10, 0.05, 0.5, UNIFORM, 
+        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
+
+    assert(0 && "evotype not implemented");
+    
+}
+
+template<class T>
+class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
 {
     public:
     
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptr(make_shared<T>(),cmd_), 
-    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize())
-    {evolvable1->setWormPars(cmd_);}
+    Evolvable_ptr<T>(make_shared<T>(),cmd_), 
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
+    {this->evolvable1->setWormPars(cmd_);}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -241,14 +324,14 @@ class EvolutionFullW: public Evolvable_ptr, public Evolution
 
 
 template<class T>
-class EvolutionFullWC: public Evolvable_ptr, public Evolution
+class EvolutionFullWC: public Evolvable_ptr<T>, public Evolution
 {
 
 public:
 
     EvolutionFullWC(shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptr(make_shared<T>(cmd_),cmd_), 
-    Evolution(cmd_,getDefaultEvoPars(cmd_),evolvable1->getVectSize()){}
+    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), 
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize()){}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double EvaluationCO(TVector<double> &genotype, RandomState &rs);
@@ -261,10 +344,10 @@ void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
         //T w(pheno, true);
         T w;
         //w.setWormPars(argc,argv);
-        w.setWormPars(cmd);
+        w.setWormPars(this->cmd);
         w.setParsFromPheno(pheno);
         json j;
-        evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(w,j);
     }
@@ -273,97 +356,18 @@ void EvolutionFullW<T>::writeJson(TVector<double> & pheno){
 template<class T>
 void EvolutionFullWC<T>::writeJson(TVector<double> & pheno){
         //T w(pheno, true);
-        T w(cmd);
+        T w(this->cmd);
         //w.setWormPars(argc,argv);
         //w.setWormPars(cmd);
         w.setParsFromPheno(pheno);
         json j;
-        evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(w,j);
     }
 
 
 
-shared_ptr<const W2Dparameters> Evolvable_ptr::getParameters(int argc, const char* argv[])
-{
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
-    //const string & evotype_ = evoPars1.evoType;
-
-    if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1, evotype_));
-    if (evotype_=="Evo18") 
-    return shared_ptr<const AgarPars>(new const AgarPars(argc,argv));
-    if (evotype_=="EvoCE"|| evotype_=="EvoCENZ") 
-    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
-    if (evotype_=="Evo21R") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1, evotype_));
-
-    assert(0 && "evotype not implemented");
-    return nullptr;
-}
-
-
-shared_ptr<const W2Dparameters> Evolvable_ptr::getParameters(shared_ptr<const CmdArgs> cmd)
-{
-    string evotype_ = cmd->getArgVal("--evoType","Evo21");
-    //const string & evotype_ = evoPars1.evoType;
-
-    if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(cmd, evolvable1, evotype_));
-    if (evotype_=="Evo18") 
-    return shared_ptr<const AgarPars>(new const AgarPars(cmd));
-    if (evotype_=="EvoCE" || evotype_=="EvoCENZ") 
-    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(cmd));
-    if (evotype_=="Evo21R") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd, evolvable1, evotype_));
-
-    assert(0 && "evotype not implemented");
-    return nullptr;
-}
-
-
-evoPars Evolvable_ptr::getDefaultEvoPars(int argc, const char* argv[]) 
-{
-
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
-    return getDefaultEvoPars(evotype_); 
-
-}
-
-evoPars Evolvable_ptr::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd) 
-{
-
-    string evotype_ = cmd->getArgVal("--evoType","Evo21");
-    
-   // getParameterString(argc,argv,"--evoType","Evo21");
-    return getDefaultEvoPars(evotype_); 
-
-}
-
-
-evoPars Evolvable_ptr::getDefaultEvoPars(const string & evotype_) 
-    {
-
-
-    if (evotype_=="Evo21" || evotype_=="Evo21R")
-        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
-
-    if (evotype_=="Evo18")
-        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", evotype_ };
-    
-    if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
-        return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
-
-    assert(0 && "evotype not implemented");
-    
-    }
 
 
 template<class T>
@@ -407,19 +411,21 @@ template<class T>
 double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &rs)
 {
 
-    const EvolparametersCER & Epars1 = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+    shared_ptr<const EvolparametersCER> Epars1 = 
+    dynamic_pointer_cast<const EvolparametersCER>(this->evopar_ptr);
+    //const EvolparametersCER & Epars1 = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
 
     
     const int gen_num = s->Generation();
     //evoPars1.MaxGenerations;
     //Epars1.doAlternateEvo;
 
-    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
-    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
-    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
-    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+    const bool doalt1 = Epars1->doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = Epars1->doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    const bool doalt1f = Epars1->doReverse==2 || (doalt1);
+    const bool doalt2f = Epars1->doReverse==2 || (doalt2);
 
-    //cout << "reverse is " << Epars1.doReverse << endl;
+    //cout << "reverse is " << Epars1->doReverse << endl;
    // assert(0);
 
     //double fitnessForward, fitnessBackward;
@@ -434,15 +440,15 @@ double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &
 
     double fitness = 0;
     int count = 0;
-    if (Epars1.doReverse==0 || doalt1f){
-    if (Epars1.zeroGainsType == 1) genotype(1)= -1.0;
+    if (Epars1->doReverse==0 || doalt1f){
+    if (Epars1->zeroGainsType == 1) genotype(1)= -1.0;
     genotype(2)= srb;
     fitness += Evaluation21Rp1(genotype, rs, 1);
     count++;
     }
-    if (Epars1.doReverse==1 || doalt2f){
+    if (Epars1->doReverse==1 || doalt2f){
     genotype(1)= sra;
-    if (Epars1.zeroGainsType == 1) genotype(2)= -1.0;
+    if (Epars1->zeroGainsType == 1) genotype(2)= -1.0;
     fitness += Evaluation21Rp1(genotype, rs, -1);
     count++;
     }
@@ -452,9 +458,9 @@ double EvolutionFullW<T>::Evaluation21R(TVector<double> &genotype, RandomState &
 
     return fitness/count;
 
-    //if (Epars1.doReverse==0) return fitnessForward;
-    //if (Epars1.doReverse==1) return fitnessBackward;
-    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+    //if (Epars1->doReverse==0) return fitnessForward;
+    //if (Epars1->doReverse==1) return fitnessBackward;
+    //if (Epars1->doReverse==2) return (fitnessForward + fitnessBackward)/2;
 
     //assert(0 && "doReverse not set properly");
     // return fitnessBackward;
@@ -472,7 +478,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     const int & skip_steps = evoPars1.skip_steps;
 
    
-    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*evopar_ptr);
+    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*(this->evopar_ptr));
     //const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
 
 //    assert(0);
@@ -516,7 +522,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         //w.setWormPars(argc,argv);
        
         //w.setWormPars(&*wormpar_ptr);
-        w.setWormPars(cmd);
+        w.setWormPars(this->cmd);
         w.setParsFromGeno(genotype);
     
         //w.setEvolPars(EparsR,evoPars1.evoType);
@@ -683,7 +689,7 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //const int & skip_steps = evoPars1.skip_steps;
 
 
-    const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
+    const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*this->evopar_ptr);
     const double AvgSpeed = EparsR.AvgSpeed;
     const double BBCfit = AvgSpeed*Duration;
 
@@ -705,7 +711,7 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     T w;//(genotype, false);
     //w.setWormPars(argc,argv);
     
-    w.setWormPars(cmd);
+    w.setWormPars(this->cmd);
     w.setParsFromGeno(genotype);
 
         //TVector<double> phenotype(1, VectSize);
@@ -833,7 +839,7 @@ template<class T>
 double EvolutionFullW<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
 {
 
-    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
+    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
 
     //Epars1.show();
     //assert(0);
@@ -901,7 +907,7 @@ template<class T>
 double EvolutionFullW<T>::EvaluationCENZ(TVector<double> &genotype, RandomState &rs)
 {
 
-    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
+    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
 
     //Epars1.show();
     //assert(0);
@@ -972,7 +978,8 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
   //const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
     //const EvolparametersCE & EparsR = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
-    shared_ptr<const EvolparametersCE> EparsR = dynamic_pointer_cast<const EvolparametersCE>(evopar_ptr);
+    shared_ptr<const EvolparametersCE> EparsR = 
+    dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
   
     
 
@@ -1011,7 +1018,7 @@ double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
     //w.setWormPars(argc,argv);
-    w.setWormPars(cmd);
+    w.setWormPars(this->cmd);
     w.setParsFromGeno(genotype);
 
 
@@ -1120,8 +1127,8 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
     const double & StepSize = evoPars1.StepSize;
     const double & Transient = evoPars1.Transient;
 
-    T w(cmd);
-    w.setStepSize(StepSize);
+    T w(this->cmd);
+    //w.setStepSize(StepSize);
 
     //w.setWormPars(cmd);
     w.setParsFromGeno(genotype);

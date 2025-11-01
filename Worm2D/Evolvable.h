@@ -35,6 +35,7 @@ virtual void setPars(shared_ptr<const CmdArgs> cmd) = 0;
 
 
 
+
 class EvolvableS
 {
   public:
@@ -53,6 +54,28 @@ class EvolvableS
 
 };
 
+
+class gradEvoPars : virtual public W2Dparameters
+{
+public:
+
+gradEvoPars(shared_ptr<const CmdArgs> cmd);
+
+double HSStepSize = 0.01;
+
+void setParsFromJson(json & j){
+
+  HSStepSize = j["HSStepSize"]["value"];
+  
+}
+void addParsToJson(json & j) const {
+
+  addParsToJson1<double>(j,{"HSStepSize"},{HSStepSize});
+
+}
+
+virtual void setPars(shared_ptr<const CmdArgs> cmd);
+};
 
 class W2Dbaseparameters : virtual public W2Dparameters
 {
@@ -212,6 +235,7 @@ class gradParameters : public W2Dbaseparameters
   void setPars(shared_ptr<const CmdArgs> cmd);
 
   double orient_orig = 0, gradSteep = 0.5, RunDuration = 100, HSStepSize = 0.01, MaxDist = 4.5;
+  //double orient_orig = 0, gradSteep = 0.5, RunDuration = 100,  MaxDist = 4.5;
   int taxis = 1, kinesis = 0;
 	
   void setParsFromJson(json & j){
@@ -229,7 +253,8 @@ void addParsToJson(json & j) const {
 
   addParsToJson1<double>(j,{"orient", "gradSteep", "RunDuration", 
     "HSStepSize", "MaxDist"},
-    {orient_orig,gradSteep,RunDuration,HSStepSize, MaxDist});
+    {orient_orig,gradSteep,RunDuration, HSStepSize, 
+      MaxDist});
 
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
 

@@ -101,6 +101,8 @@ void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
 	
 	Worm2Dbase::setWormPars(cmd_);
 	//size = cmd_->getArgValInt("--size", size);
+
+	setStepSize(gradPars->HSStepSize);
 }
 
 
