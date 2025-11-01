@@ -45,6 +45,7 @@ public:
     NervousSystem & n;
 
     template<class T> friend class EvolutionFullW;
+    template<class T> friend class Evolvable_ptr;
 
     //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
     //{return Worm2Dbase::setWormPars(argc,argv);}
@@ -77,7 +78,10 @@ public:
     Worm21R(const string & filename_);
 
     template<class T> friend class EvolutionFullW;
+    template<class T> friend class EvolutionFullWC;
 
+    template<class T> friend class Evolvable_ptr;
+    
     protected:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 48;}
