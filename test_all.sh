@@ -68,11 +68,15 @@ if [ "$quick_test" == 0 ]; then
         omv test -V .test.2018.omt
         omv test -V .test.2018W2D.omt
         omv test -V .test.COW2D.omt
+        omv test -V .test.W2D18.omt
     else
         python test2018.py
         python test2018W2D.py
-        python testCOW2D.py
+        omv test -V .test.COW2D.omt
+        python testW2D18.py
+
     fi;
+
     
     omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt
@@ -82,7 +86,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.2021W2D.omt
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DSR.omt
-    omv test -V .test.W2D18.omt
+    
 
     cd neuromlLocal
     set -ex
