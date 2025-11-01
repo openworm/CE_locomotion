@@ -77,7 +77,7 @@ if [ "$quick_test" == 0 ]; then
 
     fi;
 
-    
+    omv test -V .test.W2DCO.omt
     omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
