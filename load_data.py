@@ -572,7 +572,7 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-        if a.modelName == "CO":
+        if a.modelName == "CO" or a.modelName == "W2DCO":
             body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
         else:
             body_data = np.loadtxt(hf.rename_file("body.dat")).T
@@ -619,7 +619,7 @@ def reload_single_run(a=None, **kwargs):
             point_end = 50
             markersize = 3
             markersize_small = 0.4
-            if a.modelName == "CO":
+            if a.modelName == "CO" or a.modelName == "W2DCO":
                 point_start = 0
                 point_end = 1
                 markersize = 10
@@ -678,6 +678,7 @@ def reload_single_run(a=None, **kwargs):
 
     if not (
         a.modelName == "CO"
+        or a.modelName == "W2DCO"
         or a.modelName == "W2Dosc"
         or a.modelName == "W2Dosc21"
         or a.modelName == "CO18Full"
