@@ -177,8 +177,8 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
     //assert(evoPars1.VectSize==er.evoPars1.VectSize + offset);
 
     cout << "using " << minsize;
-    for (int i = 1; i <= minsize; i++) {
-    for (int j = 1; j <= er.s->Individual(i).Size(); j++){
+    for (int i = 1; i <= minsize; i++) 
+    for (int j = 1; j <= er.s->Individual(i).Size(); j++)
     s->Individual(i)(j+offset) = er.s->Individual(i)(j);
 
 
@@ -187,9 +187,9 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
 	//RandomizePopulation();
 	// The search is now initialized
 	s->SearchInitialized = 1;
-}
 
-}
+
+
  
 //assert(0);
 //doResume = true;

@@ -46,6 +46,7 @@ gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
 // The destructor
 WormAgent::~WormAgent()
 {
+	zeroCircuit();
 	//InitialiseCircuit(0);
 }
 
@@ -214,6 +215,18 @@ void WormAgent::InitialiseCircuit()
 	forward = 1;
 }
 
+void WormAgent::zeroCircuit()
+{
+
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+	//size = CircuitSize_;
+	n.SetCircuitSize(0,300,300);
+	w_ASER.SetBounds(1, 0);
+	w_ASER.FillContents(0.0);
+	w_ASEL.SetBounds(1, 0);
+	w_ASEL.FillContents(0.0);
+	forward = 1;
+}
 
 
 
@@ -222,10 +235,11 @@ void WormAgent::setSimParsDefault()
 	gradPars->orient_orig = 0;
 	gradPars->gradSteep = 0.5;
 	gradPars->RunDuration = 100;
-	gradPars->HSStepSize = itsStepSize();
+	gradPars->HSStepSize = 0.01; //itsStepSize();
 	gradPars->taxis = 1;
 	gradPars->kinesis = 0;
 	cout << "HS " << gradPars->HSStepSize << endl;
+	setStepSize(gradPars->HSStepSize);
 }
 
 void WormAgent::setSimPars(double orient_orig_,
@@ -237,6 +251,8 @@ void WormAgent::setSimPars(double orient_orig_,
 	gradPars->HSStepSize = HSStepSize_;
 	gradPars->taxis = taxis_;
 	gradPars->kinesis = kinesis_;
+	setStepSize(gradPars->HSStepSize);
+
 }
 
 void WormAgent::initForSimulation(RandomState &rs_)

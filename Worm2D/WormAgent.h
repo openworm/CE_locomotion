@@ -34,6 +34,7 @@ public:
 	int CircuitSize(void) {return size;};
 	//void SetCircuitSize(int news) {size = news;};
 	void InitialiseCircuit();
+	void zeroCircuit();
 	virtual void SetWormParametersFromFile(const char* fnm);
 	virtual double PositionX(void) const {return px;};
 	void SetPositionX(double newx) {px = newx;};

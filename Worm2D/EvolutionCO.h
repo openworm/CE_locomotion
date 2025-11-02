@@ -84,6 +84,7 @@ class EvolutionCO : virtual public Evolution
 template<class T>
 double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs)
 {
+  
 	T * Worm = new T(CircuitSize);
 	double val = EvaluationFunction(v, rs, Worm);
 	delete Worm;
