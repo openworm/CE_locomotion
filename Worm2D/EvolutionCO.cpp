@@ -146,9 +146,9 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
 						//Worm->UpdateChemCon(gradSteep);
  
-						accdist += Worm->distanceToCenter();
+						//accdist += Worm->distanceToCenter();
 
-						//accdist += Worm->DistanceToCentre();
+						accdist += Worm->DistanceToCentre();
 						//cout << "D " << Worm->DistanceToCentre() << endl;
 					}
 					totaldist = (accdist/(evoPars1.Duration/evoPars1.StepSize));
@@ -161,6 +161,8 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 			}
 		}
 	}
+
+	
 	return fitness/k;
 }
 
