@@ -276,3 +276,60 @@ void appendCellNamesToJson(json & j, const vector<string> & cell_names, const in
     Params< vector<string> > parvec = getNervousSysCellNames(cell_names, num_reps);
     appendToJson<vector<string> >(j,parvec);
 }
+
+
+double getParameterDouble(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return stod(argv[arg+1]);
+   return stod(defaultval.c_str());
+}
+
+int getParameterInt(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return stoi(argv[arg+1]);
+   return stoi(defaultval.c_str());
+}
+
+long getParameterLong(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return stol(argv[arg+1]);
+   return stol(defaultval.c_str());
+}
+
+string getParameterString(int argc, const char* argv[], string parName, const string defaultval)
+{    
+
+   if (((argc-1) % 2) != 0)
+   {cout << "The arguments are not configured correctly." << endl;exit(1);}
+
+   for (int arg = 1; arg<argc; arg+=2) 
+   if (strcmp(argv[arg], parName.c_str())==0) return (string) argv[arg+1];
+   return defaultval;
+}
+
+string rename_file(const string & filename, const string & directoryName, const string & fileprefix)
+{return directoryName + "/" + fileprefix + filename;}
+
+
+bool directoryExists(const string & directoryName)
+{
+  struct stat sb;
+  if (stat(directoryName.c_str(), &sb) != 0) return false;
+  return true;
+  //{cout << "Directory doesn't exist." << endl;exit(1);}
+}

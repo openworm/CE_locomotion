@@ -27,7 +27,7 @@ bool vncsr;
 
 
 
-class Worm18 : public Worm2D {
+class Worm18 : public Worm2D , public EvolvableS{
 public:
 
     Worm18();
@@ -35,7 +35,8 @@ public:
     Worm18(const TVector<double> &v, double output);
     //Worm18(bool dummy);
     Worm18(const TVector<double> &v);
-
+    Worm18(const string & filename_);
+ 
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
   
@@ -51,6 +52,8 @@ public:
 
     friend class WormCO18;
     
+    NervousSystem & n;
+
     protected:
     void Step1(); 
     virtual void preNStep();
@@ -76,10 +79,17 @@ public:
     vector<doubIntParamsHead> getWormParams();
 
     //friend class EvolutionRS18;
-
     
+    template<class T> friend class EvolutionFullW;
+    void setWormPars(shared_ptr<const CmdArgs> cmd_){Worm2D::setWormPars(cmd_);}
+
+    template<class T> friend class Evolvable_ptr;
 
     protected:
+    void setEvolPars(W2Dparameters & w2par_, string evotype_){}
+    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void setParsFromPheno(const TVector<double> &pheno);
+    int getVectSize(){return 30;}
 
     //NervousSystem & n;
     StretchReceptor18 sr;

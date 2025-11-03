@@ -8,7 +8,7 @@
 
 #include "Worm2DCE.h"
 //#include "../argUtils.h"
-#include "../neuromlLocal/c302ForW2D.h"
+//#include "../neuromlLocal/c302ForW2D.h"
 
 
 
@@ -222,7 +222,7 @@ WormCE::WormCE(json j):WormCE()
 }
 
 
-void WormCE::setParsFromPheno(TVector<double> &pheno)
+void WormCE::setParsFromPheno(const TVector<double> &pheno)
 {
 // PG: Setting these to zero as they were not initialised before use!
   // Note: the usage of these needs to be further investigated!

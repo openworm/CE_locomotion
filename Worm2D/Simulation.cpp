@@ -12,7 +12,7 @@ void Simulation::runSimulation(Worm2Dbase & w)
 
     cout << "running simulation sim" << endl;
 
-    for (double t = 0.0; t <= sp.Transient; t += sp.StepSize) w.Step();
+    for (double t = 0.0; t < sp.Transient; t += sp.StepSize) w.Step();
 
     for (double t = 0.0; t <= sp.Duration; t += sp.StepSize){
         

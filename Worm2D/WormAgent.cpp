@@ -10,42 +10,43 @@
 //using namespace CTRNNspace;
 
 
-
-
 WormAgent::WormAgent(int newsize):
-//Worm2Dbase({newsize,0,1,1,newsize}, new CTRNN(), 0), n(dynamic_cast<CTRNN&>(*n_ptr))
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
-{
-	//cout << "WormAgent::WormAgent(int newsize)" << endl;
-	//setSimParsDefault();
-	InitialiseCircuit(newsize);
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
+gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
+{InitialiseCircuit();}
 
+WormAgent::WormAgent(shared_ptr<const CmdArgs> cmd_):
+WormAgent(cmd_->getArgValInt("--network_size", 10))
+{setWormPars(cmd_);}
+
+
+WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
+{SetParameters(v);}
+
+
+WormAgent::WormAgent(int newsize, const char* fnm):WormAgent(newsize)
+{SetWormParametersFromFile(fnm);}
+
+WormAgent::WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
+{
+    setParsFromFile(filename_);
 }
 
 
-WormAgent::WormAgent(TVector<double> & v, int newsize)://WormAgent(newsize)
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
-{	
-	//setSimParsDefault();
-	
-	//cout << "WormAgent::WormAgent(TVector<double> & v, int newsize)" << endl;
-	InitialiseCircuit(newsize);
-	SetParameters(v);
-}
-
-
-WormAgent::WormAgent(int newsize, const char* fnm):
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0)//, n(dynamic_cast<NervousSystem&>(*n_ptr))
+/* WormAgent::WormAgent(int newsize, const char* fnm):
+Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
+gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
 {
 	//setSimParsDefault();
+	InitialiseCircuit();
 	SetWormParametersFromFile(newsize, fnm);  //Call to initialise sensors within
-}
+} */
 
 
 // The destructor
 WormAgent::~WormAgent()
 {
-	InitialiseCircuit(0);
+	//InitialiseCircuit(0);
 }
 
 
@@ -54,9 +55,15 @@ WormAgent::~WormAgent()
 // Setting parameters
 // *********
 
+int WormAgent::getVectSize()
+{
 
+return 2*(size-4) + (size-4)*(size-4) 
++ (size-2)*2 + (size-4) + 1 + 2*((size-2) + 1) + 4;
 
-void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
+}
+
+void WormAgent::SetWormParametersFromFile(const char* fnm)
 {
 	ifstream BestIndividualFile;
 	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -65,10 +72,10 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 	BestIndividualFile.open(fnm);
 
 	// sensory connections
-	for (int i = 1; i <= newsize-4; i++){
+	for (int i = 1; i <= size-4; i++){
 		BestIndividualFile >> w_ASER[i];
 	}
-	for (int i = 1; i <= newsize-4; i++){
+	for (int i = 1; i <= size-4; i++){
 		BestIndividualFile >> w_ASEL[i];
 	}
 
@@ -82,17 +89,30 @@ void WormAgent::SetWormParametersFromFile(int newsize, const char* fnm)
 	BestIndividualFile >> outputGain;
 
 	BestIndividualFile >> n;
-	size = n.CircuitSize();
+	//size = n.CircuitSize();
 
 	BestIndividualFile.close();
 }
 
 
 
+void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
+{
+	
+	Worm2Dbase::setWormPars(cmd_);
+	//size = cmd_->getArgValInt("--size", size);
+
+	setStepSize(gradPars->HSStepSize);
+}
 
 
 
-void WormAgent::SetParameters(TVector<double> &v)
+void WormAgent::SetParameters(const TVector<double> &v)
+{
+setParsFromPheno(v);
+}
+
+void WormAgent::setParsFromPheno(const TVector<double> &v)
 {
 
 
@@ -181,11 +201,11 @@ void WormAgent::SetParameters(TVector<double> &v)
 
 
 
-void WormAgent::InitialiseCircuit(int CircuitSize_)
+void WormAgent::InitialiseCircuit()
 {
 
 	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-	size = CircuitSize_;
+	//size = CircuitSize_;
 	n.SetCircuitSize(size,300,300);
 	w_ASER.SetBounds(1, size);
 	w_ASER.FillContents(0.0);
@@ -194,26 +214,29 @@ void WormAgent::InitialiseCircuit(int CircuitSize_)
 	forward = 1;
 }
 
+
+
+
 void WormAgent::setSimParsDefault()
 {
-	orient_orig = 0;
-	gradSteep = 0.5;
-	RunDuration = 100;
-	HSStepSize = itsStepSize();
-	taxis = 1;
-	kinesis = 0;
-	cout << "HS " << HSStepSize << endl;
+	gradPars->orient_orig = 0;
+	gradPars->gradSteep = 0.5;
+	gradPars->RunDuration = 100;
+	gradPars->HSStepSize = itsStepSize();
+	gradPars->taxis = 1;
+	gradPars->kinesis = 0;
+	cout << "HS " << gradPars->HSStepSize << endl;
 }
 
 void WormAgent::setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_)
 {
-	orient_orig = orient_orig_;
-	gradSteep = gradSteep_;
-	RunDuration = RunDuration_;
-	HSStepSize = HSStepSize_;
-	taxis = taxis_;
-	kinesis = kinesis_;
+	gradPars->orient_orig = orient_orig_;
+	gradPars->gradSteep = gradSteep_;
+	gradPars->RunDuration = RunDuration_;
+	gradPars->HSStepSize = HSStepSize_;
+	gradPars->taxis = taxis_;
+	gradPars->kinesis = kinesis_;
 }
 
 void WormAgent::initForSimulation(RandomState &rs_)
@@ -237,12 +260,12 @@ void WormAgent::InitializeState(RandomState &rs_)
 
 void WormAgent::InitialiseAgent()
 {
-	VelDelta		=	(int) (HST/HSStepSize);
-	iSensorN = (int) (sensorN/HSStepSize);
+	VelDelta = (int) (HST/gradPars->HSStepSize);
+	iSensorN = (int) (sensorN/gradPars->HSStepSize);
 	dSensorN = (double) iSensorN;
-	iSensorM = (int) (sensorM/HSStepSize);
+	iSensorM = (int) (sensorM/gradPars->HSStepSize);
 	dSensorM = (double) iSensorM;
-	int upperbound = ((int) (((2*RunDuration) + sensorN + sensorM) / HSStepSize)) + 1;
+	int upperbound = ((int) (((2*gradPars->RunDuration) + sensorN + sensorM) / gradPars->HSStepSize)) + 1;
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
 	histCurv.SetBounds(1, VelDelta);
@@ -258,22 +281,28 @@ void WormAgent::InitialiseAgent()
 void WormAgent::ResetAgentsBody()
 {
 	distanceToCentre = -MaxDist;
+
 	double tempangle = 0.0;
+
 	//SetPositionX(cos(tempangle) * distanceToCentre);
 	//SetPositionY(sin(tempangle) * distanceToCentre);
-	px = cos(tempangle) * MaxDist*-1; //DistanceToCentre();
-	py = sin(tempangle) * MaxDist*-1; //DistanceToCentre();
+	px = cos(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
+	py = sin(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;
-	orient = orient_orig;
+	orient = gradPars->orient_orig;
 	CPGoffset = 0.0;
 	forward = 1;
 }
 
 void WormAgent::ResetChemCon()
 {
-	chemCon = -DistanceToCentre() * gradSteep;
+	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+
+	//double dist = distanceToCenter();
+	//chemCon = -dist * gradPars->gradSteep;
+
 	pastCon = chemCon;
 	timer = iSensorN + iSensorM + 1;
 	for (int i = 1; i <= timer; i++)
@@ -290,20 +319,28 @@ void WormAgent::ResetAgentIntState(RandomState &rs)
 }
 
 
-
 void WormAgent::setDistanceToCentre()
 {
-	//cout << "WormAgent::setDistanceToCentre()" << endl;
 	distanceToCentre = sqrt(pow(PositionX(),2) + pow(PositionY(),2));
+
+}
+
+double WormAgent::distanceToCenter() const
+{
+	//cout << "WormAgent::setDistanceToCentre()" << endl;
+	return sqrt(pow(PositionX(),2) + pow(PositionY(),2));
 }
 
 void WormAgent::UpdateChemCon()
 {
+	//double dist = distanceToCenter();
 	setDistanceToCentre();
 	//distanceToCentre = sqrt(pow(px_,2) + pow(py_,2));
 	//distanceToCentre = sqrt(pow(px,2) + pow(py,2));
 	pastCon = chemCon;
-	chemCon = -DistanceToCentre() * gradSteep;
+	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+
+	//chemCon = -dist * gradPars->gradSteep;
 	chemConHistory(timer) = chemCon;
 	timer += 1;
 }
@@ -497,7 +534,7 @@ void WormAgent::preNStep()
 void WormAgent::postNStep()
 {
 // Update curvature
-	if (taxis == 1){
+	if (gradPars->taxis == 1){
 		NMdiff = n_ptr->NeuronOutput(size-1) - n_ptr->NeuronOutput(size);
 		theta = outputGain * NMdiff;
 		orient += settedStepSize * theta;
@@ -512,7 +549,7 @@ void WormAgent::postNStep()
 	}
 
 	// Update Forward -> Backward
-	if (kinesis == 1){
+	if (gradPars->kinesis == 1){
 		if ((forward == 1) && (n_ptr->NeuronOutput(size-2) > 0.6) && (n_ptr->NeuronOutput(size-3) < 0.4) )
 		{
 			forward = 0;
@@ -551,3 +588,63 @@ void WormAgent::moveAgent()
 }
 
 	
+void WormAgent::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+{
+	const double BiasRange = 15.0;
+const double SensorWeightRange = 1500.0;
+const double InterneuronWeightRange = 15.0;
+
+const double HST =	4.2;			// Head Sweep Time, T=4.2sec, According to Ferree, Marcotte, Lockery, 1997.
+
+const double StretchReceptorRange = 15.0;
+
+const double MaxDifSensor = HST;
+
+const double TauMax = HST;
+
+const double MinNeckTurnGain = 1.0;
+const double MaxNeckTurnGain = 2.0;
+const double TauMin = itsStepSize()*10; // = 10*evoPars1.StepSize;
+const double MinDifSensor = itsStepSize()*10; // = 10*evoPars1.StepSize;
+
+
+//	cout << "EvolutionCO::GenPhenMapping " << endl;
+	int k = 1;
+
+	// Sensor to interneurons
+	for (int i = 1; i <= 2*(size-4); i++){
+		phen(k) = MapSearchParameter(gen(k), -SensorWeightRange, SensorWeightRange);
+		k++;
+	}
+
+	// Weights between interneurons (fully recurrent, non-symm)
+	for (int i = 1; i <= (size-4)*(size-4) + (size-2)*2 + (size-4) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -InterneuronWeightRange, InterneuronWeightRange);
+		k++;
+	}
+
+	// Biases interneurons
+	for (int i = 1; i <= (size-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), -BiasRange, BiasRange);
+		k++;
+	}
+
+	//  Time-constants
+	for (int i = 1; i <= (size-2) + 1; i++){
+		phen(k) =  MapSearchParameter(gen(k), TauMin, TauMax);
+		k++;
+	}
+
+	//		CPG to motorneurons
+	phen(k) = MapSearchParameter( gen(k), 0.0, StretchReceptorRange); // w_CPG_SMB
+	k++;
+
+	//      Difference sensor parameters
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // N
+	k++;
+	phen(k) = MapSearchParameter( gen(k), MinDifSensor, MaxDifSensor);  // M
+	k++;
+
+	//      Weight of the connection between the motorneurons and the muscles
+	phen(k) = MapSearchParameter( gen(k), MinNeckTurnGain, MaxNeckTurnGain);
+}

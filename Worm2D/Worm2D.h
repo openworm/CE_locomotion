@@ -153,6 +153,9 @@ class Worm2Dbody : virtual public DataWriter
     void writeData();
     WormBody b;
 
+    bool first_call = true;
+    double xtp = 0, ytp = 0;
+
 };
 
 class Worm2Dbase : virtual public DataWriter
@@ -300,23 +303,28 @@ class Worm2D : virtual public Worm2Dm
     virtual const vector<string> getDMuscNames() {return {"not implemented"};}
 
     //virtual void addExtraParsToJson(json & j) = 0;
-    virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);}
-    virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}
-    virtual vector<toFromWeight> makeBodyConn();
-    virtual vector<toFromWeight> makeVentralBodyConn();
-    virtual vector<toFromWeight> makeDorsalBodyConn();
-
+    virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);} //from neurons to muscles
+    virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(json & j);
+    void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
+
+
+    virtual vector<toFromWeight> makeBodyConn();
+    virtual vector<toFromWeight> makeVentralBodyConn(); //from muscles to body
+    virtual vector<toFromWeight> makeDorsalBodyConn();
     void setUpBodyConn();
     void setUpBodyConn(json & j);
 
-    void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-    void setMuscleInput(); //calls setMuscleInputVec()
-    void setBodyInput();
+    
+    void setBodyInput(); //takes muscle outputs to drive body segments
+    
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
+    void setMuscleInput(); //calls setMuscleInputVec()
     void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
+    
+    
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
@@ -342,5 +350,14 @@ public:
 virtual void setForward() = 0;
 virtual void setBackward() = 0;
 virtual void randomizeNS(RandomState &rs)  = 0;
+
+};
+
+class WormGrad
+{
+public:
+virtual void ResetAgentsBody()  = 0;
+virtual double distanceToCenter() const = 0;
+
 
 };

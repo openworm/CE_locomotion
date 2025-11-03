@@ -128,6 +128,8 @@ plot_formats["W2DCE"]["plot_time"] = 20
 plot_formats["W2D21R"] = plot_formats["Net21"]
 plot_formats["W2DCESR"] = plot_formats["W2DCE"]
 plot_formats["W2DSR"] = plot_formats["W2DCE"]
+plot_formats["W2D18"] = plot_formats["RS18"]
+plot_formats["W2DCO"] = plot_formats["CO"]
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
@@ -675,7 +677,10 @@ def reload_single_run(a=None, **kwargs):
     from F2_fig_behavior import make_fig
 
     if not (
-        a.modelName == "CO" or a.modelName == "W2Dosc" or a.modelName == "W2Dosc21"
+        a.modelName == "CO"
+        or a.modelName == "W2Dosc"
+        or a.modelName == "W2Dosc21"
+        or a.modelName == "CO18Full"
     ):
         make_fig(plot_format=plot_format)
 

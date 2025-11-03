@@ -34,7 +34,7 @@ virtual void EulerStep(double stepsize) {t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
 const pfa & itsPfa() const {return pfa1;}
-virtual void setFromPheno(TVector<double> &pheno){}
+virtual void setFromPheno(const TVector<double> &pheno){}
 virtual void addParsToJson(json & j){pfa1.addParsToJson(j);}
 //friend class Worm2DoscBase<Worm2Dosc>;
 friend class Worm2Dosc;
@@ -64,7 +64,7 @@ class CoupledOsc : public NSosc
         output[i-1] = pfa1.amp[i-1]*sin(pfa1.phase[i-1]);
         return output[i-1];
     }
-    void setFromPheno(TVector<double> &pheno, int offset = 0);
+    void setFromPheno(const TVector<double> &pheno, int offset = 0);
     virtual ~CoupledOsc(){};
     friend class Worm2Dosc21Coup;
     friend class Worm2Dosc21CF;
@@ -253,7 +253,7 @@ template<class T> friend class EvolutionFullW;
 protected:
 
 void setPfaFromPheno(TVector<double> &v);
-void setParsFromPheno(TVector<double> &v);
+void setParsFromPheno(const TVector<double> &v);
 
 
 
@@ -364,8 +364,8 @@ vector<toFromWeight> makeDorsalMuscleConn() {return Worm2Dosc21base::makeDorsalM
 vector<toFromWeight> makeVentralMuscleConn() {return Worm2Dosc21base::makeVentralMuscleConn();}
 
 void setPfaFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen, int offset);
+void setParsFromPheno(const TVector<double> &phen);
+void setParsFromPheno(const TVector<double> &phen, int offset);
 
 const string getModelName() {return "Worm2Dosc21";}
 
@@ -388,7 +388,7 @@ int getVectSize() {return 18;}
 template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen);
+void setParsFromPheno(const TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21all";}
 void setPhenoNames(); 
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
@@ -408,7 +408,7 @@ int getVectSize() {return 5;}
 template<class T> friend class EvolutionFullW;
 protected:
 //void setPfaFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen);
+void setParsFromPheno(const TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21S";}
 void setPhenoNames(); 
 };
@@ -427,7 +427,7 @@ int getVectSize() {return cn.weights.size()+4;}
 template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen);
+void setParsFromPheno(const TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21Coup";}
 void setPhenoNames();
 vector<toFromWeight> getWeightVec();
@@ -448,7 +448,7 @@ int getVectSize() {return cn.weights.size() + 14 + 3;}
 template<class T> friend class EvolutionFullW;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
-void setParsFromPheno(TVector<double> &phen);
+void setParsFromPheno(const TVector<double> &phen);
 const string getModelName() {return "Worm2Dosc21CF";}
 void setPhenoNames();
 };

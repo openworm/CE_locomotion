@@ -17,23 +17,27 @@ const double	HSP				=	(2*Pi)/HST;		// Head-sweep period 2*Pi/T, According to Fer
 	
 
 // The WormAgent class declaration
-class WormAgent : public Worm2Dbase {
+class WormAgent : public Worm2Dbase, public WormGrad, public EvolvableS {
 public:
 	// The constructor
+	//WormAgent();
 	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
-	WormAgent(int newsize = 0);	// Construct from evolutionary algorithm
+	WormAgent(int newsize);	// Construct from evolutionary algorithm
 	WormAgent(int newsize, const char* fnm);	// Construct from file
+	WormAgent(shared_ptr<const CmdArgs> cmd);
+	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_);
+
 	// The destructor
 	~WormAgent();
 
 	// Accessors
 	int CircuitSize(void) {return size;};
-	void SetCircuitSize(int news) {size = news;};
-	void InitialiseCircuit(int newcs);
-	virtual void SetWormParametersFromFile(int newsize, const char* fnm);
-	virtual double PositionX(void) {return px;};
+	//void SetCircuitSize(int news) {size = news;};
+	void InitialiseCircuit();
+	virtual void SetWormParametersFromFile(const char* fnm);
+	virtual double PositionX(void) const {return px;};
 	void SetPositionX(double newx) {px = newx;};
-	virtual double PositionY(void) {return py;};
+	virtual double PositionY(void) const {return py;};
 	void SetPositionY(double newy) {py = newy;};
 	double VelocityX(void) {return vx;};
 	void SetVelocityX(double newx) {vx = newx;};
@@ -48,6 +52,8 @@ public:
 	double OutputGain(void) {return outputGain;};
 	void SetOutputGain(double newdc) {outputGain = newdc;};
 	double DistanceToCentre(void) {return distanceToCentre;};
+	double distanceToCenter(void) const;
+
 	//double DistanceToCentre(void){return sqrt(pow(PositionX(),2) + pow(PositionY(),2));}	
 
 	// Control
@@ -57,7 +63,7 @@ public:
 	void UpdateSensors();
 	virtual void ResetAgentsBody();
 	void ResetAgentIntState(RandomState &rs);
-	virtual void SetParameters(TVector<double> &v);
+	virtual void SetParameters(const TVector<double> &v);
 	//void InitialiseAgent(double runduration, double stepsize);
 	void InitialiseAgent();
 	void PrintDetail(ofstream &file);
@@ -83,11 +89,14 @@ public:
 	//VMCO::TVector<double> histCurv,histTheta;
 	TVector<double> histCurv,histTheta;
 	double px, py, vx, vy, orient, theta;
+
 	double distanceToCentre;
+	
 	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
-	int size;
+	const int size;
 	int forward;
 
+	shared_ptr<gradParameters> gradPars;
 
 	int		VelDelta;  //		=	(int) (HST/StepSize);
 
@@ -95,8 +104,10 @@ public:
 
 	RandomState * rs = nullptr;
 
-	double gradSteep, orient_orig, RunDuration, HSStepSize;
-	int taxis, kinesis;
+	//double gradSteep, orient_orig, RunDuration, HSStepSize;
+	//int taxis, kinesis;
+
+
 	//double sjadd;	
 	//int sdqqq;
 
@@ -129,5 +140,11 @@ public:
   	void setDistanceToCentre();
 	void writeAct();
 
+
+	void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+	void setEvolPars(W2Dparameters & w2par_, string evotype_){}
+	void setParsFromPheno(const TVector<double> &pheno);
+	void setWormPars(shared_ptr<const CmdArgs> cmd);
+	int getVectSize();
 };
 

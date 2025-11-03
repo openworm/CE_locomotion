@@ -1,4 +1,14 @@
 {
+    "Driving input": {
+        "strengths": {
+            "message": "Driving input strength to Nervous System in sparse format",
+            "value": []
+        },
+        "weights": {
+            "message": "Weights of driving inputs to Nervous System in sparse format",
+            "value": []
+        }
+    },
     "Evolutionary Optimization Parameters": {
         "BiasRange": {
             "value": 15.0
@@ -639,6 +649,9 @@
         "HSP": {
             "value": 1.4959964761904763
         },
+        "HSStepSize": {
+            "value": 0.01
+        },
         "HST": {
             "value": 4.2
         },
@@ -663,8 +676,20 @@
         "N_units": {
             "value": 1
         },
+        "RunDuration": {
+            "value": 100.0
+        },
         "T_muscle": {
             "value": 1.0
+        },
+        "gradSteep": {
+            "value": 0.5
+        },
+        "kinesis": {
+            "value": 0
+        },
+        "orient": {
+            "value": 0.0
         },
         "outputGain": {
             "value": 1.3456551425662862
@@ -674,6 +699,9 @@
         },
         "sensorN": {
             "value": 0.4299988224965159
+        },
+        "taxis": {
+            "value": 1
         },
         "w_CPG_SMBD": {
             "value": 8.94439282061798

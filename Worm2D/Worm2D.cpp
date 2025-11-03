@@ -144,9 +144,6 @@ Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
     //setUpBodyConn();
 }
 
-Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
-Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_)
-{}
 
 
 
@@ -335,8 +332,11 @@ void Worm2Dbase::Step(double StepSize_)
 
 double Worm2Dbody::getVelocity()
 {
-   static double xtp =  CoMx();
-   static double ytp =  CoMy();
+    if (first_call){
+    xtp =  CoMx();
+    ytp =  CoMy();
+    first_call = false;
+    }
 
     double xt = CoMx(); 
     double yt = CoMy();

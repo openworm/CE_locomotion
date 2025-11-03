@@ -124,8 +124,10 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //const vector<string> getVMuscNames(){ return {"dum1"};}
     //const vector<string> getDMuscNames(){ return {"dum1"};}
     vector<toFromWeight> makeMuscleConn(const vector<int> & neurons, const vector<double> & NMJ);
-    void setMuscleInputOrig();
-    void setBodyInputOrig();
+
+
+    
+
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
     //double AVA_output, AVB_output;
@@ -150,7 +152,11 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     void makeExternalInputConn();
     void assignExternalInput();
+
+    
     void setExternalInputOrig();
+    void setMuscleInputOrig();
+    void setBodyInputOrig();
 
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";
@@ -191,7 +197,9 @@ public:
 
     void setPhenoNames();
 
+    template<class T> friend class EvolutionFullWC;
     template<class T> friend class EvolutionFullW;
+    template<class T> friend class Evolvable_ptr;
 
     void setWormPars(shared_ptr<const CmdArgs> cmd)
     //shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
@@ -216,7 +224,7 @@ public:
     WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
 
     void setParsFromJson(json & j);
-    void setParsFromPheno(TVector<double> &pheno);
+    void setParsFromPheno(const TVector<double> &pheno);
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}
     void setEvolPars(W2Dparameters & w2par_, string evotype_);

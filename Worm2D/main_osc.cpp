@@ -1,6 +1,8 @@
 #include "Worm2Dmods.h"
 #include "Worm21.h"
+#include "WormRS18.h"
 #include "Worm2DCE.h"
+#include "WormAgent.h"
 #include "Evolution.h"
 
 
@@ -28,8 +30,13 @@ int main (int argc, const char* argv[])
     double StepSize;
     int skip_steps;
 
-    const string json_filename = rename_file("worm_data_evo.json", directoryName);
-    
+
+    string json_filename = rename_file("worm_data_evo.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
+
     if (model_name == "") {  
     if (directoryExists(json_filename)){
         json j = getJsonFromFile(json_filename);
@@ -102,6 +109,9 @@ int main (int argc, const char* argv[])
         if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
         if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
 
+        if (model_name == "W2D18") evo = new EvolutionFullW<Worm18>(cmd);
+        if (model_name == "W2DCO") evo = new EvolutionFullWC<WormAgent>(cmd);
+
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
@@ -113,6 +123,11 @@ int main (int argc, const char* argv[])
     }
 
     
+    json_filename = rename_file("worm_data_evo.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
 
    //delete w1;
     
@@ -127,6 +142,9 @@ int main (int argc, const char* argv[])
    
 
     //const string json_filename = ep1.rename_file("worm_data_evo.json");
+
+
+    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename, cmd);
 
     if (!do_nml){
 
@@ -147,7 +165,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
     if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
-    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename);
+    if (model_name == "W2D18") w2 = new Worm18(gen_filename);
+    if (model_name == "W2DCO") w2 = new WormAgent(gen_filename,cmd);
 
     }else{
 
@@ -156,6 +175,12 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
 
     }
+
+    json_filename = rename_file("worm_data_evo.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
 
     const json j_evo = getJsonFromFile(json_filename);
     long simrandseed = j_evo["Evolutionary Optimization Parameters"]["randomseed"]["value"];

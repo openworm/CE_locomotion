@@ -372,7 +372,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
 }
 
-/* TVector<double> & Evolution::getBestPhenotype()
+TVector<double> Evolution::getBestPhenotype()
 {
 
 //TVector<double> phenotype(1, itsEvoPars().VectSize);   
@@ -381,7 +381,7 @@ GenPhenMapping(bestVector, phenotype);
 return phenotype;
 
 }
- */
+ 
 
 
 TVector<double> & Evolution::getBestGenotype()
