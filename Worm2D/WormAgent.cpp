@@ -10,28 +10,6 @@
 //using namespace CTRNNspace;
 
 
-WormAgent::WormAgent(int newsize):
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
-gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
-{InitialiseCircuit();}
-
-WormAgent::WormAgent(shared_ptr<const CmdArgs> cmd_):
-WormAgent(cmd_->getArgValInt("--network_size", 10))
-{setWormPars(cmd_);}
-
-
-WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
-{SetParameters(v);}
-
-
-WormAgent::WormAgent(int newsize, const char* fnm):WormAgent(newsize)
-{SetWormParametersFromFile(fnm);}
-
-WormAgent::WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
-{
-    setParsFromFile(filename_);
-}
-
 
 /* WormAgent::WormAgent(int newsize, const char* fnm):
 Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),

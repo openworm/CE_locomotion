@@ -42,7 +42,7 @@ class Evolution
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
     void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
     TVector<double> & getBestGenotype();
-    TVector<double> getBestPhenotype();
+    const TVector<double> & getBestPhenotype();
 
     virtual void writeJson(TVector<double> &) = 0;
     
@@ -62,6 +62,7 @@ class Evolution
     string rename_file(string filename);
     //evoParsNonConst evoParsNC;
     void setFromCPT();
+    const int & itsVectSize() const {return VectSize;}
 
     protected:
     void writeJson1(Worm2Dbase & w);
@@ -98,8 +99,12 @@ class Evolution
     const simPars simPars1;
     void checkPars();
 
+    const int VectSize;
+
+   
     private:
 
+  
     
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile;//, genhistfile2;
@@ -109,64 +114,6 @@ class Evolution
 
 };
 
-
-
-
-
-/* class EvolutionFull : public Evolution
-{
-public:
-Evolvable * const evolvable1;
-
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-{return evolvable1->GenPhenMapping(gen,phen);}
-//double EvaluationFunction(TVector<double> &v, RandomState &rs)
-//{return evolvable1->EvaluationFunction(v,rs);}
-//void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
-//void writeJson(TVector<double> & v){return evolvable1->writeJson(v);}
-
-virtual ~EvolutionFull(){}
-
-protected:
-EvolutionFull(int argc, const char* argv[], Evolvable * evol1_)
-:Evolution(argc,argv,evol1_->getDefaultEvoPars(),evol1_->getVectSize()),evolvable1(evol1_)
-{
-//evolvable1->ep_ptr = &evoPars1;
-}
-
-
-};
-
-template<class T>
-class EvolutionFullW : public EvolutionFull
-{
-public:
-EvolutionFullW(int argc, const char* argv[]):EvolutionFull(argc, argv, new T()){}
-virtual ~EvolutionFullW(){if (evolvable1) delete evolvable1;}
-void writeJson(TVector<double> & pheno){T w(pheno, true);writeJson1(w);}
-double EvaluationFunction(TVector<double> &v, RandomState &rs);
-
-}; */
-/* class EvolutionFull : public Evolution
-{
-public:
-EvolvableS * const evolvable1  = nullptr;
-
-void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-{return evolvable1->GenPhenMapping(gen,phen);}
-
-virtual ~EvolutionFull(){if (evolvable1) delete evolvable1;}
-
-protected:
-EvolutionFull(int argc, const char* argv[], EvolvableS * evol1_)
-:Evolution(argc,argv,getDefaultEvoPars(evol1_),evol1_->getVectSize()),evolvable1(evol1_){}
-
-evoPars getDefaultEvoPars(EvolvableS * evol1_) 
-{return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
-        100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evol1_->getVectSize(), "", "Evo21"};}
-
-}; */
 
 
 template<class T>
@@ -199,25 +146,7 @@ const shared_ptr<const W2Dparameters> evopar_ptr;
 };
 
 
-/* template<class T>
-shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(int argc, const char* argv[])
-{
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
-    //const string & evotype_ = evoPars1.evoType;
 
-    if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(argc,argv, evolvable1, evotype_));
-    if (evotype_=="Evo18") 
-    return shared_ptr<const AgarPars>(new const AgarPars(argc,argv));
-    if (evotype_=="EvoCE"|| evotype_=="EvoCENZ") 
-    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(argc,argv));
-    if (evotype_=="Evo21R") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(argc,argv, evolvable1, evotype_));
-
-    assert(0 && "evotype not implemented");
-    return nullptr;
-}
- */
 
 
 template<class T>
@@ -262,22 +191,22 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_)
     if (evotype_=="EvoCO")
     return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, evolvable1->getVectSize(), "", evotype_};
+        1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, -1 , "", evotype_};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
+        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, evolvable1->getVectSize(), "", evotype_ };
+        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
     
     if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, evolvable1->getVectSize(), "", evotype_};
+        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
 
     assert(0 && "evotype not implemented");
     
@@ -292,6 +221,11 @@ class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
     Evolvable_ptr<T>(make_shared<T>(),cmd_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
     {this->evolvable1->setWormPars(cmd_);}
+    EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
+    Evolvable_ptr<T>(make_shared<T>(),cmd_), 
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_)
+    {this->evolvable1->setWormPars(cmd_);}
+
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -314,11 +248,6 @@ class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
     protected:
     
 
-    
-    
-    //const shared_ptr<const W2Dparameters> wormpar_ptr;
-    //const int argc;
-    //const char* argv[];
 };
 
 
@@ -329,16 +258,31 @@ class EvolutionFullWC: public Evolvable_ptr<T>, public Evolution
 public:
 
     EvolutionFullWC(shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), 
+    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), setFromEvolFlag(false),
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize()){}
+
+    EvolutionFullWC(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
+    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), setFromEvolFlag(true),
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_){}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double EvaluationCO(TVector<double> &genotype, RandomState &rs);
     void writeJson(TVector<double> & pheno);
 
+    void configure_p2(){
+    
+       // if (setFromEvolFlag){
+       // EvolutionFullW<Worm18>(cmd, "RS18_") er18;
+        //setFromEvol(er18, 0); 
+       // }
+
+    Evolution::configure_p2();
+    }
 
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
+
+    const bool setFromEvolFlag;
 };
 
 template<class T>
@@ -473,7 +417,7 @@ template<class T>
 double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState &rs, int direction){
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -684,7 +628,7 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //ofstream fitfile;
   
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -974,7 +918,7 @@ template<class T>
 double EvolutionFullW<T>::EvaluationCEp1(TVector<double> &genotype, RandomState &rs, int direction){
 
   const double & Duration = evoPars1.Duration;
-  const int & VectSize = evoPars1.VectSize;
+  //const int & VectSize = evoPars1.VectSize;
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
 

@@ -21,11 +21,22 @@ class WormAgent : public Worm2Dbase, public WormGrad, public EvolvableS {
 public:
 	// The constructor
 	//WormAgent();
-	WormAgent(TVector<double> &v, int newsize); // Construct from phenotype
-	WormAgent(int newsize);	// Construct from evolutionary algorithm
-	WormAgent(int newsize, const char* fnm);	// Construct from file
-	WormAgent(shared_ptr<const CmdArgs> cmd);
-	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_);
+	
+	WormAgent(int newsize):
+	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
+	gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
+	{InitialiseCircuit();}
+	WormAgent(TVector<double> & v, int newsize):WormAgent(newsize){SetParameters(v);}
+	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}
+
+
+	WormAgent(shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_->getArgValInt("--network_size", 10))
+	{setWormPars(cmd_);}
+	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
+	{setParsFromFile(filename_);}
+
+
+
 
 	// The destructor
 	~WormAgent();

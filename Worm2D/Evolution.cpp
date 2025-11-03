@@ -12,7 +12,7 @@ string Evolution::rename_file(string filename){return evoPars1.directoryName + "
 
 
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
-    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),
+    :evoPars1(setPars(argc,argv,ep1)),s(new TSearch(VectSize_)),VectSize(VectSize_),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
     setFromCPTflag(false)
@@ -22,7 +22,7 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
     }
   
 Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
-    :evoPars1(setPars(cmd_,ep1)),s(new TSearch(VectSize_)),
+    :evoPars1(setPars(cmd_,ep1)),s(new TSearch(VectSize_)),VectSize(VectSize_),
     simPars1(setSimPars(cmd_)),writeBestFlag(true),phenotype(1, VectSize_),
     setFromCPTflag(false)
     {
@@ -31,7 +31,7 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
     }
 
 Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
-    :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),
+    :evoPars1(setPars(argc,argv,ep1,prefix_)),s(new TSearch(VectSize_)),VectSize(VectSize_),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
     setFromCPTflag(false)
@@ -41,7 +41,7 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, s
     }
 
 Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_)
-    :evoPars1(setPars(cmd_,ep1,prefix_)),s(new TSearch(VectSize_)),
+    :evoPars1(setPars(cmd_,ep1,prefix_)),s(new TSearch(VectSize_)),VectSize(VectSize_),
     simPars1(setSimPars(cmd_)),writeBestFlag(true),phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
     setFromCPTflag(false)
@@ -53,9 +53,9 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_,
 
 void Evolution::checkPars()
 {
-    if (s->VectorSize() != evoPars1.VectSize){
-         cout << "cpt vectorsize "  << s->VectorSize() << " evolution vectorsize " <<  evoPars1.VectSize << endl;
-         assert(s->VectorSize() == evoPars1.VectSize && "Vectorsize is not correct");
+    if (s->VectorSize() != VectSize){
+         cout << "cpt vectorsize "  << s->VectorSize() << " evolution vectorsize " <<  VectSize << endl;
+         assert(s->VectorSize() == VectSize && "Vectorsize is not correct");
     }
 
     if (s->PopulationSize()!= evoPars1.PopulationSize) 
@@ -236,6 +236,8 @@ void Evolution::addParsToJson(json & j)
     //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
     evoPars1.addParsToJson(j["Evolutionary Optimization Parameters"]);
+    
+    j["Evolutionary Optimization Parameters"]["VectSize"]["value"] = VectSize;
 
     addExtraParsToJson(j);
 }
@@ -329,7 +331,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     //TVector<double> & phencur =  getBestPhenotype();
     TVector<double> & gencur =  getBestGenotype();
 
-    TVector<double> phencur(1, evoPars1.VectSize);
+    TVector<double> phencur(1, VectSize);
     GenPhenMapping(gencur, phencur);
 
 
@@ -353,11 +355,11 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     //phenprev = phencur;
     //genprev = gencur;
 
-    TVector<double> avphen(1, evoPars1.VectSize);
+    TVector<double> avphen(1, VectSize);
     for (int j = 1; j <= avphen.Size(); j++) avphen(j)=0;
 
     for (int i = 1; i <= s->PopulationSize(); i++) {
-        TVector<double> phenotype(1, evoPars1.VectSize);
+        TVector<double> phenotype(1, VectSize);
         GenPhenMapping(s->Individual(i), phenotype);
         for (int j = 1; j <= phenotype.Size(); j++) 
         avphen(j) +=  phenotype(j);    
@@ -372,7 +374,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
 }
 
-TVector<double> Evolution::getBestPhenotype()
+const TVector<double> & Evolution::getBestPhenotype()
 {
 
 //TVector<double> phenotype(1, itsEvoPars().VectSize);   
@@ -491,7 +493,7 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
     //Worm2D21 & w = dynamic_cast<Worm2D21&>(w1);
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     //const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;

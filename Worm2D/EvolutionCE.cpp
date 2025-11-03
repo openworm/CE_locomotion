@@ -85,7 +85,7 @@ double EvolutionCE::EvaluationFunction(TVector<double> &v, RandomState &rs)
 double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int direction){
 
   const double & Duration = evoPars1.Duration;
-  const int & VectSize = evoPars1.VectSize;
+  //const int & VectSize = evoPars1.VectSize;
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
 
@@ -160,7 +160,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
 
   const double & Duration = evoPars1.Duration;
-  const int & VectSize = evoPars1.VectSize;
+  //const int & VectSize = evoPars1.VectSize;
   const double & StepSize = evoPars1.StepSize;
   const double & Transient = evoPars1.Transient;
   //const int & skip_steps = evoPars1.skip_steps;
