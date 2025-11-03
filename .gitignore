@@ -50,3 +50,6 @@
 /*/*.pdf
 .DS_Store
 /CE_orientation/main
+/experiments/izq_runs_nets/45/arm64
+/experiments/izq_runs_nets/45/report.txt
+/Worm2D/main_osc
