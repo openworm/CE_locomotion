@@ -98,7 +98,7 @@ double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int directio
     double yt, ytp, oyt, fyt;
 
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1,  itsVectSize());
     GenPhenMapping(v, phenotype);
     WormCE w(phenotype);
     w.InitializeState(rs);
@@ -170,7 +170,7 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   //ofstream bodyfile(rename_file("body.dat"));
   //ofstream actfile(rename_file("act.dat"));
   // Genotype-Phenotype Mapping
-  TVector<double> phenotype(1, VectSize);
+  TVector<double> phenotype(1, itsVectSize());
   GenPhenMapping(v, phenotype);
   double sra = phenotype(SR_A);
   double srb = phenotype(SR_B);

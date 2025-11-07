@@ -30,7 +30,16 @@ std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
 class Evolution
 {
+
+    protected:
+    const evoPars evoPars1;
+    TSearch* s; 
+    const simPars simPars1;
+
     public:
+
+
+
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {cout << "no GenPhenMapping" << endl; assert(0); return;}
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
@@ -62,7 +71,8 @@ class Evolution
     string rename_file(string filename);
     //evoParsNonConst evoParsNC;
     void setFromCPT();
-    const int & itsVectSize() const {return VectSize;}
+    void setFromCPT2();
+    const int itsVectSize() const {if (s) return s->VectorSize(); assert(0 && "s not set");}
 
     protected:
     void writeJson1(Worm2Dbase & w);
@@ -77,13 +87,16 @@ class Evolution
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
 
     void setUp();
+    void setFromEvol2(const Evolution & er, int offset);
     void setFromEvol(const Evolution & er, int offset);
     //void setPopFromBestGenoFile(int vecincsize, int offset);
     void setPopFromBestGenoFile(int offset = 0);
+    //void setPopFromBestGenoFile2();
+    void construct(int vsize_, int offset_);
 
     virtual void configure_p12(){return;}
 
-    virtual void configure_p1();
+    void configure_p1();
     virtual void configure_p2();
     void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);
     void ResultsDisplay(TSearch &s);
@@ -92,14 +105,13 @@ class Evolution
     Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
     Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_);
     Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_);
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1);
 
     virtual void addExtraParsToJson(json & j) {return;}
-    TSearch* const s; 
-    const evoPars evoPars1;
-    const simPars simPars1;
+   
     void checkPars();
 
-    const int VectSize;
+    //int VectSize;
 
    
     private:
@@ -114,6 +126,8 @@ class Evolution
 
 };
 
+
+void EvolutionaryRunDisplay_try(int Generation, double BestPerf, double AvgPerf, double PerfVar);
 
 
 template<class T>

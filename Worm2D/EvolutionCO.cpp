@@ -85,7 +85,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 //	cout << "EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm)" << endl;
 
 	TVector<double> phenotype;
-	phenotype.SetBounds(1, VectSize);
+	phenotype.SetBounds(1, itsVectSize());
 	GenPhenMapping(v, phenotype);
 	
 	//WormAgent Worm(CircuitSize);
@@ -162,7 +162,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 		}
 	}
 
-	
+
 	return fitness/k;
 }
 
@@ -182,7 +182,7 @@ double EvolutionCO::Behavior(TVector<double> &v, WormAgent * Worm)
 
 	//int VectSize = evoPars1.VectSize;
 	TVector<double> phenotype;
-	phenotype.SetBounds(1, VectSize);
+	phenotype.SetBounds(1, itsVectSize());
 	GenPhenMapping(v, phenotype);
 	//WormAgent Worm(CircuitSize);
 	//Worm.setBasename(itsEvoPars().directoryName);

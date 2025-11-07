@@ -104,7 +104,7 @@ double Evolution21::EvaluationFunction1(TVector<double> &v, RandomState &rs){
     TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
     
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
     
     Segment s(phenotype);
@@ -208,7 +208,7 @@ double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &r
 
     
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
     
     Worm21 w(phenotype);
@@ -451,7 +451,7 @@ double Evolution21::EvaluationFunction2(TVector<double> &v, RandomState &rs){
     
         
         // Genotype-Phenotype Mapping
-        TVector<double> phenotype(1, VectSize);
+        TVector<double> phenotype(1, itsVectSize());
         GenPhenMapping(v, phenotype);
         
         Worm21 w(phenotype);

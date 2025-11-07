@@ -40,6 +40,18 @@ class TVecROff : private TVector<T>
     const int offset;
 }; */
 
+template<class T>
+void getVecFromFile(const string & filename_, vector<T> & vec)
+{
+
+    ifstream ifs;
+    ifs.open(filename_);
+    T val;
+    //vector<double> bestgenvec;
+    while (ifs >> val) vec.push_back(val);
+    ifs.close();
+
+}
 
 template<class T>
 void fileDropLines(string name, int rows, int cols)
