@@ -50,7 +50,7 @@ class EvolutionCO : virtual public Evolution
         26, 40, 0.05, 0.5, UNIFORM, 
         1.1, 0.1, 1, 0, 1, 1, 50, 50, StepSize_, 23, getVectSize(circuitsize_)},
         getVectSize(circuitsize_)),MinDifSensor(10*StepSize_),TauMin(10*StepSize_),
-        CircuitSize(circuitsize_){}
+        CircuitSize(circuitsize_){ cout << "evol CO " << endl;}
 
 
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);

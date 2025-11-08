@@ -39,7 +39,6 @@ class Evolution
     public:
 
 
-
     virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {cout << "no GenPhenMapping" << endl; assert(0); return;}
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
@@ -123,7 +122,7 @@ class Evolution
     const bool writeBestFlag;
     bool doResume, setFromCPTflag, doCPT;//, doneFirst
     int popsize;
-
+    bool configP1Called = false;
 };
 
 

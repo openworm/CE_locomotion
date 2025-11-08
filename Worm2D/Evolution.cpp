@@ -46,6 +46,7 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
     {  //assert(0);
         //setFromCPT();
         //setPopFromBestGenoFile();
+
         construct(VectSize_,0);
         phenotype.SetBounds(1, itsVectSize());
     }
@@ -56,6 +57,8 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, s
     //phenprev(1, VectSize_),genprev(1, VectSize_),
     setFromCPTflag(false)
     {
+       
+
         //setFromCPT();
         //setPopFromBestGenoFile();
         construct(VectSize_,0);
@@ -69,6 +72,7 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_,
     //phenprev(1, VectSize_),genprev(1, VectSize_),
     setFromCPTflag(false)
     {
+         cout << "Evo construct " << prefix_ << endl;
         //assert(0);
         //setFromCPT();
         //setPopFromBestGenoFile();
@@ -101,20 +105,19 @@ void Evolution::setFromCPT2()
     const string filename_ = rename_file("search.cpt");
     cout << filename_ << endl;
     //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
-
-    
    
+
     struct stat buffer;   
     if (doCPT && evoPars1.CheckpointInterval>0 && (stat (filename_.c_str(), &buffer) == 0)) {
         s = new TSearch(1);
-     
         s->cptfilename = filename_;
+        
         s->ReadCheckpointFile();
         cout << "setFromCPT2 " << s->cptfilename << endl;
         doResume = true;
         //ResultsDisplay(*s);
         checkPars();
-        configure_p1();
+        //configure_p1();
 
 
     }
@@ -146,7 +149,7 @@ void Evolution::setFromCPT()
 
 void Evolution::setUp()
 {   
-
+    s->cptfilename = rename_file("search.cpt");
     //setFromCPT();
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
@@ -182,6 +185,7 @@ void Evolution::construct(int vsize_, int offset_)
 
     if (doCPT && stat (filename.c_str(), &buffer) == 0) {
 
+        cout << "const from best gen " << filename << endl;
     //assert(0 && "setting from best gen");
     vector<double> bestgenvec;
     getVecFromFile<double>(filename, bestgenvec);
@@ -194,9 +198,10 @@ void Evolution::construct(int vsize_, int offset_)
 
     else s = new TSearch(bestgenvec.size());
 
-    assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
     configure_p1();
-    //s->InitializeSearch();
+    assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
+    
+    s->InitializeSearch();
     for (int i = 1; i <= s->PopulationSize(); i++) 
     for (int j = 1; j <= bestgenvec.size(); j++)
     s->Individual(i)(j + offset_) = bestgenvec[j-1];
@@ -206,10 +211,10 @@ void Evolution::construct(int vsize_, int offset_)
 
     assert(vsize_>0);
     s = new TSearch(vsize_);
-    configure_p1();
+    //configure_p1();
     //s->InitializeSearch();
     doResume = false;
-
+    cout << "const from default " << filename << " " << vsize_ << endl;
     //cout << " construct filename " << filename << endl;
     //assert(0);
     return;
@@ -275,9 +280,15 @@ void Evolution::setPopFromBestGenoFile(int offset)
 
 void Evolution::setFromEvol(const Evolution & er, int offset)
 {
-   // if (!setFromCPTflag) setFromCPT2();
-   // if (doResume) return;
 
+    
+
+    if (!setFromCPTflag) setFromCPT2();
+    if (doResume) return;
+
+    s->InitializeSearch();
+
+    //configure_p1();
 
     //assert(0);
     cout << "setFromEvol original pop size " 
@@ -298,12 +309,13 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
     for (int j = 1; j <= er.s->Individual(i).Size(); j++)
     s->Individual(i)(j+offset) = er.s->Individual(i)(j);
 
+   
 
-    s->Gen = 0;
+    //s->Gen = 0;
 	// Set up the initial population
 	//RandomizePopulation();
 	// The search is now initialized
-	s->SearchInitialized = 1;
+	//s->SearchInitialized = 1;
 
     doResume = false;
 
@@ -314,43 +326,6 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
 
 }
 
-void Evolution::setFromEvol2(const Evolution & er, int offset)
-{
-   // if (!setFromCPTflag) setFromCPT2();
-   // if (doResume) return;
-
-    cout << "setFromEvol original pop size " 
-    << s->PopulationSize() << "loaded pop size " 
-    << er.s->PopulationSize();
-
-    s->InitializeSearch();
-    int minsize = s->PopulationSize();
-    if (er.s->PopulationSize() < minsize) 
-        minsize = er.s->PopulationSize();
-
-
-    //assert(s->PopulationSize() == er.s->PopulationSize());
-    //assert(evoPars1.VectSize==er.evoPars1.VectSize + offset);
-
-    cout << "using " << minsize;
-    for (int i = 1; i <= minsize; i++) 
-    for (int j = 1; j <= er.s->Individual(i).Size(); j++)
-    s->Individual(i)(j+offset) = er.s->Individual(i)(j);
-
-
-    s->Gen = 0;
-	// Set up the initial population
-	//RandomizePopulation();
-	// The search is now initialized
-	s->SearchInitialized = 1;
-
-
-
- 
-//assert(0);
-//doResume = true;
-
-}
 
 
 void Evolution::writeJson1(Worm2Dbase & w)
@@ -561,6 +536,7 @@ TVector<double> & Evolution::getBestGenotype()
 
 void Evolution::ResultsDisplay(TSearch &s)
 {
+    //assert(0);
     TVector<double> bestVector;
     bestVector = s.BestIndividual();
 
@@ -589,6 +565,9 @@ void Evolution::ResultsDisplay(TSearch &s)
 
 void Evolution::configure_p1()
 {
+
+    if (configP1Called) return;
+    configP1Called = true;
     
     s->SetRandomSeed(evoPars1.randomseed);
 
@@ -649,7 +628,7 @@ void Evolution::configure_p2()
 void Evolution::configure()
 {
     setUp();
-    //configure_p1();
+    configure_p1();
     configure_p12();
     configure_p2();
     evolfile.close();

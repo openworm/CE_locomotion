@@ -162,7 +162,8 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 		}
 	}
 
-
+	cout << " evaluation CO " << fitness << endl;
+	
 	return fitness/k;
 }
 
