@@ -236,6 +236,7 @@ void WormAgent::setSimPars(double orient_orig_,
 void WormAgent::initForSimulation(RandomState &rs_)
 //void WormAgent::InitializeSimulation(RandomState &rs_)
 {
+	
 	rs = &rs_;
 	InitialiseAgent();
 	ResetAgentsBody();
@@ -260,12 +261,16 @@ void WormAgent::InitialiseAgent()
 	iSensorM = (int) (sensorM/gradPars->HSStepSize);
 	dSensorM = (double) iSensorM;
 	int upperbound = ((int) (((2*gradPars->RunDuration) + sensorN + sensorM) / gradPars->HSStepSize)) + 1;
+
+	cout << "uppervel " << upperbound << " " << VelDelta << endl;
+ 	
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
 	histCurv.SetBounds(1, VelDelta);
 	histCurv.FillContents(0.0);
 	histTheta.SetBounds(1, VelDelta);
 	histTheta.FillContents(0.0);
+	
 }
 
 // *******

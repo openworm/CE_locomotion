@@ -28,7 +28,7 @@ std::function<Ret(Params...)> Callback<Ret(Params...)>::func;
 
 
 
-class Evolution
+class EvoBase
 {
 
     protected:
@@ -38,30 +38,21 @@ class Evolution
 
     public:
 
+    EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, string prefix_);
 
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    {cout << "no GenPhenMapping" << endl; assert(0); return;}
-    virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
-    {cout << "RunSim not implemented" << endl; assert(0);}
-    virtual void RunSimulation(Worm2Dbase & w, RandomState &rs)
-    {cout << "RunSim not implemented" << endl; assert(0);}
-
-
-    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
-    void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
     TVector<double> & getBestGenotype();
-    const TVector<double> & getBestPhenotype();
+    
 
-    virtual void writeJson(TVector<double> &) = 0;
+    
     
     void addParsToJson(json & j);
     
-    void configure();
+    
     
     
     const evoPars & itsEvoPars() const {return evoPars1;}
 
-    virtual ~Evolution()
+    virtual ~EvoBase()
     {
       evolfile.close();
       if (s) delete s;
@@ -86,37 +77,32 @@ class Evolution
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
 
     void setUp();
-    void setFromEvol2(const Evolution & er, int offset);
-    void setFromEvol(const Evolution & er, int offset);
+    
+    void setFromEvol(const EvoBase & er, int offset);
     //void setPopFromBestGenoFile(int vecincsize, int offset);
     void setPopFromBestGenoFile(int offset = 0);
     //void setPopFromBestGenoFile2();
     void construct(int vsize_, int offset_);
-
-    virtual void configure_p12(){return;}
-
-    void configure_p1();
-    virtual void configure_p2();
-    void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);
-    void ResultsDisplay(TSearch &s);
+    void configure_p11();
     
-    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_);
-    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
-    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_);
-    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_);
-    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1);
-
-    virtual void addExtraParsToJson(json & j) {return;}
+    
+    
+    
+    EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_);
+    EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_);
+    EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_);
+    EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_);
+    EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1);
+    
+   
    
     void checkPars();
 
     //int VectSize;
 
-   
-    private:
+   virtual void addExtraParsToJson(json & j) {return;}
 
-  
-    
+
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
@@ -125,6 +111,57 @@ class Evolution
     bool configP1Called = false;
 };
 
+
+class Evolution : public EvoBase
+{
+    protected:
+
+    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
+    :EvoBase(argc,argv,ep1,VectSize_){}
+    Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
+    :EvoBase(argc,argv,ep1,VectSize_,prefix_){}
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
+    :EvoBase(cmd_,ep1,VectSize_){}
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_)
+    :EvoBase(cmd_,ep1,VectSize_,prefix_){}
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1)
+    :EvoBase(cmd_,ep1){}
+    Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, string prefix_)
+    :EvoBase(cmd_,ep1,prefix_){}
+
+
+    public:
+
+    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    {cout << "no GenPhenMapping" << endl; assert(0); return;}
+    virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
+    {cout << "RunSim not implemented" << endl; assert(0);}
+    virtual void RunSimulation(Worm2Dbase & w, RandomState &rs)
+    {cout << "RunSim not implemented" << endl; assert(0);}
+
+
+    void ResultsDisplay(TSearch &s);
+
+    virtual double EvaluationFunction(TVector<double> &v, RandomState &rs) = 0;
+    void RunStandardSimulation(Worm2Dm & w, RandomState &rs);
+
+    virtual void writeJson(TVector<double> &) = 0;
+    void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar);
+
+    const TVector<double> & getBestPhenotype();
+    
+    void configure();
+
+    protected:
+
+    virtual void configure_p12(){return;}
+    void configure_p1();
+    virtual void configure_p2();
+
+   
+
+
+};
 
 void EvolutionaryRunDisplay_try(int Generation, double BestPerf, double AvgPerf, double PerfVar);
 
@@ -148,6 +185,7 @@ evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)){}
 //evoPars getDefaultEvoPars(int argc, const char* argv[]);
 //evoPars getDefaultEvoPars(const string &);
 evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
+evoPars getDefaultEvoPars(const string & evotype_);
 
 //shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
 static shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
@@ -196,13 +234,11 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 } */
 
 template<class T>
-evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_) 
+evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_) 
 {
 
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
-    
     if (evotype_=="EvoCO")
-    return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
+        return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
         1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, -1 , "", evotype_};
 
@@ -222,7 +258,14 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_)
         1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
 
     assert(0 && "evotype not implemented");
-    
+
+}
+
+template<class T>
+evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_) 
+{
+    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    return getDefaultEvoPars(evotype_);    
 }
 
 template<class T>
@@ -283,11 +326,12 @@ public:
     void writeJson(TVector<double> & pheno);
 
     void configure_p2(){
-    
-       // if (setFromEvolFlag){
-       // EvolutionFullW<Worm18>(cmd, "RS18_") er18;
-        //setFromEvol(er18, 0); 
-       // }
+        string model_name = cmd->getArgVal("--modelname","");
+
+        if (model_name == "CO18Full"){
+        EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18"), "RS18_");
+        setFromEvol(er18, 0); 
+       }
 
     Evolution::configure_p2();
     }
@@ -295,7 +339,7 @@ public:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
 
-    const bool setFromEvolFlag;
+    const bool setFromEvolFlag = false;
 };
 
 template<class T>
@@ -1095,9 +1139,9 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 
 
     w.InitializeState(rs);
-    w.initForSimulation(rs);
+    //w.initForSimulation(rs);
     
-
+    
     shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1);
 
 	//RandomState rs2 = rs;
@@ -1145,7 +1189,7 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 				Worm->ResetChemCon(gradSteep);
 				Worm->ResetAgentIntState(rs);
 				Worm->UpdateChemCon(gradSteep); */
-
+ 
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
 					wg.ResetAgentsBody();
@@ -1187,6 +1231,8 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 			}
 		}
 	}
+
+   
 	return fitness/k;
 }
 

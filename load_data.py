@@ -249,9 +249,11 @@ def plot_evols(a=None, **kwargs):
         return
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
-    worm_file = hf.rename_file("worm_data.json")
+    worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_evo.json")
+        worm_file = hf.rename_file("worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data.json")
     network_json_data = utils.getJsonFile(worm_file)
     vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
         "value"

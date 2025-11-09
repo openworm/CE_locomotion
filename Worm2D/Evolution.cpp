@@ -7,11 +7,11 @@
 
 
 
-string Evolution::rename_file(string filename){return evoPars1.directoryName + "/" + 
+string EvoBase::rename_file(string filename){return evoPars1.directoryName + "/" + 
     evoPars1.fileprefix + filename;}
 
 
-Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1)
+EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1)
 :evoPars1(setPars(cmd_,ep1)),simPars1(setSimPars(cmd_)),
 writeBestFlag(true),setFromCPTflag(false)
 {
@@ -23,9 +23,20 @@ phenotype.SetBounds(1, itsVectSize());
 
 }
 
+EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, string prefix_)
+:evoPars1(setPars(cmd_,ep1,prefix_)),simPars1(setSimPars(cmd_)),
+writeBestFlag(true),setFromCPTflag(false)
+{
+
+construct(0,0);
+phenotype.SetBounds(1, itsVectSize());
+
+    //set phenotype
+
+}
 
 
-Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
+EvoBase::EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_)
     :evoPars1(setPars(argc,argv,ep1)),//s(new TSearch(VectSize_)),//VectSize(VectSize_),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),//phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
@@ -39,7 +50,7 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_)
 
     }
   
-Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
+EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
     :evoPars1(setPars(cmd_,ep1)),//s(new TSearch(VectSize_)),//VectSize(VectSize_),
     simPars1(setSimPars(cmd_)),writeBestFlag(true),//phenotype(1, VectSize_),
     setFromCPTflag(false)
@@ -51,7 +62,7 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
         phenotype.SetBounds(1, itsVectSize());
     }
 
-Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
+EvoBase::EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(argc,argv,ep1,prefix_)),//s(new TSearch(VectSize_)),//VectSize(VectSize_),
     simPars1(setSimPars(argc,argv)),writeBestFlag(true),//phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
@@ -66,7 +77,7 @@ Evolution::Evolution(int argc, const char* argv[], evoPars ep1, int VectSize_, s
 
     }
 
-Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_)
+EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, string prefix_)
     :evoPars1(setPars(cmd_,ep1,prefix_)),//s(new TSearch(VectSize_)),//VectSize(VectSize_),
     simPars1(setSimPars(cmd_)),writeBestFlag(true),//phenotype(1, VectSize_),
     //phenprev(1, VectSize_),genprev(1, VectSize_),
@@ -82,10 +93,10 @@ Evolution::Evolution(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_,
     }
 
 
-void Evolution::checkPars()
+void EvoBase::checkPars()
 {
     /* if (s->VectorSize() != VectSize){
-         cout << "cpt vectorsize "  << s->VectorSize() << " evolution vectorsize " <<  VectSize << endl;
+         cout << "cpt vectorsize "  << s->VectorSize() << " EvoBase vectorsize " <<  VectSize << endl;
          assert(s->VectorSize() == VectSize && "Vectorsize is not correct");
     } */
 
@@ -96,7 +107,7 @@ void Evolution::checkPars()
 
 }
 
-void Evolution::setFromCPT2()
+void EvoBase::setFromCPT2()
 {
  
     setFromCPTflag = true;
@@ -127,7 +138,7 @@ void Evolution::setFromCPT2()
 
 
 
-void Evolution::setFromCPT()
+void EvoBase::setFromCPT()
 {
     setFromCPTflag = true;
     popsize = evoPars1.PopulationSize;
@@ -147,7 +158,7 @@ void Evolution::setFromCPT()
 }
 
 
-void Evolution::setUp()
+void EvoBase::setUp()
 {   
     s->cptfilename = rename_file("search.cpt");
     //setFromCPT();
@@ -174,7 +185,7 @@ void Evolution::setUp()
 
 
 
-void Evolution::construct(int vsize_, int offset_)
+void EvoBase::construct(int vsize_, int offset_)
 {
 
     if (!setFromCPTflag) setFromCPT2();
@@ -198,7 +209,7 @@ void Evolution::construct(int vsize_, int offset_)
 
     else s = new TSearch(bestgenvec.size());
 
-    configure_p1();
+    configure_p11();
     assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
     
     s->InitializeSearch();
@@ -224,7 +235,7 @@ void Evolution::construct(int vsize_, int offset_)
 
 
 
-void Evolution::setPopFromBestGenoFile(int offset)
+void EvoBase::setPopFromBestGenoFile(int offset)
 {
    
     if (!setFromCPTflag) setFromCPT();
@@ -278,7 +289,7 @@ void Evolution::setPopFromBestGenoFile(int offset)
 
 
 
-void Evolution::setFromEvol(const Evolution & er, int offset)
+void EvoBase::setFromEvol(const EvoBase & er, int offset)
 {
 
     
@@ -328,13 +339,13 @@ void Evolution::setFromEvol(const Evolution & er, int offset)
 
 
 
-void Evolution::writeJson1(Worm2Dbase & w)
+void EvoBase::writeJson1(Worm2Dbase & w)
 {
 json j;
 writeJson1(w,j);
 }
 
-void Evolution::writeJson1(Worm2Dbase & w, json & j)
+void EvoBase::writeJson1(Worm2Dbase & w, json & j)
 {   
     
     RandomState rs;
@@ -359,7 +370,7 @@ void Evolution::writeJson1(Worm2Dbase & w, json & j)
   
 }
 
-void Evolution::addParsToJson(json & j)
+void EvoBase::addParsToJson(json & j)
 {  
     
     //doubIntParamsHead par1pars = evoPars1.getParams();
@@ -373,7 +384,7 @@ void Evolution::addParsToJson(json & j)
     addExtraParsToJson(j);
 }
 
-simPars Evolution::setSimPars(int argc, const char* argv[])
+simPars EvoBase::setSimPars(int argc, const char* argv[])
 {
 
 simPars sp1;
@@ -392,7 +403,7 @@ return sp1;
 
 }
 
-simPars Evolution::setSimPars(shared_ptr<const CmdArgs> cmd)
+simPars EvoBase::setSimPars(shared_ptr<const CmdArgs> cmd)
 {
 
 simPars sp1;
@@ -409,17 +420,17 @@ return sp1;
 
 
 
-evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1)
+evoPars EvoBase::setPars(int argc, const char* argv[], evoPars ep1)
 {
 return setPars(argc,argv,ep1,"");
 }
 
-evoPars Evolution::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1)
+evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1)
 {
 return setPars(cmd,ep1,"");
 }
 
-evoPars Evolution::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_)
+evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_)
 {
 ep1.setFromArgs(cmd);
 doCPT = (bool) cmd->getArgValInt("-docpt",1);
@@ -430,7 +441,7 @@ return ep1;
 }
 
 
-evoPars Evolution::setPars(int argc, const char* argv[], evoPars ep1, string prefix_){
+evoPars EvoBase::setPars(int argc, const char* argv[], evoPars ep1, string prefix_){
 
     ep1.setFromArgs(argc,argv);
 
@@ -527,7 +538,7 @@ return phenotype;
  
 
 
-TVector<double> & Evolution::getBestGenotype()
+TVector<double> & EvoBase::getBestGenotype()
 {
     return s->BestIndividual();
 }
@@ -563,33 +574,11 @@ void Evolution::ResultsDisplay(TSearch &s)
 
 }
 
-void Evolution::configure_p1()
+void EvoBase::configure_p11()
 {
 
     if (configP1Called) return;
     configP1Called = true;
-    
-    s->SetRandomSeed(evoPars1.randomseed);
-
-    if (true){
-    {typedef void (*callback_t)(int, double, double, double);
-    Callback<void(int, double, double, double)>::func 
-    = std::bind(&Evolution::EvolutionaryRunDisplay, this, 
-        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-    callback_t func = static_cast<callback_t>(Callback<void(int, double, double, double)>::callback); 
-    s->SetPopulationStatisticsDisplayFunction(func);
-    }
-}
-else s->SetPopulationStatisticsDisplayFunction(EvolutionaryRunDisplay_try);
-
-
-
-    {typedef void (*callback_t)(TSearch&);
-    Callback<void(TSearch&)>::func = std::bind(&Evolution::ResultsDisplay, this, std::placeholders::_1);
-    callback_t func = static_cast<callback_t>(Callback<void(TSearch&)>::callback); 
-    s->SetSearchResultsDisplayFunction(func);
-    }
-
 
     s->SetSelectionMode(evoPars1.SelectionMode);             //{FITNESS_PROPORTIONATE,RANK_BASED}
     s->SetReproductionMode(evoPars1.ReproductionMode);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
@@ -603,6 +592,34 @@ else s->SetPopulationStatisticsDisplayFunction(EvolutionaryRunDisplay_try);
     s->SetSearchConstraint(evoPars1.SearchConstraint);
     s->SetCheckpointInterval(evoPars1.CheckpointInterval);
     s->SetReEvaluationFlag(evoPars1.ReEvaluationFlag);
+
+}
+
+
+void Evolution::configure_p1()
+{
+    
+    s->SetRandomSeed(evoPars1.randomseed);
+
+    if (true){
+    {typedef void (*callback_t)(int, double, double, double);
+    Callback<void(int, double, double, double)>::func 
+    = std::bind(&Evolution::EvolutionaryRunDisplay, this, 
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+    callback_t func = static_cast<callback_t>(Callback<void(int, double, double, double)>::callback); 
+    s->SetPopulationStatisticsDisplayFunction(func);
+    }
+    }
+    else s->SetPopulationStatisticsDisplayFunction(EvolutionaryRunDisplay_try);
+
+    {typedef void (*callback_t)(TSearch&);
+    Callback<void(TSearch&)>::func = std::bind(&Evolution::ResultsDisplay, this, std::placeholders::_1);
+    callback_t func = static_cast<callback_t>(Callback<void(TSearch&)>::callback); 
+    s->SetSearchResultsDisplayFunction(func);
+    }
+
+    configure_p11();
+   
 
     
 }

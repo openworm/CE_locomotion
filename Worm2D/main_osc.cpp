@@ -19,8 +19,6 @@ int main (int argc, const char* argv[])
     shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
 
     
-    
-   
     string directoryName = cmd->getArgVal("--folder","HJUYGYT");
     if (!directoryExists(directoryName))
     {cout << "Directory doesn't exist." << endl;exit(1);}
