@@ -326,7 +326,7 @@ public:
     void writeJson(TVector<double> & pheno);
 
     void configure_p2(){
-        string model_name = cmd->getArgVal("--modelname","");
+        string model_name = this->cmd->getArgVal("--modelname","");
 
         if (model_name == "CO18Full"){
         EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18"), "RS18_");
