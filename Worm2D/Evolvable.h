@@ -234,7 +234,7 @@ class gradParameters : public W2Dbaseparameters
   
   void setPars(shared_ptr<const CmdArgs> cmd);
 
-  double orient_orig = 0, gradSteep = 0.5, RunDuration = 100, HSStepSize = 0.01, MaxDist = 4.5;
+  double orient_orig = 0, gradSteep = 0.5, RunDuration = 1000, HSStepSize = 0.01, MaxDist = 4.5;
   //double orient_orig = 0, gradSteep = 0.5, RunDuration = 100,  MaxDist = 4.5;
   int taxis = 1, kinesis = 0;
 	

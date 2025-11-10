@@ -33,7 +33,7 @@ class EvoBase
 
     protected:
     const evoPars evoPars1;
-    TSearch* s; 
+    TSearch* s;  
     const simPars simPars1;
 
     public:
@@ -100,7 +100,7 @@ class EvoBase
 
     //int VectSize;
 
-   virtual void addExtraParsToJson(json & j) {return;}
+    virtual void addExtraParsToJson(json & j) {return;}
 
 
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
@@ -328,9 +328,11 @@ public:
     void configure_p2(){
         string model_name = this->cmd->getArgVal("--modelname","");
 
+        //if (false){
         if (model_name == "CO18Full"){
         EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18"), "RS18_");
         setFromEvol(er18, 0); 
+       
        }
 
     Evolution::configure_p2();

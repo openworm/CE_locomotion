@@ -137,6 +137,7 @@ class TSearch {
 	string cptfilename; //added search filename
 
 	friend class Evolution;
+	friend class EvoBase;
 
 	void DoSearch(int ResumeFlag); //make accessible
 	private:

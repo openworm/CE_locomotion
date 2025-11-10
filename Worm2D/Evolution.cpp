@@ -127,8 +127,12 @@ void EvoBase::setFromCPT2()
         cout << "setFromCPT2 " << s->cptfilename << endl;
         doResume = true;
         //ResultsDisplay(*s);
-        checkPars();
+        //checkPars();
         //configure_p1();
+        if (s->PopulationSize()!= evoPars1.PopulationSize) 
+        {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
+        popsize = s->PopulationSize();}
+
 
 
     }
@@ -196,7 +200,7 @@ void EvoBase::construct(int vsize_, int offset_)
 
     if (doCPT && stat (filename.c_str(), &buffer) == 0) {
 
-        cout << "const from best gen " << filename << endl;
+    cout << "const from best gen " << filename << endl;
     //assert(0 && "setting from best gen");
     vector<double> bestgenvec;
     getVecFromFile<double>(filename, bestgenvec);
@@ -209,9 +213,10 @@ void EvoBase::construct(int vsize_, int offset_)
 
     else s = new TSearch(bestgenvec.size());
 
-    configure_p11();
-    assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
     
+    assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
+
+    configure_p11();
     s->InitializeSearch();
     for (int i = 1; i <= s->PopulationSize(); i++) 
     for (int j = 1; j <= bestgenvec.size(); j++)
@@ -297,14 +302,16 @@ void EvoBase::setFromEvol(const EvoBase & er, int offset)
     if (!setFromCPTflag) setFromCPT2();
     if (doResume) return;
 
-    s->InitializeSearch();
+    
 
-    //configure_p1();
+    //configure_p11();
+    //s->InitializeSearch();
 
     //assert(0);
     cout << "setFromEvol original pop size " 
     << s->PopulationSize() << "loaded pop size " 
-    << er.s->PopulationSize();
+    << er.s->PopulationSize() << endl;
+
 
     //s->InitializeSearch();
     int minsize = s->PopulationSize();
@@ -315,18 +322,20 @@ void EvoBase::setFromEvol(const EvoBase & er, int offset)
     //assert(s->PopulationSize() == er.s->PopulationSize());
     //assert(evoPars1.VectSize==er.evoPars1.VectSize + offset);
 
-    cout << "using " << minsize;
+    cout << "using " << minsize << endl;
     for (int i = 1; i <= minsize; i++) 
     for (int j = 1; j <= er.s->Individual(i).Size(); j++)
     s->Individual(i)(j+offset) = er.s->Individual(i)(j);
 
    
+    
+      //assert(0);
 
-    //s->Gen = 0;
+    s->Gen = 0;
 	// Set up the initial population
 	//RandomizePopulation();
 	// The search is now initialized
-	//s->SearchInitialized = 1;
+	s->SearchInitialized = 1;
 
     doResume = false;
 
