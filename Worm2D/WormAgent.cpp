@@ -212,7 +212,7 @@ void WormAgent::setSimParsDefault()
 {
 	gradPars->orient_orig = 0;
 	gradPars->gradSteep = 0.5;
-	gradPars->RunDuration = 100;
+	gradPars->RunDuration = 1000;
 	gradPars->HSStepSize = 0.01; //itsStepSize();
 	gradPars->taxis = 1;
 	gradPars->kinesis = 0;
