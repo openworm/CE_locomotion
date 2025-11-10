@@ -535,8 +535,8 @@ def reload_single_run(a=None, **kwargs):
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
     
-    if plot_format["do_body_plot"]:
-        fig_body, ax_body = plt.subplots(figsize=(5, 5))
+  
+        
 
     ###  Worm neuron/muscle activation
 
@@ -577,6 +577,8 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
+
+      
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
         else:
@@ -612,6 +614,19 @@ def reload_single_run(a=None, **kwargs):
         dd["x"] = []
         dd["y"] = []
 
+        fig_body, ax_body = plt.subplots(figsize=(5, 5))
+        fig_orient, ax_orient = plt.subplots(figsize=(5, 5))
+
+        w_head = 0
+        w_tail = 50
+        orientation = np.arctan2(body_data[w_head*3+2]-body_data[w_tail*3+2], 
+                                     body_data[w_head*3+1]-body_data[w_tail*3+1])
+        
+        ax_orient.plot(range(tmax), orientation)
+        fig_orient.tight_layout()
+        filename = hf.rename_file("Orient.png")
+        fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
+
         for t in range(1, tmax, int(tmax / num)):
             f = float(t) / tmax
 
@@ -632,6 +647,8 @@ def reload_single_run(a=None, **kwargs):
             xs = []
             ys = []
             
+           
+
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
@@ -675,6 +692,10 @@ def reload_single_run(a=None, **kwargs):
 
         # axs[count_num, 0].set_aspect("equal")
 
+        fig_body.tight_layout()
+        filename = hf.rename_file("Motion.png")
+        fig_body.savefig(filename, bbox_inches="tight", dpi=300)
+
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
@@ -682,10 +703,7 @@ def reload_single_run(a=None, **kwargs):
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     
-    if plot_format["do_body_plot"]:
-        fig_body.tight_layout()
-        filename = hf.rename_file("Motion.png")
-        fig_body.savefig(filename, bbox_inches="tight", dpi=300)
+        
 
     if a.showPlot:
         print("Showing plot")
