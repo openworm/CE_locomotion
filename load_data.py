@@ -534,6 +534,9 @@ def reload_single_run(a=None, **kwargs):
         fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
+    
+    if plot_format["do_body_plot"]:
+        fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
     ###  Worm neuron/muscle activation
 
@@ -643,8 +646,15 @@ def reload_single_run(a=None, **kwargs):
                     )
 
                 axs[count_num, 0].plot(
-                    [x],
-                    [y],
+                    x,
+                    y,
+                    ".",
+                    color=color,
+                    markersize=markersize if t == 1 else markersize_small,
+                )
+                ax_body.plot(
+                    x,
+                    y,
                     ".",
                     color=color,
                     markersize=markersize if t == 1 else markersize_small,
@@ -668,13 +678,19 @@ def reload_single_run(a=None, **kwargs):
     # fig.subplots_adjust(hspace=0.5)
 
     filename = hf.rename_file("ExampleActivity.png")
-    plt.savefig(filename, bbox_inches="tight", dpi=300)
+    fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
+    
+    if plot_format["do_body_plot"]:
+        fig_body.tight_layout()
+        filename = hf.rename_file("Motion.png")
+        fig_body.savefig(filename, bbox_inches="tight", dpi=300)
 
     if a.showPlot:
         print("Showing plot")
         plt.show()
     plt.close()
+   
 
     from F2_fig_behavior import make_fig
 
