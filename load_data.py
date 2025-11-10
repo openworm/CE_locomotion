@@ -620,7 +620,7 @@ def reload_single_run(a=None, **kwargs):
             color = "#%02x%02x00" % (int(0xFF * (f)), int(0xFF * (1 - f) * 0.8))
             # color2 = "#%06x" % random.randint(0, 0xFFFFFF)
 
-            point_start = 1
+            point_start = 0
             point_end = 50
             markersize = 3
             markersize_small = 0.4
@@ -631,6 +631,7 @@ def reload_single_run(a=None, **kwargs):
                 markersize_small = 10
             xs = []
             ys = []
+            
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
