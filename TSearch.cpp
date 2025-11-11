@@ -28,7 +28,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-
+//#include <cassert>
 
 // An out of memory handler for new
 
@@ -323,13 +323,14 @@ void TSearch::DoSearch(int ResumeFlag)
 	}
 	// Unless we're resuming a checkpointed search, evalute the initial population and reset best
 	if (!ResumeFlag) {
-		
+	
 		EvaluatePopulation();
-		
+		//assert(0);
 		BestPerf = -1;
 		UpdateBestFlag = 0;
 	}
 
+	//assert(0);
 	
 	// Update and display statistics of the initial population
 	UpdatePopulationStatistics();

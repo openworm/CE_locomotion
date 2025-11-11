@@ -115,7 +115,7 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     //ofstream fitfile;
   
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -131,7 +131,7 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     antpostcurv.FillContents(0.0);
 
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1,  itsVectSize());
     GenPhenMapping(v, phenotype);
 
     Worm18 w(phenotype, 0);
@@ -186,7 +186,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     ofstream fitfile;
   
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -219,7 +219,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     antpostcurv.FillContents(0.0);
 
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
 
     Worm18 w(phenotype, 0);
@@ -432,12 +432,12 @@ void EvolutionRS18::configure_p12()
     if (evo_seed)
     {
         ifstream BestIndividualFile;
-        TVector<double> bestVector(1, evoPars1.VectSize);
+        TVector<double> bestVector(1, itsVectSize());
         BestIndividualFile.open(rename_file("best.gen.dat"));
         BestIndividualFile >> bestVector;
         s->InitializeSearch();
         for (int i = 1; i <= s->PopulationSize(); i++){
-            for (int j = 1; j <= evoPars1.VectSize; j++)
+            for (int j = 1; j <= itsVectSize(); j++)
             {
                 s->Individual(i)[j] = bestVector[j];
             }

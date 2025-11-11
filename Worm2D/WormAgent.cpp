@@ -10,28 +10,6 @@
 //using namespace CTRNNspace;
 
 
-WormAgent::WormAgent(int newsize):
-Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
-gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
-{InitialiseCircuit();}
-
-WormAgent::WormAgent(shared_ptr<const CmdArgs> cmd_):
-WormAgent(cmd_->getArgValInt("--network_size", 10))
-{setWormPars(cmd_);}
-
-
-WormAgent::WormAgent(TVector<double> & v, int newsize):WormAgent(newsize)
-{SetParameters(v);}
-
-
-WormAgent::WormAgent(int newsize, const char* fnm):WormAgent(newsize)
-{SetWormParametersFromFile(fnm);}
-
-WormAgent::WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
-{
-    setParsFromFile(filename_);
-}
-
 
 /* WormAgent::WormAgent(int newsize, const char* fnm):
 Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
@@ -46,6 +24,7 @@ gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
 // The destructor
 WormAgent::~WormAgent()
 {
+	zeroCircuit();
 	//InitialiseCircuit(0);
 }
 
@@ -214,6 +193,18 @@ void WormAgent::InitialiseCircuit()
 	forward = 1;
 }
 
+void WormAgent::zeroCircuit()
+{
+
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+	//size = CircuitSize_;
+	n.SetCircuitSize(0,300,300);
+	w_ASER.SetBounds(1, 0);
+	w_ASER.FillContents(0.0);
+	w_ASEL.SetBounds(1, 0);
+	w_ASEL.FillContents(0.0);
+	forward = 1;
+}
 
 
 
@@ -221,11 +212,12 @@ void WormAgent::setSimParsDefault()
 {
 	gradPars->orient_orig = 0;
 	gradPars->gradSteep = 0.5;
-	gradPars->RunDuration = 100;
-	gradPars->HSStepSize = itsStepSize();
+	gradPars->RunDuration = 1000;
+	gradPars->HSStepSize = 0.01; //itsStepSize();
 	gradPars->taxis = 1;
 	gradPars->kinesis = 0;
 	cout << "HS " << gradPars->HSStepSize << endl;
+	setStepSize(gradPars->HSStepSize);
 }
 
 void WormAgent::setSimPars(double orient_orig_,
@@ -237,11 +229,14 @@ void WormAgent::setSimPars(double orient_orig_,
 	gradPars->HSStepSize = HSStepSize_;
 	gradPars->taxis = taxis_;
 	gradPars->kinesis = kinesis_;
+	setStepSize(gradPars->HSStepSize);
+
 }
 
 void WormAgent::initForSimulation(RandomState &rs_)
 //void WormAgent::InitializeSimulation(RandomState &rs_)
 {
+	
 	rs = &rs_;
 	InitialiseAgent();
 	ResetAgentsBody();
@@ -266,12 +261,16 @@ void WormAgent::InitialiseAgent()
 	iSensorM = (int) (sensorM/gradPars->HSStepSize);
 	dSensorM = (double) iSensorM;
 	int upperbound = ((int) (((2*gradPars->RunDuration) + sensorN + sensorM) / gradPars->HSStepSize)) + 1;
+
+	cout << "uppervel " << upperbound << " " << VelDelta << endl;
+ 	
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
 	histCurv.SetBounds(1, VelDelta);
 	histCurv.FillContents(0.0);
 	histTheta.SetBounds(1, VelDelta);
 	histTheta.FillContents(0.0);
+	
 }
 
 // *******

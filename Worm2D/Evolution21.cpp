@@ -90,7 +90,7 @@ int Evolution21::finish_Bosc(int Generation,double BestPerf,double AvgPerf,doubl
 double Evolution21::EvaluationFunction1(TVector<double> &v, RandomState &rs){
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
 
     // Fitness variables
@@ -104,7 +104,7 @@ double Evolution21::EvaluationFunction1(TVector<double> &v, RandomState &rs){
     TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
     
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
     
     Segment s(phenotype);
@@ -173,7 +173,7 @@ double Evolution21::EvaluationFunction1(TVector<double> &v, RandomState &rs){
 double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &rs){
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -208,7 +208,7 @@ double Evolution21::EvaluationFunction2Output(TVector<double> &v, RandomState &r
 
     
     // Genotype-Phenotype Mapping
-    TVector<double> phenotype(1, VectSize);
+    TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
     
     Worm21 w(phenotype);
@@ -423,7 +423,7 @@ void Evolution21::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 double Evolution21::EvaluationFunction2(TVector<double> &v, RandomState &rs){
 
     const double & Duration = evoPars1.Duration;
-    const int & VectSize = evoPars1.VectSize;
+    //const int & VectSize = evoPars1.VectSize;
     const double & StepSize = evoPars1.StepSize;
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
@@ -451,7 +451,7 @@ double Evolution21::EvaluationFunction2(TVector<double> &v, RandomState &rs){
     
         
         // Genotype-Phenotype Mapping
-        TVector<double> phenotype(1, VectSize);
+        TVector<double> phenotype(1, itsVectSize());
         GenPhenMapping(v, phenotype);
         
         Worm21 w(phenotype);

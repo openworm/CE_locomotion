@@ -73,14 +73,14 @@ int main (int argc, const char* argv[])
     
     //get vector of best individual
    
-    TVector<double> bestVector(1, ep1.VectSize);
+    TVector<double> bestVector(1, er->itsVectSize());
 
     {ifstream BestIndividualFile;
     BestIndividualFile.open(er->rename_file("best.gen.dat"));
     BestIndividualFile >> bestVector;
     BestIndividualFile.close();}
     
-    TVector<double> phenotype(1, ep1.VectSize);
+    TVector<double> phenotype(1, er->itsVectSize());
     er->GenPhenMapping(bestVector, phenotype);
 
     bool do_json = 1;

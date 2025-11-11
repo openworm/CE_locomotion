@@ -223,7 +223,7 @@ struct evoPars{
    double Transient;    //
    double StepSize;
    int N_curvs ;
-   int VectSize ;
+   int VectSize_temo ;
    string fileprefix  ;
    string evoType ;
    
@@ -240,10 +240,10 @@ struct evoPars{
 
     {vector<string> names = {"randomseed", "SelectionMode", "ReproductionMode", 
          "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
-         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize"};
+         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
     vector<int> vals = {(int) randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
-         ReEvaluationFlag, skip_steps, N_curvs, VectSize};
+         ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
     for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
       {vector<string> names = {"fileprefix", "evoType"};
@@ -268,10 +268,10 @@ struct evoPars{
 
        var1.parInt.names = {"randomseed", "SelectionMode", "ReproductionMode", 
          "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
-         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize"};
+         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
        var1.parInt.vals = {randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
-         ReEvaluationFlag, skip_steps, N_curvs, VectSize};
+         ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
 
        return var1;
    }

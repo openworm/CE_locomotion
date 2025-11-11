@@ -19,8 +19,6 @@ int main (int argc, const char* argv[])
     shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
 
     
-    
-   
     string directoryName = cmd->getArgVal("--folder","HJUYGYT");
     if (!directoryExists(directoryName))
     {cout << "Directory doesn't exist." << endl;exit(1);}
@@ -63,31 +61,7 @@ int main (int argc, const char* argv[])
 
     if (model_name == "CE") model_name = "W2DCE";
 
-    //if (!do_evol)
-
-
-    //evoPars ep1;
-    //ep1.setFromArgs(argc,argv);
-    //ep1.setFromArgs(cmd);
-    //ep1.StepSize = 0.005;
-    //ep1.skip_steps = 10;
-
    
-    //assert(0);
-
-    //EvolutionFullW<Worm2Dosc> evo(argc,argv);
-
-    /* Evolvable * w1;
-    if (model_name == "W2Dosc") w1 = new Worm2Dosc();
-    if (model_name == "W2DoscH") w1 = new Worm2DoscHalf();
-
-    EvolutionFull evo(argc,argv,w1); */
-    
-    //json_out << setprecision(32);
-    //json j;
-
-    //bool do_evol = cmd->getArgValInt("--doevol",0);
-    //bool do_evol = getParameterInt(argc,argv,"--doevol","0");
 
     json j;
 

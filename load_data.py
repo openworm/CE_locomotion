@@ -249,9 +249,11 @@ def plot_evols(a=None, **kwargs):
         return
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
-    worm_file = hf.rename_file("worm_data.json")
+    worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_evo.json")
+        worm_file = hf.rename_file("worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data.json")
     network_json_data = utils.getJsonFile(worm_file)
     vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
         "value"
@@ -532,6 +534,9 @@ def reload_single_run(a=None, **kwargs):
         fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
+    
+    if plot_format["do_body_plot"]:
+        fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
     ###  Worm neuron/muscle activation
 
@@ -572,7 +577,7 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-        if a.modelName == "CO":
+        if a.modelName == "CO" or a.modelName == "W2DCO":
             body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
         else:
             body_data = np.loadtxt(hf.rename_file("body.dat")).T
@@ -615,17 +620,18 @@ def reload_single_run(a=None, **kwargs):
             color = "#%02x%02x00" % (int(0xFF * (f)), int(0xFF * (1 - f) * 0.8))
             # color2 = "#%06x" % random.randint(0, 0xFFFFFF)
 
-            point_start = 1
+            point_start = 0
             point_end = 50
             markersize = 3
             markersize_small = 0.4
-            if a.modelName == "CO":
+            if a.modelName == "CO" or a.modelName == "W2DCO":
                 point_start = 0
                 point_end = 1
                 markersize = 10
                 markersize_small = 10
             xs = []
             ys = []
+            
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
@@ -641,8 +647,15 @@ def reload_single_run(a=None, **kwargs):
                     )
 
                 axs[count_num, 0].plot(
-                    [x],
-                    [y],
+                    x,
+                    y,
+                    ".",
+                    color=color,
+                    markersize=markersize if t == 1 else markersize_small,
+                )
+                ax_body.plot(
+                    x,
+                    y,
                     ".",
                     color=color,
                     markersize=markersize if t == 1 else markersize_small,
@@ -666,18 +679,25 @@ def reload_single_run(a=None, **kwargs):
     # fig.subplots_adjust(hspace=0.5)
 
     filename = hf.rename_file("ExampleActivity.png")
-    plt.savefig(filename, bbox_inches="tight", dpi=300)
+    fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
+    
+    if plot_format["do_body_plot"]:
+        fig_body.tight_layout()
+        filename = hf.rename_file("Motion.png")
+        fig_body.savefig(filename, bbox_inches="tight", dpi=300)
 
     if a.showPlot:
         print("Showing plot")
         plt.show()
     plt.close()
+   
 
     from F2_fig_behavior import make_fig
 
     if not (
         a.modelName == "CO"
+        or a.modelName == "W2DCO"
         or a.modelName == "W2Dosc"
         or a.modelName == "W2Dosc21"
         or a.modelName == "CO18Full"

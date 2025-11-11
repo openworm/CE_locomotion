@@ -62,6 +62,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/izq_runs_nets_nml_musc/103
     rm -rf experiments/exW2DSR
     rm -rf testruns/exW2D18
+    rm -rf testruns/exW2DCO
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -77,7 +78,7 @@ if [ "$quick_test" == 0 ]; then
 
     fi;
 
-    
+    omv test -V .test.W2DCO.omt
     omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
