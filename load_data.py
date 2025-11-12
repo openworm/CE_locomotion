@@ -615,16 +615,76 @@ def reload_single_run(a=None, **kwargs):
         dd["y"] = []
 
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
-        fig_orient, ax_orient = plt.subplots(figsize=(5, 5))
+        fig_orient, ax_orient = plt.subplots(6, 2, figsize=(5, 15))
+
+        t_start = 1000
+        t_end = tmax - 1000
+        trange = range(t_start,t_end)
+        body_data_res = body_data[:,trange]
 
         w_head = 0
         w_tail = 50
-        orientation = np.arctan2(body_data[w_head*3+2]-body_data[w_tail*3+2], 
-                                     body_data[w_head*3+1]-body_data[w_tail*3+1])
+        body_diff = np.diff(body_data_res, axis = 1)
+        #print(body_diff.shape)
+        trajectory = np.arctan2(body_diff[w_head*3+2], body_diff[w_head*3+1])
+        #print(trajectory.shape)
+
+        body_data_res_mid = (body_data_res[:,1:] + body_data_res[:,:-1])/2.0
+        dir_to_origin_mid = np.arctan2(body_data_res_mid[w_head*3+2]*-1, body_data_res_mid[w_head*3+1]*-1)
+        dir_to_origin = np.arctan2(body_data_res[w_head*3+2]*-1, body_data_res[w_head*3+1]*-1)
+       
+        #(pi - x) - (-pi + y) = 2 * pi - (y + x)
+
+        trajectory_diff = np.diff(trajectory)
+        trajectory_diff_u =  np.unwrap(trajectory_diff)
+        bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
         
-        ax_orient.plot(range(tmax), orientation)
+
+
+        trajectory_diff_1 = trajectory_diff - (trajectory_diff>np.pi)*np.pi*2 + (trajectory_diff<np.pi*-1)*np.pi*2 
+
+        orientation = np.arctan2(body_data_res[w_head*3+2]-body_data_res[w_tail*3+2], 
+                                     body_data_res[w_head*3+1]-body_data_res[w_tail*3+1])
+        
+        #dOrientation = orientation[1:] - orientation[:-1]
+        dOrientation = np.diff(orientation, axis = 0)
+        dOrientation_mask_1 = dOrientation > np.pi
+        dOrientation_mask_2 = dOrientation < np.pi*-1
+        dOrientation = dOrientation - dOrientation_mask_1*np.pi*2 + dOrientation_mask_2*np.pi*2
+        #dOrientation = dOrientation
+        distToOrigin = np.sqrt(np.multiply(body_data_res[w_head*3+2],body_data_res[w_head*3+2]) 
+                               + np.multiply(body_data_res[w_head*3+1],body_data_res[w_head*3+1]))
+        
+        #dirToOrigin = np.arctan2(body_data_res[w_head*3+2], body_data_res[w_head*3+1])
+
+        bearing = dir_to_origin[:-1] - trajectory
+        bearing = bearing - (bearing>np.pi)*np.pi*2 + (bearing<np.pi*-1)*np.pi*2 
+        
+        mark_size = 1
+        ax_orient[0,0].plot(trange, orientation)
+        ax_orient[1,0].plot(trange, distToOrigin)
+        ax_orient[2,0].plot(trange, dir_to_origin)
+        ax_orient[3,0].plot(trange[1:-1], trajectory_diff)
+        ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
+        ax_orient[5,0].scatter(bearing[:-1], trajectory_diff_1, s=mark_size)
+
+        
+        ax_orient[0,1].plot(trange[:-1], dOrientation)
+        ax_orient[1,1].scatter(dir_to_origin[:-1], dOrientation, s=mark_size)
+        
+        heatmap, xedges, yedges = np.histogram2d(bearing_mid[:-1], trajectory_diff_u*10.0, bins=50)
+        extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+        #plt.clf()
+        ax_orient[2,1].imshow(heatmap.T, extent=extent, origin='lower')
+        ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
+        ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
+        ax_orient[5,1].scatter(bearing_mid[:-1], trajectory_diff_u, s=mark_size)
+
+
         fig_orient.tight_layout()
         filename = hf.rename_file("Orient.png")
+        #fig_orient.show()
         fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
 
         for t in range(1, tmax, int(tmax / num)):
