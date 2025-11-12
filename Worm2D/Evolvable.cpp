@@ -21,6 +21,7 @@ void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 
 void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
+    worm_rotation= cmd->getArgValDoub("--rotation", worm_rotation);
     orient_orig = cmd->getArgValDoub("--orient", orient_orig);
     gradSteep = cmd->getArgValDoub("--gradSteep", gradSteep);
     RunDuration = cmd->getArgValDoub("--RunDuration", RunDuration);

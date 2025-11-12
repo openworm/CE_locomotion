@@ -145,8 +145,6 @@ Worm2Dm(par1_, n_ptr_, new Muscles),m(dynamic_cast<Muscles&>(*m_ptr))
 }
 
 
-
-
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
     //cout << "Worm2Dbody init state" << endl;
@@ -239,6 +237,23 @@ void Worm2Dbody::shiftY(double shiftdist_)
 {
     shiftdist_=  shiftdist_/100.0; //change to meters
     for (int i = 1; i <= N_rods; i++) b.Y(i)+=shiftdist_;
+}
+
+void Worm2Dbody::rotateBody(double theta)
+{
+   
+    for (int i = 1; i <= N_rods; i++) {
+
+        double x = (b.X(i)-b.X(Head))*cos(theta) - (b.Y(i)-b.Y(Head))*sin(theta);
+        double y = (b.X(i)-b.X(Head))*sin(theta) + (b.Y(i)-b.Y(Head))*cos(theta);
+        b.X(i) = b.X(Head) + x;
+        b.Y(i) = b.Y(Head) + y;
+        b.Phi(i) = b.Phi(i) + theta;
+        //b.X(i) = i*L_seg*cos(angle);
+        //b.Y(i) = i*L_seg*sin(angle);
+        //int i3 = 3*i;
+        //Z[i3] = i*L_seg; Z[i3+1] = 0.0; Z[i3+2] = M_PI/2
+    }
 }
 
 void Worm2Dbody::zeroX()

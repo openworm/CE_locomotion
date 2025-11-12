@@ -685,6 +685,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doOrigMuscInput"] = True
 
     sim_extra_parameters = {}
+    sim_extra_parameters["rotation"] = 0
     sim_extra_parameters["orient"] = 0
     sim_extra_parameters["doTestRun"] = False
     sim_extra_parameters["doForwardFirst"] = True

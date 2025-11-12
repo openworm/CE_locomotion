@@ -141,6 +141,8 @@ class Worm2Dbody : virtual public DataWriter
     void shiftY(double shiftdist_);
     void zeroX();
     void zeroY();
+  
+    void rotateBody(double theta);
 
     virtual void addParsToJson(json & j);
     double getVelocity();
