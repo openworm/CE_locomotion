@@ -459,8 +459,6 @@ def reload_single_run(a=None, **kwargs):
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
     
-  
-        
 
     ###  Worm neuron/muscle activation
 

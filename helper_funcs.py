@@ -141,9 +141,13 @@ def make_orients(body_data, **kwargs):
     trajectory = np.arctan2(body_diff[w_head*3+2], body_diff[w_head*3+1])
     body_data_res_mid = (body_data_res[:,1:] + body_data_res[:,:-1])/2.0
     dir_to_origin_mid = np.arctan2(body_data_res_mid[w_head*3+2]*-1, body_data_res_mid[w_head*3+1]*-1)
-    trajectory_diff = np.diff(trajectory)
-    trajectory_diff_u =  np.unwrap(trajectory_diff)
-    bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
+
+    trajectory_diff_u = angle_diff(trajectory[1:],trajectory[:-1])
+    #trajectory_diff = np.diff(trajectory)
+    #trajectory_diff_u =  np.unwrap(trajectory_diff)
+    bearing_mid = angle_diff(trajectory, dir_to_origin_mid)
+
+    #bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
 
     return bearing_mid, trajectory_diff_u
 
@@ -178,7 +182,7 @@ def plot_path(body_data, ax):
 
 
 def plot_orients(body_data):
-    fig_orient, ax_orient = plt.subplots(6, 2, figsize=(5, 15))
+    fig_orient, ax_orient = plt.subplots(5, 2, figsize=(10, 15))
 
     tmax = body_data.shape[1]
     t_start = 1000
@@ -199,51 +203,73 @@ def plot_orients(body_data):
     
     #(pi - x) - (-pi + y) = 2 * pi - (y + x)
 
-    trajectory_diff = np.diff(trajectory)
-    trajectory_diff_u =  np.unwrap(trajectory_diff)
-    bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
+    #trajectory_diff = np.diff(trajectory)
+    #trajectory_diff_u =  np.unwrap(trajectory_diff)
+    #bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
     
+    trajectory_diff_u = angle_diff(trajectory[1:],trajectory[:-1])
+    #trajectory_diff = np.diff(trajectory)
+    #trajectory_diff_u =  np.unwrap(trajectory_diff)
+    bearing_mid = angle_diff(trajectory, dir_to_origin_mid)
 
 
-    trajectory_diff_1 = trajectory_diff - (trajectory_diff>np.pi)*np.pi*2 + (trajectory_diff<np.pi*-1)*np.pi*2 
+    #trajectory_diff_1 = trajectory_diff - (trajectory_diff>np.pi)*np.pi*2 + (trajectory_diff<np.pi*-1)*np.pi*2 
 
     orientation = np.arctan2(body_data_res[w_head*3+2]-body_data_res[w_tail*3+2], 
                                     body_data_res[w_head*3+1]-body_data_res[w_tail*3+1])
     
     #dOrientation = orientation[1:] - orientation[:-1]
-    dOrientation = np.diff(orientation, axis = 0)
-    dOrientation_mask_1 = dOrientation > np.pi
-    dOrientation_mask_2 = dOrientation < np.pi*-1
-    dOrientation = dOrientation - dOrientation_mask_1*np.pi*2 + dOrientation_mask_2*np.pi*2
+    dOrientation = angle_diff(orientation[1:],orientation[:-1])
+
+    #dOrientation = np.diff(orientation, axis = 0)
+    #dOrientation_mask_1 = dOrientation > np.pi
+    #dOrientation_mask_2 = dOrientation < np.pi*-1
+    #dOrientation = dOrientation - dOrientation_mask_1*np.pi*2 + dOrientation_mask_2*np.pi*2
     #dOrientation = dOrientation
+
     distToOrigin = np.sqrt(np.multiply(body_data_res[w_head*3+2],body_data_res[w_head*3+2]) 
                             + np.multiply(body_data_res[w_head*3+1],body_data_res[w_head*3+1]))
     
     #dirToOrigin = np.arctan2(body_data_res[w_head*3+2], body_data_res[w_head*3+1])
 
-    bearing = dir_to_origin[:-1] - trajectory
-    bearing = bearing - (bearing>np.pi)*np.pi*2 + (bearing<np.pi*-1)*np.pi*2 
+    bearing = angle_diff(trajectory, dir_to_origin[1:])
+    #bearing = dir_to_origin[:-1] - trajectory
+    #bearing = bearing - (bearing>np.pi)*np.pi*2 + (bearing<np.pi*-1)*np.pi*2 
     
     mark_size = 1
     ax_orient[0,0].plot(trange, orientation)
     ax_orient[1,0].plot(trange, distToOrigin)
     ax_orient[2,0].plot(trange, dir_to_origin)
-    ax_orient[3,0].plot(trange[1:-1], trajectory_diff)
-    ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
-    ax_orient[5,0].scatter(bearing[:-1], trajectory_diff_1, s=mark_size)
+    ax_orient[3,0].plot(trange[:-1], dOrientation)
+    ax_orient[4,0].plot(trange[1:-1], trajectory_diff_u)
+    ax_orient[0,1].plot(trange[:-1], bearing_mid)
+    ax_orient[1,1].plot(trange[:-1], trajectory)
 
+
+    #ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
+    ax_orient[2,1].scatter(bearing[:-1], trajectory_diff_u*10, s=mark_size)
     
-    ax_orient[0,1].plot(trange[:-1], dOrientation)
-    ax_orient[1,1].scatter(dir_to_origin[:-1], dOrientation, s=mark_size)
+    #heatmap, xedges, yedges = np.histogram2d(bearing[:-1], trajectory_diff_u*10.0, bins=50)
+    #extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    #ax_orient[1,1].imshow(heatmap.T, extent=extent, origin='lower')
+
+    ax_orient[3,1].scatter(bearing_mid[:-1], trajectory_diff_u*10, s=mark_size)
     
     heatmap, xedges, yedges = np.histogram2d(bearing_mid[:-1], trajectory_diff_u*10.0, bins=50)
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    ax_orient[4,1].imshow(heatmap.T, extent=extent, origin='lower')
+
+    
+    #ax_orient[1,1].scatter(dir_to_origin[:-1], dOrientation, s=mark_size)
+    
+    #heatmap, xedges, yedges = np.histogram2d(bearing_mid[:-1], trajectory_diff_u*10.0, bins=50)
+    #extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
     #plt.clf()
-    ax_orient[2,1].imshow(heatmap.T, extent=extent, origin='lower')
-    ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
-    ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
-    ax_orient[5,1].scatter(bearing_mid[:-1], trajectory_diff_u, s=mark_size)
+    
+    #ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
+    #ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
+    
 
 
     fig_orient.tight_layout()
@@ -259,3 +285,19 @@ def angle_diff(a, b):
     d = a - b
     # Wrap to [-pi, pi)
     return (d + math.pi) % (2 * math.pi) - math.pi
+
+from scipy.stats import binned_statistic
+
+def plotHist(ax,x,y):
+
+    # mean
+    y_mean, bin_edges, _ = binned_statistic(x, y, statistic='mean', bins=20)
+    # standard deviation
+    y_std, _, _ = binned_statistic(x, y, statistic='std', bins=20)
+
+    bin_centers = 0.5 * (bin_edges[1:] + bin_edges[:-1])
+
+    ax.errorbar(bin_centers, y_mean, yerr=y_std/np.sqrt(50), fmt='o')
+    ax.xlabel('x')
+    ax.ylabel('Average y')
+    #plt.show()

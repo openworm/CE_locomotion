@@ -209,7 +209,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
 
-    if (evotype_=="EvoCO") 
+    if (evotype_=="EvoCO" || evotype_=="EvoCO2") 
     return shared_ptr<const gradEvoPars>(new const gradEvoPars(cmd_));
     if (evotype_=="Evo21") 
     return shared_ptr<const Evolparameters>(new const Evolparameters(cmd_, evol1_, evotype_));
@@ -237,7 +237,7 @@ template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_) 
 {
 
-    if (evotype_=="EvoCO")
+    if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
         1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, -1 , "", evotype_};
@@ -314,15 +314,16 @@ class EvolutionFullWC: public Evolvable_ptr<T>, public Evolution
 public:
 
     EvolutionFullWC(shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), setFromEvolFlag(false),
+    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), //setFromEvolFlag(false),
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize()){}
 
     EvolutionFullWC(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
-    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), setFromEvolFlag(true),
+    Evolvable_ptr<T>(make_shared<T>(cmd_),cmd_), //setFromEvolFlag(true),
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_){}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double EvaluationCO(TVector<double> &genotype, RandomState &rs);
+    double EvaluationCO2(TVector<double> &genotype, RandomState &rs);
     void writeJson(TVector<double> & pheno);
 
     void configure_p2(){
@@ -341,7 +342,7 @@ public:
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
 
-    const bool setFromEvolFlag = false;
+    //const bool setFromEvolFlag = false;
 };
 
 template<class T>
@@ -393,7 +394,7 @@ template<class T>
 double EvolutionFullWC<T>::EvaluationFunction(TVector<double> &genotype, RandomState &rs)
 {
     if (evoPars1.evoType=="EvoCO") return EvaluationCO(genotype,rs);
-    
+    if (evoPars1.evoType=="EvoCO2") return EvaluationCO2(genotype,rs);
 
     assert(0 && "Type not implemented");
     //if (evoPars1.evoType=="EvoCE") return EvaluationCE(genotype,rs);
@@ -1169,8 +1170,8 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
 
-                w1->worm_rotation = orient;
-                w1->orient_orig = 0;
+                //w1->worm_rotation = orient;
+                w1->orient_orig = orient;
                 w1->gradSteep = gradSteep;
                 w1->RunDuration = Transient + Duration;
                 w1->HSStepSize = StepSize;
@@ -1242,3 +1243,125 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 
 
 
+template<class T>
+double EvolutionFullWC<T>::EvaluationCO2(TVector<double> &genotype, RandomState &rs)
+{
+
+//	cout << "EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, WormAgent * Worm)" << endl;
+
+	//TVector<double> phenotype;
+	//phenotype.SetBounds(1, evoPars1.VectSize);
+	//GenPhenMapping(v, phenotype);
+	
+	//WormAgent Worm(CircuitSize);
+
+    const double & Duration = evoPars1.Duration;
+    const double & StepSize = evoPars1.StepSize;
+    const double & Transient = evoPars1.Transient;
+
+    T w(this->cmd);
+    //w.setStepSize(StepSize);
+
+    //w.setWormPars(cmd);
+    w.setParsFromGeno(genotype);
+
+
+    w.InitializeState(rs);
+    //w.initForSimulation(rs);
+    
+    
+    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1);
+
+	//RandomState rs2 = rs;
+	//Worm->InitializeState(rs2);
+	//Worm->SetParameters(phenotype);
+	//Worm->setStepSize(evoPars1.StepSize);
+
+    WormGrad & wg = dynamic_cast<WormGrad&>(w);
+    
+    const double Pi	=	3.1415926;
+
+	double f, accdist, totaldist;
+	int k = 0;
+	double fitness = 0.0;
+	int taxis,kinesis;
+	for (int mode = 1; mode <= 1; mode++)
+	{
+		if (mode==0){taxis = 0;kinesis = 1;}
+		else {taxis = 1;kinesis = 0;}
+
+		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
+		{
+			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
+			{
+
+                w1->worm_rotation = orient;
+                w1->orient_orig = Pi;
+                w1->gradSteep = gradSteep;
+                w1->RunDuration = Transient + Duration;
+                w1->HSStepSize = StepSize;
+                w1->taxis = taxis;
+                w1->kinesis = kinesis;
+
+				//Worm->setSimPars(orient,
+				//	gradSteep,
+				//	evoPars1.Transient + evoPars1.Duration,
+				//	evoPars1.StepSize, taxis, kinesis);
+
+				//Worm->InitializeSimulation(rs);
+				//Worm->initForSimulation(rs);
+
+                
+
+				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
+				Worm->ResetAgentsBody(orient, rs);
+				Worm->ResetChemCon(gradSteep);
+				Worm->ResetAgentIntState(rs);
+				Worm->UpdateChemCon(gradSteep); */
+ 
+				for (int repeats = 1; repeats <= 1; repeats++)
+				{
+                    w.initForSimulation(rs);
+					//wg.ResetAgentsBody();
+					w.setTime(0);
+					for (double t = StepSize; t <= Transient; t += StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						w.Step();
+
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+					}
+					accdist = 0.0;
+					w.setTime(0);
+					for (double t = StepSize; t <= Duration; t += StepSize)
+					{
+						//Worm->setStepPars(gradSteep,rs,t,taxis,kinesis);
+						//Worm->Step(evoPars1.StepSize);
+						w.Step();
+						
+						//Worm->UpdateSensors();
+						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
+						//Worm->UpdateChemCon(gradSteep);
+                    
+                        accdist += wg.distanceToCenter();
+
+						//accdist += Worm->DistanceToCentre();
+						//cout << "D " << Worm->DistanceToCentre() << endl;
+					}
+					totaldist = (accdist/(Duration/StepSize));
+					f = (w1->MaxDist - totaldist)/w1->MaxDist;
+					f = f < 0 ? 0.0 : f;
+					fitness += f;
+					k++;
+					//cout << k << " " << totaldist << endl;
+				}
+			}
+		}
+	}
+
+   
+	return fitness/k;
+}
