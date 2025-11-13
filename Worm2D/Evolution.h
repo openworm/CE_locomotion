@@ -1169,6 +1169,7 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
 
+                
                 w1->orient_orig = orient;
                 w1->gradSteep = gradSteep;
                 w1->RunDuration = Transient + Duration;

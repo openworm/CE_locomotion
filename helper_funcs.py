@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import argparse
 import os
+import math
 
 dir_name = None
 file_prefix = None
@@ -85,9 +86,11 @@ def setFolder(a):
         print("Folder name is required for data.")
         return
 
+    global dir_name, file_prefix
     dir_name = a.folderName
     file_prefix = a.modelName + "_"
-
+    #print(dir_name,   file_prefix)
+    
 
 def rename_file(file_name):
     if dir_name is None:
@@ -108,8 +111,11 @@ def get_path_list(outFolderBases):
     current = os.path.dirname(os.path.realpath(__file__))  # location of this file!
     for outFolderBase in outFolderBases:
         path = current + "/" + outFolderBase
-        dir_list = sorted(os.listdir(path))
-        path_list += [path + "/" + dir for dir in dir_list]
+        dir_list = sorted([x[0] for x in os.walk(path)])
+        #dir_list = sorted(os.listdir(path))
+        #dirs = [dir for dir in dir_list if os.path.isdir(dir)]
+        #path_list += [path + "/" + dir for dir in dir_list]
+        path_list +=  dir_list[1:]
     return path_list
 
 
@@ -141,6 +147,34 @@ def make_orients(body_data, **kwargs):
 
     return bearing_mid, trajectory_diff_u
 
+
+def plot_path(body_data, ax):
+
+    tmax = body_data.shape[1]
+    num = 60.0
+    point_start = 0
+    point_end = 50
+    markersize = 3
+    markersize_small = 0.4
+
+    for t in range(1, tmax, int(tmax / num)):
+        f = float(t) / tmax
+
+        color = "#%02x%02x00" % (int(0xFF * (f)), int(0xFF * (1 - f) * 0.8))
+            # color2 = "#%06x" % random.randint(0, 0xFFFFFF)
+        for i in range(point_start, point_end):
+                x = body_data[i * 3 + 1][t]
+                y = body_data[i * 3 + 2][t]
+
+                ax.plot(
+                    x,
+                    y,
+                    ".",
+                    color=color,
+                    markersize=markersize if t == 1 else markersize_small,
+                )
+
+         
 
 
 def plot_orients(body_data):
@@ -218,3 +252,10 @@ def plot_orients(body_data):
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
 
     
+
+
+def angle_diff(a, b):
+    """Return the signed smallest difference between two angles (in radians)."""
+    d = a - b
+    # Wrap to [-pi, pi)
+    return (d + math.pi) % (2 * math.pi) - math.pi

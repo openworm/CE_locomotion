@@ -400,7 +400,7 @@ def reload_single_run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     hf.setFolder(a)
-
+    
     plot_format = plot_formats[a.modelName]
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
@@ -416,6 +416,8 @@ def reload_single_run(a=None, **kwargs):
     mpl.rcParams["ytick.labelsize"] = 12
 
     act_file = hf.rename_file("act.dat")
+
+    
     if not os.path.isfile(act_file):
         hf.file_prefix = None
     act_data = np.loadtxt(hf.rename_file("act.dat")).T
