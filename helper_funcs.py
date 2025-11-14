@@ -3,6 +3,8 @@ from matplotlib import pyplot as plt
 import argparse
 import os
 import math
+from scipy.stats import binned_statistic
+
 
 dir_name = None
 file_prefix = None
@@ -286,18 +288,35 @@ def angle_diff(a, b):
     # Wrap to [-pi, pi)
     return (d + math.pi) % (2 * math.pi) - math.pi
 
-from scipy.stats import binned_statistic
+
 
 def plotHist(ax,x,y):
 
+    bins = 40
     # mean
-    y_mean, bin_edges, _ = binned_statistic(x, y, statistic='mean', bins=20)
+    #y_mean, bin_edges, _ = binned_statistic(x, y, statistic='mean', bins=bins)
     # standard deviation
-    y_std, _, _ = binned_statistic(x, y, statistic='std', bins=20)
+    #y_std, _, _ = binned_statistic(x, y, statistic='std', bins=bins)
 
+    mean_stats = binned_statistic(x, y, statistic='mean', bins=bins)
+    bin_means = mean_stats.statistic
+
+    bin_edges = mean_stats.bin_edges
     bin_centers = 0.5 * (bin_edges[1:] + bin_edges[:-1])
 
-    ax.errorbar(bin_centers, y_mean, yerr=y_std/np.sqrt(50), fmt='o')
-    ax.xlabel('x')
-    ax.ylabel('Average y')
+    count_stats = binned_statistic(x, y, statistic='count', bins=bins)
+    bin_counts = count_stats.statistic
+
+    std_stats = binned_statistic(x, y, statistic='std', bins=bins)
+    bin_stds = std_stats.statistic
+
+    # Calculate the Standard Error of the Mean (SEM) for each bin: SEM = SD / sqrt(count)
+    bin_sems = bin_stds / np.sqrt(bin_counts)
+
+
+    #bin_centers = 0.5 * (bin_edges[1:] + bin_edges[:-1])
+
+    ax.errorbar(bin_centers, bin_means, yerr=bin_sems, fmt='o')
+    #ax.xlabel('x')
+    #ax.ylabel('Average y')
     #plt.show()

@@ -31,12 +31,17 @@ def plot_orients(a=None, **kwargs):
     trajectory_diff_all = np.array(trajectory_diff_all)
     bearing_mid_all  = np.array(bearing_mid_all)
     mark_size = 1
-    fig_orient, ax_orient = plt.subplots(2, figsize=(5, 5))
+    fig_orient, ax_orient = plt.subplots(3, figsize=(5, 10))
     ax_orient[0].scatter(bearing_mid_all, trajectory_diff_all, s=mark_size)
 
     heatmap, xedges, yedges = np.histogram2d(bearing_mid_all, trajectory_diff_all*10, bins=50)
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
     ax_orient[1].imshow(heatmap.T, extent=extent, origin='lower')
+
+
+    hf.plotHist(ax_orient[2],bearing_mid_all,trajectory_diff_all)
+
+
     fig_orient.tight_layout()
     filename = dir_names[0] + "/Orient.png"
     #fig_orient.show()
@@ -45,6 +50,8 @@ def plot_orients(a=None, **kwargs):
     fig_body.tight_layout()
     filename = dir_names[0] + "/Motion.png"
     fig_body.savefig(filename, bbox_inches="tight", dpi=300)
+
+    
 
 if __name__ == "__main__":
     import sys
