@@ -15,5 +15,5 @@ run(
     evoType="Evo18",
     doTestRun=True,
     doOrigMuscInput=True,
-    randInitState=True,
+    randInitState=False,
 )

@@ -174,14 +174,14 @@ Worm::Worm(TVector<double> &v,double output)
 void Worm::InitializeState(RandomState &rs)
 {
     t = 0.0;
-    n.RandomizeCircuitState(-0.5, 0.5, rs);
-    h.RandomizeCircuitState(-0.5, 0.5, rs);
+    //n.RandomizeCircuitState(-0.5, 0.5, rs);
+    //h.RandomizeCircuitState(-0.5, 0.5, rs);
     //n.RandomizeCircuitState(0.4, 0.4, rs); //fix initial conditions
     //h.RandomizeCircuitState(0.4, 0.4, rs); //fix initial conditions
-    /* for (int i = 1; i <= n.size; i++)
+    for (int i = 1; i <= n.size; i++)
         n.SetNeuronState(i, (i-0.5)/n.size);
     for (int i = 1; i <= h.size; i++)
-        h.SetNeuronState(i, (i-0.5)/h.size); */
+        h.SetNeuronState(i, (i-0.5)/h.size); 
     b.InitializeBodyState();
     m.InitializeMuscleState();
 }

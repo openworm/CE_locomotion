@@ -33,7 +33,7 @@ return {headsr,vncsr};
 Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
 n(dynamic_cast<NervousSystem&>(*n_ptr)),rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 {
-    W2Dbaseparameters1->randomInitialState = 1;
+    //W2Dbaseparameters1->randomInitialState = 1;
     setRs18output(1);
 
 } //for WormCO18Full
@@ -312,14 +312,17 @@ void Worm18::InitializeState(RandomState &rs)
 {
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
-    if (W2Dbaseparameters1->randomInitialState)
-    n.RandomizeCircuitState(-0.5, 0.5, rs);
-    else n.RandomizeCircuitState(0.7, 0.7, rs);
+    if (W2Dbaseparameters1->randomInitialState){
+        //assert(0);
+    n.RandomizeCircuitState(-0.5, 0.5, rs);}
+    else //n.RandomizeCircuitState(0.7, 0.7, rs);
 
-    /* for (int i = 1; i <= n.size-4; i++)
+    { for (int i = 1; i <= n.size-4; i++)
         n.SetNeuronState(i, (i-0.5)/(n.size-4));
     for (int i = 1; i <= 4; i++)
-        n.SetNeuronState(i + n.size-4, (i-0.5)/4); */
+        n.SetNeuronState(i + n.size-4, (i-0.5)/4); 
+    }
+
     //n.RandomizeCircuitState(0.5, 0.5, rs); //fix initial conditions
     //h.RandomizeCircuitState(-0.5, 0.5, rs);
     Worm2D::InitializeState(rs);

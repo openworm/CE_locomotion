@@ -500,7 +500,6 @@ def reload_single_run(a=None, **kwargs):
 
     if plot_format["do_body_plot"]:
 
-      
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
         else:
@@ -512,9 +511,8 @@ def reload_single_run(a=None, **kwargs):
         #    tmax = body_data.shape[1]
         num = 60.0
 
-        
-        hf.plot_orients(body_data)
-
+        if not (a.modelName == "CO" or a.modelName == "W2DCO"):
+            hf.plot_orients(body_data)
 
         # title = axs[count_num, 0].set_title("2D worm motion", fontsize=title_font_size, loc='right')
         axs[count_num, 0].set_title(
@@ -543,8 +541,6 @@ def reload_single_run(a=None, **kwargs):
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
 
-        
-
         for t in range(1, tmax, int(tmax / num)):
             f = float(t) / tmax
 
@@ -565,8 +561,6 @@ def reload_single_run(a=None, **kwargs):
             xs = []
             ys = []
             
-           
-
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
