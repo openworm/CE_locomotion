@@ -21,16 +21,23 @@ public:
     void Update();
     Params<double> getStretchReceptorParams();
 
+    SRWeights makeSRWeights() const;
 
     void SetDorsalInput(int seg, double normlen){normSegLenD(seg) = normlen;};
     void SetVentralInput(int seg, double normlen){normSegLenV(seg) = normlen;};
     
 
-    double HeadDorsalOutput(){return HD_sr;};
+    /* double HeadDorsalOutput(){return HD_sr;};
     double HeadVentralOutput(){return HV_sr;};
     double VCDorsalOutput(int i){return D_sr(i);};
     double VCVentralAOutput(int i){return VA_sr(i);};
-    double VCVentralPOutput(int i){return VP_sr(i);};
+    double VCVentralPOutput(int i){return VP_sr(i);}; */
+
+    double HeadDorsalOutput(){return all_sr(1);};
+    double HeadVentralOutput(){return all_sr(2);};
+    double VCDorsalOutput(int i){return all_sr(2 + i);};
+    double VCVentralAOutput(int i){return all_sr(2 + NSR + i);};
+    double VCVentralPOutput(int i){return all_sr(2 + 2*NSR + i);};
     
     double NSR;
     double NSEGS;
@@ -40,11 +47,13 @@ public:
     double NSEGSHEADSTART,NSEGSHEAD, NSEGSVNCSTART;
     TVector<double> normSegLenD;
     TVector<double> normSegLenV;
-    double HD_sr;
-    double HV_sr;
-    TVector<double> D_sr;
-    TVector<double> VA_sr;
-    TVector<double> VP_sr;
     
+    //double HD_sr;
+    //double HV_sr;
+    //TVector<double> D_sr;
+    //TVector<double> VA_sr;
+    //TVector<double> VP_sr;
+
+    TVector<double> all_sr;
 };
 

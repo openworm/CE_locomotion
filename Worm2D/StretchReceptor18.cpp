@@ -27,9 +27,11 @@ void StretchReceptor18::SetStretchReceptorParams(int nSegs, int nSR, double srvn
 
     normSegLenD.SetBounds(1, NSEGS);
     normSegLenV.SetBounds(1, NSEGS);
-    D_sr.SetBounds(1, NSR);
-    VA_sr.SetBounds(1, NSR);
-    VP_sr.SetBounds(1, NSR);
+
+    all_sr.SetBounds(1, 2 + 3*NSR);
+    //D_sr.SetBounds(1, NSR);
+    //VA_sr.SetBounds(1, NSR);
+    //VP_sr.SetBounds(1, NSR);
 }
 
 Params<double> StretchReceptor18::getStretchReceptorParams()
@@ -45,6 +47,20 @@ par.messages_inds = {0,1,2}; //must be ordered
 return par;
 }
 
+
+SRWeights StretchReceptor18::makeSRWeights() const
+{
+   /*  for (int j = NSEGSHEADSTART; j < NSEGSHEADSTART + NSEGSHEAD; j++){
+        int from = j, to = 1;
+        double weight = SR_A_gain/NSEGSSR;
+        toFromWeight tfw({from,weight},to);
+        srw.segToA_D.push_back(tfw);
+        srw.segToA_V.push_back(tfw);
+    }
+ */
+}
+
+
 void StretchReceptor18::Update()
 {
     double d, v;
@@ -57,8 +73,10 @@ void StretchReceptor18::Update()
         d += normSegLenD(j);
         v += normSegLenV(j);
     }
-    HD_sr = SRheadgain*(d/NSEGSHEAD);
-    HV_sr = SRheadgain*(v/NSEGSHEAD);
+    //HD_sr = SRheadgain*(d/NSEGSHEAD);
+    //HV_sr = SRheadgain*(v/NSEGSHEAD);
+    all_sr(1) = SRheadgain*(d/NSEGSHEAD);
+    all_sr(2) = SRheadgain*(v/NSEGSHEAD);
 
     // First four VC Neural Units (with three muscles each)
     for (int i = 1; i <= 6; i++){
@@ -69,8 +87,9 @@ void StretchReceptor18::Update()
             d += normSegLenD(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1);
             v += normSegLenV(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1);
         }
-        D_sr(i) = SRvncgain*(d/NSEGSSR);
-        VA_sr(i) = SRvncgain*(v/NSEGSSR);
+
+        all_sr(2 + i) = SRvncgain*(d/NSEGSSR);
+        all_sr(2 + NSR + i) = SRvncgain*(v/NSEGSSR);
 
         d = 0.0;
         v = 0.0;
@@ -79,6 +98,6 @@ void StretchReceptor18::Update()
             d += normSegLenD(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1+2);
             v += normSegLenV(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1+2);
         }
-        VP_sr(i) = SRvncgain*(v/NSEGSSR);
+        all_sr(2 + 2*NSR + i) = SRvncgain*(v/NSEGSSR);
     }
 }
