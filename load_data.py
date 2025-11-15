@@ -607,6 +607,7 @@ def reload_single_run(a=None, **kwargs):
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
         fig_body.savefig(filename, bbox_inches="tight", dpi=300)
+        #fig_body.close()
 
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
@@ -614,7 +615,7 @@ def reload_single_run(a=None, **kwargs):
     filename = hf.rename_file("ExampleActivity.png")
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-    
+    plt.close()
         
 
     if a.showPlot:

@@ -46,11 +46,12 @@ def plot_orients(a=None, **kwargs):
     filename = dir_names[0] + "/Orient.png"
     #fig_orient.show()
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
+    #fig_orient.close()
 
     fig_body.tight_layout()
     filename = dir_names[0] + "/Motion.png"
     fig_body.savefig(filename, bbox_inches="tight", dpi=300)
-
+    plt.close()
     
 
 if __name__ == "__main__":

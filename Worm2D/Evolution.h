@@ -763,8 +763,6 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
         temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
         distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
 
-
-
     }
     fitness = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
 

@@ -97,13 +97,15 @@ class DataWriter{
     void closeAll();
     void InitializeData(string basename_);
 
+    
 
     protected:
     virtual const string getModelName() = 0;
     size_t getPos(string name_);
+    virtual void writeData() = 0; //{cout << "write data not implemented!" << endl;}
 
     //bool resetStats(bool & firstcall, size_t & pos, int & tt, string name_);
-    virtual void writeData() = 0; //{cout << "write data not implemented!" << endl;}
+   
    
     string getName(string name_);
 
@@ -150,10 +152,11 @@ class Worm2Dbody : virtual public DataWriter
     //virtual ~Worm2Dbody(){}
     virtual void writeBody();
     virtual void writeCurvature();
-    
+    WormBody b;
+
     protected:
     void writeData();
-    WormBody b;
+    
 
     bool first_call = true;
     double xtp = 0, ytp = 0;
@@ -265,6 +268,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     virtual void addParsToJson(json & j);
     virtual ~Worm2Dm(){}
 
+     void writeData();
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
@@ -274,7 +278,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
 
-    void writeData();
+   
 
     bool W2Dmparscalled, W2Dminitcalled;
     //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
@@ -297,6 +301,9 @@ class Worm2D : virtual public Worm2Dm
 
     void InitializeState(RandomState &rs);
     //void writeData(){Worm2Dm::writeData();}
+    
+    virtual void preNStep(){assert(0);}
+    virtual void postNStep(){assert(0);}
 
     protected:
 
@@ -335,12 +342,13 @@ class Worm2D : virtual public Worm2Dm
     virtual void Step1();
     void setUp();
     Muscles & m;
-   
+    
     //NSToMuscles vMuscConn, dMuscConn;
     vector<toFromWeight> vMuscConnvec, dMuscConnvec, vBodyConnvec, dBodyConnvec;
     
- 
+        
 };
+
 
 
 

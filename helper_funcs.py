@@ -278,7 +278,7 @@ def plot_orients(body_data):
     filename = rename_file("Orient.png")
     #fig_orient.show()
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
-
+    #fig_orient.close()
     
 
 

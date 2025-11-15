@@ -75,7 +75,6 @@ if [ "$quick_test" == 0 ]; then
         python test2018W2D.py
         omv test -V .test.COW2D.omt
         python testW2D18.py
-
     fi;
 
     omv test -V .test.W2DCO.omt
