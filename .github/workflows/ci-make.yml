@@ -62,7 +62,8 @@ jobs:
         pip install pyNeuroML
         pip install numpy matplotlib
         pip install ruff 
-
+        pip install scipy
+        
     - name: Test directly running main program
       run: |
         ./main -p 6  # Note: small population of 6 for quick runtime
