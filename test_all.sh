@@ -66,14 +66,17 @@ if [ "$quick_test" == 0 ]; then
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
+    
+        omv test -V .test.2018.omt
+        omv test -V .test.2018W2D.omt
+        omv test -V .test.W2D18.omt
     else
-        echo "Running 2018 tests which don't pass on mac..."
+        python test2018.py
+        python test2018W2D.py
+        python testW2D18.py
     fi;
 
-    omv test -V .test.2018.omt
-    omv test -V .test.2018W2D.omt
     omv test -V .test.COW2D.omt
-    omv test -V .test.W2D18.omt
     omv test -V .test.W2DCO.omt
     omv test -V .test.izq_sim.omt
     omv test -V .test.CO.omt

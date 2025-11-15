@@ -284,7 +284,11 @@ double Worm2Dbody::CoMy()
     return temp/N_rods;
 }
 
-
+double Worm2Dbody::headDistanceToCenter()
+{
+	//cout << "WormAgent::setDistanceToCentre()" << endl;
+	return sqrt(pow(PositionX(),2) + pow(PositionY(),2));
+}
 
 double Worm2Dbody::Orientation()
 {

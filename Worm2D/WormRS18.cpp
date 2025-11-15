@@ -303,6 +303,8 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
     }
 
      setUpMuscleConn();
+     setUpBodyConn();
+     //makeExternalInputConn();
      //writeData();
 
 }
@@ -557,6 +559,10 @@ void Worm18::postNStep()
 
     // Set input to Body
     //  First two segments receive special treatment because they are only affected by a single muscle
+
+    setBodyInput();
+
+ if (false){
     b.SetDorsalSegmentActivation(1, m.DorsalMuscleOutput(1)/2);
     b.SetVentralSegmentActivation(1, m.VentralMuscleOutput(1)/2);
     b.SetDorsalSegmentActivation(2, m.DorsalMuscleOutput(1)/2);
@@ -575,6 +581,8 @@ void Worm18::postNStep()
     b.SetVentralSegmentActivation(N_segments-1, m.VentralMuscleOutput(par1.N_muscles)/2);
     b.SetDorsalSegmentActivation(N_segments, m.DorsalMuscleOutput(par1.N_muscles)/2);
     b.SetVentralSegmentActivation(N_segments, m.VentralMuscleOutput(par1.N_muscles)/2);
+
+}
 }
 
 void Worm18::Step1()
