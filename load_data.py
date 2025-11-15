@@ -6,7 +6,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import sys
-import argparse
+
+# import argparse
 import os
 import neuromlLocal.utils as utils
 from matplotlib.ticker import MaxNLocator
@@ -393,14 +394,12 @@ def plot_evols(a=None, **kwargs):
             print("Saved plot image to: %s" % filename)
 
 
-
-
 # def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):
 def reload_single_run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     hf.setFolder(a)
-    
+
     plot_format = plot_formats[a.modelName]
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
@@ -417,7 +416,6 @@ def reload_single_run(a=None, **kwargs):
 
     act_file = hf.rename_file("act.dat")
 
-    
     if not os.path.isfile(act_file):
         hf.file_prefix = None
     act_data = np.loadtxt(hf.rename_file("act.dat")).T
@@ -458,7 +456,6 @@ def reload_single_run(a=None, **kwargs):
         fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
-    
 
     ###  Worm neuron/muscle activation
 
@@ -499,7 +496,6 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
         else:
@@ -540,7 +536,6 @@ def reload_single_run(a=None, **kwargs):
 
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
-
         for t in range(1, tmax, int(tmax / num)):
             f = float(t) / tmax
 
@@ -560,7 +555,7 @@ def reload_single_run(a=None, **kwargs):
                 markersize_small = 10
             xs = []
             ys = []
-            
+
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
@@ -607,7 +602,7 @@ def reload_single_run(a=None, **kwargs):
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
         fig_body.savefig(filename, bbox_inches="tight", dpi=300)
-        #fig_body.close()
+        # fig_body.close()
 
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
@@ -616,13 +611,11 @@ def reload_single_run(a=None, **kwargs):
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close()
-        
 
     if a.showPlot:
         print("Showing plot")
         plt.show()
     plt.close()
-   
 
     from F2_fig_behavior import make_fig
 

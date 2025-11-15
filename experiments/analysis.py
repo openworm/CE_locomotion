@@ -4,7 +4,7 @@ import json
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+# import helper_funcs as hf
 
 sys.path.append("..")
 
@@ -116,6 +116,9 @@ for outFolderBase in outFolderBases:
     path = current + "/" + outFolderBase
     dir_list = sorted(os.listdir(path))
     path_list += [path + "/" + dir for dir in dir_list]
+
+
+# path_list = hf.get_path_list(outFolderBases)
 
 print(len(path_list))
 # sys.exit(1)
