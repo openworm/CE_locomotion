@@ -50,14 +50,18 @@ return par;
 
 SRWeights StretchReceptor18::makeSRWeights() const
 {
-   /*  for (int j = NSEGSHEADSTART; j < NSEGSHEADSTART + NSEGSHEAD; j++){
+
+    SRWeights srw;
+
+
+    for (int j = NSEGSHEADSTART; j < NSEGSHEADSTART + NSEGSHEAD; j++){
         int from = j, to = 1;
-        double weight = SR_A_gain/NSEGSSR;
+        double weight = SRheadgain/NSEGSHEAD;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
     }
- */
+ 
 }
 
 
