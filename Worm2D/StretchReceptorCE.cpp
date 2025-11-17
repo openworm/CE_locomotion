@@ -12,7 +12,7 @@
 
 
 StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain):
-SR(nSegs,nSR)
+SRCE(nSegs,nSR)
 {
     SetStretchReceptorParams(nSegs, nSR, ASRgain, BSRgain);
 }

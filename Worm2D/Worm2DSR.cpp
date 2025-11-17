@@ -93,7 +93,7 @@ shared_ptr<SR> Worm2DSR::getSR(json & j)
 {
 
     if (j.contains("Stretch receptor"))
-    return make_shared<SR>(j["Stretch receptor"]["NSegs"]["value"],j["Stretch receptor"]["NStretch"]["value"]);
+    return make_shared<SRCE>(j["Stretch receptor"]["NSegs"]["value"],j["Stretch receptor"]["NStretch"]["value"]);
     else return nullptr;
 
 }
@@ -158,11 +158,13 @@ void Worm2DSR::writeAct()
     // Stretch receptors
 
      if (w2dsr_ptr!=nullptr){
+      
+      shared_ptr<SRCE> w2dsr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
 
-    for (int i = 1; i <= w2dsr_ptr->srvars.nstretch; i++) {
+    for (int i = 1; i <= w2dsr_ptr->srvars_ptr->nstretch; i++) {
       //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
-      ofs <<  " " << w2dsr_ptr->srvars.A_D_sr[i-1] << " " << w2dsr_ptr->srvars.A_V_sr[i-1] << " " 
-      << w2dsr_ptr->srvars.B_D_sr[i-1] << " " << w2dsr_ptr->srvars.B_V_sr[i-1];
+      ofs <<  " " << w2dsr->srvars->A_D_sr[i-1] << " " << w2dsr->srvars->A_V_sr[i-1] << " " 
+      << w2dsr->srvars->B_D_sr[i-1] << " " << w2dsr->srvars->B_V_sr[i-1];
     }
 
     }

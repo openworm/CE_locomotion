@@ -13,7 +13,7 @@
 #include "StretchReceptor.h"
 using namespace std;
 
-class StretchReceptorCE : public StretchReceptor, public SR{
+class StretchReceptorCE : public StretchReceptor, public SRCE{
 public:
     
     StretchReceptorCE(int nSegs = 50, int nSR = 10, double A_SR_gain = 0.0, double B_SR_gain = 0.0);

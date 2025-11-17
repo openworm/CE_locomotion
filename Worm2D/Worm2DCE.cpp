@@ -863,8 +863,8 @@ void Worm2DCE::writeAct()
     // Stretch receptors
     for (int i = 1; i <= N_stretchrec; i++) {
       //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
-      ofs <<  " " << sr_ptr->srvars.A_D_sr[i-1] << " " << sr_ptr->srvars.A_V_sr[i-1] << " " 
-      << sr_ptr->srvars.B_D_sr[i-1] << " " << sr_ptr->srvars.B_V_sr[i-1];
+      ofs <<  " " << sr_ptr->srvars->A_D_sr[i-1] << " " << sr_ptr->srvars->A_V_sr[i-1] << " " 
+      << sr_ptr->srvars->B_D_sr[i-1] << " " << sr_ptr->srvars->B_V_sr[i-1];
     }
     // Ventral Cord Motor Neurons
     //ofs << "\nV: ";

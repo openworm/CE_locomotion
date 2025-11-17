@@ -16,16 +16,6 @@ void SR::setFromBody(const WormBody & b)
 
 }
 
-void SR::incNS(NSForW2D & ns_)
-{
-
-updateNS(nssrweights.segToA_D, srvars.A_D_sr, ns_);
-updateNS(nssrweights.segToA_V, srvars.A_V_sr, ns_);
-updateNS(nssrweights.segToB_D, srvars.B_D_sr, ns_);
-updateNS(nssrweights.segToB_V, srvars.B_V_sr, ns_);
-
-}
-
 void SR::updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_)
 {
     for (int i=0;i<seg_.size();i++){
@@ -38,7 +28,7 @@ void SR::updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_,
 
 vector<double> SR::updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_)
 {
-    vector<double> sr(srvars.nstretch,0.0);
+    vector<double> sr(srvars_ptr->nstretch,0.0);
 
     for (int i=0;i<seg_.size();i++){
     const toFromWeight & tfw = seg_[i];
@@ -49,7 +39,20 @@ vector<double> SR::updateSegs1(const vector<toFromWeight> & seg_, vector<double>
 
 }
 
-void SR::updateSegs()
+
+void SRCE::incNS(NSForW2D & ns_)
+{
+
+updateNS(nssrweights.segToA_D, srvars->A_D_sr, ns_);
+updateNS(nssrweights.segToA_V, srvars->A_V_sr, ns_);
+updateNS(nssrweights.segToB_D, srvars->B_D_sr, ns_);
+updateNS(nssrweights.segToB_V, srvars->B_V_sr, ns_);
+
+}
+
+
+
+void SRCE::updateSegs()
 {   
     vector<double>  nslDA = multiply(nslD, SR_A_gain);
     vector<double>  nslDB = multiply(nslD, SR_B_gain);
@@ -57,20 +60,20 @@ void SR::updateSegs()
     vector<double>  nslVB = multiply(nslV, SR_B_gain);
 
     {vector<double> vec = updateSegs1(srweights.segToA_D, nslDA);
-    srvars.A_D_sr.swap(vec);}
+    srvars->A_D_sr.swap(vec);}
     {vector<double> vec = updateSegs1(srweights.segToA_V, nslVA);
-    srvars.A_V_sr.swap(vec);}
+    srvars->A_V_sr.swap(vec);}
     {vector<double> vec = updateSegs1(srweights.segToB_D, nslDB);
-    srvars.B_D_sr.swap(vec);}
+    srvars->B_D_sr.swap(vec);}
     {vector<double> vec = updateSegs1(srweights.segToB_V, nslVB);
-    srvars.B_V_sr.swap(vec);}
+    srvars->B_V_sr.swap(vec);}
 
 }
 
 
 
 
-void SR::addParsToJson(json & j) const
+void SRCE::addParsToJson(json & j) const
 {
 
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A D"]["weights"], srweights.segToA_D);
@@ -96,7 +99,7 @@ void SR::addParsToJson(json & j) const
 
 
     j["Stretch receptor"]["NSegs"]["value"] = nsegs;
-    j["Stretch receptor"]["NStretch"]["value"] = srvars.nstretch;
+    j["Stretch receptor"]["NStretch"]["value"] = srvars_ptr->nstretch;
 
     if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
 
@@ -107,25 +110,12 @@ void SR::addParsToJson(json & j) const
 }
 
 
-/* void SRCE::addParsToJson(json & j) const
-{
-
-    //srcepars->addParsToJson(j["Stretch receptor"]);
-    SR::addParsToJson(j);
-    //j["Stretch receptor"]["NSegsforanSR"]["value"] = srcepars->nsegperstr;
-    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
-
-    //j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
-    //j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
-}
- */
 
 
 
 
 
-
-void SR::setParsFromJson(json & j) 
+void SRCE::setParsFromJson(json & j) 
 {
     
     nssrweights.segToA_D = 
@@ -154,21 +144,9 @@ void SR::setParsFromJson(json & j)
 
 }
 
-/* void SRCE::setParsFromJson(json & j)
-{
-
-    srcepars->setParsFromJson(j["Stretch receptor"]);
-    //SR::addParsToJson(j);
-    //srcepars->nsegperstr = j["Stretch receptor"]["NSegsforanSR"]["value"];
-    //j["Stretch receptor"]["SR Form"]["value"] = SRForm;
-
-    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
-    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
 
 
-} */
-
-SRWeights SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) const
+void SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) 
 {
     SRWeights srw;
     const Worm2DCE & w_ptr = dynamic_cast<const Worm2DCE&>(w_ptr_);
@@ -203,13 +181,16 @@ for (int i = 1; i <= w_ptr.par1.N_units; i++){
     }
     
 }
+    nssrweights.swapAll(srw);
+    
+    
 
 
-return srw;
+//return srw;
 
 }
 
-SRWeights SRCE::makeSRWeights() const
+void SRCE::makeSRWeights()
 {
 
     SRWeights srw;
@@ -299,22 +280,24 @@ SRWeights SRCE::makeSRWeights() const
         }
 
 }
+    srweights.swapAll(srw);
+    
 
-return srw;
+//return srw;
 
 }
 
 
-SRWeights SRReg::makeSRWeights() const
+void SRReg::makeSRWeights()
 {
 
-    double full_len = nsegs/srvars.nstretch ;//+ 1;
+    double full_len = nsegs/srvars_ptr->nstretch ;//+ 1;
     //const int half_len = (int) (nsegs/(2*srvars.nstretch));
 
 
     SRWeights srw;
 
-   for (int i = 1; i <= srvars.nstretch; i++){
+   for (int i = 1; i <= srvars_ptr->nstretch; i++){
  
     double midpoint = full_len*(i-0.5); 
     int start = (int) (midpoint - (srcepars->nsegperstr/2.0));
@@ -345,7 +328,9 @@ SRWeights SRReg::makeSRWeights() const
 
    //cout << " nsegperstr " << srcepars->nsegperstr << " " << srregpars->offset << endl;
    
-return srw;
+//return srw;
+ 
+srweights.swapAll(srw);
 
 }
 
