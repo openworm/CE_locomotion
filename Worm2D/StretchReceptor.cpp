@@ -83,6 +83,31 @@ void SRCE::updateSegs()
 }
 
 
+void SR18::addParsToJson(json & j) const
+{
+
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR D"]["weights"], srweights.segToD);
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR V"]["weights"], srweights.segToV);
+
+    j["Stretch receptor"]["SR D"]["weights"]["message"] = "Weights from body segments to dorsal SR";
+    j["Stretch receptor"]["SR V"]["weights"]["message"] = "Weights from body segments to ventral SR";
+
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR D NS"]["weights"], nssrweights.segToD);
+    appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR V NS"]["weights"], nssrweights.segToV);
+
+    j["Stretch receptor"]["SR D NS"]["weights"]["message"] = "Weights from dorsal SR to Nervous System";
+    j["Stretch receptor"]["SR V NS"]["weights"]["message"] = "Weights from ventral SR to Nervous System";
+
+    j["Stretch receptor"]["NSegs"]["value"] = nsegs;
+    j["Stretch receptor"]["NStretch"]["value"] = srvars_ptr->nstretch;
+
+    j["Stretch receptor"]["SRvncgain"]["value"] = SRvncgain;
+    j["Stretch receptor"]["SRheadgain"]["value"] = SRheadgain;
+    j["Stretch receptor"]["SRvncsr"]["value"] = vncsr;
+    j["Stretch receptor"]["SRheadsr"]["value"] = headsr;
+
+
+}
 
 
 void SRCE::addParsToJson(json & j) const
@@ -125,7 +150,25 @@ void SRCE::addParsToJson(json & j) const
 
 
 
+void SR18::setParsFromJson(json & j) 
+{
+    nssrweights.segToD = 
+    j["Stretch receptor"]["SR D NS"]["weights"]["value"].template get< vector<toFromWeight> >();
+    nssrweights.segToV = 
+    j["Stretch receptor"]["SR V NS"]["weights"]["value"].template get< vector<toFromWeight> >();
 
+
+    srweights.segToD = 
+    j["Stretch receptor"]["SR D"]["weights"]["value"].template get< vector<toFromWeight> >();
+    srweights.segToV = 
+    j["Stretch receptor"]["SR V"]["weights"]["value"].template get< vector<toFromWeight> >();
+
+    SRvncgain = j["Stretch receptor"]["SRvncgain"]["value"];
+    SRheadgain = j["Stretch receptor"]["SRheadgain"]["value"];
+    vncsr = j["Stretch receptor"]["SRvncsr"]["value"];
+    headsr = j["Stretch receptor"]["SRheadsr"]["value"];
+
+}
 
 void SRCE::setParsFromJson(json & j) 
 {

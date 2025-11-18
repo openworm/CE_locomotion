@@ -25,10 +25,10 @@ const int nstretch;
 };
 
 
-class SRVars18 : public SRVars
+class SRVarsSimp : public SRVars
 {
 public:
-SRVars18(int nstretch_):SRVars(nstretch_),D_sr(nstretch_,0),V_sr(nstretch_,0){}
+SRVarsSimp(int nstretch_):SRVars(nstretch_),D_sr(nstretch_,0),V_sr(nstretch_,0){}
 
 vector<double> D_sr, V_sr;
 //vector<double> D_sr, V_sr;
@@ -135,20 +135,26 @@ vector<double> nslD, nslV;
 class SR18 : public SR //bug should be 6 not 7 streatch receptors?
 {
 public:
-    SR18(shared_ptr<const CmdArgs> cmd):
-    SR(50,7, nullptr, make_shared<SRVars18>(7)),
-    srvars(dynamic_pointer_cast<SRVars18>(srvars_ptr))
+    SR18():SR(50,7, nullptr, make_shared<SRVarsSimp>(7)),
+    srvars(dynamic_pointer_cast<SRVarsSimp>(srvars_ptr)){}
+
+    SR18(shared_ptr<const CmdArgs> cmd):SR18()
     {
         SRvncgain = cmd->getArgValDoub("--SRvncgain",SRvncgain);
         SRheadgain = cmd->getArgValDoub("--SRheadgain",SRheadgain);
+        vncsr = cmd->getArgValInt("--SRvncsr",vncsr);
+        headsr = cmd->getArgValInt("--SRheadsr",headsr);
     }
 
 
+    void addParsToJson(json & j) const;
+    void setParsFromJson(json & j);
 
     //int NSEGS = nSegs;                  // Number of segments
     //int NSR = nSR;                      // Number of stretch receptors
     //int nsegperstr = 6;
 
+    protected:
     const int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
     double SRvncgain = 0;   //srvncgain;                // Stretch receptor gain
     double SRheadgain = 0;   // srheadgain;                // Stretch receptor gain
@@ -162,7 +168,7 @@ public:
     void makeNSSRWeights(const Worm2Dbase & w_ptr);
     void makeSRWeights();
     void updateSegs();
-    shared_ptr<SRVars18> srvars;
+    shared_ptr<SRVarsSimp> srvars;
 
     SRWeightsSimp srweights, nssrweights;
 };
