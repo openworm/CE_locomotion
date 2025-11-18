@@ -1,6 +1,8 @@
 
 #include "StretchReceptor.h"
 #include "Worm2DCE.h"
+#include "WormRS18.h"
+
 
 void SR::setFromBody(const WormBody & b)
 {
@@ -40,6 +42,8 @@ vector<double> SR::updateSegs1(const vector<toFromWeight> & seg_, vector<double>
 }
 
 
+
+
 void SRCE::incNS(NSForW2D & ns_)
 {
 
@@ -50,7 +54,15 @@ updateNS(nssrweights.segToB_V, srvars->B_V_sr, ns_);
 
 }
 
+void SR18::updateSegs()
+{   
+    
+    {vector<double> vec = updateSegs1(srweights.segToD, nslD);
+    srvars->D_sr.swap(vec);}
+    {vector<double> vec = updateSegs1(srweights.segToV, nslV);
+    srvars->V_sr.swap(vec);}
 
+}
 
 void SRCE::updateSegs()
 {   
@@ -144,6 +156,57 @@ void SRCE::setParsFromJson(json & j)
 
 }
 
+void SR18::makeNSSRWeights(const Worm2Dbase & w_ptr_)
+{
+/* 
+     for (int i = 1; i <= par1.N_units; i++){
+        n_ptr->SetNeuronExternalInput(nn(DB,i), sr.VCDorsalOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBA,i), sr.VCVentralAOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBP,i), sr.VCVentralPOutput(i));
+to = 1 + srvars_ptr->nstretch + i */
+
+    SRWeightsSimp srw;
+
+    const Worm18 & w_ptr = dynamic_cast<const Worm18&>(w_ptr_);
+
+    if (vncsr){
+    for (int i = 1; i <= w_ptr.par1.N_units; i++){
+    {int from = i + 1;
+    {int to = w_ptr.nn(w_ptr.DB,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToD.push_back(tfw);}
+    {int to = w_ptr.nn(w_ptr.VBA,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToV.push_back(tfw);}
+    }
+    int from = 1 + srvars_ptr->nstretch + i;
+    {int to = w_ptr.nn(w_ptr.VBP,i);
+    toFromWeight tfw({from,1.0},to);
+    srw.segToV.push_back(tfw);}
+    }
+}
+
+
+    if (headsr){
+
+        //n_ptr->SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
+        //n_ptr->SetNeuronExternalInput(SMDV, sr.HeadVentralOutput()); 
+        int from = 1;
+        {int to = w_ptr.SMDD;
+        toFromWeight tfw({from,1.0},to);
+        srw.segToD.push_back(tfw);}
+        {int to = w_ptr.SMDV;
+        toFromWeight tfw({from,1.0},to);
+        srw.segToV.push_back(tfw);}
+
+
+    }
+    nssrweights.swapAll(srw);
+
+
+}
+
+
 
 
 void SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) 
@@ -187,6 +250,39 @@ for (int i = 1; i <= w_ptr.par1.N_units; i++){
 
 
 //return srw;
+
+}
+
+
+void SR18::makeSRWeights()
+{
+
+    SRWeightsSimp srw;
+
+    for (int j = NSEGSHEADSTART; j < NSEGSHEADSTART + NSEGSHEAD; j++){
+        int from = j, to = 1;
+        double weight = SRheadgain/NSEGSHEAD;
+        toFromWeight tfw({from,weight},to);
+        srw.segToD.push_back(tfw);
+        srw.segToV.push_back(tfw);
+    }
+
+    for (int i = 1; i <= 6; i++){
+        for (int j = 1; j <= NSEGSSR; j++){
+            {int from = j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1, to = 1 + i;
+            double weight = SRvncgain/NSEGSSR;
+            toFromWeight tfw({from,weight},to);
+            srw.segToD.push_back(tfw);
+            srw.segToV.push_back(tfw);}
+            {double weight = SRvncgain/NSEGSSR;
+            int from = j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1+2, to = 1 + srvars_ptr->nstretch + i;
+            toFromWeight tfw({from,weight},to);
+            srw.segToV.push_back(tfw);}
+
+            }
+        }
+
+    srweights.swapAll(srw);
 
 }
 

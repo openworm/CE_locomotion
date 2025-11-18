@@ -28,7 +28,8 @@ void StretchReceptor18::SetStretchReceptorParams(int nSegs, int nSR, double srvn
     normSegLenD.SetBounds(1, NSEGS);
     normSegLenV.SetBounds(1, NSEGS);
 
-    all_sr.SetBounds(1, 2 + 3*NSR);
+    all_sr_d.SetBounds(1, 1 + NSR);
+    all_sr_v.SetBounds(1, 1 + 2*NSR);
     //D_sr.SetBounds(1, NSR);
     //VA_sr.SetBounds(1, NSR);
     //VP_sr.SetBounds(1, NSR);
@@ -48,21 +49,7 @@ return par;
 }
 
 
-SRWeights StretchReceptor18::makeSRWeights() const
-{
 
-    SRWeights srw;
-
-
-    for (int j = NSEGSHEADSTART; j < NSEGSHEADSTART + NSEGSHEAD; j++){
-        int from = j, to = 1;
-        double weight = SRheadgain/NSEGSHEAD;
-        toFromWeight tfw({from,weight},to);
-        srw.segToA_D.push_back(tfw);
-        srw.segToA_V.push_back(tfw);
-    }
- 
-}
 
 
 void StretchReceptor18::Update()
@@ -79,8 +66,8 @@ void StretchReceptor18::Update()
     }
     //HD_sr = SRheadgain*(d/NSEGSHEAD);
     //HV_sr = SRheadgain*(v/NSEGSHEAD);
-    all_sr(1) = SRheadgain*(d/NSEGSHEAD);
-    all_sr(2) = SRheadgain*(v/NSEGSHEAD);
+    all_sr_d(1) = SRheadgain*(d/NSEGSHEAD);
+    all_sr_v(1) = SRheadgain*(v/NSEGSHEAD);
 
     // First four VC Neural Units (with three muscles each)
     for (int i = 1; i <= 6; i++){
@@ -92,8 +79,8 @@ void StretchReceptor18::Update()
             v += normSegLenV(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1);
         }
 
-        all_sr(2 + i) = SRvncgain*(d/NSEGSSR);
-        all_sr(2 + NSR + i) = SRvncgain*(v/NSEGSSR);
+        all_sr_d(1 + i) = SRvncgain*(d/NSEGSSR);
+        all_sr_v(1 + i) = SRvncgain*(v/NSEGSSR);
 
         d = 0.0;
         v = 0.0;
@@ -102,6 +89,6 @@ void StretchReceptor18::Update()
             d += normSegLenD(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1+2);
             v += normSegLenV(j+((i-1)*NSEGSSR)+NSEGSVNCSTART-1+2);
         }
-        all_sr(2 + 2*NSR + i) = SRvncgain*(v/NSEGSSR);
+        all_sr_v(1 + NSR + i) = SRvncgain*(v/NSEGSSR);
     }
 }

@@ -342,6 +342,22 @@ void addParsToJson(json & j) const {
 
 };
 
+/* class SR18pars : public W2Dparameters
+{
+public:
+SR18pars();
+SR18pars(shared_ptr<const CmdArgs> cmd);
+
+int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
+double SRvncgain = srvncgain;                // Stretch receptor gain
+double SRheadgain = srheadgain;                // Stretch receptor gain
+
+int NSEGSHEADSTART = 7;             // 7-12
+int NSEGSHEAD = 14;                 // Number of segments for the sublateral head motorneurons
+int NSEGSVNCSTART = 7;              // Segment where VNC starts
+
+};
+ */
 
 
 class SRCEpars : public W2Dparameters

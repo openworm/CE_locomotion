@@ -54,6 +54,21 @@ public:
     
     NervousSystem & n;
 
+
+    const int DB = 1;
+    const int DD = 2;
+    const int VBA = 3;
+    const int VDA = 4;
+    const int VBP = 5;
+    const int VDP = 6;
+    
+
+    // Neuron name conventions
+    const int SMDD = 37;
+    const int RMDD = 38;
+    const int SMDV = 39;
+    const int RMDV = 40;
+
     protected:
     void Step1(); 
     virtual void preNStep();
@@ -85,7 +100,10 @@ public:
 
     template<class T> friend class Evolvable_ptr;
 
-    protected:
+
+    
+
+   
     void setEvolPars(W2Dparameters & w2par_, string evotype_){}
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
     void setParsFromPheno(const TVector<double> &pheno);
@@ -124,19 +142,7 @@ public:
     
 
     // Neuron name conventions
-    const int DB = 1;
-    const int DD = 2;
-    const int VBA = 3;
-    const int VDA = 4;
-    const int VBP = 5;
-    const int VDP = 6;
     
-
-    // Neuron name conventions
-    const int SMDD = 37;
-    const int RMDD = 38;
-    const int SMDV = 39;
-    const int RMDV = 40;
 
     //const int Head = 1;
     //const int Tail = N_segments;

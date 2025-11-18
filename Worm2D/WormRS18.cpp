@@ -546,8 +546,11 @@ if (rS18Macros.vncsr)
 
 void Worm18::postNStep()
 {
+    if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+    else setMuscleInput();
 
-     setMuscleInputOrig();
+    
+    //setMuscleInputOrig();
     //setMuscleInputVec(StepSize);
     //setMuscleInput(StepSize);
 

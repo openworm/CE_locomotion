@@ -25,6 +25,16 @@ const int nstretch;
 };
 
 
+class SRVars18 : public SRVars
+{
+public:
+SRVars18(int nstretch_):SRVars(nstretch_),D_sr(nstretch_,0),V_sr(nstretch_,0){}
+
+vector<double> D_sr, V_sr;
+//vector<double> D_sr, V_sr;
+
+};
+
 class SRVarsCE : public SRVars
 {
 public:
@@ -41,17 +51,27 @@ struct SRWeights
 public:
 vector<toFromWeight> segToA_D, segToA_V, segToB_D, segToB_V;
 
-
 void swapAll(SRWeights & srw){
     segToA_D.swap(srw.segToA_D);
     segToA_V.swap(srw.segToA_V);
     segToB_D.swap(srw.segToB_D);
     segToB_V.swap(srw.segToB_V);
 }
-
 //vector<toFromWeight> segToD, segToV;
 };
 
+struct SRWeightsSimp
+{
+public:
+vector<toFromWeight> segToD, segToV;
+
+void swapAll(SRWeightsSimp & srw){
+    segToD.swap(srw.segToD);
+    segToV.swap(srw.segToV);
+}
+
+
+};
 
 
 class SR{
@@ -111,6 +131,43 @@ vector<double> nslD, nslV;
 
 };
 
+
+class SR18 : public SR //bug should be 6 not 7 streatch receptors?
+{
+public:
+    SR18(shared_ptr<const CmdArgs> cmd):
+    SR(50,7, nullptr, make_shared<SRVars18>(7)),
+    srvars(dynamic_pointer_cast<SRVars18>(srvars_ptr))
+    {
+        SRvncgain = cmd->getArgValDoub("--SRvncgain",SRvncgain);
+        SRheadgain = cmd->getArgValDoub("--SRheadgain",SRheadgain);
+    }
+
+
+
+    //int NSEGS = nSegs;                  // Number of segments
+    //int NSR = nSR;                      // Number of stretch receptors
+    //int nsegperstr = 6;
+
+    const int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
+    double SRvncgain = 0;   //srvncgain;                // Stretch receptor gain
+    double SRheadgain = 0;   // srheadgain;                // Stretch receptor gain
+
+    const int NSEGSHEADSTART = 7;             // 7-12
+    const int NSEGSHEAD = 14;                 // Number of segments for the sublateral head motorneurons
+    const int NSEGSVNCSTART = 7;              // Segment where VNC starts
+
+    bool vncsr = 1;
+    bool headsr = 1;
+    void makeNSSRWeights(const Worm2Dbase & w_ptr);
+    void makeSRWeights();
+    void updateSegs();
+    shared_ptr<SRVars18> srvars;
+
+    SRWeightsSimp srweights, nssrweights;
+};
+
+
 class SRCE : public SR
 {
 
@@ -128,6 +185,7 @@ void makeSRWeights();
 double transformSegs(const double & val);
 void addParsToJson(json & j) const;
 void setParsFromJson(json & j);
+
 
 void updateSegs();
 void incNS(NSForW2D & ns);
