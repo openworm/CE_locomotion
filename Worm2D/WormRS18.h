@@ -100,7 +100,7 @@ public:
 
     template<class T> friend class Evolvable_ptr;
 
-
+    void initConst();
     
 
    
@@ -112,7 +112,8 @@ public:
     //NervousSystem & n;
     StretchReceptor18 sr;
     //NervousSystem h;
-    
+    //shared_ptr<SR18> sr_ptr;
+
     void setPhenoNames();
    
     // Neuromuscular junctions

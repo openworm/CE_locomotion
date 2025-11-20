@@ -31,12 +31,31 @@ return {headsr,vncsr};
 //Worm18::Worm18():Worm18(readPhenotype(), 0){setRs18output(1);} //for WormCO18
 
 Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
-n(dynamic_cast<NervousSystem&>(*n_ptr)),rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
+n(dynamic_cast<NervousSystem&>(*n_ptr)),//sr_ptr(make_shared<SR18>()),
+rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 {
     //W2Dbaseparameters1->randomInitialState = 1;
     setRs18output(1);
+    //initConst();
 
 } //for WormCO18Full
+
+
+void Worm18::initConst()
+{
+
+    //sr_ptr->setWeights();
+    //sr_ptr->setNSWeights(*this);
+
+    
+
+    setUpMuscleConn();
+    setUpBodyConn();
+    //makeExternalInputConn();
+    
+
+}
+
 
 // The constructor
 
@@ -244,6 +263,9 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
     // Stretch receptor
     sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
 
+    //sr_ptr->SRvncgain = v(14);
+    //sr_ptr->SRheadgain = v(28);
+
     // NMJ Weight
     NMJ_DB = v(15);
     NMJ_VBa = v(15);
@@ -302,9 +324,11 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
     }
 
-     setUpMuscleConn();
-     setUpBodyConn();
-     //makeExternalInputConn();
+     
+
+    initConst();
+
+    //makeExternalInputConn();
      //writeData();
 
 }
@@ -506,6 +530,16 @@ double ds, vs;
 
 b.StepBody(settedStepSize);
 
+
+    //sr_ptr->updateAll(b);
+
+    //setExternalInput();
+  //setExternalInputOrig();
+
+    //sr_ptr->incNS(*n_ptr);
+
+
+   
     // Set input to Stretch Receptors from Body
     for(int i = 1; i <= N_segments; ++i){
         ds = (b.DorsalSegmentLength(i) - b.RestingLength(i))/b.RestingLength(i);
@@ -516,29 +550,41 @@ b.StepBody(settedStepSize);
 
     // Update Stretch Receptors
     sr.Update();
+ 
+
+
 
     // Set input to Nervous System (Head) from Stretch Receptors
 //#ifdef HEADSR
-if (rS18Macros.headsr)
-{
-    if (rs18output == 1){
-        n_ptr->SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
-        n_ptr->SetNeuronExternalInput(SMDV, sr.HeadVentralOutput());   // to segments
+
+    StretchReceptor18 * sr_ptr = &sr;
+
+
+    if (rS18Macros.headsr)
+    {
+     if (rs18output == 1){
+        n_ptr->SetNeuronExternalInput(SMDD, sr_ptr->HeadDorsalOutput());    // Average of first
+        n_ptr->SetNeuronExternalInput(SMDV, sr_ptr->HeadVentralOutput());   // to segments
+        }   
     }
-}
+
+    //#endif
+
+        // Set input to Nervous System (Ventral Cord) from Stretch Receptors
+    //#ifdef VNCSR
+
+    if (rS18Macros.vncsr)
+    {
+        for (int i = 1; i <= par1.N_units; i++){
+        n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->VCDorsalOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBA,i), sr_ptr->VCVentralAOutput(i));
+        n_ptr->SetNeuronExternalInput(nn(VBP,i), sr_ptr->VCVentralPOutput(i));
+        }
+    }    
+
+
 //#endif
 
-    // Set input to Nervous System (Ventral Cord) from Stretch Receptors
-//#ifdef VNCSR
-if (rS18Macros.vncsr)
-{
-    for (int i = 1; i <= par1.N_units; i++){
-        n_ptr->SetNeuronExternalInput(nn(DB,i), sr.VCDorsalOutput(i));
-        n_ptr->SetNeuronExternalInput(nn(VBA,i), sr.VCVentralAOutput(i));
-        n_ptr->SetNeuronExternalInput(nn(VBP,i), sr.VCVentralPOutput(i));
-    }
-}    
-//#endif
 
 
 }
@@ -595,6 +641,7 @@ void Worm18::Step1()
 
     // Update Nervous System
     //h.EulerStep(StepSize);
+
     n_ptr->EulerStep(settedStepSize);
 
     // Set input to Muscles
@@ -623,8 +670,10 @@ void Worm18::addParsToJson(json & j)
 
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
-    Params<double> par = sr.getStretchReceptorParams();
-    appendToJson<double>(j["Stretch receptor"], par);
+    //Params<double> par = sr.getStretchReceptorParams();
+    //appendToJson<double>(j["Stretch receptor"], par);
+
+    //sr_ptr->addParsToJson(j);
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], n);
     Worm2D::addParsToJson(j);
@@ -671,7 +720,8 @@ void Worm18::writeAct()
 
     if (resetStats(firstcall,pos,tt,"act.dat")) return; */
 
- 
+    StretchReceptor18 * sr_ptr = &sr;
+
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
     int & tt = tts[pos];
@@ -683,10 +733,11 @@ void Worm18::writeAct()
         ofs << datatime;
         //ofs << "\nSR: ";
         // Stretch receptors
-        ofs <<  " " << sr.HeadDorsalOutput() << " " << sr.HeadVentralOutput();
+        ofs <<  " " << sr_ptr->HeadDorsalOutput() << " " << sr_ptr->HeadVentralOutput();
         
         for (int i = 1; i <= N_stretchrec; i++) {
-            ofs <<  " " << sr.VCDorsalOutput(i) << " " << sr.VCVentralAOutput(i) << " " << sr.VCVentralPOutput(i);;
+            ofs <<  " " << sr_ptr->VCDorsalOutput(i) << " " 
+            << sr_ptr->VCVentralAOutput(i) << " " << sr_ptr->VCVentralPOutput(i);;
         }
         // Head Neurons
         //ofs << "\nH: ";
@@ -739,7 +790,7 @@ void Worm18::DumpVoltage(ofstream &ofs, int skips)
 
 void Worm18::DumpParams(ofstream &ofs)
 {
-
+    StretchReceptor18 * sr_ptr = &sr;
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     
     ofs << "Time-constants: \n DB: " << n.NeuronTimeConstant(DB) << "\n VBA/P: " << n.NeuronTimeConstant(VBA) << " / " << n.NeuronTimeConstant(VBP) << "\n DD: " << n.NeuronTimeConstant(DD) << "\n VDA/P: " << n.NeuronTimeConstant(VDA) << " / " << n.NeuronTimeConstant(VDP) << endl;
@@ -747,7 +798,7 @@ void Worm18::DumpParams(ofstream &ofs)
     ofs << "Self conns: \n DB: " << n.ChemicalSynapseWeight(DB, DB) << "\n VBA/P: " << n.ChemicalSynapseWeight(VBA, VBA) << " / " << n.ChemicalSynapseWeight(VBP, VBP) << "\n DD: " << n.ChemicalSynapseWeight(DD, DD) <<  "\n VDA/P: " << n.ChemicalSynapseWeight(VDA, VDA) <<  " / " << n.ChemicalSynapseWeight(VDP, VDP) << endl;
     ofs << "Chem Conns: \n DB->DD: " << n.ChemicalSynapseWeight(DB, DD) <<  "\n DB->VDA/VDP: " << n.ChemicalSynapseWeight(DB, VDA) << " / " << n.ChemicalSynapseWeight(DB, VDP) << "\n VBA/P->DD: " << n.ChemicalSynapseWeight(VBA, DD) << " / " << n.ChemicalSynapseWeight(VBP, DD) << "\n VBA/P->VDA/P: " << n.ChemicalSynapseWeight(VBA, VDA) << " / " << n.ChemicalSynapseWeight(VBP, VDP) << "\n VDA/P->VBA/P: " << n.ChemicalSynapseWeight(VDA, VBA) << " / " << n.ChemicalSynapseWeight(VDP, VBP) << "\n DD->VDA: " << n.ChemicalSynapseWeight(DD, VDA) <<endl;
     ofs << "Gap Juncs: \n DB-DB+1: " << n.ElectricalSynapseWeight(DB, DB+par1.N_neuronsperunit) << "\n VBA-VBP / VBP-VBP+1: " << n.ElectricalSynapseWeight(VBA, VBP) << " / " << n.ElectricalSynapseWeight(VBP, VBA+par1.N_neuronsperunit) << "\n VBP-DB+1: " << n.ElectricalSynapseWeight(VBP, DB+par1.N_neuronsperunit) << "\n DD-VDA/P: " << n.ElectricalSynapseWeight(DD, VDA) << " / " << n.ElectricalSynapseWeight(DD, VDP) << "\n DD-DD+1: " << n.ElectricalSynapseWeight(DD, DD+par1.N_neuronsperunit) << "\n VDA-VDP / VDP-VDP+1: " << n.ElectricalSynapseWeight(VDA, VDP) << " / " << n.ElectricalSynapseWeight(VDP, VDA+par1.N_neuronsperunit) <<  endl;
-    ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;
+    ofs << "SR Gain (VNC and Head): " << sr_ptr->SRvncgain << " " << sr_ptr->SRheadgain << endl;
     ofs << "NMJ weights: \n B: " << NMJ_DB << " " << NMJ_VBa << " " << NMJ_VBp << "\n D: " <<  NMJ_DD << " " << NMJ_VDa << " " << NMJ_VDp << endl;
     ofs << "Head: \nBiases: \n SMD(D/V): " << n.NeuronBias(SMDD) << " " << n.NeuronBias(SMDV) << "\n RMD(D/V): "<< n.NeuronBias(RMDD) << " "<< n.NeuronBias(RMDV) << endl;
     ofs << "Time-constants: \n SMD(D/V): " << n.NeuronTimeConstant(SMDD) << " " << n.NeuronTimeConstant(SMDV) << "\n RMD(D/V): " << n.NeuronTimeConstant(RMDD) << " " << n.NeuronTimeConstant(RMDV) << endl;

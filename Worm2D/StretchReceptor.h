@@ -28,7 +28,8 @@ const int nstretch;
 class SRVarsSimp : public SRVars
 {
 public:
-SRVarsSimp(int nstretch_):SRVars(nstretch_),D_sr(nstretch_,0),V_sr(nstretch_,0){}
+SRVarsSimp(int nstretch_):SRVars(nstretch_),D_sr(1 + nstretch_,0),V_sr(1 + 2*nstretch_,0){}
+
 
 vector<double> D_sr, V_sr;
 //vector<double> D_sr, V_sr;
@@ -82,6 +83,7 @@ public:
 void setFromBody(const WormBody & b);
 virtual void updateSegs() = 0;
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
+void updateSegs2(const vector<toFromWeight> & seg_, vector<double> & nsl_, vector<double> & sr_);
 
 virtual void makeSRWeights() = 0; // {assert(0);}
 virtual void makeNSSRWeights(const Worm2Dbase & w_ptr) = 0; //{assert(0);}
@@ -135,7 +137,7 @@ vector<double> nslD, nslV;
 class SR18 : public SR //bug should be 6 not 7 streatch receptors?
 {
 public:
-    SR18():SR(50,7, nullptr, make_shared<SRVarsSimp>(7)),
+    SR18():SR(50, 6, nullptr, make_shared<SRVarsSimp>(6)),
     srvars(dynamic_pointer_cast<SRVarsSimp>(srvars_ptr)){}
 
     SR18(shared_ptr<const CmdArgs> cmd):SR18()
@@ -154,11 +156,23 @@ public:
     //int NSR = nSR;                      // Number of stretch receptors
     //int nsegperstr = 6;
 
-    protected:
-    const int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
     double SRvncgain = 0;   //srvncgain;                // Stretch receptor gain
     double SRheadgain = 0;   // srheadgain;                // Stretch receptor gain
 
+    double HeadDorsalOutput(){return srvars->D_sr[0];}
+    double HeadVentralOutput(){return srvars->V_sr[0];}
+        
+
+    double VCDorsalOutput(int i){return  srvars->D_sr[i];}
+        
+    double VCVentralAOutput(int i){ return  srvars->V_sr[i];}     
+    double VCVentralPOutput(int i){return  srvars->V_sr[i + srvars_ptr->nstretch];}
+        
+    void incNS(NSForW2D & ns_);
+
+    protected:
+    const int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
+    
     const int NSEGSHEADSTART = 7;             // 7-12
     const int NSEGSHEAD = 14;                 // Number of segments for the sublateral head motorneurons
     const int NSEGSVNCSTART = 7;              // Segment where VNC starts
@@ -168,6 +182,8 @@ public:
     void makeNSSRWeights(const Worm2Dbase & w_ptr);
     void makeSRWeights();
     void updateSegs();
+  
+
     shared_ptr<SRVarsSimp> srvars;
 
     SRWeightsSimp srweights, nssrweights;

@@ -14,7 +14,7 @@ using namespace std;
 class StretchReceptor18 : public StretchReceptor{
 public:
     
-    StretchReceptor18(int nSegs = 50, int nSR = 7, double SRgain = 0.0, double SRHeadgain = 0.0);
+    StretchReceptor18(int nSegs = 50, int nSR = 6, double SRgain = 0.0, double SRHeadgain = 0.0);
 
     void SetStretchReceptorParams(int nSegs, int nSR, double SRVNCgain, double SRHeadgain);
     
