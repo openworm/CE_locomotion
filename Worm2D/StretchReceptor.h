@@ -80,6 +80,7 @@ public:
 
 //SR(int nsegs_, int nstretch_):SR(nsegs_, nstretch_, nullptr){}
 
+
 void setFromBody(const WormBody & b);
 virtual void updateSegs() = 0;
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
@@ -106,7 +107,7 @@ virtual double transformSegs(const double & val) {return val;}
 virtual void incNS(NSForW2D & ns) = 0;
 void updateNS(const vector<toFromWeight> & seg_, const vector<double> & sr_, NSForW2D & ns_);
 
-
+virtual void writeAct(ofstream & ofs) = 0;
 
 void setPars(shared_ptr<const CmdArgs> cmd){
 
@@ -121,6 +122,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 //SRVars srvars;
 shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
+string SRType = "Base";
 
 protected:
 const int nsegs;
@@ -131,6 +133,7 @@ nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),srpars(srpar
 vector<double> nslD, nslV;
 
 
+
 };
 
 
@@ -138,7 +141,7 @@ class SR18 : public SR //bug should be 6 not 7 streatch receptors?
 {
 public:
     SR18():SR(50, 6, nullptr, make_shared<SRVarsSimp>(6)),
-    srvars(dynamic_pointer_cast<SRVarsSimp>(srvars_ptr)){}
+    srvars(dynamic_pointer_cast<SRVarsSimp>(srvars_ptr)){SRType = "SR18";}
 
     SR18(shared_ptr<const CmdArgs> cmd):SR18()
     {
@@ -170,6 +173,8 @@ public:
         
     void incNS(NSForW2D & ns_);
 
+
+    void writeAct(ofstream & ofs);
     protected:
     const int NSEGSSR = 6;                    // Number of segments that go into a stretch receptor
     
@@ -183,7 +188,7 @@ public:
     void makeSRWeights();
     void updateSegs();
   
-
+    
     shared_ptr<SRVarsSimp> srvars;
 
     SRWeightsSimp srweights, nssrweights;
@@ -198,7 +203,7 @@ SRCE(int nsegs_, int nstretch_):
 SR(nsegs_,nstretch_,make_shared<SRCEpars>(), make_shared<SRVarsCE>(nstretch_))
 ,srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
-{}
+{SRType = "SRCE";}
 
 void makeNSSRWeights(const Worm2Dbase & w_ptr);
 void makeSRWeights();
@@ -218,7 +223,7 @@ shared_ptr<SRVarsCE> srvars;
 
 double SR_A_gain = 0;
 double SR_B_gain = 0;
-
+void writeAct(ofstream & ofs);
 protected:
 SRCE(int nsegs_, int nstretch_,shared_ptr<SRCEpars> srcepars_):
 SR(nsegs_,nstretch_,srcepars_,make_shared<SRVarsCE>(nstretch_)),

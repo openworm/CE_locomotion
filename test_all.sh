@@ -63,6 +63,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/exW2DSR
     rm -rf testruns/exW2D18
     rm -rf testruns/exW2DCO
+    rm -rf testruns/exW2D18gen
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -70,12 +71,14 @@ if [ "$quick_test" == 0 ]; then
         omv test -V .test.2018.omt
         omv test -V .test.2018W2D.omt
         omv test -V .test.W2D18.omt
+
     else
         python test2018.py
         python test2018W2D.py
         python testW2D18.py
     fi;
 
+    omv test -V .test.W2D18gen.omt
     omv test -V .test.COW2D.omt
     omv test -V .test.W2DCO.omt
     omv test -V .test.izq_sim.omt

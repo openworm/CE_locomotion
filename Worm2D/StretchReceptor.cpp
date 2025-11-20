@@ -104,6 +104,14 @@ void SRCE::updateSegs()
 }
 
 
+void SR::addParsToJson(json & j) const
+{
+
+    j["Stretch receptor"]["Type"]["value"] = SRType;
+}
+
+
+
 void SR18::addParsToJson(json & j) const
 {
 
@@ -126,9 +134,12 @@ void SR18::addParsToJson(json & j) const
     j["Stretch receptor"]["SRheadgain"]["value"] = SRheadgain;
     j["Stretch receptor"]["SRvncsr"]["value"] = vncsr;
     j["Stretch receptor"]["SRheadsr"]["value"] = headsr;
+   
 
-
+    SR::addParsToJson(j);
 }
+
+
 
 
 void SRCE::addParsToJson(json & j) const
@@ -164,10 +175,16 @@ void SRCE::addParsToJson(json & j) const
 
     j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
     j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
+  
+    SR::addParsToJson(j);
 
 }
 
+void SR::setParsFromJson(json & j) 
+{
 
+    SRType = j["Stretch receptor"]["Type"]["value"];
+}
 
 
 
@@ -188,6 +205,8 @@ void SR18::setParsFromJson(json & j)
     SRheadgain = j["Stretch receptor"]["SRheadgain"]["value"];
     vncsr = j["Stretch receptor"]["SRvncsr"]["value"];
     headsr = j["Stretch receptor"]["SRheadsr"]["value"];
+
+    SR::setParsFromJson(j); 
 
 }
 
@@ -217,8 +236,29 @@ void SRCE::setParsFromJson(json & j)
     SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
     SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
 
+    SR::setParsFromJson(j); 
+}
+
+void SRCE::writeAct(ofstream & ofs)
+{
+
+    for (int i = 1; i <= srvars_ptr->nstretch; i++) 
+      //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
+      ofs <<  " " << srvars->A_D_sr[i-1] << " " << srvars->A_V_sr[i-1] << " " 
+      << srvars->B_D_sr[i-1] << " " << srvars->B_V_sr[i-1];
 
 }
+
+void SR18::writeAct(ofstream & ofs)
+{
+ 
+    ofs <<  " " << HeadDorsalOutput() << " " << HeadVentralOutput();
+        for (int i = 1; i <= srvars_ptr->nstretch; i++) 
+            ofs <<  " " << VCDorsalOutput(i) << " " 
+            << VCVentralAOutput(i) << " " << VCVentralPOutput(i);
+
+}
+
 
 void SR18::makeNSSRWeights(const Worm2Dbase & w_ptr_)
 {

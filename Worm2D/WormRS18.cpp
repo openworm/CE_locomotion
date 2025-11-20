@@ -645,7 +645,8 @@ void Worm18::postNStep()
 
 void Worm18::Step1()
 {
-   
+    
+
     preNStep();
 
     // Update Nervous System
@@ -678,7 +679,7 @@ void Worm18::addParsToJson(json & j)
     //appendCellNamesToJson(j[nsHead], cell_names, 1);
 
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-     if (W2Dbaseparameters1->doOrigSRInput){
+    if (W2Dbaseparameters1->doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
@@ -755,7 +756,7 @@ void Worm18::writeAct()
         else {
 
         ofs <<  " " << sr_ptr->HeadDorsalOutput() << " " << sr_ptr->HeadVentralOutput();
-        for (int i = 1; i <= N_stretchrec; i++) 
+        for (int i = 1; i <= sr_ptr->srvars_ptr->nstretch; i++) 
             ofs <<  " " << sr_ptr->VCDorsalOutput(i) << " " 
             << sr_ptr->VCVentralAOutput(i) << " " << sr_ptr->VCVentralPOutput(i);
 

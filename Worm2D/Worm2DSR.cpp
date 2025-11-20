@@ -28,9 +28,10 @@ Worm2DSR::Worm2DSR(json j, shared_ptr<const CmdArgs> cmd):Worm2Dm(
 
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     setNSFromJson(j,n);
-    assert(n.size == par1.N_units*par1.N_neuronsperunit);
-    assert(n.maxchemconns == 3);
-    assert(n.maxelecconns == 2);
+
+    //assert(n.size == par1.N_units*par1.N_neuronsperunit);
+    //assert(n.maxchemconns == 3);
+    //assert(n.maxelecconns == 2);
 
     }
 
@@ -67,9 +68,9 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
     setNSFromJson(j,n);
   
    
-    assert(n.size == par1.N_units*par1.N_neuronsperunit);
-    assert(n.maxchemconns == 3);
-    assert(n.maxelecconns == 2);
+    //assert(n.size == par1.N_units*par1.N_neuronsperunit);
+    //assert(n.maxchemconns == 3);
+    //assert(n.maxelecconns == 2);
   
     if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
@@ -92,8 +93,13 @@ NSForW2D * Worm2DSR::getNS(shared_ptr<const CmdArgs> cmd)
 shared_ptr<SR> Worm2DSR::getSR(json & j)
 {
 
-    if (j.contains("Stretch receptor"))
+    if (j.contains("Stretch receptor")){
+    
+    if (j["Stretch receptor"]["Type"]["value"] == "SR18") return make_shared<SR18>();
+
     return make_shared<SRCE>(j["Stretch receptor"]["NSegs"]["value"],j["Stretch receptor"]["NStretch"]["value"]);
+
+    }
     else return nullptr;
 
 }
@@ -157,17 +163,16 @@ void Worm2DSR::writeAct()
     //ofs << "\nSR: ";
     // Stretch receptors
 
-     if (w2dsr_ptr!=nullptr){
+     if (w2dsr_ptr!=nullptr) w2dsr_ptr->writeAct(ofs);
+
       
-      shared_ptr<SRCE> w2dsr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
+    // Head Neurons
+        //ofs << "\nH: ";
+        int offset = par1.N_units*par1.N_neuronsperunit;
 
-    for (int i = 1; i <= w2dsr_ptr->srvars_ptr->nstretch; i++) {
-      //ofs <<  " " << sr_ptr->A_D_sr(i) << " " << sr_ptr->A_V_sr(i) << " " << sr_ptr->B_D_sr(i) << " " << sr_ptr->B_V_sr(i);
-      ofs <<  " " << w2dsr->srvars->A_D_sr[i-1] << " " << w2dsr->srvars->A_V_sr[i-1] << " " 
-      << w2dsr->srvars->B_D_sr[i-1] << " " << w2dsr->srvars->B_V_sr[i-1];
-    }
-
-    }
+        for (int i = offset + 1; i <= par1.N_size; i++) {
+            ofs <<  " " << n_ptr->NeuronOutput(i);
+        }
 
     // Ventral Cord Motor Neurons
     //ofs << "\nV: ";
