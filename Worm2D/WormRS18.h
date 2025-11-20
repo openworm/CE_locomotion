@@ -112,7 +112,7 @@ public:
     //NervousSystem & n;
     StretchReceptor18 sr;
     //NervousSystem h;
-    //shared_ptr<SR18> sr_ptr;
+    shared_ptr<SR18> sr_ptr;
 
     void setPhenoNames();
    

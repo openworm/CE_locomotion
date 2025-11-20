@@ -840,6 +840,7 @@ void Worm2Dbase::setExternalInput()
     assignExternalInput();
 
     vector<double> vtot(par1.N_size, 0.0);
+    
     for (int i=0;i<externalInputConn.size();i++)
     {
         const toFromWeight & tfw = externalInputConn[i];
