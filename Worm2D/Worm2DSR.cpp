@@ -110,7 +110,8 @@ shared_ptr<SR> Worm2DSR::getSR(json & j)
 void Worm2DSR::Step1()
 {
   
-    
+  zeroAllInputs();
+
   b.StepBody(settedStepSize);
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);

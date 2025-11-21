@@ -584,6 +584,7 @@ else
 {
     sr_ptr->updateAll(b);
 
+    zeroAllInputs();
     setExternalInput();
     //setExternalInputOrig();
 

@@ -536,6 +536,28 @@ void Worm2Dbody::addParsToJson(json & j)
  appendBodyToJson(j, b);
 }
 
+void Worm2Dbase::makeExternalInputConnFromJson(json & j)
+{
+
+    if (j.contains("InputNS")){
+        vector<toFromWeight> vec1 = j["InputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
+        NSInputConn.swap(vec1);
+    }
+
+    if (j.contains("OutputNS")){
+        vector<toFromWeight> vec1 = j["OutputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
+        NSOutputConn.swap(vec1);
+    }
+
+
+
+vector<toFromWeight> vec1 = j["Driving input"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<double> exvec = j["Driving input"]["strengths"]["value"].template get< vector<double> >();
+externalInputs.swap(exvec);
+externalInputConn.swap(vec1);
+
+}
+
 
 void Worm2Dbase::addParsToJson(json & j)
 {  
@@ -577,6 +599,13 @@ void Worm2Dbase::addParsToJson(json & j)
     appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
     j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
 //}
+
+
+    appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
+    j["InputNS"]["weights"]["message"] = "Weights of driving inputs to NS from another NS";
+
+    appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
+    j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
 
     W2Dbaseparameters1->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
@@ -763,6 +792,7 @@ void Worm2D::Step1()
   
   b.StepBody(settedStepSize);
 
+  zeroAllInputs();
   setExternalInput();
   //setExternalInputOrig();
 
@@ -834,6 +864,38 @@ void Worm2D::setBodyInput()
 
 }
 
+void Worm2Dbase::incOutputToNS(Worm2Dbase & w_)
+{
+
+   vector<double> vtot(w_.par1.N_size, 0.0);
+
+    for (int i=0;i<NSOutputConn.size();i++)
+    {
+        const toFromWeight & tfw = NSOutputConn[i];
+        vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
+    }
+
+    for (int i=0;i<vtot.size();i++) w_.itsNS().IncNeuronExternalInput(i+1, vtot[i]); 
+
+}
+
+
+void Worm2Dbase::incInputFromNS(NSForW2D & ns_)
+{
+
+    vector<double> vtot(par1.N_size, 0.0);
+
+    for (int i=0;i<NSInputConn.size();i++)
+    {
+        const toFromWeight & tfw = NSInputConn[i];
+        vtot[tfw.to-1] += tfw.w.weight*ns_.NeuronOutput(tfw.w.from);
+    }
+
+    for (int i=0;i<vtot.size();i++) n_ptr->IncNeuronExternalInput(i+1, vtot[i]); 
+
+}
+
+
 void Worm2Dbase::setExternalInput()
 {
 
@@ -847,7 +909,7 @@ void Worm2Dbase::setExternalInput()
         vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
     }
 
-    for (int i=0;i<vtot.size();i++) n_ptr->SetNeuronExternalInput(i+1, vtot[i]); 
+    for (int i=0;i<vtot.size();i++) n_ptr->IncNeuronExternalInput(i+1, vtot[i]); 
 
 }
 
@@ -905,15 +967,7 @@ dBodyConnvec.swap(dBodyConnvec1);
 }
 
 
-void Worm2Dbase::makeExternalInputConnFromJson(json & j)
-{
 
-vector<toFromWeight> vec1 = j["Driving input"]["weights"]["value"].template get< vector<toFromWeight> >();
-vector<double> exvec = j["Driving input"]["strengths"]["value"].template get< vector<double> >();
-externalInputs.swap(exvec);
-externalInputConn.swap(vec1);
-
-}
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)

@@ -213,6 +213,11 @@ virtual void setWormPars(shared_ptr<const CmdArgs> cmd)
 
 shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
+void zeroAllInputs(){
+    for (int i=0;i<par1.N_size;i++)
+    n_ptr->SetNeuronExternalInput(i+1, 0);
+}
+
 protected:
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
@@ -247,7 +252,15 @@ vector<double> externalInputs;
 //vector<double> sjdkdsdjddssdsloe;
 //double sjdkdsdjddssdsloe;
 void setExternalInput();
-virtual void assignExternalInput(){return;}
+virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+
+vector<toFromWeight> NSInputConn, NSOutputConn;
+void incInputFromNS(NSForW2D & ns_);
+void incOutputToNS(Worm2Dbase & ns_);
+virtual void makeNSInputConn(){return;}
+virtual void makeNSOutputConn(){return;}
+
+
 
 };
 

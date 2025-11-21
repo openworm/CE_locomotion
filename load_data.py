@@ -128,7 +128,7 @@ plot_formats["W2DCE"] = copy.deepcopy(plot_formats["CE"])
 plot_formats["W2DCE"]["plot_time"] = 20
 plot_formats["W2D21R"] = plot_formats["Net21"]
 plot_formats["W2DCESR"] = plot_formats["W2DCE"]
-#plot_formats["W2DSR"] = plot_formats["W2DCE"]
+# plot_formats["W2DSR"] = plot_formats["W2DCE"]
 plot_formats["W2D18"] = plot_formats["RS18"]
 plot_formats["W2DCO"] = plot_formats["CO"]
 
@@ -405,25 +405,18 @@ def reload_single_run(a=None, **kwargs):
     if not os.path.isfile(act_file):
         hf.file_prefix = None
 
-
-
-
     worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data.json")
     if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data_worm.json")
 
-    
     network_json_data = utils.getJsonFile(worm_file)
 
-    
-    json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
-
     if a.modelName == "W2DSR":
+        json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
-   
     plot_format = plot_formats[a.modelName]
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
@@ -438,12 +431,11 @@ def reload_single_run(a=None, **kwargs):
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
-    
     act_data = np.loadtxt(hf.rename_file("act.dat")).T
     t_data = act_data[0]
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
-        #network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
+        # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
         CO18_size = network_json_data["Nervous system"]["size"]["value"]
         plot_formats[a.modelName]["data_sizes"] = [CO18_size, 2]
         plot_formats[a.modelName]["plot_cell_names"] = [
