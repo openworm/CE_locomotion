@@ -120,6 +120,8 @@ struct toFromWeight{
     int to;
 };
 
+double angle_diff(double a, double b);
+
 
 
 
