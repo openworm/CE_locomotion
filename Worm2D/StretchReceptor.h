@@ -78,26 +78,17 @@ void swapAll(SRWeightsSimp & srw){
 class SR{
 public:
 
-//SR(int nsegs_, int nstretch_):SR(nsegs_, nstretch_, nullptr){}
-
-
 void setFromBody(const WormBody & b);
 virtual void updateSegs() = 0;
 vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & nsl_);
 void updateSegs2(const vector<toFromWeight> & seg_, vector<double> & nsl_, vector<double> & sr_);
 
-virtual void makeSRWeights() = 0; // {assert(0);}
-virtual void makeNSSRWeights(const Worm2Dbase & w_ptr) = 0; //{assert(0);}
-
+virtual void makeSRWeights() = 0; 
+virtual void makeNSSRWeights(const Worm2Dbase & w_ptr) = 0; 
 virtual void setParsFromJson(json & j) = 0;
 
-
 void setWeights(){makeSRWeights();}
-
-void setNSWeights(const Worm2Dbase & w_ptr){
-    makeNSSRWeights(w_ptr);
-//assert(0);
-}
+void setNSWeights(const Worm2Dbase & w_ptr){makeNSSRWeights(w_ptr);}
 
 virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
@@ -111,7 +102,6 @@ virtual void writeAct(ofstream & ofs) = 0;
 
 void setPars(shared_ptr<const CmdArgs> cmd){
 
-    //assert(0);
     if (srpars!=nullptr){
     srpars->setPars(cmd); 
     setWeights();

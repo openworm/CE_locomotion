@@ -105,7 +105,7 @@ public:
 
    
     void setEvolPars(W2Dparameters & w2par_, string evotype_){}
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     void setParsFromPheno(const TVector<double> &pheno);
     int getVectSize(){return 30;}
 

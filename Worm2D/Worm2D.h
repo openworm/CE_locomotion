@@ -262,6 +262,7 @@ virtual void makeNSOutputConn(){return;}
 
 
 
+
 };
 
 
@@ -297,7 +298,8 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
     bool W2Dmparscalled, W2Dminitcalled;
     //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
-
+    
+    
 };
 
 class Worm2D : virtual public Worm2Dm
@@ -347,7 +349,8 @@ class Worm2D : virtual public Worm2Dm
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
     void setMuscleInput(); //calls setMuscleInputVec()
     void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
-    
+
+    void setMuscBodExt();
     
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);

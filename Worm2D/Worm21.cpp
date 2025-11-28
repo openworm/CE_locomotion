@@ -223,7 +223,7 @@ void Worm21::addParsToJson(json & j)
 
 
 
-void Worm21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void Worm21::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 
    

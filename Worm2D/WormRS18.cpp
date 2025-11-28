@@ -583,6 +583,7 @@ void Worm18::preNStep()
 else
 {
     sr_ptr->updateAll(b);
+  
 
     zeroAllInputs();
     setExternalInput();
@@ -840,7 +841,7 @@ void Worm18::DumpParams(ofstream &ofs)
 }
 
 
-void Worm18::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void Worm18::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
     // --------------------------------
     // Parameters for the Ventral Nerve Cord Unit

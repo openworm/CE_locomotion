@@ -587,7 +587,7 @@ void WormAgent::moveAgent()
 }
 
 	
-void WormAgent::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void WormAgent::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 	const double BiasRange = 15.0;
 const double SensorWeightRange = 1500.0;

@@ -212,7 +212,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
     if (evotype_=="EvoCO" || evotype_=="EvoCO2") 
     return shared_ptr<const gradEvoPars>(new const gradEvoPars(cmd_));
     if (evotype_=="Evo21") 
-    return shared_ptr<const Evolparameters>(new const Evolparameters(cmd_, evol1_, evotype_));
+    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd_, evol1_, evotype_));
     if (evotype_=="Evo18") 
     return shared_ptr<const AgarPars>(new const AgarPars(cmd_));
     if (evotype_=="EvoCE" || evotype_=="EvoCENZ") 
@@ -483,20 +483,25 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     const double & Transient = evoPars1.Transient;
     const int & skip_steps = evoPars1.skip_steps;
 
-   
-    const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*(this->evopar_ptr));
+  
+    shared_ptr<const EvolparametersCER> EparsR = 
+    dynamic_pointer_cast<const EvolparametersCER>(this->evopar_ptr);
+
+    //const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*(this->evopar_ptr));
     //const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
 
 //    assert(0);
+  
+    if (EparsR == nullptr) assert(0);
 
-    const double OSCT =  EparsR.OSCTbase* Duration;
+    const double OSCT =  EparsR->OSCTbase* Duration;
 
     //const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
     //const double agarfreq = 0.44;
     //const double    AvgSpeed = 0.00022;
-    const double AvgSpeed = EparsR.AvgSpeed;    // Average speed of the worm in meters per seconds
+    const double AvgSpeed = EparsR->AvgSpeed;    // Average speed of the worm in meters per seconds
     const double BBCfit = AvgSpeed*Duration;
-    const double agarfreq = EparsR.agarfreq;
+    const double agarfreq = EparsR->agarfreq;
 
 
         // Fitness
@@ -530,7 +535,7 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         //w.setWormPars(&*wormpar_ptr);
         w.setWormPars(this->cmd);
         w.setParsFromGeno(genotype);
-    
+     
         //w.setEvolPars(EparsR,evoPars1.evoType);
 
         //TVector<double> phenotype(1, VectSize);
@@ -545,6 +550,8 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
 
         
         shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1);
+
+       if (w1 != nullptr) {
 
         //shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2)
         //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
@@ -569,33 +576,35 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         }
 
         else assert(0 && "direction not set properly");
-       
+
+
+        }
 
         //w.setWormPars(&w1);
      
-        //assert(0);
+      
 
         for (double t = 0.0; t <= Transient; t += StepSize){
             w.Step();
         }    
 
-        cout << "EparsR.dbunit " << EparsR.dbunit << endl;
-        cout << "EparsR.vbunit " << EparsR.vbunit << endl;
+        cout << "EparsR->dbunit " << EparsR->dbunit << endl;
+        cout << "EparsR->vbunit " << EparsR->vbunit << endl;
        
         //assert(0);
        
-        DBp = w.n.NeuronOutput(EparsR.dbunit);
-        VBp = w.n.NeuronOutput(EparsR.vbunit);
+        DBp = w.n.NeuronOutput(EparsR->dbunit);
+        VBp = w.n.NeuronOutput(EparsR->vbunit);
     
         w.Step(); // determine sign of derivative
     
 
-        dDB = w.n.NeuronOutput(EparsR.dbunit) - DBp;
-        dVB = w.n.NeuronOutput(EparsR.vbunit) - VBp;
+        dDB = w.n.NeuronOutput(EparsR->dbunit) - DBp;
+        dVB = w.n.NeuronOutput(EparsR->vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n.NeuronOutput(EparsR.dbunit);
-        VBp = w.n.NeuronOutput(EparsR.vbunit);
+        DBp = w.n.NeuronOutput(EparsR->dbunit);
+        VBp = w.n.NeuronOutput(EparsR->vbunit);
         
         double xt = w.CoMx(), xtp;
         double yt = w.CoMy(), ytp;
@@ -607,13 +616,13 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = w.n.NeuronOutput(EparsR.dbunit) - DBp;
-            dVB = w.n.NeuronOutput(EparsR.vbunit) - VBp;
+            dDB = w.n.NeuronOutput(EparsR->dbunit) - DBp;
+            dVB = w.n.NeuronOutput(EparsR->vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - w.n.NeuronOutput(EparsR.dbunit));
-            oscVB += abs(VBp - w.n.NeuronOutput(EparsR.vbunit));
+            oscDB += abs(DBp - w.n.NeuronOutput(EparsR->dbunit));
+            oscVB += abs(VBp - w.n.NeuronOutput(EparsR->vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -628,8 +637,8 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = w.n.NeuronOutput(EparsR.dbunit);
-            VBp = w.n.NeuronOutput(EparsR.vbunit);
+            DBp = w.n.NeuronOutput(EparsR->dbunit);
+            VBp = w.n.NeuronOutput(EparsR->vbunit);
             
             //// Locomotion
             // Current and past centroid position
@@ -643,15 +652,20 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             
             // Fitness
             bodyorientation = w.Orientation();                  // Orientation of the body position
-            movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
+            movementorientation = atan2(yt-ytp,xt-xtp);
+            
+            if (EparsR->doAngleDiff)
+            anglediff = angle_diff(movementorientation,bodyorientation);
+            else
+            // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
             if (direction == 1 || direction == 2){
-            if (EparsR.fitType == 0)
+            if (EparsR->fitType == 0)
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             else temp = cos(anglediff);
             }
             else{
-            if (EparsR.fitType == 0) 
+            if (EparsR->fitType == 0) 
             temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
             else temp = cos(anglediff)*-1;
             }
@@ -695,9 +709,15 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //const int & skip_steps = evoPars1.skip_steps;
 
 
-    const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*this->evopar_ptr);
-    const double AvgSpeed = EparsR.AvgSpeed;
+    shared_ptr<const AgarPars> EparsR = dynamic_pointer_cast<const AgarPars>(this->evopar_ptr);
+
+    if (EparsR == nullptr) assert(0);
+
+    const double AvgSpeed = EparsR->AvgSpeed;
     const double BBCfit = AvgSpeed*Duration;
+
+
+    
 
     //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
     //const double    BBCfit = AvgSpeed*Duration;
@@ -713,13 +733,16 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //TVector<double> phenotype(1, VectSize);
     //GenPhenMapping(v, phenotype);
 
-     
+ 
+
     T w;//(genotype, false);
     //w.setWormPars(argc,argv);
     
     w.setWormPars(this->cmd);
-    w.setParsFromGeno(genotype);
 
+    
+    w.setParsFromGeno(genotype);
+   
         //TVector<double> phenotype(1, VectSize);
         //GenPhenMapping(geno, phenotype);
         //setPfaFromPheno(phenotype);
@@ -731,6 +754,7 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     w.setStepSize(StepSize);
 
     
+
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
     {

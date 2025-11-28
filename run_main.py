@@ -684,6 +684,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["SRZeroGainsTypeEvo"] = 1
     evol_extra_parameters["doOrigMuscInput"] = True
     evol_extra_parameters["doOrigSRInput"] = True
+    evol_extra_parameters["doAngleDiff"] = False
 
     sim_extra_parameters = {}
     sim_extra_parameters["rotation"] = 0

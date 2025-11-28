@@ -707,7 +707,7 @@ void WormCE::setEvolPars(W2Dparameters & w2par_, string evotype_)
 }
 
 
-void WormCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
  
   shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1);

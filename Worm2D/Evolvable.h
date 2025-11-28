@@ -40,7 +40,7 @@ class EvolvableS
 {
   public:
   
-  virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) = 0;
+  virtual void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) = 0;
   virtual int getVectSize() = 0;
   virtual void setParsFromPheno(const TVector<double> &pheno) = 0;
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
@@ -49,8 +49,8 @@ class EvolvableS
   virtual ~EvolvableS(){}
   
   void setParsFromFile(const string & genofilename_);
-  void setParsFromGeno(TVector<double> &geno);
-  
+  void setParsFromGeno(const TVector<double> &geno);
+  void setParsFromPhenGen(const TVector<double> &phengen, const bool & isPheno);
 
 };
 
@@ -175,17 +175,20 @@ void setPars(shared_ptr<const CmdArgs> cmd);
 int doReverse = 0;
 int fitType = 0;
 int zeroGainsType = 1;
+int doAngleDiff = 0;
 
 void setParsFromJson(json & j){
   doReverse =  j["doReverse"]["value"];
   fitType = j["fitType"]["value"];
   zeroGainsType = j["zeroGainsType"]["value"];
+  doAngleDiff = j["doAngleDiff"]["value"];
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
   j["doReverse"]["value"] = doReverse;
   j["fitType"]["value"] = fitType;
   j["zeroGainsType"]["value"] = zeroGainsType;
+   j["doAngleDiff"]["value"] = doAngleDiff;
   AgarPars::addParsToJson(j);
 }
 
@@ -228,7 +231,11 @@ void addParsToJson(json & j) const {
 }
 
 };
- 
+
+ ///////////////////////
+/////////////////////
+/////////////////// worm parameters
+///////////////////////
 
 
 class gradParameters : public W2Dbaseparameters

@@ -4,7 +4,6 @@ from run_main import run
 from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("./neuromlLocal")
 
-
 doOrig = True
 doNML = True
 doMuscles = False
@@ -16,16 +15,11 @@ args = dict(
     outputFolderName="experiments/demoRun_1_out",
     reRand=True,
     overwrite=True,
-    # doTestRun=True,
-    # doOrigMuscInput=True,
-    # randomInitialState = False
     randInitState=False,
-    prioritizeCmd=True,
-)
+    prioritizeCmd=True,)
 
 if doOrig:
     run(**args)
-
 
 if doNML:
     try:

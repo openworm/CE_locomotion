@@ -156,7 +156,7 @@ void AgarPars::setPars(shared_ptr<const CmdArgs> cmd)
 
 AgarPars::AgarPars(int argc, const char* argv[])
 {
-
+     assert(0 && "This is depreciated.");
     OSCTbase = getParameterDouble(argc,argv,"--OSCTbase","0.25");
     agarfreq = getParameterDouble(argc,argv,"--agarfreq","0.44");
     AvgSpeed = getParameterDouble(argc,argv,"--AvgSpeed","0.00022");
@@ -181,6 +181,7 @@ EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
     doReverse = cmd->getArgValInt("--doReverse",doReverse);
     fitType = cmd->getArgValInt("--fitType",fitType);
     zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
+    doAngleDiff= cmd->getArgValInt("--doAngleDiff",doAngleDiff);
 }
 
 void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
@@ -191,6 +192,7 @@ void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
     doReverse = cmd->getArgValInt("--doReverse",doReverse);
     fitType = cmd->getArgValInt("--fitType",fitType);
     zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
+    doAngleDiff= cmd->getArgValInt("--doAngleDiff",doAngleDiff);
 
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }
@@ -223,8 +225,16 @@ void EvolvableS::setParsFromFile(const string & genofilename_)
     setParsFromGeno(bestVector);
 }
 
+void EvolvableS::setParsFromPhenGen(const TVector<double> &phengen, const bool & isPheno)
+{
 
-void EvolvableS::setParsFromGeno(TVector<double> &geno)
+     if (isPheno) setParsFromPheno(phengen);
+    else setParsFromGeno(phengen);
+
+}
+
+
+void EvolvableS::setParsFromGeno(const TVector<double> &geno)
 {
     
     //cout << v << endl;

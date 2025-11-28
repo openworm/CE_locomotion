@@ -95,22 +95,28 @@ void DataWriter::dataReset(){closeAll();
 
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(new W2Dbaseparameters()),
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(make_shared<W2Dbaseparameters>()),
 muscForWDconst(false){}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(new W2Dbaseparameters()),
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(make_shared<W2Dbaseparameters>()),
 muscForWDconst(mfwc){}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
     shared_ptr<W2Dbaseparameters> w2dpar_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(w2dpar_),
-muscForWDconst(mfwc){}
+muscForWDconst(mfwc)
+{
+ if (W2Dbaseparameters1 == nullptr) assert(0);
+}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
     shared_ptr<W2Dbaseparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
     W2Dbaseparameters1(w2dpar_),//W2Dbaseparameters1(new W2Dbaseparameters()),
-muscForWDconst(false){}
+muscForWDconst(false){
+    if (W2Dbaseparameters1 == nullptr) assert(0);
+    
+}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){}
@@ -794,6 +800,7 @@ void Worm2D::Step1()
 
   zeroAllInputs();
   setExternalInput();
+
   //setExternalInputOrig();
 
   n_ptr->EulerStep(settedStepSize);
@@ -806,7 +813,11 @@ void Worm2D::Step1()
 }
 
 
-
+void Worm2D::setMuscBodExt(){ 
+        setUpMuscleConn();
+        setUpBodyConn();
+        makeExternalInputConn();
+}
 
 void Worm2D::setMuscleInputVec()
 {

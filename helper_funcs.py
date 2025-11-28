@@ -241,8 +241,8 @@ def plot_orients(body_data):
     # bearing = bearing - (bearing>np.pi)*np.pi*2 + (bearing<np.pi*-1)*np.pi*2
 
     mark_size = 1
-    ax_orient[0, 0].plot(trange, orientation)
-    ax_orient[1, 0].plot(trange, distToOrigin)
+    ax_orient[0, 0].plot(trange, orientation) #body orientation
+    ax_orient[1, 0].plot(trange, distToOrigin) 
     ax_orient[2, 0].plot(trange, dir_to_origin)
     ax_orient[3, 0].plot(trange[:-1], dOrientation)
     ax_orient[4, 0].plot(trange[1:-1], trajectory_diff_u)
@@ -280,12 +280,14 @@ def plot_orients(body_data):
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
     # fig_orient.close()
 
-
 def angle_diff(a, b):
     """Return the signed smallest difference between two angles (in radians)."""
-    d = a - b
-    # Wrap to [-pi, pi)
-    return (d + math.pi) % (2 * math.pi) - math.pi
+    d = (a - b + math.pi) % (2 * math.pi) - math.pi
+    # Optional: map -pi to +pi for symmetry
+    if d == -math.pi:
+        return math.pi
+    return d
+
 
 
 def plotHist(ax, x, y):
