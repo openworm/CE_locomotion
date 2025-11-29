@@ -63,6 +63,9 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
     pars1->setParsFromJson(j["Worm"]);
 
     setUpMuscleConn(j);
+    setUpBodyConn(j);
+    makeExternalInputConnFromJson(j);
+    
 }
 
 

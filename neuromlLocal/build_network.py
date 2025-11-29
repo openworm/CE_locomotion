@@ -568,6 +568,13 @@ def run(a=None, **kwargs):
     add_PG = True
     if (default_dict is not None) and ("add_PG" in default_dict):
         add_PG = default_dict["add_PG"]
+    add_ES = True
+    if (default_dict is not None) and ("add_ES" in default_dict):
+        add_ES = default_dict["add_ES"]
+    add_MH = True
+    if (default_dict is not None) and ("add_MH" in default_dict):
+        add_MH = default_dict["add_MH"]
+
     if add_PG:
         # pop_stim_ind = 0
         # pop0 = net.populations[pop_stim_ind]
@@ -596,7 +603,7 @@ def run(a=None, **kwargs):
 
             input_list.input_ws.append(input_w)
 
-    if add_PG:
+    if add_ES:
         pg_ext = PulseGenerator(
             id="extStim",
             delay="0s",
@@ -652,7 +659,8 @@ def run(a=None, **kwargs):
     if not output_folder_name == this_file_dir:
         shutil.copyfile(nml_file, output_folder_name + "/Worm2D.net.nml")
 
-    if add_PG:
+    if add_MH:
+        
         handler = MatrixHandler(
             level=1,
             nl_network=None,
