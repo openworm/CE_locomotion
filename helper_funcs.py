@@ -284,8 +284,8 @@ def angle_diff(a, b):
     """Return the signed smallest difference between two angles (in radians)."""
     d = (a - b + math.pi) % (2 * math.pi) - math.pi
     # Optional: map -pi to +pi for symmetry
-    if d == -math.pi:
-        return math.pi
+    #if d == -math.pi:
+    #    return math.pi
     return d
 
 
