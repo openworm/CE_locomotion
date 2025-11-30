@@ -18,14 +18,17 @@ void Worm2D21m::setPhenoNames()
 }
 
 
-Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0 , true, make_shared<W2DCEparsA>()),
+Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), make_shared<W2DCEparsA>(), 0),
 W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1))
 {
 
-    cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
-    if (muscForWDconst) {m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    cout << "muscForWDconst set"<< muscForWDconst << endl;
-    }
+    cout << "1 Worm2D21m const "<< endl;    
+    //if (muscForWDconst) 
+    //{
+     //   m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
+    
+        //cout << "muscForWDconst set"<< muscForWDconst << endl;
+    //}
 
 // Interneuron inputs (AVB)
 wAVB_DB = 1;

@@ -660,7 +660,6 @@ def run(a=None, **kwargs):
         shutil.copyfile(nml_file, output_folder_name + "/Worm2D.net.nml")
 
     if add_MH:
-        
         handler = MatrixHandler(
             level=1,
             nl_network=None,

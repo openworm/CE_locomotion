@@ -286,6 +286,17 @@ void setParsFromPheno(const TVector<double> &v);
 };
 
 
+class Worm2DoscNMLm : public Worm2Dm
+{
+
+    public:
+    Worm2DoscNMLm(int size);
+    Worm2DoscNMLm(const string & jsonfile);
+    protected:
+    const string getModelName() {return "Worm2DoscNMLm";}
+};
+
+
 class Worm2DoscNML : public Worm2DPars, public Worm2Dosc1
 {
 
@@ -297,6 +308,8 @@ class Worm2DoscNML : public Worm2DPars, public Worm2Dosc1
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
     const string getModelName() {return "Worm2DoscNML";}
 };
+
+
 
 
 class Worm2DoscHalf : public Worm2Dosc

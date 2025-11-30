@@ -219,11 +219,14 @@ void zeroAllInputs(){
 }
 
 protected:
-Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+//Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters>);
-Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
-    shared_ptr<W2Dbaseparameters> w2dpar_);
+
+//Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
+//    shared_ptr<W2Dbaseparameters> w2dpar_);
+
 void writeData();
 virtual void setPhenoNames() {return;}
 
@@ -241,7 +244,7 @@ vector<int> phenoNamesNums;
 void addPhenoName(string name, int k);
 
 double t; // Time
-const bool muscForWDconst;
+
 
 double settedStepSize;
 
@@ -288,15 +291,20 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     void writeData();
 
     protected:
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
-    bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+    //bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_);
+
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    //muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    shared_ptr<W2Dbaseparameters> w2dpar_, bool);
 
-   
+    //const bool muscForWDconst;
     void setBodyInput(); //takes muscle outputs to drive body segments
     virtual vector<toFromWeight> makeBodyConn();
     virtual vector<toFromWeight> makeVentralBodyConn(); //from muscles to body
