@@ -24,7 +24,8 @@ W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1))
 
     cout << "1 Worm2D21m const "<< muscForWDconst << endl;    
     if (muscForWDconst) {m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    cout << "muscForWDconst set"<< muscForWDconst << endl;}
+    cout << "muscForWDconst set"<< muscForWDconst << endl;
+    }
 
 // Interneuron inputs (AVB)
 wAVB_DB = 1;
@@ -237,8 +238,12 @@ void Worm2D21m::Step1()
     // Update Muscle activation
     //m.EulerStep(StepSize);
     
+    setBodyInput();
+
     // Set input to Body
     //  First two segments receive special treatment because they are only affected by a single muscle
+
+    if (false){
     b.SetDorsalSegmentActivation(1, m_ptr->DorsalMuscleOutput(1)/2);
     b.SetVentralSegmentActivation(1, m_ptr->VentralMuscleOutput(1)/2);
     b.SetDorsalSegmentActivation(2, m_ptr->DorsalMuscleOutput(1)/2);
@@ -258,6 +263,7 @@ void Worm2D21m::Step1()
     b.SetDorsalSegmentActivation(N_segments, m_ptr->DorsalMuscleOutput(par1.N_muscles)/2);
     b.SetVentralSegmentActivation(N_segments, m_ptr->VentralMuscleOutput(par1.N_muscles)/2);
     
+}
     // Time
     //t += StepSize;
 }

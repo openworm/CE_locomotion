@@ -119,24 +119,24 @@ muscForWDconst(false){
 }
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){}
+Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_):
-Worm2Dbase(par1_,n_ptr_,new Muscles(), w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){} 
+Worm2Dbase(par1_,n_ptr_,new Muscles(), w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();} 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){}
+Worm2Dbase(par1_,n_ptr_,m_ptr_),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();}
 
 //Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
 //Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
 //W2Dmparscalled(false),W2Dminitcalled(false){} 
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){}
+Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();}
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
     bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_):
-Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){}
+Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();}
 
 
 
@@ -793,6 +793,24 @@ void Worm2D::setMuscleInputDors()
 } */
 
 
+
+void Worm2Dm::Step1()
+{
+  
+  b.StepBody(settedStepSize);
+
+  zeroAllInputs();
+  setExternalInput();
+
+  //setExternalInputOrig();
+
+  n_ptr->EulerStep(settedStepSize);
+  
+  
+  setBodyInput();
+  
+}
+
 void Worm2D::Step1()
 {
   
@@ -848,7 +866,7 @@ void Worm2D::setMuscleInputVec()
     //m.EulerStep(settedStepSize);
 }
 
-void Worm2D::setBodyInput()
+void Worm2Dm::setBodyInput()
 {
 
     {
@@ -856,7 +874,7 @@ void Worm2D::setBodyInput()
     for (int i=0;i<vBodyConnvec.size();i++)
     {
         const toFromWeight & tfw = vBodyConnvec[i];
-        vtot[tfw.to-1] += tfw.w.weight*m.VentralMuscleOutput(tfw.w.from);
+        vtot[tfw.to-1] += tfw.w.weight*m_ptr->VentralMuscleOutput(tfw.w.from);
     }
     for (int i=0;i<vtot.size();i++) b.SetVentralSegmentActivation(i+1, vtot[i]);
     }
@@ -866,7 +884,7 @@ void Worm2D::setBodyInput()
     for (int i=0;i<dBodyConnvec.size();i++)
     {
         const toFromWeight & tfw = dBodyConnvec[i];
-        vtot[tfw.to-1] += tfw.w.weight*m.DorsalMuscleOutput(tfw.w.from);
+        vtot[tfw.to-1] += tfw.w.weight*m_ptr->DorsalMuscleOutput(tfw.w.from);
     }
     for (int i=0;i<vtot.size();i++) b.SetDorsalSegmentActivation(i+1, vtot[i]);
     }
@@ -957,7 +975,7 @@ dMuscConnvec1.swap(dMuscConnvec);
 
 }
 
-void Worm2D::setUpBodyConn()
+void Worm2Dm::setUpBodyConn()
 {
 
 vector<toFromWeight> vBodyConnvec1 = makeVentralBodyConn();
@@ -967,7 +985,7 @@ dBodyConnvec1.swap(dBodyConnvec);
 
 }
 
-void Worm2D::setUpBodyConn(json & j)
+void Worm2Dm::setUpBodyConn(json & j)
 {
     
 vector<toFromWeight> vBodyConnvec1 = j["Ventral body"]["weights"]["value"].template get< vector<toFromWeight> >();
@@ -1016,21 +1034,21 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 }
 
 
-vector<toFromWeight> Worm2D::makeDorsalBodyConn()
+vector<toFromWeight> Worm2Dm::makeDorsalBodyConn()
 {
 
     return makeBodyConn();
 
 }
 
-vector<toFromWeight> Worm2D::makeVentralBodyConn()
+vector<toFromWeight> Worm2Dm::makeVentralBodyConn()
 {
 
     return makeBodyConn();
 
 }
 
-vector<toFromWeight> Worm2D::makeBodyConn()
+vector<toFromWeight> Worm2Dm::makeBodyConn()
 {
 vector<toFromWeight> vec1;
 

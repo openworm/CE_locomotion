@@ -263,6 +263,7 @@ virtual void makeNSOutputConn(){return;}
 
 
 
+
 };
 
 
@@ -284,7 +285,8 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     virtual void addParsToJson(json & j);
     virtual ~Worm2Dm(){}
 
-     void writeData();
+    void writeData();
+
     protected:
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
@@ -295,11 +297,19 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
 
    
+    void setBodyInput(); //takes muscle outputs to drive body segments
+    virtual vector<toFromWeight> makeBodyConn();
+    virtual vector<toFromWeight> makeVentralBodyConn(); //from muscles to body
+    virtual vector<toFromWeight> makeDorsalBodyConn();
+    void setUpBodyConn();
+    void setUpBodyConn(json & j);
 
     bool W2Dmparscalled, W2Dminitcalled;
     //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+     vector<toFromWeight> vBodyConnvec, dBodyConnvec;
     
-    
+     void Step1();
+
 };
 
 class Worm2D : virtual public Worm2Dm
@@ -337,15 +347,6 @@ class Worm2D : virtual public Worm2Dm
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
 
 
-    virtual vector<toFromWeight> makeBodyConn();
-    virtual vector<toFromWeight> makeVentralBodyConn(); //from muscles to body
-    virtual vector<toFromWeight> makeDorsalBodyConn();
-    void setUpBodyConn();
-    void setUpBodyConn(json & j);
-
-    
-    void setBodyInput(); //takes muscle outputs to drive body segments
-    
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
     void setMuscleInput(); //calls setMuscleInputVec()
     void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
@@ -362,7 +363,8 @@ class Worm2D : virtual public Worm2Dm
     Muscles & m;
     
     //NSToMuscles vMuscConn, dMuscConn;
-    vector<toFromWeight> vMuscConnvec, dMuscConnvec, vBodyConnvec, dBodyConnvec;
+    vector<toFromWeight> vMuscConnvec, dMuscConnvec;
+   
     
         
 };
