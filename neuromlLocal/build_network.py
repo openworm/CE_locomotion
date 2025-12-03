@@ -301,7 +301,7 @@ def run(a=None, **kwargs):
         utils.makeCellXml(network_json_data, cells_filepath)
 
     if doMuscles:
-        muscX_filename = "musc_X_cells.xml"
+        muscX_filename = "musc_W2D_cells.xml"
         muscX_filepath = this_file_dir + "/" + muscX_filename
         utils.makeMuscCellXml(
             network_json_data, muscX_filepath, vNMJ_cellnames + dNMJ_cellnames
@@ -316,7 +316,7 @@ def run(a=None, **kwargs):
         )
         if doMuscles:
             shutil.copyfile(
-                this_file_dir + "/musc_X.xml", output_folder_name + "/musc_X.xml"
+                this_file_dir + "/musc_W2D.xml", output_folder_name + "/musc_W2D.xml"
             )
         shutil.copyfile(cells_filepath, output_folder_name + "/" + cells_filename)
         if doMuscles:

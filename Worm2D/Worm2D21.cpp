@@ -19,7 +19,7 @@ void Worm2D21m::setPhenoNames()
 
 
 Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), make_shared<W2DCEparsA>(), 0),
-W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1))
+W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1b))
 {
 
     cout << "1 Worm2D21m const "<< endl;    

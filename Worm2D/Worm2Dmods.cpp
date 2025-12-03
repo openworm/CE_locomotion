@@ -39,14 +39,15 @@ void CoupledOsc::EulerStep(double stepsize)
 
 //shared_ptr<W2Dparameters> w2par_ptr(new Worm2Doscpars1());
 
-Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2par_ptr):
+/* Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2par_ptr):
 Worm2Dm(par1_,n_ptr_,w2par_ptr)//,pars1_ptr(w2par_ptr)
-,Worm2D(par1_,0){}
+,Worm2D(par1_,0){} */
 
 
 Worm2DoscNML::Worm2DoscNML(int size_):
-Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(),shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>())),
-Worm2DPars({size_,24,0.1,1,size_}, 0, nullptr),
+Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(),
+shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>())),
+Worm2D({size_,24,0.1,1,size_}, nullptr),
 Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1)){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
@@ -55,17 +56,34 @@ Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 
 
     pars1->setParsFromJson(j["Worm"]);
-
-    setUpMuscleConn(j);
-    setUpBodyConn(j);
-    makeExternalInputConnFromJson(j);
+    setMuscBodExt(j); 
+    //setUpMuscleConn(j);
+    //setUpBodyConn(j);
+    //makeExternalInputConnFromJson(j);
     
 }
 
 
+Worm2DoscNMLm::Worm2DoscNMLm(int size_):
+Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),
+shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+
+Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_):Worm2DoscNMLm(48)
+{
+    json j = getJsonFromFile(jsonfile_);
+
+
+    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    setBodExt(j); 
+    //setUpMuscleConn(j);
+    //setUpBodyConn(j);
+    //makeExternalInputConnFromJson(j);
+    
+}
+
 
 Worm2Dosc21NML::Worm2Dosc21NML():
-Worm2DPars({2,24,0.1,7,14}, 0, nullptr),
+Worm2D({2,24,0.1,7,14}, nullptr),
 Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
 Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
@@ -86,10 +104,11 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
     //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
 
     pars1->setParsFromJson(j["Worm"]);
+    setMuscBodExt(j);
 
-    setUpMuscleConn(j);
-    setUpBodyConn(j);
-    makeExternalInputConnFromJson(j);
+    //setUpMuscleConn(j);
+    //setUpBodyConn(j);
+    //makeExternalInputConnFromJson(j);
 
     
 }
@@ -98,7 +117,7 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
 //Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
 Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2par_ptr):
-Worm2DPars(par1_, 0, w2par_ptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),
+Worm2D(par1_, nullptr), Worm2Dm(par1_, new NSosc(par1_.N_size), w2par_ptr),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
@@ -432,7 +451,7 @@ vector<toFromWeight> Worm2Dosc1::makeVentralMuscleConn()
     return makeDVMuscleConn(24);
 }
 
-void Worm2DPars::Step1_old()
+/* void Worm2DPars::Step1_old()
 {
 
    
@@ -468,7 +487,7 @@ void Worm2DPars::Step1_old()
     
    
 }
-
+ */
 
 
 //NSosc::NSosc(const pfa & pfa_):pfa1(pfa_){}
@@ -569,7 +588,7 @@ return makeMuscleConn(ventralNeurons, ventralNMJ);
 
 void Worm2DoscBase::addParsToJson(json & j)
 {
-    Worm2DPars::addParsToJson(j);
+    Worm2D::addParsToJson(j);
     //n.pfa1.addParsToJson(j["Nervous system"]);
     n.addParsToJson(j["Nervous system"]);
 }

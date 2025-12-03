@@ -77,36 +77,54 @@ void addParsToJson(json & j) const {
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
 };
 
-class W2Dbaseparameters : virtual public W2Dparameters
+class W2DbaseparametersNML : virtual public W2Dparameters
+{
+
+public:
+W2DbaseparametersNML(){}
+//W2DbaseparametersNML(int argc, const char* argv[]);
+//W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
+bool randomInitialState = 0;
+
+
+void setParsFromJson(json & j){
+  randomInitialState = j["randomInitialState"]["value"];
+}
+
+void addParsToJson(json & j) const {
+  j["randomInitialState"]["value"] = randomInitialState;
+}
+
+void setPars(shared_ptr<const CmdArgs> cmd);
+
+};
+
+class W2Dbaseparameters : public W2DbaseparametersNML
 {
 
 public:
 W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
 //W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
-bool randomInitialState = 0;
+
 bool doOrigSRInput = 1;
 bool doOrigMuscInput = 1;
 
 void setParsFromJson(json & j){
-  randomInitialState = j["randomInitialState"]["value"];
   doOrigMuscInput = j["doOrigMuscInput"]["value"];
   doOrigSRInput = j["doOrigSRInput"]["value"];
+  W2DbaseparametersNML::setParsFromJson(j);
 }
 
 void addParsToJson(json & j) const {
-  j["randomInitialState"]["value"] = randomInitialState;
   j["doOrigMuscInput"]["value"] = doOrigMuscInput;
   j["doOrigSRInput"]["value"] = doOrigSRInput;
+  W2DbaseparametersNML::addParsToJson(j);
 }
 
 void setPars(shared_ptr<const CmdArgs> cmd);
 
-
-
 };
-
-
 
 class AgarPars : virtual public W2Dparameters
 {

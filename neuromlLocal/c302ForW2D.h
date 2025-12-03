@@ -7,6 +7,8 @@
 #include <string>
 #include <memory>
 
+
+
 class c302ForW2D : virtual public NSForW2D
 {
 

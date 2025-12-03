@@ -24,7 +24,7 @@ public:
 	
 	WormAgent(int newsize):
 	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), 0, make_shared<gradParameters>()),
-	gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
+	gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b)),size(newsize)
 	{InitialiseCircuit();}
 	WormAgent(TVector<double> & v, int newsize):WormAgent(newsize){SetParameters(v);}
 	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}

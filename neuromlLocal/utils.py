@@ -575,7 +575,7 @@ def makeMuscCellXml(network_json_data, cellX_filename, cell_names):
     cellX_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
         output_string = (
-            '<muscX id="'
+            '<muscW2D id="'
             + str(pop_cell_name)
             + '" state0="'
             + str(pop_states[ind])

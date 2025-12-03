@@ -16,7 +16,8 @@ args = dict(
     reRand=True,
     overwrite=True,
     randInitState=False,
-    prioritizeCmd=True,)
+    prioritizeCmd=True,
+)
 
 if doOrig:
     run(**args)

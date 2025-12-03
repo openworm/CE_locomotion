@@ -8,7 +8,7 @@ c302ForW2D::c302ForW2D(const std::string & simFileName):
 inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states"), get_output_func("get_outpus"),
-simulation(new SignalSimulatorForWorm2D(simFileName,defaultSimClassName,0.005))
+simulation(std::make_shared<SignalSimulatorForWorm2D>(simFileName,defaultSimClassName,0.005))
 {SetPopStructure("DA DB DD VD VA VB", 10);}
 
 //c302NervousSystem::c302NervousSystem():
@@ -18,14 +18,14 @@ c302ForW2D::c302ForW2D():
 inc_neuron_input_func("inc_neuron_input_j"),
 set_neuron_input_func("set_neuron_input_j"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states_j"), get_output_func("get_outputs_j"),
-simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlLocal",0.005))
+simulation(std::make_shared<SignalSimulatorForWorm2D>("main_sim",defaultSimClassName,"neuromlLocal",0.005))
 {SetPopStructure(); std::cout << "c302ForW2D" << std::endl;}
 
 c302ForW2D::c302ForW2D(const std::string & popStruct, const int & popSize):
 inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states"), get_output_func("get_outputs"),
-simulation(new SignalSimulatorForWorm2D("main_sim",defaultSimClassName,"neuromlLocal",0.005))
+simulation(std::make_shared<SignalSimulatorForWorm2D>("main_sim",defaultSimClassName,"neuromlLocal",0.005))
 {SetPopStructure(popStruct, popSize);}
 
 c302ForW2D::c302ForW2D(const std::string & simFileName, 
@@ -33,7 +33,7 @@ const std::string & simDirName):v_newstep(new bool(true)), d_newstep(new bool(tr
 inc_neuron_input_func("inc_neuron_input"),
 set_neuron_input_func("set_neuron_input"), 
 get_states_func("get_states"), get_output_func("get_outputs"),
-simulation(new SignalSimulatorForWorm2D(simFileName,
+simulation(std::make_shared<SignalSimulatorForWorm2D>(simFileName,
 defaultSimClassName,simDirName,0.005)){SetPopStructure("DA DB DD VD VA VB", 10);}
 
 void c302ForW2D::SetPopStructure()
@@ -93,16 +93,19 @@ c302muscForW2D::c302muscForW2D(c302ForW2D & c_):simulation(c_.simulation),v_news
 d_newstep(c_.d_newstep),
 get_d_output_func("get_dorsal_musc_states"),get_v_output_func("get_ventral_musc_states")
 {
-
     std::cout << "c302muscForW2D" << std::endl;
 }
 
 double c302muscForW2D::DorsalMuscleOutput(int muscle){
 
+   
 if (*d_newstep){
     d_output_value =  simulation->vecValFunc(get_d_output_func);
+    std::cout << d_output_value[muscle-1] << std::endl;
+    //assert(0);
     *d_newstep = false;
-    }
+}
+   
 return d_output_value[muscle-1];
 }
 

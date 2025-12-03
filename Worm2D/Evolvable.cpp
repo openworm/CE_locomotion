@@ -12,11 +12,17 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 
 
 
+void W2DbaseparametersNML::setPars(shared_ptr<const CmdArgs> cmd)
+{
+    randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+
+}
+
 void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
     doOrigSRInput = cmd->getArgValInt("--doOrigSRInput", doOrigSRInput);
     doOrigMuscInput = cmd->getArgValInt("--doOrigMuscInput", doOrigMuscInput);
-    randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+    W2DbaseparametersNML::setPars(cmd);
 
 }
 

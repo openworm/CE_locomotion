@@ -84,8 +84,14 @@ class Worm2Doscpars1 : public W2Dbaseparameters
 {
 public:
 double NMJweight = 1;
-void setParsFromJson(json & j){NMJweight = j["NMJWeight"]["value"];}
-void addParsToJson(json & j) const {j["NMJWeight"]["value"] = NMJweight;}
+void setParsFromJson(json & j){
+    NMJweight = j["NMJWeight"]["value"];
+    W2Dbaseparameters::setParsFromJson(j);
+}
+void addParsToJson(json & j) const {
+    j["NMJWeight"]["value"] = NMJweight;
+    W2Dbaseparameters::addParsToJson(j);
+}
 void setPars(shared_ptr<const CmdArgs> cmd){
     NMJweight = cmd->getArgValDoub("--NMJweight", NMJweight);
     W2Dbaseparameters::setPars(cmd);
@@ -142,7 +148,7 @@ void setPars(shared_ptr<const CmdArgs> cmd)
 ////////////////////////////////////////
 
 
-class Worm2DPars : public Worm2D
+/* class Worm2DPars : public Worm2D
 {
 public:
 
@@ -168,9 +174,9 @@ vector<doubIntParamsHead> getWormParams() {
     return parvec;
 }
 };
+ */
 
-
-class Worm2DoscBase : public Worm2DPars, public EvolvableS
+class Worm2DoscBase : public Worm2D, public EvolvableS
 {
 public:
 //void InitializeState(RandomState &rs);
@@ -297,7 +303,7 @@ class Worm2DoscNMLm : public Worm2Dm
 };
 
 
-class Worm2DoscNML : public Worm2DPars, public Worm2Dosc1
+class Worm2DoscNML : public Worm2D, public Worm2Dosc1
 {
 
     public:
@@ -358,7 +364,7 @@ const int N_neuronsperunit;
 };
 
 
-class Worm2Dosc21NML: public Worm2DPars, public Worm2Dosc21base
+class Worm2Dosc21NML: public Worm2D, public Worm2Dosc21base
 {
     public:
     Worm2Dosc21NML();

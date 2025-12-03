@@ -1167,7 +1167,7 @@ double EvolutionFullWC<T>::EvaluationCO(TVector<double> &genotype, RandomState &
     //w.initForSimulation(rs);
     
     
-    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1);
+    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
 
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);
@@ -1292,7 +1292,7 @@ double EvolutionFullWC<T>::EvaluationCO2(TVector<double> &genotype, RandomState 
     //w.initForSimulation(rs);
     
     
-    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1);
+    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
 
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);

@@ -84,8 +84,8 @@ def run(a=None, **kwargs):
         ls.include_lems_file("cell_syn_W2D_cells.xml")
     doMuscles = a.doMuscles
     if doMuscles:
-        ls.include_lems_file("musc_X.xml")
-        ls.include_lems_file("musc_X_cells.xml")
+        ls.include_lems_file("musc_W2D.xml")
+        ls.include_lems_file("musc_W2D_cells.xml")
     ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
 
     disp0 = "display0"

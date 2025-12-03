@@ -209,9 +209,10 @@ void incSimTimes();
 //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
-{W2Dbaseparameters1->setPars(cmd);}
+{W2Dbaseparameters1b->setPars(cmd);}
 
-shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+//shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+shared_ptr<W2Dparameters> W2Dbaseparameters1b;
 
 void zeroAllInputs(){
     for (int i=0;i<par1.N_size;i++)
@@ -222,7 +223,7 @@ protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters>);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dparameters>);
 
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
 //    shared_ptr<W2Dbaseparameters> w2dpar_);
@@ -230,8 +231,14 @@ Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_p
 void writeData();
 virtual void setPhenoNames() {return;}
 
-virtual vector<doubIntParamsHead> getWormParams() {assert(0);}
-virtual void Step1() = 0;
+virtual vector<doubIntParamsHead> getWormParams() {
+    vector<doubIntParamsHead> parvec;
+    doubIntParamsHead var1;
+    parvec.push_back(var1);
+    return parvec;}
+
+
+    virtual void Step1() = 0;
 NSForW2D * const n_ptr = nullptr;
 muscForW2D * m_ptr = nullptr;
     
@@ -277,7 +284,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
     //virtual void Step(double StepSize, double output) = 0;
 
-    virtual void InitializeState(RandomState &rs) = 0;
+    virtual void InitializeState(RandomState &rs);
     //virtual vector<doubIntParamsHead> getWormParams() = 0;
     
     //virtual void initForSimulation() =  0;
@@ -298,11 +305,12 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
+        shared_ptr<W2Dparameters> w2dpar_);
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
     //muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
-    shared_ptr<W2Dbaseparameters> w2dpar_, bool);
+    shared_ptr<W2Dparameters> w2dpar_, bool);
 
     //const bool muscForWDconst;
     void setBodyInput(); //takes muscle outputs to drive body segments
@@ -311,6 +319,8 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     virtual vector<toFromWeight> makeDorsalBodyConn();
     void setUpBodyConn();
     void setUpBodyConn(json & j);
+    void setBodExt(json & j);
+    void setBodExt();
 
     bool W2Dmparscalled, W2Dminitcalled;
     //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
@@ -360,7 +370,8 @@ class Worm2D : virtual public Worm2Dm
     void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
 
     void setMuscBodExt();
-    
+    void setMuscBodExt(json & j);
+
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
@@ -372,8 +383,8 @@ class Worm2D : virtual public Worm2Dm
     
     //NSToMuscles vMuscConn, dMuscConn;
     vector<toFromWeight> vMuscConnvec, dMuscConnvec;
-   
-    
+        
+    shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
         
 };
 
