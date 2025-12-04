@@ -25,9 +25,14 @@ def run(a=None, **kwargs):
         print("worm_data.json folder is required for nml generation")
         sys.exit()
 
-    json_file = a.folder + "/worm_data.json"
+    json_file = a.folder + "/worm_data_evo.json"
     if not os.path.isfile(json_file):
-        json_file = a.folder + "/worm_data_evo.json"
+        json_file = a.folder + "/worm_data.json"
+    if not os.path.isfile(json_file):
+        json_file = a.folder + "/worm_data_worm.json"
+
+    print(json_file)
+    
 
     if hasattr(a, "output_folder"):
         output_folder = getattr(a, "output_folder")

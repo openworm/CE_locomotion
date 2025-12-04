@@ -207,7 +207,7 @@ def run(a=None, **kwargs):
         dNMJ_pop_cell_names = utils.getPopNamesCell(dNMJ_cellnames)
         vNMJ_popSizes = utils.getPopSizes(vNMJ_cellnames, vNMJ_pop_cell_names)
         dNMJ_popSizes = utils.getPopSizes(dNMJ_cellnames, dNMJ_pop_cell_names)
-
+       
     drop_self_connections = False
     if drop_self_connections and (chemical_weights is not None):
         chemical_weights = utils.dropSelfConnections(chemical_weights)
@@ -343,7 +343,11 @@ def run(a=None, **kwargs):
     add_continuousProjections = False
     if chemical_weights is not None:
         add_continuousProjections = True
-
+    if vNMJ_weights is not None:
+        add_continuousProjections = True
+    if dNMJ_weights is not None:
+        add_continuousProjections = True
+        
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
 
@@ -485,7 +489,7 @@ def run(a=None, **kwargs):
                         conn_indices=conn_indices,
                         projNames=projNames,
                     )
-
+                #exit()
             addMuscles(dNMJ_pop_cell_names, dNMJ_popSizes, dNMJ_weights, dNMJ_cellnames)
             addMuscles(vNMJ_pop_cell_names, vNMJ_popSizes, vNMJ_weights, vNMJ_cellnames)
 

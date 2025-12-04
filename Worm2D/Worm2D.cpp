@@ -840,6 +840,7 @@ void Worm2D::Step1()
   setBodyInput();
   
 }
+
 void Worm2Dm::setBodExt(json & j)
 {
         setUpBodyConn(j);
