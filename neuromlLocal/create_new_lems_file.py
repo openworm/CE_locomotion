@@ -77,7 +77,8 @@ def run(a=None, **kwargs):
     if default_dict is not None and "XML cell file" in default_dict:
         print(default_dict["XML cell file"])
         print(default_dict["XML cells file"])
-        ls.include_lems_file(default_dict["XML cell file"])
+        for XML_cell_file in default_dict["XML cell file"]:
+            ls.include_lems_file(XML_cell_file)
         ls.include_lems_file(default_dict["XML cells file"])
     else:
         ls.include_lems_file("cell_syn_W2D.xml")

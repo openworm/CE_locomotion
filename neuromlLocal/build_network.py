@@ -271,7 +271,7 @@ def run(a=None, **kwargs):
 
     print(default_dict)
     if default_dict is not None and "XML cell file" in default_dict:
-        xml_cell_filename = default_dict["XML cell file"]
+        xml_cell_filenames = default_dict["XML cell file"]
         cells_filename = default_dict["XML cells file"]
         cells_filepath = this_file_dir + "/" + cells_filename
         if "timestep" in default_dict["default parameters"]:
@@ -295,7 +295,7 @@ def run(a=None, **kwargs):
         )
 
     else:
-        xml_cell_filename = "cell_syn_W2D.xml"
+        xml_cell_filenames = ["cell_syn_W2D.xml"]
         cells_filename = "cell_syn_W2D_cells.xml"
         cells_filepath = this_file_dir + "/" + cells_filename
         utils.makeCellXml(network_json_data, cells_filepath)
@@ -310,10 +310,11 @@ def run(a=None, **kwargs):
     # copy from current working directory to neuromLocal and output folder
     if not output_folder_name == this_file_dir:
         shutil.copyfile(cell_Id_file_name, output_folder_name + "/cell_Ids.json")
-        shutil.copyfile(
+        for xml_cell_filename in xml_cell_filenames:
+            shutil.copyfile(
             this_file_dir + "/" + xml_cell_filename,
             output_folder_name + "/" + xml_cell_filename,
-        )
+            )
         if doMuscles:
             shutil.copyfile(
                 this_file_dir + "/musc_W2D.xml", output_folder_name + "/musc_W2D.xml"
@@ -343,11 +344,8 @@ def run(a=None, **kwargs):
     add_continuousProjections = False
     if chemical_weights is not None:
         add_continuousProjections = True
-    if vNMJ_weights is not None:
-        add_continuousProjections = True
-    if dNMJ_weights is not None:
-        add_continuousProjections = True
-        
+   
+
     net = Network(id="Worm2DNet")
     nml_doc.networks.append(net)
 
@@ -475,7 +473,7 @@ def run(a=None, **kwargs):
                     append_pop_properties(pop0)
                     net.populations.append(pop0)
 
-                if add_continuousProjections:
+                if loc_weights is not None:
                     utils.makeProjectionsConnections(
                         net,
                         loc_weights,

@@ -44,7 +44,7 @@ default_cells["Worm2Dosc"]["names"] = ["NV" + str(i) for i in range(24)] + [
 default_cells["Worm2Dosc"]["add_PG"] = False
 default_cells["Worm2Dosc"]["add_ES"] = True
 default_cells["Worm2Dosc"]["add_MH"] = False
-default_cells["Worm2Dosc"]["XML cell file"] = "cell_W2Dosc.xml"
+default_cells["Worm2Dosc"]["XML cell file"] = ["cell_W2Dosc.xml", "syn_W2D.xml"]
 default_cells["Worm2Dosc"]["XML cells file"] = "cell_W2Dosc_cells.xml"
 default_cells["Worm2Dosc"]["default parameters"] = {
     "amp": 1,
