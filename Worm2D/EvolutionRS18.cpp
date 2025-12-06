@@ -120,7 +120,7 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     const int & N_curvs = evoPars1.N_curvs;
     const double & Transient = evoPars1.Transient;
     //const int & skip_steps = evoPars1.skip_steps;
-
+   
 
     // Fitness
     fitness = 0.0;
@@ -133,10 +133,14 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     // Genotype-Phenotype Mapping
     TVector<double> phenotype(1,  itsVectSize());
     GenPhenMapping(v, phenotype);
+   
 
     Worm18 w(phenotype, 0);
+  
+
     w.InitializeState(rs);
-    
+   
+   
     w.setRs18output(1);
 
     // Transient

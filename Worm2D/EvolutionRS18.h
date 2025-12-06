@@ -22,7 +22,11 @@ class EvolutionRS18 : public Evolution
         96, 1000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
     ),speedoutput(cmd_->getArgValInt("--speed_output", 0)),
-    evo_seed(cmd_->getArgValInt("--evo_seed", 0)){cout << "const RS18 " << modelname_ << endl;}
+    evo_seed(cmd_->getArgValInt("--evo_seed", 0))
+    {
+        cout << "const RS18 " << modelname_ << endl;
+       
+    }
 
 
     void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);

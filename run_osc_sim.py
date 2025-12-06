@@ -42,7 +42,6 @@ run(
 
 
 if do_nml:
-
     try:
         os.chdir("./neuromlLocal")
     except Exception:
@@ -71,7 +70,6 @@ if do_nml:
 
 
 if do_muscles:
-
     try:
         os.chdir("./neuromlLocal")
     except Exception:
@@ -95,5 +93,5 @@ if do_muscles:
         doPlotEvol=False,
         doNML=True,
         doOrigMuscInput=False,
-        doMuscSim=True
+        doMuscSim=True,
     )

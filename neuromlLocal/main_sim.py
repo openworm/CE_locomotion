@@ -66,8 +66,8 @@ class Worm2DNRNSimulation:
         import utils
 
         self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
-        #print(self.DMIds)
-        #sys.exit()
+        # print(self.DMIds)
+        # sys.exit()
 
     def get_neuron_number(self, pop, i):
         return self.pop_dict[pop] + i * self.pop_num
@@ -294,8 +294,8 @@ class Worm2DNRNSimulation:
                 # val = 0
             # scaled_val = self._scale(val)
             values.append(val)
-        #print(values)
-        #sys.exit()
+        # print(values)
+        # sys.exit()
         return values
 
     def get_ventral_musc_states(self):

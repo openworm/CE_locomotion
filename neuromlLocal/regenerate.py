@@ -32,7 +32,6 @@ def run(a=None, **kwargs):
         json_file = a.folder + "/worm_data_worm.json"
 
     print(json_file)
-    
 
     if hasattr(a, "output_folder"):
         output_folder = getattr(a, "output_folder")

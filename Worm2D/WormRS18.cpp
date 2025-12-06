@@ -31,7 +31,9 @@ return {headsr,vncsr};
 //Worm18::Worm18():Worm18(readPhenotype(), 0){setRs18output(1);} //for WormCO18
 
 //Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
-Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem()), 
+Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem()
+,shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())
+), 
 n(dynamic_cast<NervousSystem&>(*n_ptr)),sr_ptr(make_shared<SR18>()),
 rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 {

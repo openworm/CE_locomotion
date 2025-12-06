@@ -14,7 +14,7 @@ Worm2DSR::Worm2DSR(json j, shared_ptr<const CmdArgs> cmd):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  }, getNS(cmd)),
+  }, getNS(cmd), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
   Worm2D({j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
@@ -52,7 +52,7 @@ Worm2DSR::Worm2DSR(json j):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  }, new NervousSystem()),
+  }, new NervousSystem(), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
   Worm2D({j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
