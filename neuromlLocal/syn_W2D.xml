@@ -1,0 +1,37 @@
+<Lems>
+
+    <ComponentType name="baseGradedSynapseDL"
+                   extends="baseSynapseDL"
+                   description="Base type for dimensionless graded synapses">
+    </ComponentType>
+
+    <ComponentType name="outputSynapse"
+                   extends="baseGradedSynapse"
+                   description="For Worm2D...">
+
+        <Parameter name="sign" dimension="none"/>
+
+        <Property name="weight" dimension="none" defaultValue="1"/>
+
+        <Constant name="PAMP_SCALE" dimension="current" value="1pA"/>
+
+        <Exposure name="i" dimension="current"/>
+
+        <Requirement name="output" dimension="none"/>
+
+        <InstanceRequirement name="peer" type="outputSynapse"/>
+
+        <Dynamics>
+            <DerivedVariable name="outputpeer" dimension="none" select="peer/output"/>
+            <DerivedVariable name="i" exposure="i"  value="weight * sign * outputpeer * PAMP_SCALE"/>
+        </Dynamics>
+    </ComponentType>
+
+
+<silentSynapse id="silentSyn"/>
+<outputSynapse id="neuron_to_neuron_syn_w2d" sign="1"/>
+
+<gapJunction id="gapJunction0" conductance="1nS"/>
+
+</Lems>
+    
