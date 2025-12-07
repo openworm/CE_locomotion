@@ -70,37 +70,6 @@ Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_):Worm2DoscNMLm(48)
 }
 
 
-Worm2Dosc21NML::Worm2Dosc21NML():
-Worm2D({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
-{
-    //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
-}
-
-
-Worm2Dosc21NMLm::Worm2Dosc21NMLm():
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
-shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
-
-
-Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
-{
-    json j = getJsonFromFile(jsonfile_);
-    pars1->setParsFromJson(j["Worm"]);
-    setMuscBodExt(j);
-}
-
-
-Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_):Worm2Dosc21NMLm()
-{
-    json j = getJsonFromFile(jsonfile_);
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-    
-    setBodExt(j); 
-        
-}
-
 
 
 
@@ -202,6 +171,39 @@ Worm2Dosc21::Worm2Dosc21(TVector<double> & phengen, const bool & isPheno):Worm2D
 }
 
 
+Worm2Dosc21NML::Worm2Dosc21NML():
+Worm2D({2,24,0.1,7,14}, nullptr),
+Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+{
+    //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
+}
+
+
+Worm2Dosc21NMLm::Worm2Dosc21NMLm():
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
+shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+
+
+Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
+{
+    json j = getJsonFromFile(jsonfile_);
+    pars1->setParsFromJson(j["Worm"]);
+    setMuscBodExt(j);
+}
+
+
+Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_):Worm2Dosc21NMLm()
+{
+    json j = getJsonFromFile(jsonfile_);
+    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    
+    setBodExt(j); 
+        
+}
+
+
+
 Worm2Dosc21S::Worm2Dosc21S():Worm2Dosc21(),
 Worm2Dm({2,24,0.1,7,14},new NSosc(14),shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24))){}
 
@@ -236,6 +238,22 @@ shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
 
+
+Worm2Dosc21allNML::Worm2Dosc21allNML():
+Worm2D({2,24,0.1,7,14}, nullptr),
+Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+{
+    //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
+}
+
+Worm2Dosc21allNML::Worm2Dosc21allNML(const string & jsonfile_):Worm2Dosc21allNML()
+{
+    json j = getJsonFromFile(jsonfile_);
+    pars1->setParsFromJson(j["Worm"]);
+    setMuscBodExt(j);
+}
+
 Worm2Dosc21all::Worm2Dosc21all(const string & filename_):Worm2Dosc21all()
 //Worm2Dosc21(),
 //Worm2Dm({2,24,0.1,7,14},new NSosc())
@@ -244,6 +262,8 @@ Worm2Dosc21all::Worm2Dosc21all(const string & filename_):Worm2Dosc21all()
   
     setParsFromFile(filename_);
 }
+
+
 
 
 Worm2Dosc21all::Worm2Dosc21all(TVector<double> & phengen, const bool & isPheno):Worm2Dosc21all()
@@ -257,6 +277,10 @@ Worm2Dosc21all::Worm2Dosc21all(TVector<double> & phengen, const bool & isPheno):
     //else setParsFromGeno(phengen);
 
 }
+
+
+
+
 
 Worm2Dosc21Coup::Worm2Dosc21Coup():
 Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec(),14),

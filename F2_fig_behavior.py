@@ -8,7 +8,10 @@ import os
 import neuromlLocal.utils as utils
 
 
-def make_fig(plot_format):
+def make_fig(model_name):
+
+    plot_format = utils.plot_formats[model_name]
+
     file_prefix = "sim_"
     if not os.path.isfile(hf.rename_file(file_prefix + "ns.dat")):
         file_prefix = ""
@@ -60,7 +63,9 @@ def make_fig(plot_format):
     if "plot_cell_unit" in plot_format:
         plot_cell_unit = plot_format["plot_cell_unit"]
     plot_col_divs = plot_format["plot_col_divs"]
-    cell_names = utils.getCellNames(network_json_data)
+    #cell_names = utils.getCellNames(network_json_data)
+    cell_names = utils.default_cells[model_name]["names"]
+
     step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
         "value"
     ]
@@ -198,6 +203,9 @@ def make_fig(plot_format):
     ):
         ind1 = utils.getIndOfNthVal(cell, cell_names, plot_cell_unit)
         if ind1 is None:
+            print(cell_names)
+            print(cell)
+            print(plot_cell_unit)
             print("Index error")
             exit()
         print("cell ind is ", ind1)

@@ -64,6 +64,7 @@ int main (int argc, const char* argv[])
    
 
     json j;
+    j["Worm"]["Main model name"]["value"] = model_name;
 
     bool do_evol = cmd->getArgValInt("--doevol", 0);
     if (do_evol) 
@@ -93,6 +94,12 @@ int main (int argc, const char* argv[])
        
         evo->addParsToJson(j);
         delete evo;
+        json_filename = rename_file("worm_data_evo.json", directoryName);
+        json j_evo = getJsonFromFile(json_filename);
+        j_evo["Worm"]["Main model name"]["value"] = model_name;
+        ofstream json_out(json_filename);
+        json_out << std::setw(4) << j_evo << std::endl;
+        json_out.close();
 
     }
 
@@ -157,7 +164,14 @@ int main (int argc, const char* argv[])
         if (do_musclesim) w2 = new Worm2Dosc21NMLm(json_filename);
         else w2 = new Worm2Dosc21NML(json_filename);
     }
-    
+
+    if (model_name == "W2Dosc21all") 
+    {
+        //if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename);
+        //else 
+        w2 = new Worm2Dosc21allNML(json_filename);
+    }
+
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
 
     }

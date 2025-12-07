@@ -414,6 +414,20 @@ void setPhenoNames();
 
 };
 
+
+class Worm2Dosc21allNML: public Worm2D, public Worm2Dosc21base
+{
+    public:
+    Worm2Dosc21allNML();
+    Worm2Dosc21allNML(const string & jsonfile_);
+    protected:
+    vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
+    vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
+    const string getModelName() {return "Worm2Dosc21allNML";}
+
+};
+
+
 class Worm2Dosc21S : public Worm2Dosc21
 {
 public:

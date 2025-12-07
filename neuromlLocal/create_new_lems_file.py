@@ -36,7 +36,7 @@ def run(a=None, **kwargs):
 
     network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
-    model_name = utils.getModelName(network_json_data)
+    model_name = utils.getMainModelName(network_json_data)
 
     if model_name is not None:
         default_dict = utils.default_cells[model_name]

@@ -10,6 +10,121 @@ from neuroml import (
     ElectricalConnectionInstanceW,
 )
 
+plot_formats = {}
+plot_formats["RS18"] = {}
+plot_formats["RS18"]["fig_titles"] = [
+    "Stretch receptors",
+    "Head Neurons",
+    "Body Neurons",
+    "Muscles",
+]
+plot_formats["RS18"]["data_sizes"] = [20, 4, 36, 48]
+plot_formats["RS18"]["fig_labels"] = ["SR", "Neu", "Neu", "Mu"]
+plot_formats["RS18"]["plot_cell_names"] = [
+    "DB",
+    "DD",
+    "VBA",
+    "VDA",
+    "VBP",
+    "VDP",
+    "SMDD",
+    "RMDD",
+    "SMDV",
+    "RMDV",
+]
+plot_formats["RS18"]["plot_col_divs"] = [6, 4]
+plot_formats["RS18"]["plot_time"] = 20
+plot_formats["RS18"]["worm_plot_time"] = 12
+plot_formats["RS18"]["do_body_plot"] = True
+plot_formats["RS18"]["do_curv_plot"] = True
+
+
+plot_formats["Net21"] = {}
+plot_formats["Net21"]["fig_titles"] = ["Neurons", "Muscles"]
+plot_formats["Net21"]["data_sizes"] = [49, 48]
+plot_formats["Net21"]["fig_labels"] = ["Neu", "Mu"]
+plot_formats["Net21"]["plot_cell_names"] = ["AS", "DA", "DB", "DD", "VA", "VB", "VD"]
+plot_formats["Net21"]["plot_col_divs"] = [4, 3]
+plot_formats["Net21"]["plot_time"] = 10
+plot_formats["Net21"]["worm_plot_time"] = 2
+plot_formats["Net21"]["do_body_plot"] = True
+plot_formats["Net21"]["do_curv_plot"] = True
+
+
+
+
+
+plot_formats["CE"] = {}
+plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
+plot_formats["CE"]["data_sizes"] = [40, 60, 48]
+plot_formats["CE"]["fig_labels"] = ["SR", "Neu", "Mu"]
+plot_formats["CE"]["plot_cell_names"] = ["DA", "DB", "DD", "VA", "VB", "VD"]
+plot_formats["CE"]["plot_cell_unit"] = 4
+plot_formats["CE"]["plot_col_divs"] = [3, 3]
+plot_formats["CE"]["plot_time"] = 10
+plot_formats["CE"]["worm_plot_time"] = 5
+plot_formats["CE"]["do_body_plot"] = True
+plot_formats["CE"]["do_curv_plot"] = True
+
+plot_formats["CO"] = {}
+plot_formats["CO"]["fig_titles"] = [
+    "Inter neurons",
+    "Kinesis neurons",
+    "Head Motor neurons",
+    "Sensory receptors",
+]
+
+plot_formats["CO"]["data_sizes"] = [6, 2, 2, 2]
+plot_formats["CO"]["fig_labels"] = ["Neu", "Kin", "Mot", "Sen"]
+plot_formats["CO"]["plot_cell_names"] = (
+    ["I" + str(i) for i in range(6)]
+    + ["K" + str(i) for i in range(2)]
+    + ["H" + str(i) for i in range(2)]
+    + ["S" + str(i) for i in range(2)]
+)
+plot_formats["CO"]["plot_col_divs"] = [6, 6]
+plot_formats["CO"]["plot_time"] = 10
+plot_formats["CO"]["worm_plot_time"] = 5
+plot_formats["CO"]["do_body_plot"] = True
+plot_formats["CO"]["do_curv_plot"] = False
+
+CO18_size = 6
+plot_formats["CO18"] = {}
+plot_formats["CO18"]["fig_titles"] = ["Neurons", "Sensory"]
+plot_formats["CO18"]["data_sizes"] = [CO18_size, 2]
+plot_formats["CO18"]["fig_labels"] = ["Neu", "Sen"]
+plot_formats["CO18"]["plot_cell_names"] = ["N" + str(i) for i in range(CO18_size)] + [
+    "S" + str(i) for i in range(2)
+]
+plot_formats["CO18"]["plot_col_divs"] = [CO18_size, 2]
+plot_formats["CO18"]["plot_time"] = 10
+plot_formats["CO18"]["worm_plot_time"] = 5
+plot_formats["CO18"]["do_body_plot"] = False
+plot_formats["CO18"]["do_curv_plot"] = False
+
+plot_formats["CO18Full"] = plot_formats["CO18"]
+plot_formats["W2Dosc"] = copy.deepcopy(plot_formats["Net21"])
+plot_formats["W2Dosc"]["data_sizes"] = [48, 48]
+plot_formats["W2Dosc"]["plot_cell_names"] = ["ND1", "NV1"]
+plot_formats["W2Dosc"]["plot_col_divs"] = [1, 1]
+plot_formats["W2Dosc21"] = copy.deepcopy(plot_formats["W2Dosc"])
+plot_formats["W2Dosc21"]["data_sizes"] = [14, 48]
+plot_formats["W2Dosc21all"] = plot_formats["W2Dosc21"]
+# plot_formats["W2DoscH"] = plot_formats["W2Dosc"]
+# plot_formats["W2DoscH"]["data_sizes"] = [24, 48]
+plot_formats["W2Dosc21Coup"] = plot_formats["W2Dosc21"]
+plot_formats["W2Dosc21S"] = plot_formats["W2Dosc21"]
+plot_formats["W2Dosc21CF"] = plot_formats["W2Dosc21"]
+plot_formats["W2D21"] = plot_formats["Net21"]
+plot_formats["W2DCE"] = copy.deepcopy(plot_formats["CE"])
+plot_formats["W2DCE"]["plot_time"] = 20
+plot_formats["W2D21R"] = plot_formats["Net21"]
+plot_formats["W2DCESR"] = plot_formats["W2DCE"]
+# plot_formats["W2DSR"] = plot_formats["W2DCE"]
+plot_formats["W2D18"] = plot_formats["RS18"]
+plot_formats["W2DCO"] = plot_formats["CO"]
+
+
 DEFAULTS = {"doMuscles": False, "folder": None, "popstruct": 2}
 
 
@@ -72,6 +187,8 @@ for i in range(7):
     namelist.append("NV" + str(i))
 
 default_cells["Worm2Dosc21"]["names"] = namelist
+default_cells["W2Dosc21all"] = copy.deepcopy(default_cells["Worm2Dosc21"])
+
 
 default_cells["W2DCE"] = default_cells["CE"]
 
@@ -216,11 +333,15 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
-def getModelName(network_json_data):
+def getModelName_old(network_json_data):
     if "Model name" in network_json_data["Nervous system"]:
         return network_json_data["Nervous system"]["Model name"]["value"]
     return None
 
+def getMainModelName(network_json_data):
+    if "Main model name" in network_json_data["Worm"]:
+        return network_json_data["Worm"]["Main model name"]["value"]
+    return None
 
 def getIndOfNthVal(val, vals_list, n):
     l1 = [i for i, val1 in enumerate(vals_list) if val1 == val]

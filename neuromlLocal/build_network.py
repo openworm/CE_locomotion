@@ -213,7 +213,7 @@ def run(a=None, **kwargs):
         chemical_weights = utils.dropSelfConnections(chemical_weights)
 
     # pop_cell_names, cell_names = utils.getPopNamesCellNames(network_json_data)
-    model_name = utils.getModelName(network_json_data)
+    model_name = utils.getMainModelName(network_json_data)
     if model_name is not None:
         default_dict = utils.default_cells[model_name]
         cell_names = default_dict["names"]

@@ -290,6 +290,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //virtual void initForSimulation() =  0;
 
     virtual const vector<string> getCellNames() {return {"not implemented"};}
+    
     virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
