@@ -51,9 +51,6 @@ plot_formats["Net21"]["do_body_plot"] = True
 plot_formats["Net21"]["do_curv_plot"] = True
 
 
-
-
-
 plot_formats["CE"] = {}
 plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
 plot_formats["CE"]["data_sizes"] = [40, 60, 48]
@@ -191,7 +188,10 @@ default_cells["W2Dosc21all"] = copy.deepcopy(default_cells["Worm2Dosc21"])
 
 
 default_cells["W2DCE"] = default_cells["CE"]
-
+default_cells["W2D18"] = default_cells["RS18"]
+default_cells["W2D21"] = default_cells["Net21"]
+default_cells["W2D21R"] = default_cells["Net21"]
+default_cells["W2DCO"] = default_cells["CO"]
 
 def process_args():
     parser = argparse.ArgumentParser(
@@ -338,10 +338,12 @@ def getModelName_old(network_json_data):
         return network_json_data["Nervous system"]["Model name"]["value"]
     return None
 
+
 def getMainModelName(network_json_data):
     if "Main model name" in network_json_data["Worm"]:
         return network_json_data["Worm"]["Main model name"]["value"]
     return None
+
 
 def getIndOfNthVal(val, vals_list, n):
     l1 = [i for i, val1 in enumerate(vals_list) if val1 == val]

@@ -12,7 +12,7 @@ import os
 import neuromlLocal.utils as utils
 from matplotlib.ticker import MaxNLocator
 import math
-import copy
+
 
 # import neuromlLocal.utils as utils
 import matplotlib as mpl
@@ -22,8 +22,6 @@ sys.path.append("..")
 
 # import random
 import helper_funcs as hf
-
-
 
 
 def run_main(args=None):
@@ -331,9 +329,9 @@ def reload_single_run(a=None, **kwargs):
         # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
         CO18_size = network_json_data["Nervous system"]["size"]["value"]
         plot_format["data_sizes"] = [CO18_size, 2]
-        plot_format["plot_cell_names"] = [
-            "N" + str(i) for i in range(CO18_size)
-        ] + ["S" + str(i) for i in range(2)]
+        plot_format["plot_cell_names"] = ["N" + str(i) for i in range(CO18_size)] + [
+            "S" + str(i) for i in range(2)
+        ]
         plot_format["plot_col_divs"] = [CO18_size, 2]
 
     def makeFigure(data_offset, data_size, title, label, plot_num):

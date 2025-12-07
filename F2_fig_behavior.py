@@ -9,7 +9,6 @@ import neuromlLocal.utils as utils
 
 
 def make_fig(model_name):
-
     plot_format = utils.plot_formats[model_name]
 
     file_prefix = "sim_"
@@ -63,7 +62,7 @@ def make_fig(model_name):
     if "plot_cell_unit" in plot_format:
         plot_cell_unit = plot_format["plot_cell_unit"]
     plot_col_divs = plot_format["plot_col_divs"]
-    #cell_names = utils.getCellNames(network_json_data)
+    # cell_names = utils.getCellNames(network_json_data)
     cell_names = utils.default_cells[model_name]["names"]
 
     step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][

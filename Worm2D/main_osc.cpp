@@ -61,8 +61,6 @@ int main (int argc, const char* argv[])
 
     if (model_name == "CE") model_name = "W2DCE";
 
-   
-
     json j;
     j["Worm"]["Main model name"]["value"] = model_name;
 
