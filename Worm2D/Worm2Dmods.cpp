@@ -50,32 +50,23 @@ shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>())),
 Worm2D({size_,24,0.1,1,size_}, nullptr),
 Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1)){}
 
+Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
+{
+    json j = getJsonFromFile(jsonfile_);
+    pars1->setParsFromJson(j["Worm"]);
+    setMuscBodExt(j); 
+
+}
+
 Worm2DoscNMLm::Worm2DoscNMLm(int size_):
 Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),
 shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
 
-
-Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
-{
-    json j = getJsonFromFile(jsonfile_);
-
-
-    pars1->setParsFromJson(j["Worm"]);
-    setMuscBodExt(j); 
-    //setUpMuscleConn(j);
-    //setUpBodyConn(j);
-    //makeExternalInputConnFromJson(j);
-    
-}
-
-
 Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_):Worm2DoscNMLm(48)
 {
     json j = getJsonFromFile(jsonfile_);
-
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setBodExt(j); 
-        
 }
 
 
@@ -87,31 +78,29 @@ Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shar
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
 
+
 Worm2Dosc21NMLm::Worm2Dosc21NMLm():
 Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
 shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
 
 
+Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
+{
+    json j = getJsonFromFile(jsonfile_);
+    pars1->setParsFromJson(j["Worm"]);
+    setMuscBodExt(j);
+}
+
+
 Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_):Worm2Dosc21NMLm()
 {
     json j = getJsonFromFile(jsonfile_);
-
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    
     setBodExt(j); 
         
 }
 
-Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
-{
-
-
-    json j = getJsonFromFile(jsonfile_);
-
-    pars1->setParsFromJson(j["Worm"]);
-    setMuscBodExt(j);
-
-  
-}
 
 
 
@@ -595,6 +584,26 @@ void Worm2DoscBase::addParsToJson(json & j)
     Worm2D::addParsToJson(j);
     //n.pfa1.addParsToJson(j["Nervous system"]);
     n.addParsToJson(j["Nervous system"]);
+}
+
+void Worm2Dosc::addParsToJson(json & j)
+{
+    Worm2DoscBase::addParsToJson(j);
+    pars1->addParsToJson(j["Worm"]);
+    //Worm2D::addParsToJson(j);
+    //n.pfa1.addParsToJson(j["Nervous system"]);
+    //n.addParsToJson(j["Nervous system"]);
+
+}
+
+void Worm2Dosc21::addParsToJson(json & j)
+{
+    Worm2DoscBase::addParsToJson(j);
+    pars1->addParsToJson(j["Worm"]);
+    //Worm2D::addParsToJson(j);
+    //n.pfa1.addParsToJson(j["Nervous system"]);
+    //n.addParsToJson(j["Nervous system"]);
+
 }
 
 /* void Worm2DoscBase::construct(const string & filename_)

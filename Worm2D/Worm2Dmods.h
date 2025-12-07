@@ -121,7 +121,7 @@ void setParsFromJson(json & j)
     NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
     NMJ_VN =  j["NMJ_VN"]["value"];
     NMJ_DN =  j["NMJ_DN"]["value"];
-    //Evolparameters::setParsFromJson(j);
+    W2Dbaseparameters::setParsFromJson(j);
 } 
 
 void addParsToJson(json & j) const
@@ -129,7 +129,7 @@ void addParsToJson(json & j) const
     j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
     j["NMJ_VN"]["value"] = NMJ_VN;
     j["NMJ_DN"]["value"] = NMJ_DN;
-    //Evolparameters::addParsToJson(j);
+    W2Dbaseparameters::addParsToJson(j);
 }
 void setPars(shared_ptr<const CmdArgs> cmd)
 {
@@ -179,55 +179,25 @@ vector<doubIntParamsHead> getWormParams() {
 class Worm2DoscBase : public Worm2D, public EvolvableS
 {
 public:
-//void InitializeState(RandomState &rs);
-//void initForSimulation(RandomState &) {return;}
-//void DumpParams(ofstream &ofs) {return;}
 
-//double EvaluationFunction(TVector<double> &v, RandomState &rs);
-//void writeJson(TVector<double> &);
-//evoPars getDefaultEvoPars();
-//void setParsFromPheno(TVector<double> &v) {return construct(v);}
-//void setParsFromFile(const string & genofilename_);
-//void setParsFromGeno(TVector<double> &v);
 virtual void setPfaFromPheno(const TVector<double> &v) = 0;
-//virtual void setParsFromPheno(TVector<double> &v) = 0;
-//void setPfaFromGeno(TVector<double> &v);
 
-//void setPfaFromFile(const string & genofilename_);
-//void setParsFromFile(const string & genofilename_);
-//const vector<string> getCellNames() {return {"not implemented"};}
 
 NSosc & n;
-//Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(*pars1_ptr);
-//Evolparameters & Epars1;
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
 {return Worm2Dbase::setWormPars(cmd);}
 
-//virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
-//{return Worm2Dbase::setWormPars(argc,argv);}
-
-//virtual void setWormPars(const W2Dparameters * w2par_)
-//{return Worm2Dbase::setWormPars(w2par_);}
 
 
 protected:
 
-//void Step1();
-//const vector<string> getVMuscNames() {return {"not implemented"};}
-//const vector<string> getDMuscNames() {return {"not implemented"};}
-
-//void constructFromGeno(TVector<double> &geno);
 void construct(const TVector<double> &pheno);
-//void construct(const string & filename_);
 
 Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2par_ptr);
-
 void addParsToJson(json & j);
 
 
-
-//W2Dparameters * const pars1_ptr;
 
 };
 
@@ -277,7 +247,7 @@ void setPfaFromPheno(const TVector<double> &v);
 void setParsFromPheno(const TVector<double> &v);
 
 
-
+void addParsToJson(json & j);
 
 //virtual ~Worm2Dosc(){if (pars1_ptr) delete pars1_ptr;}
 
@@ -412,7 +382,11 @@ void setPfaFromPheno(const TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen, int offset);
 
+void addParsToJson(json & j);
+
 const string getModelName() {return "Worm2Dosc21";}
+
+
 
 //Worm2Dosc21pars & pars1;
 

@@ -1,0 +1,41 @@
+# Framework for running automated tests on Open Source Brain
+# See https://github.com/OpenSourceBrain/osb-model-validation for more details
+ 
+target: run_osc_sim_21.py
+engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
+mep: .test.osc_sim_21.mep
+experiments:
+    Test2:
+        observables:
+            spike times:
+                file: 
+                    path: experiments/osc_sim_21_nml/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.0
+    
+    Test3:
+        observables:
+            spike times:
+                file: 
+                    path: experiments/osc_sim_21_nml_musc/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.0
+    Test4:
+        observables:
+            spike times:
+                file: 
+                    path: experiments/osc_sim_21/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.0
