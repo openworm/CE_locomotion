@@ -71,6 +71,9 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/osc_sim_21 
     rm -rf experiments/osc_sim_21_nml 
     rm -rf experiments/osc_sim_21_nml_musc
+    rm -rf experiments/osc_sim_21all 
+    rm -rf experiments/osc_sim_21all_nml 
+    rm -rf experiments/osc_sim_21all_nml_musc
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -87,6 +90,7 @@ if [ "$quick_test" == 0 ]; then
 
     omv test -V .test.osc_sim.omt
     omv test -V .test.osc_sim_21.omt
+    omv test -V .test.osc_sim_21all.omt
     omv test -V .test.W2D18gen.omt
     omv test -V .test.W2DSR18.omt
     omv test -V .test.COW2D.omt

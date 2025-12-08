@@ -194,6 +194,7 @@ default_cells["W2D21"] = default_cells["Net21"]
 default_cells["W2D21R"] = default_cells["Net21"]
 default_cells["W2DCO"] = default_cells["CO"]
 
+
 def process_args():
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")
