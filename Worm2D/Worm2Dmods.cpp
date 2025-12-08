@@ -254,6 +254,17 @@ Worm2Dosc21allNML::Worm2Dosc21allNML(const string & jsonfile_):Worm2Dosc21allNML
     setMuscBodExt(j);
 }
 
+Worm2Dosc21allNMLm::Worm2Dosc21allNMLm():
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
+shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+
+Worm2Dosc21allNMLm::Worm2Dosc21allNMLm(const string & jsonfile_):Worm2Dosc21allNMLm()
+{
+    json j = getJsonFromFile(jsonfile_);
+    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    setBodExt(j); 
+}
+
 Worm2Dosc21all::Worm2Dosc21all(const string & filename_):Worm2Dosc21all()
 //Worm2Dosc21(),
 //Worm2Dm({2,24,0.1,7,14},new NSosc())

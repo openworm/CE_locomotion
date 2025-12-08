@@ -6,7 +6,7 @@ from neuromlLocal.regenerate import run as regenerate_run
 
 
 doOrig = True
-doMuscles = False
+doMuscles = True
 do_nml = True
 
 duration = 10

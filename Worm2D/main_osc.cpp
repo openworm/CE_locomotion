@@ -165,9 +165,8 @@ int main (int argc, const char* argv[])
 
     if (model_name == "W2Dosc21all") 
     {
-        //if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename);
-        //else 
-        w2 = new Worm2Dosc21allNML(json_filename);
+        if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename);
+        else w2 = new Worm2Dosc21allNML(json_filename);
     }
 
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);

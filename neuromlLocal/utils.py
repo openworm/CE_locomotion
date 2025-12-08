@@ -184,8 +184,9 @@ for i in range(7):
     namelist.append("NV" + str(i))
 
 default_cells["Worm2Dosc21"]["names"] = namelist
-default_cells["W2Dosc21all"] = copy.deepcopy(default_cells["Worm2Dosc21"])
-
+default_cells["W2Dosc21all"] = default_cells["Worm2Dosc21"]
+default_cells["W2Dosc21"] = default_cells["Worm2Dosc21"]
+default_cells["W2Dosc"] = default_cells["Worm2Dosc"]
 
 default_cells["W2DCE"] = default_cells["CE"]
 default_cells["W2D18"] = default_cells["RS18"]

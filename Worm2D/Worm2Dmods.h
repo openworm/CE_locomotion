@@ -427,6 +427,15 @@ class Worm2Dosc21allNML: public Worm2D, public Worm2Dosc21base
 
 };
 
+class Worm2Dosc21allNMLm : public Worm2Dm
+{
+
+    public:
+    Worm2Dosc21allNMLm();
+    Worm2Dosc21allNMLm(const string & jsonfile);
+    protected:
+    const string getModelName() {return "Worm2Dosc21allNMLm";}
+};
 
 class Worm2Dosc21S : public Worm2Dosc21
 {
