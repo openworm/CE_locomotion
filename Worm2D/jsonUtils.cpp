@@ -200,9 +200,9 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 }
 
 
-void setNSFromJson(json & j, NervousSystem & n)
+void setNSFromJson(const json & j, NervousSystem & n)
 {
-    json & j2 = j["Nervous system"];
+    const json & j2 = j["Nervous system"];
     
     n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
    

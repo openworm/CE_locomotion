@@ -124,7 +124,12 @@ int main (int argc, const char* argv[])
 
     bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
 
-    if (model_name == "W2DSR") w2 = new Worm2DSR(json_filename, cmd);
+    if (model_name == "W2DSR") 
+    
+    if (do_musclesim) w2 = new Worm2DSRm(json_filename);
+    else w2 = new Worm2DSR(json_filename, cmd);
+
+    else{
 
     if (!do_nml){
 
@@ -172,6 +177,9 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
 
     }
+
+}
+
 
     json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))

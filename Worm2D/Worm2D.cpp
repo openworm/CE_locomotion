@@ -553,7 +553,7 @@ void Worm2Dbody::addParsToJson(json & j)
  appendBodyToJson(j, b);
 }
 
-void Worm2Dbase::makeExternalInputConnFromJson(json & j)
+void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
 {
 
     if (j.contains("InputNS")){
@@ -841,7 +841,7 @@ void Worm2D::Step1()
   
 }
 
-void Worm2Dm::setBodExt(json & j)
+void Worm2Dm::setBodExt(const json & j)
 {
         setUpBodyConn(j);
         makeExternalInputConnFromJson(j);
@@ -853,7 +853,7 @@ void Worm2Dm::setBodExt()
         makeExternalInputConn();
 }
 
-void Worm2D::setMuscBodExt(json & j){ 
+void Worm2D::setMuscBodExt(const json & j){ 
         setUpMuscleConn(j);
         Worm2Dm::setBodExt(j);
 }
@@ -983,7 +983,7 @@ void Worm2D::setMuscleInput()
     //exit(1);
 }
 
-void Worm2D::setUpMuscleConn(json & j)
+void Worm2D::setUpMuscleConn(const json & j)
 {
     
 vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
@@ -1013,7 +1013,7 @@ dBodyConnvec1.swap(dBodyConnvec);
 
 }
 
-void Worm2Dm::setUpBodyConn(json & j)
+void Worm2Dm::setUpBodyConn(const json & j)
 {
     
 vector<toFromWeight> vBodyConnvec1 = j["Ventral body"]["weights"]["value"].template get< vector<toFromWeight> >();

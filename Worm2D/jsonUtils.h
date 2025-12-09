@@ -29,7 +29,7 @@ vector<T> multiply(const vector<T>& v, T scalar) {
 
 
 template<class T>
-T getJsonVal(json & j, const string & key, const T & default_, bool doValue = false)
+T getJsonVal(const json & j, const string & key, const T & default_, bool doValue = false)
 {
 
 if (j.contains(key)){
@@ -126,7 +126,7 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
-void setNSFromJson(json & j, NervousSystem & n);
+void setNSFromJson(const json & j, NervousSystem & n);
 
 
 

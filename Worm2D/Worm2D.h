@@ -255,7 +255,7 @@ double t; // Time
 
 double settedStepSize;
 
-void makeExternalInputConnFromJson(json & j);
+void makeExternalInputConnFromJson(const json & j);
 virtual void makeExternalInputConn(){return;}
 vector<toFromWeight> externalInputConn;
 vector<double> externalInputs;
@@ -319,8 +319,8 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     virtual vector<toFromWeight> makeVentralBodyConn(); //from muscles to body
     virtual vector<toFromWeight> makeDorsalBodyConn();
     void setUpBodyConn();
-    void setUpBodyConn(json & j);
-    void setBodExt(json & j);
+    void setUpBodyConn(const json & j);
+    void setBodExt(const json & j);
     void setBodExt();
 
     bool W2Dmparscalled, W2Dminitcalled;
@@ -361,7 +361,7 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);} //from neurons to muscles
     virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
-    void setUpMuscleConn(json & j);
+    void setUpMuscleConn(const json & j);
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
 
@@ -371,7 +371,7 @@ class Worm2D : virtual public Worm2Dm
     void setMuscleInputVec(); //takes neuron output, inputs it to muscles using connection vector
 
     void setMuscBodExt();
-    void setMuscBodExt(json & j);
+    void setMuscBodExt(const json & j);
 
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);

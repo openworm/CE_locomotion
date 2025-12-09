@@ -180,7 +180,7 @@ void SRCE::addParsToJson(json & j) const
 
 }
 
-void SR::setParsFromJson(json & j) 
+void SR::setParsFromJson(const json & j) 
 {
 
     SRType = j["Stretch receptor"]["Type"]["value"];
@@ -188,7 +188,7 @@ void SR::setParsFromJson(json & j)
 
 
 
-void SR18::setParsFromJson(json & j) 
+void SR18::setParsFromJson(const json & j) 
 {
     nssrweights.segToD = 
     j["Stretch receptor"]["SR D NS"]["weights"]["value"].template get< vector<toFromWeight> >();
@@ -210,7 +210,7 @@ void SR18::setParsFromJson(json & j)
 
 }
 
-void SRCE::setParsFromJson(json & j) 
+void SRCE::setParsFromJson(const json & j) 
 {
     
     nssrweights.segToA_D = 

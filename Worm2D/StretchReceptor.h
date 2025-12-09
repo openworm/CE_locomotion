@@ -85,7 +85,7 @@ void updateSegs2(const vector<toFromWeight> & seg_, vector<double> & nsl_, vecto
 
 virtual void makeSRWeights() = 0; 
 virtual void makeNSSRWeights(const Worm2Dbase & w_ptr) = 0; 
-virtual void setParsFromJson(json & j) = 0;
+virtual void setParsFromJson(const json & j) = 0;
 
 void setWeights(){makeSRWeights();}
 void setNSWeights(const Worm2Dbase & w_ptr){makeNSSRWeights(w_ptr);}
@@ -143,7 +143,7 @@ public:
 
 
     void addParsToJson(json & j) const;
-    void setParsFromJson(json & j);
+    void setParsFromJson(const json & j);
 
     //int NSEGS = nSegs;                  // Number of segments
     //int NSR = nSR;                      // Number of stretch receptors
@@ -201,7 +201,7 @@ void makeSRWeights();
 //void setParsFromJson(json & j);
 double transformSegs(const double & val);
 void addParsToJson(json & j) const;
-void setParsFromJson(json & j);
+void setParsFromJson(const json & j);
 
 
 void updateSegs();

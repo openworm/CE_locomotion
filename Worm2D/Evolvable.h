@@ -27,7 +27,7 @@ class W2Dparameters
 {
 public:
 virtual ~W2Dparameters(){}
-virtual void setParsFromJson(json & j) = 0;
+virtual void setParsFromJson(const json & j) = 0;
 virtual void addParsToJson(json & j) const = 0;
 virtual void setPars(shared_ptr<const CmdArgs> cmd) = 0;
 };
@@ -63,7 +63,7 @@ gradEvoPars(shared_ptr<const CmdArgs> cmd);
 
 double HSStepSize = 0.01;
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
 
   HSStepSize = j["HSStepSize"]["value"];
   
@@ -87,7 +87,7 @@ W2DbaseparametersNML(){}
 bool randomInitialState = 0;
 
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   randomInitialState = j["randomInitialState"]["value"];
 }
 
@@ -110,7 +110,7 @@ W2Dbaseparameters(int argc, const char* argv[]);
 bool doOrigSRInput = 1;
 bool doOrigMuscInput = 1;
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   doOrigMuscInput = j["doOrigMuscInput"]["value"];
   doOrigSRInput = j["doOrigSRInput"]["value"];
   W2DbaseparametersNML::setParsFromJson(j);
@@ -139,7 +139,7 @@ double OSCTbase = 0.25; // Cap for oscillation evaluation
 double agarfreq = 0.44;
 double AvgSpeed = 0.00022; 
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
 
   OSCTbase = j["OSCTbase"]["value"]; 
   agarfreq = j["agarfreq"]["value"];
@@ -166,7 +166,7 @@ Evolparameters(shared_ptr<const CmdArgs> cmd, shared_ptr<EvolvableS> & evol1_, s
 
 int dbunit = 0;
 int vbunit = 0;
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
   AgarPars::setParsFromJson(j);
 }
@@ -195,7 +195,7 @@ int fitType = 0;
 int zeroGainsType = 1;
 int doAngleDiff = 0;
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   doReverse =  j["doReverse"]["value"];
   fitType = j["fitType"]["value"];
   zeroGainsType = j["zeroGainsType"]["value"];
@@ -230,7 +230,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
   Evolparameters::setPars(cmd);
 }
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   EvolparametersCE::setParsFromJson(j);
   Evolparameters::setParsFromJson(j);
 
@@ -269,7 +269,7 @@ class gradParameters : public W2Dbaseparameters
   //double orient_orig = 0, gradSteep = 0.5, RunDuration = 100,  MaxDist = 4.5;
   int taxis = 1, kinesis = 0;
 	
-  void setParsFromJson(json & j){
+  void setParsFromJson(const json & j){
 
   worm_rotation = j["rotation"]["value"];
   orient_orig = j["orient"]["value"]; 
@@ -312,7 +312,7 @@ void show() const {cout <<
   AVA_output << " AVB_output " << AVB_output << " randInitState " << randomInitialState << endl;}
 
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   AB_output_level = getJsonVal<double>(j, "AB_output_level", AB_output_level, true);
   //AB_output_level = j["AB_output_level"]["value"];
   AVA_output = j["AVA_output"]["value"]; 
@@ -345,7 +345,7 @@ double SREvoBotA = 0, SREvoTopA = 200;
 
 void show(){ W2DCEparsA::show();}
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   //assert(0);
   SREvoBot = getJsonVal<double>(j, "SREvoBot", SREvoBot, true);
   SREvoTop = getJsonVal<double>(j, "SREvoTop", SREvoTop, true);
@@ -403,7 +403,7 @@ int zeroGainsType = 0;
 virtual ~SRCEpars(){}
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   sr_type = getJsonVal<string>(j, "SRType" , sr_type, true);
   SRForm = getJsonVal<int>(j, "SRForm" , SRForm , true);
   //sr_type = j["SRType"]["value"]; 
@@ -432,7 +432,7 @@ void setPars(shared_ptr<const CmdArgs> cmd);
 
 int offset = 0;
 
-void setParsFromJson(json & j){
+void setParsFromJson(const json & j){
   SRCEpars::setParsFromJson(j);
   offset = j["SROffset"]["value"];
 }
