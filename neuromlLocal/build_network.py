@@ -277,9 +277,9 @@ def run(a=None, **kwargs):
         if "timestep" in default_dict["default parameters"]:
             if isinstance(default_dict["default parameters"]["timestep"], dict):
                 default_dict["default parameters"]["timestep"]["value"] = (
-                    network_json_data["Evolutionary Optimization Parameters"][
-                        "StepSize"
-                    ]["value"]
+                    network_json_data[
+                        "Evolutionary Optimization Parameters"
+                    ]["StepSize"]["value"]
                 )
             else:
                 default_dict["default parameters"]["timestep"] = network_json_data[

@@ -534,7 +534,7 @@ def reload_single_run(a=None, **kwargs):
         fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
-    
+
     if plot_format["do_body_plot"]:
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
@@ -631,7 +631,7 @@ def reload_single_run(a=None, **kwargs):
                 markersize_small = 10
             xs = []
             ys = []
-            
+
             for i in range(point_start, point_end):
                 x = body_data[i * 3 + 1][t]
                 # xs.append(x * 1000)
@@ -681,7 +681,7 @@ def reload_single_run(a=None, **kwargs):
     filename = hf.rename_file("ExampleActivity.png")
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-    
+
     if plot_format["do_body_plot"]:
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
@@ -691,7 +691,6 @@ def reload_single_run(a=None, **kwargs):
         print("Showing plot")
         plt.show()
     plt.close()
-   
 
     from F2_fig_behavior import make_fig
 
