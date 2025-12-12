@@ -31,8 +31,8 @@ vector<double> Worm2Dbase::readPhenotype()
     while(infile >> val) vec1.push_back(val);
     //TVector<double> phenovec = getTVector<double>(vec1);
     infile.close();
-    for (int i=0; i<vec1.size();i++) cout << vec1[i] << " ";
-    cout << endl;
+    //for (int i=0; i<vec1.size();i++) cout << vec1[i] << " ";
+    //cout << endl;
     return vec1;
 
 }

@@ -265,13 +265,18 @@ Worm2Dosc21allNMLm::Worm2Dosc21allNMLm(const string & jsonfile_):Worm2Dosc21allN
     setBodExt(j); 
 }
 
-Worm2Dosc21all::Worm2Dosc21all(const string & filename_):Worm2Dosc21all()
+Worm2Dosc21all::Worm2Dosc21all(const string & filename_, const bool & isGenJson):Worm2Dosc21all()
 //Worm2Dosc21(),
 //Worm2Dm({2,24,0.1,7,14},new NSosc())
 {
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-  
-    setParsFromFile(filename_);
+    if (isGenJson) setParsFromFile(filename_);
+    else {
+    json j = getJsonFromFile(filename_);
+    pars1->setParsFromJson(j);
+    assert(0 && "setPfafromjson not implemented");
+    setMuscBodExt(j);
+    }
 }
 
 

@@ -101,7 +101,7 @@ double c302muscForW2D::DorsalMuscleOutput(int muscle){
    
 if (*d_newstep){
     d_output_value =  simulation->vecValFunc(get_d_output_func);
-    std::cout << d_output_value[muscle-1] << std::endl;
+    //std::cout << d_output_value[muscle-1] << std::endl;
     //assert(0);
     *d_newstep = false;
 }

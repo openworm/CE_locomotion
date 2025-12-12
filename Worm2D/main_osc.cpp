@@ -123,6 +123,7 @@ int main (int argc, const char* argv[])
     //const string json_filename = ep1.rename_file("worm_data_evo.json");
 
     bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
+    bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
 
     if (model_name == "W2DSR") 
     
@@ -139,7 +140,7 @@ int main (int argc, const char* argv[])
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(gen_filename);
     if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(gen_filename);
     if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(gen_filename);
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename);
+    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename, useGenJson);
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);

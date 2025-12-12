@@ -136,6 +136,10 @@ default_cells["CE"] = {}
 default_cells["RS18"] = {}
 default_cells["CO"] = {}
 
+default_cells["Net21"]["add_PG"] = False
+default_cells["CE"]["add_PG"] = False
+default_cells["RS18"]["add_PG"] = False
+default_cells["CO"]["add_PG"] = False
 
 default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
 default_cells["CE"]["names"] = ["DA", "DB", "DD", "VD", "VA", "VB"] * 10

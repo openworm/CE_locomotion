@@ -112,8 +112,9 @@ class Worm2Dosc21pars : public W2Dbaseparameters
 {
 public:
 
-Worm2Dosc21pars(int N_musc){NMJ_Gain.SetBounds(1,N_musc);}
+Worm2Dosc21pars(int N_musc_):N_musc(N_musc_){NMJ_Gain.SetBounds(1,N_musc_);}
 
+const int N_musc;
 TVector<double> NMJ_Gain;
 double NMJ_VN = 1, NMJ_DN = 1, NMJ_Gain_Map = 1;
 void setParsFromJson(json & j)
@@ -121,6 +122,11 @@ void setParsFromJson(json & j)
     NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
     NMJ_VN =  j["NMJ_VN"]["value"];
     NMJ_DN =  j["NMJ_DN"]["value"];
+    for (int i=1; i<=N_musc; i++)
+    {
+    NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
+    }
+
     W2Dbaseparameters::setParsFromJson(j);
 } 
 
@@ -136,6 +142,11 @@ void setPars(shared_ptr<const CmdArgs> cmd)
     NMJ_Gain_Map = cmd->getArgValDoub("--NMJ_Gain_Map", NMJ_Gain_Map);
     NMJ_DN = cmd->getArgValDoub("--NMJ_DN", NMJ_DN);
     NMJ_VN = cmd->getArgValDoub("--NMJ_VN", NMJ_VN);
+    for (int i=1; i<=N_musc; i++)
+    {
+    NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
+    }
+
     W2Dbaseparameters::setPars(cmd);
 }
 
@@ -398,7 +409,7 @@ class Worm2Dosc21all : public Worm2Dosc21
 {
 public:
 Worm2Dosc21all();
-Worm2Dosc21all(const string & filename_);
+Worm2Dosc21all(const string & filename_, const bool & isGenJson = true);
 Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
