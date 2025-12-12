@@ -633,6 +633,11 @@ void Worm2Dm::addParsToJson(json & j)
 {  
     if (W2Dmparscalled) return;
    
+    appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
+    appendVectorToJson<toFromWeight>(j["Ventral body"]["weights"], vBodyConnvec);
+    j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
+    j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
+
     Worm2Dbody::addParsToJson(j);
     Worm2Dbase::addParsToJson(j);
 
@@ -692,11 +697,7 @@ void Worm2D::addParsToJson(json & j)
     appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights"], vMuscConnvec);
    
 
-    appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
-    appendVectorToJson<toFromWeight>(j["Ventral body"]["weights"], vBodyConnvec);
-    j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
-    j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
-
+    
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    

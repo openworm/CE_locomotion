@@ -70,6 +70,29 @@ return
   };
 }
 
+void Worm2DSR::addParsToJson(json & j)
+{
+  NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
+  if (n!=nullptr){
+  string nsHead = "Nervous system";
+  appendAllNSJson(j[nsHead], *n);
+  }
+  Worm2D::addParsToJson(j);
+  Worm2DSRb::addParsToJson(j);
+
+
+}
+void Worm2DSRm::addParsToJson(json & j)
+{
+ Worm2DSRb::addParsToJson(j);
+  Worm2Dm::addParsToJson(j);
+}
+
+void Worm2DSRb::addParsToJson(json & j)
+{
+if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
+
+}
 
 NSForW2D * Worm2DSR::getNS(shared_ptr<const CmdArgs> cmd)
 {

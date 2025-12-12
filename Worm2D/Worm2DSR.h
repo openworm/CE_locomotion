@@ -15,6 +15,7 @@ static wormIzqParams getIzqPars(const json & j);
 shared_ptr<SR> w2dsr_ptr = nullptr;
 Worm2DSRb(const json & j);
 Worm2DSRb(shared_ptr<SR> sr_ptr_);
+void addParsToJson(json & j);
 };
 
 class Worm2DSRm : public Worm2Dm, public Worm2DSRb
@@ -26,7 +27,7 @@ Worm2DSRm(const string & jsonfilename_);
 void setWormPars(shared_ptr<const CmdArgs> cmd){
   Worm2Dm::setWormPars(cmd);
 }
-
+void addParsToJson(json & j);
 void writeAct();
 protected:
 
@@ -51,6 +52,8 @@ void setWormPars(shared_ptr<const CmdArgs> cmd){
   Worm2D::setWormPars(cmd);
 }
 
+void addParsToJson(json & j);
+
 void writeAct();
 
 //void writeAct(){return Worm2DSRm::writeAct();}
@@ -64,5 +67,7 @@ const string getModelName() {return "W2DSR";}
 //static shared_ptr<SR> getSR(json & j);
 static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd);
 //static wormIzqParams getIzqPars(json & j);
+
+
 };
 
