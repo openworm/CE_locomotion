@@ -22,8 +22,8 @@ class Worm2DSRm : public Worm2Dm, public Worm2DSRb
 {
 public:
 //Worm2DSRm(json & j, shared_ptr<const CmdArgs> cmd);
-Worm2DSRm(const json & j);
-Worm2DSRm(const string & jsonfilename_);
+Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd);
+Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 void setWormPars(shared_ptr<const CmdArgs> cmd){
   Worm2Dm::setWormPars(cmd);
 }
@@ -65,7 +65,7 @@ virtual void Step1();
 const string getModelName() {return "W2DSR";}
 //vector<doubIntParamsHead> getWormParams();
 //static shared_ptr<SR> getSR(json & j);
-static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd);
+//static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd, const json & j);
 //static wormIzqParams getIzqPars(json & j);
 
 

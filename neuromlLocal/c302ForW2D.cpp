@@ -14,11 +14,11 @@ simulation(std::make_shared<SignalSimulatorForWorm2D>(simFileName,defaultSimClas
 //c302NervousSystem::c302NervousSystem():
 //simulation(new SignalSimulatorForWorm2D("neuromlLocal.main_sim",defaultSimClassName,0.005)){}
 
-c302ForW2D::c302ForW2D():
+c302ForW2D::c302ForW2D(float timestep_):
 inc_neuron_input_func("inc_neuron_input_j"),
 set_neuron_input_func("set_neuron_input_j"), v_newstep(new bool(true)), d_newstep(new bool(true)), 
 get_states_func("get_states_j"), get_output_func("get_outputs_j"),
-simulation(std::make_shared<SignalSimulatorForWorm2D>("main_sim",defaultSimClassName,"neuromlLocal",0.005))
+simulation(std::make_shared<SignalSimulatorForWorm2D>("main_sim",defaultSimClassName,"neuromlLocal",timestep_))
 {SetPopStructure(); std::cout << "c302ForW2D" << std::endl;}
 
 c302ForW2D::c302ForW2D(const std::string & popStruct, const int & popSize):

@@ -15,7 +15,7 @@ class c302ForW2D : virtual public NSForW2D
     public:
     c302ForW2D(const std::string & popStruct, const int & popSize);
     c302ForW2D(const std::string & simFileName);
-    c302ForW2D();
+    c302ForW2D(float timestep = 0.005);
     c302ForW2D(const std::string & simFileName, const std::string & simDirName);
 
     void IncNeuronExternalInput(int i, double value);

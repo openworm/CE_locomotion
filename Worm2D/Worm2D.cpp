@@ -696,8 +696,6 @@ void Worm2D::addParsToJson(json & j)
     appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights"], dMuscConnvec);
     appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights"], vMuscConnvec);
    
-
-    
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
    
@@ -960,17 +958,35 @@ void Worm2Dbase::setExternalInput()
     assignExternalInput();
 
     vector<double> vtot(par1.N_size, 0.0);
-    
+    bool hasUpdate = false;
+
     for (int i=0;i<externalInputConn.size();i++)
     {
         const toFromWeight & tfw = externalInputConn[i];
         vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
+        hasUpdate = true;
     }
-
+    if (hasUpdate)
     for (int i=0;i<vtot.size();i++) n_ptr->IncNeuronExternalInput(i+1, vtot[i]); 
 
 }
 
+NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
+{
+  bool do_nml =  cmd->getArgValInt("--donml",0);
+  if (do_nml) {
+    double StepSize = 0;
+    if (j.contains("Evolutionary Optimization Parameters")){
+    StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    StepSize = cmd->getArgValDoub("--StepSize",StepSize);
+    if (StepSize == 0) return new c302ForW2D();
+    return new c302ForW2D(StepSize);
+
+  }
+  return new NervousSystem();
+
+}
 
 void Worm2D::setMuscleInput()
 {

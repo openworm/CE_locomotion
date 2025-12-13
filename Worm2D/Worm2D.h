@@ -228,6 +228,8 @@ Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_p
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
 //    shared_ptr<W2Dbaseparameters> w2dpar_);
 
+static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd, const json & j);
+
 void writeData();
 virtual void setPhenoNames() {return;}
 

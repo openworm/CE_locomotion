@@ -16,7 +16,7 @@ Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
-  getNS(cmd), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
+  getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
   Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(j)
 {
 
@@ -39,10 +39,11 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
 
 }
 
-Worm2DSRm::Worm2DSRm(const string & jsonfilename_):Worm2DSRm(getJsonFromFile(jsonfilename_)){}
+Worm2DSRm::Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
+Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 
-Worm2DSRm::Worm2DSRm(const json & j):Worm2Dm(getIzqPars(j),
-  new c302ForW2D(), shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()), 0),
+Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()), 0),
  Worm2DSRb(j)
 {
 
@@ -94,13 +95,7 @@ if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
 
 }
 
-NSForW2D * Worm2DSR::getNS(shared_ptr<const CmdArgs> cmd)
-{
-  bool do_nml =  cmd->getArgValInt("--donml",0);
-  if (do_nml) return new c302ForW2D();
-  return new NervousSystem();
 
-}
 
 shared_ptr<SR> Worm2DSRb::getSR(const json & j)
 {
@@ -123,13 +118,13 @@ void Worm2DSR::Step1()
 {
   
   zeroAllInputs();
+  setExternalInput();
 
   b.StepBody(settedStepSize);
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
   
    
-  setExternalInput();
   //setExternalInputOrig();
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->incNS(*n_ptr);
