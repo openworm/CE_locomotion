@@ -348,7 +348,7 @@ def getModelName_old(network_json_data):
 def getMainModelName(network_json_data):
     if "Main model name" in network_json_data["Worm"]:
         return network_json_data["Worm"]["Main model name"]["value"]
-    return None
+    return getModelName_old(network_json_data)
 
 
 def getIndOfNthVal(val, vals_list, n):

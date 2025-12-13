@@ -24,10 +24,10 @@ int main (int argc, const char* argv[])
     {cout << "Directory doesn't exist." << endl;exit(1);}
 
     
-    string model_name = cmd->getArgVal("--modelname","");
+    string sup_model_name = cmd->getArgVal("--modelname","");
     double StepSize;
     int skip_steps;
-
+    string model_name = sup_model_name;
 
     string json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
@@ -35,17 +35,23 @@ int main (int argc, const char* argv[])
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
 
-    if (model_name == "") {  
+
+    if (model_name == "" || model_name == "W2DSR") {  
     if (directoryExists(json_filename)){
         json j = getJsonFromFile(json_filename);
-        //model_name =  j["Nervous system"]["Model name"]["value"];
+        if (j["Worm"].contains("Main model name"))
         model_name =  j["Worm"]["Main model name"]["value"];
-    }
-    else{
+        else if (j["Nervous system"].contains("Model name"))
+        model_name =  j["Nervous system"]["Model name"]["value"];
+        
+    }}
+    if (model_name == "") model_name = "W2DSR";
+
+    /* else{
     cout << "Model name is not in json file or the argument list. Exiting." << endl;
-    return 0;
-    }
-    }
+    return 0; */
+    //}
+    
 
 
    /*  if (directoryExists(json_filename)){
@@ -64,7 +70,7 @@ int main (int argc, const char* argv[])
     if (model_name == "CE") model_name = "W2DCE";
 
     json j;
-    j["Worm"]["Main model name"]["value"] = model_name;
+    
 
     bool do_evol = cmd->getArgValInt("--doevol", 0);
     if (do_evol) 
@@ -97,6 +103,8 @@ int main (int argc, const char* argv[])
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
+        j_evo["Nervous system"]["Model name"]["value"] = model_name;
+
         ofstream json_out(json_filename);
         json_out << std::setw(4) << j_evo << std::endl;
         json_out.close();
@@ -127,7 +135,7 @@ int main (int argc, const char* argv[])
     bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
     bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
 
-    if (model_name == "W2DSR") 
+    if (sup_model_name == "W2DSR") 
     
     if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
     else w2 = new Worm2DSR(json_filename, cmd);
@@ -304,7 +312,8 @@ int main (int argc, const char* argv[])
     */
 
     //cout << "const 1" << endl;
-
+    j["Worm"]["Main model name"]["value"] = model_name;
+    j["Nervous system"]["Model name"]["value"] = model_name;
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
