@@ -162,21 +162,16 @@ class Worm2DNRNSimulation:
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
-
     def set_neuron_input_j_old(self, i, weight):
-
         getattr(
             self.h,
             "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
         ).weight = weight
 
-    
     def set_neuron_input_j(self, i, weight):
         stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
-        setattr(getattr(self.h,stimstr),"weight",weight)
+        setattr(getattr(self.h, stimstr), "weight", weight)
         return
-        
-
 
     def inc_neuron_input(self, i, weight):
         pop_name, nn = self.get_pop_number(i)
@@ -185,7 +180,6 @@ class Worm2DNRNSimulation:
         return
 
     def inc_neuron_input_j_old(self, i, weight):
-
         print("main sim inc neuron ", i, weight)
         stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
         print(stimstr)
@@ -197,23 +191,22 @@ class Worm2DNRNSimulation:
             print("No such attribute: %s " % e)
             sys.exit()
         print("main sim inc neuron x", val)
-        #print(val)
+        # print(val)
         val += weight
         val = getattr(self.h, stimstr).weight
         print("main sim inc neuron y", val)
-        #print(val)
-        #exit
+        # print(val)
+        # exit
 
     def inc_neuron_input_j(self, i, weight):
-        print("main sim inc neuron ", i, weight)
+        #print("main sim inc neuron ", i, weight)
         stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
-        val = getattr(getattr(self.h,stimstr),"weight")
-        print(val)
-        setattr(getattr(self.h,stimstr),"weight",val + weight)
-        val = getattr(getattr(self.h,stimstr),"weight")
-        print(val)
-        
-   
+        val = getattr(getattr(self.h, stimstr), "weight")
+        #print(val)
+        setattr(getattr(self.h, stimstr), "weight", val + weight)
+        #val = getattr(getattr(self.h, stimstr), "weight")
+        #print(val)
+
     def set_gapJunction_weight(self, pre, post, weight):
         # syn_NC_PopVB_PopVB_gapJunction0_gapJunction0_A[8].weight
         pass
@@ -389,8 +382,6 @@ class Worm2DNRNSimulation:
 
     def run(self, skip_to_time=-1):
         self.ns.advance()
-
-       
 
     def save_results(self):
         print_("> Saving results at time: %s" % self.h.t)

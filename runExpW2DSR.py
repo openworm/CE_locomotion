@@ -58,7 +58,3 @@ if doMuscles:
     args["reRand"] = False
     args["doMuscSim"] = True
     run(**args)
-
-
-
-    

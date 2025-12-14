@@ -21,7 +21,7 @@ args = dict(
     reRand=True,
     doTestRun=True,
     doOrigMuscInput=False,
-    modifyJson = False
+    modifyJson=False,
 )
 
 if doOrig:
@@ -59,7 +59,6 @@ if doMuscles:
     args["reRand"] = False
     args["doMuscSim"] = True
     run(**args)
-
 
 
 """ run(

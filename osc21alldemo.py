@@ -9,7 +9,7 @@ from neuromlLocal.regenerate import run as regenerate_run
 
 output_folder = "experiments/osc21alldemo"
 output_folder_nml = output_folder + "_nml"
-output_folder_nml_musc =  output_folder + "_nml_musc"
+output_folder_nml_musc = output_folder + "_nml_musc"
 
 duration = 10
 transient = 10
@@ -38,7 +38,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     doOrigMuscInput=False,
-    useGenJson = True
+    useGenJson=True,
 )
 
 

@@ -119,13 +119,13 @@ void Worm2DSR::Step1()
 {
   
   zeroAllInputs();
-  setExternalInput();
+  
 
   b.StepBody(settedStepSize);
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
   
-   
+  setExternalInput();
   //setExternalInputOrig();
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->incNS(*n_ptr);

@@ -9,7 +9,7 @@ doOrig = True
 doNML = True
 doMuscles = True
 
-outputFolderName = "experiments/exW2DSR"
+outputFolderName = "testruns/exW2DSR"
 
 args = dict(
     simduration=20,
@@ -58,7 +58,3 @@ if doMuscles:
     args["reRand"] = False
     args["doMuscSim"] = True
     run(**args)
-
-
-
-    

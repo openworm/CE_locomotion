@@ -98,7 +98,8 @@ Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_pt
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
 W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
-{}
+{//zeroAllInputs();
+}
 
 /* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(make_shared<W2Dbaseparameters>()),
@@ -118,6 +119,7 @@ Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_pt
     //,muscForWDconst(false)
 {
     if (W2Dbaseparameters1b == nullptr) assert(0);
+    //zeroAllInputs();
 }
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):

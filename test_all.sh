@@ -58,20 +58,14 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRunCO
     rm -rf exampleRunW2DCE
     rm -rf experiments/izq_runs_nets/103 experiments/izq_runs_nets_nml/103 experiments/izq_runs_nets_nml_musc/103
-    rm -rf experiments/exW2DSR experiments/exW2DSR_nml experiments/exW2DSR_nml_musc
+    rm -rf testruns/exW2DSR testruns/exW2DSR_nml testruns/exW2DSR_nml_musc
     rm -rf testruns/exW2D18
     rm -rf testruns/exW2DCO
     rm -rf testruns/exW2D18gen
-    rm -rf testruns/exW2DSR18
-    rm -rf experiments/osc_sim 
-    rm -rf experiments/osc_sim_nml 
-    rm -rf experiments/osc_sim_nml_musc
-    rm -rf experiments/osc_sim_21 
-    rm -rf experiments/osc_sim_21_nml 
-    rm -rf experiments/osc_sim_21_nml_musc
-    rm -rf experiments/osc_sim_21all 
-    rm -rf experiments/osc_sim_21all_nml 
-    rm -rf experiments/osc_sim_21all_nml_musc
+    rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
+    rm -rf experiments/osc_sim experiments/osc_sim_nml experiments/osc_sim_nml_musc
+    rm -rf experiments/osc_sim_21 experiments/osc_sim_21_nml experiments/osc_sim_21_nml_musc
+    rm -rf experiments/osc_sim_21all experiments/osc_sim_21all_nml experiments/osc_sim_21all_nml_musc
     rm -rf testruns/exW2DSR21 testruns/exW2DSR21_nml testruns/exW2DSR21_nml_musc
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 

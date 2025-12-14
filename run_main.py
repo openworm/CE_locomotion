@@ -548,19 +548,18 @@ def run(a=None, **kwargs):
                         input_path, a.outputFolderName + "/" + prefix + filename1
                     )
         if hasattr(a, "modifyJson"):
-            if getattr(a, "modifyJson") == True:
-                json_path_mod =  a.outputFolderName + "/" + prefix + "worm_data_evo.json"
+            if getattr(a, "modifyJson"):
+                json_path_mod = a.outputFolderName + "/" + prefix + "worm_data_evo.json"
                 network_json_data_mod = utils.getJsonFile(json_path_mod)
                 rtaus = network_json_data_mod["Nervous system"]["Rtaus"]["value"]
                 taus = network_json_data_mod["Nervous system"]["taus"]["value"]
                 for i in range(len(taus)):
-                    taus[i]=1
-                    rtaus[i]=1
+                    taus[i] = 1
+                    rtaus[i] = 1
                 network_json_data_mod["Nervous system"]["Rtaus"]["value"] = rtaus
                 network_json_data_mod["Nervous system"]["taus"]["value"] = taus
                 with open(json_path_mod, "w", encoding="utf-8") as f:
                     json.dump(network_json_data_mod, f, ensure_ascii=False, indent=4)
-
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):

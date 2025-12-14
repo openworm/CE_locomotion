@@ -9,7 +9,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: experiments/exW2DSR/act.dat
+          path: testruns/exW2DSR/act.dat
           columns: [0,3]
           scaling: [1, 1]
         spike detection: 
@@ -20,7 +20,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: experiments/exW2DSR_nml/act.dat
+          path: testruns/exW2DSR_nml/act.dat
           columns: [0,3]
           scaling: [1, 1]
         spike detection: 
@@ -31,7 +31,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: experiments/exW2DSR_nml_musc/act.dat
+          path: testruns/exW2DSR_nml_musc/act.dat
           columns: [0,3]
           scaling: [1, 1]
         spike detection: 

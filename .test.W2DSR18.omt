@@ -16,25 +16,4 @@ experiments:
           method: threshold
           threshold: 1
         tolerance: 0
-  Test2:
-    observables:
-      spike times:
-        file: 
-          path: testruns/exW2DSR18_nml/act.dat
-          columns: [0, 1]
-          scaling: [1, 1]
-        spike detection: 
-          method: threshold
-          threshold: 1
-        tolerance: 0
-  Test3:
-    observables:
-      spike times:
-        file: 
-          path: testruns/exW2DSR18_nml_musc/act.dat
-          columns: [0, 1]
-          scaling: [1, 1]
-        spike detection: 
-          method: threshold
-          threshold: 1
-        tolerance: 0
+  
