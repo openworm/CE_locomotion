@@ -28,7 +28,8 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
 
     }
 
-    W2Dbaseparameters1->setParsFromJson(j["Worm"]);
+    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    setWormPars(cmd);
 
     if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
@@ -48,7 +49,7 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 {
 
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-
+    setWormPars(cmd);
     if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
     setBodExt(j);
@@ -133,7 +134,7 @@ void Worm2DSR::Step1()
   
   //setMuscleInput();
 
-  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  if (W2Dbaseparameters1->doOrigMuscInput) {assert(0); setMuscleInputOrig();}
   else setMuscleInput();
 
   setBodyInput();

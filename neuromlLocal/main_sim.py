@@ -162,43 +162,58 @@ class Worm2DNRNSimulation:
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
+
+    def set_neuron_input_j_old(self, i, weight):
+
+        getattr(
+            self.h,
+            "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
+        ).weight = weight
+
+    
+    def set_neuron_input_j(self, i, weight):
+        stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
+        setattr(getattr(self.h,stimstr),"weight",weight)
+        return
+        
+
+
     def inc_neuron_input(self, i, weight):
         pop_name, nn = self.get_pop_number(i)
         getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight += weight
         # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
         return
 
+    def inc_neuron_input_j_old(self, i, weight):
+
+        print("main sim inc neuron ", i, weight)
+        stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
+        print(stimstr)
+        if not hasattr(self.h, stimstr):
+            sys.exit()
+        try:
+            val = getattr(self.h, stimstr).weight
+        except AttributeError as e:
+            print("No such attribute: %s " % e)
+            sys.exit()
+        print("main sim inc neuron x", val)
+        #print(val)
+        val += weight
+        val = getattr(self.h, stimstr).weight
+        print("main sim inc neuron y", val)
+        #print(val)
+        #exit
+
     def inc_neuron_input_j(self, i, weight):
-        getattr(
-            self.h,
-            "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
-        ).weight += weight
-
-    def set_neuron_input_j(self, i, weight):
-        # self.h.ExtStimPopAS_6.weight = weight
-
-        setattr(
-            getattr(
-                self.h,
-                "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]),
-            ),
-            "weight",
-            weight,
-        )
-
-        # pop_name, nn = self.get_pop_number(i)
-        """  getattr(
-            self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
-        ).weight = weight """
-
-        # setattr(
-        #    self.h, "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"]) + ".weight", weight)
-
-        # ).weight = weight
-        # getattr(self.h, "ExtStimPop" + pop_name + "_" + str(nn)).weight = weight
-        # fout_weights.write(pop_name + ' ' + str(nn) + ' ' + str(weight) + '\n')
-        return
-
+        print("main sim inc neuron ", i, weight)
+        stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
+        val = getattr(getattr(self.h,stimstr),"weight")
+        print(val)
+        setattr(getattr(self.h,stimstr),"weight",val + weight)
+        val = getattr(getattr(self.h,stimstr),"weight")
+        print(val)
+        
+   
     def set_gapJunction_weight(self, pre, post, weight):
         # syn_NC_PopVB_PopVB_gapJunction0_gapJunction0_A[8].weight
         pass
@@ -273,7 +288,7 @@ class Worm2DNRNSimulation:
                 val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
             except AttributeError as e:
                 print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
-                continue
+                exit
                 # val = 0
             # scaled_val = self._scale(val)
             values.append(val)
@@ -290,7 +305,7 @@ class Worm2DNRNSimulation:
                 val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
             except AttributeError as e:
                 print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
-                continue
+                exit
                 # val = 0
             # scaled_val = self._scale(val)
             values.append(val)
@@ -309,7 +324,7 @@ class Worm2DNRNSimulation:
                 val = getattr(self.h, id["NRN pop name"])[id["Ind"]].state
             except AttributeError as e:
                 print("Problem passing neuronal output of %s, %s" % (id["Pop"], e))
-                continue
+                exit
                 # val = 0
             # scaled_val = self._scale(val)
             values.append(val)
@@ -346,7 +361,7 @@ class Worm2DNRNSimulation:
                     "Problem passing neuronal output of %s, %s, %s"
                     % (id["Pop"], id["Ind"], e)
                 )
-                continue
+                exit
                 # val = 0
             # scaled_val = self._scale(val)
             values.append(val)
@@ -373,23 +388,9 @@ class Worm2DNRNSimulation:
         return values
 
     def run(self, skip_to_time=-1):
-        # print_("> Current NEURON time: %s ms" % self.h.t)
-
         self.ns.advance()
 
-        # print_("< Current NEURON time: %s ms" % self.h.t)
-
-        # values = []
-        """ pop_list = [
-            "m_DA_PopDA",
-            "m_DB_PopDB",
-            "m_DD_PopDD",
-            "m_VD_PopVD",
-            "m_VA_PopVA",
-            "m_VB_PopVB",
-        ] """
-
-        # return self.get_output
+       
 
     def save_results(self):
         print_("> Saving results at time: %s" % self.h.t)
