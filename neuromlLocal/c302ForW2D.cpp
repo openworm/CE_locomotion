@@ -56,7 +56,7 @@ simulation->oneValFunc(set_neuron_input_func,i-1,value);
 
 void c302ForW2D::IncNeuronExternalInput(int i, double value)
 {
-    std::cout << "c302 inc inp " << i << " " << value << std::endl;
+    //std::cout << "c302 inc inp " << i << " " << value << std::endl;
 
 simulation->oneValFunc(inc_neuron_input_func,i-1,value);
 }

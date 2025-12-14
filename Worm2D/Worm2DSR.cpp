@@ -134,7 +134,7 @@ void Worm2DSR::Step1()
   
   //setMuscleInput();
 
-  if (W2Dbaseparameters1->doOrigMuscInput) {assert(0); setMuscleInputOrig();}
+  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
   setBodyInput();
