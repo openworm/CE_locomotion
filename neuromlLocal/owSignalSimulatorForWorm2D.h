@@ -3,9 +3,9 @@
 class SignalSimulatorForWorm2D: public SignalSimulator{
 public:
   SignalSimulatorForWorm2D(const std::string & simFileName, 
-  const std::string & simClassName, float timeStep);
+  const std::string & simClassName, double timeStep);
   SignalSimulatorForWorm2D(const std::string & simFileName, 
-  const std::string & simClassName, const std::string & simDirName, float timeStep);
+  const std::string & simClassName, const std::string & simDirName, double timeStep);
   const std::string & setUpSignalSimulator(const std::string & simDirName,
   const std::string & simFileName);
 
@@ -14,7 +14,7 @@ public:
 
   void strOneValFunc(const std::string & funcName, const std::string & parName, const int & i);
 
-  std::vector<float> vecValFunc(const std::string & funcName);
+  std::vector<double> vecValFunc(const std::string & funcName);
   
   virtual ~SignalSimulatorForWorm2D();
 

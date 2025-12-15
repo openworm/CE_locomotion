@@ -47,7 +47,7 @@
 
 SignalSimulator::SignalSimulator(const std::string &simFileName,
                                  const std::string &simClassName,
-                                 float timeStep) {
+                                 double timeStep) {
 
   // char pyClass[] = "SiberneticNEURONWrapper";
   // char pyClass[] = "C302Simulation";
@@ -115,7 +115,7 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
       std::cout << "Error at PyObject_CallObject" << std::endl;
       PyErr_Print();
     }
-    PyObject *dt = Py_BuildValue("f", timeStep); // Create tuple of arguments for initialization
+    PyObject *dt = Py_BuildValue("d", timeStep); // Create tuple of arguments for initialization
     PyObject *pFuncName = Py_BuildValue("s", "set_timestep");
     //pInstance = PyObject_CallMethod(pInstance, "set_timestep", "(f)", timeStep);
 

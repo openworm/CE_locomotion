@@ -47,14 +47,14 @@
 
 class owINeuronSimulator {
 protected:
-	std::vector<float> unpackPythonList(PyObject* pValue, size_t musclesNum=96){
+	std::vector<double> unpackPythonList(PyObject* pValue, size_t musclesNum=96){
 		Py_ssize_t size = PyList_Size(pValue);
-		//std::vector<float> test(musclesNum); //needs to change! 96 is hardcoded
-		std::vector<float> test((size_t) size);
+		//std::vector<double> test(musclesNum); //needs to change! 96 is hardcoded
+		std::vector<double> test((size_t) size);
 		//printf("====\n");
 		for (Py_ssize_t i = 0; i < size; i++) {
-			float value;
-			value = (float)PyFloat_AsDouble(PyList_GetItem(pValue, i));
+			double value;
+			value = (double)PyFloat_AsDouble(PyList_GetItem(pValue, i));
 			test[i]= value;
 		}
 		Py_DECREF(pValue);
@@ -62,7 +62,7 @@ protected:
 	}
 	PyObject *pName, *pModule, *pDict, *pFunc, *pValue, *pClass, *pInstance, * nrn_sim;
 public:
-	//virtual std::vector<float> run() = 0;
+	//virtual std::vector<double> run() = 0;
 	virtual void run() = 0;
 	virtual ~owINeuronSimulator()
 	{

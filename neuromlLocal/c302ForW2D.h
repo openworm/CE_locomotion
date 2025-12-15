@@ -15,7 +15,7 @@ class c302ForW2D : virtual public NSForW2D
     public:
     c302ForW2D(const std::string & popStruct, const int & popSize);
     c302ForW2D(const std::string & simFileName);
-    c302ForW2D(float timestep = 0.005);
+    c302ForW2D(double timestep = 0.005);
     c302ForW2D(const std::string & simFileName, const std::string & simDirName);
 
     void IncNeuronExternalInput(int i, double value);
@@ -37,8 +37,8 @@ class c302ForW2D : virtual public NSForW2D
     void SetPopStructure();
     const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
     //SignalSimulatorForWorm2D *simulation = 0;
-    std::vector<float> output_value;
-    std::vector<float> state_value;
+    std::vector<double> output_value;
+    std::vector<double> state_value;
     bool newstep  = true;
     bool newstep2  = true;
     const std::shared_ptr<bool> v_newstep;
@@ -66,8 +66,8 @@ protected:
 
 const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
 //SignalSimulatorForWorm2D *simulation = 0;
-std::vector<float> v_output_value;
-std::vector<float> d_output_value;
+std::vector<double> v_output_value;
+std::vector<double> d_output_value;
 const std::shared_ptr<bool> v_newstep;
 const std::shared_ptr<bool> d_newstep;
 

@@ -1,11 +1,11 @@
 #include "owSignalSimulatorForWorm2D.h"
 
 SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName, 
-  const std::string & simClassName, float timeStep):
+  const std::string & simClassName, double timeStep):
   SignalSimulator(simFileName,simClassName,timeStep){}
 
 SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName, 
-  const std::string & simClassName, const std::string & simDirName, float timeStep):
+  const std::string & simClassName, const std::string & simDirName, double timeStep):
   SignalSimulator(setUpSignalSimulator(simDirName, simFileName),simClassName,timeStep){}
 
 const std::string & SignalSimulatorForWorm2D::setUpSignalSimulator(const std::string & simDirName,
@@ -24,7 +24,7 @@ const std::string & simFileName)
   return simFileName;
   }
 
-std::vector<float> SignalSimulatorForWorm2D::vecValFunc(const std::string & funcName){
+std::vector<double> SignalSimulatorForWorm2D::vecValFunc(const std::string & funcName){
   // Call a method of the class
   // pValue = PyObject_CallMethod(pInstance, "rrun
   // un", nullptr);
@@ -41,12 +41,12 @@ std::vector<float> SignalSimulatorForWorm2D::vecValFunc(const std::string & func
       throw std::runtime_error("Exception in simulator run (printed above)");
   }
   if (PyList_Check(pValue)) {
-    std::vector<float> value_array;
+    std::vector<double> value_array;
     value_array = SignalSimulator::unpackPythonList(pValue);
     return value_array;
   } else {
-    std::vector<float> single_element_array(0);
-    single_element_array[0] = (float)PyFloat_AsDouble(pValue);
+    std::vector<double> single_element_array(0);
+    single_element_array[0] = (double)PyFloat_AsDouble(pValue);
     return single_element_array;
   }
 }
@@ -102,7 +102,7 @@ PyObject *pValue = PyObject_CallMethodObjArgs(pInstance, pFuncName, py_i, py_j, 
 void SignalSimulatorForWorm2D::oneValFunc(const std::string & funcName, const int & i, const double & value)
 {
     PyObject *py_i = Py_BuildValue("i", i); // Create tuple of arguments for initialization
-    PyObject *py_value = Py_BuildValue("f", value);
+    PyObject *py_value = Py_BuildValue("d", value);
     PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
 
     //pInstance = PyObject_CallMethod(pInstance, "set_timestep", "(f)", timeStep);
@@ -156,7 +156,7 @@ void SignalSimulatorForWorm2D::strValFunc(const std::string & funcName, const st
 const int & i, const double & value)
 {
     PyObject *py_i = Py_BuildValue("i", i); // Create tuple of arguments for initialization
-    PyObject *py_value = Py_BuildValue("f", value); 
+    PyObject *py_value = Py_BuildValue("d", value); 
     PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
     PyObject *py_par = Py_BuildValue("s", parName.c_str());
 
@@ -213,7 +213,7 @@ void SignalSimulatorForWorm2D::twoValFunc(const std::string & funcName,
 const int & i, const int & j, const double & value)
 {
     PyObject *py_i = Py_BuildValue("i", i); // Create tuple of arguments for initialization
-    PyObject *py_value = Py_BuildValue("f", value);
+    PyObject *py_value = Py_BuildValue("d", value);
     PyObject *py_j = Py_BuildValue("i", j); 
     PyObject *pFuncName = Py_BuildValue("s", funcName.c_str());
 
