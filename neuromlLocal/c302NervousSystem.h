@@ -40,7 +40,7 @@ void SetElectricalSynapseWeight(int n1, int n2, double value);
     void RandomizeCircuitOutput(double lb, double ub, RandomState &rs);
  
 
- const std::vector<float> & getOutputValues() const {return output_value;}
+ const std::vector<double> & getOutputValues() const {return output_value;}
  ostream & writeOutputValues(ostream & os) {return writeVector(os,output_value);}
  bool skipCalc = 1;
 
