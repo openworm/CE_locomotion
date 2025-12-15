@@ -41,10 +41,10 @@ class c302ForW2D : virtual public NSForW2D
     std::vector<double> state_value;
     bool newstep  = true;
     bool newstep2  = true;
-    const std::shared_ptr<bool> v_newstep;
-    const std::shared_ptr<bool> d_newstep;
-    //bool v_newstep  = true;
-    //bool d_newstep  = true;
+    //const std::shared_ptr<bool> v_newstep;
+    //const std::shared_ptr<bool> d_newstep;
+    bool v_newstep  = true;
+    bool d_newstep  = true;
 
     const std::string set_neuron_input_func, get_states_func, 
     get_output_func, inc_neuron_input_func;
@@ -63,13 +63,14 @@ double VentralMuscleOutput(int muscle);
 virtual ~c302muscForW2D(){}
 
 protected:
+c302ForW2D & c;
 
-const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
+//const std::shared_ptr<SignalSimulatorForWorm2D> simulation;
 //SignalSimulatorForWorm2D *simulation = 0;
 std::vector<double> v_output_value;
 std::vector<double> d_output_value;
-const std::shared_ptr<bool> v_newstep;
-const std::shared_ptr<bool> d_newstep;
+//const std::shared_ptr<bool> v_newstep;
+//const std::shared_ptr<bool> d_newstep;
 
 const std::string get_v_output_func, get_d_output_func;
 };
