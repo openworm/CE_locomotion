@@ -443,7 +443,7 @@ def reload_single_run(a=None, **kwargs):
         for t in range(1, tmax, int(tmax / num)):
             f = float(t) / tmax
 
-            dd["t"].append(t)
+            dd["t"].append(body_data[0][t])
 
             color = "#%02x%02x00" % (int(0xFF * (f)), int(0xFF * (1 - f) * 0.8))
             # color2 = "#%06x" % random.randint(0, 0xFFFFFF)
