@@ -137,7 +137,7 @@ default_cells["RS18"] = {}
 default_cells["CO"] = {}
 
 default_cells["Net21"]["add_PG"] = False
-default_cells["CE"]["add_PG"] = False
+default_cells["CE"]["add_PG"] = True
 default_cells["RS18"]["add_PG"] = False
 default_cells["CO"]["add_PG"] = False
 

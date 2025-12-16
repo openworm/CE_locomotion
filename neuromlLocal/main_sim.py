@@ -199,14 +199,14 @@ class Worm2DNRNSimulation:
         # exit
 
     def inc_neuron_input_j(self, i, weight):
-        #print("main sim inc neuron ", i, weight)
+        # print("main sim inc neuron ", i, weight)
         stimstr = "ExtStim" + self.NSIds[i]["Pop"] + "_" + str(self.NSIds[i]["Ind"])
-        #print(stimstr)
+        # print(stimstr)
         val = getattr(getattr(self.h, stimstr), "weight")
-        #print(val)
+        # print(val)
         setattr(getattr(self.h, stimstr), "weight", val + weight)
-        #val = getattr(getattr(self.h, stimstr), "weight")
-        #print(val)
+        # val = getattr(getattr(self.h, stimstr), "weight")
+        # print(val)
 
     def set_gapJunction_weight(self, pre, post, weight):
         # syn_NC_PopVB_PopVB_gapJunction0_gapJunction0_A[8].weight
