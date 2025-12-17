@@ -340,8 +340,9 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
 void Worm18::InitializeState(RandomState &rs)
 {
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    if (W2Dbaseparameters1->randomInitialState){
+    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    assert(w1parss!=nullptr);
+    if (w1parss->randomInitialState){
         //assert(0);
     n.RandomizeCircuitState(-0.5, 0.5, rs);}
     else //n.RandomizeCircuitState(0.7, 0.7, rs);
@@ -684,7 +685,10 @@ void Worm18::addParsToJson(json & j)
     //appendCellNamesToJson(j[nsHead], cell_names, 1);
 
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-    if (W2Dbaseparameters1->doOrigSRInput){
+
+    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    assert(w1parss!=nullptr);
+    if (w1parss->doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
@@ -828,7 +832,10 @@ void Worm18::DumpParams(ofstream &ofs)
     ofs << "Self conns: \n DB: " << n.ChemicalSynapseWeight(DB, DB) << "\n VBA/P: " << n.ChemicalSynapseWeight(VBA, VBA) << " / " << n.ChemicalSynapseWeight(VBP, VBP) << "\n DD: " << n.ChemicalSynapseWeight(DD, DD) <<  "\n VDA/P: " << n.ChemicalSynapseWeight(VDA, VDA) <<  " / " << n.ChemicalSynapseWeight(VDP, VDP) << endl;
     ofs << "Chem Conns: \n DB->DD: " << n.ChemicalSynapseWeight(DB, DD) <<  "\n DB->VDA/VDP: " << n.ChemicalSynapseWeight(DB, VDA) << " / " << n.ChemicalSynapseWeight(DB, VDP) << "\n VBA/P->DD: " << n.ChemicalSynapseWeight(VBA, DD) << " / " << n.ChemicalSynapseWeight(VBP, DD) << "\n VBA/P->VDA/P: " << n.ChemicalSynapseWeight(VBA, VDA) << " / " << n.ChemicalSynapseWeight(VBP, VDP) << "\n VDA/P->VBA/P: " << n.ChemicalSynapseWeight(VDA, VBA) << " / " << n.ChemicalSynapseWeight(VDP, VBP) << "\n DD->VDA: " << n.ChemicalSynapseWeight(DD, VDA) <<endl;
     ofs << "Gap Juncs: \n DB-DB+1: " << n.ElectricalSynapseWeight(DB, DB+par1.N_neuronsperunit) << "\n VBA-VBP / VBP-VBP+1: " << n.ElectricalSynapseWeight(VBA, VBP) << " / " << n.ElectricalSynapseWeight(VBP, VBA+par1.N_neuronsperunit) << "\n VBP-DB+1: " << n.ElectricalSynapseWeight(VBP, DB+par1.N_neuronsperunit) << "\n DD-VDA/P: " << n.ElectricalSynapseWeight(DD, VDA) << " / " << n.ElectricalSynapseWeight(DD, VDP) << "\n DD-DD+1: " << n.ElectricalSynapseWeight(DD, DD+par1.N_neuronsperunit) << "\n VDA-VDP / VDP-VDP+1: " << n.ElectricalSynapseWeight(VDA, VDP) << " / " << n.ElectricalSynapseWeight(VDP, VDA+par1.N_neuronsperunit) <<  endl;
-    if (W2Dbaseparameters1->doOrigSRInput)
+
+    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    assert(w1parss!=nullptr);
+    if (w1parss->doOrigSRInput)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;
     else 
     ofs << "SR Gain (VNC and Head): " << sr_ptr->SRvncgain << " " << sr_ptr->SRheadgain << endl;

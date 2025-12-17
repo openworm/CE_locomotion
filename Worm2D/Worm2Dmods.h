@@ -93,6 +93,7 @@ void addParsToJson(json & j) const {
     W2Dbaseparameters::addParsToJson(j);
 }
 void setPars(shared_ptr<const CmdArgs> cmd){
+    
     NMJweight = cmd->getArgValDoub("--NMJweight", NMJweight);
     W2Dbaseparameters::setPars(cmd);
     }
@@ -112,11 +113,16 @@ class Worm2Dosc21pars : public W2Dbaseparameters
 {
 public:
 
-Worm2Dosc21pars(int N_musc_):N_musc(N_musc_){NMJ_Gain.SetBounds(1,N_musc_);}
+Worm2Dosc21pars(int N_musc_):N_musc(N_musc_){
+//    NMJ_Gain.SetBounds(1,N_musc_);
+    NMJ_Gain.resize(N_musc_);
+}
 
 const int N_musc;
-TVector<double> NMJ_Gain;
+//TVector<double> NMJ_Gain;
+vector<double> NMJ_Gain;
 double NMJ_VN = 1, NMJ_DN = 1, NMJ_Gain_Map = 1;
+
 void setParsFromJson(json & j)
 {
     NMJ_Gain_Map = j["NMJ_Gain_Map"]["value"];
@@ -124,7 +130,7 @@ void setParsFromJson(json & j)
     NMJ_DN =  j["NMJ_DN"]["value"];
     for (int i=1; i<=N_musc; i++)
     {
-    NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
+    NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
     }
 
     W2Dbaseparameters::setParsFromJson(j);
@@ -137,6 +143,7 @@ void addParsToJson(json & j) const
     j["NMJ_DN"]["value"] = NMJ_DN;
     W2Dbaseparameters::addParsToJson(j);
 }
+
 void setPars(shared_ptr<const CmdArgs> cmd)
 {
     NMJ_Gain_Map = cmd->getArgValDoub("--NMJ_Gain_Map", NMJ_Gain_Map);
@@ -144,7 +151,7 @@ void setPars(shared_ptr<const CmdArgs> cmd)
     NMJ_VN = cmd->getArgValDoub("--NMJ_VN", NMJ_VN);
     for (int i=1; i<=N_musc; i++)
     {
-    NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
+    NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
     }
 
     W2Dbaseparameters::setPars(cmd);
@@ -197,7 +204,7 @@ virtual void setPfaFromPheno(const TVector<double> &v) = 0;
 NSosc & n;
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
-{return Worm2Dbase::setWormPars(cmd);}
+{return Worm2D::setWormPars(cmd);}
 
 
 

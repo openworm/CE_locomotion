@@ -48,7 +48,7 @@ Worm2DoscNML::Worm2DoscNML(int size_):
 Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(),
 shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>())),
 Worm2D({size_,24,0.1,1,size_}, nullptr),
-Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1)){}
+Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1b)){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 {
@@ -83,7 +83,7 @@ Worm2D(par1_, nullptr), Worm2Dm(par1_, new NSosc(par1_.N_size), w2par_ptr),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
-Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1)),
+Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1b)),
 Worm2DoscBase({size_,24,0.1,1,size_}, nullptr),
 //pars1(dynamic_pointer_cast<Worm2Doscpars>(W2Dbaseparameters1)),
 Worm2Dm({size_,24,0.1,1,size_},new NSosc(size_),shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>()))
@@ -139,7 +139,7 @@ Worm2Dm({24,24,0.1,1,24},new NSosc(24))
 
 Worm2Dosc21::Worm2Dosc21():
 Worm2DoscBase({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
+Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
 Worm2Dm({2,24,0.1,7,14},new NSosc(14), 
 shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
@@ -173,7 +173,7 @@ Worm2Dosc21::Worm2Dosc21(TVector<double> & phengen, const bool & isPheno):Worm2D
 
 Worm2Dosc21NML::Worm2Dosc21NML():
 Worm2D({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
+Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
 Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -241,7 +241,7 @@ shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 
 Worm2Dosc21allNML::Worm2Dosc21allNML():
 Worm2D({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1)),
+Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
 Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -378,6 +378,7 @@ for (int i = 25; i<=48; i++) pfa1.phase.push_back(phen(1)*(i-25) + phen(2));
 for (int i = 1; i<=48; i++) {pfa1.freq.push_back(phen(3));pfa1.amp.push_back(1);}
 
 n.pfa1.swap_all(pfa1);
+
 
 }
 
@@ -834,9 +835,9 @@ void Worm2Dosc21::setParsFromPheno(const TVector<double> &phen, int offset)
 {
     pars1->NMJ_Gain_Map = phen(offset);
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    for (int i=1; i<=par1.N_muscles; i++)
+    for (int i=1; i<=pars1->N_musc; i++)
     {
-    pars1->NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/par1.N_muscles));
+    pars1->NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/pars1->N_musc));
     }
     
     pars1->NMJ_VN = phen(offset+1);
@@ -859,9 +860,9 @@ void Worm2Dosc21S::setParsFromPheno(const TVector<double> &phen)
     pars1->NMJ_Gain_Map = phen(4);
 
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    for (int i=1; i<=par1.N_muscles; i++)
+    for (int i=1; i<=pars1->N_musc; i++)
     {
-    pars1->NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/par1.N_muscles));
+    pars1->NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/pars1->N_musc));
     }
     pars1->NMJ_DN = phen(5);
     pars1->NMJ_VN = phen(5);

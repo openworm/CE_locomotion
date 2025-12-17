@@ -197,8 +197,10 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
 void Worm21::InitializeState(RandomState &rs)
 {    
     Worm2D21::InitializeState(rs);
+    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    assert(w1parss!=nullptr);
 
-    if (W2Dbaseparameters1->randomInitialState)
+    if (w1parss->randomInitialState)
     {
         n.RandomizeCircuitState(-1, 1, rs);
         n.RandomizeCircuitOutput(0.2, 0.8, rs);

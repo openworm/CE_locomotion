@@ -84,7 +84,7 @@ public:
 W2DbaseparametersNML(){}
 //W2DbaseparametersNML(int argc, const char* argv[]);
 //W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
-bool randomInitialState = 0;
+bool randomInitialState = false;
 
 
 void setParsFromJson(const json & j){

@@ -940,15 +940,18 @@ void Worm2Dbase::incOutputToNS(Worm2Dbase & w_)
 
 void Worm2Dbase::incInputFromNS(NSForW2D & ns_)
 {
+    
+    if (NSInputConn.size()<=0) return;
 
     vector<double> vtot(par1.N_size, 0.0);
-
+   
     for (int i=0;i<NSInputConn.size();i++)
     {
         const toFromWeight & tfw = NSInputConn[i];
         vtot[tfw.to-1] += tfw.w.weight*ns_.NeuronOutput(tfw.w.from);
+    
     }
-
+    
     for (int i=0;i<vtot.size();i++) n_ptr->IncNeuronExternalInput(i+1, vtot[i]); 
 
 }
@@ -957,18 +960,20 @@ void Worm2Dbase::incInputFromNS(NSForW2D & ns_)
 void Worm2Dbase::setExternalInput()
 {
 
+    if (externalInputConn.size()<=0) return;
+
     assignExternalInput();
 
+    
     vector<double> vtot(par1.N_size, 0.0);
-    bool hasUpdate = false;
-
+   
     for (int i=0;i<externalInputConn.size();i++)
     {
         const toFromWeight & tfw = externalInputConn[i];
         vtot[tfw.to-1] += tfw.w.weight*externalInputs[tfw.w.from-1];
-        hasUpdate = true;
+       
     }
-    if (hasUpdate)
+    
     for (int i=0;i<vtot.size();i++) n_ptr->IncNeuronExternalInput(i+1, vtot[i]); 
 
 }

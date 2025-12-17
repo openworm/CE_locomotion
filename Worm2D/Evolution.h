@@ -588,8 +588,8 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             w.Step();
         }    
 
-        cout << "EparsR->dbunit " << EparsR->dbunit << endl;
-        cout << "EparsR->vbunit " << EparsR->vbunit << endl;
+        //cout << "EparsR->dbunit " << EparsR->dbunit << endl;
+        //cout << "EparsR->vbunit " << EparsR->vbunit << endl;
        
         //assert(0);
        

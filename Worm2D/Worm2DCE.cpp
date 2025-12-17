@@ -14,7 +14,7 @@
 
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
 Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,0, sr_ptr_),
-    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+    W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
     sr_ptr(sr_ptr_)
 {
     initConst(); 
@@ -58,7 +58,7 @@ Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0, sr_ptr_),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1)),
+  } ,0, sr_ptr_),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
   sr_ptr(sr_ptr_)
 {
 
@@ -655,8 +655,11 @@ void Worm2DCE::setExternalInputOrig()
 
 void WormCE::randomizeNS(RandomState &rs)
 {
- 
-  if (W2Dbaseparameters1->randomInitialState) {
+ shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+
+ assert(w1parss!=nullptr);
+
+  if (w1parss->randomInitialState) {
   n.RandomizeCircuitState(-1, 1, rs);
   n.RandomizeCircuitOutput(0.2, 0.8, rs);
   }
@@ -673,9 +676,10 @@ void WormCE::InitializeState(RandomState &rs)
   
   //assert(0);
 
+  shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+  assert(w1parss!=nullptr);
 
-
-  if (W2Dbaseparameters1->randomInitialState) {
+  if (w1parss->randomInitialState) {
     randomizeNS(rs);
   }
   else{
@@ -710,7 +714,7 @@ void WormCE::setEvolPars(W2Dparameters & w2par_, string evotype_)
 void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
  
-  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1);
+  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
 
 
     // Genotype -> Phenotype Mapping Ranges

@@ -7,7 +7,7 @@ from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("../neuromlLocal")
 
 
-output_folder = "experiments/osc21alldemo"
+output_folder = "experiments/osc21alldemo_p2"
 output_folder_nml = output_folder + "_nml"
 output_folder_nml_musc = output_folder + "_nml_musc"
 
@@ -17,16 +17,16 @@ transient = 10
 do_muscles = False
 do_nml = False
 
-randseed = 4012128
+randseed = 40112
 model_name = "W2Dosc21all"
 print(output_folder)
 run(
     simduration=duration,
     simtransient=transient,
-    duration=50,
-    transient=20,
-    maxGens=300,
-    popSize=52,
+    duration=30,
+    transient=0,
+    maxGens=30,
+    popSize=92,
     RandSeed=randseed,
     modelName=model_name,
     modelFolder="Worm2D",

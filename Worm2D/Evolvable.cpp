@@ -15,6 +15,8 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 void W2DbaseparametersNML::setPars(shared_ptr<const CmdArgs> cmd)
 {
     randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+    //cout << "randomInitialState " << randomInitialState << endl;
+    //assert(0);
 
 }
 
