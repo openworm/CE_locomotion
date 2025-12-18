@@ -25,14 +25,10 @@ class TVector {
 public:
     // Constructors
     TVector() : lb(1), ub(0) {}
-    TVector(int LowerBound, int UpperBound) { SetBounds(LowerBound, UpperBound); }
-    TVector(const TVector<EltType>& v) { 
-        
-        lb = 1; ub = 0; 
-	    SetBounds(v.LowerBound(),v.UpperBound());
-	    for (int i = lb; i <= ub; i++)
-		    (*this)[i] = v[i];
-        }
+    TVector(int LowerBound, int UpperBound) { 
+        SetBounds(LowerBound, UpperBound); 
+    }
+    TVector(const TVector<EltType>& v) { *this = v; }
 
     // Destructor
     ~TVector() = default;

@@ -97,9 +97,10 @@ int main (int argc, const char* argv[])
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
-       
+     
         evo->addParsToJson(j);
         delete evo;
+        //assert(0);
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
@@ -124,6 +125,7 @@ int main (int argc, const char* argv[])
 
     //bool do_nml =  getParameterInt(argc,argv,"--donml","0");
 
+    
     
     bool do_nml =  cmd->getArgValInt("--donml",0);
 

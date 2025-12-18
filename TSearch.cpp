@@ -85,7 +85,7 @@ TSearch::TSearch(int VSize, double (*EvalFn)(TVector<double> &, RandomState &))
 
 TSearch::~TSearch()
 {
-  RandomStates.SetSize(0);
+ 	RandomStates.SetSize(0);
 	for (int i = 1; i <= PopulationSize(); i++)
 		Population[i].SetSize(0);
 	Population.SetSize(0);
