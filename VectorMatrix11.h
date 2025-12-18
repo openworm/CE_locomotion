@@ -44,8 +44,8 @@ public:
         //if (NewUB < NewLB){
         //std::cout << NewUB << " " << NewLB << std::endl;
         //assert(0);}
-        if (NewUB < NewLB)
-         	throw std::invalid_argument("Attempt to allocate a negative length TVector");
+        //if (NewUB < NewLB)
+        // 	throw std::invalid_argument("Attempt to allocate a negative length TVector");
         lb = NewLB;
         ub = NewUB;
         if (Size()<0)
@@ -175,6 +175,8 @@ public:
           //  throw std::invalid_argument("Attempt to allocate negative sized TMatrix");
         lb1 = newlb1; ub1 = newub1;
         lb2 = newlb2; ub2 = newub2;
+        if (RowSize()<0 || ColumnSize()<0)
+          throw std::invalid_argument("Attempt to allocate negative sized TMatrix");
         matrix.resize(RowSize());
         for (auto& row : matrix)
             row.resize(ColumnSize());
