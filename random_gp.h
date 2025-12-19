@@ -5,6 +5,7 @@
 #include <fstream>
 #include <ostream>
 #include <istream>
+#include "VectorMatrix.h"
 
 // Numerical Recipes ran1 constants
 #define IA 16807
@@ -29,6 +30,7 @@ int UniformRandomInteger(int min,int max);
 double GaussianRandom(double mean, double variance);
 void RandomUnitVector(std::vector<double>& v);
 int ProbabilisticChoice(double prob);
+void RandomUnitVector(TVector<double> &v);
 
 class RandomState {
 public:
@@ -43,6 +45,7 @@ public:
     double GaussianRandom(double mean, double variance);
     void RandomUnitVector(std::vector<double>& v);
     int ProbabilisticChoice(double prob);
+    void RandomUnitVector(TVector<double> &v);
 
     void WriteRandomState(std::ostream& os);
     void BinaryWriteRandomState(std::ofstream& bofs);

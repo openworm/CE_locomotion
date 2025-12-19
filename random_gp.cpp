@@ -21,6 +21,7 @@ int UniformRandomInteger(int min,int max) { return GRS.UniformRandomInteger(min,
 double GaussianRandom(double mean, double variance) { return GRS.GaussianRandom(mean,variance); }
 void RandomUnitVector(std::vector<double>& v) { GRS.RandomUnitVector(v); }
 int ProbabilisticChoice(double prob) { return GRS.ProbabilisticChoice(prob); }
+void RandomUnitVector(TVector<double> &v) {GRS.RandomUnitVector(v);};
 
 RandomState::RandomState(long s) {
     SetRandomSeed(s);
@@ -143,4 +144,18 @@ void RandomState::RandomUnitVector(std::vector<double>& v)
 int RandomState::ProbabilisticChoice(double prob)
 {
     return (UniformRandom(0.0,1.0) <= prob) ? 1 : 0;
+}
+
+void RandomState::RandomUnitVector(TVector<double> &v)
+{
+	double r = 0.0;
+
+	for (int i = v.LowerBound(); i <= v.UpperBound(); i++)
+	{
+		v[i] = GaussianRandom(0,1);
+		r += v[i] * v[i];
+	}
+	r = sqrt(r);
+	for (int i = v.LowerBound(); i <= v.UpperBound(); i++)
+		v[i] = v[i] / r;
 }
