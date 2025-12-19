@@ -24,12 +24,12 @@
 
 #include "TSearch.h"
 #include <math.h>
-#include <limits.h>
+//#include <limits.h>
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
 //#include <cassert>
-
+#include <limits>
 // An out of memory handler for new
 
 #include <new>
@@ -37,7 +37,7 @@
 void OutOfMemoryHandler(void)
 {
 	cerr << "Error: Out of memory!\n";
-	exit(0);
+	exit(1);
 }
 
 
@@ -50,9 +50,10 @@ void OutOfMemoryHandler(void)
 TSearch::TSearch(int VSize, double (*EvalFn)(TVector<double> &, RandomState &))
 {
 	// Install a default new handler if none is currently installed
-	new_handler OldHandler;
-	OldHandler = set_new_handler(OutOfMemoryHandler);
-	if (OldHandler != NULL) set_new_handler(OldHandler);
+	//new_handler OldHandler;
+	//OldHandler = set_new_handler(OutOfMemoryHandler);
+	//if (OldHandler != NULL) set_new_handler(OldHandler);
+	set_new_handler(OutOfMemoryHandler);
 	// Initialize internal state                                              
 	SearchInitialized = 0;
 	// Initialize function pointers
@@ -107,7 +108,7 @@ TSearch::~TSearch()
 void TSearch::SetVectorSize(int NewSize)
 {
 	// Set up the new vector size
-	if (NewSize <= 0) {cerr << "Invalid vector size: "<< NewSize; exit(0);}
+	if (NewSize <= 0) {cerr << "Invalid vector size: "<< NewSize; exit(1);}
 	vectorSize = NewSize;
 	// Resize the population
 	for (int i = 1; i <= Population.Size(); i++)
@@ -129,7 +130,7 @@ void TSearch::SetVectorSize(int NewSize)
 
 void TSearch::SetPopulationSize(int NewSize)
 {
-	if (NewSize <= 0) {cerr << "Invalid population size: "<< NewSize; exit(0);}
+	if (NewSize <= 0) {cerr << "Invalid population size: "<< NewSize; exit(1);}
 	Population.SetSize(NewSize);
 	for (int i = 1; i <= NewSize; i++)
 		Population[i].SetSize(vectorSize);
@@ -137,7 +138,9 @@ void TSearch::SetPopulationSize(int NewSize)
 	fitness.SetSize(NewSize);
   RandomStates.SetSize(NewSize);
   for (int i = 1; i <= NewSize; i++)
-      RandomStates[i].SetRandomSeed(rs.UniformRandomInteger(1,(int)LONG_MAX));
+	RandomStates[i].SetRandomSeed(rs.UniformRandomInteger(1,std::numeric_limits<int>::max()));
+
+      //RandomStates[i].SetRandomSeed(rs.UniformRandomInteger(1,(int)LONG_MAX));
 //    RandomStates[i].SetRandomSeed(rs.UniformRandomInteger(1,32767)); // XXX
 //    RandomStates[i].SetRandomSeed(rs.UniformRandomInteger(1,LONG_MAX));
 }
@@ -149,7 +152,7 @@ void TSearch::SetMaxGenerations(int NewMax)
 {
 	if (NewMax < 0) {
 		cerr << "Invalid MaxGenerations: " << NewMax; 
-		exit(0);
+		exit(1);
 	}
 	MaxGens = NewMax;
 }
@@ -161,7 +164,7 @@ void TSearch::SetElitistFraction(double NewFraction)
 {
 	if (NewFraction < 0.0 || NewFraction > 1.0) {
 		cerr << "Invalid ElitismFraction: " << NewFraction; 
-		exit(0);
+		exit(1);
 	}
 	EFraction = NewFraction;
 }
@@ -173,7 +176,7 @@ void TSearch::SetMaxExpectedOffspring(double NewVal)
 {
 	if (NewVal < 1.0 || NewVal > 2.0) {
 		cerr << "Invalid MaxExpectedOffspring: " << NewVal; 
-		exit(0);
+		exit(1);
 	}
 	MaxExpOffspring = NewVal;
 }
@@ -185,7 +188,7 @@ void TSearch::SetMutationVariance(double NewVariance)
 {
 	if (NewVariance <= 0.0) {
 		cerr << "Invalid MutationVariance: " << NewVariance; 
-		exit(0);
+		exit(1);
 	}
 	MutationVar = NewVariance;
 }
@@ -197,7 +200,7 @@ void TSearch::SetCrossoverProbability(double NewProb)
 {
 	if (NewProb < 0.0 || NewProb > 1.0) {
 		cerr << "Invalid CrossoverProbability: " << NewProb; 
-		exit(0);
+		exit(1);
 	}
 	CrossProb = NewProb;
 }
@@ -210,7 +213,7 @@ void TSearch::SetCrossoverTemplate(TVector<int> &NewTemplate)
 	// Modify CrossoverTemplate
 	if (NewTemplate.Size() != vectorSize) {
 		cerr << "Invalid vector size for CrossoverTemplate: " << NewTemplate.Size();
-		exit(0);
+		exit(1);
 	}
 	int x = 1;
 	for (int i = 1; i <= NewTemplate.Size(); i++)
@@ -223,7 +226,7 @@ void TSearch::SetCrossoverTemplate(TVector<int> &NewTemplate)
 			else
             {
 				cerr << "Invalid format for CrossoverTemplate: " << NewTemplate;
-				exit(0);
+				exit(1);
 			}
         }
 	crossTemplate = NewTemplate;
@@ -244,18 +247,18 @@ void TSearch::SetCrossoverPoints(TVector<int> &NewPoints)
 	// Modify CrossoverPoints
 	if (NewPoints.Size() > vectorSize) {
 		cerr << "Invalid vector size for Crossover Points: " << NewPoints.Size();
-		exit(0);
+		exit(1);
 	}
 	if (NewPoints.Size() < 1 || NewPoints[1] != 1) {
 		cerr << "Invalid format for Crossover Points: " << NewPoints;
-		exit(0);
+		exit(1);
 	}
 	int x = 0;
 	for (int i = 1; i <= NewPoints.Size(); i++)
 		if (NewPoints[i] > x && NewPoints[i] <= vectorSize) x = NewPoints[i];
 		else {
 			cerr << "Invalid format for Crossover Points: " << NewPoints;
-			exit(0);
+			exit(1);
 		}
 	crossPoints = NewPoints;
 	// Modify CrossoverTemplate appropriately
@@ -278,7 +281,7 @@ void TSearch::SetSearchConstraint(TVector<int> &constraint)
 {
 	if (constraint.Size() != vectorSize) {
 		cerr << "Invalid vector size for SearchConstraint: " << constraint;
-		exit(0);
+		exit(1);
 	}
 	ConstraintVector = constraint;
 }
@@ -296,7 +299,7 @@ void TSearch::SetCheckpointInterval(int NewInterval)
 {
 	if (NewInterval < 0) {
 		cerr << "Invalid CheckpointInterval: " << NewInterval; 
-		exit(0);
+		exit(1);
 	}
 	CheckpointInt = NewInterval;
 }
@@ -319,7 +322,7 @@ void TSearch::DoSearch(int ResumeFlag)
 	if (EvaluationFunction == NULL)
 	{
 		cerr << "Error: NULL evaluation function\n";
-		exit(0);
+		exit(1);
 	}
 	// Unless we're resuming a checkpointed search, evalute the initial population and reset best
 	if (!ResumeFlag) {
@@ -616,10 +619,12 @@ void TSearch::UpdatePopulationFitness(void)
 			}
 		// Calculate normalized fitness based on a rank-based method
 		case RANK_BASED:
+			if (psize == 1)
+			{cout << "Psize is too small" << endl;exit(1);}
 			for (int i = 1; i <= psize; i++)
 				fitness[i] = (MaxExpOffspring + (2.0 - 2.0*MaxExpOffspring)*((i-1.0)/(psize-1)))/psize;
 			break;
-		default: cerr << "Invalid selection mode" << endl; exit(0);
+		default: cerr << "Invalid selection mode" << endl; exit(1);
 	}
 }
 
@@ -702,7 +707,7 @@ void TSearch::ReproducePopulation(void)
 	switch (RepMode) {
 		case HILL_CLIMBING: ReproducePopulationHillClimbing(); break;
 		case GENETIC_ALGORITHM: ReproducePopulationGeneticAlgorithm(); break;
-		default: cerr << "Invalid reproduction mode" << endl; exit(0);
+		default: cerr << "Invalid reproduction mode" << endl; exit(1);
 	}
 }
 
@@ -794,7 +799,7 @@ void TSearch::ReproducePopulationGeneticAlgorithm(void)
 			switch (CrossMode) {
 				case UNIFORM: UniformCrossover(Population[i],Parent2); break;
 				case TWO_POINT: TwoPointCrossover(Population[i],Parent2); break;
-				default: cerr << "Invalid crossover mode" << endl; exit(0);
+				default: cerr << "Invalid crossover mode" << endl; exit(1);
 			}
 			// If the child is the same as the first parent after crossover, mutate it
 			if (EqualVector(Population[i],Parent1)) MutateVector(Population[i]);
@@ -880,6 +885,7 @@ void TSearch::WriteCheckpointFile()
 {
 
 	ofstream bofs(cptfilename, ios::binary);
+	if (!bofs) {cout << "File not opened " << endl; exit(1);}
   int i;
   double d;
 	// Write the vector size and population size
@@ -895,21 +901,21 @@ void TSearch::WriteCheckpointFile()
 	switch (SelectMode) {
 		case FITNESS_PROPORTIONATE: i = 1; break;
 		case RANK_BASED: i = 2; break;
-		default: cerr << "Invalid selection mode" << endl; exit(0);
+		default: cerr << "Invalid selection mode" << endl; exit(1);
 	}
   bofs.write((const char*) &(i), sizeof(i));      
 	// Write the reproduction mode
 	switch (RepMode) {
 		case HILL_CLIMBING: i = 1; break;
 		case GENETIC_ALGORITHM: i = 2; break;
-		default: cerr << "Invalid reproduction mode" << endl; exit(0);
+		default: cerr << "Invalid reproduction mode" << endl; exit(1);
 	}
   bofs.write((const char*) &(i), sizeof(i));
 	// Write the crossover mode
 	switch (CrossMode) {
 		case UNIFORM: i = 1; break;
 		case TWO_POINT: i = 2; break;
-		default: cerr << "Invalid crossover mode" << endl; exit(0);
+		default: cerr << "Invalid crossover mode" << endl; exit(1);
 	}
   bofs.write((const char*) &(i), sizeof(i));  
 	// Write the search initialized and re-evaluation flags, and the checkpoint frequency
@@ -947,6 +953,7 @@ void TSearch::WriteCheckpointFile()
 void TSearch::ReadCheckpointFile()
 {
   ifstream bifs(cptfilename, ios::binary);
+  if (!bifs) {cout << "File not opened " << endl; exit(1);}
   int i;
   double d;
   TVector<int> iv;
@@ -967,21 +974,21 @@ void TSearch::ReadCheckpointFile()
 	switch (i) {
     case 1: SetSelectionMode(FITNESS_PROPORTIONATE); break;
 		case 2: SetSelectionMode(RANK_BASED); break;
-		default: cerr << "Invalid selection mode" << endl; exit(0);
+		default: cerr << "Invalid selection mode" << endl; exit(1);
 	}
 	// Read the reproduction mode
 	bifs.read((char*) &(i), sizeof(i));
 	switch (i) {
 		case 1: SetReproductionMode(HILL_CLIMBING);break;
 		case 2: SetReproductionMode(GENETIC_ALGORITHM);break;
-		default: cerr << "Invalid reproduction mode" << endl; exit(0);
+		default: cerr << "Invalid reproduction mode" << endl; exit(1);
 	}
 	// Read the crossover mode
   bifs.read((char*) &(i), sizeof(i));
 	switch (i) {
 		case 1: SetCrossoverMode(UNIFORM);break;
 		case 2: SetCrossoverMode(TWO_POINT);break;
-		default: cerr << "Invalid crossover mode" << endl; exit(0);
+		default: cerr << "Invalid crossover mode" << endl; exit(1);
 	}
 	// Read the search initialized and re-evaluation flags, and the checkpoint frequency
   bifs.read((char*) &(SearchInitialized), sizeof(SearchInitialized));

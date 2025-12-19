@@ -1,6 +1,6 @@
 
 // ======================= random.cpp =======================
-#include "random_gp.h"
+#include "random.h"
 
 #include <cmath>
 #include <cstdlib>

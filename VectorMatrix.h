@@ -8,249 +8,494 @@
 
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <cstdlib>
 #include <cstdarg>
-#include <stdexcept>
-#include <cassert>
-#include <stdlib.h>
+
+using namespace std;
 
 #define DEBUG 0
 
-// =======================
-//        TVector
-// =======================
+// *******
+// TVector
+// *******
+
+// The TVector class declaration
 
 template<class EltType>
 class TVector {
 public:
-    // Constructors
-    TVector() : lb(1), ub(0) {}
-    TVector(int LowerBound, int UpperBound) { 
-        SetBounds(LowerBound, UpperBound); 
-    }
-    TVector(const TVector<EltType>& v) { *this = v; }
+	// Constructors
+	TVector(void);
+	TVector(int LowerBound, int UpperBound);
+	TVector(TVector<EltType> &v); 
+	
 
-    // Destructor
-    ~TVector() = default;
+	// The destructor
+	~TVector();
+	// Accessors
+	int Size(void) const {return ub - lb + 1;};
+	void SetSize(int NewSize) {SetBounds(lb,NewSize+lb-1);};
+	int LowerBound(void) const {return lb;};
+	void SetLowerBound(int NewLB) {SetBounds(NewLB,ub);};
+	int UpperBound(void) const {return ub;};
+	void SetUpperBound(int NewUB) {SetBounds(lb,NewUB);};
+	void SetBounds(int NewLB, int NewUB);
+	// Other stuff
+	void FillContents(EltType value);
 
-    // Accessors
-    int Size() const { return ub - lb + 1; }
-    int LowerBound() const { return lb; }
-    int UpperBound() const { return ub; }
+	double PushFront(EltType value);
+	
+	void InitializeContents(EltType v1,...);
+	// Vector i/o
+	void BinaryWriteVector(ofstream& bofs);
+	void BinaryReadVector(ifstream& binfs);
+	// Overloaded operators
+	EltType &operator[](int index) 
+	{
+#if !DEBUG
+		return Vector[index];
+#else
+		return (*this)(index);
+#endif
+	};
 
-    void SetSize(int NewSize) { SetBounds(lb, lb + NewSize - 1); }
-    void SetLowerBound(int NewLB) { SetBounds(NewLB, ub); }
-    void SetUpperBound(int NewUB) { SetBounds(lb, NewUB); }
 
-    void SetBounds(int NewLB, int NewUB) {
-        //if (NewUB < NewLB){
-        //std::cout << NewUB << " " << NewLB << std::endl;
-        //assert(0);}
-        //if (NewUB < NewLB)
-        // 	throw std::invalid_argument("Attempt to allocate a negative length TVector");
-        lb = NewLB;
-        ub = NewUB;
-        if (Size()<0)
-            throw std::invalid_argument("Attempt to allocate a negative length TVector");
-        data.resize(Size());
-    }
-
-    // Fill / modify
-    void FillContents(const EltType& value) {
-        std::fill(data.begin(), data.end(), value);
-    }
-
-    double PushFront(const EltType& value) {
-        if (data.empty()) return 0.0;
-        double sum = 0.0;
-        for (int i = ub; i > lb; --i){
-            (*this)(i) = (*this)(i - 1);
-            sum+=(*this)(i);
-        }
-        (*this)(lb) = value;
-        sum+=(*this)(lb);
-        return sum;
-    }
-
-    void InitializeContents(EltType v1, ...) {
-        if (data.empty()) return;
-        va_list ap;
-        va_start(ap, v1);
-        (*this)(lb) = v1;
-        for (int i = lb + 1; i <= ub; ++i)
-            (*this)(i) = va_arg(ap, EltType);
-        va_end(ap);
-    }
-
-    // Binary I/O
-    void BinaryWriteVector(std::ofstream& bofs) const {
-        bofs.write(reinterpret_cast<const char*>(&lb), sizeof(lb));
-        bofs.write(reinterpret_cast<const char*>(&ub), sizeof(ub));
-        for (int i = lb; i <= ub; ++i)
-            bofs.write(reinterpret_cast<const char*>(&(*this)(i)), sizeof(EltType));
-    }
-
-    void BinaryReadVector(std::ifstream& bifs) {
-        int LB, UB;
-        bifs.read(reinterpret_cast<char*>(&LB), sizeof(LB));
-        bifs.read(reinterpret_cast<char*>(&UB), sizeof(UB));
-        SetBounds(LB, UB);
-        for (int i = LB; i <= UB; ++i)
-            bifs.read(reinterpret_cast<char*>(&(*this)(i)), sizeof(EltType));
-    }
-
-    // Operators
-    EltType& operator[](int index) {
-        return (*this)(index);}
-
-    const EltType& operator[](int index) const {
-        return (*this)(index);}
-
-    const EltType& operator()(int index) const {
-        if (index < lb || index > ub)
-            throw std::out_of_range("Vector index out of bounds");
-        return data[index - lb];
-    }
-
-    EltType& operator()(int index) {
-        if (index < lb || index > ub)
-            throw std::out_of_range("Vector index out of bounds");
-        return data[index - lb];
-    }
-
-    TVector<EltType>& operator=(const TVector<EltType>& v) {
-        lb = v.lb;
-        ub = v.ub;
-        data = v.data;
-        return *this;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const TVector<EltType>& v) {
-        for (int i = v.LowerBound(); i <= v.UpperBound(); ++i) {
-            os << v(i);
-            if (i != v.UpperBound()) os << " ";
-        }
-        return os;
-    }
-
-    friend std::istream& operator>>(std::istream& is, TVector<EltType>& v) {
-        for (int i = v.LowerBound(); i <= v.UpperBound(); ++i)
-            is >> v(i);
-        return is;
-    }
-
-private:
-    int lb = 1, ub = 0;
-    std::vector<EltType> data;
+	inline const EltType &operator()(int index) const; //added const operator
+	inline EltType &operator()(int index);
+	inline TVector<EltType> &operator=(TVector<EltType> &v);
+	
+protected:
+	int lb = 1 , ub = 0;
+	EltType *Vector = nullptr;
 };
 
-// =======================
-//        TMatrix
-// =======================
+
+// The default constructor
+
+template<class EltType>
+TVector<EltType>::TVector(void) 
+{
+	lb = 1; ub = 0;
+}
+
+
+// The standard constructor
+
+template<class EltType>
+TVector<EltType>::TVector(int LB, int UB) 
+{
+	lb = 1; ub = 0; 
+	SetBounds(LB,UB);
+}
+
+
+// The copy constructor
+
+template<class EltType>
+TVector<EltType>::TVector(TVector<EltType> &v)
+{
+	lb = 1; ub = 0; 
+	SetBounds(v.LowerBound(),v.UpperBound());
+	for (int i = lb; i <= ub; i++)
+		Vector[i] = v[i];
+}
+
+
+
+
+// The destructor
+
+template<class EltType>
+TVector<EltType>::~TVector(void)
+{
+	SetSize(0);
+}
+
+
+// Set the bounds of a TVector, reallocating space as necessary and
+// preserving as much of the previous contents as possible
+
+template<class EltType>
+void TVector<EltType>::SetBounds(int newlb, int newub)
+{
+	// Only do it if we have to
+	if (lb == newlb && ub == newub) return;
+	// Save the old info and init the new
+	EltType *OldVector = Vector;
+	int oldlb = lb, oldub = ub, oldlen = ub - lb + 1, len = newub - newlb + 1;
+	lb = newlb; ub = newub;
+	// No negative length vectors allowed!
+	if (len < 0) {
+		cerr << "Attempt to allocate a negative length TVector\n";
+		exit(0);
+	}
+	// Allocate the new storage and copy as much of the old info as possible
+	if (len != 0) {
+		Vector = new EltType[len] - lb;
+		if (oldlen != 0)
+			for (int i = oldlb, j = lb; i <= oldub && j <= ub; i++,j++)
+				Vector[j] = OldVector[i];
+	}
+	// Recover the old storage
+	if (oldlen != 0) delete [] (OldVector + oldlb);
+}
+
+
+// Fill a TVector with the given value
+
+template<class EltType>
+void TVector<EltType>::FillContents(EltType value)
+{
+	for (int i = lb; i <= ub; i++)
+		Vector[i] = value;
+}
+
+
+// Push an element to the front 
+// The whole lists shifts and the last element is dropped
+// Added by Eduardo Izquierdo
+
+/* template<class EltType>
+void TVector<EltType>::PushFront(EltType value)
+{
+	for (int i = ub; i > lb; i-=1){
+		Vector[i] = Vector[i-1];
+	}
+	Vector[lb] = value;
+} */
+
+template<class EltType>
+double TVector<EltType>::PushFront(EltType value)
+{
+    double sum = 0.0;
+	for (int i = ub; i > lb; i-=1){
+		Vector[i] = Vector[i-1];
+		sum += Vector[i];
+	}
+	Vector[lb] = value;
+	sum += Vector[lb];
+	return sum;
+}
+
+
+// Initialize a TVector with given contents
+
+template<class EltType>
+void TVector<EltType>::InitializeContents(EltType v1,...)
+{
+	va_list ap;
+	
+	if (Size() == 0) return;
+	Vector[lb] = v1;
+	va_start(ap,v1);
+	for (int i = lb+1; i <= ub; i++)
+		Vector[i] = va_arg(ap,EltType);
+	va_end(ap);
+}
+
+
+// Overload the () operator to provide safe indexing
+
+template<class EltType>
+inline const EltType &TVector<EltType>::operator()(int index) const
+{
+	if (index < lb || index > ub) 
+	{
+		cerr << "Vector index " << index << " out of bounds\n";
+	 	exit(0);
+	}
+	return Vector[index];
+}
+
+template<class EltType>
+inline EltType &TVector<EltType>::operator()(int index)
+{
+	if (index < lb || index > ub) 
+	{
+		cerr << "Vector index " << index << " out of bounds\n";
+	 	exit(0);
+	}
+	return Vector[index];
+}
+
+
+// Overload the = operator to copy one TVector to another
+
+template<class EltType>
+inline TVector<EltType> &TVector<EltType>::operator=(TVector<EltType> &v)
+{
+	SetBounds(v.LowerBound(),v.UpperBound());
+	for (int i = lb; i <= ub; i++)
+		Vector[i] = v[i];
+	return *this;
+}
+
+
+// Overload the stream insertion operator to recognize a TVector
+
+template<class EltType>
+ostream& operator<<(ostream& os, TVector<EltType>& v)
+{
+	for (int i = v.LowerBound(); i < v.UpperBound(); i++)
+		os << v[i] << " ";
+	if (v.Size() > 0) os << v[v.UpperBound()];
+	return os;
+}
+
+// Read a vector from a file
+// Added by Thomas Buhrmann and Eduardo Izquierdo
+template<class EltType>
+istream& operator>>(istream& is, TVector<EltType>& v)
+{
+	for (int i = v.LowerBound(); i < v.UpperBound(); i++)
+		is >> v[i];
+	if (v.Size() > 0) is >> v[v.UpperBound()];
+	return is;
+}
+
+// Write and read a TVector in binary
+// (Thanks to Chad Seys)
+
+template<class EltType>
+void TVector<EltType>::BinaryWriteVector(ofstream& bofs)
+{
+	int thisSize = ub-lb+1;
+	bofs.write((const char*) &(lb), sizeof(lb));
+	bofs.write((const char*) &(ub), sizeof(ub));
+    
+	for (int i = lb; i < ub; i++) {
+		bofs.write((const char *) &(Vector[i]), sizeof(Vector[i]));
+	}	
+	if (thisSize > 0) {
+		bofs.write((const char *) &(Vector[ub]), sizeof(Vector[ub]));
+	}
+}
+
+template<class EltType>
+void TVector<EltType>::BinaryReadVector(ifstream& bifs)
+{
+	int LB;
+	int UB;
+	bifs.read((char *) &(LB), sizeof(LB));
+	bifs.read((char *) &(UB), sizeof(UB));
+	SetLowerBound(LB);
+	SetUpperBound(UB);
+	
+	for (int i = LB; i <= UB; ++i) {
+		bifs.read((char *) &(Vector[i]),sizeof(Vector[i]));
+	}
+}
+
+
+// *******
+// TMatrix
+// *******
+
+// The TMatrix class declaration
 
 template<class EltType>
 class TMatrix {
 public:
-    // Constructors
-    TMatrix() : lb1(1), ub1(0), lb2(1), ub2(0) {}
-    TMatrix(int RowLB, int RowUB, int ColLB, int ColUB) {
-        SetBounds(RowLB, RowUB, ColLB, ColUB);
-    }
-    TMatrix(const TMatrix<EltType>& m) { *this = m; }
-
-    // Destructor
-    ~TMatrix() = default;
-
-    // Accessors
-    int RowSize() const { return ub1 - lb1 + 1; }
-    int ColumnSize() const { return ub2 - lb2 + 1; }
-
-    int RowLowerBound() const { return lb1; }
-    int RowUpperBound() const { return ub1; }
-    int ColumnLowerBound() const { return lb2; }
-    int ColumnUpperBound() const { return ub2; }
-
-    void SetBounds(int newlb1, int newub1, int newlb2, int newub2) {
-        //if (newub1 < newlb1 || newub2 < newlb2)
-          //  throw std::invalid_argument("Attempt to allocate negative sized TMatrix");
-        lb1 = newlb1; ub1 = newub1;
-        lb2 = newlb2; ub2 = newub2;
-        if (RowSize()<0 || ColumnSize()<0) 
-            throw std::invalid_argument("Attempt to allocate negative sized TMatrix");
-        matrix.resize(RowSize());
-        for (auto& row : matrix)
-            row.resize(ColumnSize());
-    }
-
-    // Fill
-    void FillContents(const EltType& x) {
-        for (auto& row : matrix)
-            std::fill(row.begin(), row.end(), x);
-    }
-
-    // Initialize with variadic list (unsafe legacy-style)
-    void InitializeContents(EltType v1, ...) {
-        if (RowSize() == 0 || ColumnSize() == 0) return;
-        va_list ap;
-        va_start(ap, v1);
-        int i = lb1, j = lb2;
-        (*this)(i, j) = v1;
-        for (int r = 0; r < RowSize(); ++r)
-            for (int c = 0; c < ColumnSize(); ++c)
-                if (!(r == 0 && c == 0))
-                    (*this)(lb1 + r, lb2 + c) = va_arg(ap, EltType);
-        va_end(ap);
-    }
-
-    // Operators
-    EltType& operator()(int i, int j) {
-        if (i < lb1 || i > ub1 || j < lb2 || j > ub2)
-            throw std::out_of_range("Matrix index out of bounds");
-        return matrix[i - lb1][j - lb2];
-    }
-
-    const EltType& operator()(int i, int j) const {
-        if (i < lb1 || i > ub1 || j < lb2 || j > ub2)
-            throw std::out_of_range("Matrix index out of bounds");
-        return matrix[i - lb1][j - lb2];
-    }
-
-    TMatrix<EltType>& operator=(const TMatrix<EltType>& m) {
-        lb1 = m.lb1; ub1 = m.ub1;
-        lb2 = m.lb2; ub2 = m.ub2;
-        matrix = m.matrix;
-        return *this;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const TMatrix<EltType>& m) {
-        for (int i = m.RowLowerBound(); i <= m.RowUpperBound(); ++i) {
-            for (int j = m.ColumnLowerBound(); j <= m.ColumnUpperBound(); ++j) {
-                os << m(i, j);
-                if (j != m.ColumnUpperBound()) os << " ";
-            }
-            if (i != m.RowUpperBound()) os << "\n";
-        }
-        return os;
-    }
-
-    EltType* operator[](int i) {
-#if DEBUG
-        if (i < lb1 || i > ub1)
-            throw std::out_of_range("Matrix row index out of bounds");
+	// Constructors
+	TMatrix(void);
+	TMatrix(int RowLowerBound, int RowUpperBound, int ColumnLowerBound, int ColumnUpperBound);
+	TMatrix(TMatrix<EltType> &m);
+	// The destructor
+	~TMatrix();
+	
+	// Accessors
+	int RowSize(void) {return rowlen;};
+	void SetRowSize(int NewSize) {SetBounds(lb1,lb1+NewSize-1,lb2,ub2);};
+	int ColumnSize(void) {return collen;};
+	void SetColumnSize(int NewSize) {SetBounds(lb1,ub1,lb2,lb2+NewSize-1);};
+	void SetSize(int NewRowSize,int NewColSize) 
+	{SetBounds(lb1,lb1+NewRowSize-1,lb2,lb2+NewColSize-1);};
+	int RowLowerBound(void) {return lb1;};
+	void SetRowLowerBound(int newlb1) {SetBounds(newlb1,ub1,lb2,ub2);};
+	int RowUpperBound(void) {return ub1;};
+	void SetRowUpperBound(int newub1) {SetBounds(lb1,newub1,lb2,ub2);};
+	int ColumnLowerBound(void) {return lb2;};
+	void SetColumnLowerBound(int newlb2) {SetBounds(lb1,ub1,newlb2,ub2);};
+	int ColumnUpperBound(void) {return ub2;};
+	void SetColumnUpperBound(int newub2) {SetBounds(lb1,ub1,lb2,newub2);};
+	void SetBounds(int newlb1, int newub1, int newlb2, int newub2);
+	// Overloaded operators
+	EltType* operator[](int index) 
+	{
+#if !DEBUG
+		return Matrix[index];
+#else
+		if (index < lb1 || index > ub1)
+		{
+			cerr << "Matrix index " << index << " out of bounds\n";
+			exit(0);
+		}
+		return Matrix[index];
 #endif
-        return matrix[i - lb1].data();
-    }
-
-    const EltType* operator[](int i) const {
-#if DEBUG
-        if (i < lb1 || i > ub1)
-            throw std::out_of_range("Matrix row index out of bounds");
-#endif
-        return matrix[i - lb1].data();
-    }
-
-
-private:
-    int lb1 = 1, ub1 = 0, lb2 = 1, ub2 = 0;
-    std::vector<std::vector<EltType>> matrix;
+	};
+	inline EltType &operator()(int i,int j);
+	inline TMatrix<EltType> &operator=(TMatrix<EltType> &m);
+	// Other stuff
+	void FillContents(EltType x);
+	void InitializeContents(EltType v1,...);
+	
+protected:
+	int lb1 = 1, ub1 = 0, lb2 = 1, ub2 = 0, collen = 0, rowlen = 0;
+	EltType **Matrix = nullptr;
 };
+
+
+// The default constructor
+
+template<class EltType>
+TMatrix<EltType>::TMatrix(void)
+{
+	lb1 = lb2 = 1; ub1 = ub2 = 0; collen = 0; rowlen = 0;
+}
+
+
+// The standard constructor
+
+template<class EltType>
+TMatrix<EltType>::TMatrix(int RowLowerBound, int RowUpperBound, 
+                          int ColumnLowerBound, int ColumnUpperBound)
+{
+	lb1 = lb2 = 1; ub1 = ub2 = 0; collen = 0; rowlen = 0;
+	SetBounds(RowLowerBound,RowUpperBound,ColumnLowerBound,ColumnUpperBound);
+}
+
+
+// The copy constructor
+
+template<class EltType>
+TMatrix<EltType>::TMatrix(TMatrix<EltType> &m)
+{
+	lb1 = lb2 = 1; ub1 = ub2 = 0; collen = 0; rowlen = 0;
+	SetBounds(m.RowLowerBound(),m.RowUpperBound(),m.ColumnLowerBound(),m.ColumnUpperBound());
+	for (int i = lb1; i <= ub1; i++)
+		for (int j = lb2; j <= ub2; j++)
+			Matrix[i][j] = m[i][j];
+}
+
+
+// The destructor
+
+template<class EltType>
+TMatrix<EltType>::~TMatrix()
+{
+	SetSize(0,0);
+}
+
+
+// Set the bounds of a TMatrix to the given values, reallocating space as necessary.
+// Note that, unlike for TVectors, we do not try to preserve the previous contents.
+
+template<class EltType>
+void TMatrix<EltType>::SetBounds(int newlb1, int newub1, int newlb2, int newub2)
+{
+	// Only do it if we have to
+	if (newlb1 == lb1 && newub1 == ub1 && newlb2 == lb2 && newub2 == ub2) return;
+	// If storage is currently allocated, reclaim it
+	if (collen != 0) {
+		if (rowlen != 0)
+			for (int i = lb1; i <= ub1; i++)
+				delete (Matrix[i] + lb2);
+		delete [] (Matrix + lb1);
+	}
+	// Save the new bounds info
+	lb1 = newlb1; ub1 = newub1; lb2 = newlb2; ub2 = newub2; 
+	collen = ub1 - lb1 + 1; rowlen = ub2 - lb2 + 1;
+	// No negative sizes allowed!
+	if (collen < 0 || rowlen < 0) {
+		cerr << "Attempt to allocate a negative sized TMatrix\n";
+		exit(0);
+	}
+	// If new storage is needed, allocate it
+	if (collen != 0) {
+		Matrix = new EltType*[collen] - lb1;
+		if (rowlen != 0)
+			for (int i = lb1; i <= ub1; i++)
+				Matrix[i] = new EltType[rowlen] - lb2;
+		else
+			for (int i = lb1; i <= ub1; i++)
+				Matrix[i] = NULL;
+	}
+}
+
+
+// Fill a TMatrix with the given value
+
+template<class EltType>
+void TMatrix<EltType>::FillContents(EltType x)
+{
+	for (int i = lb1; i <= ub1; i++)
+		for (int j = lb2; j <= ub2; j++)
+			Matrix[i][j] = x;
+}
+
+
+// Initialize a TMatrix with given contents
+
+template<class EltType>
+void TMatrix<EltType>::InitializeContents(EltType v1,...)
+{
+	va_list ap;
+	
+	if (rowlen == 0 || collen == 0) return;
+	Matrix[lb1][lb2] = v1;
+	va_start(ap,v1);
+	for (int j = lb2+1; j <= ub2; j++)
+		Matrix[lb1][j] = va_arg(ap,EltType);
+	for (int i = lb1+1; i <= ub1; i++)
+		for (int j = lb2; j <= ub2; j++)
+			Matrix[i][j] = va_arg(ap,EltType);
+	va_end(ap);
+}
+
+
+// Overload the () operator to provide safe indexing
+
+template<class EltType>
+inline EltType &TMatrix<EltType>::operator()(int i,int j)
+{
+	if (i < lb1 || i > ub1 || j < lb2 || j > ub2)
+	{
+		cerr << "Matrix indices (" << i << "," << j << ") out of bounds\n";
+		exit(0);
+	}
+	return Matrix[i][j];
+}
+
+
+// Overload the = operator to copy one TMatrix to another
+
+template<class EltType>
+inline TMatrix<EltType> &TMatrix<EltType>::operator=(TMatrix<EltType> &m)
+{
+	SetBounds(m.RowLowerBound(),m.RowUpperBound(),m.ColumnLowerBound(),m.ColumnUpperBound());
+	for (int i = lb1; i <= ub1; i++)
+		for (int j = lb2; j <= ub2; j++)
+			Matrix[i][j] = m[i][j];
+	return *this;
+}
+
+
+// Overload the stream insertion operator to recognize a TMatrix
+
+template<class EltType>
+ostream& operator<<(ostream& os, TMatrix<EltType> &m)
+{
+	int i,j;
+	
+	for (i = m.RowLowerBound(); i < m.RowUpperBound(); i++) {
+		for (j = m.ColumnLowerBound(); j < m.ColumnUpperBound(); j++) 
+			os << m[i][j] << " ";
+		if (m.ColumnSize() > 0) os << m[i][m.ColumnUpperBound()] << endl;
+	}
+	if (m.RowSize() > 0) {
+		for (j = m.ColumnLowerBound(); j < m.ColumnUpperBound(); j++)
+			os << m[m.RowUpperBound()][j] << " ";
+		if (m.ColumnSize() > 0) os << m[m.RowUpperBound()][m.ColumnUpperBound()];
+	}
+	return os;
+}

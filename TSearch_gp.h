@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <numeric>
 
-#include "random_gp.h"
+#include "random.h"
 
 #ifdef THREADED_SEARCH
   #include <pthread.h>
@@ -98,14 +98,7 @@ public:
     double CrossoverProbability() const { return CrossProb; }
     void SetCrossoverProbability(double NewProb);
 
-    std::vector<int>& CrossoverTemplate() { return crossTemplate; }
-    //void SetCrossoverTemplate(const std::vector<int>& NewTemplate);
-
-    std::vector<int>& CrossoverPoints() { return crossPoints; }
-    //void SetCrossoverPoints(const std::vector<int>& NewPoints);
-
-    std::vector<int>& SearchConstraint() { return ConstraintVector; }
-    //void SetSearchConstraint(const std::vector<int>& Constraint);
+   
     void SetSearchConstraint(int Flag);
 
     int ReEvaluationFlag() const { return ReEvalFlag; }
@@ -138,12 +131,26 @@ public:
     // Status accessors
     int Generation() const { return Gen; }
 
-    std::vector<double>& Individual(int i) { return Population.at(i); }
-    double Fitness(int i) const { return fitness.at(i); }
-    double Performance(int i) const { return Perf.at(i); }
+   
+    TVector<double>& IndividualT(int i)
+    {
+        individualT.SetBounds(1,vectorSize);
+        for (int j=1;j<=vectorSize;j++) individualT(j)=Individual(i-1)[j-1];
+        return individualT;
+    }
+
+   
+    double FitnessT(int i) const { return fitness.at(i-1); }
+    double PerformanceT(int i) const { return Perf.at(i-1); }
 
     double BestPerformance() const { return BestPerf; }
-    std::vector<double>& BestIndividual() { return bestVector; }
+   
+    TVector<double>& BestIndividualT()
+    {
+        bestVectorT.SetBounds(1,vectorSize);
+        for (int i=1;i<=vectorSize;i++) bestVectorT(i)=BestIndividual()[i-1];
+        return bestVectorT;
+    }
 
     // Control
     void InitializeSearch();
@@ -162,6 +169,20 @@ public:
     void DoSearch(int ResumeFlag);
 
 private:
+     std::vector<int>& CrossoverTemplate() { return crossTemplate; }
+    //void SetCrossoverTemplate(const std::vector<int>& NewTemplate);
+
+    std::vector<int>& CrossoverPoints() { return crossPoints; }
+    //void SetCrossoverPoints(const std::vector<int>& NewPoints);
+
+    std::vector<int>& SearchConstraint() { return ConstraintVector; }
+    //void SetSearchConstraint(const std::vector<int>& Constraint);
+    
+    std::vector<double>& BestIndividual(){ return bestVector; }
+    double Fitness(int i) const { return fitness.at(i); }
+    double Performance(int i) const { return Perf.at(i); }
+    std::vector<double>& Individual(int i) { return Population.at(i); }
+
     // Helper methods
     int EqualVector(const std::vector<double>& v1,
                     const std::vector<double>& v2) const
@@ -207,6 +228,7 @@ private:
 
     int UpdateBestFlag = 0;
     std::vector<double> bestVector;
+    TVector<double> bestVectorT, individualT;
 
     double BestPerf = 0.0;
     double MinPerf  = 0.0;

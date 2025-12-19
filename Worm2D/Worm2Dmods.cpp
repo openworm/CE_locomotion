@@ -5,9 +5,9 @@
 void pfa::swap_all(pfa & pfa_){
     assert(pfa_.size==size);
 //size = pfa_.size;
-pfa_.phase.swap(phase);
-pfa_.freq.swap(freq);
-pfa_.amp.swap(amp);
+phase.swap(pfa_.phase);
+freq.swap(pfa_.freq);
+amp.swap(pfa_.amp);
 }
 
 
@@ -447,6 +447,8 @@ void Worm2DoscHalf::setParsFromPheno(const TVector<double> &phen)
 
 vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
 {
+    //cout << "NMJweight " << pars1->NMJweight << endl;
+    //assert(0);
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
     int from_neuron = to_musc+offset;

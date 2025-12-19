@@ -99,11 +99,7 @@ public:
 
     // Operators
     EltType& operator[](int index) {
-#if !DEBUG
         return (*this)(index);
-#else
-        return (*this)(index);
-#endif
     }
 
     const EltType& operator()(int index) const {
@@ -118,12 +114,16 @@ public:
         return data[index - lb];
     }
 
-    TVector<EltType>& operator=(const TVector<EltType>& v) {
+   
+
+    TVector<EltType>& operator=(const vector<EltType>& v) {
         lb = v.lb;
         ub = v.ub;
         data = v.data;
         return *this;
     }
+    
+
 
     friend std::ostream& operator<<(std::ostream& os, const TVector<EltType>& v) {
         for (int i = v.LowerBound(); i <= v.UpperBound(); ++i) {
