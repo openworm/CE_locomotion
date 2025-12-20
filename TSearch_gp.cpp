@@ -69,7 +69,7 @@ void OutOfMemoryHandler()
 // ============================
 
 TSearch::TSearch(int VSize,
-                 double (*EvalFn)(std::vector<double>&, RandomState&))
+                 double (*EvalFn)(TVector<double>&, RandomState&))
 {
     std::set_new_handler(OutOfMemoryHandler);
 
@@ -192,7 +192,10 @@ void TSearch::RandomizePopulation()
 
 double TSearch::EvaluateVector(std::vector<double>& v, RandomState& rs)
 {
-    double perf = EvaluationFunction(v, rs);
+    TVector<double> tv;
+    tv.SetBounds(1,v.size());
+    for (int i = 1;i<=v.size();i++) tv(i)=v[i-1];
+    double perf = EvaluationFunction(tv, rs);
     return perf < 0.0 ? 0.0 : perf;
 }
 

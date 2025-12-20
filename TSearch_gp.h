@@ -7,7 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <numeric>
-
+#include "VectorMatrix.h"
 #include "random.h"
 
 #ifdef THREADED_SEARCH
@@ -61,7 +61,7 @@ class TSearch {
 public:
     // Constructor / Destructor
     TSearch(int vectorSize = 0,
-            double (*EvalFn)(std::vector<double>&, RandomState&) = nullptr);
+            double (*EvalFn)(TVector<double>&, RandomState&) = nullptr);
     ~TSearch();
 
     // Basic accessors
@@ -108,8 +108,12 @@ public:
     void SetCheckpointInterval(int NewFreq);
 
     // Function pointer accessors
+    //void SetEvaluationFunction(
+    //    double (*EvalFn)(std::vector<double>&, RandomState&))
+    //{ EvaluationFunction = EvalFn; }
+
     void SetEvaluationFunction(
-        double (*EvalFn)(std::vector<double>&, RandomState&))
+        double (*EvalFn)(TVector<double>&, RandomState&))
     { EvaluationFunction = EvalFn; }
 
     void SetBestActionFunction(
@@ -177,7 +181,7 @@ private:
 
     std::vector<int>& SearchConstraint() { return ConstraintVector; }
     //void SetSearchConstraint(const std::vector<int>& Constraint);
-    
+
     std::vector<double>& BestIndividual(){ return bestVector; }
     double Fitness(int i) const { return fitness.at(i); }
     double Performance(int i) const { return Perf.at(i); }
@@ -257,7 +261,8 @@ private:
     int CheckpointInt = 0;
 
     // Function pointers
-    double (*EvaluationFunction)(std::vector<double>&, RandomState&) = nullptr;
+    //double (*EvaluationFunction)(std::vector<double>&, RandomState&) = nullptr;
+    double (*EvaluationFunction)(TVector<double>&, RandomState&) = nullptr;
     void (*BestActionFunction)(int, std::vector<double>&) = nullptr;
     void (*PopulationStatisticsDisplayFunction)(int, double, double, double) = nullptr;
     int (*SearchTerminationFunction)(int, double, double, double) = nullptr;

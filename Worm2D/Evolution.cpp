@@ -214,13 +214,13 @@ void EvoBase::construct(int vsize_, int offset_)
     else s = new TSearch(bestgenvec.size());
 
     
-    assert((bestgenvec.size() + offset_) <= s->Individual(1).Size());
+    assert((bestgenvec.size() + offset_) <= s->IndividualT(1).Size());
 
     configure_p11();
     s->InitializeSearch();
     for (int i = 1; i <= s->PopulationSize(); i++) 
     for (int j = 1; j <= bestgenvec.size(); j++)
-    s->Individual(i)(j + offset_) = bestgenvec[j-1];
+    s->IndividualT(i)(j + offset_) = bestgenvec[j-1];
     doResume = false;
     return;
     }
@@ -268,14 +268,14 @@ void EvoBase::setPopFromBestGenoFile(int offset)
 
 
     cout << "popsize " << s->PopulationSize() 
-    << " indsize " << s->Individual(1).Size() << " bestsize " << bestgenvec.size() << endl;
+    << " indsize " << s->IndividualT(1).Size() << " bestsize " << bestgenvec.size() << endl;
    //assert(0);
 
     //s->InitializeSearch();
 
     for (int i = 1; i <= s->PopulationSize(); i++) 
-    for (int j = 1 + offset; j <= s->Individual(i).Size(); j++)
-    s->Individual(i)(j) = bestgenvec[j-1];
+    for (int j = 1 + offset; j <= s->IndividualT(i).Size(); j++)
+    s->IndividualT(i)(j) = bestgenvec[j-1];
     
     doResume = true;
     //s->Gen = 0;
@@ -324,8 +324,8 @@ void EvoBase::setFromEvol(const EvoBase & er, int offset)
 
     cout << "using " << minsize << endl;
     for (int i = 1; i <= minsize; i++) 
-    for (int j = 1; j <= er.s->Individual(i).Size(); j++)
-    s->Individual(i)(j+offset) = er.s->Individual(i)(j);
+    for (int j = 1; j <= er.s->IndividualT(i).Size(); j++)
+    s->IndividualT(i)(j+offset) = er.s->IndividualT(i)(j);
 
    
     
@@ -521,7 +521,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
     for (int i = 1; i <= s->PopulationSize(); i++) {
         TVector<double> phenotype(1, itsVectSize());
-        GenPhenMapping(s->Individual(i), phenotype);
+        GenPhenMapping(s->IndividualT(i), phenotype);
         for (int j = 1; j <= phenotype.Size(); j++) 
         avphen(j) +=  phenotype(j);    
     }
@@ -539,7 +539,7 @@ const TVector<double> & Evolution::getBestPhenotype()
 {
 
 //TVector<double> phenotype(1, itsEvoPars().VectSize);   
-TVector<double> bestVector = s->BestIndividual();
+TVector<double> bestVector = s->BestIndividualT();
 GenPhenMapping(bestVector, phenotype);
 return phenotype;
 
@@ -549,7 +549,7 @@ return phenotype;
 
 TVector<double> & EvoBase::getBestGenotype()
 {
-    return s->BestIndividual();
+    return s->BestIndividualT();
 }
 
 
@@ -558,7 +558,7 @@ void Evolution::ResultsDisplay(TSearch &s)
 {
     //assert(0);
     TVector<double> bestVector;
-    bestVector = s.BestIndividual();
+    bestVector = s.BestIndividualT();
 
     {ofstream BestIndividualFile;
     //bestVector = s.BestIndividual();

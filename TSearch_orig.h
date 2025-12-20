@@ -119,11 +119,13 @@ class TSearch {
 		// Status Accessors
 		int Generation(void) {return Gen;};
 		TVector<double> &Individual(int i) {return Population(i);};
+		TVector<double> &IndividualT(int i) {return Population(i);};
 		//RandomState & itsRandomState(int i) {return RandomStates(i);};
 		double Fitness(int i) {return fitness(i);};
 		double Performance(int i) {return Perf(i);};
 		double BestPerformance (void) {return BestPerf;};
 		TVector<double> &BestIndividual(void) {return bestVector;};
+		TVector<double> &BestIndividualT(void) {return bestVector;};
 		// Control
 		void InitializeSearch(void);
 		void ExecuteSearch(void);

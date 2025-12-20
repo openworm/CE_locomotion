@@ -22,7 +22,7 @@
 //      and calling ExecuteSearch for each object.
 // *******************************************************************************
 
-#include "TSearch.h"
+#include "TSearch_orig.h"
 #include <math.h>
 //#include <limits.h>
 #include <iostream>
