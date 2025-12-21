@@ -41,7 +41,7 @@
 //
 // The logic and behavior match the original code.
 
-#include "TSearch_gp2.h"
+#include "TSearch.h"
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -269,14 +269,6 @@ int TSearch::SearchTerminated(void)
 }
 
 
-void TSearch::ReproducePopulation(void)
-{
-	switch (RepMode) {
-		case HILL_CLIMBING: ReproducePopulationHillClimbing(); break;
-		case GENETIC_ALGORITHM: ReproducePopulationGeneticAlgorithm(); break;
-		default: cerr << "Invalid reproduction mode" << endl; exit(1);
-	}
-}
 
 
 void TSearch::ReproducePopulationHillClimbing(void)
@@ -855,7 +847,34 @@ void TSearch::ReadCheckpointFile()
 
 
 
+void TSearch::DisplayPopulationStatistics(void)
+{
+	if (PopulationStatisticsDisplayFunction != NULL)
+		(*PopulationStatisticsDisplayFunction)(Gen,BestPerf,AvgPerf,PerfVar);
+	else {
+		cout << "Generation " << Gen << ": Best = " << BestPerf;
+		cout << ", Average = " << AvgPerf << ", Variance = " << PerfVar << endl;
+	}
+}
 
+
+// Display the results of a search
+
+void TSearch::DisplaySearchResults(void)
+{
+	if (SearchResultsDisplayFunction != NULL)
+		(*SearchResultsDisplayFunction)(*this);
+}
+
+
+void TSearch::SetCheckpointInterval(int NewInterval) 
+{
+	if (NewInterval < 0) {
+		cerr << "Invalid CheckpointInterval: " << NewInterval; 
+		exit(1);
+	}
+	CheckpointInt = NewInterval;
+}
 
 
 
