@@ -1,13 +1,18 @@
-// ======================= random.h =======================
+// *******************************
+// Various Random Number Utilities
+//
+// RDB 2/95
+// *******************************
+
 #pragma once
 
-#include <vector>
-#include <fstream>
-#include <ostream>
-#include <istream>
 #include "VectorMatrix.h"
+#include <fstream>
 
-// Numerical Recipes ran1 constants
+using namespace std;
+
+// Global defines for ran1
+
 #define IA 16807
 #define IM 2147483647
 #define AM (1.0/IM)
@@ -18,50 +23,58 @@
 #define EPS 1.2e-7
 #define RNMX (1.0-EPS)
 
-// Backward-compatible global RNG API
+
+// Functions to manipulate the global random state for backward compatibility
+
 void SetRandomSeed(long seed);
 long GetRandomSeed(void);
-void WriteRandomState(std::ostream& os);
-void BinaryWriteRandomState(std::ofstream& bofs);
-void ReadRandomState(std::istream& is);
-void BinaryReadRandomState(std::ifstream& bifs);
+void WriteRandomState(ostream& os);
+void BinaryWriteRandomState(ofstream& bofs);
+void ReadRandomState(istream& is);
+void BinaryReadRandomState(ifstream& bifs);
 double UniformRandom(double min,double max);
 int UniformRandomInteger(int min,int max);
 double GaussianRandom(double mean, double variance);
-void RandomUnitVector(std::vector<double>& v);
-int ProbabilisticChoice(double prob);
 void RandomUnitVector(TVector<double> &v);
+int ProbabilisticChoice(double prob);
+
+
+// The RandomState class declaration
 
 class RandomState {
 public:
-    explicit RandomState(long seed = 0);
-    ~RandomState() = default;
+  // The constructor
+  RandomState(long seed = 0) {
+    SetRandomSeed(seed); 
+    gaussian_flag = 0;
+   
+  }
+  // The destructor
+  ~RandomState() {}
+  
+  // Accessors
+  void SetRandomSeed(long seed);
+  long GetRandomSeed(void);
+  
+  // Helper functions
+  double ran1(void);
+  void GenerateNormals(void);
+  
+  // Return random deviates
+  double UniformRandom(double min,double max);
+  int UniformRandomInteger(int min,int max);
+  double GaussianRandom(double mean, double variance);
+  void RandomUnitVector(TVector<double> &v);
+  int ProbabilisticChoice(double prob);
+  
+  // Input/Output 
+  void WriteRandomState(ostream& os);
+  void BinaryWriteRandomState(ofstream& bofs);
+  void ReadRandomState(istream& is);
+  void BinaryReadRandomState(ifstream& bifs);
+  
 
-    void SetRandomSeed(long seed);
-    long GetRandomSeed(void);
-
-    double UniformRandom(double min,double max);
-    int UniformRandomInteger(int min,int max);
-    double GaussianRandom(double mean, double variance);
-    void RandomUnitVector(std::vector<double>& v);
-    int ProbabilisticChoice(double prob);
-    void RandomUnitVector(TVector<double> &v);
-
-    void WriteRandomState(std::ostream& os);
-    void BinaryWriteRandomState(std::ofstream& bofs);
-    void ReadRandomState(std::istream& is);
-    void BinaryReadRandomState(std::ifstream& bifs);
-
-private:
-    double ran1(void);
-    void GenerateNormals(void);
-
-    long seed = 0;
-    long idum = 0;
-    long iy = 0;
-    long iv[NTAB]{};
-
-    int gaussian_flag = 0;
-    double gX1 = 0.0, gX2 = 0.0;
+  long seed = 0, idum = 0, iy = 0, iv[NTAB];
+  int gaussian_flag = 0;
+  double gX1 = 0, gX2 = 0;
 };
-
