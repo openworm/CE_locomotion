@@ -205,8 +205,8 @@ virtual void setPfaFromPheno(const TVector<double> &v) = 0;
 
 NSosc & n;
 
-virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
-{return Worm2D::setWormPars(cmd);}
+//virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
+//{return Worm2D::setWormPars(cmd);}
 
 
 

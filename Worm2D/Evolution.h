@@ -180,8 +180,6 @@ evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)){}
 //{evolvable1->setWormPars(cmd_);}
 
 
-
-
 //evoPars getDefaultEvoPars(int argc, const char* argv[]);
 //evoPars getDefaultEvoPars(const string &);
 evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
@@ -210,15 +208,15 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
 
     if (evotype_=="EvoCO" || evotype_=="EvoCO2") 
-    return shared_ptr<const gradEvoPars>(new const gradEvoPars(cmd_));
+    return make_shared<const gradEvoPars>(cmd_);
     if (evotype_=="Evo21") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd_, evol1_, evotype_));
+    return make_shared<const EvolparametersCER>(cmd_, evol1_, evotype_);
     if (evotype_=="Evo18") 
-    return shared_ptr<const AgarPars>(new const AgarPars(cmd_));
+    return make_shared<const AgarPars>(cmd_);
     if (evotype_=="EvoCE" || evotype_=="EvoCENZ") 
-    return shared_ptr<const EvolparametersCE>(new const EvolparametersCE(cmd_));
+    return make_shared<const EvolparametersCE>(cmd_);
     if (evotype_=="Evo21R") 
-    return shared_ptr<const EvolparametersCER>(new const EvolparametersCER(cmd_, evol1_, evotype_));
+    return make_shared<const EvolparametersCER>(cmd_, evol1_, evotype_);
 
     assert(0 && "evotype not implemented");
     return nullptr;

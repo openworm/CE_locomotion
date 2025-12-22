@@ -44,7 +44,7 @@ class EvolvableS
   virtual int getVectSize() = 0;
   virtual void setParsFromPheno(const TVector<double> &pheno) = 0;
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
-  virtual void setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
+  //virtual void setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
 
   virtual ~EvolvableS(){}
   
