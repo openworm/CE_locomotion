@@ -59,6 +59,15 @@ public:
 #endif
 	};
 
+	const EltType &operator[](int index) const
+	{
+#if !DEBUG
+		return Vector[index];
+#else
+		return (*this)(index);
+#endif
+	};
+
 
 	inline const EltType &operator()(int index) const; //added const operator
 	inline EltType &operator()(int index);
@@ -234,7 +243,7 @@ inline TVector<EltType> &TVector<EltType>::operator=(TVector<EltType> &v)
 // Overload the stream insertion operator to recognize a TVector
 
 template<class EltType>
-ostream& operator<<(ostream& os, TVector<EltType>& v)
+ostream& operator<<(ostream& os, const TVector<EltType>& v)
 {
 	for (int i = v.LowerBound(); i < v.UpperBound(); i++)
 		os << v[i] << " ";

@@ -1073,7 +1073,7 @@ void Worm2Dosc21Coup::GenPhenMapping(const TVector<double> &gen, TVector<double>
 
 }
 
-void Worm2Dosc21CF::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void Worm2Dosc21CF::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
    
     cout << "GenPhenMapping Worm2Dosc21CF " << endl;

@@ -83,7 +83,7 @@ public:
     template<class T> friend class Evolvable_ptr;
     
     protected:
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 48;}
     void setParsFromPheno(TVector<double> &pheno);
     void setPhenoNames();

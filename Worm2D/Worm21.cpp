@@ -317,7 +317,7 @@ void Worm21::setPhenoNames()
 }
 
 
-void Worm21R::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void Worm21R::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 
 const double wAV_top = 10;

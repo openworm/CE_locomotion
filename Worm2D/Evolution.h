@@ -33,14 +33,14 @@ class EvoBase
 
     protected:
     const evoPars evoPars1;
-    TSearch* s;  
+    TSearch* s  =  nullptr;
     const simPars simPars1;
 
     public:
 
     EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, string prefix_);
 
-    TVector<double> & getBestGenotype();
+    const TVector<double> & getBestGenotype();
     
 
     
@@ -106,7 +106,7 @@ class EvoBase
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, setFromCPTflag, doCPT;//, doneFirst
+    bool doResume, setFromCPTflag = false, doCPT;//, doneFirst
     int popsize;
     bool configP1Called = false;
 };
@@ -132,8 +132,8 @@ class Evolution : public EvoBase
 
     public:
 
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
-    {cout << "no GenPhenMapping" << endl; assert(0); return;}
+    virtual void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) = 0;
+    //{cout << "no GenPhenMapping" << endl; assert(0); return;}
     virtual void RunSimulation(TVector<double> &v, RandomState &rs) 
     {cout << "RunSim not implemented" << endl; assert(0);}
     virtual void RunSimulation(Worm2Dbase & w, RandomState &rs)
@@ -296,7 +296,7 @@ class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
     void writeJson(TVector<double> & pheno);
 
   
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
 
 
@@ -339,7 +339,7 @@ public:
     Evolution::configure_p2();
     }
 
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen) 
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
 
     //const bool setFromEvolFlag = false;

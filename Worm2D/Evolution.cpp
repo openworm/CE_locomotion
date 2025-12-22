@@ -120,7 +120,7 @@ void EvoBase::setFromCPT2()
 
     struct stat buffer;   
     if (doCPT && evoPars1.CheckpointInterval>0 && (stat (filename_.c_str(), &buffer) == 0)) {
-        s = new TSearch(1);
+        s = new TSearch;
         s->cptfilename = filename_;
         
         s->ReadCheckpointFile();
@@ -490,7 +490,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     if (writeBestFlag) ResultsDisplay(*s);
 
     //TVector<double> & phencur =  getBestPhenotype();
-    TVector<double> & gencur =  getBestGenotype();
+    const TVector<double> & gencur =  getBestGenotype();
  
   
 
@@ -523,7 +523,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
         TVector<double> phenotype(1, itsVectSize());
         GenPhenMapping(s->IndividualT(i), phenotype);
         for (int j = 1; j <= phenotype.Size(); j++) 
-        avphen(j) +=  phenotype(j);    
+        avphen(j) =  avphen(j) + phenotype(j);    
     }
     for (int j = 1; j <= avphen.Size(); j++) avphen(j)= avphen(j)/s->PopulationSize();
     
@@ -539,7 +539,7 @@ const TVector<double> & Evolution::getBestPhenotype()
 {
 
 //TVector<double> phenotype(1, itsEvoPars().VectSize);   
-TVector<double> bestVector = s->BestIndividualT();
+const TVector<double> & bestVector = s->BestIndividualT();
 GenPhenMapping(bestVector, phenotype);
 return phenotype;
 
@@ -547,7 +547,7 @@ return phenotype;
  
 
 
-TVector<double> & EvoBase::getBestGenotype()
+const TVector<double> & EvoBase::getBestGenotype()
 {
     return s->BestIndividualT();
 }
@@ -557,8 +557,8 @@ TVector<double> & EvoBase::getBestGenotype()
 void Evolution::ResultsDisplay(TSearch &s)
 {
     //assert(0);
-    TVector<double> bestVector;
-    bestVector = s.BestIndividualT();
+    //TVector<double> bestVector;
+    const TVector<double> & bestVector = s.BestIndividualT();
 
     {ofstream BestIndividualFile;
     //bestVector = s.BestIndividual();
