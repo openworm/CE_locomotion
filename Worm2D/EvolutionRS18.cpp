@@ -25,7 +25,7 @@ void EvolutionRS18::addExtraParsToJson(json & j)
     appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }
 
-void EvolutionRS18::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void EvolutionRS18::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
     // --------------------------------
     // Parameters for the Ventral Nerve Cord Unit

@@ -24,7 +24,7 @@ void EvolutionCE::addExtraParsToJson(json & j)
     appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }
 
-void EvolutionCE::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void EvolutionCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
      // Parameters for the Stretch Receptors
   phen(SR_A) = MapSearchParameter(gen(SR_A), 0.0, SRmax);

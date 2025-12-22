@@ -29,7 +29,7 @@ class EvolutionRS18 : public Evolution
     }
 
 
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     double EvaluationFunctionOrig(TVector<double> &v, RandomState &rs);
     double EvaluationFunctionNoOut(TVector<double> &v, RandomState &rs);

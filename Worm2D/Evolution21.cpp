@@ -25,7 +25,7 @@ void Evolution21::addExtraParsToJson(json & j)
     //appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }
 
-void Evolution21::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void Evolution21::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
   // Bias
   for (int i = 1; i <= 7; i++){

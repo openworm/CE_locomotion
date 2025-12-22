@@ -20,7 +20,7 @@ class Evolution21:public Evolution
         1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
     ){}
 
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     double EvaluationFunction1(TVector<double> &v, RandomState &rs);
     double EvaluationFunction2(TVector<double> &v, RandomState &rs);

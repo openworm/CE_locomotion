@@ -23,7 +23,7 @@ return 2*(CircuitSize_-4) + (CircuitSize_-4)*(CircuitSize_-4)
 }
 
 
-void EvolutionCO::GenPhenMapping(TVector<double> &gen, TVector<double> &phen)
+void EvolutionCO::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 
 //	cout << "EvolutionCO::GenPhenMapping " << endl;

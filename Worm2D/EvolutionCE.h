@@ -17,7 +17,7 @@ class EvolutionCE:public Evolution
         96, 10, 0.05, 0.5, UNIFORM, 
         1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, 17}, 17){}    
 
-    void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     double EvaluationFunction(TVector<double> &v, RandomState &rs);
     double Evaluation(TVector<double> &v, RandomState &rs, int direction);
     //evoPars getEvoPars(const SuppliedArgs & sa);

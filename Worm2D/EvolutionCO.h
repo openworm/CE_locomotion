@@ -53,7 +53,7 @@ class EvolutionCO : virtual public Evolution
         CircuitSize(circuitsize_){ cout << "evol CO " << endl;}
 
 
-    virtual void GenPhenMapping(TVector<double> &gen, TVector<double> &phen);
+    virtual void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     virtual double EvaluationFunction(TVector<double> &v, RandomState &rs);
     void RunSimulation(TVector<double> &v, RandomState &rs){Behavior(v);}
     void RunSimulation(Worm2Dbase &w1, RandomState &rs){Behavior(w1);}
