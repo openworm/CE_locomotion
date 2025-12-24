@@ -45,7 +45,7 @@ par.messages_inds = {0,1,2}; //must be ordered
 return par;
 }
 
-SRWeights StretchReceptorCE::makeSRWeights() const
+SRWeights StretchReceptorCE::makeSRWeights_old() const
 {
 
     SRWeights srw;

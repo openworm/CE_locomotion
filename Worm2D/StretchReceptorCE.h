@@ -51,7 +51,7 @@ public:
 
 
     protected:
-    SRWeights makeSRWeights() const;
+    SRWeights makeSRWeights_old() const;
     
 };
 

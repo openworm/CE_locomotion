@@ -141,7 +141,7 @@ void TVector<EltType>::SetBounds(int newlb, int newub)
 	// Allocate the new storage and copy as much of the old info as possible
 	if (len != 0) {
 		Vector = new EltType[len] - lb;
-		for (int j = lb; j <= ub; j++) Vector[j] = 0; //added zero initialization
+		//for (int j = lb; j <= ub; j++) Vector[j] = 0; //added zero initialization
 		if (oldlen != 0)
 			for (int i = oldlb, j = lb; i <= oldub && j <= ub; i++,j++)
 				Vector[j] = OldVector[i];
