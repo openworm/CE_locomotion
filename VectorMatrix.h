@@ -28,7 +28,7 @@ public:
 	TVector(void);
 	TVector(int LowerBound, int UpperBound);
 	TVector(TVector<EltType> &v); 
-	
+	//TVector(const EltType & val):TVector(){} //added for initialization
 
 	// The destructor
 	~TVector();

@@ -42,11 +42,8 @@ class EvoBase
 
     const TVector<double> & getBestGenotype();
     
-
-    
     
     void addParsToJson(json & j);
-    
     
     
     
@@ -506,9 +503,9 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         double fitness_tr = 0.0;
         double bodyorientation, anglediff;
         double movementorientation, distancetravelled = 0, displacement, temp;
-        TVector<double> curvature(1, N_curvs);
-        TVector<double> antpostcurv(1, 2);
-        antpostcurv.FillContents(0.0);
+        //TVector<double> curvature(1, N_curvs);
+        //TVector<double> antpostcurv(1, 2);
+        //antpostcurv.FillContents(0.0);
     
         // Evaluation of B-class neuron oscillation,and frequency in segment 2.
         // The index of B class in this segment correspond to DBs2 = 10; VBs2 = 13
@@ -518,9 +515,12 @@ double EvolutionFullW<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     
         double freqDB=0, freqVB=0;
         int pDB = 0, pVB = 0, signtagDB, signtagVB, signDB, signVB;
+
         TVector<double> peaksDB(1, 2*Duration);
         TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
-    
+        peaksDB.FillContents(0.0);
+        peaksVB.FillContents(0.0);
+
         
         // Genotype-Phenotype Mapping
         //TVector<double> phenotype(1, VectSize);
@@ -723,9 +723,9 @@ double EvolutionFullW<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     fitness = 0.0;
     double bodyorientation, anglediff;
     double movementorientation, distancetravelled = 0, temp;
-    TVector<double> curvature(1, N_curvs);
-    TVector<double> antpostcurv(1, 2);
-    antpostcurv.FillContents(0.0);
+    //TVector<double> curvature(1, N_curvs);
+    //TVector<double> antpostcurv(1, 2);
+    //antpostcurv.FillContents(0.0);
 
     // Genotype-Phenotype Mapping
     //TVector<double> phenotype(1, VectSize);

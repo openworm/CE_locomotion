@@ -18,6 +18,7 @@ writeBestFlag(true),setFromCPTflag(false)
 
 construct(0,0);
 phenotype.SetBounds(1, itsVectSize());
+phenotype.FillContents(0.0);
 
     //set phenotype
 
@@ -30,7 +31,7 @@ writeBestFlag(true),setFromCPTflag(false)
 
 construct(0,0);
 phenotype.SetBounds(1, itsVectSize());
-
+phenotype.FillContents(0.0);
     //set phenotype
 
 }
@@ -44,6 +45,7 @@ EvoBase::EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_)
     {
         construct(VectSize_,0);
         phenotype.SetBounds(1, itsVectSize());
+        phenotype.FillContents(0.0);
         //setFromCPT();
         //setPopFromBestGenoFile();
 
@@ -60,6 +62,7 @@ EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_)
 
         construct(VectSize_,0);
         phenotype.SetBounds(1, itsVectSize());
+        phenotype.FillContents(0.0);
     }
 
 EvoBase::EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_, string prefix_)
@@ -74,6 +77,7 @@ EvoBase::EvoBase(int argc, const char* argv[], evoPars ep1, int VectSize_, strin
         //setPopFromBestGenoFile();
         construct(VectSize_,0);
         phenotype.SetBounds(1, itsVectSize());
+        phenotype.FillContents(0.0);
 
     }
 
@@ -89,6 +93,7 @@ EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1, int VectSize_, str
         //setPopFromBestGenoFile();
         construct(VectSize_,0);
         phenotype.SetBounds(1, itsVectSize());
+        phenotype.FillContents(0.0);
 
     }
 
@@ -495,6 +500,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
   
 
     TVector<double> phencur(1, itsVectSize());
+    phencur.FillContents(0.0);
     GenPhenMapping(gencur, phencur);
 
     genhistfile << Generation << " " << gencur << " " << phencur;
@@ -517,10 +523,12 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     //genprev = gencur;
 
     TVector<double> avphen(1, itsVectSize());
-    for (int j = 1; j <= avphen.Size(); j++) avphen(j)=0;
+    avphen.FillContents(0.0);
+    //for (int j = 1; j <= avphen.Size(); j++) avphen(j)=0;
 
     for (int i = 1; i <= s->PopulationSize(); i++) {
         TVector<double> phenotype(1, itsVectSize());
+        phenotype.FillContents(0.0);
         GenPhenMapping(s->IndividualT(i), phenotype);
         for (int j = 1; j <= phenotype.Size(); j++) 
         avphen(j) =  avphen(j) + phenotype(j);    
@@ -572,6 +580,7 @@ void Evolution::ResultsDisplay(TSearch &s)
     ofstream BestIndividualFile;
     BestIndividualFile.open(rename_file("best.phen.dat"));
     TVector<double> bestPheno(1,bestVector.Size());
+    bestPheno.FillContents(0);
     GenPhenMapping(bestVector,bestPheno);
     //BestIndividualFile.open(bestfilename);
     BestIndividualFile << setprecision(32);
