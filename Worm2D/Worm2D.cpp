@@ -176,8 +176,9 @@ void Worm2Dbody::InitializeState(RandomState &rs)
 void Worm2Dbase::InitializeState(RandomState &rs)
 {  
     //cout << "Worm2Dbase init state" << endl;
-    t = 0.0;
-    datatime =  0.0;
+    setTime(0);
+    //t = 0.0;
+    //datatime =  0.0;
     //writeDataCheck();
     //dataReset();
     return;

@@ -199,7 +199,7 @@ virtual ~Worm2Dbase(){
         if (n_ptr) delete n_ptr;
 }
 
-void setTime(double t_){t=t_;}
+virtual void setTime(double t_){t=t_;datatime=t_;}
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
@@ -252,10 +252,10 @@ vector<int> phenoNamesNums;
 
 void addPhenoName(string name, int k);
 
-double t; // Time
+double t = 0; // Time
 
 
-double settedStepSize;
+double settedStepSize = 0.01;
 
 void makeExternalInputConnFromJson(const json & j);
 virtual void makeExternalInputConn(){return;}
@@ -380,7 +380,7 @@ class Worm2D : virtual public Worm2Dm
     //void setMuscleInputVent();
     //void setMuscleInputDors();
     //Worm2D();
-    virtual void Step1();
+    void Step1();
     void setUp();
     Muscles & m;
     

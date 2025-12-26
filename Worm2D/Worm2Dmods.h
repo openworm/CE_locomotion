@@ -31,23 +31,26 @@ virtual double NeuronOutput(int i) {
 double NeuronState(int i) {return 0;}
 void SetNeuronExternalInput(int i, double value) {return;}
 void IncNeuronExternalInput(int i, double value) {return;}
-virtual void EulerStep(double stepsize) {t+=stepsize;}
+virtual void EulerStep(double stepsize_) {t+=stepsize_;}
+virtual void EulerStep(){t+=stepsize;}
 virtual ~NSosc(){};
 void setTime(const double & t_){t=t_;}
+void setStepSize(double val_){stepsize=val_;}
 const pfa & itsPfa() const {return pfa1;}
-virtual void setFromPheno(const TVector<double> &pheno){}
+//virtual void setFromPheno(const TVector<double> &pheno){}
 virtual void addParsToJson(json & j){pfa1.addParsToJson(j);}
 //friend class Worm2DoscBase<Worm2Dosc>;
 friend class Worm2Dosc;
 friend class Worm2Dosc21;
 friend class Worm2Dosc21all;
 friend class Worm2DoscHalf;
+void InitializeState(RandomState &rs){setTime(0);}
 
 pfa pfa1;
 protected:
 //vector<double> output;
 private:
-double t;
+double t = 0, stepsize = 0.01;
 
 
 //vector<double> phase, freq, amp;
@@ -208,15 +211,15 @@ NSosc & n;
 //virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
 //{return Worm2D::setWormPars(cmd);}
 
-
-
+void setStepSize(double val_){Worm2D::setStepSize(val_);n.setStepSize(val_);}
+void InitializeState(RandomState &rs){Worm2D::InitializeState(rs);n.InitializeState(rs);}
 protected:
 
 void construct(const TVector<double> &pheno);
 
 Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2par_ptr);
 void addParsToJson(json & j);
-
+void setTime(const double & t_){Worm2D::setTime(t_);n.setTime(t_);}
 
 
 };
