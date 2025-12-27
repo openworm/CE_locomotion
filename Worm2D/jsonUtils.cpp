@@ -35,7 +35,28 @@ void from_json(const json& j, toFromWeight & w)
 }
 
 
+void to_json(json & j, const intPair & w)
+{
+  j = json{{"ind", w.ind}, {"val", w.val}};
+}
 
+void from_json(const json& j, intPair & w) 
+{
+        j.at("ind").get_to(w.ind);
+        j.at("val").get_to(w.val);
+}
+
+void to_json(json & j, const toFromInt & w)
+{
+  j = json{{"to", w.to},  {"from", w.from},  {"val", w.val}};
+}
+
+void from_json(const json& j, toFromInt & w) 
+{
+        j.at("to").get_to(w.to);
+        j.at("from").get_to(w.from);
+        j.at("val").get_to(w.val);
+}
 
 
 Params<double> getBodyParams(WormBody& b)

@@ -110,7 +110,8 @@ ParamsHead<long> parInt;
 // An entry in a sparse weight matrix
 
 struct weightentry {int from; double weight;};
-
+struct intPair {int ind; int val;};
+struct toFromInt {int to; int from; int val;};
 
 struct toFromWeight{
     

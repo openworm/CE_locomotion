@@ -5,12 +5,14 @@
 //Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}*/
 
+Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
+Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
+
+
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
 //Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
-Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){}
-Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
@@ -31,7 +33,7 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setWormPars(cmd);
 
-    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
     setMuscBodExt(j);
     //setUpMuscleConn(j);
@@ -50,7 +52,8 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setWormPars(cmd);
-    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    
+    //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
     setBodExt(j);
     //setUpMuscleConn(j);

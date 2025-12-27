@@ -24,9 +24,9 @@ public:
 //Worm2DSRm(json & j, shared_ptr<const CmdArgs> cmd);
 Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd);
 Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
-void setWormPars(shared_ptr<const CmdArgs> cmd){
-  Worm2Dm::setWormPars(cmd);
-}
+
+//void setWormPars(shared_ptr<const CmdArgs> cmd){Worm2Dm::setWormPars(cmd);}
+
 void addParsToJson(json & j);
 void writeAct();
 protected:
@@ -48,9 +48,8 @@ public:
 Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd);
 //Worm2DSR(json & j);
 Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
-void setWormPars(shared_ptr<const CmdArgs> cmd){
-  Worm2D::setWormPars(cmd);
-}
+
+//void setWormPars(shared_ptr<const CmdArgs> cmd){Worm2D::setWormPars(cmd);}
 
 void addParsToJson(json & j);
 
@@ -71,3 +70,8 @@ const string getModelName() {return "W2DSR";}
 
 };
 
+class Worm2DSRE : public Worm2DSR, public EvolvableS
+{
+
+
+};
