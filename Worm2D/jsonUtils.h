@@ -113,9 +113,32 @@ void appendToJson(json & j, const Params<T> & par)
         }
                
 }
+
 void to_json(json & j, const weightentry & w);
 void to_json(json & j, const toFromWeight & w);
 void from_json(const json& j, toFromWeight & w);
+void to_json(json & j, const intPair & w);
+void from_json(const json& j, intPair & w);
+void to_json(json & j, const toFromInt & w);
+void from_json(const json& j, toFromInt & w);
+void to_json(json & j, const intDoubDoub & w);
+void from_json(const json& j, intDoubDoub & w);
+void to_json(json & j, const doubDoub & w);
+void from_json(const json& j, doubDoub & w);
+
+template<class T>
+vector<T> getEvoVecFromJ(const json & j, const string & name1_, const string & name2_)
+{
+return j[name1_][name2_]["evolvable"].template get< vector<T> >();
+}
+
+template<class T>
+vector<T> getEvoVecFromJ(const json & j, const vector<string> & namevec_)
+{
+  json j2 = j;
+  for (int i=0;i<namevec_.size(); i++) j2 = j2[namevec_[i]];
+  return j2.template get< vector<T> >();
+}
 
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);

@@ -16,7 +16,6 @@ json getJsonFromFile(const string & jsonfile_){
 
 
 
-
 void to_json(json & j, const weightentry & w)
 {
   j = json{{"from", w.from}, {"weight", w.weight}};
@@ -32,6 +31,29 @@ void from_json(const json& j, toFromWeight & w)
         j.at("to").get_to(w.to);
         j.at("from").get_to(w.w.from);
         j.at("weight").get_to(w.w.weight);
+}
+
+void to_json(json & j, const intDoubDoub & w)
+{
+  j = json{{"ind", w.ind}, {"val1", w.val1}, {"val2", w.val2}};
+}
+
+void from_json(const json& j, intDoubDoub & w) 
+{
+        j.at("ind").get_to(w.ind);
+        j.at("val1").get_to(w.val1);
+        j.at("val2").get_to(w.val2);
+}
+
+void to_json(json & j, const doubDoub & w)
+{
+  j = json{{"val1", w.val1}, {"val2", w.val2}};
+}
+
+void from_json(const json& j, doubDoub & w) 
+{
+        j.at("val1").get_to(w.val1);
+        j.at("val2").get_to(w.val2);
 }
 
 
@@ -256,9 +278,9 @@ void setNSFromJson(const json & j, NervousSystem & n)
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronExternalInput(i+1, vals[i]);}
     
-
-
 }
+
+
 
 void appendAllNSJson( json & j, NervousSystem & n)
 {

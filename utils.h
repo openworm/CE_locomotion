@@ -112,6 +112,9 @@ ParamsHead<long> parInt;
 struct weightentry {int from; double weight;};
 struct intPair {int ind; int val;};
 struct toFromInt {int to; int from; int val;};
+struct intDoubDoub {int ind; double val1; double val2;};
+struct stringPair {string s1; string s2;};
+struct doubDoub {double val1; double val2;};
 
 struct toFromWeight{
     

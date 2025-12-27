@@ -33,7 +33,7 @@ protected:
 
 //Worm2DSRm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_);
 //shared_ptr<SR> w2dsr_ptr = nullptr;
-virtual void Step1();
+void Step1();
 const string getModelName() {return "W2DSRm";}
 //vector<doubIntParamsHead> getWormParams();
 //static shared_ptr<SR> getSR(json & j);
@@ -60,7 +60,7 @@ protected:
 
 Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_);
 //shared_ptr<SR> w2dsr_ptr = nullptr;
-virtual void Step1();
+void Step1();
 const string getModelName() {return "W2DSR";}
 //vector<doubIntParamsHead> getWormParams();
 //static shared_ptr<SR> getSR(json & j);
@@ -70,8 +70,23 @@ const string getModelName() {return "W2DSR";}
 
 };
 
-class Worm2DSRE : public Worm2DSR, public EvolvableS
+class Worm2DSRE : public Worm2DSR
 {
+    public:
+Worm2DSRE(json j, shared_ptr<const CmdArgs> cmd);
+//Worm2DSR(json & j);
+Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
+void setParsFromPheno(const TVector<double> &pheno);
 
+void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
+//void setNSEvoFromJson(const json & j, NervousSystem & n);
+void makeVals(const json & j);
+void testJson(json & j);
+//vector<toFromInt> chem_weights_evo, elec_weights_evo;
+//vector<intPair> biases_evo, taus_evo, gains_evo;
+vector<doubDoub> genPhenLims;
+vector<vector<string> > TFnames, IPnames;
+vector<vector<toFromInt> > TFIvec;
+vector<vector<intPair> > IPvec;
 };

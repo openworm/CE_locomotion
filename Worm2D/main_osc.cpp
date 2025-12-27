@@ -140,7 +140,7 @@ int main (int argc, const char* argv[])
     if (sup_model_name == "W2DSR") 
     
     if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
-    else w2 = new Worm2DSR(json_filename, cmd);
+    else w2 = new Worm2DSRE(json_filename, cmd);
 
     else{
 
