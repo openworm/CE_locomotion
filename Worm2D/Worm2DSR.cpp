@@ -337,6 +337,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 
 for (int i = 0; i<TFnames.size(); i++)
 {
+
 const vector<string> & s1 = TFnames[i];
 const vector<toFromInt> & v1 = TFIvec[i];
 if (s1[0]=="Nervous system")
@@ -351,9 +352,39 @@ for (int j = 0; j<v1.size(); j++)
 n.SetElectricalSynapseWeight(v1[j].to, v1[j].from, pheno(v1[j].val)); //unity indices
 
 }
+else if (s1[0]=="Dorsal NMJ")
+{
+  if (s1[1]=="weights")
+  for (int j = 0; j<v1.size(); j++) 
+  for (int k = 0; k<dMuscConnvec.size(); k++)
+  if ((v1[j].to == dMuscConnvec[k].to) && (v1[j].from == dMuscConnvec[k].w.from))
+  {dMuscConnvec[k].w.weight = pheno(v1[j].val);break;}
 
 }
 
+}
+
+for (int i = 0; i<IPnames.size(); i++)
+{
+const vector<string> & s1 = IPnames[i];
+const vector<intPair> & v1 = IPvec[i];
+if (s1[0]=="Nervous system")
+{
+NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+if (s1[1]=="biases")
+for (int j = 0; j<v1.size(); j++)
+n.SetNeuronBias(v1[j].ind, pheno(v1[j].val));
+else if (s1[1]=="taus")
+for (int j = 0; j<v1.size(); j++)
+n.SetNeuronTimeConstant(v1[j].ind, pheno(v1[j].val));
+else if (s1[1]=="gains")
+for (int j = 0; j<v1.size(); j++)
+n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
+}
+
+}
+
+return;
 }
 
 void Worm2DSRE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
