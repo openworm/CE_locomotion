@@ -10,7 +10,6 @@ Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
-//Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
 
@@ -20,9 +19,9 @@ Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
-Worm2DSRE::Worm2DSRE(json j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
+Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd){testJson(j);makeVals(j);}
+  Worm2DSR(j,cmd){makeVals(j);}
   
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
@@ -292,9 +291,12 @@ void Worm2DSR::writeAct()
 
 void Worm2DSRE::makeVals(const json & j)
 {
+  if (!j.contains("Evolvable")) return;
+
   vector<string> v1;
   v1.push_back("Evolvable");
   v1.push_back("value");
+  
   genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
 
 
@@ -310,7 +312,7 @@ void Worm2DSRE::makeVals(const json & j)
         v1.push_back(it2.key());
         TFnames.push_back(v1);
         v1.push_back("evolvable");
-        TFIvec.push_back(getEvoVecFromJ<toFromInt>(j,v1));
+        TFIvec.push_back(getEvoVecFromJ<fromToInt>(j,v1));
         
         cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
    
@@ -339,17 +341,17 @@ for (int i = 0; i<TFnames.size(); i++)
 {
 
 const vector<string> & s1 = TFnames[i];
-const vector<toFromInt> & v1 = TFIvec[i];
+const vector<fromToInt> & v1 = TFIvec[i];
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
 if (s1[1]=="Chemical weights")
 for (int j = 0; j<v1.size(); j++)
-n.SetChemicalSynapseWeight(v1[j].to, v1[j].from, pheno(v1[j].val)); //unity indices
+n.SetChemicalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
 else if (s1[1]=="Electrical weights")
 for (int j = 0; j<v1.size(); j++)
-n.SetElectricalSynapseWeight(v1[j].to, v1[j].from, pheno(v1[j].val)); //unity indices
+n.SetElectricalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
 
 }
 else if (s1[0]=="Dorsal NMJ")
@@ -407,7 +409,7 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({-10.0,5.0});
   j["Evolvable"]["value"] = vec; 
 
-  {vector<toFromInt> vec;
+  {vector<fromToInt> vec;
   vec.push_back({1,3,1});
   vec.push_back({3,4,2});
   j["Dorsal NMJ"]["weights"]["evolvable"] = vec;
@@ -419,5 +421,16 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({3,3});
   j["Nervous system"]["biases"]["evolvable"] = vec;
   }
+
+}
+
+void Worm2DSRE::setEvolPars(W2Dparameters & w2par_, string evotype_)
+{
+    if (evotype_=="Evo21" || evotype_=="Evo21R"){
+    Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
+
+    Epars1.dbunit = 10;
+    Epars1.vbunit = 13;
+    }
 
 }

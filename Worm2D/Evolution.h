@@ -173,9 +173,10 @@ shared_ptr<T> evolvable1;
 //Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_),{}
 
 Evolvable_ptr(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
-evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)){}
+evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)),json_ptr(nullptr){}
 //{evolvable1->setWormPars(cmd_);}
-
+Evolvable_ptr(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
+evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)),json_ptr(json_ptr_){}
 
 //evoPars getDefaultEvoPars(int argc, const char* argv[]);
 //evoPars getDefaultEvoPars(const string &);
@@ -186,8 +187,11 @@ evoPars getDefaultEvoPars(const string & evotype_);
 static shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
     shared_ptr<T> evol1_);
 
-shared_ptr<const CmdArgs> cmd;
-const shared_ptr<const W2Dparameters> evopar_ptr;
+shared_ptr<const CmdArgs> cmd = nullptr;
+const shared_ptr<const W2Dparameters> evopar_ptr = nullptr;
+const shared_ptr<const json> json_ptr = nullptr;
+
+shared_ptr<T> getTw(){}
 
 };
 
@@ -277,6 +281,9 @@ class EvolutionFullW: public Evolvable_ptr<T>, public Evolution
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_)
     {this->evolvable1->setWormPars(cmd_);}
 
+    EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const json & j):
+    Evolvable_ptr<T>(make_shared<T>(j,cmd_),cmd_, make_shared<const json>(j)), 
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize()){}
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     double Evaluation21(TVector<double> &geno, RandomState &rs);

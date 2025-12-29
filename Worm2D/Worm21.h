@@ -59,6 +59,7 @@ public:
     
 
     protected:
+    void addEvolvableToJson(json & j);
     void addParsToJson(json & j);
     void setPhenoNames();
     void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);

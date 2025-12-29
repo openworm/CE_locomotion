@@ -223,7 +223,132 @@ void Worm21::addParsToJson(json & j)
         Worm2D21::addParsToJson(j);    
     }
 
+void Worm21::addEvolvableToJson(json & j)
+{
 
+  vector<doubDoub> vec;
+
+const double	BiasRange				= 15.0;
+     const double    SCRange                 = 15.0;
+     const double    CSRange                 = 15.0;
+     const double    TauMin                 = 0.1;
+     const double    TauMax                 = 2.5;
+     const double    ESRange                 = 2.0;
+     //const double    NMJmax                  = 1.2;
+
+
+for (int i = 1; i <= 7; i++) vec.push_back({-BiasRange, BiasRange});
+// Time Constant
+for (int i = 8; i <= 14; i++) vec.push_back({TauMin, TauMax});
+// Self connections
+for (int i = 15; i <= 21; i++) vec.push_back({-SCRange, SCRange});
+// Chemical synapses
+for (int i = 22; i <=30; i++) vec.push_back({-CSRange, CSRange});
+
+vec.push_back({0.0, ESRange});
+
+vec.push_back({-CSRange, CSRange});
+vec.push_back({-CSRange, CSRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+
+
+  j["Evolvable"]["value"] = vec; 
+
+vector<intPair> biasvec, tauvec;
+vector<fromToInt> chemvec, elecvec;
+
+int as, da, db, dd, vd, vb, va;
+    int asNext, dbNext, ddNext, vdNext, vbNext, vaNext ;
+    
+    for (int u = 1; u <= par1.N_units; u++){
+        as = nn(AS, u);
+        da = nn(DA, u);
+        db = nn(DB, u);
+        dd = nn(DD, u);
+        vd = nn(VD, u);
+        vb = nn(VB, u);
+        va = nn(VA, u);
+
+        asNext = nn(AS, u+1);
+        dbNext = nn(DB, u+1);
+        ddNext = nn(DD, u+1);
+        vdNext = nn(VD, u+1);
+        vbNext = nn(VB, u+1);
+        vaNext = nn(VA, u+1);
+     
+        {vector<intPair> & vec = biasvec;
+            vec.push_back({as,1});
+            vec.push_back({da,2});
+            vec.push_back({db,3});
+            vec.push_back({dd,4});
+            vec.push_back({vd,5});
+            vec.push_back({vb,6});
+            vec.push_back({va,7});
+       
+        }
+
+        {vector<intPair> & vec = tauvec;
+            vec.push_back({as,8});
+            vec.push_back({da,9});
+            vec.push_back({db,10});
+            vec.push_back({dd,11});
+            vec.push_back({vd,12});
+            vec.push_back({vb,13});
+            vec.push_back({va,14});
+        //j["Nervous system"]["taus"]["evolvable"] = vec;
+        }
+
+        {
+            vector<fromToInt> & vec = chemvec;
+            vec.push_back({as,as,15});
+            vec.push_back({da,da,16});
+            vec.push_back({db,db,17});
+            vec.push_back({dd,dd,18});
+            vec.push_back({vd,vd,19});
+            vec.push_back({vb,vb,20});
+            vec.push_back({va,va,21});
+
+            vec.push_back({as,da,22});
+            vec.push_back({as,vd,23});
+            vec.push_back({da,db,24});
+            vec.push_back({db, as,25});
+            vec.push_back({vd, va,26});
+            vec.push_back({vd, vb,27});
+            vec.push_back({da, dd,28});
+            vec.push_back({vb, dd,29});
+            vec.push_back({va, dd,30});
+
+            if (u < par1.N_units){
+                vec.push_back({db, ddNext, 32});
+                vec.push_back({vaNext, dd, 33});
+        }
+
+        //j["Nervous system"]["Chemical weights"]["evolvable"] = vec;        
+        }
+{
+  vector<fromToInt> & vec = elecvec;
+  vec.push_back({vd, dd, 31});
+
+    if (u < par1.N_units){
+        vec.push_back({as, vaNext, 34});
+        vec.push_back({da, asNext, 35});
+        vec.push_back({vb, dbNext, 36});
+}
+
+ //j["Nervous system"]["Electrical weights"]["evolvable"] = vec;
+}
+
+
+}
+
+ j["Nervous system"]["biases"]["evolvable"] = biasvec;
+j["Nervous system"]["taus"]["evolvable"] = tauvec;
+j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
+j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+}
 
 void Worm21::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {

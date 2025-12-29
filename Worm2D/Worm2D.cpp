@@ -582,6 +582,7 @@ externalInputConn.swap(vec1);
 void Worm2Dbase::addParsToJson(json & j)
 {  
 
+    addEvolvableToJson(j);
 
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);

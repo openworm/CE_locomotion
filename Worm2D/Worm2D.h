@@ -184,6 +184,7 @@ virtual void writeAct();
 void writeState();
 virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
+virtual void addEvolvableToJson(json & j) {return;}
 
 NSForW2D & itsNS(){return *n_ptr;}
 virtual void DumpParams(ofstream &ofs) {return;}

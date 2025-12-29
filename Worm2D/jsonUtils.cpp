@@ -68,12 +68,12 @@ void from_json(const json& j, intPair & w)
         j.at("val").get_to(w.val);
 }
 
-void to_json(json & j, const toFromInt & w)
+void to_json(json & j, const fromToInt & w)
 {
   j = json{{"to", w.to},  {"from", w.from},  {"val", w.val}};
 }
 
-void from_json(const json& j, toFromInt & w) 
+void from_json(const json& j, fromToInt & w) 
 {
         j.at("to").get_to(w.to);
         j.at("from").get_to(w.from);
