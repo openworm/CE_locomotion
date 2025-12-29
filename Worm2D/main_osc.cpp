@@ -35,14 +35,14 @@ int main (int argc, const char* argv[])
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
 
-
+    json j_orig;
     if (model_name == "" || model_name == "W2DSR") {  
     if (directoryExists(json_filename)){
-        json j = getJsonFromFile(json_filename);
-        if (j["Worm"].contains("Main model name"))
-        model_name =  j["Worm"]["Main model name"]["value"];
-        else if (j["Nervous system"].contains("Model name"))
-        model_name =  j["Nervous system"]["Model name"]["value"];
+        j_orig = getJsonFromFile(json_filename);
+        if (j_orig["Worm"].contains("Main model name"))
+        model_name = j_orig["Worm"]["Main model name"]["value"];
+        else if (j_orig["Nervous system"].contains("Model name"))
+        model_name = j_orig["Nervous system"]["Model name"]["value"];
         
     }}
     if (model_name == "") model_name = "W2DSR";
@@ -77,6 +77,8 @@ int main (int argc, const char* argv[])
     {
         Evolution * evo = 0;
     
+        if (model_name == "W2DSR") evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
+
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
         if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
 

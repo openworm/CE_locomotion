@@ -199,13 +199,17 @@ class Evolvable_ptrB: public Evolvable_ptr<T>, public Evolution
 {
 
 protected:
-    Evolvable_ptrB(shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptr<T>(make_shared<T>(),cmd_), 
+    Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
+    Evolvable_ptr<T>(evol1_,cmd_), 
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
+    {this->evolvable1->setWormPars(cmd_);}
+    Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
+    Evolvable_ptr<T>(evol1_,cmd_,json_ptr_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
     {this->evolvable1->setWormPars(cmd_);}
 
-    Evolvable_ptrB(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
-    Evolvable_ptr<T>(make_shared<T>(),cmd_), 
+    Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, const string & prefix_):
+    Evolvable_ptr<T>(evol1_,cmd_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_)
     {this->evolvable1->setWormPars(cmd_);}
 
@@ -309,35 +313,35 @@ class EvolutionFullW: public Evolvable_ptrB<T>
 {
     public:
     
-    EvolutionFullW(shared_ptr<const CmdArgs> cmd_):Evolvable_ptrB<T>(cmd_){}
+    EvolutionFullW(shared_ptr<const CmdArgs> cmd_):Evolvable_ptrB<T>(make_shared<T>(),cmd_){}
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
-    Evolvable_ptrB<T>(cmd_,prefix_){} 
+    Evolvable_ptrB<T>(make_shared<T>(),cmd_,prefix_){} 
     
-    
-    //EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const json & j):
-    //Evolvable_ptr<T>(make_shared<T>(j,cmd_),cmd_, make_shared<const json>(j)), 
-    //Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize()){}
-
-   /*  double EvaluationFunction(TVector<double> &geno, RandomState &rs);
-    //double Evaluation21(TVector<double> &geno, RandomState &rs);
-    double Evaluation18(TVector<double> &genotype, RandomState &rs);
-    double EvaluationCE(TVector<double> &genotype, RandomState &rs);
-    double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
-    double Evaluation21R(TVector<double> &genotype, RandomState &rs);
-    //double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
-    double EvaluationCENZ(TVector<double> &genotype, RandomState &rs); */
-    
-
-    
-
-
 
     protected:
     
     shared_ptr<T> getTw(){
-
     //if (json_ptr!=nullptr) return make_shared<T>(*json_ptr,cmd);
     return make_shared<T>();
+
+    }
+};
+
+template<class T>
+class EvolutionFullWJ: public Evolvable_ptrB<T>
+{
+    public:
+    
+    EvolutionFullWJ(const json & j, shared_ptr<const CmdArgs> cmd_):
+    Evolvable_ptrB<T>(make_shared<T>(j,cmd_),cmd_,make_shared<const json>(j)){}
+    
+    
+
+    protected:
+    
+    shared_ptr<T> getTw(){
+    if (this->json_ptr!=nullptr) return make_shared<T>(*this->json_ptr,this->cmd);
+    assert(0);
 
     }
 };
@@ -599,7 +603,7 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
         w.setStepSize(StepSize);
 
         
-        shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1);
+        shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
 
        if (w1 != nullptr) {
 
@@ -643,18 +647,18 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
        
         //assert(0);
        
-        DBp = w.n.NeuronOutput(EparsR->dbunit);
-        VBp = w.n.NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
     
         w.Step(); // determine sign of derivative
     
 
-        dDB = w.n.NeuronOutput(EparsR->dbunit) - DBp;
-        dVB = w.n.NeuronOutput(EparsR->vbunit) - VBp;
+        dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
+        dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n.NeuronOutput(EparsR->dbunit);
-        VBp = w.n.NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
         
         double xt = w.CoMx(), xtp;
         double yt = w.CoMy(), ytp;
@@ -666,13 +670,13 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = w.n.NeuronOutput(EparsR->dbunit) - DBp;
-            dVB = w.n.NeuronOutput(EparsR->vbunit) - VBp;
+            dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
+            dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - w.n.NeuronOutput(EparsR->dbunit));
-            oscVB += abs(VBp - w.n.NeuronOutput(EparsR->vbunit));
+            oscDB += abs(DBp - w.n_ptr->NeuronOutput(EparsR->dbunit));
+            oscVB += abs(VBp - w.n_ptr->NeuronOutput(EparsR->vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -687,8 +691,8 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = w.n.NeuronOutput(EparsR->dbunit);
-            VBp = w.n.NeuronOutput(EparsR->vbunit);
+            DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+            VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
             
             //// Locomotion
             // Current and past centroid position
@@ -785,9 +789,10 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
  
 
-    T w;//(genotype, false);
+    //T w;//(genotype, false);
     //w.setWormPars(argc,argv);
-    
+    shared_ptr<T> w_ptr = this->getTw();
+    T & w = *w_ptr; 
     w.setWormPars(this->cmd);
 
     
@@ -1089,8 +1094,9 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     //T w(argc,argv,genotype);
 
-    T w;
-
+    //T w;
+    shared_ptr<T> w_ptr = this->getTw();
+    T & w = *w_ptr; 
    
 
     //T w(genotype, false);
@@ -1120,7 +1126,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
 
-    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1);
+    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
 
     //w1.show();
     //assert(0);

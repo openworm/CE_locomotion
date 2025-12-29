@@ -220,6 +220,8 @@ void zeroAllInputs(){
     n_ptr->SetNeuronExternalInput(i+1, 0);
 }
 
+template<class T> friend class Evolvable_ptrB;
+
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
@@ -241,7 +243,7 @@ virtual vector<doubIntParamsHead> getWormParams() {
     return parvec;}
 
 
-    virtual void Step1() = 0;
+virtual void Step1() = 0;
 NSForW2D * const n_ptr = nullptr;
 muscForW2D * m_ptr = nullptr;
     

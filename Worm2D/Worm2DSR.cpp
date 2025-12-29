@@ -293,6 +293,7 @@ void Worm2DSRE::makeVals(const json & j)
 {
   if (!j.contains("Evolvable")) return;
 
+  assert(0);
   vector<string> v1;
   v1.push_back("Evolvable");
   v1.push_back("value");
