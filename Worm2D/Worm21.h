@@ -46,6 +46,7 @@ public:
 
     template<class T> friend class EvolutionFullW;
     template<class T> friend class Evolvable_ptr;
+    template<class T> friend class Evolvable_ptrB;
 
     //virtual shared_ptr<const W2Dparameters> setWormPars(int argc, const char* argv[]) 
     //{return Worm2Dbase::setWormPars(argc,argv);}
@@ -80,6 +81,7 @@ public:
 
     template<class T> friend class EvolutionFullW;
     template<class T> friend class EvolutionFullWC;
+    template<class T> friend class Evolvable_ptrB;
 
     template<class T> friend class Evolvable_ptr;
     

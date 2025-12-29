@@ -261,6 +261,7 @@ int getVectSize(){return 4;}
 //void setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_);
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
+template<class T> friend class Evolvable_ptrB;
 template<class T> friend class EvolutionFullW;
 //static inline int evoVectSize = 4;
 protected:
@@ -326,6 +327,7 @@ int getVectSize() {return 3;}
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
 template<class T> friend class EvolutionFullW;
+template<class T> friend class Evolvable_ptrB;
 
 protected:
 vector<toFromWeight> makeDVMuscleConn(double);
@@ -394,7 +396,7 @@ int getVectSize() {return 6;}
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 
 template<class T> friend class EvolutionFullW;
-
+template<class T> friend class Evolvable_ptrB;
 protected:
 void setPhenoNames(); 
 //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
@@ -428,6 +430,7 @@ void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 18;}
 
 template<class T> friend class EvolutionFullW;
+template<class T> friend class Evolvable_ptrB;
 protected:
 void setPfaFromPheno(const TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen);
@@ -471,6 +474,7 @@ void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return 5;}
 
 template<class T> friend class EvolutionFullW;
+template<class T> friend class Evolvable_ptrB;
 protected:
 //void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen);
@@ -490,6 +494,8 @@ void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size()+4;}
 
 template<class T> friend class EvolutionFullW;
+template<class T> friend class Evolvable_ptrB;
+
 protected:
 void setPfaFromPheno(const TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen);
@@ -511,6 +517,7 @@ void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 int getVectSize() {return cn.weights.size() + 14 + 3;}
 
 template<class T> friend class EvolutionFullW;
+template<class T> friend class Evolvable_ptrB;
 protected:
 void setPfaFromPheno(TVector<double> &phen);
 void setParsFromPheno(const TVector<double> &phen);

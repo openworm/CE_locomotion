@@ -200,6 +200,7 @@ public:
     template<class T> friend class EvolutionFullWC;
     template<class T> friend class EvolutionFullW;
     template<class T> friend class Evolvable_ptr;
+    template<class T> friend class Evolvable_ptrB;
 
     void setWormPars(shared_ptr<const CmdArgs> cmd)
     //shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd)
