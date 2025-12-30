@@ -35,16 +35,21 @@ int main (int argc, const char* argv[])
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
 
+
     json j_orig;
-    if (model_name == "" || model_name == "W2DSR") {  
-    if (directoryExists(json_filename)){
-        j_orig = getJsonFromFile(json_filename);
+    if (directoryExists(json_filename)) 
+    j_orig = getJsonFromFile(json_filename);
+
+    //if (model_name == "" || model_name == "W2DSR") {
+    if (model_name == ""){
+    //if (directoryExists(json_filename)){
+        //j_orig = getJsonFromFile(json_filename);
         if (j_orig["Worm"].contains("Main model name"))
         model_name = j_orig["Worm"]["Main model name"]["value"];
         else if (j_orig["Nervous system"].contains("Model name"))
         model_name = j_orig["Nervous system"]["Model name"]["value"];
         
-    }}
+    }
     if (model_name == "") model_name = "W2DSR";
 
     /* else{
