@@ -103,7 +103,7 @@ class EvoBase
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, setFromCPTflag = false, doCPT;//, doneFirst
+    bool doResume, setFromCPTflag = false, doCPT = true;//, doneFirst
     int popsize;
     bool configP1Called = false;
 };
@@ -333,18 +333,23 @@ class EvolutionFullWJ: public Evolvable_ptrB<T>
     public:
     
     EvolutionFullWJ(const json & j, shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptrB<T>(make_shared<T>(j,cmd_),cmd_,make_shared<const json>(j)){}
+    Evolvable_ptrB<T>(make_shared<T>(j,cmd_,true),cmd_,make_shared<const json>(j))
+    {}
     
     
 
     protected:
-    
+
+    //void writeOrigGen();
+     
+
     shared_ptr<T> getTw(){
     if (this->json_ptr!=nullptr) return make_shared<T>(*this->json_ptr,this->cmd);
     assert(0);
 
     }
 };
+
 
 
 template<class T>

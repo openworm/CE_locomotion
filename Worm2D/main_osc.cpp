@@ -24,7 +24,7 @@ int main (int argc, const char* argv[])
     {cout << "Directory doesn't exist." << endl;exit(1);}
 
     
-    string sup_model_name = cmd->getArgVal("--modelname","");
+    const string sup_model_name = cmd->getArgVal("--modelname","");
     double StepSize;
     int skip_steps;
     string model_name = sup_model_name;
@@ -40,8 +40,8 @@ int main (int argc, const char* argv[])
     if (directoryExists(json_filename)) 
     j_orig = getJsonFromFile(json_filename);
 
-    //if (model_name == "" || model_name == "W2DSR") {
-    if (model_name == ""){
+    if (model_name == "" || model_name == "W2DSR") {
+    //if (model_name == ""){
     //if (directoryExists(json_filename)){
         //j_orig = getJsonFromFile(json_filename);
         if (j_orig["Worm"].contains("Main model name"))
@@ -82,8 +82,9 @@ int main (int argc, const char* argv[])
     {
         Evolution * evo = 0;
     
-        if (model_name == "W2DSR") evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
+        if (sup_model_name == "W2DSR" || model_name == "W2DSR") evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
 
+        else{
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
         if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
 
@@ -99,7 +100,7 @@ int main (int argc, const char* argv[])
 
         if (model_name == "W2D18") evo = new EvolutionFullW<Worm18>(cmd);
         if (model_name == "W2DCO") evo = new EvolutionFullWC<WormAgent>(cmd);
-
+        }
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;

@@ -13,9 +13,9 @@ inputFolderName = "experiments/izq_runs_nets/103"
 outputFolderName = "testruns/exW2DSRE21"
 
 args = dict(
-    simduration=58,
-    simtransient=50,
-    maxGens=36,
+    simduration=50,
+    simtransient=0,
+    maxGens=16,
     popSize=36,
     RandSeed=292,
     modelName="W2DSR",
@@ -26,7 +26,9 @@ args = dict(
     doTestRun=True,
     doOrigMuscInput=False,
     modifyJson=False,
-    doEvol = True
+    doEvol=True,
+    checkPointInterval=5,
+    evoType="Evo18",
 )
 
 if doOrig:

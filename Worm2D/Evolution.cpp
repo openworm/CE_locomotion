@@ -200,10 +200,18 @@ void EvoBase::construct(int vsize_, int offset_)
     if (!setFromCPTflag) setFromCPT2();
     if (doResume) return;
 
-    string filename = rename_file("best.gen.dat");
+    string filename;
+    bool foundFile = false;
+    filename = rename_file("EvoWJbest.gen.dat");
     struct stat buffer;   
+    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
 
-    if (doCPT && stat (filename.c_str(), &buffer) == 0) {
+    if (foundFile == false){
+    filename = rename_file("best.gen.dat");
+    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
+    }
+
+    if (doCPT && foundFile) {
 
     cout << "const from best gen " << filename << endl;
     //assert(0 && "setting from best gen");

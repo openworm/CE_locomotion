@@ -55,6 +55,19 @@ inline double InverseMapSearchParameter(double x, double min, double max)
 	return m * x + b;
 }
 
+inline double InverseMapSearchParameterGPT(double y, double min, double max,
+                                        double clipmin = MinSearchValue,
+                                        double clipmax = MaxSearchValue)
+{
+    const double m = (max - min) / (MaxSearchValue - MinSearchValue);
+    const double b = min - m * MinSearchValue;
+
+    // Protect against degenerate range
+    if (m == 0.0)
+        return 0.0;
+
+    return clip((y - b) / m, clipmin, clipmax);
+}
 
 // *******************************
 // The TSearch class declaration

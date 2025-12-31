@@ -19,9 +19,12 @@ Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
-Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
+Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd){makeVals(j);}
+  Worm2DSR(j,cmd){
+    makeVals(j);
+    if (callInit) writeOrigGen(cmd);
+  }
   
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
@@ -315,7 +318,7 @@ void Worm2DSRE::makeVals(const json & j)
         v1.push_back("evolvable");
         TFIvec.push_back(getEvoVecFromJ<fromToInt>(j,v1));
         
-        cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
+        //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
    
         }
         else 
@@ -328,15 +331,17 @@ void Worm2DSRE::makeVals(const json & j)
         IPnames.push_back(v1);
         v1.push_back("evolvable");
         IPvec.push_back(getEvoVecFromJ<intPair>(j,v1));
-        cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
+        //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
         }
       }
      //assert(0);
 }
 
+
+
+
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
-
 
 for (int i = 0; i<TFnames.size(); i++)
 {
@@ -389,6 +394,112 @@ n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
 
 return;
 }
+
+
+void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
+{
+
+  string directoryName = cmd->getArgVal("--folder","HJUYGYT");
+  struct stat sb;
+  if (stat(directoryName.c_str(), &sb) != 0) 
+  {cout << "Directory doesn't exist." << endl;exit(1);}
+
+    ofstream BestIndividualFile;
+    //bestVector = s.BestIndividual();
+    BestIndividualFile.open(rename_file("EvoWJbest.gen.dat", directoryName));
+    //BestIndividualFile.open(bestfilename);
+    BestIndividualFile << setprecision(32);
+    vector<double> initGeno = getInitGeno();
+    BestIndividualFile << initGeno[0];
+    for (int i=1;i<initGeno.size();i++)
+    BestIndividualFile << " " << initGeno[i];
+    BestIndividualFile << endl;
+    BestIndividualFile.close();
+
+}
+
+vector<double> Worm2DSRE::getInitGeno()
+{
+
+
+vector<double> initialPheno(getVectSize(), 123456); 
+//for (int i = 0; i< initialPheno.size(); i++) initialPheno[i] = 123456;
+
+for (int i = 0; i<TFnames.size(); i++)
+{
+
+const vector<string> & s1 = TFnames[i];
+const vector<fromToInt> & v1 = TFIvec[i];
+if (s1[0]=="Nervous system")
+{
+NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+
+if (s1[1]=="Chemical weights")
+for (int j = 0; j<v1.size(); j++)
+initialPheno[v1[j].val-1] = n.ChemicalSynapseWeight(v1[j].from, v1[j].to);
+//n.SetChemicalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
+else if (s1[1]=="Electrical weights")
+for (int j = 0; j<v1.size(); j++)
+initialPheno[v1[j].val-1] = n.ElectricalSynapseWeight(v1[j].from, v1[j].to);
+//n.SetElectricalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
+
+}
+else if (s1[0]=="Dorsal NMJ")
+{
+  if (s1[1]=="weights")
+  for (int j = 0; j<v1.size(); j++) 
+  for (int k = 0; k<dMuscConnvec.size(); k++)
+  if ((v1[j].to == dMuscConnvec[k].to) && (v1[j].from == dMuscConnvec[k].w.from))
+  {initialPheno[v1[j].val-1] = dMuscConnvec[k].w.weight; break;}
+}
+
+}
+
+for (int i = 0; i<IPnames.size(); i++)
+{
+const vector<string> & s1 = IPnames[i];
+const vector<intPair> & v1 = IPvec[i];
+if (s1[0]=="Nervous system")
+{
+NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+if (s1[1]=="biases")
+for (int j = 0; j<v1.size(); j++)
+//n.SetNeuronBias(v1[j].ind, pheno(v1[j].val));
+initialPheno[v1[j].val-1] = n.NeuronBias(v1[j].ind);
+else if (s1[1]=="taus")
+for (int j = 0; j<v1.size(); j++)
+//n.SetNeuronTimeConstant(v1[j].ind, pheno(v1[j].val));
+initialPheno[v1[j].val-1] = n.NeuronTimeConstant(v1[j].ind);
+else if (s1[1]=="gains")
+for (int j = 0; j<v1.size(); j++)
+//n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
+initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
+}
+
+}
+
+for (int i = 0; i< initialPheno.size(); i++)
+if (initialPheno[i]<123456.001 && initialPheno[i]>123455.999) assert(0);
+
+vector<double> initialGeno(getVectSize());
+//initialGeno.resize(getVectSize());
+PhenGenMapping(initialGeno, initialPheno);
+
+return initialGeno;
+}
+
+
+void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
+{
+
+  for (int i = 0; i<genPhenLims.size(); i++)
+  {
+  assert(genPhenLims[i].val1<=genPhenLims[i].val2);
+  gen[i] = InverseMapSearchParameter(phen[i], genPhenLims[i].val1, genPhenLims[i].val2);
+  }
+
+}
+
 
 void Worm2DSRE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {

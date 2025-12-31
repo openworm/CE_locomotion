@@ -376,3 +376,151 @@ bool directoryExists(const string & directoryName)
   return true;
   //{cout << "Directory doesn't exist." << endl;exit(1);}
 }
+
+
+void evoPars::addParsToJson(json &j) const
+  {
+
+    {vector<string> names = {"MutationVariance", "CrossoverProbability", 
+         "MaxExpectedOffspring", "ElitistFraction",
+         "Duration", "Transient", "StepSize"};
+    vector<double> vals = {MutationVariance, CrossoverProbability, 
+         MaxExpectedOffspring, ElitistFraction,
+         Duration, Transient, StepSize};
+    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+    {vector<string> names = {"randomseed", "SelectionMode", "ReproductionMode", 
+         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
+         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
+    vector<int> vals = {(int) randomseed, SelectionMode, ReproductionMode, 
+         PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
+         ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
+    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+      {vector<string> names = {"fileprefix", "evoType"};
+      vector<string> vals = {fileprefix, evoType};
+       for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+
+
+  }
+const doubIntParamsHead evoPars::getParams() const
+   {
+       doubIntParamsHead var1;
+       var1.parDoub.head = "Evolutionary Optimization Parameters";
+       var1.parInt.head = "Evolutionary Optimization Parameters";
+       var1.parDoub.names = 
+       {"MutationVariance", "CrossoverProbability", 
+         "MaxExpectedOffspring", "ElitistFraction",
+         "Duration", "Transient", "StepSize"};
+       var1.parDoub.vals = {MutationVariance, CrossoverProbability, 
+         MaxExpectedOffspring, ElitistFraction,
+         Duration, Transient, StepSize};
+
+       var1.parInt.names = {"randomseed", "SelectionMode", "ReproductionMode", 
+         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
+         "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
+       var1.parInt.vals = {randomseed, SelectionMode, ReproductionMode, 
+         PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
+         ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
+
+       return var1;
+   }
+
+
+  //void setFromArgs(int argc, const char* argv[]);
+  //string rename_file(string filename);
+
+
+
+string evoPars::rename_file(string filename){return directoryName + "/" + 
+    fileprefix + filename;}
+
+
+void evoPars::setFromArgs(shared_ptr<const CmdArgs> cmd)
+{
+
+bool seed_flag = 1;
+
+MaxGenerations = cmd->getArgValInt("--maxgens", MaxGenerations);
+MutationVariance = cmd->getArgValDoub("--MutVar", MutationVariance);
+CrossoverProbability = cmd->getArgValDoub("--CrossProb", CrossoverProbability);
+directoryName = cmd->getArgVal("--folder","HJUYGYT");
+struct stat sb;
+if (stat(directoryName.c_str(), &sb) != 0) 
+{cout << "Directory doesn't exist." << endl;exit(1);}
+
+PopulationSize = cmd->getArgValInt("-p",PopulationSize);
+CheckpointInterval = cmd->getArgValInt("-cpt", CheckpointInterval);
+Duration = cmd->getArgValDoub("-d", Duration);
+Transient = cmd->getArgValDoub("-t", Transient);
+evoType = cmd->getArgVal("--evoType", evoType);
+
+if (seed_flag){ 
+  long randomseed1 = cmd->getArgValLong("-R",-1);
+  if (randomseed1!=-1)
+  {seed_flag = 0;randomseed = randomseed1;}
+}
+
+if (seed_flag){ 
+  long randomseed1 = cmd->getArgValLong("-r",-1);
+  if (randomseed1!=-1)
+  {seed_flag = 0;randomseed = randomseed1 + static_cast<long>(time(NULL));}
+}
+
+
+}
+
+void evoPars::setFromArgs(int argc, const char* argv[])
+{
+
+  if (((argc-1) % 2) != 0)
+     {
+      cout << "The arguments are not configured correctly." << endl;
+      exit(1);
+    }
+    
+    bool seed_flag = 1;
+
+    for (int arg = 1; arg<argc; arg+=2)
+    { 
+    if (strcmp(argv[arg],"--maxgens")==0) MaxGenerations = stoi(argv[arg+1]);
+
+    if (strcmp(argv[arg],"--MutVar")==0) MutationVariance = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"--CrossProb")==0) CrossoverProbability = stod(argv[arg+1]);
+
+    //if (strcmp(argv[arg],"--dorandinit")==0) simRandomInit = stol(argv[arg+1]);
+    //if (strcmp(argv[arg],"--skipOrigSim")==0) skipOrigSim = stol(argv[arg+1]);
+    //if (strcmp(argv[arg],"--donml")==0) do_nml = stol(argv[arg+1]);
+
+
+    if (strcmp(argv[arg],"--folder")==0) {
+      directoryName= argv[arg+1];
+      struct stat sb;
+      if (stat(directoryName.c_str(), &sb) != 0) 
+      {cout << "Directory doesn't exist." << endl;exit(1);}
+    }
+
+    if (seed_flag){ 
+    if (strcmp(argv[arg],"-R")==0) randomseed = stol(argv[arg+1]);
+    if (strcmp(argv[arg],"-r")==0) 
+    {long randomseed1 = static_cast<long>(time(NULL));
+           randomseed = randomseed1 + stol(argv[arg+1]);
+    }
+    seed_flag = 0;
+    }
+    //if (strcmp(argv[arg], "--modelname")==0) model_name = argv[arg+1];
+    if (strcmp(argv[arg],"-p")==0) PopulationSize = stoi(argv[arg+1]);
+    if (strcmp(argv[arg],"-d")==0) Duration = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"-t")==0) Transient = stod(argv[arg+1]);
+    if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = stoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--evoType")==0) evoType = (string) argv[arg+1];
+    
+
+    //cout << "doCPT " << doCPT << endl;
+    //if (strcmp(argv[arg],"--nervous")==0) nervousSystemNameForSim = argv[arg+1];
+    
+    }
+
+   
+
+}

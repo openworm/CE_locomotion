@@ -67,6 +67,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/osc_sim_21 experiments/osc_sim_21_nml experiments/osc_sim_21_nml_musc
     rm -rf experiments/osc_sim_21all experiments/osc_sim_21all_nml experiments/osc_sim_21all_nml_musc
     rm -rf testruns/exW2DSR21 testruns/exW2DSR21_nml testruns/exW2DSR21_nml_musc
+    rm -rf testruns/exW2DSRE21
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -97,6 +98,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DSR.omt
     omv test -V .test.W2DSR21.omt
+    omv test -V .test.W2DSRE21.omt
 
     cd neuromlLocal
     set -ex
