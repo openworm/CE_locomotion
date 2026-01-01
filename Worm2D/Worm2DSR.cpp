@@ -21,8 +21,7 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd){
-    makeVals(j);
+  Worm2DSR(j,cmd),genPhenPars(makeVals(j)){
     if (callInit) writeOrigGen(cmd);
   }
   
@@ -295,27 +294,39 @@ void Worm2DSR::writeAct()
 void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
-  j["Evolvable"]["value"] =  genPhenLims;
-  for (int i = 0; i<TFnames.size();i++)
+  j["Evolvable"]["value"] =  genPhenPars.genPhenLims;
+  for (int i = 0; i<genPhenPars.TFnames.size();i++)
   {
     json j2;
-    j2 = TFIvec[i];
-    TFnames[i].push_back("evolvable");
-    set_nested_json(j, TFnames[i], j2);
+    j2 = genPhenPars.TFIvec[i];
+    vector<string> TFi = genPhenPars.TFnames[i];
+    TFi.push_back("evolvable");
+    set_nested_json(j, TFi, j2);
   }
-  
+  for (int i = 0; i<genPhenPars.IPnames.size();i++)
+  {
+    json j2;
+    j2 = genPhenPars.IPvec[i];
+    vector<string> TFi = genPhenPars.IPnames[i];
+    TFi.push_back("evolvable");
+    set_nested_json(j, TFi, j2);
+  }
+
 }
 
-void Worm2DSRE::makeVals(const json & j)
+Worm2DSREpars Worm2DSRE::makeVals(const json & j)
 {
-  if (!j.contains("Evolvable")) return;
+
+  if (!j.contains("Evolvable")) return Worm2DSREpars();
+
+  Worm2DSREpars w1pars;
 
   //assert(0);
   vector<string> v1;
   v1.push_back("Evolvable");
   v1.push_back("value");
   
-  genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
+  w1pars.genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
 
 
   for (auto it = j.begin(); it != j.end(); ++it)
@@ -328,9 +339,9 @@ void Worm2DSRE::makeVals(const json & j)
         vector<string> v1;
         v1.push_back(it.key());
         v1.push_back(it2.key());
-        TFnames.push_back(v1);
+        w1pars.TFnames.push_back(v1);
         v1.push_back("evolvable");
-        TFIvec.push_back(getEvoVecFromJ<fromToInt>(j,v1));
+        w1pars.TFIvec.push_back(getEvoVecFromJ<fromToInt>(j,v1));
         
         //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
    
@@ -342,13 +353,14 @@ void Worm2DSRE::makeVals(const json & j)
         vector<string> v1;
         v1.push_back(it.key());
         v1.push_back(it2.key());
-        IPnames.push_back(v1);
+        w1pars.IPnames.push_back(v1);
         v1.push_back("evolvable");
-        IPvec.push_back(getEvoVecFromJ<intPair>(j,v1));
+        w1pars.IPvec.push_back(getEvoVecFromJ<intPair>(j,v1));
         //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
         }
       }
      //assert(0);
+     return w1pars;
 }
 
 
@@ -357,11 +369,11 @@ void Worm2DSRE::makeVals(const json & j)
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
-for (int i = 0; i<TFnames.size(); i++)
+for (int i = 0; i<genPhenPars.TFnames.size(); i++)
 {
 
-const vector<string> & s1 = TFnames[i];
-const vector<fromToInt> & v1 = TFIvec[i];
+const vector<string> & s1 = genPhenPars.TFnames[i];
+const vector<fromToInt> & v1 = genPhenPars.TFIvec[i];
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -386,10 +398,10 @@ else if (s1[0]=="Dorsal NMJ")
 
 }
 
-for (int i = 0; i<IPnames.size(); i++)
+for (int i = 0; i<genPhenPars.IPnames.size(); i++)
 {
-const vector<string> & s1 = IPnames[i];
-const vector<intPair> & v1 = IPvec[i];
+const vector<string> & s1 = genPhenPars.IPnames[i];
+const vector<intPair> & v1 = genPhenPars.IPvec[i];
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -439,11 +451,11 @@ vector<double> Worm2DSRE::getInitGeno()
 vector<double> initialPheno(getVectSize(), 123456); 
 //for (int i = 0; i< initialPheno.size(); i++) initialPheno[i] = 123456;
 
-for (int i = 0; i<TFnames.size(); i++)
+for (int i = 0; i<genPhenPars.TFnames.size(); i++)
 {
 
-const vector<string> & s1 = TFnames[i];
-const vector<fromToInt> & v1 = TFIvec[i];
+const vector<string> & s1 = genPhenPars.TFnames[i];
+const vector<fromToInt> & v1 = genPhenPars.TFIvec[i];
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -469,10 +481,10 @@ else if (s1[0]=="Dorsal NMJ")
 
 }
 
-for (int i = 0; i<IPnames.size(); i++)
+for (int i = 0; i<genPhenPars.IPnames.size(); i++)
 {
-const vector<string> & s1 = IPnames[i];
-const vector<intPair> & v1 = IPvec[i];
+const vector<string> & s1 = genPhenPars.IPnames[i];
+const vector<intPair> & v1 = genPhenPars.IPvec[i];
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -506,10 +518,10 @@ return initialGeno;
 void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
 {
 
-  for (int i = 0; i<genPhenLims.size(); i++)
+  for (int i = 0; i<genPhenPars.genPhenLims.size(); i++)
   {
-  assert(genPhenLims[i].val1<=genPhenLims[i].val2);
-  gen[i] = InverseMapSearchParameter(phen[i], genPhenLims[i].val1, genPhenLims[i].val2);
+  assert(genPhenPars.genPhenLims[i].val1<=genPhenPars.genPhenLims[i].val2);
+  gen[i] = InverseMapSearchParameter(phen[i], genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
   }
 
 }
@@ -518,10 +530,10 @@ void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
 void Worm2DSRE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 
-  for (int i = 0; i<genPhenLims.size(); i++)
+  for (int i = 0; i<genPhenPars.genPhenLims.size(); i++)
   {
-  assert(genPhenLims[i].val1<=genPhenLims[i].val2);
-  phen(i+1) = MapSearchParameter(gen(i+1), genPhenLims[i].val1, genPhenLims[i].val2);
+  assert(genPhenPars.genPhenLims[i].val1<=genPhenPars.genPhenLims[i].val2);
+  phen(i+1) = MapSearchParameter(gen(i+1), genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
   }
 
 }
