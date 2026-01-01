@@ -88,6 +88,7 @@ void makeVals(const json & j);
 void testJson(json & j);
 //void setInitGeno();
 vector<double> getInitGeno();
+void addEvolvableToJson(json & j);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 //vector<toFromInt> chem_weights_evo, elec_weights_evo;
 //vector<intPair> biases_evo, taus_evo, gains_evo;

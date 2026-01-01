@@ -139,6 +139,8 @@ vector<T> getEvoVecFromJ(const json & j, const vector<string> & namevec_)
   for (int i=0;i<namevec_.size(); i++) j2 = j2[namevec_[i]];
   return j2.template get< vector<T> >();
 }
+void set_nested_json(json & j, const vector<string> & keys, const json & value);
+
 
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);

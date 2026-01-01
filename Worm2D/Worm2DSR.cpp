@@ -292,6 +292,20 @@ void Worm2DSR::writeAct()
     
 } */
 
+void Worm2DSRE::addEvolvableToJson(json & j)
+{
+  
+  j["Evolvable"]["value"] =  genPhenLims;
+  for (int i = 0; i<TFnames.size();i++)
+  {
+    json j2;
+    j2 = TFIvec[i];
+    TFnames[i].push_back("evolvable");
+    set_nested_json(j, TFnames[i], j2);
+  }
+  
+}
+
 void Worm2DSRE::makeVals(const json & j)
 {
   if (!j.contains("Evolvable")) return;

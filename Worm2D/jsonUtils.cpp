@@ -80,6 +80,30 @@ void from_json(const json& j, fromToInt & w)
         j.at("val").get_to(w.val);
 }
 
+void set_nested_json(json & j, const vector<string> & keys, const json & value)
+{
+
+   json * current = &j;
+
+  for (int i = 0; i<keys.size(); ++i)
+  {
+  const auto& k = keys[i];
+  if (i==keys.size()-1)
+  {
+
+    (*current)[k]=value;
+
+  }
+  else 
+  {
+    if (!(*current)[k].is_object())
+      (*current)[k] = json::object();
+    current = &((*current)[k]);
+}
+}
+}
+
+
 
 Params<double> getBodyParams(WormBody& b)
 {
