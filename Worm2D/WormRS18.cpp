@@ -688,11 +688,15 @@ void Worm18::addParsToJson(json & j)
 
     shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
     assert(w1parss!=nullptr);
+
     if (w1parss->doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
     else sr_ptr->addParsToJson(j);
+
+    
+
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], n);
     Worm2D::addParsToJson(j);

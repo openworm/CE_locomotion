@@ -152,7 +152,7 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
 void setNSFromJson(const json & j, NervousSystem & n);
-
+void mergeJson(json & j1, const json & j2);
 
 
 class CmdArgs {

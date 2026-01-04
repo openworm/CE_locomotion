@@ -15,6 +15,75 @@ json getJsonFromFile(const string & jsonfile_){
 }
 
 
+void mergeJson(json & j1, const json & j2)
+{
+
+    string NS = "Nervous system";
+    string CW = "Chemical weights";
+    string EW = "Electrical weights";
+    string V = "value";
+    int j1size = j1[NS]["size"][V];
+
+    {
+    vector<vector<string> > keys;
+    keys.push_back({NS,CW,V});
+    keys.push_back({NS,EW,V});
+
+    for (int i = 0; i<keys.size(); i++){
+    vector<toFromWeight> v1 = getEvoVecFromJ<toFromWeight>(j1, keys[i]);
+    vector<toFromWeight> v2 = getEvoVecFromJ<toFromWeight>(j2, keys[i]);
+    for (int j = 0; j<v2.size(); j++)
+    v1.push_back({{v2[j].w.from + j1size, v2[j].w.weight}, v2[j].to + j1size});
+    json j3 = v1;
+    set_nested_json(j1, keys[i], j3);
+    }
+    }
+
+    {
+    vector<string> vecvals = {"Cell name", "NumChemicalConns", "NumElectricalConns", 
+    "Rtaus", "biases", "externalinputs", "gains", "outputs", "paststates", "states", "taus"};
+    vector<vector<string> > keys;
+    for (int i=0;i<vecvals.size();i++) {
+    vector<double> v1 = getEvoVecFromJ<double>(j1, {NS,vecvals[i],V});
+    vector<double> v2 = getEvoVecFromJ<double>(j2, {NS,vecvals[i],V});
+    v1.insert(v1.end(), v2.begin(), v2.end());
+    json j3 = v1;
+    set_nested_json(j1, {NS,vecvals[i],V}, j3);
+    }
+
+    {
+    int j2size = j1[NS]["size"][V];
+    json j3 = j2size + j1size;
+    set_nested_json(j1, {NS,"size",V}, j3);
+    }
+    {
+    int j1val = j1[NS]["maxchemcons"][V];
+    int j2val = j2[NS]["maxchemcons"][V];
+    json j3 = max(j1val,j2val);
+    set_nested_json(j1, {NS,"maxchemcons",V}, j3);
+    }
+    {
+    int j1val = j1[NS]["maxeleccons"][V];
+    int j2val = j2[NS]["maxeleccons"][V];
+    json j3 = max(j1val,j2val);
+    set_nested_json(j1, {NS,"maxeleccons",V}, j3);
+    }
+    {
+    string j1val = j1[NS]["model name"][V];
+    string j2val = j2[NS]["model name"][V];
+    json j3 = j1val + "_" + j2val;
+    set_nested_json(j1, {NS,"model name",V}, j3);
+    }
+
+    }
+    
+
+
+    
+
+   
+}
+
 
 void to_json(json & j, const weightentry & w)
 {
