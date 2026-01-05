@@ -418,7 +418,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         //w.setWormPars(this->cmd);
         w_ptr->setParsFromPheno(pheno);
         json j;
-        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters Sup"]);
+        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(*w_ptr,j);
 }

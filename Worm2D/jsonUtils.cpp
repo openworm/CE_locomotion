@@ -44,11 +44,21 @@ void mergeJson(json & j1, const json & j2)
     "Rtaus", "biases", "externalinputs", "gains", "outputs", "paststates", "states", "taus"};
     vector<vector<string> > keys;
     for (int i=0;i<vecvals.size();i++) {
-    vector<double> v1 = getEvoVecFromJ<double>(j1, {NS,vecvals[i],V});
-    vector<double> v2 = getEvoVecFromJ<double>(j2, {NS,vecvals[i],V});
+    vector<string> keyval = {NS,vecvals[i],V};
+    vector<double> v1 = getEvoVecFromJ<double>(j1, keyval);
+    vector<double> v2 = getEvoVecFromJ<double>(j2, keyval);
     v1.insert(v1.end(), v2.begin(), v2.end());
     json j3 = v1;
-    set_nested_json(j1, {NS,vecvals[i],V}, j3);
+    set_nested_json(j1,keyval, j3);
+    }
+
+    {
+    vector<string> keyval = {"Driving input","strengths",V};
+    vector<double> v1 = getEvoVecFromJ<double>(j1,keyval);
+    vector<double> v2 = getEvoVecFromJ<double>(j2,keyval);
+    v1.insert(v1.end(), v2.begin(), v2.end());
+    json j3 = v1;
+    set_nested_json(j1, keyval, j3);
     }
 
     {
