@@ -146,7 +146,7 @@ class Worm2Dbody : virtual public DataWriter
     void ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars);
 
     double headDistanceToCenter();
-
+    double headDistanceToLocation(const double & x, const double & y);
     void rotateBody(double theta);
 
     virtual void addParsToJson(json & j);

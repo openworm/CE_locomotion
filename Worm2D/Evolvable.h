@@ -15,7 +15,7 @@ void addParsToJson1(json & j, const vector<string> & names, const vector<T> & va
 }
 
 template<class T>
-T getParFromJson1(json & j, const string & name)
+T getParFromJson1(const json & j, const string & name)
 {
 
   return j[name]["value"];

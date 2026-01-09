@@ -324,6 +324,14 @@ double Worm2Dbody::headDistanceToCenter()
 	return sqrt(pow(PositionX(),2) + pow(PositionY(),2));
 }
 
+double Worm2Dbody::headDistanceToLocation(const double & x, const double & y)
+{
+	//cout << "WormAgent::setDistanceToCentre()" << endl;
+	return sqrt(pow(PositionX()-x,2) + pow(PositionY()-y,2));
+}
+
+
+
 double Worm2Dbody::Orientation()
 {
     return atan2(b.Y(Head)-b.Y(Tail),b.X(Head)-b.X(Tail));

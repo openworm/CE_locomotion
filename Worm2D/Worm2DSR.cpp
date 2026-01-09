@@ -624,9 +624,15 @@ void Sensor::InitialiseAgent()
 {
 	//VelDelta = (int) (HST/gradPars->HSStepSize);
 
-	iSensorN = (int) (sensorN/CO2DSRpars->HSStepSize);
+  for (int i = 0; i<spvec.size(); i++){
+
+  SensorPars & sp1 = spvec[i];
+	sp1.iSensorN = (int) (sp1.sensorN/sp1.HSStepSize);
 	//dSensorN = (double) iSensorN;
-	iSensorM = (int) (sensorM/CO2DSRpars->HSStepSize);
+	sp1.iSensorM = (int) (sp1.sensorM/sp1.HSStepSize);
+  }
+
+
 	//dSensorM = (double) iSensorM;
 	//int upperbound = ((int) (((2*CO2DSRpars->RunDuration) + sensorN + sensorM) / CO2DSRpars->HSStepSize)) + 1;
 
@@ -653,47 +659,156 @@ void WormCO2DSR::Step1()
 }
 
 
-void Sensor::ResetChemCon()
+void SensorPars::writeParsToJson(json & j) const
 {
-	double chemCon = -headDistanceToCenter() * CO2DSRpars->gradSteep;
+
+addParsToJson1<double>(j,{"sensorN","sensorM","gradSteep", 
+  "HSStepSize", "x_center", "y_center"},
+    {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
+addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
+
+}
+
+void SensorPars::setParsFromJson(const json & j)
+{
+
+  sensorN = j["sensorN"]["value"];
+  sensorM = j["sensorM"]["value"];
+  gradSteep = j["gradSteep"]["value"];
+  HSStepSize = j["HSStepSize"]["value"];
+  x_center  = j["x_center"]["value"];
+  y_center = j["y_center"]["value"];
+  extInp1 = j["extInp1"]["value"];
+  extInp2 = j["extInp2"]["value"];
+
+//double sensorN, sensorM;
+//double dSensorN, dSensorM;
+//int iSensorN, iSensorM;
+//double chemCon, presentAvgCon, pastAvgCon;
+//double presentAvgCon, pastAvgCon;
+//int extInp1, extInp2;
+//double gradSteep, HSStepSize, x_center, y_center;
+
+}
+
+void  Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_)
+{
+
+  if (j.contains("Sensors"))
+ {
+  json j2 = j["Sensors"];
+  int ind = 1;
+  while(j2.contains("Sensor_" + to_string(ind))){
+
+  SensorPars sp1;
+  sp1.setParsFromJson(j2["Sensor_" + to_string(ind)]);
+  spvec.push_back(sp1);
+
+  }
+  
+ }else if (j["Worm"].contains("sensorM"))
+ {
+  SensorPars sp1;
+  sp1.gradSteep = CO2DSRpars_->gradSteep;
+  sp1.HSStepSize = CO2DSRpars_->HSStepSize;
+  sp1.extInp1 = 0;
+  sp1.extInp2 = 1;
+  sp1.sensorM = j["Worm"]["sensorM"]["value"];
+  sp1.sensorN = j["Worm"]["sensorN"]["value"];
+  sp1.x_center = 0, sp1.y_center = 0;
+  spvec.push_back(sp1);
+
+ }
+
+
+
+}
+
+void  Sensor::writeParsToJson(json & j) const
+{
+
+json j2 = j["Sensors"];
+
+for (int i =0; i<spvec.size(); i++)
+{
+
+const SensorPars & sp1 = spvec[i];
+sp1.writeParsToJson(j2["Sensor_" + to_string(i+1)]);
+
+
+
+}
+if (spvec.size()>0)
+{
+const SensorPars & sp1 = spvec[0];
+sp1.writeParsToJson(j["Worm"]);
+
+}
+
+
+
+}
+
+
+
+
+void Sensor::ResetChemCon()
+{ 
+  for (int i = 0; i<spvec.size(); i++){
+    
+  SensorPars & sp1 = spvec[i];
+	double chemCon = -headDistanceToLocation(sp1.x_center,sp1.y_center) * sp1.gradSteep;
 
 	//double dist = distanceToCenter();
 	//chemCon = -dist * CO2DSRpars->gradSteep;
 
 	//pastCon = chemCon;
-  chemConHistory.clear();
+  sp1.chemConHistory.clear();
 	//timer = iSensorN + iSensorM + 1;
-	for (int i = 1; i <= iSensorN + iSensorM + 1; i++) chemConHistory.push_back(chemCon);
+	for (int i = 1; i <= sp1.iSensorN + sp1.iSensorM + 1; i++) sp1.chemConHistory.push_back(chemCon);
 		//chemConHistory(i) = chemCon;
-	presentAvgCon = chemCon * iSensorN;
-	pastAvgCon = chemCon * iSensorM;
+	sp1.presentAvgCon = chemCon * sp1.iSensorN;
+	sp1.pastAvgCon = chemCon * sp1.iSensorM;
+
+  }
 }
 
 
 void Sensor::UpdateChemCon()
 {
-	
+	for (int i = 0; i<spvec.size(); i++){
+    
+  SensorPars & sp1 = spvec[i];
 	//pastCon = chemCon;
-	double chemCon = -headDistanceToCenter() * CO2DSRpars->gradSteep;
-  chemConHistory.push_back(chemCon);
+	double chemCon = -headDistanceToLocation(sp1.x_center,sp1.y_center) * sp1.gradSteep;
+  sp1.chemConHistory.push_back(chemCon);
+
+  }
 	//chemConHistory(timer) = chemCon;
 	//timer += 1;
 }
 
 void Sensor::assignExternalInput(vector<double> & externalInputs)
 {
-  double dSensorN = (double) iSensorN;
-  double dSensorM = (double) iSensorM;
-  presentAvgCon += chemConHistory[chemConHistory.size()-1] - chemConHistory[chemConHistory.size()- iSensorN -1];
-  pastAvgCon += chemConHistory[chemConHistory.size() - iSensorN - 1] 
-  -  chemConHistory[chemConHistory.size()- iSensorN - iSensorM - 1];
+  for (int i = 0; i<spvec.size(); i++){
+    
+  SensorPars & sp1 = spvec[i];
+
+  double dSensorN = (double) sp1.iSensorN;
+  double dSensorM = (double) sp1.iSensorM;
+  sp1.presentAvgCon += sp1.chemConHistory[sp1.chemConHistory.size()-1] - 
+  sp1.chemConHistory[sp1.chemConHistory.size()- sp1.iSensorN -1];
+  sp1.pastAvgCon += sp1.chemConHistory[sp1.chemConHistory.size() - sp1.iSensorN - 1] 
+  -  sp1.chemConHistory[sp1.chemConHistory.size()- sp1.iSensorN - sp1.iSensorM - 1];
 
 
 	//presentAvgCon += chemConHistory(timer - 1) - chemConHistory(timer - iSensorN - 1);
 	//pastAvgCon += chemConHistory(timer - iSensorN - 1) - chemConHistory(timer - iSensorN - iSensorM - 1);
-	double tempDiff = (presentAvgCon/dSensorN) - (pastAvgCon/dSensorM);
-	externalInputs[0] = tempDiff > 0.0 ? tempDiff: 0.0;
-	externalInputs[1] =  tempDiff < 0.0 ? fabs(tempDiff): 0.0;
+	double tempDiff = (sp1.presentAvgCon/dSensorN) - (sp1.pastAvgCon/dSensorM);
+	externalInputs[sp1.extInp1] = tempDiff > 0.0 ? tempDiff: 0.0;
+	externalInputs[sp1.extInp2] =  tempDiff < 0.0 ? fabs(tempDiff): 0.0;
+
+  }
 }
 
 

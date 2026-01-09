@@ -115,8 +115,10 @@ const Worm2DSREpars genPhenPars;
 };
 
 
-struct SensorPars
+class SensorPars
 {
+  public:
+
 vector<double> chemConHistory;
 //TVector<double> chemConHistory;
 double sensorN, sensorM;
@@ -124,6 +126,11 @@ double sensorN, sensorM;
 int iSensorN, iSensorM;
 //double chemCon, presentAvgCon, pastAvgCon;
 double presentAvgCon, pastAvgCon;
+int extInp1, extInp2;
+double gradSteep, HSStepSize, x_center, y_center;
+
+void setParsFromJson(const json & j);
+void writeParsToJson(json & j) const;
 
 };
 
@@ -131,10 +138,21 @@ class Sensor
 {
 public:
 
-Sensor(shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):CO2DSRpars(CO2DSRpars_),wb(wb_){}
+Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):
+//CO2DSRpars(CO2DSRpars_),
+wb(wb_)
+{
 
+  setParsFromJson(j,CO2DSRpars_);
+
+}
+
+void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
+//void setParsFromJson(const json & j);
+void writeParsToJson(json & j) const;
 
 double headDistanceToCenter() {return wb.headDistanceToCenter();}
+double headDistanceToLocation(const double & x, const double & y) {return wb.headDistanceToLocation(x,y);}
 
 void ResetChemCon();
 void UpdateChemCon();
@@ -142,7 +160,7 @@ void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
 
 Worm2Dbody & wb;
-shared_ptr<gradParameters> CO2DSRpars;
+//shared_ptr<gradParameters> CO2DSRpars;
 
 vector<SensorPars> spvec;
 
