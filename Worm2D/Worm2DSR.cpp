@@ -572,3 +572,132 @@ void Worm2DSRE::setEvolPars(W2Dparameters & w2par_, string evotype_)
     }
 
 }
+
+
+void WormCO2DSR::initForSimulation(RandomState &rs_)
+//void WormAgent::InitializeSimulation(RandomState &rs_)
+{
+	
+	//rs = &rs_;
+	InitialiseAgent();
+	ResetAgentsBody(CO2DSRpars);
+	ResetChemCon();
+	//InitializeState(rs_);
+
+	//ResetAgentIntState(rs_);
+	UpdateChemCon();
+	//RandomState rs2 = *rs;	
+	//Worm2Dbase::InitializeState(rs2);
+}
+
+
+
+/* void WormCO2DSR::ResetAgentIntState(RandomState &rs)
+{
+	NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+	n.RandomizeCircuitState(0.0, 0.0, rs);
+	//n.RandomizeCircuitState(0.0, 0.5, rs);
+}
+ */
+
+
+void WormCO2DSR::InitializeState(RandomState &rs)
+{
+    Worm2DSR::InitializeState(rs);
+	NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
+
+	if (n!=nullptr){
+	if (W2Dbaseparameters1->randomInitialState)
+    {
+        n->RandomizeCircuitState(-1, 1, rs);
+        n->RandomizeCircuitOutput(0.2, 0.8, rs);
+    }
+	else n->RandomizeCircuitState(0.0, 0.0, rs);
+}
+
+}
+
+
+
+
+void Sensor::InitialiseAgent()
+{
+	//VelDelta = (int) (HST/gradPars->HSStepSize);
+
+	iSensorN = (int) (sensorN/CO2DSRpars->HSStepSize);
+	//dSensorN = (double) iSensorN;
+	iSensorM = (int) (sensorM/CO2DSRpars->HSStepSize);
+	//dSensorM = (double) iSensorM;
+	//int upperbound = ((int) (((2*CO2DSRpars->RunDuration) + sensorN + sensorM) / CO2DSRpars->HSStepSize)) + 1;
+
+	//cout << "uppervel " << upperbound << " " << VelDelta << endl;
+ 	
+	//chemConHistory.SetBounds(1, upperbound);
+	//chemConHistory.FillContents(0.0);
+
+	//histCurv.SetBounds(1, VelDelta);
+	//histCurv.FillContents(0.0);
+	//histTheta.SetBounds(1, VelDelta);
+	//histTheta.FillContents(0.0);
+	
+}
+
+
+void WormCO2DSR::Step1()
+{
+   
+    //UpdateSensors();
+	Worm2DSR::Step1();
+  UpdateChemCon();
+   
+}
+
+
+void Sensor::ResetChemCon()
+{
+	double chemCon = -headDistanceToCenter() * CO2DSRpars->gradSteep;
+
+	//double dist = distanceToCenter();
+	//chemCon = -dist * CO2DSRpars->gradSteep;
+
+	//pastCon = chemCon;
+  chemConHistory.clear();
+	//timer = iSensorN + iSensorM + 1;
+	for (int i = 1; i <= iSensorN + iSensorM + 1; i++) chemConHistory.push_back(chemCon);
+		//chemConHistory(i) = chemCon;
+	presentAvgCon = chemCon * iSensorN;
+	pastAvgCon = chemCon * iSensorM;
+}
+
+
+void Sensor::UpdateChemCon()
+{
+	
+	//pastCon = chemCon;
+	double chemCon = -headDistanceToCenter() * CO2DSRpars->gradSteep;
+  chemConHistory.push_back(chemCon);
+	//chemConHistory(timer) = chemCon;
+	//timer += 1;
+}
+
+void Sensor::assignExternalInput(vector<double> & externalInputs)
+{
+  double dSensorN = (double) iSensorN;
+  double dSensorM = (double) iSensorM;
+  presentAvgCon += chemConHistory[chemConHistory.size()-1] - chemConHistory[chemConHistory.size()- iSensorN -1];
+  pastAvgCon += chemConHistory[chemConHistory.size() - iSensorN - 1] 
+  -  chemConHistory[chemConHistory.size()- iSensorN - iSensorM - 1];
+
+
+	//presentAvgCon += chemConHistory(timer - 1) - chemConHistory(timer - iSensorN - 1);
+	//pastAvgCon += chemConHistory(timer - iSensorN - 1) - chemConHistory(timer - iSensorN - iSensorM - 1);
+	double tempDiff = (presentAvgCon/dSensorN) - (pastAvgCon/dSensorM);
+	externalInputs[0] = tempDiff > 0.0 ? tempDiff: 0.0;
+	externalInputs[1] =  tempDiff < 0.0 ? fabs(tempDiff): 0.0;
+}
+
+
+void WormCO2DSR::assignExternalInput()
+{
+  Sensor::assignExternalInput(externalInputs);
+}

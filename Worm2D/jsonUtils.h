@@ -136,9 +136,41 @@ template<class T>
 vector<T> getEvoVecFromJ(const json & j, const vector<string> & namevec_)
 {
   json j2 = j;
-  for (int i=0;i<namevec_.size(); i++) j2 = j2[namevec_[i]];
+  for (int i=0;i<namevec_.size(); i++) 
+  {if (!j2.contains(namevec_[i])) {cout << "eer " << namevec_[i] << endl; assert(0);}
+    j2 = j2[namevec_[i]];}
   return j2.template get< vector<T> >();
 }
+
+template<class T>
+bool getEvoVecFromJ(const json & j, const vector<string> & namevec_, vector<T> & vec)
+{
+  json j2 = j;
+  for (int i=0;i<namevec_.size(); i++) 
+  {
+    if (!j2.contains(namevec_[i])) return false;
+    j2 = j2[namevec_[i]];
+  }
+  vector<T> jvec = j2.template get< vector<T> >();
+  vec.swap(jvec);
+  return true;
+}
+
+template<class T>
+bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
+{
+  json j2 = j;
+  for (int i=0;i<namevec_.size(); i++) 
+  {
+    if (!j2.contains(namevec_[i])) return false;
+    j2 = j2[namevec_[i]];
+  }
+  val = j2;
+  return true;
+}
+
+
+
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
 
 

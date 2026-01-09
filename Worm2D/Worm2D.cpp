@@ -259,6 +259,20 @@ void Worm2Dbody::shiftY(double shiftdist_)
     for (int i = 1; i <= N_rods; i++) b.Y(i)+=shiftdist_;
 }
 
+
+void Worm2Dbody::ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars)
+{
+    //orient = gradPars->orient_orig;
+    b.InitializeBodyState();
+    zeroX();
+    zeroY();
+    //w18->shiftX(-4.5);
+    shiftX(cos(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
+    shiftY(sin(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
+	rotateBody(CO2DSRpars->worm_rotation);
+    
+}
+
 void Worm2Dbody::rotateBody(double theta)
 {
    

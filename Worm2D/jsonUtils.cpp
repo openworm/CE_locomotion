@@ -14,6 +14,111 @@ json getJsonFromFile(const string & jsonfile_){
         return j;
 }
 
+template<class T>
+void appendToEnd(vector<T> & v1, const vector<T> & v2)
+{
+   v1.insert(v1.end(), v2.begin(), v2.end());
+}
+
+vector<toFromWeight> meanDupes(vector<toFromWeight> v1)
+{
+
+  vector<toFromWeight> v3;
+  for (auto it = v1.begin(); it != v1.end(); ++it) 
+  {
+    int count = 1;
+    double weighttot = it->w.weight;
+    for (auto it2 = it+1; it2 !=v1.end(); ++it2)
+      if (it2->to == it->to && it2->w.from == it->w.from) 
+      {weighttot+=it2->w.weight;v1.erase(it2);count++;}
+    v3.push_back({{it->w.from, weighttot/count}, it->to});
+
+  }
+
+  return v3;
+}
+
+
+void mergeToFromVec(vector<toFromWeight> & v1, const vector<toFromWeight> & v2, 
+  const int & fval, const int & tval)
+{
+
+  for (int j = 0; j<v2.size(); j++)
+  v1.push_back({{v2[j].w.from + fval, v2[j].w.weight}, v2[j].to + tval});
+  v1 = meanDupes(v1);
+}
+
+void incToFromVec(vector<toFromWeight> & v1, const int & fval, const int & tval)
+{
+
+  for (int j = 0; j<v1.size(); j++) {v1[j].w.from += fval; v1[j].to += tval;}
+  //v1.push_back({{v2[j].w.from + fval, v2[j].w.weight}, v2[j].to + tval});
+
+}
+
+
+
+template<class T>
+void mergeVecKeys(json & j1, const json & j2, 
+  const vector<string> & keyval, void (*func)(vector<T> & v1, const vector<T> & v2))
+{
+    vector<T> v1, v2;
+    bool hasv1 = getEvoVecFromJ<T>(j1, keyval, v1);
+    bool hasv2 = getEvoVecFromJ<T>(j2, keyval, v2);
+    if (hasv1 && hasv2)
+    {
+    func(v1,v2);
+    //v1.insert(v1.end(), v2.begin(), v2.end());
+    json j3 = v1;
+    set_nested_json(j1, keyval, j3);
+    }
+    else if (hasv2){
+    json j3 = v2;
+    set_nested_json(j1, keyval, j3);
+    }
+}
+
+
+void mergeVecKeys(json & j1, const json & j2, 
+  const vector<string> & keyval, const int & fval, const int & tval, bool doInc = false)
+{
+    vector<toFromWeight> v1, v2;
+    bool hasv1 = getEvoVecFromJ<toFromWeight>(j1, keyval, v1);
+    bool hasv2 = getEvoVecFromJ<toFromWeight>(j2, keyval, v2);
+    if (hasv1 && hasv2)
+    {
+    mergeToFromVec(v1,v2,fval,tval);
+    json j3 = v1;
+    set_nested_json(j1, keyval, j3);
+    }
+    else if (hasv2){
+    if (doInc) incToFromVec(v2,fval,tval);
+    json j3 = v2;
+    set_nested_json(j1, keyval, j3);
+    }
+}
+
+template<class T>
+void mergeValKeys(json & j1, const json & j2, const vector<string> & keyval, T (*func)(const T&, const T&))
+{
+  T v1, v2;
+  bool hasv1 = getEvoValFromJ<T>(j1, keyval, v1);
+  bool hasv2 = getEvoValFromJ<T>(j2, keyval, v2);
+
+  if (hasv1 && hasv2)
+  {
+    json j3 = func(v1, v2);
+    set_nested_json(j1, keyval, j3);
+  }
+  else if (hasv2)
+  {
+    json j3 = v2;
+    set_nested_json(j1, keyval, j3);
+  }
+
+}
+
+
 
 void mergeJson(json & j1, const json & j2)
 {
@@ -22,74 +127,84 @@ void mergeJson(json & j1, const json & j2)
     string CW = "Chemical weights";
     string EW = "Electrical weights";
     string V = "value";
+    string SR = "Stretch receptor";
+    string W = "weights";
+
     int j1size = j1[NS]["size"][V];
 
+    int j1SRsize = 0;
+    if (j1.contains(SR))  j1SRsize = j1[SR]["NStretch"][V];
+
     {
+    
     vector<vector<string> > keys;
     keys.push_back({NS,CW,V});
     keys.push_back({NS,EW,V});
 
-    for (int i = 0; i<keys.size(); i++){
-    vector<toFromWeight> v1 = getEvoVecFromJ<toFromWeight>(j1, keys[i]);
-    vector<toFromWeight> v2 = getEvoVecFromJ<toFromWeight>(j2, keys[i]);
-    for (int j = 0; j<v2.size(); j++)
-    v1.push_back({{v2[j].w.from + j1size, v2[j].w.weight}, v2[j].to + j1size});
-    json j3 = v1;
-    set_nested_json(j1, keys[i], j3);
-    }
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], j1size, j1size);
+
     }
 
+
     {
-    vector<string> vecvals = {"Cell name", "NumChemicalConns", "NumElectricalConns", 
-    "Rtaus", "biases", "externalinputs", "gains", "outputs", "paststates", "states", "taus"};
     vector<vector<string> > keys;
-    for (int i=0;i<vecvals.size();i++) {
-    vector<string> keyval = {NS,vecvals[i],V};
-    vector<double> v1 = getEvoVecFromJ<double>(j1, keyval);
-    vector<double> v2 = getEvoVecFromJ<double>(j2, keyval);
-    v1.insert(v1.end(), v2.begin(), v2.end());
-    json j3 = v1;
-    set_nested_json(j1,keyval, j3);
+    keys.push_back({SR,"SR D", W,V});
+    keys.push_back({SR,"SR V", W,V});
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], 0, j1SRsize);
+    }
+    {
+    vector<vector<string> > keys;
+    keys.push_back({SR,"SR D NS", W,V});
+    keys.push_back({SR,"SR V NS", W,V});
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], j1SRsize, j1size, true);
     }
 
     {
-    vector<string> keyval = {"Driving input","strengths",V};
-    vector<double> v1 = getEvoVecFromJ<double>(j1,keyval);
-    vector<double> v2 = getEvoVecFromJ<double>(j2,keyval);
-    v1.insert(v1.end(), v2.begin(), v2.end());
-    json j3 = v1;
-    set_nested_json(j1, keyval, j3);
+    vector<vector<string> > keys;
+    keys.push_back({"Dorsal NMJ", W,V});
+    keys.push_back({"Ventral NMJ", W,V});
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], j1size, 0, true);
     }
 
     {
-    int j2size = j1[NS]["size"][V];
-    json j3 = j2size + j1size;
-    set_nested_json(j1, {NS,"size",V}, j3);
-    }
-    {
-    int j1val = j1[NS]["maxchemcons"][V];
-    int j2val = j2[NS]["maxchemcons"][V];
-    json j3 = max(j1val,j2val);
-    set_nested_json(j1, {NS,"maxchemcons",V}, j3);
-    }
-    {
-    int j1val = j1[NS]["maxeleccons"][V];
-    int j2val = j2[NS]["maxeleccons"][V];
-    json j3 = max(j1val,j2val);
-    set_nested_json(j1, {NS,"maxeleccons",V}, j3);
-    }
-    {
-    string j1val = j1[NS]["model name"][V];
-    string j2val = j2[NS]["model name"][V];
-    json j3 = j1val + "_" + j2val;
-    set_nested_json(j1, {NS,"model name",V}, j3);
+    vector<vector<string> > keys;
+    keys.push_back({"Driving input", W,V});
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], 0, j1size, true);
     }
 
+    {
+    vector<vector<string> > keys;
+    keys.push_back({"OutputNS", W,V});
+    for (int i = 0; i<keys.size(); i++) mergeVecKeys(j1,j2, keys[i], j1size, j1size, true);
     }
     
+    {
+    vector<string> vecvals = {"Rtaus", "biases", "externalinputs", "gains", "outputs", 
+      "paststates", "states", "taus"};
+    for (int i=0;i<vecvals.size();i++) mergeVecKeys<double>(j1, j2, {NS,vecvals[i],V}, appendToEnd<double>);
+    }
 
+    {
+    vector<string> vecvals = {"NumChemicalConns", "NumElectricalConns"};
+    for (int i=0;i<vecvals.size();i++) mergeVecKeys<int>(j1, j2, {NS,vecvals[i],V}, appendToEnd<int>);
+    }
+    {
+    vector<string> vecvals = {"Cell name"};
+    for (int i=0;i<vecvals.size();i++) mergeVecKeys<string>(j1, j2, {NS,vecvals[i],V}, appendToEnd<string>);
+    }
 
     
+    mergeVecKeys<double>(j1,j2, {"Driving input","strengths",V}, appendToEnd<double>);
+
+    mergeValKeys<int>(j1, j2, {SR,"NStretch",V}, [](const int& v1, const int& v2){return v1 + v2;});
+
+    mergeValKeys<int>(j1, j2, {NS,"size",V}, [](const int& v1, const int& v2){return v1 + v2;});
+    mergeValKeys<int>(j1, j2, {NS,"maxchemcons",V}, [](const int& v1, const int& v2){return max(v1,v2);});
+    mergeValKeys<int>(j1, j2, {NS,"maxeleccons",V}, [](const int& v1, const int& v2){return max(v1,v2);});
+    mergeValKeys<string>(j1, j2, {NS,"Model name",V}, 
+      [](const string& v1, const string& v2){return v1 + "_" + v2;});
+    
+   
 
    
 }

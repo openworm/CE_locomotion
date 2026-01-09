@@ -113,3 +113,83 @@ const Worm2DSREpars genPhenPars;
 //vector<vector<intPair> > IPvec;
 //vector<double> initialGeno;
 };
+
+
+struct SensorPars
+{
+vector<double> chemConHistory;
+//TVector<double> chemConHistory;
+double sensorN, sensorM;
+//double dSensorN, dSensorM;
+int iSensorN, iSensorM;
+//double chemCon, presentAvgCon, pastAvgCon;
+double presentAvgCon, pastAvgCon;
+
+};
+
+class Sensor
+{
+public:
+
+Sensor(shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):CO2DSRpars(CO2DSRpars_),wb(wb_){}
+
+
+double headDistanceToCenter() {return wb.headDistanceToCenter();}
+
+void ResetChemCon();
+void UpdateChemCon();
+void InitialiseAgent();
+void assignExternalInput(vector<double> & externalInputs);
+
+Worm2Dbody & wb;
+shared_ptr<gradParameters> CO2DSRpars;
+
+vector<SensorPars> spvec;
+
+//vector<double> chemConHistory;
+//TVector<double> chemConHistory;
+//double sensorN, sensorM;
+//double dSensorN, dSensorM;
+//int iSensorN, iSensorM;
+//double chemCon, presentAvgCon, pastAvgCon;
+//double presentAvgCon, pastAvgCon;
+
+//int timer;
+};
+
+
+class WormCO2DSR : public Worm2DSRE, public Sensor
+{
+public:
+//WormCO18Full(const string & filename_, shared_ptr<const CmdArgs> cmd_):    
+//Worm2DSR(jsonfilename_,cmd){}
+WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
+WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
+
+WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),
+  Worm2DSRE(j,cmd,callInit),Sensor(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
+  {}
+
+
+
+//WormCO2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
+//Worm2DSR(par1_,n_ptr_,sr_ptr_),Worm2Dm(par1_, n_ptr_){}
+
+
+void initForSimulation(RandomState& rs);
+void InitializeState(RandomState &rs);
+//void ResetAgentsBody();
+//void ResetChemCon();
+//void UpdateChemCon();
+//void UpdateSensors();
+//void ResetAgentIntState(RandomState &rs);
+//virtual void SetParameters(const TVector<double> &v);
+	//void InitialiseAgent(double runduration, double stepsize);
+//void InitialiseAgent();
+void Step1();
+void assignExternalInput();
+
+
+
+};

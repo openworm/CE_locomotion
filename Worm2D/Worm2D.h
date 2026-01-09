@@ -143,7 +143,8 @@ class Worm2Dbody : virtual public DataWriter
     void shiftY(double shiftdist_);
     void zeroX();
     void zeroY();
-   
+    void ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars);
+
     double headDistanceToCenter();
 
     void rotateBody(double theta);
