@@ -577,7 +577,8 @@ void Worm2DSRE::setEvolPars(W2Dparameters & w2par_, string evotype_)
 void WormCO2DSR::initForSimulation(RandomState &rs_)
 //void WormAgent::InitializeSimulation(RandomState &rs_)
 {
-	
+
+  
 	//rs = &rs_;
 	InitialiseAgent();
 	ResetAgentsBody(CO2DSRpars);
@@ -623,6 +624,12 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 void Sensor::InitialiseAgent()
 {
 	//VelDelta = (int) (HST/gradPars->HSStepSize);
+
+  if (spvec.size()>0){
+  spvec[0].HSStepSize = CO2DSRpars->HSStepSize;
+  spvec[0].gradSteep = CO2DSRpars->gradSteep;
+
+  }
 
   for (int i = 0; i<spvec.size(); i++){
 

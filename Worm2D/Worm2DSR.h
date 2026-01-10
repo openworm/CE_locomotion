@@ -139,7 +139,7 @@ class Sensor
 public:
 
 Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):
-//CO2DSRpars(CO2DSRpars_),
+CO2DSRpars(CO2DSRpars_),
 wb(wb_)
 {
 
@@ -160,7 +160,7 @@ void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
 
 Worm2Dbody & wb;
-//shared_ptr<gradParameters> CO2DSRpars;
+shared_ptr<gradParameters> CO2DSRpars;
 
 vector<SensorPars> spvec;
 
@@ -186,7 +186,7 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),
-  Worm2DSRE(j,cmd,callInit),Sensor(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
+  Worm2DSRE(j,cmd,callInit),Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   {}
 
 
