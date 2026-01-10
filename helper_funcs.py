@@ -118,6 +118,32 @@ def get_path_list(outFolderBases):
         path_list += dir_list[1:]
     return path_list
 
+def make_directory(directory_name, overwrite=False, str1="the contents"):
+    try:
+        os.mkdir(directory_name)
+        print(f"Directory '{directory_name}' created successfully.")
+        return True
+    except FileExistsError:
+        if overwrite:
+            print(
+                f"Directory '{directory_name}' already exists and "
+                + str1
+                + " will be overwritten."
+            )
+            return True
+        else:
+            print(
+                f"Directory '{directory_name}' already exists and overwrite is false."
+            )
+            return False
+    except PermissionError:
+        print(f"Permission denied: Unable to create '{directory_name}'.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+
 
 def make_orients(body_data, **kwargs):
     tmax = body_data.shape[1]

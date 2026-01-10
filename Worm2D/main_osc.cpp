@@ -82,7 +82,9 @@ int main (int argc, const char* argv[])
     {
         Evolution * evo = 0;
     
-        if (sup_model_name == "W2DSR" || model_name == "W2DSR") evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
+        if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
+        //evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
+        evo = new EvolutionFullWJ<WormCO2DSR>(j_orig,cmd);
 
         else{
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 

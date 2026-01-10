@@ -3,6 +3,8 @@ import argparse
 import os
 import sys
 import neuromlLocal.utils as utils
+import helper_funcs as hf
+
 
 # import helper_funcs as hf
 # from importlib import import_module
@@ -400,30 +402,6 @@ def process_args():
     return parser.parse_args()
 
 
-def make_directory(directory_name, overwrite=False, str1="the contents"):
-    try:
-        os.mkdir(directory_name)
-        print(f"Directory '{directory_name}' created successfully.")
-        return True
-    except FileExistsError:
-        if overwrite:
-            print(
-                f"Directory '{directory_name}' already exists and "
-                + str1
-                + " will be overwritten."
-            )
-            return True
-        else:
-            print(
-                f"Directory '{directory_name}' already exists and overwrite is false."
-            )
-            return False
-    except PermissionError:
-        print(f"Permission denied: Unable to create '{directory_name}'.")
-        sys.exit(1)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        sys.exit(1)
 
 
 def run_main(args=None):
@@ -507,7 +485,7 @@ def run(a=None, **kwargs):
     else:
         str1 = "the simulation results"
 
-    if not make_directory(a.outputFolderName, a.overwrite, str1):
+    if not hf.make_directory(a.outputFolderName, a.overwrite, str1):
         print(
             "Please change output directory name, or set overwrite to True\n"
             "and doEvol to True to overwrite the evolution and simulation results,\n"

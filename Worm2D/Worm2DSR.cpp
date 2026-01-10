@@ -578,7 +578,7 @@ void WormCO2DSR::initForSimulation(RandomState &rs_)
 //void WormAgent::InitializeSimulation(RandomState &rs_)
 {
 
-  
+  Worm2DSRE::initForSimulation(rs_);
 	//rs = &rs_;
 	InitialiseAgent();
 	ResetAgentsBody(CO2DSRpars);
@@ -604,7 +604,8 @@ void WormCO2DSR::initForSimulation(RandomState &rs_)
 
 void WormCO2DSR::InitializeState(RandomState &rs)
 {
-    Worm2DSR::InitializeState(rs);
+
+  Worm2DSR::InitializeState(rs);
 	NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
 
 	if (n!=nullptr){
@@ -698,7 +699,7 @@ void SensorPars::setParsFromJson(const json & j)
 
 }
 
-void  Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_)
+void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_)
 {
 
   if (j.contains("Sensors"))
@@ -726,8 +727,6 @@ void  Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRp
   spvec.push_back(sp1);
 
  }
-
-
 
 }
 
