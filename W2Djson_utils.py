@@ -16,8 +16,14 @@ def incNSvals(j1):
 NSname = "Nervous system"
 
 jsonNames = {"List" : {NSname : ["biases", "taus", "gains", "states"]},
-            "Weights" : {NSname : ["Chemical weights", "Electrical weights"]}}  
+            "Weights" : {NSname : ["Chemical weights", "Electrical weights"],
+                         "Driving input" : ["weights"],
+                         "OutputNS" : ["weights"],
+                         }
+            }  
                                  
+jsonLists = {"Driving input" : ["strengths"]}
+
 
 
 def addNewNeuron(j1, parameters):
@@ -54,7 +60,14 @@ def addConnection(j1, wp):
              }
             ) 
     
+def makeWeightParameters(modulename, parname, val, evolind = None):
+    weight_parameters_1 = {"module" : modulename, "type" : parname, "value" : val}
+    if evolind is not None:
+        weight_parameters_1["evolvable"] = evolind
+    return weight_parameters_1
 
+def incToFromWeight(val, tval = 0, fval = 0):
+    return {"from" : val["from"] + fval, "to" : val["to"] + tval, "weight" : val["weight"]}
 
 def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
@@ -62,11 +75,56 @@ def run(a=None, **kwargs):
     print(a.folderName)
     worm_file = a.folderName #+ "/worm_data.json"
     network_json_data = utils.getJsonFile(worm_file)
-    
-    hf.make_directory("test_json_utils", overwrite=True)
-    addedNeurons = []
-    
 
+    addedNeurons = []
+    appended_json_data = utils.getJsonFile("W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json")
+  
+    appendedSize = appended_json_data[NSname]["size"]["value"]
+    origSize = network_json_data[NSname]["size"]["value"]
+    appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
+    origDrivingSize = len(network_json_data["Driving input"]["strengths"]["value"])
+
+    #print(appendedDrivingSize, "sdd ", origDrivingSize)
+    
+    for modulename in jsonLists:
+        for parname in jsonLists[modulename]:
+            network_json_data[modulename][parname]["value"] += appended_json_data[modulename][parname]["value"]
+
+    for key, val in appended_json_data["Worm"].items():
+        if key not in network_json_data["Worm"]:
+            network_json_data["Worm"][key] = val
+
+    for modulename in jsonNames["Weights"]:
+        addmodulename = modulename
+        for parname in jsonNames["Weights"][modulename]:
+            addparname = parname
+            if parname in appended_json_data[modulename]:
+                for val in appended_json_data[modulename][parname]["value"]:
+                    if modulename == NSname:
+                        val2 =  incToFromWeight(val, tval=origSize, fval=origSize)   
+                    elif modulename == "Driving input":
+                        val2 = incToFromWeight(val, tval=origSize, fval=origDrivingSize)
+                    elif modulename == "OutputNS":
+                        val2 = incToFromWeight(val, tval=0, fval=origSize)
+                        addmodulename = NSname
+                        addparname = "Chemical weights"
+                    else:
+                        val2 = val
+                    addConnection(network_json_data, makeWeightParameters(addmodulename, addparname, val2))
+
+
+    for ind in range(appendedSize):
+        cell_parameters_1 = {}
+        for parname in jsonNames["List"][NSname]:
+            cell_parameters_1[parname]= {}
+            cell_parameters_1[parname]["value"] = appended_json_data[NSname][parname]["value"][ind]
+        addedNeurons.append({"index" : addNewNeuron(network_json_data, cell_parameters_1), 
+                         "parameters" : cell_parameters_1})
+
+
+    hf.make_directory("test_json_utils", overwrite=True)
+    
+    
     cell_parameters = {"biases" : {"value" : -100, "evolvable" : 3},
                             "taus" : {"value": -100}, 
                             "gains" : {"value" : -100, "evolvable" : 7}, 
@@ -86,13 +144,14 @@ def run(a=None, **kwargs):
     
 
 
-    #print(addedNeurons)                
+    print(addedNeurons)                
     #unity indices
 
     with open("test_json_utils/test.json", "w", encoding="utf-8") as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
+
     filename = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
     run(folderName=filename)
 
