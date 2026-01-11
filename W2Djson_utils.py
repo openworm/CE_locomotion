@@ -60,7 +60,7 @@ def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     print(a.folderName)
-    worm_file = a.folderName + "/worm_data.json"
+    worm_file = a.folderName #+ "/worm_data.json"
     network_json_data = utils.getJsonFile(worm_file)
     
     hf.make_directory("test_json_utils", overwrite=True)
@@ -93,6 +93,6 @@ def run(a=None, **kwargs):
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
-
-    run(folderName="exampleRunRS18W2D_keep3")
+    filename = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
+    run(folderName=filename)
 
