@@ -13,18 +13,24 @@ def joinJson(json1, json2):
 def incNSvals(j1):
     pass
 
+NSname = "Nervous system"
 
-jsonNames = {"List" : {"Nervous system" : ["biases", "taus", "gains", "states"]},
-            "Weights" : {"Nervous system" : ["Chemical weights", "Electrical weights"]}}  
+jsonNames = {"List" : {NSname : ["biases", "taus", "gains", "states"]},
+            "Weights" : {NSname : ["Chemical weights", "Electrical weights"]}}  
                                  
 
 
-def addNewNeuron(j1, parameters, name = None):
-    for key, val in j1["Nervous system"].items():
-        val2 = j1["Nervous system"][key]["value"]
-        if key in parameters:
-           j1["Nervous system"][key]["value"].append(val)
-
+def addNewNeuron(j1, parameters):
+    j1[NSname]["size"]["value"] = j1[NSname]["size"]["value"] + 1
+    indVal = j1[NSname]["size"]["value"]
+    for parval in jsonNames["List"][NSname]:
+        if parameters[NSname][parval] is dict:
+            j1[NSname][parval]["value"].append(parameters[NSname][parval]["value"])
+            j1[NSname][parval]["evolvable"].append(
+                {"ind":indVal, "val": parameters[NSname][parval]["evolvable"]})
+        else:
+            j1[NSname][parval]["value"].append(parameters[NSname][parval])
+    return indVal
 
 def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
@@ -34,6 +40,17 @@ def run(a=None, **kwargs):
     network_json_data = utils.getJsonFile(worm_file)
     
     hf.make_directory("test_json_utils", overwrite=True)
+    addedNeurons = []
+
+    parameters = {NSname : {"biases" : {"value" : -100, "evolvable" : 3},
+                            "taus" : -100, 
+                            "gains" : {"value" : -100, "evolvable" : 7}, 
+                            "states" : -100}}
+    addedNeurons.append({"index" : addNewNeuron(network_json_data, parameters), 
+                         "parameters" : parameters})
+    
+    #print(addedNeurons)                
+    #unity indices
 
     with open("test_json_utils/test.json", "w", encoding="utf-8") as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
