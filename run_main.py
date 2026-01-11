@@ -402,8 +402,6 @@ def process_args():
     return parser.parse_args()
 
 
-
-
 def run_main(args=None):
     if args is None:
         args = process_args()

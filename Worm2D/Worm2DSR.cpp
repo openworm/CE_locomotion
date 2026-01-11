@@ -728,6 +728,7 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
 
  }
 
+ 
 }
 
 void  Sensor::writeParsToJson(json & j) const
@@ -820,5 +821,6 @@ void Sensor::assignExternalInput(vector<double> & externalInputs)
 
 void WormCO2DSR::assignExternalInput()
 {
+  Worm2DSRE::assignExternalInput();
   Sensor::assignExternalInput(externalInputs);
 }

@@ -271,14 +271,26 @@ class gradParameters : public W2Dbaseparameters
 	
   void setParsFromJson(const json & j){
 
-  worm_rotation = j["rotation"]["value"];
+  //assert(0);
+
+  worm_rotation = getJsonVal<double>(j, "rotation", worm_rotation , true);
+  orient_orig = getJsonVal<double>(j, "orient", orient_orig, true);
+  gradSteep = getJsonVal<double>(j, "gradSteep", gradSteep,true);
+  RunDuration = getJsonVal<double>(j,"RunDuration" , RunDuration ,true);
+  HSStepSize = getJsonVal<double>(j,"HSStepSize" , HSStepSize,true);
+  MaxDist = getJsonVal<double>(j, "MaxDist", MaxDist,true);
+  taxis = getJsonVal<int>(j, "taxis", taxis,true); 
+  kinesis = getJsonVal<int>(j, "kinesis", kinesis,true); 
+
+ /*  worm_rotation = j["rotation"]["value"];
   orient_orig = j["orient"]["value"]; 
   gradSteep = j["gradSteep"]["value"];
   RunDuration = j["RunDuration"]["value"];
   HSStepSize = j["HSStepSize"]["value"];
   taxis = j["taxis"]["value"];
   kinesis = j["kinesis"]["value"];
-  MaxDist = j["MaxDist"]["value"];
+  MaxDist = j["MaxDist"]["value"]; */
+
 }
 
 void addParsToJson(json & j) const {

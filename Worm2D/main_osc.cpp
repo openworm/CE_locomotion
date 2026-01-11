@@ -151,6 +151,7 @@ int main (int argc, const char* argv[])
     
     if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
     else w2 = new Worm2DSRE(json_filename, cmd);
+    //else w2 = new WormCO2DSR(json_filename, cmd);
 
     else{
 

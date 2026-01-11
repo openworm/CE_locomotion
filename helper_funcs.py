@@ -4,7 +4,7 @@ import argparse
 import os
 import math
 from scipy.stats import binned_statistic
-
+import sys
 
 dir_name = None
 file_prefix = None
@@ -118,6 +118,7 @@ def get_path_list(outFolderBases):
         path_list += dir_list[1:]
     return path_list
 
+
 def make_directory(directory_name, overwrite=False, str1="the contents"):
     try:
         os.mkdir(directory_name)
@@ -142,7 +143,6 @@ def make_directory(directory_name, overwrite=False, str1="the contents"):
     except Exception as e:
         print(f"An error occurred: {e}")
         sys.exit(1)
-
 
 
 def make_orients(body_data, **kwargs):
