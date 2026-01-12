@@ -137,16 +137,16 @@ class Worm2Dbody : virtual public DataWriter
     void AngleCurvature(TVector<double> &c);
     //void DumpBodyState(ofstream &ofs, int skips);
     virtual void InitializeState(RandomState &rs) = 0;
-    double PositionX(){return b.X(Head)*100.0;} //change to cm
-    double PositionY(){return b.Y(Head)*100.0;}
+    double PositionX() const {return b.X(Head)*100.0;} //change to cm
+    double PositionY() const {return b.Y(Head)*100.0;}
     void shiftX(double shiftdist_);
     void shiftY(double shiftdist_);
     void zeroX();
     void zeroY();
     void ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars);
 
-    double headDistanceToCenter();
-    double headDistanceToLocation(const double & x, const double & y);
+    double headDistanceToCenter() const;
+    double headDistanceToLocation(const double & x, const double & y) const;
     void rotateBody(double theta);
 
     virtual void addParsToJson(json & j);
@@ -414,6 +414,6 @@ class WormGrad
 public:
 virtual void ResetAgentsBody()  = 0;
 virtual double distanceToCenter() const = 0;
-
+virtual void InitializeSensors(RandomState& rs) = 0;
 
 };

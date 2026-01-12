@@ -318,13 +318,13 @@ double Worm2Dbody::CoMy()
     return temp/N_rods;
 }
 
-double Worm2Dbody::headDistanceToCenter()
+double Worm2Dbody::headDistanceToCenter() const
 {
 	//cout << "WormAgent::setDistanceToCentre()" << endl;
 	return sqrt(pow(PositionX(),2) + pow(PositionY(),2));
 }
 
-double Worm2Dbody::headDistanceToLocation(const double & x, const double & y)
+double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) const
 {
 	//cout << "WormAgent::setDistanceToCentre()" << endl;
 	return sqrt(pow(PositionX()-x,2) + pow(PositionY()-y,2));

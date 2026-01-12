@@ -134,7 +134,7 @@ void writeParsToJson(json & j) const;
 
 };
 
-class Sensor
+class Sensor  : public WormGrad
 {
 public:
 
@@ -151,13 +151,15 @@ void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
 //void setParsFromJson(const json & j);
 void writeParsToJson(json & j) const;
 
-double headDistanceToCenter() {return wb.headDistanceToCenter();}
-double headDistanceToLocation(const double & x, const double & y) {return wb.headDistanceToLocation(x,y);}
+double distanceToCenter() const {return wb.headDistanceToCenter();}
+double headDistanceToLocation(const double & x, const double & y) const {return wb.headDistanceToLocation(x,y);}
 
 void ResetChemCon();
 void UpdateChemCon();
 void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
+void InitializeSensors(RandomState& rs);
+void ResetAgentsBody(){wb.ResetAgentsBody(CO2DSRpars);}
 
 Worm2Dbody & wb;
 shared_ptr<gradParameters> CO2DSRpars;
@@ -183,6 +185,7 @@ public:
 //Worm2DSR(jsonfilename_,cmd){}
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
+
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),

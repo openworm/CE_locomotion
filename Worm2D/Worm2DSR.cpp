@@ -573,22 +573,31 @@ void Worm2DSRE::setEvolPars(W2Dparameters & w2par_, string evotype_)
 
 }
 
-
-void WormCO2DSR::initForSimulation(RandomState &rs_)
-//void WormAgent::InitializeSimulation(RandomState &rs_)
+void Sensor::InitializeSensors(RandomState &rs_)
 {
 
-  Worm2DSRE::initForSimulation(rs_);
-	//rs = &rs_;
-	InitialiseAgent();
-	ResetAgentsBody(CO2DSRpars);
+  InitialiseAgent();
+	
 	ResetChemCon();
 	//InitializeState(rs_);
 
 	//ResetAgentIntState(rs_);
 	UpdateChemCon();
-	//RandomState rs2 = *rs;	
-	//Worm2Dbase::InitializeState(rs2);
+
+}
+
+
+void WormCO2DSR::initForSimulation(RandomState &rs_)
+//void WormAgent::InitializeSimulation(RandomState &rs_)
+{
+
+  //return;
+  Worm2DSRE::initForSimulation(rs_);
+	//rs = &rs_;
+  //ResetAgentsBody();
+  //InitializeSensors(rs_);
+  
+	
 }
 
 
@@ -605,7 +614,9 @@ void WormCO2DSR::initForSimulation(RandomState &rs_)
 void WormCO2DSR::InitializeState(RandomState &rs)
 {
 
-  Worm2DSR::InitializeState(rs);
+  Worm2DSRE::InitializeState(rs);
+
+  //return;
 	NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
 
 	if (n!=nullptr){
@@ -614,7 +625,7 @@ void WormCO2DSR::InitializeState(RandomState &rs)
         n->RandomizeCircuitState(-1, 1, rs);
         n->RandomizeCircuitOutput(0.2, 0.8, rs);
     }
-	else n->RandomizeCircuitState(0.0, 0.0, rs);
+	//else n->RandomizeCircuitState(0.0, 0.0, rs);
 }
 
 }
@@ -661,7 +672,7 @@ void WormCO2DSR::Step1()
 {
    
     //UpdateSensors();
-	Worm2DSR::Step1();
+	Worm2DSRE::Step1();
   UpdateChemCon();
    
 }

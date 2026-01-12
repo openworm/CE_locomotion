@@ -16,7 +16,7 @@ def incNSvals(j1):
 NSname = "Nervous system"
 
 jsonNames = {
-    "List": {NSname: ["biases", "taus", "gains", "states"]},
+    "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
     "Weights": {
         NSname: ["Chemical weights", "Electrical weights"],
         "Driving input": ["weights"],

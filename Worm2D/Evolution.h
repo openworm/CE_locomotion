@@ -1295,7 +1295,9 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
  
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
-					wg.ResetAgentsBody();
+                    wg.ResetAgentsBody();
+                    wg.InitializeSensors(rs);
+				
 					w.setTime(0);
 					for (double t = StepSize; t <= Transient; t += StepSize)
 					{
@@ -1423,8 +1425,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
  
 				for (int repeats = 1; repeats <= 1; repeats++)
 				{
-                    w.initForSimulation(rs);
-					//wg.ResetAgentsBody();
+                    //w.initForSimulation(rs);
+					wg.ResetAgentsBody();
+                    wg.InitializeSensors(rs);
 					w.setTime(0);
 					for (double t = StepSize; t <= Transient; t += StepSize)
 					{
