@@ -1285,11 +1285,11 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 				//Worm->InitializeSimulation(rs);
 				//Worm->initForSimulation(rs);
 
-                w.initForSimulation(rs);
+                //w.initForSimulation(rs);
 
-                //wg.ResetAgentsBody();
+                wg.ResetAgentsBody();
 
-                //wg.InitializeSensors(rs);
+                wg.InitializeSensors(rs);
 
 				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
 				Worm->ResetAgentsBody(orient, rs);
@@ -1429,9 +1429,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
  
 				for (int repeats = 1; repeats <= 1; repeats++)
 				{
-                    w.initForSimulation(rs);
-					//wg.ResetAgentsBody();
-                    //wg.InitializeSensors(rs);
+                    //w.initForSimulation(rs);
+					wg.ResetAgentsBody();
+                    wg.InitializeSensors(rs);
 					w.setTime(0);
 					for (double t = StepSize; t <= Transient; t += StepSize)
 					{

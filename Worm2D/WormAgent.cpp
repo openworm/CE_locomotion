@@ -235,7 +235,7 @@ void WormAgent::setSimPars(double orient_orig_,
 
 
 
-/* void WormAgent::InitializeSensors(RandomState &rs_)
+void WormAgent::InitializeSensors(RandomState &rs_)
 {
 	rs = &rs_;
 	InitialiseAgent();
@@ -244,7 +244,7 @@ void WormAgent::setSimPars(double orient_orig_,
 	UpdateChemCon();
 }
 
- */
+
 void WormAgent::initForSimulation(RandomState &rs_)
 //void WormAgent::InitializeSimulation(RandomState &rs_)
 {
@@ -254,9 +254,11 @@ void WormAgent::initForSimulation(RandomState &rs_)
 
 	//return;
 
+	ResetAgentsBody();
+
 	rs = &rs_;
 	InitialiseAgent();
-	ResetAgentsBody();
+	
 	ResetChemCon();
 	ResetAgentIntState(*rs);
 	UpdateChemCon();
