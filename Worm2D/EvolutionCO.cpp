@@ -122,6 +122,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 
 				for (int repeats = 1; repeats <= 2; repeats++)
 				{
+					//Worm->InitializeSensors(rs);
 					Worm->ResetAgentsBody();
 					Worm->setTime(0);
 					for (double t = evoPars1.StepSize; t <= evoPars1.Transient; t += evoPars1.StepSize)

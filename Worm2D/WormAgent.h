@@ -68,7 +68,8 @@ public:
 	double CoMx() const {return px;}
     double CoMy() const {return py;}
 	//double DistanceToCentre(void){return sqrt(pow(PositionX(),2) + pow(PositionY(),2));}	
-	void InitializeSensors(RandomState &rs_);
+	
+	//void InitializeSensors(RandomState &rs_);
 
 	// Control
 	void ResetChemCon();
