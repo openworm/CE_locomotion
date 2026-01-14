@@ -248,8 +248,10 @@ def getPlotFormat(network_json_data):
     if "Stretch receptor" in network_json_data:
         plot_format["fig_titles"].append("Stretch receptors")
         plot_format["fig_labels"].append("SR")
-        plot_format["data_sizes"].append(network_json_data["Stretch receptor"]["plot size"]["value"])
-    
+        plot_format["data_sizes"].append(
+            network_json_data["Stretch receptor"]["plot size"]["value"]
+        )
+
     sects = network_json_data["Nervous system"]["section sizes"]
 
     if "head" in sects:
@@ -261,7 +263,7 @@ def getPlotFormat(network_json_data):
         plot_format["fig_titles"].append("Interneurons")
         plot_format["fig_labels"].append("Neu")
         plot_format["data_sizes"].append(sects["interneurons"]["value"])
-    
+
     if "VNC" in sects:
         plot_format["fig_titles"].append("VNC neurons")
         plot_format["fig_labels"].append("Neu")
@@ -270,12 +272,16 @@ def getPlotFormat(network_json_data):
     if "Muscle" in network_json_data:
         plot_format["fig_titles"].append("Muscles")
         plot_format["fig_labels"].append("Mu")
-        plot_format["data_sizes"].append(network_json_data["Muscle"]["Nmuscles"]["value"]*2)
+        plot_format["data_sizes"].append(
+            network_json_data["Muscle"]["Nmuscles"]["value"] * 2
+        )
 
     if "Driving input" in network_json_data:
         plot_format["fig_titles"].append("Sensory")
         plot_format["fig_labels"].append("Se")
-        plot_format["data_sizes"].append(network_json_data["Driving input"]["size"]["value"])
+        plot_format["data_sizes"].append(
+            network_json_data["Driving input"]["size"]["value"]
+        )
 
     plot_format["plot_time"] = 20
     plot_format["worm_plot_time"] = 12
@@ -283,7 +289,6 @@ def getPlotFormat(network_json_data):
     plot_format["do_curv_plot"] = True
 
     return plot_format
-
 
 
 def build_namespace(DEFAULTS={}, a=None, **kwargs):

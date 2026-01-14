@@ -85,13 +85,12 @@ def run(a=None, **kwargs):
 def mergeJsons(file1, file2):
     print(file1)
     print(file2)
-    #worm_file = a.file1  # + "/worm_data.json"
+    # worm_file = a.file1  # + "/worm_data.json"
     network_json_data = utils.getJsonFile(file1)
 
     addedNeurons = []
     appended_json_data = utils.getJsonFile(file2)
-        #"W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
-    
+    # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
     appendedSize = appended_json_data[NSname]["size"]["value"]
     origSize = network_json_data[NSname]["size"]["value"]
@@ -103,16 +102,16 @@ def mergeJsons(file1, file2):
     ]["value"]
 
     network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
-    #network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+    # network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
 
     if "section sizes" in appended_json_data[NSname]:
         for key in appended_json_data[NSname]["section sizes"]:
             keyval = key
             if key in network_json_data[NSname]["section sizes"]:
                 keyval = key + " 2"
-            network_json_data[NSname]["section sizes"][keyval] = appended_json_data[NSname]["section sizes"][key]
-            
-
+            network_json_data[NSname]["section sizes"][keyval] = appended_json_data[
+                NSname
+            ]["section sizes"][key]
 
     # print(appendedDrivingSize, "sdd ", origDrivingSize)
 
@@ -169,55 +168,61 @@ def mergeJsons(file1, file2):
             }
         )
 
-    #hf.make_directory("test_json_utils", overwrite=True)
-
+    # hf.make_directory("test_json_utils", overwrite=True)
 
     print(addedNeurons)
     # unity indices
 
-    with open("testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8") as json_file:
+    with open(
+        "testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8"
+    ) as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 
 def addCells(file1):
-        
-        network_json_data = utils.getJsonFile(file1)
+    network_json_data = utils.getJsonFile(file1)
+    cell_names = utils.getCellNames(network_json_data)
+    from_cell_ind = utils.getIndOfNthVal("SMDD", cell_names, 0)
 
-        addedNeurons = []
-        cell_parameters = {
-            "biases": {"value": -100, "evolvable": 3},
-            "taus": {"value": -100},
-            "gains": {"value": -100, "evolvable": 7},
-            "states": {"value": -100},
+    from_cell_ind
+
+    addedNeurons = []
+    cell_parameters = {
+        "biases": {"value": -100, "evolvable": 3},
+        "taus": {"value": -100},
+        "gains": {"value": -100, "evolvable": 7},
+        "states": {"value": -100},
+    }
+    addedNeurons.append(
+        {
+            "index": addNewNeuron(network_json_data, cell_parameters),
+            "parameters": cell_parameters,
         }
-        addedNeurons.append(
-            {
-                "index": addNewNeuron(network_json_data, cell_parameters),
-                "parameters": cell_parameters,
-            }
-        )
+    )
 
-        weight_parameters = {
-            "module": NSname,
-            "type": "Chemical weights",
-            "value": {"from": addedNeurons[-1]["index"], "to": 15, "weight": -1},
-            "evolvable": 2,
-        }
-        addConnection(network_json_data, weight_parameters)
+    weight_parameters = {
+        "module": NSname,
+        "type": "Chemical weights",
+        "value": {"from": addedNeurons[-1]["index"], "to": 15, "weight": -1},
+        "evolvable": 2,
+    }
+    addConnection(network_json_data, weight_parameters)
 
-        print(addedNeurons)
-        # unity indices
+    print(addedNeurons)
+    # unity indices
 
-        with open("testruns/COW2DSREgen_k1/worm_data.json", "w", encoding="utf-8") as json_file:
-            json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
+    with open(
+        "testruns/COW2DSREgen_k1/worm_data.json", "w", encoding="utf-8"
+    ) as json_file:
+        json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
-    #file1 = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
-    #file2 = "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
-    #file1 = "W2Dmoddev/experiments/jan14/run_0/RS18_worm_data.json"
-    #file2 = "W2Dmoddev/experiments/jan14/run_0/CO18Full_worm_data_evo.json"
+    # file1 = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
+    # file2 = "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
+    # file1 = "W2Dmoddev/experiments/jan14/run_0/RS18_worm_data.json"
+    # file2 = "W2Dmoddev/experiments/jan14/run_0/CO18Full_worm_data_evo.json"
     file1 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/RS18_worm_data.json"
     file2 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/CO18Full_worm_data_evo.json"
-    #run(folderName=filename)
-    mergeJsons(file1 = file1, file2 = file2)
+    # run(folderName=filename)
+    mergeJsons(file1=file1, file2=file2)
