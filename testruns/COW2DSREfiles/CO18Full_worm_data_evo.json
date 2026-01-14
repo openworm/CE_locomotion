@@ -1,0 +1,514 @@
+{
+    "Driving input": {
+        "size": {
+            "value": 2
+        },
+        "strengths": {
+            "message": "Driving input strength to Nervous System in sparse format",
+            "value": [
+                0.0,
+                0.0
+            ]
+        },
+        "weights": {
+            "message": "Weights of driving inputs to Nervous System in sparse format",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": -485.037800065517
+                },
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 615.4844161237518
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": 6.555477328677083
+                },
+                {
+                    "from": 2,
+                    "to": 2,
+                    "weight": -1033.9110227927492
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 859.3431908890472
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": 425.8228062662335
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": -26.75371050875271
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": -827.0967176751325
+                }
+            ]
+        }
+    },
+    "Evolutionary Optimization Parameters": {
+        "CheckpointInterval": {
+            "value": 5
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 50.0
+        },
+        "ElitistFraction": {
+            "value": 0.1
+        },
+        "HSStepSize": {
+            "value": 0.01
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 575
+        },
+        "MutationVariance": {
+            "value": 0.05
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "PopulationSize": {
+            "value": 50
+        },
+        "ReEvaluationFlag": {
+            "value": 1
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "StepSize": {
+            "value": 0.01
+        },
+        "Transient": {
+            "value": 20.0
+        },
+        "VectSize": {
+            "value": 66
+        },
+        "VectSize_temo": {
+            "value": -1
+        },
+        "evoType": {
+            "value": "EvoCO2"
+        },
+        "fileprefix": {
+            "value": "CO18Full_"
+        },
+        "randomseed": {
+            "value": 173257
+        },
+        "skip_steps": {
+            "value": 1
+        }
+    },
+    "InputNS": {
+        "weights": {
+            "message": "Weights of driving inputs to NS from another NS",
+            "value": []
+        }
+    },
+    "Nervous system": {
+        "Chemical weights": {
+            "message": "chemical weights in sparse format",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 1,
+                    "weight": -7.375948325085116
+                },
+                {
+                    "from": 2,
+                    "to": 1,
+                    "weight": 13.093512512802526
+                },
+                {
+                    "from": 3,
+                    "to": 1,
+                    "weight": -11.862859939440764
+                },
+                {
+                    "from": 4,
+                    "to": 1,
+                    "weight": -12.807015545167214
+                },
+                {
+                    "from": 1,
+                    "to": 2,
+                    "weight": -12.825376285329767
+                },
+                {
+                    "from": 2,
+                    "to": 2,
+                    "weight": -15.0
+                },
+                {
+                    "from": 3,
+                    "to": 2,
+                    "weight": -2.3120691053885274
+                },
+                {
+                    "from": 4,
+                    "to": 2,
+                    "weight": -5.129640618174797
+                },
+                {
+                    "from": 1,
+                    "to": 3,
+                    "weight": 15.0
+                },
+                {
+                    "from": 2,
+                    "to": 3,
+                    "weight": -9.324213811073509
+                },
+                {
+                    "from": 3,
+                    "to": 3,
+                    "weight": 5.314379989318473
+                },
+                {
+                    "from": 4,
+                    "to": 3,
+                    "weight": 3.612156669248959
+                },
+                {
+                    "from": 1,
+                    "to": 4,
+                    "weight": -2.718866236768513
+                },
+                {
+                    "from": 2,
+                    "to": 4,
+                    "weight": -3.368918704762593
+                },
+                {
+                    "from": 3,
+                    "to": 4,
+                    "weight": -0.32070493471626693
+                },
+                {
+                    "from": 4,
+                    "to": 4,
+                    "weight": -4.049864979346005
+                }
+            ]
+        },
+        "Electrical weights": {
+            "message": "electrical weights in sparse format",
+            "value": []
+        },
+        "Model name": {
+            "value": "CO18Full"
+        },
+        "NumChemicalConns": {
+            "value": [
+                4,
+                4,
+                4,
+                4
+            ]
+        },
+        "NumElectricalConns": {
+            "value": [
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "Rtaus": {
+            "value": [
+                0.31402075122271617,
+                0.24601129458971951,
+                3.7510106131597483,
+                0.31331110704002846
+            ]
+        },
+        "biases": {
+            "value": [
+                1.744266395462198,
+                -5.7538803772957205,
+                -13.68222465620144,
+                -4.575589290425934
+            ]
+        },
+        "externalinputs": {
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "gains": {
+            "value": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "maxchemcons": {
+            "value": 4
+        },
+        "maxelecconns": {
+            "value": 4
+        },
+        "outputs": {
+            "value": [
+                0.8512281665716538,
+                0.0031604343245807383,
+                1.142575310827285e-06,
+                0.010195214533955476
+            ]
+        },
+        "paststates": {
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "section sizes": {
+            "interneurons": {
+                "plot order": 0,
+                "value": 4
+            }
+        },
+        "size": {
+            "value": 4
+        },
+        "states": {
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "taus": {
+            "value": [
+                3.184502922517881,
+                4.064854020900667,
+                0.2665948202043682,
+                3.1917157659917894
+            ]
+        }
+    },
+    "OutputNS": {
+        "weights": {
+            "message": "Weights of driving inputs from NS to another NS",
+            "value": [
+                {
+                    "from": 1,
+                    "to": 37,
+                    "weight": 12.565264112692905
+                },
+                {
+                    "from": 2,
+                    "to": 39,
+                    "weight": 12.565264112692905
+                }
+            ]
+        }
+    },
+    "PhenoNames": {
+        "value": [
+            "CO18Full_w_ASER",
+            "CO18Full_w_ASER",
+            "CO18Full_w_ASER",
+            "CO18Full_w_ASER",
+            "CO18Full_w_ASEL",
+            "CO18Full_w_ASEL",
+            "CO18Full_w_ASEL",
+            "CO18Full_w_ASEL",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_chem_recur_wei",
+            "CO18Full_bias",
+            "CO18Full_bias",
+            "CO18Full_bias",
+            "CO18Full_bias",
+            "CO18Full_tau",
+            "CO18Full_tau",
+            "CO18Full_tau",
+            "CO18Full_tau",
+            "CO18Full_w_CPG_SMB",
+            "CO18Full_sensorN",
+            "CO18Full_sensorM",
+            "CO18Full_outputGain"
+        ]
+    },
+    "PhenoNamesNums": {
+        "value": [
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66
+        ]
+    },
+    "Sensory": {
+        "w_ASEL": {
+            "value": [
+                -485.037800065517,
+                6.555477328677083,
+                859.3431908890472,
+                -26.75371050875271
+            ]
+        },
+        "w_ASER": {
+            "value": [
+                615.4844161237518,
+                -1033.9110227927492,
+                425.8228062662335,
+                -827.0967176751325
+            ]
+        }
+    },
+    "Worm": {
+        "ChemDiffConst": {
+            "value": 5.184200000000001
+        },
+        "HSP": {
+            "value": 1.4959964761904763
+        },
+        "HSStepSize": {
+            "value": 0.01
+        },
+        "HST": {
+            "value": 4.2
+        },
+        "MaxDist": {
+            "value": 4.5
+        },
+        "MaxGauGradHeight": {
+            "value": 1.0
+        },
+        "MaxVel": {
+            "value": 0.022
+        },
+        "N_muscles": {
+            "value": 0
+        },
+        "N_neuronsperunit": {
+            "value": 4
+        },
+        "N_size": {
+            "value": 4
+        },
+        "N_units": {
+            "value": 1
+        },
+        "RunDuration": {
+            "value": 1000.0
+        },
+        "T_muscle": {
+            "value": 1.0
+        },
+        "gradSteep": {
+            "value": 0.5
+        },
+        "kinesis": {
+            "value": 0
+        },
+        "orient": {
+            "value": 0.0
+        },
+        "outputGain": {
+            "value": 1.4158183155386868
+        },
+        "resetAgentBody": {
+            "value": false
+        },
+        "rotation": {
+            "value": 3.1415926
+        },
+        "sensorM": {
+            "value": 0.17830142156997342
+        },
+        "sensorN": {
+            "value": 3.024005965843151
+        },
+        "taxis": {
+            "value": 1
+        },
+        "w_CPG_SMBD": {
+            "value": 12.565264112692905
+        },
+        "w_CPG_SMBV": {
+            "value": 12.565264112692905
+        }
+    }
+}
