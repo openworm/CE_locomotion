@@ -182,6 +182,9 @@ virtual void setStepSize(double val_){settedStepSize=val_;}
 
 vector<double> readPhenotype();
 virtual void writeAct();
+void writeExtInp(ofstream & ofs);
+void writeVNC(ofstream & ofs);
+void writeMusc(ofstream & ofs);
 void writeState();
 virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);

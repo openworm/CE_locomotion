@@ -255,13 +255,15 @@ void WormAgent::initForSimulation(RandomState &rs_)
 	//return;
 
 	ResetAgentsBody();
-
-	rs = &rs_;
+	InitializeSensors(rs_);
+	
+	/* rs = &rs_;
 	InitialiseAgent();
 	
 	ResetChemCon();
 	ResetAgentIntState(*rs);
-	UpdateChemCon();
+	UpdateChemCon(); */
+
 	//RandomState rs2 = *rs;	
 	//Worm2Dbase::InitializeState(rs2);
 }
@@ -495,6 +497,8 @@ void WormAgent::addParsToJson(json & j)
     Worm2Dbase::addParsToJson(j);
 	string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], dynamic_cast<NervousSystem&>(*n_ptr));
+	j[nsHead]["section sizes"]["interneurons"]["value"] = size;
+	j[nsHead]["section sizes"]["interneurons"]["plot order"] = 0;
 
 	Params< vector<double> > par;
 	par.names =  {"w_ASER", "w_ASEL"};

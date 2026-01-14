@@ -237,9 +237,11 @@ double EvaluationFunction(TVector<double> &geno, RandomState &rs);
 
     void configure_p2(){
         string model_name = this->cmd->getArgVal("--modelname","");
+        bool usj = this->cmd->getArgValInt("--useSecondJson",false);
 
         //if (false){
-        if (model_name == "CO18Full"){
+        //if (model_name == "CO18Full"){
+        if (usj){
         EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18"), "RS18_");
         setFromEvol(er18, 0); 
        

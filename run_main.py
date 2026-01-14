@@ -4,7 +4,7 @@ import os
 import sys
 import neuromlLocal.utils as utils
 import helper_funcs as hf
-
+import numpy as np
 
 # import helper_funcs as hf
 # from importlib import import_module
@@ -537,6 +537,17 @@ def run(a=None, **kwargs):
                 with open(json_path_mod, "w", encoding="utf-8") as f:
                     json.dump(network_json_data_mod, f, ensure_ascii=False, indent=4)
 
+
+    check_nan_files = ["fitness.dat","genhistory.dat"]
+    for file in check_nan_files:
+        input_filenames = glob.glob(a.outputFolderName + "/*" + file)
+        for file1 in input_filenames:
+            filename1 = pathlib.Path(file1).name
+            #np.loadtxt(file1)
+            data = np.genfromtxt(file1, dtype=float)
+            data = np.nan_to_num(data, nan=0.0)
+            np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
+
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):
         with open(sim_par_file) as f:
@@ -675,6 +686,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doOrigSRInput"] = True
     evol_extra_parameters["doAngleDiff"] = False
     evol_extra_parameters["StepSize"] = 0.005
+    evol_extra_parameters["resetAgentBody"] = False
+    evol_extra_parameters["useSecondJson"] = False
 
     sim_extra_parameters = {}
     sim_extra_parameters["rotation"] = 0

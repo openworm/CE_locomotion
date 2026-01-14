@@ -264,13 +264,14 @@ void Worm2Dbody::ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars)
 {
     //orient = gradPars->orient_orig;
     b.InitializeBodyState();
+    if (CO2DSRpars->resetAgentBody){
     zeroX();
     zeroY();
     //w18->shiftX(-4.5);
     shiftX(cos(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
     shiftY(sin(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
 	rotateBody(CO2DSRpars->worm_rotation);
-    
+    }
 }
 
 void Worm2Dbody::rotateBody(double theta)
@@ -641,6 +642,9 @@ void Worm2Dbase::addParsToJson(json & j)
     j["Driving input"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
     appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
     j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
+
+    j["Driving input"]["size"]["value"] = externalInputs.size();
+    
 //}
 
 
@@ -728,6 +732,33 @@ void Worm2D::addParsToJson(json & j)
     //addExtraParsToJson(j);
 }
 
+void Worm2Dbase::writeExtInp(ofstream & ofs)
+{
+
+    for (int i=0; i<externalInputs.size(); i++)
+    ofs <<  " " << externalInputs[i];
+
+}
+
+void Worm2Dbase::writeVNC(ofstream & ofs)
+{
+
+if (n_ptr)
+for (int i = 1; i <= par1.N_units; i++) 
+    for (int j = 1; j <= par1.N_neuronsperunit; j++) 
+        ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
+        
+    
+}
+
+void Worm2Dbase::writeMusc(ofstream & ofs)
+{
+
+    if (m_ptr)
+    for (int i = 1; i <= par1.N_muscles; i++) 
+    ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+        
+}
 
 
 void Worm2Dbase::writeAct()
@@ -754,19 +785,15 @@ void Worm2Dbase::writeAct()
 
         // Ventral Cord Motor Neurons
         //ofs << "\nV: ";
-        for (int i = 1; i <= par1.N_units; i++) {
-            for (int j = 1; j <= par1.N_neuronsperunit; j++) {
-                ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
-            }
-        }
+
+        writeVNC(ofs);
+     
         // Muscles
         //ofs << "\nM: ";
+        writeMusc(ofs);
+        
+        writeExtInp(ofs);
 
-        if (m_ptr){
-        for (int i = 1; i <= par1.N_muscles; i++) {
-            ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
-        }
-    }
         ofs << endl;
     }
 }

@@ -120,6 +120,7 @@ plot_formats["W2DCESR"] = plot_formats["W2DCE"]
 # plot_formats["W2DSR"] = plot_formats["W2DCE"]
 plot_formats["W2D18"] = plot_formats["RS18"]
 plot_formats["W2DCO"] = plot_formats["CO"]
+plot_formats["COW2DSR"] = plot_formats["RS18"]
 
 
 DEFAULTS = {"doMuscles": False, "folder": None, "popstruct": 2}
@@ -236,6 +237,53 @@ def process_args():
     )
 
     return parser.parse_args()
+
+
+def getPlotFormat(network_json_data):
+    plot_format = {}
+    plot_format["fig_titles"] = []
+    plot_format["fig_labels"] = []
+    plot_format["data_sizes"] = []
+
+    if "Stretch receptor" in network_json_data:
+        plot_format["fig_titles"].append("Stretch receptors")
+        plot_format["fig_labels"].append("SR")
+        plot_format["data_sizes"].append(network_json_data["Stretch receptor"]["plot size"]["value"])
+    
+    sects = network_json_data["Nervous system"]["section sizes"]
+
+    if "head" in sects:
+        plot_format["fig_titles"].append("Head neurons")
+        plot_format["fig_labels"].append("Neu")
+        plot_format["data_sizes"].append(sects["head"]["value"])
+
+    if "interneurons" in sects:
+        plot_format["fig_titles"].append("Interneurons")
+        plot_format["fig_labels"].append("Neu")
+        plot_format["data_sizes"].append(sects["interneurons"]["value"])
+    
+    if "VNC" in sects:
+        plot_format["fig_titles"].append("VNC neurons")
+        plot_format["fig_labels"].append("Neu")
+        plot_format["data_sizes"].append(sects["VNC"]["value"])
+
+    if "Muscle" in network_json_data:
+        plot_format["fig_titles"].append("Muscles")
+        plot_format["fig_labels"].append("Mu")
+        plot_format["data_sizes"].append(network_json_data["Muscle"]["Nmuscles"]["value"]*2)
+
+    if "Driving input" in network_json_data:
+        plot_format["fig_titles"].append("Sensory")
+        plot_format["fig_labels"].append("Se")
+        plot_format["data_sizes"].append(network_json_data["Driving input"]["size"]["value"])
+
+    plot_format["plot_time"] = 20
+    plot_format["worm_plot_time"] = 12
+    plot_format["do_body_plot"] = True
+    plot_format["do_curv_plot"] = True
+
+    return plot_format
+
 
 
 def build_namespace(DEFAULTS={}, a=None, **kwargs):

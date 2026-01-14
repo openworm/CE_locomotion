@@ -134,7 +134,7 @@ void SR18::addParsToJson(json & j) const
     j["Stretch receptor"]["SRheadgain"]["value"] = SRheadgain;
     j["Stretch receptor"]["SRvncsr"]["value"] = vncsr;
     j["Stretch receptor"]["SRheadsr"]["value"] = headsr;
-   
+    j["Stretch receptor"]["plot size"]["value"] = 2 + srvars_ptr->nstretch*3;
 
     SR::addParsToJson(j);
 }
@@ -175,7 +175,8 @@ void SRCE::addParsToJson(json & j) const
 
     j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
     j["Stretch receptor"]["SR_B_gain"]["value"] = SR_B_gain;
-  
+    j["Stretch receptor"]["plot size"]["value"] = srvars_ptr->nstretch*4;
+
     SR::addParsToJson(j);
 
 }

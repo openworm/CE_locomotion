@@ -695,10 +695,14 @@ void Worm18::addParsToJson(json & j)
      }
     else sr_ptr->addParsToJson(j);
 
-    
 
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], n);
+    j[nsHead]["section sizes"]["head"]["value"] = 4;
+    j[nsHead]["section sizes"]["head"]["plot order"] = 0;
+    j[nsHead]["section sizes"]["VNC"]["value"] = 36;
+    j[nsHead]["section sizes"]["VNC"]["plot order"] = 1;
+
     Worm2D::addParsToJson(j);
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), 1);

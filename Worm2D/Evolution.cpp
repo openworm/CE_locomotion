@@ -499,7 +499,14 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     assert(s && "s not set ");
 
     cout << "EvolutionaryRunDisplay" << endl;
-    evolfile << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
+    evolfile << Generation;
+    vector<double> evovals{BestPerf,AvgPerf,PerfVar};
+    for (int i=0;i<evovals.size();i++) 
+        if (isnan(evovals[i])) evolfile << " " << 0.0;
+        else evolfile << " " << evovals[i];
+    evolfile << endl;
+
+    //evolfile << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
     if (writeBestFlag) ResultsDisplay(*s);
 
     //TVector<double> & phencur =  getBestPhenotype();

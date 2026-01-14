@@ -298,9 +298,10 @@ def reload_single_run(a=None, **kwargs):
 
     worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data.json")
-    if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data.json")
+    
 
     network_json_data = utils.getJsonFile(worm_file)
 
@@ -308,7 +309,11 @@ def reload_single_run(a=None, **kwargs):
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
-    plot_format = utils.plot_formats[a.modelName]
+    if a.modelName == "COW2DSR":
+        plot_format = utils.getPlotFormat(network_json_data)
+    else:
+        plot_format = utils.plot_formats[a.modelName]
+
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
 
@@ -325,6 +330,7 @@ def reload_single_run(a=None, **kwargs):
     act_data = np.loadtxt(hf.rename_file("act.dat")).T
     t_data = act_data[0]
 
+    
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
         CO18_size = network_json_data["Nervous system"]["size"]["value"]
@@ -357,7 +363,7 @@ def reload_single_run(a=None, **kwargs):
     if plot_format["do_curv_plot"] or plot_format["do_body_plot"]:
         plot_rows += 1
     if plot_rows > 1:
-        fig, axs = plt.subplots(plot_rows, 2, figsize=(plot_rows * 4, 10))
+        fig, axs = plt.subplots(plot_rows, 2, figsize=(10, plot_rows * 2))
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
 
@@ -523,13 +529,8 @@ def reload_single_run(a=None, **kwargs):
 
     from F2_fig_behavior import make_fig
 
-    if not (
-        a.modelName == "CO"
-        or a.modelName == "W2DCO"
-        or a.modelName == "W2Dosc"
-        or a.modelName == "W2Dosc21"
-        or a.modelName == "CO18Full"
-    ):
+    notF2models = ["CO",  "W2DCO", "W2Dosc", "W2Dosc21", "CO18Full", "COW2DSR"]
+    if a.modelName not in notF2models:
         make_fig(model_name=a.modelName)
 
 

@@ -14,6 +14,7 @@ def incNSvals(j1):
 
 
 NSname = "Nervous system"
+EOP = "Evolutionary Optimization Parameters"
 
 jsonNames = {
     "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
@@ -49,6 +50,7 @@ def addConnection(j1, wp):
         exit()
     if wp["type"] not in jsonNames["Weights"][wp["module"]]:
         print(wp["type"], " not in ", jsonNames["Weights"][wp["module"]])
+        exit()
     if wp["type"] not in j1[wp["module"]]:
         j1[wp["module"]][wp["type"]] = {}
         j1[wp["module"]][wp["type"]]["value"] = []
@@ -79,14 +81,15 @@ def incToFromWeight(val, tval=0, fval=0):
 def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
-    print(a.folderName)
-    worm_file = a.folderName  # + "/worm_data.json"
-    network_json_data = utils.getJsonFile(worm_file)
+    print(a.file1)
+    print(a.file2)
+    #worm_file = a.file1  # + "/worm_data.json"
+    network_json_data = utils.getJsonFile(a.file1)
 
     addedNeurons = []
-    appended_json_data = utils.getJsonFile(
-        "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
-    )
+    appended_json_data = utils.getJsonFile(a.file2)
+        #"W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
+    
 
     appendedSize = appended_json_data[NSname]["size"]["value"]
     origSize = network_json_data[NSname]["size"]["value"]
@@ -96,6 +99,18 @@ def run(a=None, **kwargs):
     network_json_data["Worm"]["N_size"]["value"] += appended_json_data["Worm"][
         "N_size"
     ]["value"]
+
+    network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
+    #network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+
+    if "section sizes" in appended_json_data[NSname]:
+        for key in appended_json_data[NSname]["section sizes"]:
+            keyval = key
+            if key in network_json_data[NSname]["section sizes"]:
+                keyval = key + " 2"
+            network_json_data[NSname]["section sizes"][keyval] = appended_json_data[NSname]["section sizes"][key]
+            
+
 
     # print(appendedDrivingSize, "sdd ", origDrivingSize)
 
@@ -108,6 +123,14 @@ def run(a=None, **kwargs):
     for key, val in appended_json_data["Worm"].items():
         if key not in network_json_data["Worm"]:
             network_json_data["Worm"][key] = val
+
+    if EOP not in network_json_data:
+        network_json_data[EOP] = {}
+
+    if EOP in appended_json_data:
+        for key, val in appended_json_data[EOP].items():
+            if key not in network_json_data[EOP]:
+                network_json_data[EOP][key] = val
 
     for modulename in jsonNames["Weights"]:
         addmodulename = modulename
@@ -144,7 +167,7 @@ def run(a=None, **kwargs):
             }
         )
 
-    hf.make_directory("test_json_utils", overwrite=True)
+    #hf.make_directory("test_json_utils", overwrite=True)
 
     if False:
         cell_parameters = {
@@ -171,10 +194,16 @@ def run(a=None, **kwargs):
     print(addedNeurons)
     # unity indices
 
-    with open("test_json_utils/test.json", "w", encoding="utf-8") as json_file:
+    with open("testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8") as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
-    filename = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
-    run(folderName=filename)
+    #file1 = "W2Dmoddev/testruns/testCO18Full/RS18_worm_data.json"
+    #file2 = "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
+    #file1 = "W2Dmoddev/experiments/jan14/run_0/RS18_worm_data.json"
+    #file2 = "W2Dmoddev/experiments/jan14/run_0/CO18Full_worm_data_evo.json"
+    file1 = "W2Dmoddev/experiments/CO18Full_demo_k5/RS18_worm_data.json"
+    file2 = "W2Dmoddev/experiments/CO18Full_demo_k5/CO18Full_worm_data_evo.json"
+    #run(folderName=filename)
+    run(file1 = file1, file2 = file2)

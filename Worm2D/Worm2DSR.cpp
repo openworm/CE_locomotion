@@ -37,6 +37,9 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     setNSFromJson(j,n);
 
+    if (j["Nervous system"].contains("section sizes"))
+      jsects = j["Nervous system"]["section sizes"];
+
     }
 
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
@@ -48,6 +51,8 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
     //setUpMuscleConn(j);
     //setUpBodyConn(j);
     //makeExternalInputConnFromJson(j);
+
+   
 
 }
 
@@ -90,12 +95,14 @@ void Worm2DSR::addParsToJson(json & j)
   if (n!=nullptr){
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], *n);
+  
+  j[nsHead]["section sizes"] = jsects;
   }
   Worm2D::addParsToJson(j);
   Worm2DSRb::addParsToJson(j);
 
-
 }
+
 void Worm2DSRm::addParsToJson(json & j)
 {
  Worm2DSRb::addParsToJson(j);
@@ -217,20 +224,17 @@ void Worm2DSRm::writeAct()
             ofs <<  " " << n_ptr->NeuronOutput(i);
         }
 
-    // Ventral Cord Motor Neurons
-    //ofs << "\nV: ";
-    for (int i = 1; i <= par1.N_units; i++) {
-      for (int j = 1; j <= par1.N_neuronsperunit; j++) {
-        ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
-      }
-    }
 
-    // Muscles
-    //ofs << "\nM: ";
-    if (m_ptr){
-    for (int i = 1; i <= par1.N_muscles; i++) {
-      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
-    }}
+      writeVNC(ofs);
+     
+        // Muscles
+        //ofs << "\nM: ";
+      writeMusc(ofs);
+        
+      writeExtInp(ofs);
+
+    
+
     ofs << endl;
   }
 }
@@ -249,31 +253,28 @@ void Worm2DSR::writeAct()
     //ofs << "\nSR: ";
     // Stretch receptors
 
-     if (w2dsr_ptr!=nullptr) w2dsr_ptr->writeAct(ofs);
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->writeAct(ofs);
 
       
     // Head Neurons
         //ofs << "\nH: ";
-        int offset = par1.N_units*par1.N_neuronsperunit;
+    int offset = par1.N_units*par1.N_neuronsperunit;
 
-        for (int i = offset + 1; i <= par1.N_size; i++) {
-            ofs <<  " " << n_ptr->NeuronOutput(i);
-        }
+    for (int i = offset + 1; i <= par1.N_size; i++) 
+        ofs <<  " " << n_ptr->NeuronOutput(i);
+    
+      writeVNC(ofs);
+     
+        // Muscles
+        //ofs << "\nM: ";
+      writeMusc(ofs);
+        
+      writeExtInp(ofs);
 
-    // Ventral Cord Motor Neurons
-    //ofs << "\nV: ";
-    for (int i = 1; i <= par1.N_units; i++) {
-      for (int j = 1; j <= par1.N_neuronsperunit; j++) {
-        ofs <<  " " << n_ptr->NeuronOutput(nn(j,i));
-      }
-    }
-
+   
     // Muscles
     //ofs << "\nM: ";
-    if (m_ptr){
-    for (int i = 1; i <= par1.N_muscles; i++) {
-      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
-    }}
+    
     ofs << endl;
   }
 }
@@ -594,8 +595,8 @@ void WormCO2DSR::initForSimulation(RandomState &rs_)
   //return;
   Worm2DSRE::initForSimulation(rs_);
 	//rs = &rs_;
-  //ResetAgentsBody();
-  //InitializeSensors(rs_);
+  Sensor::ResetAgentsBody();
+  InitializeSensors(rs_);
   
 	
 }
@@ -727,6 +728,8 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
   
  }else if (j["Worm"].contains("sensorM"))
  {
+
+
   SensorPars sp1;
   sp1.gradSteep = CO2DSRpars_->gradSteep;
   sp1.HSStepSize = CO2DSRpars_->HSStepSize;
@@ -737,6 +740,7 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
   sp1.x_center = 0, sp1.y_center = 0;
   spvec.push_back(sp1);
 
+  
  }
 
  

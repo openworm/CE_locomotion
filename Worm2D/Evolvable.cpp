@@ -37,6 +37,7 @@ void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
     HSStepSize = cmd->getArgValDoub("--HSStepSize", HSStepSize);
     taxis = cmd->getArgValInt("--taxis", taxis);
     kinesis = cmd->getArgValInt("--kinesis", kinesis);
+    resetAgentBody = cmd->getArgValInt("--resetAgentBody", resetAgentBody);
     W2Dbaseparameters::setPars(cmd);
 
 }

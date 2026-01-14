@@ -67,7 +67,7 @@ const string getModelName() {return "W2DSR";}
 //static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd, const json & j);
 //static wormIzqParams getIzqPars(json & j);
 
-
+json jsects;
 
 };
 
@@ -142,9 +142,7 @@ Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_)
 CO2DSRpars(CO2DSRpars_),
 wb(wb_)
 {
-
   setParsFromJson(j,CO2DSRpars_);
-
 }
 
 void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
@@ -197,7 +195,7 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
 //WormCO2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
 //Worm2DSR(par1_,n_ptr_,sr_ptr_),Worm2Dm(par1_, n_ptr_){}
 
-
+const string getModelName() {return "CO2DSR";}
 void initForSimulation(RandomState& rs);
 void InitializeState(RandomState &rs);
 //void ResetAgentsBody();

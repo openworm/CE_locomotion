@@ -268,11 +268,12 @@ class gradParameters : public W2Dbaseparameters
   MaxDist = 4.5, worm_rotation = 0.0;
   //double orient_orig = 0, gradSteep = 0.5, RunDuration = 100,  MaxDist = 4.5;
   int taxis = 1, kinesis = 0;
-	
+	bool resetAgentBody = false;
+
   void setParsFromJson(const json & j){
 
   //assert(0);
-
+  resetAgentBody = getJsonVal<int>(j, "resetAgentBody", resetAgentBody, true);
   worm_rotation = getJsonVal<double>(j, "rotation", worm_rotation , true);
   orient_orig = getJsonVal<double>(j, "orient", orient_orig, true);
   gradSteep = getJsonVal<double>(j, "gradSteep", gradSteep,true);
@@ -301,6 +302,8 @@ void addParsToJson(json & j) const {
       MaxDist, worm_rotation});
 
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
+  addParsToJson1<bool>(j,{"resetAgentBody"}, {resetAgentBody});
+
 
 }
 
