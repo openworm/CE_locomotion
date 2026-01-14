@@ -237,7 +237,7 @@ double EvaluationFunction(TVector<double> &geno, RandomState &rs);
 
     void configure_p2(){
         string model_name = this->cmd->getArgVal("--modelname","");
-        bool usj = this->cmd->getArgValInt("--useSecondJson",false);
+        bool usj = this->cmd->getArgValInt("--useSupCPT",false);
 
         //if (false){
         //if (model_name == "CO18Full"){

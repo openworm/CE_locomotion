@@ -81,13 +81,15 @@ def incToFromWeight(val, tval=0, fval=0):
 def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
-    print(a.file1)
-    print(a.file2)
+
+def mergeJsons(file1, file2):
+    print(file1)
+    print(file2)
     #worm_file = a.file1  # + "/worm_data.json"
-    network_json_data = utils.getJsonFile(a.file1)
+    network_json_data = utils.getJsonFile(file1)
 
     addedNeurons = []
-    appended_json_data = utils.getJsonFile(a.file2)
+    appended_json_data = utils.getJsonFile(file2)
         #"W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
     
 
@@ -169,7 +171,19 @@ def run(a=None, **kwargs):
 
     #hf.make_directory("test_json_utils", overwrite=True)
 
-    if False:
+
+    print(addedNeurons)
+    # unity indices
+
+    with open("testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8") as json_file:
+        json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
+
+
+def addCells(file1):
+        
+        network_json_data = utils.getJsonFile(file1)
+
+        addedNeurons = []
         cell_parameters = {
             "biases": {"value": -100, "evolvable": 3},
             "taus": {"value": -100},
@@ -191,11 +205,11 @@ def run(a=None, **kwargs):
         }
         addConnection(network_json_data, weight_parameters)
 
-    print(addedNeurons)
-    # unity indices
+        print(addedNeurons)
+        # unity indices
 
-    with open("testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8") as json_file:
-        json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
+        with open("testruns/COW2DSREgen_k1/worm_data.json", "w", encoding="utf-8") as json_file:
+            json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
@@ -203,7 +217,7 @@ if __name__ == "__main__":
     #file2 = "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
     #file1 = "W2Dmoddev/experiments/jan14/run_0/RS18_worm_data.json"
     #file2 = "W2Dmoddev/experiments/jan14/run_0/CO18Full_worm_data_evo.json"
-    file1 = "W2Dmoddev/experiments/CO18Full_demo_k5/RS18_worm_data.json"
-    file2 = "W2Dmoddev/experiments/CO18Full_demo_k5/CO18Full_worm_data_evo.json"
+    file1 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/RS18_worm_data.json"
+    file2 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/CO18Full_worm_data_evo.json"
     #run(folderName=filename)
-    run(file1 = file1, file2 = file2)
+    mergeJsons(file1 = file1, file2 = file2)

@@ -139,6 +139,7 @@ void EvoBase::setFromCPT2()
         popsize = s->PopulationSize();}
 
 
+        //assert(0);
 
     }
     else doResume = false;
@@ -164,8 +165,7 @@ void EvoBase::setFromCPT()
     }
     else doResume = false;
    
-}
-
+} 
 
 void EvoBase::setUp()
 {   

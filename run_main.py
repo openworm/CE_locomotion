@@ -687,7 +687,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doAngleDiff"] = False
     evol_extra_parameters["StepSize"] = 0.005
     evol_extra_parameters["resetAgentBody"] = False
-    evol_extra_parameters["useSecondJson"] = False
+    evol_extra_parameters["useSupCPT"] = False
+    evol_extra_parameters["modPar"] = True
 
     sim_extra_parameters = {}
     sim_extra_parameters["rotation"] = 0
