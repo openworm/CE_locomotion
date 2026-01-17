@@ -195,7 +195,7 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
 //WormCO2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
 //Worm2DSR(par1_,n_ptr_,sr_ptr_),Worm2Dm(par1_, n_ptr_){}
 
-const string getModelName() {return "CO2DSR";}
+const string getModelName() {return "COW2DSR";}
 void initForSimulation(RandomState& rs);
 void InitializeState(RandomState &rs);
 //void ResetAgentsBody();

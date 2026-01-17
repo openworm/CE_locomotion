@@ -1,7 +1,7 @@
 import helper_funcs as hf
 import neuromlLocal.utils as utils
 import json
-
+import pathlib
 
 def joinJson(json1, json2):
     j1_size = json1["Nervous system"]["size"]["value"]
@@ -17,7 +17,8 @@ NSname = "Nervous system"
 EOP = "Evolutionary Optimization Parameters"
 
 jsonNames = {
-    "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
+    # "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
+    "List": {NSname: ["biases", "taus", "gains", "states", "Cell name", "Section name"]},
     "Weights": {
         NSname: ["Chemical weights", "Electrical weights"],
         "Driving input": ["weights"],
@@ -31,7 +32,13 @@ jsonLists = {"Driving input": ["strengths"]}
 def addNewNeuron(j1, parameters):
     j1[NSname]["size"]["value"] = j1[NSname]["size"]["value"] + 1
     indVal = j1[NSname]["size"]["value"]
+    if "Cell name" not in parameters:
+        parameters["Cell name"] = {"value" : "Cell_" + str(indVal)}
+    if "Section name" not in parameters:
+        parameters["Section name"] = {"value" : "interneuron"}
     for parval in jsonNames["List"][NSname]:
+        if parval not in j1[NSname]:
+            j1[NSname][parval] = {} 
         if "value" not in j1[NSname][parval]:
             j1[NSname][parval]["value"] = []
         j1[NSname][parval]["value"].append(parameters[parval]["value"])
@@ -92,6 +99,7 @@ def mergeJsons(file1, file2):
     appended_json_data = utils.getJsonFile(file2)
     # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
+
     appendedSize = appended_json_data[NSname]["size"]["value"]
     origSize = network_json_data[NSname]["size"]["value"]
     # appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
@@ -101,8 +109,22 @@ def mergeJsons(file1, file2):
         "N_size"
     ]["value"]
 
-    network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
-    # network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+    #network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
+
+    json_model_name = network_json_data[NSname]["Model name"]["value"]
+    section_names = utils.getNSvalue(network_json_data, "Section name")
+    if section_names is None:
+       section_names = utils.default_cells[json_model_name]["Section name"]
+       if "Section name" not in network_json_data[NSname]:
+           network_json_data[NSname]["Section name"] = {}
+       network_json_data[NSname]["Section name"]["value"] = section_names
+
+
+
+    if "Main model name" not in network_json_data["Worm"]:
+        network_json_data["Worm"]["Main model name"] = {}
+    network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+
 
     if "section sizes" in appended_json_data[NSname]:
         for key in appended_json_data[NSname]["section sizes"]:
@@ -157,10 +179,11 @@ def mergeJsons(file1, file2):
     for ind in range(appendedSize):
         cell_parameters_1 = {}
         for parname in jsonNames["List"][NSname]:
-            cell_parameters_1[parname] = {}
-            cell_parameters_1[parname]["value"] = appended_json_data[NSname][parname][
-                "value"
-            ][ind]
+            if parname in appended_json_data[NSname]:
+                cell_parameters_1[parname] = {}
+                cell_parameters_1[parname]["value"] = appended_json_data[NSname][parname][
+                    "value"
+                ][ind]
         addedNeurons.append(
             {
                 "index": addNewNeuron(network_json_data, cell_parameters_1),
@@ -182,9 +205,20 @@ def mergeJsons(file1, file2):
 def addCells(file1):
     network_json_data = utils.getJsonFile(file1)
     cell_names = utils.getCellNames(network_json_data)
-    from_cell_ind = utils.getIndOfNthVal("SMDD", cell_names, 0)
+    section_names = utils.getNSvalue(network_json_data, "Section name")
+    json_model_name = network_json_data[NSname]["Model name"]["value"]
+    if cell_names is None:
+       cell_names = utils.default_cells[json_model_name]["names"]
+       network_json_data[NSname]["Cell name"]["value"] = cell_names
+    if section_names is None:
+       section_names = utils.default_cells[json_model_name]["Section name"]
+       if "Section name" not in network_json_data[NSname]:
+           network_json_data[NSname]["Section name"] = {}
+       network_json_data[NSname]["Section name"]["value"] = section_names
 
-    from_cell_ind
+
+    SMDD_cell_ind = utils.getIndOfNthVal("SMDD", cell_names, 0)
+    SMDD_cell_ind
 
     addedNeurons = []
     cell_parameters = {
@@ -203,16 +237,19 @@ def addCells(file1):
     weight_parameters = {
         "module": NSname,
         "type": "Chemical weights",
-        "value": {"from": addedNeurons[-1]["index"], "to": 15, "weight": -1},
+        "value": {"from": addedNeurons[-1]["index"], "to": SMDD_cell_ind, "weight": -1},
         "evolvable": 2,
     }
     addConnection(network_json_data, weight_parameters)
 
+
+
     print(addedNeurons)
     # unity indices
+    filename1 = pathlib.Path(file1).name
+    dirpath = str(pathlib.Path(file1).parent)
 
-    with open(
-        "testruns/COW2DSREgen_k1/worm_data.json", "w", encoding="utf-8"
+    with open(dirpath + "/" + "Sup_" + filename1, "w", encoding="utf-8"
     ) as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
@@ -222,7 +259,9 @@ if __name__ == "__main__":
     # file2 = "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_worm.json"
     # file1 = "W2Dmoddev/experiments/jan14/run_0/RS18_worm_data.json"
     # file2 = "W2Dmoddev/experiments/jan14/run_0/CO18Full_worm_data_evo.json"
-    file1 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/RS18_worm_data.json"
-    file2 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/CO18Full_worm_data_evo.json"
+    #file1 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/RS18_worm_data.json"
+    #file2 = "W2Dmoddev/experiments/CO18Full_demo_k2_3/CO18Full_worm_data_evo.json"
+    file1 = "/home/adam/uclwork/CE_locomotion/testruns/COW2DSREgen/worm_data.json"
     # run(folderName=filename)
-    mergeJsons(file1=file1, file2=file2)
+    addCells(file1)
+    #mergeJsons(file1=file1, file2=file2)

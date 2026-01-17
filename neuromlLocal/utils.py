@@ -151,7 +151,14 @@ default_cells["RS18"]["names"] = ["DB", "DD", "VBA", "VDA", "VBP", "VDP"] * 6 + 
     "RMDV",
 ]
 
+default_cells["Net21"]["Section name"] = ["VNC"] * 49
+default_cells["CE"]["Section name"] = ["VNC"] * 60
+default_cells["RS18"]["Section name"] = ["VNC"] * 36 + ["head"] * 4
+
 default_cells["CO"]["names"] = ["A", "B"]
+
+default_cells["CO"]["Section name"] = ["head"] * 2
+
 
 default_cells["Worm2Dosc"] = {}
 # default_cells["Worm2Dosc"]["names"] = ["NV"]*24 + ["ND"]*24
@@ -252,22 +259,47 @@ def getPlotFormat(network_json_data):
             network_json_data["Stretch receptor"]["plot size"]["value"]
         )
 
-    sects = network_json_data["Nervous system"]["section sizes"]
+    NSname = "Nervous system"
+    json_model_name = network_json_data[NSname]["Model name"]["value"]
+    section_names = getNSvalue(network_json_data, "Section name")
+    if section_names is None:
+       section_names = default_cells[json_model_name]["Section name"]
+    oldval =  section_names[0]
+    #network_json_data["Nervous system"]["Section name"]["value"][0]
+    ind = 1
+    for val in section_names[1:]:
+        if oldval!=val:
+            plot_format["fig_titles"].append(val)
+            plot_format["fig_labels"].append("Neu")
+            plot_format["data_sizes"].append(ind)
+            ind = 1
+            oldval = val
+        ind = ind + 1
+    plot_format["fig_titles"].append(oldval)
+    plot_format["fig_labels"].append("Neu")
+    plot_format["data_sizes"].append(ind)
 
-    if "head" in sects:
-        plot_format["fig_titles"].append("Head neurons")
-        plot_format["fig_labels"].append("Neu")
-        plot_format["data_sizes"].append(sects["head"]["value"])
 
-    if "interneurons" in sects:
-        plot_format["fig_titles"].append("Interneurons")
-        plot_format["fig_labels"].append("Neu")
-        plot_format["data_sizes"].append(sects["interneurons"]["value"])
 
-    if "VNC" in sects:
-        plot_format["fig_titles"].append("VNC neurons")
-        plot_format["fig_labels"].append("Neu")
-        plot_format["data_sizes"].append(sects["VNC"]["value"])
+    if False:
+        sects = network_json_data["Nervous system"]["section sizes"]
+
+        if "head" in sects:
+            plot_format["fig_titles"].append("Head neurons")
+            plot_format["fig_labels"].append("Neu")
+            plot_format["data_sizes"].append(sects["head"]["value"])
+
+        if "interneurons" in sects:
+            plot_format["fig_titles"].append("Interneurons")
+            plot_format["fig_labels"].append("Neu")
+            plot_format["data_sizes"].append(sects["interneurons"]["value"])
+
+        if "VNC" in sects:
+            plot_format["fig_titles"].append("VNC neurons")
+            plot_format["fig_labels"].append("Neu")
+            plot_format["data_sizes"].append(sects["VNC"]["value"])
+
+
 
     if "Muscle" in network_json_data:
         plot_format["fig_titles"].append("Muscles")
@@ -392,6 +424,8 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
+
+
 def getModelName_old(network_json_data):
     if "Model name" in network_json_data["Nervous system"]:
         return network_json_data["Nervous system"]["Model name"]["value"]
@@ -404,7 +438,7 @@ def getMainModelName(network_json_data):
     return getModelName_old(network_json_data)
 
 
-def getIndOfNthVal(val, vals_list, n):
+def getIndOfNthVal(val, vals_list, n=0):
     l1 = [i for i, val1 in enumerate(vals_list) if val1 == val]
     if len(l1) > n:
         return l1[n]
@@ -412,7 +446,14 @@ def getIndOfNthVal(val, vals_list, n):
 
 
 def getCellNames(network_json_data):
-    return network_json_data["Nervous system"]["Cell name"]["value"]
+    if "Cell name" in network_json_data["Nervous system"]:
+        return network_json_data["Nervous system"]["Cell name"]["value"]
+    return None
+
+def getNSvalue(network_json_data, value):
+    if value in network_json_data["Nervous system"]:
+        return network_json_data["Nervous system"][value]["value"]
+    return None
 
 
 def getPopNames(network_json_data):
