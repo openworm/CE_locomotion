@@ -479,6 +479,16 @@ else if (s1[0]=="Dorsal NMJ")
   if ((v1[j].to == dMuscConnvec[k].to) && (v1[j].from == dMuscConnvec[k].w.from))
   {initialPheno[v1[j].val-1] = dMuscConnvec[k].w.weight; break;}
 }
+else if (s1[0]=="Ventral NMJ")
+{
+  if (s1[1]=="weights")
+  for (int j = 0; j<v1.size(); j++) 
+  for (int k = 0; k<vMuscConnvec.size(); k++)
+  if ((v1[j].to == vMuscConnvec[k].to) && (v1[j].from == vMuscConnvec[k].w.from))
+  {initialPheno[v1[j].val-1] = vMuscConnvec[k].w.weight; break;}
+}
+
+
 
 }
 
