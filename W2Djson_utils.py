@@ -204,6 +204,7 @@ def mergeJsons(file1, file2):
 
     print(addedNeurons)
     # unity indices
+    hf.make_directory("testruns/COW2DSREgen", True)
 
     with open(
         "testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8"
