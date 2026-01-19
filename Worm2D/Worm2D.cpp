@@ -1058,25 +1058,7 @@ void Worm2D::setMuscleInput()
     //exit(1);
 }
 
-void Worm2D::setUpMuscleConn(const json & j)
-{
-    
-vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-vMuscConnvec.swap(vMuscConnvec1);
-dMuscConnvec.swap(dMuscConnvec1);
 
-}
-
-void Worm2D::setUpMuscleConn()
-{
-
-vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
-vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
-vMuscConnvec1.swap(vMuscConnvec);
-dMuscConnvec1.swap(dMuscConnvec);
-
-}
 
 void Worm2Dm::setUpBodyConn()
 {
@@ -1099,6 +1081,26 @@ dBodyConnvec.swap(dBodyConnvec1);
 }
 
 
+
+void Worm2D::setUpMuscleConn(const json & j)
+{
+    
+vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+vMuscConnvec.swap(vMuscConnvec1);
+dMuscConnvec.swap(dMuscConnvec1);
+
+}
+
+void Worm2D::setUpMuscleConn()
+{
+
+vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
+vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();
+vMuscConnvec1.swap(vMuscConnvec);
+dMuscConnvec1.swap(dMuscConnvec);
+
+}
 
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
