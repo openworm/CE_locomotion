@@ -309,6 +309,7 @@ def reload_single_run(a=None, **kwargs):
     else:
         main_model_name = None """
 
+    main_model_name = None
     if a.modelName == "W2DSR":
         main_model_name = network_json_data["Worm"]["Main model name"]["value"]
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
