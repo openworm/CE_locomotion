@@ -221,7 +221,7 @@ void Worm21::addParsToJson(json & j)
         string nsHead = "Nervous system";
         appendAllNSJson(j[nsHead], n);
         Worm2D21::addParsToJson(j);    
-    }
+}
 
 void Worm21::addEvolvableToJson(json & j)
 {

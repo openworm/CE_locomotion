@@ -298,17 +298,20 @@ def reload_single_run(a=None, **kwargs):
 
     worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_worm.json")
-    if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data.json")
+    if not os.path.isfile(worm_file):
+        worm_file = hf.rename_file("worm_data_worm.json")
 
     network_json_data = utils.getJsonFile(worm_file)
+
+    main_model_name = network_json_data["Worm"]["Main model name"]["value"]
 
     if a.modelName == "W2DSR":
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
-    if a.modelName == "COW2DSR":
+    
+    if main_model_name == "COW2DSR":
         plot_format = utils.getPlotFormat(network_json_data)
     else:
         plot_format = utils.plot_formats[a.modelName]
@@ -526,7 +529,15 @@ def reload_single_run(a=None, **kwargs):
 
     from F2_fig_behavior import make_fig
 
-    notF2models = ["CO", "W2DCO", "W2Dosc", "W2Dosc21", "CO18Full", "COW2DSR"]
+    notF2models = [
+        "CO",
+        "W2DCO",
+        "W2Dosc",
+        "W2Dosc21",
+        "CO18Full",
+        "COW2DSR",
+        "RS18_CO18Full",
+    ]
     if a.modelName not in notF2models:
         make_fig(model_name=a.modelName)
 

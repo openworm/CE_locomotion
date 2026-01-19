@@ -259,26 +259,31 @@ def getPlotFormat(network_json_data):
             network_json_data["Stretch receptor"]["plot size"]["value"]
         )
 
-    NSname = "Nervous system"
-    json_model_name = network_json_data[NSname]["Model name"]["value"]
-    section_names = getNSvalue(network_json_data, "Section name")
-    if section_names is None:
-       section_names = default_cells[json_model_name]["Section name"]
-    oldval =  section_names[0]
-    #network_json_data["Nervous system"]["Section name"]["value"][0]
-    ind = 1
-    for val in section_names[1:]:
-        if oldval!=val:
-            plot_format["fig_titles"].append(val)
-            plot_format["fig_labels"].append("Neu")
-            plot_format["data_sizes"].append(ind)
-            ind = 1
-            oldval = val
-        ind = ind + 1
-    plot_format["fig_titles"].append(oldval)
-    plot_format["fig_labels"].append("Neu")
-    plot_format["data_sizes"].append(ind)
+    if True:
+        NSname = "Nervous system"
+        json_model_name = network_json_data[NSname]["Model name"]["value"]
+        section_names = getNSvalue(network_json_data, "Section name")
+        if section_names is None:
+            section_names = default_cells[json_model_name]["Section name"]
+        oldval = section_names[0]
+        # network_json_data["Nervous system"]["Section name"]["value"][0]
+        ind = 1
+        for val in section_names[1:]:
+            if oldval != val:
+                plot_format["fig_titles"].append(oldval)
+                plot_format["fig_labels"].append("Neu")
+                plot_format["data_sizes"].append(ind)
+                ind = 0
+                oldval = val
+            ind = ind + 1
+        plot_format["fig_titles"].append(oldval)
+        plot_format["fig_labels"].append("Neu")
+        plot_format["data_sizes"].append(ind)
 
+        vncind = plot_format["fig_titles"].index("VNC")
+        plot_format["fig_titles"].append(plot_format["fig_titles"].pop(vncind))
+        plot_format["fig_labels"].append(plot_format["fig_labels"].pop(vncind))
+        plot_format["data_sizes"].append(plot_format["data_sizes"].pop(vncind))
 
 
     if False:
@@ -299,8 +304,6 @@ def getPlotFormat(network_json_data):
             plot_format["fig_labels"].append("Neu")
             plot_format["data_sizes"].append(sects["VNC"]["value"])
 
-
-
     if "Muscle" in network_json_data:
         plot_format["fig_titles"].append("Muscles")
         plot_format["fig_labels"].append("Mu")
@@ -320,6 +323,8 @@ def getPlotFormat(network_json_data):
     plot_format["do_body_plot"] = True
     plot_format["do_curv_plot"] = True
 
+    print(plot_format)
+    exit
     return plot_format
 
 
@@ -424,8 +429,6 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
-
-
 def getModelName_old(network_json_data):
     if "Model name" in network_json_data["Nervous system"]:
         return network_json_data["Nervous system"]["Model name"]["value"]
@@ -449,6 +452,7 @@ def getCellNames(network_json_data):
     if "Cell name" in network_json_data["Nervous system"]:
         return network_json_data["Nervous system"]["Cell name"]["value"]
     return None
+
 
 def getNSvalue(network_json_data, value):
     if value in network_json_data["Nervous system"]:
