@@ -219,7 +219,7 @@ def addEvolvable(network_json_data):
         network_json_data["Evolvable"]["value"] = []
 
     evolvables = network_json_data["Evolvable"]["value"]
-
+    print(evolvables)
 
 
 def addCells(network_json_data):
