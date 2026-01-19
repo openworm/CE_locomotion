@@ -305,15 +305,15 @@ def reload_single_run(a=None, **kwargs):
     network_json_data = utils.getJsonFile(worm_file)
 
     main_model_name = None
-    if "Main model name" in network_json_data["Worm"]:
+    if (network_json_data is not None) and (
+        "Main model name" in network_json_data["Worm"]
+    ):
         main_model_name = network_json_data["Worm"]["Main model name"]["value"]
-    
-   
+
     if a.modelName == "W2DSR":
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
-    
     if (main_model_name is not None) and (main_model_name == "COW2DSR"):
         plot_format = utils.getPlotFormat(network_json_data)
     else:

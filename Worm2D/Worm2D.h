@@ -340,6 +340,9 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
 };
 
+
+
+
 class Worm2D : virtual public Worm2Dm
 {
     
@@ -369,11 +372,16 @@ class Worm2D : virtual public Worm2Dm
     //virtual void addExtraParsToJson(json & j) = 0;
     virtual vector<toFromWeight> makeVentralMuscleConn() {assert(0);} //from neurons to muscles
     virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
+
+
+
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(const json & j);
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
     vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
-
+    //vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
+    vector<toFromWeight> makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
+    TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc);
 
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
     void setMuscleInput(); //calls setMuscleInputVec()
@@ -395,7 +403,14 @@ class Worm2D : virtual public Worm2Dm
     vector<toFromWeight> vMuscConnvec, dMuscConnvec;
         
     shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;  //change this back
-        
+
+    vector<weightentry> ventinds, dorsinds;
+    vector<intPair> unitToMuscV, unitToMuscD;
+    double NMJ_gain_map_V, NMJ_gain_map_D;
+    bool hasVNCNMJ = false;
+    vector<toFromWeight> makeMuscleConnVNCV();
+    vector<toFromWeight> makeMuscleConnVNCD();
+
 };
 
 

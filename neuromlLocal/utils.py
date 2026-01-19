@@ -285,7 +285,6 @@ def getPlotFormat(network_json_data):
         plot_format["fig_labels"].append(plot_format["fig_labels"].pop(vncind))
         plot_format["data_sizes"].append(plot_format["data_sizes"].pop(vncind))
 
-
     if False:
         sects = network_json_data["Nervous system"]["section sizes"]
 

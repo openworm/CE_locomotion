@@ -114,6 +114,7 @@ void appendToJson(json & j, const Params<T> & par)
                
 }
 
+void from_json(const json & j, weightentry & w);
 void to_json(json & j, const weightentry & w);
 void to_json(json & j, const toFromWeight & w);
 void from_json(const json& j, toFromWeight & w);
@@ -125,6 +126,9 @@ void to_json(json & j, const intDoubDoub & w);
 void from_json(const json& j, intDoubDoub & w);
 void to_json(json & j, const doubDoub & w);
 void from_json(const json& j, doubDoub & w);
+void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight);
+
+vector<weightentry> makeWeightEntry(const vector<int> & ind, const vector<double> & weight);
 
 template<class T>
 vector<T> getEvoVecFromJ(const json & j, const string & name1_, const string & name2_)

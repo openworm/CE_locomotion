@@ -137,7 +137,8 @@ public:
     const int startingMuscleB = 13;       // XXX
     const int NmusclePerNUB = 4;
     
-    
+    vector<intPair>  makeUnitToMusc();
+
     // Neuron name conventions
     
 

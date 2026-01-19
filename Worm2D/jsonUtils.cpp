@@ -215,6 +215,13 @@ void to_json(json & j, const weightentry & w)
   j = json{{"from", w.from}, {"weight", w.weight}};
 }
 
+void from_json(const json & j, weightentry & w)
+{
+    
+      j.at("from").get_to(w.from);
+      j.at("weight").get_to(w.weight);
+}
+
 void to_json(json & j, const toFromWeight & w)
 {
   j = json{{"to", w.to}, {"from", w.w.from}, {"weight", w.w.weight}};
@@ -356,6 +363,20 @@ void appendBodyToJson(json & j, WormBody& b)
     appendToJson<int>(j["Body"],par);}
 } 
 
+void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight)
+{
+
+  for (int i=0;i<w.size();i++){ind.push_back(w[i].from);  weight.push_back(w[i].weight);}
+  
+}
+
+
+vector<weightentry> makeWeightEntry(const vector<int> & ind, const vector<double> & weight)
+{
+  vector<weightentry> w;
+  for (int i=0;i<ind.size();i++) w.push_back({ind[i],weight[i]});
+  return w;
+}
 
 
 Params<double> getMusclesParamsDouble(Muscles & m)

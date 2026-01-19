@@ -213,7 +213,6 @@ def mergeJsons(file1, file2):
 
 
 def addEvolvable(network_json_data):
-
     if "Evolvable" not in network_json_data:
         network_json_data["Evolvable"] = {}
         network_json_data["Evolvable"]["value"] = []
@@ -223,7 +222,6 @@ def addEvolvable(network_json_data):
 
 
 def addCells(network_json_data):
-    
     cell_names = utils.getCellNames(network_json_data)
     section_names = utils.getNSvalue(network_json_data, "Section name")
     json_model_name = network_json_data[NSname]["Model name"]["value"]

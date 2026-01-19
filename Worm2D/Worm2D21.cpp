@@ -140,7 +140,22 @@ vector<toFromWeight> Worm2D21::makeDorsalMuscleConn()
 {
 vector<int> dorsalNeurons({AS,DA,DB,DD});
 vector<double> dorsalNMJ({NMJ_AS,NMJ_DA,NMJ_DB,NMJ_DD});
-return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+
+
+//return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+
+
+hasVNCNMJ = true;
+NMJ_gain_map_D = NMJ_Gain_Map;
+vector<weightentry> v1 = makeWeightEntry(dorsalNeurons,dorsalNMJ);
+dorsinds.swap(v1);
+vector<intPair> o1 = makeUnitToMusc();
+unitToMuscD.swap(o1);
+
+
+return makeMuscleConnVNCD();
+
+//return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 }
 
 vector<toFromWeight> Worm2D21::makeVentralMuscleConn()
@@ -148,13 +163,48 @@ vector<toFromWeight> Worm2D21::makeVentralMuscleConn()
 vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 
-return makeMuscleConn(ventralNeurons, ventralNMJ);
+//return makeMuscleConn(ventralNeurons, ventralNMJ);
+
+hasVNCNMJ = true;
+NMJ_gain_map_V = NMJ_Gain_Map;
+vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
+ventinds.swap(v1);
+vector<intPair> o1 = makeUnitToMusc();
+unitToMuscV.swap(o1);
+
+return makeMuscleConnVNCV();
+
+//return makeMuscleConn(ventralNeurons, ventralNMJ);
+
+}
+
+vector<intPair>  Worm2D21::makeUnitToMusc()
+{
+
+    vector<intPair> unitToMusc;
+    int unit = 1;
+    for (int to_musc = 1; to_musc < 5; to_musc++) 
+    unitToMusc.push_back({unit,to_musc});
+    for (int unit = 2; unit <= 5; unit++)
+    for (int to_musc = 5 + 3*(unit-2); to_musc < 5 + 3*(unit-1); to_musc++)
+    unitToMusc.push_back({unit,to_musc});
+    for (int unit = 6; unit <= 7; unit++)
+    for (int to_musc = 17 + 4*(unit-6); to_musc < 17 + 4*(unit-5); to_musc++)
+    unitToMusc.push_back({unit,to_musc});
+
+    return unitToMusc;
 
 }
 
 
+
 vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
 {
+
+    //vector<intPair> unitToMusc = makeUnitToMusc();
+    //return makeMuscleConnW2D(neurons,NMJ,NMJ_Gain,unitToMusc);
+
+
     vector<toFromWeight> vec1;
     int unit = 1;
     for (int to_musc = 1; to_musc < 5; to_musc++) 
