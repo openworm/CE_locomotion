@@ -605,7 +605,7 @@ externalInputConn.swap(vec1);
 void Worm2Dbase::addParsToJson(json & j)
 {  
 
-    addEvolvableToJson(j);
+    
 
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
@@ -657,32 +657,39 @@ void Worm2Dbase::addParsToJson(json & j)
     W2Dbaseparameters1b->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
+
+    addEvolvableToJson(j);
 }
 
 void Worm2Dm::addParsToJson(json & j)
 {  
     if (W2Dmparscalled) return;
-   
+
+
     appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
     appendVectorToJson<toFromWeight>(j["Ventral body"]["weights"], vBodyConnvec);
     j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
     j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
 
-    Worm2Dbody::addParsToJson(j);
-    Worm2Dbase::addParsToJson(j);
-
+    
     string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
 
     W2Dmparscalled = true;
+
+    Worm2Dbody::addParsToJson(j);
+    Worm2Dbase::addParsToJson(j);
+
+
+
 }
 
 
 void Worm2D::addParsToJson(json & j)
 {  
      // addwormIzqParams
-    Worm2Dm::addParsToJson(j);
+    
 
     appendMuscleToJson(j,m);
 
@@ -760,6 +767,7 @@ void Worm2D::addParsToJson(json & j)
     }
     
 
+    Worm2Dm::addParsToJson(j);
 
    
     //addExtraParsToJson(j);

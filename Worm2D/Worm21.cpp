@@ -226,7 +226,7 @@ void Worm21::addParsToJson(json & j)
 void Worm21::addEvolvableToJson(json & j)
 {
 
-  vector<doubDoub> vec;
+  {vector<doubDoub> vec;
 
 const double	BiasRange				= 15.0;
      const double    SCRange                 = 15.0;
@@ -234,7 +234,7 @@ const double	BiasRange				= 15.0;
      const double    TauMin                 = 0.1;
      const double    TauMax                 = 2.5;
      const double    ESRange                 = 2.0;
-     //const double    NMJmax                  = 1.2;
+     const double    NMJmax                  = 1.2;
 
 
 for (int i = 1; i <= 7; i++) vec.push_back({-BiasRange, BiasRange});
@@ -247,6 +247,15 @@ for (int i = 22; i <=30; i++) vec.push_back({-CSRange, CSRange});
 
 vec.push_back({0.0, ESRange});
 
+vec.push_back({0.0, NMJmax});
+vec.push_back({0.0, NMJmax});
+vec.push_back({NMJmax, NMJmax});
+vec.push_back({-NMJmax, 0.0});
+vec.push_back({-NMJmax, 0.0});
+vec.push_back({NMJmax, NMJmax});
+vec.push_back({0.0, NMJmax});
+vec.push_back({0.2, 1.0});
+
 vec.push_back({-CSRange, CSRange});
 vec.push_back({-CSRange, CSRange});
 vec.push_back({0.0, ESRange});
@@ -255,6 +264,7 @@ vec.push_back({0.0, ESRange});
 
 
   j["Evolvable"]["value"] = vec; 
+  }
 
 vector<intPair> biasvec, tauvec;
 vector<fromToInt> chemvec, elecvec;
@@ -321,8 +331,8 @@ int as, da, db, dd, vd, vb, va;
             vec.push_back({va, dd,30});
 
             if (u < par1.N_units){
-                vec.push_back({db, ddNext, 32});
-                vec.push_back({vaNext, dd, 33});
+                vec.push_back({db, ddNext, 40});
+                vec.push_back({vaNext, dd, 41});
         }
 
         //j["Nervous system"]["Chemical weights"]["evolvable"] = vec;        
@@ -332,9 +342,9 @@ int as, da, db, dd, vd, vb, va;
   vec.push_back({vd, dd, 31});
 
     if (u < par1.N_units){
-        vec.push_back({as, vaNext, 34});
-        vec.push_back({da, asNext, 35});
-        vec.push_back({vb, dbNext, 36});
+        vec.push_back({as, vaNext, 42});
+        vec.push_back({da, asNext, 43});
+        vec.push_back({vb, dbNext, 44});
 }
 
  //j["Nervous system"]["Electrical weights"]["evolvable"] = vec;
@@ -347,6 +357,29 @@ int as, da, db, dd, vd, vb, va;
 j["Nervous system"]["taus"]["evolvable"] = tauvec;
 j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
 j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+
+
+
+vector<intPair> nmjvecd;
+nmjvecd.push_back({AS,32});
+nmjvecd.push_back({DA,33});
+nmjvecd.push_back({DB,34});
+nmjvecd.push_back({DD,35});
+
+vector<intPair> nmjvecv;
+nmjvecv.push_back({VD,36});
+nmjvecv.push_back({VB,37});
+nmjvecv.push_back({VA,38});
+
+ 
+j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
+j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
+
+j["VNC NMJ"]["NMJ gain map D"]["evolvable"] = 39;
+j["VNC NMJ"]["NMJ gain map V"]["evolvable"] = 39;
+
+
 
 }
 

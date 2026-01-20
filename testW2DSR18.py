@@ -12,7 +12,7 @@ doMuscles = True
 outputFolderName = "testruns/exW2DSR18"
 
 args = dict(
-    simduration=30,
+    simduration=50,
     simtransient=0,
     modelName="W2DSR",
     modelFolder="Worm2D",
