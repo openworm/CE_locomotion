@@ -22,7 +22,7 @@ inputFolderName = "testruns/COW2DSREgen"
 outputFolderName = "testruns/COW2DSREgen_out"
 
 args = dict(
-    simduration=500,
+    simduration=300,
     simtransient=0,
     RandSeed=173257,
     modelName="W2DSR",
