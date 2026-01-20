@@ -365,6 +365,18 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
 {
     //cout << "making ventral muscle con" << endl;
 
+    vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
+    vector<double> ventralNMJ({NMJ_SMDV, NMJ_RMDD, NMJ_VDa, NMJ_VBa, NMJ_VDp, NMJ_VBp});
+    hasVNC18 = true;
+    NMJ_gain_map_V = 0.5;
+    NMJ_gain_fact = 0.7;
+    vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
+    ventinds.swap(v1);
+
+    return makeVentralMuscleConn18();
+
+
+
     vector<toFromWeight> vec1;
 
         {vector<int> neurons({SMDV, RMDV});
@@ -411,6 +423,20 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
 
 vector<toFromWeight> Worm18::makeDorsalMuscleConn()
 {
+
+    vector<int> neurons({SMDD, RMDD, DD, DB});
+    vector<double> NMJs({NMJ_SMDD, NMJ_RMDV, NMJ_DD, NMJ_DB});
+    hasVNC18 = true;
+    NMJ_gain_map_D = 0.5;
+    NMJ_gain_fact = 0.7;
+    vector<weightentry> v1 = makeWeightEntry(neurons,NMJs);
+    dorsinds.swap(v1);
+
+    return makeDorsalMuscleConn18();
+
+
+
+
     //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
 
@@ -428,6 +454,12 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
 
     return vec1;
 }
+
+
+
+
+
+
 
 void Worm18::setMuscleInputOrigDorsal()
 {

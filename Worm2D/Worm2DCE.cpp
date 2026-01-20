@@ -432,14 +432,79 @@ vector<toFromWeight> Worm2DCE::makeDorsalMuscleConn()
 {
 vector<int> dorsalNeurons({DA,DB,DD});
 vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
-return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+
+hasVNCNMJ = true;
+NMJ_gain_map_D = 0;
+NMJ_gain_fact = 1;
+vector<weightentry> v1 = makeWeightEntry(dorsalNeurons,dorsalNMJ);
+dorsinds.swap(v1);
+vector<intPair> o1 = makeUnitToMusc();
+unitToMuscD.swap(o1);
+
+
+return makeMuscleConnVNCD();
+
+
+//return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 }
 
 vector<toFromWeight> Worm2DCE::makeVentralMuscleConn()
 {
 vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
-return makeMuscleConn(ventralNeurons, ventralNMJ);
+
+hasVNCNMJ = true;
+NMJ_gain_map_V = 0;
+NMJ_gain_fact = 1.0;
+vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
+ventinds.swap(v1);
+vector<intPair> o1 = makeUnitToMusc();
+unitToMuscV.swap(o1);
+
+return makeMuscleConnVNCV();
+
+//return makeMuscleConn(ventralNeurons, ventralNMJ);
+
+}
+
+
+vector<intPair>  Worm2DCE::makeUnitToMusc()
+{
+
+    vector<intPair> unitToMusc;
+    int unit = 1;
+    for (int to_musc = 1; to_musc < 3; to_musc++) 
+    unitToMusc.push_back({unit,to_musc});
+    int to_musc = 4;
+    unit = 1;
+    unitToMusc.push_back({unit,to_musc});
+    unit = 2;
+    unitToMusc.push_back({unit,to_musc});
+    to_musc = 5;
+    unit = 2;
+    unitToMusc.push_back({unit,to_musc});
+    unit = 2; // Muscles 6-19
+    for (int to_musc=6; to_musc<=19; to_musc++){
+      unitToMusc.push_back({unit,to_musc});
+      unitToMusc.push_back({unit+1,to_musc});
+      unit += to_musc%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+    }
+
+  to_musc = 20;
+  unit = 9;
+  unitToMusc.push_back({unit,to_musc});
+  to_musc = 21;
+  unit = 9;
+  unitToMusc.push_back({unit,to_musc});
+
+  to_musc = 21;
+  unit = 10;
+  unitToMusc.push_back({unit,to_musc});
+    unit = 10;
+    for (int to_musc=22; to_musc<=24; to_musc++)
+     unitToMusc.push_back({unit,to_musc});
+
+ return unitToMusc;
 
 }
 

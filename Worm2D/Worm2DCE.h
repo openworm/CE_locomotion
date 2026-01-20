@@ -125,7 +125,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //const vector<string> getDMuscNames(){ return {"dum1"};}
     vector<toFromWeight> makeMuscleConn(const vector<int> & neurons, const vector<double> & NMJ);
 
-
+    vector<intPair> makeUnitToMusc();
     
 
 

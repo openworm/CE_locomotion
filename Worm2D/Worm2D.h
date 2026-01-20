@@ -406,10 +406,12 @@ class Worm2D : virtual public Worm2Dm
 
     vector<weightentry> ventinds, dorsinds;
     vector<intPair> unitToMuscV, unitToMuscD;
-    double NMJ_gain_map_V, NMJ_gain_map_D;
-    bool hasVNCNMJ = false;
+    double NMJ_gain_map_V, NMJ_gain_map_D, NMJ_gain_fact = 0.7;
+    bool hasVNCNMJ = false, hasVNC18 = false;
     vector<toFromWeight> makeMuscleConnVNCV();
     vector<toFromWeight> makeMuscleConnVNCD();
+    vector<toFromWeight> makeVentralMuscleConn18();
+    vector<toFromWeight> makeDorsalMuscleConn18();
 
 };
 
