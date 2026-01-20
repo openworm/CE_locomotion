@@ -146,8 +146,12 @@ vector<double> dorsalNMJ({NMJ_AS,NMJ_DA,NMJ_DB,NMJ_DD});
 
 
 hasVNCNMJ = true;
-NMJ_gain_map_D = NMJ_Gain_Map;
-NMJ_gain_fact = 0.7;
+doubVars.setVal("NMJ gain map D", NMJ_Gain_Map);
+doubVars.setVal("NMJ gain fact", 0.7);
+
+//NMJ_gain_map_D = NMJ_Gain_Map;
+//NMJ_gain_fact = 0.7;
+
 vector<weightentry> v1 = makeWeightEntry(dorsalNeurons,dorsalNMJ);
 dorsinds.swap(v1);
 vector<intPair> o1 = makeUnitToMusc();
@@ -167,8 +171,11 @@ vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 //return makeMuscleConn(ventralNeurons, ventralNMJ);
 
 hasVNCNMJ = true;
-NMJ_gain_map_V = NMJ_Gain_Map;
-NMJ_gain_fact = 0.7;
+doubVars.setVal("NMJ gain map V", NMJ_Gain_Map);
+doubVars.setVal("NMJ gain fact", 0.7);
+
+//NMJ_gain_map_V = NMJ_Gain_Map;
+//NMJ_gain_fact = 0.7;
 vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
 ventinds.swap(v1);
 vector<intPair> o1 = makeUnitToMusc();

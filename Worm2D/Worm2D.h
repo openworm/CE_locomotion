@@ -278,7 +278,7 @@ void incInputFromNS(NSForW2D & ns_);
 void incOutputToNS(Worm2Dbase & ns_);
 virtual void makeNSInputConn(){return;}
 virtual void makeNSOutputConn(){return;}
-
+namedValVec<double> doubVars;
 
 
 
@@ -406,7 +406,9 @@ class Worm2D : virtual public Worm2Dm
 
     vector<weightentry> ventinds, dorsinds;
     vector<intPair> unitToMuscV, unitToMuscD;
-    double NMJ_gain_map_V, NMJ_gain_map_D, NMJ_gain_fact = 0.7;
+    //double NMJ_gain_map_V, NMJ_gain_map_D, NMJ_gain_fact = 0.7;
+    
+    
     bool hasVNCNMJ = false, hasVNC18 = false;
     vector<toFromWeight> makeMuscleConnVNCV();
     vector<toFromWeight> makeMuscleConnVNCD();

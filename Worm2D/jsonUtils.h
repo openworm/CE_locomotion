@@ -161,6 +161,18 @@ bool getEvoVecFromJ(const json & j, const vector<string> & namevec_, vector<T> &
 }
 
 template<class T>
+T getEvoValFromJ(const json & j, const vector<string> & namevec_)
+{
+  json j2 = j;
+  for (int i=0;i<namevec_.size(); i++) 
+  {
+    if (!j2.contains(namevec_[i])) return false;
+    j2 = j2[namevec_[i]];
+  }
+  return j2;
+}
+
+template<class T>
 bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
 {
   json j2 = j;

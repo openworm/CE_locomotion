@@ -746,9 +746,9 @@ void Worm2D::addParsToJson(json & j)
         j2["D inds"]["value"] = dorsinds;
         j2["V conns"]["value"] = unitToMuscV;
         j2["D conns"]["value"] = unitToMuscD;
-        j2["NMJ gain map V"]["value"] = NMJ_gain_map_V;
-        j2["NMJ gain map D"]["value"] = NMJ_gain_map_D;
-        j2["NMJ gain fact"]["value"] = NMJ_gain_fact;
+        j2["NMJ gain map V"]["value"] = doubVars.getVal("NMJ gain map V");
+        j2["NMJ gain map D"]["value"] = doubVars.getVal("NMJ gain map D"); //NMJ_gain_map_D;
+        j2["NMJ gain fact"]["value"] = doubVars.getVal("NMJ gain fact");
 
     }
 
@@ -760,10 +760,9 @@ void Worm2D::addParsToJson(json & j)
 
         j2["V inds"]["value"] = ventinds;
         j2["D inds"]["value"] = dorsinds;
-        j2["NMJ gain map V"]["value"] = NMJ_gain_map_V;
-        j2["NMJ gain map D"]["value"] = NMJ_gain_map_D;
-        j2["NMJ gain fact"]["value"] = NMJ_gain_fact;
-
+        j2["NMJ gain map V"]["value"] = doubVars.getVal("NMJ gain map V");
+        j2["NMJ gain map D"]["value"] = doubVars.getVal("NMJ gain map D");
+        j2["NMJ gain fact"]["value"] = doubVars.getVal("NMJ gain fact");
     }
     
 
@@ -1108,6 +1107,9 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
 {
     //cout << "making ventral muscle con" << endl;
 
+    const double & NMJ_gain_map_V = doubVars.getVal("NMJ gain map V");
+    const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
+
     const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
     const int VNCMuscleStart = 7;           // VNC motorneurons innervate starting from 7th muscle
     const int NmusclePerNU = 3;   
@@ -1179,6 +1181,9 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
 
 vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
 {
+
+    const double & NMJ_gain_map_D = doubVars.getVal("NMJ gain map D");
+    const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
     //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
     const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
@@ -1218,6 +1223,8 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
 vector<toFromWeight> Worm2D::makeMuscleConnVNCV()
 {
 
+     const double & NMJ_gain_map_V = doubVars.getVal("NMJ gain map V");
+    const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
 TVector<double> NMJ_Gain(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)
 NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_V)/par1.N_muscles));
@@ -1230,6 +1237,9 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscV);
 
 vector<toFromWeight> Worm2D::makeMuscleConnVNCD()
 {
+
+  const double & NMJ_gain_map_D = doubVars.getVal("NMJ gain map D");
+    const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)
@@ -1251,9 +1261,14 @@ void Worm2D::setUpMuscleConn(const json & j)
     hasVNCNMJ = true;
 
     const json & j2 = j["VNC NMJ"];
-    NMJ_gain_map_V = 0.5;
-    NMJ_gain_map_D = 0.5;
-    NMJ_gain_fact = 0.7;
+    doubVars.setVal("NMJ gain map V", 0.5);
+    doubVars.setVal("NMJ gain map D", 0.5);
+    doubVars.setVal("NMJ gain fact", 0.7);
+
+    assert(0);
+    //NMJ_gain_map_V = 0.5;
+    //NMJ_gain_map_D = 0.5;
+    //NMJ_gain_fact = 0.7;
  
     ventinds = j2["V inds"]["value"].template get< vector<weightentry> >();
     dorsinds = j2["D inds"]["value"].template get< vector<weightentry> >();
@@ -1261,13 +1276,13 @@ void Worm2D::setUpMuscleConn(const json & j)
     unitToMuscV = j2["V conns"]["value"].template get< vector<intPair> >();
     unitToMuscD = j2["D conns"]["value"].template get< vector<intPair> >();
     
-    if (j2.contains("NMJ gain map V"))
-    NMJ_gain_map_V = j2["NMJ gain map V"]["value"];
+    if (j2.contains("NMJ gain map V"))  
+    doubVars.setVal("NMJ gain map V",j2["NMJ gain map V"]["value"]);
     if (j2.contains("NMJ gain map D"))
-    NMJ_gain_map_D = j2["NMJ gain map D"]["value"];
+    doubVars.setVal("NMJ gain map D",j2["NMJ gain map D"]["value"]);
     if (j2.contains("NMJ gain fact"))
-    NMJ_gain_fact = j2["NMJ gain fact"]["value"];
-    
+    doubVars.setVal("NMJ gain fact", j2["NMJ gain fact"]["value"]);
+
 
     vector<toFromWeight> vMuscConnvec1 = makeMuscleConnVNCV();
     vMuscConnvec.swap(vMuscConnvec1);
@@ -1286,19 +1301,26 @@ void Worm2D::setUpMuscleConn(const json & j)
     hasVNC18 = true;
 
     const json & j2 = j["VNC 18"];
-    NMJ_gain_map_V = 0.5;
-    NMJ_gain_map_D = 0.5;
-    NMJ_gain_fact = 0.7;
+    doubVars.setVal("NMJ gain map V", 0.5);
+    doubVars.setVal("NMJ gain map D", 0.5);
+    doubVars.setVal("NMJ gain fact", 0.7);
+
+    //NMJ_gain_map_V = 0.5;
+    //NMJ_gain_map_D = 0.5;
+    //NMJ_gain_fact = 0.7;
  
     ventinds = j2["V inds"]["value"].template get< vector<weightentry> >();
     dorsinds = j2["D inds"]["value"].template get< vector<weightentry> >();
 
-    if (j2.contains("NMJ gain map V"))
-    NMJ_gain_map_V = j2["NMJ gain map V"]["value"];
+    if (j2.contains("NMJ gain map V"))  
+    doubVars.setVal("NMJ gain map V",j2["NMJ gain map V"]["value"]);
     if (j2.contains("NMJ gain map D"))
-    NMJ_gain_map_D = j2["NMJ gain map D"]["value"];
+    doubVars.setVal("NMJ gain map D",j2["NMJ gain map D"]["value"]);
     if (j2.contains("NMJ gain fact"))
-    NMJ_gain_fact = j2["NMJ gain fact"]["value"];
+    doubVars.setVal("NMJ gain fact", j2["NMJ gain fact"]["value"]);
+   
+
+   
     
 
     vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn18();

@@ -330,9 +330,23 @@ Worm2DSREpars Worm2DSRE::makeVals(const json & j)
   w1pars.genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
 
 
+
   for (auto it = j.begin(); it != j.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
-      if (it2->contains("evolvable")){ 
+      if (it2->contains("evolvable"))
+      {
+        if (it2->at("evolvable").is_number())
+        {
+        vector<string> v1;
+        v1.push_back(it.key());
+        v1.push_back(it2.key());
+        w1pars.singValnames.push_back(v1);
+        v1.push_back("evolvable");
+        w1pars.singVals.push_back(getEvoValFromJ<int>(j,v1));
+        cout << it.key() << " " << it2.key() << endl;
+
+        }else{
+        
         size_t idx = it2.key().find("weights");
         if(idx != string::npos)
         {
@@ -360,7 +374,8 @@ Worm2DSREpars Worm2DSRE::makeVals(const json & j)
         //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
         }
       }
-     //assert(0);
+      }
+     assert(0);
      return w1pars;
 }
 
@@ -396,13 +411,24 @@ else if (s1[0]=="Dorsal NMJ")
   {dMuscConnvec[k].w.weight = pheno(v1[j].val);break;}
 
 }
+else if (s1[0]=="Ventral NMJ")
+{
+  if (s1[1]=="weights")
+  for (int j = 0; j<v1.size(); j++) 
+  for (int k = 0; k<vMuscConnvec.size(); k++)
+  if ((v1[j].to == vMuscConnvec[k].to) && (v1[j].from == vMuscConnvec[k].w.from))
+  {vMuscConnvec[k].w.weight = pheno(v1[j].val);break;}
+
+}
 
 }
 
 for (int i = 0; i<genPhenPars.IPnames.size(); i++)
 {
-const vector<string> & s1 = genPhenPars.IPnames[i];
-const vector<intPair> & v1 = genPhenPars.IPvec[i];
+
+  const vector<string> & s1 = genPhenPars.IPnames[i];
+  const vector<intPair> & v1 = genPhenPars.IPvec[i];
+
 if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -416,6 +442,32 @@ else if (s1[1]=="gains")
 for (int j = 0; j<v1.size(); j++)
 n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
 }
+else if (s1[0]=="VNC NMJ")
+{
+if (s1[1]=="D inds")
+{
+for (int j = 0; j<v1.size(); j++)
+for (int k = 0; k<dorsinds.size(); k++)
+if (v1[j].ind == dorsinds[k].from) {dorsinds[k].weight = pheno(v1[j].val);break;}
+}
+else if (s1[1]=="V inds")
+{
+for (int j = 0; j<v1.size(); j++)
+for (int k = 0; k<ventinds.size(); k++)
+if (v1[j].ind == ventinds[k].from) {ventinds[k].weight = pheno(v1[j].val);break;}
+}
+
+}
+
+}
+
+for (int i = 0; i<genPhenPars.singValnames.size(); i++)
+{
+const vector<string> & s1 = genPhenPars.singValnames[i];
+const int & v1 = genPhenPars.singVals[i];
+
+doubVars.setVal(s1[1], pheno(v1));
+
 
 }
 
@@ -512,11 +564,39 @@ for (int j = 0; j<v1.size(); j++)
 //n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
 initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
 }
+else if (s1[0]=="VNC NMJ")
+{
+if (s1[1]=="D inds")
+{
+for (int j = 0; j<v1.size(); j++)
+for (int k = 0; k<dorsinds.size(); k++)
+if (v1[j].ind == dorsinds[k].from)
+{initialPheno[v1[j].val-1] = dorsinds[k].weight;break;}
+}
+else if (s1[1]=="V inds")
+{
+for (int j = 0; j<v1.size(); j++)
+for (int k = 0; k<ventinds.size(); k++)
+if (v1[j].ind == ventinds[k].from)
+{initialPheno[v1[j].val-1] = ventinds[k].weight;break;}
+}
 
 }
 
+}
+
+for (int i = 0; i<genPhenPars.singValnames.size(); i++)
+{
+const vector<string> & s1 = genPhenPars.singValnames[i];
+const int & v1 = genPhenPars.singVals[i];
+initialPheno[v1 -1] = doubVars.getVal(s1[1]);
+
+}
+
+
+
 for (int i = 0; i< initialPheno.size(); i++)
-if (initialPheno[i]<123456.001 && initialPheno[i]>123455.999) assert(0);
+if (initialPheno[i]<123456.001 && initialPheno[i]>123455.999) assert(0 && "init pheno not set");
 
 vector<double> initialGeno(getVectSize());
 //initialGeno.resize(getVectSize());

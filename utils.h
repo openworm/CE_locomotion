@@ -7,7 +7,7 @@
 //#include "VectorMatrix.h"
 #include <iomanip> 
 #include <fstream>
-
+#include <assert.h>
 
 using namespace std;
 
@@ -115,6 +115,50 @@ struct fromToInt {int from; int to; int val;};
 struct intDoubDoub {int ind; double val1; double val2;};
 struct stringPair {string s1; string s2;};
 struct doubDoub {double val1; double val2;};
+template<class T> struct namedVal {string name; T val;};
+
+template<class T> 
+class namedValVec 
+{
+
+    public:
+    bool setVal(const string & name, const T & val);
+    const T & getVal(const string & name) const;
+    T & getVal(const string & name);
+
+    private:
+    vector<namedVal<T> > vec;
+    
+};
+
+template<class T>
+const T & namedValVec<T>::getVal(const string & name) const
+{
+    for (int i=0;i<vec.size();i++)
+        if (vec[i].name == name) return vec[i].val;
+    cout << "getVal " << name << endl;
+    assert(0);
+
+}
+
+template<class T>
+T & namedValVec<T>::getVal(const string & name)
+{
+    for (int i=0;i<vec.size();i++)
+        if (vec[i].name == name) return vec[i].val;
+    cout << "getVal " << name << endl;
+    assert(0);
+}
+
+template<class T>
+bool namedValVec<T>::setVal(const string & name, const T & val)
+{
+    for (int i=0;i<vec.size();i++)
+        {if (vec[i].name == name) vec[i].val = val;return true;}
+    vec.push_back({name,val});
+    return false;
+}
+
 
 struct toFromWeight{
     

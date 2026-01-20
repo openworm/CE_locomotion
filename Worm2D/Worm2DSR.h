@@ -76,9 +76,10 @@ struct Worm2DSREpars
 
 public:
 vector<doubDoub> genPhenLims;
-vector<vector<string> > TFnames, IPnames;
+vector<vector<string> > TFnames, IPnames, singValnames;
 vector<vector<fromToInt> > TFIvec;
 vector<vector<intPair> > IPvec;
+vector<int> singVals; 
 
 };
 
