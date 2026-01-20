@@ -1114,13 +1114,13 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
     const double & NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
     NMJ_VDa = weights[2], NMJ_VBa = weights[3], NMJ_VDp = weights[4], NMJ_VBp = weights[5]; 
 
-    vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
+   /*  vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
     vector<double> ventralNMJ({NMJ_SMDV, NMJ_RMDD, NMJ_VDa, NMJ_VBa, NMJ_VDp, NMJ_VBp});
     hasVNCNMJ = true;
     NMJ_gain_map_V = 0.5;
     NMJ_gain_fact = 0.7;
     vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
-    ventinds.swap(v1);
+    ventinds.swap(v1); */
 
     vector<toFromWeight> vec1;
 
