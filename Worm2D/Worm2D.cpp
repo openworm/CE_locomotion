@@ -1110,6 +1110,9 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
     vector<int> units;
     vector<double> weights;
     splitWeightEntry(ventinds,units,weights);
+
+
+
     const int & SMDV = units[0], RMDV = units[1], VDA = units[2], VBA = units[3], VDP = units[4], VBP = units[5];
     const double & NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
     NMJ_VDa = weights[2], NMJ_VBa = weights[3], NMJ_VDp = weights[4], NMJ_VBp = weights[5]; 
@@ -1170,7 +1173,7 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
 {
     //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
-     const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
+    const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
     const int VNCMuscleStart = 7;           // VNC motorneurons innervate starting from 7th muscle
     const int NmusclePerNU = 3;   
 
@@ -1180,9 +1183,12 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
     vector<int> units;
     vector<double> weights;
     splitWeightEntry(dorsinds,units,weights);
+
+
     const int & SMDD = units[0], RMDD = units[1], DB = units[2], DD = units[3];
     const double & NMJ_SMDD = weights[0], NMJ_RMDV = weights[1], 
     NMJ_DD = weights[2], NMJ_DB = weights[3];
+
 
     {vector<int> neurons({SMDD, RMDD});
     vector<double> NMJ({NMJ_SMDD, NMJ_RMDV});

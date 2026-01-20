@@ -453,6 +453,7 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
     }}
 
     return vec1;
+
 }
 
 
