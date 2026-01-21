@@ -368,8 +368,10 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
     vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
     vector<double> ventralNMJ({NMJ_SMDV, NMJ_RMDD, NMJ_VDa, NMJ_VBa, NMJ_VDp, NMJ_VBp});
     hasVNC18 = true;
-    doubVars.setVal("NMJ gain map V", 0.5);
-    doubVars.setVal("NMJ gain fact", 0.7);
+    //doubVars.setVal("NMJ gain map V", 0.5);
+    //doubVars.setVal("NMJ gain fact", 0.7);
+    namedVars["NMJ gain map V"] = 0.5;
+    namedVars["NMJ gain fact"] = 0.7;
     //NMJ_gain_map_V = 0.5;
     //NMJ_gain_fact = 0.7;
     vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);
@@ -429,8 +431,10 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
     vector<int> neurons({SMDD, RMDD, DD, DB});
     vector<double> NMJs({NMJ_SMDD, NMJ_RMDV, NMJ_DD, NMJ_DB});
     hasVNC18 = true;
-    doubVars.setVal("NMJ gain map D", 0.5);
-    doubVars.setVal("NMJ gain fact", 0.7);
+    namedVars["NMJ gain map D"] = 0.5;
+    namedVars["NMJ gain fact"] = 0.7;
+    //doubVars.setVal("NMJ gain map D", 0.5);
+    //doubVars.setVal("NMJ gain fact", 0.7);
     //NMJ_gain_map_D = 0.5;
     //NMJ_gain_fact = 0.7;
     vector<weightentry> v1 = makeWeightEntry(neurons,NMJs);

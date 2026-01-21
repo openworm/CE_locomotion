@@ -278,8 +278,8 @@ void incInputFromNS(NSForW2D & ns_);
 void incOutputToNS(Worm2Dbase & ns_);
 virtual void makeNSInputConn(){return;}
 virtual void makeNSOutputConn(){return;}
-namedValVec<double> doubVars;
-
+//namedValVec<double> doubVars;
+json namedVars;
 
 
 

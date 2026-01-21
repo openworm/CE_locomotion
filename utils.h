@@ -125,11 +125,20 @@ class namedValVec
     bool setVal(const string & name, const T & val);
     const T & getVal(const string & name) const;
     T & getVal(const string & name);
+    void show() const;
 
     private:
     vector<namedVal<T> > vec;
     
 };
+
+template<class T>
+void namedValVec<T>::show() const
+{
+for (int i=0;i<vec.size();i++) cout << "nvv " << vec[i].name << " " << vec[i].val << endl;
+
+}
+
 
 template<class T>
 const T & namedValVec<T>::getVal(const string & name) const
@@ -154,8 +163,8 @@ template<class T>
 bool namedValVec<T>::setVal(const string & name, const T & val)
 {
     for (int i=0;i<vec.size();i++)
-        {if (vec[i].name == name) vec[i].val = val;return true;}
-    vec.push_back({name,val});
+        if (vec[i].name == name) {vec[i].val = val;return true;}
+    vec.push_back(namedVal<T>({name,val}));
     return false;
 }
 
@@ -170,6 +179,12 @@ struct toFromWeight{
 
 double angle_diff(double a, double b);
 
+/* bool checkVal(const double & val, const double & checkval)
+{
+
+    return (val<(checkval + 0.00001) && val>(checkval - 0.00001));
+
+}
 
 
-
+ */

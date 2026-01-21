@@ -434,8 +434,11 @@ vector<int> dorsalNeurons({DA,DB,DD});
 vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
 
 hasVNCNMJ = true;
-doubVars.setVal("NMJ gain map D", 0);
-doubVars.setVal("NMJ gain fact", 1);
+//doubVars.setVal("NMJ gain map D", 0);
+//doubVars.setVal("NMJ gain fact", 1);
+
+namedVars["NMJ gain map D"] = 0;
+namedVars["NMJ gain fact"] = 1;
 //NMJ_gain_map_D = 0;
 //NMJ_gain_fact = 1;
 vector<weightentry> v1 = makeWeightEntry(dorsalNeurons,dorsalNMJ);
@@ -456,8 +459,11 @@ vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 
 hasVNCNMJ = true;
-doubVars.setVal("NMJ gain map V", 0);
-doubVars.setVal("NMJ gain fact", 1);
+namedVars["NMJ gain map V"] = 0;
+namedVars["NMJ gain fact"] = 1;
+
+//doubVars.setVal("NMJ gain map V", 0);
+//doubVars.setVal("NMJ gain fact", 1);
 //NMJ_gain_map_V = 0;
 //NMJ_gain_fact = 1.0;
 vector<weightentry> v1 = makeWeightEntry(ventralNeurons,ventralNMJ);

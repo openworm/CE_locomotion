@@ -375,7 +375,7 @@ Worm2DSREpars Worm2DSRE::makeVals(const json & j)
         }
       }
       }
-     assert(0);
+    // assert(0);
      return w1pars;
 }
 
@@ -465,8 +465,8 @@ for (int i = 0; i<genPhenPars.singValnames.size(); i++)
 {
 const vector<string> & s1 = genPhenPars.singValnames[i];
 const int & v1 = genPhenPars.singVals[i];
-
-doubVars.setVal(s1[1], pheno(v1));
+namedVars[s1[1]] = pheno(v1);
+//doubVars.setVal(s1[1], pheno(v1));
 
 
 }
@@ -497,12 +497,15 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 }
 
+
+
+
 vector<double> Worm2DSRE::getInitGeno()
 {
 
+const double checkval = 123456;
+vector<double> initialPheno(getVectSize(), checkval); 
 
-vector<double> initialPheno(getVectSize(), 123456); 
-//for (int i = 0; i< initialPheno.size(); i++) initialPheno[i] = 123456;
 
 for (int i = 0; i<genPhenPars.TFnames.size(); i++)
 {
@@ -514,13 +517,15 @@ if (s1[0]=="Nervous system")
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
 if (s1[1]=="Chemical weights")
-for (int j = 0; j<v1.size(); j++)
-initialPheno[v1[j].val-1] = n.ChemicalSynapseWeight(v1[j].from, v1[j].to);
-//n.SetChemicalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
+for (int j = 0; j<v1.size(); j++) 
+{initialPheno[v1[j].val-1] = n.ChemicalSynapseWeight(v1[j].from, v1[j].to);
+assert(!isnan(initialPheno[v1[j].val-1]));
+}
 else if (s1[1]=="Electrical weights")
 for (int j = 0; j<v1.size(); j++)
-initialPheno[v1[j].val-1] = n.ElectricalSynapseWeight(v1[j].from, v1[j].to);
-//n.SetElectricalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity indices
+{initialPheno[v1[j].val-1] = n.ElectricalSynapseWeight(v1[j].from, v1[j].to);
+assert(!isnan(initialPheno[v1[j].val-1]));
+}
 
 }
 else if (s1[0]=="Dorsal NMJ")
@@ -529,7 +534,10 @@ else if (s1[0]=="Dorsal NMJ")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<dMuscConnvec.size(); k++)
   if ((v1[j].to == dMuscConnvec[k].to) && (v1[j].from == dMuscConnvec[k].w.from))
-  {initialPheno[v1[j].val-1] = dMuscConnvec[k].w.weight; break;}
+  { 
+    initialPheno[v1[j].val-1] = dMuscConnvec[k].w.weight; 
+    assert(!isnan(initialPheno[v1[j].val-1]));
+    break;}
 }
 else if (s1[0]=="Ventral NMJ")
 {
@@ -537,7 +545,10 @@ else if (s1[0]=="Ventral NMJ")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<vMuscConnvec.size(); k++)
   if ((v1[j].to == vMuscConnvec[k].to) && (v1[j].from == vMuscConnvec[k].w.from))
-  {initialPheno[v1[j].val-1] = vMuscConnvec[k].w.weight; break;}
+  {
+    initialPheno[v1[j].val-1] = vMuscConnvec[k].w.weight; 
+    assert(!isnan(initialPheno[v1[j].val-1]));
+    break;}
 }
 
 
@@ -552,17 +563,18 @@ if (s1[0]=="Nervous system")
 {
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 if (s1[1]=="biases")
-for (int j = 0; j<v1.size(); j++)
-//n.SetNeuronBias(v1[j].ind, pheno(v1[j].val));
-initialPheno[v1[j].val-1] = n.NeuronBias(v1[j].ind);
+for (int j = 0; j<v1.size(); j++) 
+{initialPheno[v1[j].val-1] = n.NeuronBias(v1[j].ind); 
+assert(!isnan(initialPheno[v1[j].val-1]));}
 else if (s1[1]=="taus")
 for (int j = 0; j<v1.size(); j++)
-//n.SetNeuronTimeConstant(v1[j].ind, pheno(v1[j].val));
-initialPheno[v1[j].val-1] = n.NeuronTimeConstant(v1[j].ind);
+{initialPheno[v1[j].val-1] = n.NeuronTimeConstant(v1[j].ind);
+assert(!isnan(initialPheno[v1[j].val-1]));}
 else if (s1[1]=="gains")
 for (int j = 0; j<v1.size(); j++)
-//n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
-initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
+{initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
+assert(!isnan(initialPheno[v1[j].val-1]));}
+
 }
 else if (s1[0]=="VNC NMJ")
 {
@@ -571,14 +583,18 @@ if (s1[1]=="D inds")
 for (int j = 0; j<v1.size(); j++)
 for (int k = 0; k<dorsinds.size(); k++)
 if (v1[j].ind == dorsinds[k].from)
-{initialPheno[v1[j].val-1] = dorsinds[k].weight;break;}
+{initialPheno[v1[j].val-1] = dorsinds[k].weight;
+  assert(!isnan(initialPheno[v1[j].val-1]));
+  break;}
 }
 else if (s1[1]=="V inds")
 {
 for (int j = 0; j<v1.size(); j++)
 for (int k = 0; k<ventinds.size(); k++)
 if (v1[j].ind == ventinds[k].from)
-{initialPheno[v1[j].val-1] = ventinds[k].weight;break;}
+{initialPheno[v1[j].val-1] = ventinds[k].weight;
+  assert(!isnan(initialPheno[v1[j].val-1]));
+  break;}
 }
 
 }
@@ -589,8 +605,8 @@ for (int i = 0; i<genPhenPars.singValnames.size(); i++)
 {
 const vector<string> & s1 = genPhenPars.singValnames[i];
 const int & v1 = genPhenPars.singVals[i];
-initialPheno[v1 -1] = doubVars.getVal(s1[1]);
-
+initialPheno[v1 -1] = namedVars[s1[1]];
+assert(!isnan(initialPheno[v1-1]));
 }
 
 
@@ -612,7 +628,9 @@ void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
   for (int i = 0; i<genPhenPars.genPhenLims.size(); i++)
   {
   assert(genPhenPars.genPhenLims[i].val1<=genPhenPars.genPhenLims[i].val2);
-  gen[i] = InverseMapSearchParameter(phen[i], genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
+  gen[i] = InverseMapSearchParameterGPT(phen[i], genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
+  cout << "phengen " << phen[i] << " " << genPhenPars.genPhenLims[i].val1 << " " << genPhenPars.genPhenLims[i].val2 << endl;
+  assert(!isnan(gen[i]));
   }
 
 }
