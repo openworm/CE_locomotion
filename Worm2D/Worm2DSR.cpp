@@ -312,6 +312,14 @@ void Worm2DSRE::addEvolvableToJson(json & j)
     TFi.push_back("evolvable");
     set_nested_json(j, TFi, j2);
   }
+   for (int i = 0; i<genPhenPars.singValnames.size();i++)
+  {
+    json j2;
+    j2 = genPhenPars.singVals[i];
+    vector<string> TFi = genPhenPars.singValnames[i];
+    TFi.push_back("evolvable");
+    set_nested_json(j, TFi, j2);
+  }
 
 }
 

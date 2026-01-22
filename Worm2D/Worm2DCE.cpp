@@ -209,7 +209,7 @@ WormCE::WormCE(json j):WormCE()
   pheno_A_gain = sr_ptr->SR_A_gain;
   pheno_B_gain = sr_ptr->SR_B_gain;
 
-  sr_ptr->setParsFromJson(j);
+  //sr_ptr->setParsFromJson(j);
 
   //sr_ptr->setNSWeights(*this);
   //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
