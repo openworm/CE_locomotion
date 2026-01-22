@@ -497,8 +497,17 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 }
 
+bool check123456(double val, double val2)
+{
+bool b1 = (val<123456.001 && val>123455.999);
+bool b2 = (val==val2);
+return b1 || b2;
+}
 
-
+bool check123456(double val)
+{
+return (val<123456.001 && val>123455.999);
+}
 
 vector<double> Worm2DSRE::getInitGeno()
 {
@@ -518,13 +527,16 @@ NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
 if (s1[1]=="Chemical weights")
 for (int j = 0; j<v1.size(); j++) 
-{initialPheno[v1[j].val-1] = n.ChemicalSynapseWeight(v1[j].from, v1[j].to);
-assert(!isnan(initialPheno[v1[j].val-1]));
+{
+  assert(check123456(initialPheno[v1[j].val-1], n.ChemicalSynapseWeight(v1[j].from, v1[j].to)));
+  initialPheno[v1[j].val-1] = n.ChemicalSynapseWeight(v1[j].from, v1[j].to);
+
 }
 else if (s1[1]=="Electrical weights")
 for (int j = 0; j<v1.size(); j++)
-{initialPheno[v1[j].val-1] = n.ElectricalSynapseWeight(v1[j].from, v1[j].to);
-assert(!isnan(initialPheno[v1[j].val-1]));
+{assert(check123456(initialPheno[v1[j].val-1], n.ElectricalSynapseWeight(v1[j].from, v1[j].to)));
+  initialPheno[v1[j].val-1] = n.ElectricalSynapseWeight(v1[j].from, v1[j].to);
+
 }
 
 }
@@ -534,9 +546,9 @@ else if (s1[0]=="Dorsal NMJ")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<dMuscConnvec.size(); k++)
   if ((v1[j].to == dMuscConnvec[k].to) && (v1[j].from == dMuscConnvec[k].w.from))
-  { 
+  { assert(check123456(initialPheno[v1[j].val-1], dMuscConnvec[k].w.weight));
     initialPheno[v1[j].val-1] = dMuscConnvec[k].w.weight; 
-    assert(!isnan(initialPheno[v1[j].val-1]));
+    
     break;}
 }
 else if (s1[0]=="Ventral NMJ")
@@ -545,9 +557,9 @@ else if (s1[0]=="Ventral NMJ")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<vMuscConnvec.size(); k++)
   if ((v1[j].to == vMuscConnvec[k].to) && (v1[j].from == vMuscConnvec[k].w.from))
-  {
+  { assert(check123456(initialPheno[v1[j].val-1], vMuscConnvec[k].w.weight));
     initialPheno[v1[j].val-1] = vMuscConnvec[k].w.weight; 
-    assert(!isnan(initialPheno[v1[j].val-1]));
+   
     break;}
 }
 
@@ -564,16 +576,19 @@ if (s1[0]=="Nervous system")
 NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 if (s1[1]=="biases")
 for (int j = 0; j<v1.size(); j++) 
-{initialPheno[v1[j].val-1] = n.NeuronBias(v1[j].ind); 
-assert(!isnan(initialPheno[v1[j].val-1]));}
+{assert(check123456(initialPheno[v1[j].val-1], n.NeuronBias(v1[j].ind)));
+  initialPheno[v1[j].val-1] = n.NeuronBias(v1[j].ind);} 
+
 else if (s1[1]=="taus")
 for (int j = 0; j<v1.size(); j++)
-{initialPheno[v1[j].val-1] = n.NeuronTimeConstant(v1[j].ind);
-assert(!isnan(initialPheno[v1[j].val-1]));}
+{assert(check123456(initialPheno[v1[j].val-1], n.NeuronTimeConstant(v1[j].ind)));
+  initialPheno[v1[j].val-1] = n.NeuronTimeConstant(v1[j].ind);
+}
 else if (s1[1]=="gains")
 for (int j = 0; j<v1.size(); j++)
-{initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
-assert(!isnan(initialPheno[v1[j].val-1]));}
+{assert(check123456(initialPheno[v1[j].val-1], n.NeuronGain(v1[j].ind)));
+  initialPheno[v1[j].val-1] = n.NeuronGain(v1[j].ind);
+}
 
 }
 else if (s1[0]=="VNC NMJ")
@@ -583,8 +598,9 @@ if (s1[1]=="D inds")
 for (int j = 0; j<v1.size(); j++)
 for (int k = 0; k<dorsinds.size(); k++)
 if (v1[j].ind == dorsinds[k].from)
-{initialPheno[v1[j].val-1] = dorsinds[k].weight;
-  assert(!isnan(initialPheno[v1[j].val-1]));
+{assert(check123456(initialPheno[v1[j].val-1], dorsinds[k].weight));
+  initialPheno[v1[j].val-1] = dorsinds[k].weight;
+  
   break;}
 }
 else if (s1[1]=="V inds")
@@ -592,8 +608,9 @@ else if (s1[1]=="V inds")
 for (int j = 0; j<v1.size(); j++)
 for (int k = 0; k<ventinds.size(); k++)
 if (v1[j].ind == ventinds[k].from)
-{initialPheno[v1[j].val-1] = ventinds[k].weight;
-  assert(!isnan(initialPheno[v1[j].val-1]));
+{assert(check123456(initialPheno[v1[j].val-1], ventinds[k].weight));
+  initialPheno[v1[j].val-1] = ventinds[k].weight;
+  
   break;}
 }
 
@@ -605,14 +622,14 @@ for (int i = 0; i<genPhenPars.singValnames.size(); i++)
 {
 const vector<string> & s1 = genPhenPars.singValnames[i];
 const int & v1 = genPhenPars.singVals[i];
+assert(check123456(initialPheno[v1-1], namedVars[s1[1]]));
 initialPheno[v1 -1] = namedVars[s1[1]];
-assert(!isnan(initialPheno[v1-1]));
 }
 
 
 
 for (int i = 0; i< initialPheno.size(); i++)
-if (initialPheno[i]<123456.001 && initialPheno[i]>123455.999) assert(0 && "init pheno not set");
+assert(!check123456(initialPheno[i]) && "init pheno not set");
 
 vector<double> initialGeno(getVectSize());
 //initialGeno.resize(getVectSize());
