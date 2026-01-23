@@ -331,6 +331,16 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 	return sqrt(pow(PositionX()-x,2) + pow(PositionY()-y,2));
 }
 
+wormIzqParams Worm2Dbase::getIzqPars(const json & j)
+{
+return
+  {j["Worm"]["N_neuronsperunit"]["value"], 
+    j["Worm"]["N_muscles"]["value"], 
+    j["Worm"]["T_muscle"]["value"],
+    j["Worm"]["N_units"]["value"],
+    j["Nervous system"]["size"]["value"]
+  };
+}
 
 
 double Worm2Dbody::Orientation()
@@ -1355,6 +1365,38 @@ void Worm2D::setUpMuscleConn(const json & j)
 
 void Worm2D::setUpMuscleConn()
 {
+
+
+
+if (hasVNCNMJ){
+
+    assert(!hasVNC18);
+
+    vector<toFromWeight> vMuscConnvec1 = makeMuscleConnVNCV();
+    vMuscConnvec.swap(vMuscConnvec1);
+       
+    vector<toFromWeight> dMuscConnvec1 = makeMuscleConnVNCD();
+    dMuscConnvec.swap(dMuscConnvec1);
+    
+    return;
+
+}
+if (hasVNC18)
+
+{
+
+    assert(!hasVNCNMJ);
+
+    vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn18();
+    vMuscConnvec.swap(vMuscConnvec1);
+       
+    vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn18();
+    dMuscConnvec.swap(dMuscConnvec1);
+     
+ return;
+
+}
+
 
 vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn();
 vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn();

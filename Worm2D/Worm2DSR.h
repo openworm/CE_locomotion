@@ -11,7 +11,7 @@ protected:
 vector<doubIntParamsHead> getWormParams();
 static shared_ptr<SR> getSR(const json & j);
 //static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd);
-static wormIzqParams getIzqPars(const json & j);
+//static wormIzqParams getIzqPars(const json & j);
 shared_ptr<SR> w2dsr_ptr = nullptr;
 Worm2DSRb(const json & j);
 Worm2DSRb(shared_ptr<SR> sr_ptr_);

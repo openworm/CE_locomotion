@@ -280,7 +280,7 @@ virtual void makeNSInputConn(){return;}
 virtual void makeNSOutputConn(){return;}
 //namedValVec<double> doubVars;
 json namedVars;
-
+static wormIzqParams getIzqPars(const json & j);
 
 
 };

@@ -78,16 +78,6 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 
 
 
-wormIzqParams Worm2DSRb::getIzqPars(const json & j)
-{
-return
-  {j["Worm"]["N_neuronsperunit"]["value"], 
-    j["Worm"]["N_muscles"]["value"], 
-    j["Worm"]["T_muscle"]["value"],
-    j["Worm"]["N_units"]["value"],
-    j["Nervous system"]["size"]["value"]
-  };
-}
 
 void Worm2DSR::addParsToJson(json & j)
 {
@@ -478,6 +468,14 @@ namedVars[s1[1]] = pheno(v1);
 
 
 }
+
+//w2dsr_ptr->setWeights();
+//w2dsr_ptr->setNSWeights(*this);
+
+//sr_ptr->setWeights();
+//sr_ptr->setNSWeights(*this);
+
+setMuscBodExt();
 
 return;
 }
