@@ -15,6 +15,7 @@ static shared_ptr<SR> getSR(const json & j);
 shared_ptr<SR> w2dsr_ptr = nullptr;
 Worm2DSRb(const json & j);
 Worm2DSRb(shared_ptr<SR> sr_ptr_);
+void setParsFromJson(const json & j);
 void addParsToJson(json & j);
 };
 
@@ -93,12 +94,13 @@ Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 void setParsFromPheno(const TVector<double> &pheno);
-int getVectSize() {assert(genPhenPars.genPhenLims.size()>0); return genPhenPars.genPhenLims.size();}
+int getVectSize() {assert(genPhenLims.size()>0); return genPhenLims.size();}
 void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
 //void setNSEvoFromJson(const json & j, NervousSystem & n);
 //void makeVals(const json & j);
-Worm2DSREpars makeVals(const json & j);
+//Worm2DSREpars makeVals(const json & j);
+vector<doubDoub> makeVals(const json & j);
 void testJson(json & j);
 //void setInitGeno();
 vector<double> getInitGeno();
@@ -106,15 +108,19 @@ void addEvolvableToJson(json & j);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 //vector<toFromInt> chem_weights_evo, elec_weights_evo;
 //vector<intPair> biases_evo, taus_evo, gains_evo;
+//vector<double> getInitGeno_old();
 
-const Worm2DSREpars genPhenPars;
+//const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
 //vector<vector<string> > TFnames, IPnames;
 //vector<vector<fromToInt> > TFIvec;
 //vector<vector<intPair> > IPvec;
 //vector<double> initialGeno;
 
-bool directMuscEvo = false;
+const vector<doubDoub> genPhenLims;
+
+//bool directMuscEvo = false;
+json itsJson;
 };
 
 

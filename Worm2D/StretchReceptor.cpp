@@ -195,23 +195,47 @@ void SR::setParsFromJson(const json & j)
 
 void SR18::setParsFromJson(const json & j) 
 {
-    nssrweights.segToD = 
-    j["Stretch receptor"]["SR D NS weights"]["value"].template get< vector<toFromWeight> >();
-    nssrweights.segToV = 
-    j["Stretch receptor"]["SR V NS weights"]["value"].template get< vector<toFromWeight> >();
 
+    const json & j2 =  j["Stretch receptor"];
 
-    srweights.segToD = 
-    j["Stretch receptor"]["SR D weights"]["value"].template get< vector<toFromWeight> >();
-    srweights.segToV = 
-    j["Stretch receptor"]["SR V weights"]["value"].template get< vector<toFromWeight> >();
-
-    SRvncgain = j["Stretch receptor"]["SRvncgain"]["value"];
-    SRheadgain = j["Stretch receptor"]["SRheadgain"]["value"];
-    vncsr = j["Stretch receptor"]["SRvncsr"]["value"];
-    headsr = j["Stretch receptor"]["SRheadsr"]["value"];
+    SRvncgain = j2["SRvncgain"]["value"];
+    SRheadgain = j2["SRheadgain"]["value"];
+    vncsr = j2["SRvncsr"]["value"];
+    headsr = j2["SRheadsr"]["value"];
 
     SR::setParsFromJson(j); 
+
+    if (j2["SRvncgain"].contains("Evolvable") || j2["SRheadgain"].contains("Evolvable"))
+    {
+
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }
+    else{
+
+    if (j2.contains("SR D NS weights")){
+    nssrweights.segToD = 
+    j2["SR D NS weights"]["value"].template get< vector<toFromWeight> >();
+    nssrweights.segToV = 
+    j2["SR V NS weights"]["value"].template get< vector<toFromWeight> >();
+
+    srweights.segToD = 
+    j2["SR D weights"]["value"].template get< vector<toFromWeight> >();
+    srweights.segToV = 
+    j2["SR V weights"]["value"].template get< vector<toFromWeight> >();
+
+    }else{
+
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }
+
+
+    }
+   
+    
 
 }
 
@@ -221,7 +245,7 @@ void SRCE::setParsFromJson(const json & j)
     SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
     SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
 
-
+    if (j["Stretch receptor"].contains("SR D NS weights")){
     nssrweights.segToA_D = 
     j["Stretch receptor"]["SR A D NS weights"]["value"].template get< vector<toFromWeight> >();
     nssrweights.segToA_V = 
@@ -239,6 +263,14 @@ void SRCE::setParsFromJson(const json & j)
     j["Stretch receptor"]["SR B D weights"]["value"].template get< vector<toFromWeight> >();
     srweights.segToB_V = 
     j["Stretch receptor"]["SR B V weights"]["value"].template get< vector<toFromWeight> >();
+    }
+    else{
+        
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }
+
 
     if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
 

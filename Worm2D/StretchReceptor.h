@@ -151,6 +151,7 @@ public:
 
     double SRvncgain = 0;   //srvncgain;                // Stretch receptor gain
     double SRheadgain = 0;   // srheadgain;                // Stretch receptor gain
+  //  double oldSRvncgain = 0, oldSRheadgain = 0;
 
     double HeadDorsalOutput(){return srvars->D_sr[0];}
     double HeadVentralOutput(){return srvars->V_sr[0];}

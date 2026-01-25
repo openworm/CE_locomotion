@@ -5,7 +5,7 @@
 //Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}*/
 
-Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
+Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){setParsFromJson(j);}
 Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
@@ -21,7 +21,7 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd),genPhenPars(makeVals(j)){
+  Worm2DSR(j,cmd),genPhenLims(makeVals(j)),itsJson(j){
     if (callInit) writeOrigGen(cmd);
   }
   
@@ -105,6 +105,7 @@ if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
 
 }
 
+void  Worm2DSRb::setParsFromJson(const json & j){if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
 
 
 shared_ptr<SR> Worm2DSRb::getSR(const json & j)
@@ -285,7 +286,13 @@ void Worm2DSR::writeAct()
 void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
-  j["Evolvable"]["value"] =  genPhenPars.genPhenLims;
+
+  j["Evolvable"]["value"] = itsJson["Evolvable"]["value"];
+
+  return;
+
+
+/*   j["Evolvable"]["value"] =  genPhenPars.genPhenLims;
   for (int i = 0; i<genPhenPars.TFnames.size();i++)
   {
     json j2;
@@ -310,26 +317,31 @@ void Worm2DSRE::addEvolvableToJson(json & j)
     TFi.push_back("evolvable");
     set_nested_json(j, TFi, j2);
   }
-
+ */
 }
 
-Worm2DSREpars Worm2DSRE::makeVals(const json & j)
+vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 {
 
-  if (!j.contains("Evolvable")) return Worm2DSREpars();
+  if (!j.contains("Evolvable")) return vector<doubDoub>(0);
 
-  Worm2DSREpars w1pars;
+  //Worm2DSREpars w1pars;
 
   //assert(0);
-  vector<string> v1;
-  v1.push_back("Evolvable");
-  v1.push_back("value");
+  //vector<string> v1;
+  //v1.push_back("Evolvable");
+  //v1.push_back("value");
   
-  w1pars.genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
+  return j["Evolvable"]["value"].template get< vector<doubDoub> >();
+
+  //genPhenLims.swap(values);
+
+
+  //genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
 
 
 
-  for (auto it = j.begin(); it != j.end(); ++it)
+ /*  for (auto it = j.begin(); it != j.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
       if (it2->contains("evolvable"))
       {
@@ -374,7 +386,8 @@ Worm2DSREpars Worm2DSRE::makeVals(const json & j)
       }
       }
     // assert(0);
-     return w1pars;
+     return w1pars; */
+
 }
 
 
@@ -383,7 +396,60 @@ Worm2DSREpars Worm2DSRE::makeVals(const json & j)
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
-for (int i = 0; i<genPhenPars.TFnames.size(); i++)
+
+  json & js1 = itsJson;
+
+ for (auto it = js1.begin(); it != js1.end(); ++it)
+    for (auto it2 = it->begin(); it2 != it->end(); ++it2)
+      if (it2->contains("evolvable"))
+      {
+        if (it2->at("evolvable").is_number())
+          it2->at("value") = pheno[it2->at("evolvable")];
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          for (int i = 0; i<evols.size();i++)
+          for (int j = 0; j<values.size();j++)
+          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
+          {values[j].w.weight = pheno[evols[i].val];break;} 
+          it2->at("value") = values;
+        }
+        else
+        {
+        vector<double> values = it2->at("value").template get< vector<double> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++) values[evols[i].ind] = pheno[evols[i].val];
+        it2->at("value") = values;
+        }
+        
+        }
+      }
+
+
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    setNSFromJson(js1,n);
+
+    //if (js1["Nervous system"].contains("section sizes"))
+    //  jsects = js1["Nervous system"]["section sizes"];
+
+    W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
+   
+
+    //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    
+    Worm2DSRb::setParsFromJson(js1);
+    setMuscBodExt(js1);
+    
+
+
+    return;
+
+
+/* for (int i = 0; i<genPhenPars.TFnames.size(); i++)
 {
 
 const vector<string> & s1 = genPhenPars.TFnames[i];
@@ -480,7 +546,9 @@ namedVars[s1[1]] = pheno(v1);
 
 setMuscBodExt();
 
-return;
+return; */
+
+
 }
 
 
@@ -518,7 +586,73 @@ bool check123456(double val)
 return (val<123456.001 && val>123455.999);
 }
 
+
 vector<double> Worm2DSRE::getInitGeno()
+{
+
+const double checkval = 123456;
+vector<double> pheno(getVectSize(), checkval); 
+
+
+  json & js1 = itsJson;
+
+ for (auto it = js1.begin(); it != js1.end(); ++it)
+    for (auto it2 = it->begin(); it2 != it->end(); ++it2)
+      if (it2->contains("evolvable"))
+      {
+        if (it2->at("evolvable").is_number()){
+        assert(check123456(pheno[it2->at("evolvable")-1], it2->at("value")));
+        pheno[it2->at("evolvable")-1] = it2->at("value");
+        }
+  //        it2->at("value") = pheno[it2->at("evolvable")];
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          for (int i = 0; i<evols.size();i++)
+          for (int j = 0; j<values.size();j++)
+          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
+          {
+            assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
+            pheno[evols[i].val-1] = values[j].w.weight;
+            //values[j].w.weight = pheno[evols[i].val];
+            break;} 
+          //it2->at("value") = values;
+        }
+        else
+        {
+        vector<double> values = it2->at("value").template get< vector<double> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++) 
+        {
+          assert(check123456(pheno[evols[i].val-1], values[evols[i].ind]));
+          pheno[evols[i].val-1] = values[evols[i].ind];
+        }
+        //values[evols[i].ind] = pheno[evols[i].val];
+        //it2->at("value") = values;
+        }
+        
+        }
+      }
+
+for (int i = 0; i< pheno.size(); i++)
+assert(!check123456(pheno[i]) && "init pheno not set");
+
+vector<double> initialGeno(getVectSize());
+//initialGeno.resize(getVectSize());
+PhenGenMapping(initialGeno, pheno);
+
+return initialGeno;
+
+
+}
+
+
+
+/* vector<double> Worm2DSRE::getInitGeno_old()
 {
 
 const double checkval = 123456;
@@ -645,17 +779,17 @@ vector<double> initialGeno(getVectSize());
 PhenGenMapping(initialGeno, initialPheno);
 
 return initialGeno;
-}
+} */
 
 
 void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
 {
 
-  for (int i = 0; i<genPhenPars.genPhenLims.size(); i++)
+  for (int i = 0; i<genPhenLims.size(); i++)
   {
-  assert(genPhenPars.genPhenLims[i].val1<=genPhenPars.genPhenLims[i].val2);
-  gen[i] = InverseMapSearchParameterGPT(phen[i], genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
-  cout << "phengen " << phen[i] << " " << genPhenPars.genPhenLims[i].val1 << " " << genPhenPars.genPhenLims[i].val2 << endl;
+  assert(genPhenLims[i].val1<=genPhenLims[i].val2);
+  gen[i] = InverseMapSearchParameterGPT(phen[i], genPhenLims[i].val1, genPhenLims[i].val2);
+  cout << "phengen " << phen[i] << " " << genPhenLims[i].val1 << " " << genPhenLims[i].val2 << endl;
   assert(!isnan(gen[i]));
   }
 
@@ -665,10 +799,10 @@ void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
 void Worm2DSRE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
 
-  for (int i = 0; i<genPhenPars.genPhenLims.size(); i++)
+  for (int i = 0; i<genPhenLims.size(); i++)
   {
-  assert(genPhenPars.genPhenLims[i].val1<=genPhenPars.genPhenLims[i].val2);
-  phen(i+1) = MapSearchParameter(gen(i+1), genPhenPars.genPhenLims[i].val1, genPhenPars.genPhenLims[i].val2);
+  assert(genPhenLims[i].val1<=genPhenLims[i].val2);
+  phen(i+1) = MapSearchParameter(gen(i+1), genPhenLims[i].val1, genPhenLims[i].val2);
   }
 
 }
