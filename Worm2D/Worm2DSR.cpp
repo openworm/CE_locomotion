@@ -402,6 +402,7 @@ n.SetElectricalSynapseWeight(v1[j].from, v1[j].to, pheno(v1[j].val)); //unity in
 }
 else if (s1[0]=="Dorsal NMJ")
 {
+  directMuscEvo = true;
   if (s1[1]=="weights")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<dMuscConnvec.size(); k++)
@@ -411,6 +412,7 @@ else if (s1[0]=="Dorsal NMJ")
 }
 else if (s1[0]=="Ventral NMJ")
 {
+  directMuscEvo = true;
   if (s1[1]=="weights")
   for (int j = 0; j<v1.size(); j++) 
   for (int k = 0; k<vMuscConnvec.size(); k++)
@@ -440,8 +442,9 @@ else if (s1[1]=="gains")
 for (int j = 0; j<v1.size(); j++)
 n.SetNeuronGain(v1[j].ind, pheno(v1[j].val));
 }
-else if (s1[0]=="VNC NMJ")
+else if (s1[0]=="VNC NMJ" || s1[0] == "VNC 18")
 {
+assert(!directMuscEvo);
 if (s1[1]=="D inds")
 {
 for (int j = 0; j<v1.size(); j++)
@@ -463,6 +466,7 @@ for (int i = 0; i<genPhenPars.singValnames.size(); i++)
 {
 const vector<string> & s1 = genPhenPars.singValnames[i];
 const int & v1 = genPhenPars.singVals[i];
+if (s1[0]=="VNC NMJ" || s1[0] == "VNC 18") assert(!directMuscEvo);
 namedVars[s1[1]] = pheno(v1);
 //doubVars.setVal(s1[1], pheno(v1));
 
@@ -472,8 +476,7 @@ namedVars[s1[1]] = pheno(v1);
 //w2dsr_ptr->setWeights();
 //w2dsr_ptr->setNSWeights(*this);
 
-//sr_ptr->setWeights();
-//sr_ptr->setNSWeights(*this);
+
 
 setMuscBodExt();
 

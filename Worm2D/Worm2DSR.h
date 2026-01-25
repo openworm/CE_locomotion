@@ -113,6 +113,8 @@ const Worm2DSREpars genPhenPars;
 //vector<vector<fromToInt> > TFIvec;
 //vector<vector<intPair> > IPvec;
 //vector<double> initialGeno;
+
+bool directMuscEvo = false;
 };
 
 

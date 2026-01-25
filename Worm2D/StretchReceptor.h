@@ -84,11 +84,11 @@ vector<double> updateSegs1(const vector<toFromWeight> & seg_, vector<double> & n
 void updateSegs2(const vector<toFromWeight> & seg_, vector<double> & nsl_, vector<double> & sr_);
 
 virtual void makeSRWeights() = 0; 
-virtual void makeNSSRWeights(const Worm2Dbase & w_ptr) = 0; 
+virtual void makeNSSRWeights() = 0; 
 virtual void setParsFromJson(const json & j) = 0;
 
 void setWeights(){makeSRWeights();}
-void setNSWeights(const Worm2Dbase & w_ptr){makeNSSRWeights(w_ptr);}
+void setNSWeights(const Worm2Dbase & w_ptr){makeNSSRWeights();}
 
 virtual ~SR(){}
 void updateAll(const WormBody & b){setFromBody(b);updateSegs();}
@@ -174,10 +174,25 @@ public:
 
     bool vncsr = 1;
     bool headsr = 1;
-    void makeNSSRWeights(const Worm2Dbase & w_ptr);
+    void makeNSSRWeights();
     void makeSRWeights();
     void updateSegs();
-  
+
+    const int N_units = 6;
+    const int DB = 1;
+    const int DD = 2;
+    const int VBA = 3;
+    const int VDA = 4;
+    const int VBP = 5;
+    const int VDP = 6;
+    
+
+    // Neuron name conventions
+    const int SMDD = 37;
+    const int RMDD = 38;
+    const int SMDV = 39;
+    const int RMDV = 40;
+
     
     shared_ptr<SRVarsSimp> srvars;
 
@@ -195,7 +210,7 @@ SR(nsegs_,nstretch_,make_shared<SRCEpars>(), make_shared<SRVarsCE>(nstretch_))
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
 {SRType = "SRCE";}
 
-void makeNSSRWeights(const Worm2Dbase & w_ptr);
+void makeNSSRWeights();
 void makeSRWeights();
 //void addParsToJson(json & j) const;
 //void setParsFromJson(json & j);
@@ -224,8 +239,13 @@ srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){}
 //SRVarsCE srvars;
 SRWeights srweights, nssrweights;
 
-
-
+    const int N_units = 10;
+    const int DA = 1;
+    const int DB = 2;
+    const int DD = 3;
+    const int VD = 4;
+    const int VA = 5;
+    const int VB = 6;
 };
 
 class SRReg : public SRCE

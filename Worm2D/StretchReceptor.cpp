@@ -267,7 +267,7 @@ void SR18::writeAct(ofstream & ofs)
 }
 
 
-void SR18::makeNSSRWeights(const Worm2Dbase & w_ptr_)
+void SR18::makeNSSRWeights()
 {
 /* 
      for (int i = 1; i <= par1.N_units; i++){
@@ -278,20 +278,20 @@ to = 1 + srvars_ptr->nstretch + i */
 
     SRWeightsSimp srw;
 
-    const Worm18 & w_ptr = dynamic_cast<const Worm18&>(w_ptr_);
+    //const Worm18 & w_ptr = dynamic_cast<const Worm18&>(w_ptr_);
 
     if (vncsr){
-    for (int i = 1; i <= w_ptr.par1.N_units; i++){
+    for (int i = 1; i <= N_units; i++){
     {int from = i + 1;
-    {int to = w_ptr.nn(w_ptr.DB,i);
+    {int to = nn1(DB,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToD.push_back(tfw);}
-    {int to = w_ptr.nn(w_ptr.VBA,i);
+    {int to = nn1(VBA,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToV.push_back(tfw);}
     }
     int from = 1 + srvars_ptr->nstretch + i;
-    {int to = w_ptr.nn(w_ptr.VBP,i);
+    {int to = nn1(VBP,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToV.push_back(tfw);}
     }
@@ -303,10 +303,10 @@ to = 1 + srvars_ptr->nstretch + i */
         //n_ptr->SetNeuronExternalInput(SMDD, sr.HeadDorsalOutput());    // Average of first
         //n_ptr->SetNeuronExternalInput(SMDV, sr.HeadVentralOutput()); 
         int from = 1;
-        {int to = w_ptr.SMDD;
+        {int to = SMDD;
         toFromWeight tfw({from,1.0},to);
         srw.segToD.push_back(tfw);}
-        {int to = w_ptr.SMDV;
+        {int to = SMDV;
         toFromWeight tfw({from,1.0},to);
         srw.segToV.push_back(tfw);}
 
@@ -320,10 +320,10 @@ to = 1 + srvars_ptr->nstretch + i */
 
 
 
-void SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_) 
+void SRCE::makeNSSRWeights() 
 {
     SRWeights srw;
-    const Worm2DCE & w_ptr = dynamic_cast<const Worm2DCE&>(w_ptr_);
+    //const Worm2DCE & w_ptr = dynamic_cast<const Worm2DCE&>(w_ptr_);
 
     //shared_ptr<const Worm2DCE> w_ptr = dynamic_pointer_cast<const Worm2DCE>(w_ptr_);
 
@@ -331,25 +331,25 @@ void SRCE::makeNSSRWeights(const Worm2Dbase & w_ptr_)
     //assert(0);
 
 
-for (int i = 1; i <= w_ptr.par1.N_units; i++){
+for (int i = 1; i <= N_units; i++){
     int from = i;
     {
-    int to = w_ptr.nn(w_ptr.DA,i);
+    int to = nn1(DA,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_D.push_back(tfw);
     }
     {
-    int to = w_ptr.nn(w_ptr.VA,i);
+    int to = nn1(VA,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_V.push_back(tfw);
     }
     {
-    int to = w_ptr.nn(w_ptr.DB,i);
+    int to = nn1(DB,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_D.push_back(tfw);
     }
     {
-    int to = w_ptr.nn(w_ptr.VB,i);
+    int to = nn1(VB,i,N_units);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_V.push_back(tfw);
     }
