@@ -404,7 +404,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
       if (it2->contains("evolvable"))
       {
         if (it2->at("evolvable").is_number())
-          it2->at("value") = pheno[it2->at("evolvable")];
+          it2->at("value") = pheno[it2->at("evolvable").get<int>()];
         else
         {
         size_t idx = it2.key().find("weights");
@@ -420,12 +420,35 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
         }
         else
         {
+          if (it2->at("value")[0].is_number())
+        {
         vector<double> values = it2->at("value").template get< vector<double> >();
         vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
-        for (int i = 0; i<evols.size();i++) values[evols[i].ind] = pheno[evols[i].val];
+        for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
         it2->at("value") = values;
         }
-        
+        else{
+
+        vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            //assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            values[j].weight = pheno[evols[i].val];
+            //pheno[evols[i].val-1] = values[j].weight;
+            break;
+          }
+
+          it2->at("value") = values;
+        }
+
+
+
+      }
         }
       }
 
@@ -601,8 +624,10 @@ vector<double> pheno(getVectSize(), checkval);
       if (it2->contains("evolvable"))
       {
         if (it2->at("evolvable").is_number()){
-        assert(check123456(pheno[it2->at("evolvable")-1], it2->at("value")));
-        pheno[it2->at("evolvable")-1] = it2->at("value");
+        cout << "ph " << it.key() << " " << it2.key() << endl;
+        cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
+        assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
+        pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
         }
   //        it2->at("value") = pheno[it2->at("evolvable")];
         else
@@ -616,6 +641,8 @@ vector<double> pheno(getVectSize(), checkval);
           for (int j = 0; j<values.size();j++)
           if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
           {
+            cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
             assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
             pheno[evols[i].val-1] = values[j].w.weight;
             //values[j].w.weight = pheno[evols[i].val];
@@ -624,15 +651,35 @@ vector<double> pheno(getVectSize(), checkval);
         }
         else
         {
+        if (it2->at("value")[0].is_number())
+        {
         vector<double> values = it2->at("value").template get< vector<double> >();
         vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++) 
         {
-          assert(check123456(pheno[evols[i].val-1], values[evols[i].ind]));
-          pheno[evols[i].val-1] = values[evols[i].ind];
+             cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
+          assert(check123456(pheno[evols[i].val-1], values[evols[i].ind-1]));
+          pheno[evols[i].val-1] = values[evols[i].ind-1];
         }
         //values[evols[i].ind] = pheno[evols[i].val];
         //it2->at("value") = values;
+
+        }
+        else{          
+        vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+            cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            pheno[evols[i].val-1] = values[j].weight;
+            break;}
+        }
+
         }
         
         }
