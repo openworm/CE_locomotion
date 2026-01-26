@@ -417,6 +417,8 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         //w.setWormPars(argc,argv);
         //w.setWormPars(this->cmd);
 
+
+        w_ptr->setParsFromPheno(pheno);
         RandomState rs;
         rs.SetRandomSeed(evoPars1.randomseed);
     
@@ -429,8 +431,10 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         w_ptr->InitializeState(rs); 
         w_ptr->initForSimulation(rs);
 
+        //assert(0);
+
         json j;
-        w_ptr->setParsFromPheno(pheno);
+      
         w_ptr->addParsToJson(j);
         addParsToJson(j);
 
@@ -445,7 +449,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
 
 
 
-        //writeJson1(*w_ptr,j);
+       // writeJson1(*w_ptr,j);
 }
 
 
@@ -851,7 +855,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
-    
+   
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
@@ -888,6 +892,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     }
     fitness = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
 
+
+    //assert(0);
 
     return fitness;
 }
@@ -1142,13 +1148,15 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     T & w = *w_ptr; 
    
 
+   
+
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
     //w.setWormPars(argc,argv);
   
     //w.setWormPars(this->cmd);
     w.setParsFromGeno(genotype);
-
+ 
 
     //EvolparametersCE & Epars1 = w.getWormPars();
 
@@ -1189,6 +1197,8 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     }
     else assert(0 && "direction not set properly");
 
+   
+
     //w1.show();
     //assert(0);
 
@@ -1200,6 +1210,9 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     for (double t = 0.0; t <= Transient; t += StepSize){
         w.Step(StepSize);
     }
+
+    assert(0);
+
     xt = w.CoMx(); yt = w.CoMy();
     oxt = w.CoMx(); oyt = w.CoMy();
     // Run
@@ -1234,6 +1247,9 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     fitB = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
     fitB = (fitB > 0)? fitB : 0.0;
+
+
+    
     return fitB;
 
 

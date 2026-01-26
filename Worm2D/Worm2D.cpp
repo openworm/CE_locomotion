@@ -1104,6 +1104,7 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
 void Worm2D::setMuscleInput()
 {
 
+    
     setMuscleInputVec();
     //setMuscleInputVent();
     //setMuscleInputDors();

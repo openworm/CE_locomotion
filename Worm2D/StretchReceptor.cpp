@@ -354,6 +354,9 @@ to = 1 + srvars_ptr->nstretch + i */
 
 void SRCE::makeNSSRWeights() 
 {
+
+    
+
     SRWeights srw;
     //const Worm2DCE & w_ptr = dynamic_cast<const Worm2DCE&>(w_ptr_);
 

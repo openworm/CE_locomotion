@@ -13,7 +13,7 @@
 
 
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
-Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,0, sr_ptr_),
+Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,n_ptr_, sr_ptr_),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
     sr_ptr(sr_ptr_)
 {
@@ -224,6 +224,15 @@ WormCE::WormCE(json j):WormCE()
 
 void WormCE::setParsFromPheno(const TVector<double> &pheno)
 {
+
+
+
+//cout << "CE spfp " << par1.N_units << " " << par1.N_neuronsperunit << endl;
+//assert(0);
+
+//cout << "pheno " << pheno << " endpheno" << endl;
+//assert(0);
+
 // PG: Setting these to zero as they were not initialised before use!
   // Note: the usage of these needs to be further investigated!
   //AVA_act = 0;
@@ -433,6 +442,9 @@ vector<toFromWeight> Worm2DCE::makeDorsalMuscleConn()
 vector<int> dorsalNeurons({DA,DB,DD});
 vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
 
+
+//return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+
 hasVNCNMJ = true;
 //doubVars.setVal("NMJ gain map D", 0);
 //doubVars.setVal("NMJ gain fact", 1);
@@ -457,6 +469,9 @@ vector<toFromWeight> Worm2DCE::makeVentralMuscleConn()
 {
 vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
+
+
+//return makeMuscleConn(ventralNeurons, ventralNMJ);
 
 hasVNCNMJ = true;
 namedVars["NMJ gain map V"] = 0;
@@ -803,6 +818,12 @@ void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
     
     const int SR_A = 1;
     const int SR_B = 2;
+
+
+    //cout <<  "gpevobot " << gen(1) << " " << gen(2) << " " << w1->SREvoBotA << " " 
+    //<< w1->SREvoTopA << " " << w1->SREvoBot << " " << w1->SREvoTop << endl;
+
+    //assert(0);
 
 
      // Parameters for the Stretch Receptors

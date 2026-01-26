@@ -513,7 +513,7 @@ void setNSFromJson(const json & j, NervousSystem & n)
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronGain(i+1, vals[i]);}
 
-    if (false) //removed external inputs here
+   // if (false) //removed external inputs here
     {vector<double> vals = 
         j2["externalinputs"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)

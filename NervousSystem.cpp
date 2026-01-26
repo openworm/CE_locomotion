@@ -186,13 +186,21 @@ void NervousSystem::RandomizeCircuitOutput(double lb, double ub, RandomState &rs
 // Integrate a circuit one step using Euler integration.
 void NervousSystem::EulerStep(double stepsize)
 {
+
+   
+
+
     // Update past states (used for gap junctions)
     for (int i = 1; i <= size; i++){
         paststates[i] = states[i];
     }
+
+    
     // Update the state of all neurons.
     for (int i = 1; i <= size; i++) {
         // External input
+       // cout << "NS " << i << endl;
+        
         double input = externalinputs[i];
         // Input from chemical synapses
         for (int j = 1; j <= NumChemicalConns[i]; j++)
@@ -202,10 +210,16 @@ void NervousSystem::EulerStep(double stepsize)
             input += electricalweights[i][j].weight * (paststates[electricalweights[i][j].from] - paststates[i]);
         // Take the step
         states[i] += stepsize * Rtaus[i] * (input - states[i]);
+        
     }
+    //assert(0);
     // Update the outputs of all neurons.
     for (int i = 1; i <= size; i++)
         outputs[i] = NS::sigmoid(gains[i] * (states[i] + biases[i]));
+
+ 
+
+
 }
 
 

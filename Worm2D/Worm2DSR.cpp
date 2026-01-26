@@ -127,10 +127,9 @@ shared_ptr<SR> Worm2DSRb::getSR(const json & j)
 
 void Worm2DSR::Step1()
 {
-  
+ 
   zeroAllInputs();
   
-
   b.StepBody(settedStepSize);
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
@@ -138,10 +137,10 @@ void Worm2DSR::Step1()
   setExternalInput();
   //setExternalInputOrig();
 
-  if (w2dsr_ptr!=nullptr) w2dsr_ptr->incNS(*n_ptr);
-
+  if (w2dsr_ptr!=nullptr) {w2dsr_ptr->incNS(*n_ptr);}
+ 
   n_ptr->EulerStep(settedStepSize);
-  
+ 
   //setMuscleInput();
 
   if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
@@ -149,6 +148,7 @@ void Worm2DSR::Step1()
 
   setBodyInput();
   
+
 }
 
 void Worm2DSRm::Step1()

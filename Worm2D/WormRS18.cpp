@@ -41,12 +41,14 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
     setRs18output(1);
     //initConst();
 
+
 } //for WormCO18Full
 
 
 void Worm18::initConst()
 {
 
+    
     sr_ptr->setWeights();
     sr_ptr->setNSWeights(*this);
 
