@@ -373,7 +373,7 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     RandomState rs;
     rs.SetRandomSeed(evoPars1.randomseed);
    
-    
+   
     w.setStepSize(evoPars1.StepSize);
     w.setDataskips(evoPars1.skip_steps);
     w.setPrefix();

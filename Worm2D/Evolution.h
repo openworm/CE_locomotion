@@ -193,8 +193,6 @@ const shared_ptr<const W2Dparameters> evopar_ptr = nullptr;
 const shared_ptr<const json> json_ptr = nullptr;
 
 
-
-
 };
 
 template<class T>
@@ -418,11 +416,36 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         //T & w = *w_ptr; 
         //w.setWormPars(argc,argv);
         //w.setWormPars(this->cmd);
-        w_ptr->setParsFromPheno(pheno);
+
+        RandomState rs;
+        rs.SetRandomSeed(evoPars1.randomseed);
+    
+    
+        w_ptr->setStepSize(evoPars1.StepSize);
+        w_ptr->setDataskips(evoPars1.skip_steps);
+        w_ptr->setPrefix();
+        w_ptr->InitializeData(evoPars1.directoryName);
+
+        w_ptr->InitializeState(rs); 
+        w_ptr->initForSimulation(rs);
+
         json j;
+        w_ptr->setParsFromPheno(pheno);
+        w_ptr->addParsToJson(j);
+        addParsToJson(j);
+
         this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
-        writeJson1(*w_ptr,j);
+
+        
+        ofstream json_out(rename_file("worm_data_evo.json"));
+        json_out << std::setw(4) << j << std::endl;
+        json_out.close(); 
+
+
+
+
+        //writeJson1(*w_ptr,j);
 }
 
 

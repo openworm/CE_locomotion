@@ -109,6 +109,8 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 //vector<toFromInt> chem_weights_evo, elec_weights_evo;
 //vector<intPair> biases_evo, taus_evo, gains_evo;
 //vector<double> getInitGeno_old();
+void addParsToJson(json & j){j = itsJson;}
+
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
