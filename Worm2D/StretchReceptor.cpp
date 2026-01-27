@@ -315,15 +315,15 @@ to = 1 + srvars_ptr->nstretch + i */
     if (vncsr){
     for (int i = 1; i <= N_units; i++){
     {int from = i + 1;
-    {int to = nn1(DB,i,N_units);
+    {int to = nn1(DB,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToD.push_back(tfw);}
-    {int to = nn1(VBA,i,N_units);
+    {int to = nn1(VBA,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToV.push_back(tfw);}
     }
     int from = 1 + srvars_ptr->nstretch + i;
-    {int to = nn1(VBP,i,N_units);
+    {int to = nn1(VBP,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToV.push_back(tfw);}
     }
@@ -369,22 +369,22 @@ void SRCE::makeNSSRWeights()
 for (int i = 1; i <= N_units; i++){
     int from = i;
     {
-    int to = nn1(DA,i,N_units);
+    int to = nn1(DA,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_D.push_back(tfw);
     }
     {
-    int to = nn1(VA,i,N_units);
+    int to = nn1(VA,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToA_V.push_back(tfw);
     }
     {
-    int to = nn1(DB,i,N_units);
+    int to = nn1(DB,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_D.push_back(tfw);
     }
     {
-    int to = nn1(VB,i,N_units);
+    int to = nn1(VB,i,N_neuronsperunit);
     toFromWeight tfw({from,1.0},to);
     srw.segToB_V.push_back(tfw);
     }

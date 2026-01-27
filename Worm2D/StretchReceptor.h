@@ -180,6 +180,7 @@ public:
     void updateSegs();
 
     const int N_units = 6;
+    const int N_neuronsperunit = 6;
     const int DB = 1;
     const int DD = 2;
     const int VBA = 3;
@@ -241,6 +242,7 @@ srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){}
 SRWeights srweights, nssrweights;
 
     const int N_units = 10;
+    const int N_neuronsperunit = 6;
     const int DA = 1;
     const int DB = 2;
     const int DD = 3;

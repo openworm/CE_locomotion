@@ -1118,8 +1118,8 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
 {
     //cout << "making ventral muscle con" << endl;
 
-    const double & NMJ_gain_map_V = namedVars["NMJ gain map V"];
-    const double & NMJ_gain_fact = namedVars["NMJ gain fact"];
+    const double NMJ_gain_map_V = namedVars["NMJ gain map V"].get<double>();
+    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
 
     const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
     const int VNCMuscleStart = 7;           // VNC motorneurons innervate starting from 7th muscle
@@ -1193,8 +1193,8 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
 vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
 {
 
-    const double & NMJ_gain_map_D = namedVars["NMJ gain map D"];
-    const double & NMJ_gain_fact = namedVars["NMJ gain fact"];
+    const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>();
+    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
     //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
     const int HeadMotorNeuronMuscles = 6;  // Head motorneurons innervate first 8 muscles (temporarily first 6)
@@ -1241,8 +1241,8 @@ vector<toFromWeight> Worm2D::makeMuscleConnVNCV()
 
      //const double & NMJ_gain_map_V = doubVars.getVal("NMJ gain map V");
     //const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
- const double & NMJ_gain_map_V = namedVars["NMJ gain map V"]; //doubVars.getVal("NMJ gain map D");
-    const double & NMJ_gain_fact = namedVars["NMJ gain fact"];
+ const double NMJ_gain_map_V = namedVars["NMJ gain map V"].get<double>(); //doubVars.getVal("NMJ gain map D");
+    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
     
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
@@ -1258,8 +1258,8 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscV);
 vector<toFromWeight> Worm2D::makeMuscleConnVNCD()
 {
 
-  const double & NMJ_gain_map_D = namedVars["NMJ gain map D"]; //doubVars.getVal("NMJ gain map D");
-    const double & NMJ_gain_fact = namedVars["NMJ gain fact"];
+  const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>(); //doubVars.getVal("NMJ gain map D");
+    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)
