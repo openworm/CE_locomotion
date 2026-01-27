@@ -445,7 +445,7 @@ vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
 
 //return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 
-hasVNCNMJ = true;
+//hasVNCNMJ = true;
 //doubVars.setVal("NMJ gain map D", 0);
 //doubVars.setVal("NMJ gain fact", 1);
 
@@ -473,7 +473,7 @@ vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 
 //return makeMuscleConn(ventralNeurons, ventralNMJ);
 
-hasVNCNMJ = true;
+//hasVNCNMJ = true;
 namedVars["NMJ gain map V"] = 0;
 namedVars["NMJ gain fact"] = 1;
 
