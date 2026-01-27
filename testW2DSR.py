@@ -21,7 +21,7 @@ args = dict(
     reRand=True,
     doTestRun=True,
     doOrigMuscInput=False,
-    doOrigSRInput = False
+    doOrigSRInput=False,
 )
 
 if doOrig:
