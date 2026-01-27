@@ -83,8 +83,8 @@ int main (int argc, const char* argv[])
         Evolution * evo = 0;
     
         if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
-        evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
-        //evo = new EvolutionFullWJ<WormCO2DSR>(j_orig,cmd);
+        //evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
+        evo = new EvolutionFullWJ<WormCO2DSR>(j_orig,cmd);
 
 
         else{
@@ -151,9 +151,9 @@ int main (int argc, const char* argv[])
     if (sup_model_name == "W2DSR") 
     
     if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
-    else w2 = new Worm2DSR(json_filename, cmd);
+    //else w2 = new Worm2DSR(json_filename, cmd);
     //else w2 = new Worm2DSRE(json_filename, cmd);
-    //else w2 = new WormCO2DSR(json_filename, cmd);
+    else w2 = new WormCO2DSR(json_filename, cmd);
 
     else{
 
