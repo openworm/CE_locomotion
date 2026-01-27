@@ -1211,7 +1211,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
         w.Step(StepSize);
     }
 
-    assert(0);
+   
 
     xt = w.CoMx(); yt = w.CoMy();
     oxt = w.CoMx(); oyt = w.CoMy();

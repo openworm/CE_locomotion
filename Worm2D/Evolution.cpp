@@ -370,7 +370,7 @@ writeJson1(w,j);
 void EvoBase::writeJson1(Worm2Dbase & w, json & j)
 {   
     
-    assert(0);
+   
 
     RandomState rs;
     rs.SetRandomSeed(evoPars1.randomseed);
@@ -497,7 +497,7 @@ assert(0);
 
 void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar)
 {
-    assert(0);
+    
     assert(s && "s not set ");
 
     cout << "EvolutionaryRunDisplay" << endl;
