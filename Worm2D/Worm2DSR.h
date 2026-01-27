@@ -68,7 +68,7 @@ const string getModelName() {return "W2DSR";}
 //static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd, const json & j);
 //static wormIzqParams getIzqPars(json & j);
 
-json jsects;
+//json jsects;
 
 };
 

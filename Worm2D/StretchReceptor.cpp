@@ -187,7 +187,7 @@ void SRCE::addParsToJson(json & j) const
 
 void SR::setParsFromJson(const json & j) 
 {
-
+    if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
     SRType = j["Stretch receptor"]["Type"]["value"];
 }
 
@@ -235,8 +235,6 @@ void SR18::setParsFromJson(const json & j)
 
     }
    
-    
-
 }
 
 void SRCE::setParsFromJson(const json & j) 
@@ -245,7 +243,7 @@ void SRCE::setParsFromJson(const json & j)
     SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
     SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
 
-    if (j["Stretch receptor"].contains("SR D NS weights")){
+    if (j["Stretch receptor"].contains("SR A D NS weights")){
     nssrweights.segToA_D = 
     j["Stretch receptor"]["SR A D NS weights"]["value"].template get< vector<toFromWeight> >();
     nssrweights.segToA_V = 
@@ -272,7 +270,7 @@ void SRCE::setParsFromJson(const json & j)
     }
 
 
-    if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
+    //if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
 
    
     SR::setParsFromJson(j); 

@@ -1274,6 +1274,17 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 
 void Worm2D::setUpMuscleConn(const json & j)
 {
+
+
+if (false)
+    {
+    vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+    vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
+    vMuscConnvec.swap(vMuscConnvec1);
+    dMuscConnvec.swap(dMuscConnvec1);
+
+    return;
+    }
     
     if (j.contains("VNC NMJ"))
     {

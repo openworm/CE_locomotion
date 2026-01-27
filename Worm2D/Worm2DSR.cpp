@@ -5,7 +5,9 @@
 //Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}*/
 
-Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){setParsFromJson(j);}
+Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){
+  setParsFromJson(j);
+}
 Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
@@ -28,7 +30,7 @@ Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callIni
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(j)
+  Worm2D(getIzqPars(j) ,nullptr), Worm2DSRb(j)
 {
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
@@ -37,8 +39,8 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     setNSFromJson(j,n);
 
-    if (j["Nervous system"].contains("section sizes"))
-      jsects = j["Nervous system"]["section sizes"];
+    //if (j["Nervous system"].contains("section sizes"))
+      //jsects = j["Nervous system"]["section sizes"];
 
     }
 
@@ -86,7 +88,7 @@ void Worm2DSR::addParsToJson(json & j)
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], *n);
   
-  j[nsHead]["section sizes"] = jsects;
+  //j[nsHead]["section sizes"] = jsects;
   }
   Worm2D::addParsToJson(j);
   Worm2DSRb::addParsToJson(j);
