@@ -104,7 +104,7 @@ public:
     void initConst();
     
 
-   
+    void addEvolvableToJson(json & j);
     void setEvolPars(W2Dparameters & w2par_, string evotype_){}
     void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     void setParsFromPheno(const TVector<double> &pheno);

@@ -902,6 +902,233 @@ void Worm18::DumpParams(ofstream &ofs)
 }
 
 
+void Worm18::addEvolvableToJson(json & j)
+{
+ 
+    {vector<doubDoub> vec; 
+
+    const double	BiasRange			    = 15.0;
+    const double    SCRange                 = 15.0;
+    const double    CSRange                 = 15.0;
+    const double    TauMin                  = 0.5; //
+    const double    TauMax                  = 2.0;
+
+    const double    ESRange                 = 2.0;
+
+    const double    SRmax                   = 200.0;
+    const double    NMJmax                  = 1.0;
+    const double    HCSRange                = 15.0;
+
+vec.push_back({-BiasRange, BiasRange});
+vec.push_back({-BiasRange, BiasRange});
+vec.push_back({ TauMin, TauMax});
+
+vec.push_back({TauMin, TauMax});
+vec.push_back({-SCRange, SCRange});
+vec.push_back({-SCRange, SCRange});
+
+vec.push_back({ -CSRange, CSRange});
+vec.push_back({ -CSRange, CSRange});
+vec.push_back({ -CSRange, CSRange});
+vec.push_back({ -CSRange, CSRange});
+
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({-SRmax, 0.0});
+vec.push_back({0.0, NMJmax});
+vec.push_back({-NMJmax, 0.0});
+vec.push_back({-BiasRange, BiasRange});
+vec.push_back({-BiasRange, BiasRange});
+
+vec.push_back({TauMin, TauMax});
+vec.push_back({TauMin, TauMax});
+vec.push_back({-SCRange, SCRange});
+vec.push_back({4.0, SCRange});
+vec.push_back({-HCSRange, HCSRange});
+vec.push_back({-HCSRange, HCSRange});
+vec.push_back({-HCSRange, HCSRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({0.0, ESRange});
+vec.push_back({-SRmax, 0.0});
+vec.push_back({0.0, NMJmax});
+vec.push_back({0.0, NMJmax});
+
+j["Evolvable"]["value"] = toIntDoubDoub(vec);
+
+
+ }
+
+    vector<intPair> biasvec, tauvec;
+    vector<fromToInt> chemvec, elecvec;
+
+   
+    for (int u = 1; u <= par1.N_units; u++){
+
+    int db, dd, vba, vda, vbp, vdp;
+    int ddNext, dbNext, vdaNext, vbaNext;
+
+
+        db = nn(DB,u);
+        dd = nn(DD,u);
+        vba = nn(VBA,u);
+        vbp = nn(VBP,u);
+        vda = nn(VDA,u);
+        vdp = nn(VDP,u);
+
+        ddNext = nn(DD,u+1);
+        dbNext = nn(DB,u+1);
+        vdaNext = nn(VDA,u+1);
+        vbaNext = nn(VBA,u+1);
+
+      
+
+            {vector<intPair> & vec = biasvec;
+            vec.push_back({db,1});
+            vec.push_back({vba,1});
+            vec.push_back({vbp,1});
+            vec.push_back({dd,2});
+            vec.push_back({vda,2});
+            vec.push_back({vdp,2});
+            }
+
+
+         {vector<intPair> & vec = tauvec;
+            vec.push_back({db,3});
+            vec.push_back({vba,3});
+            vec.push_back({vbp,3});
+            vec.push_back({dd,4});
+            vec.push_back({vda,4});
+            vec.push_back({vdp,4});
+        }
+
+
+        {
+            vector<fromToInt> & vec = chemvec;
+            vec.push_back({db,db,5});
+            vec.push_back({vba,vba,5});
+            vec.push_back({vbp,vbp,5});
+            vec.push_back({dd,dd,6});
+            vec.push_back({vda,vda,6});
+            vec.push_back({vdp,vdp,6});
+            vec.push_back({db,dd,7});
+            vec.push_back({vba, vda,7});
+            vec.push_back({vbp, vdp,7});
+            vec.push_back({db, vda,8});
+             vec.push_back({db, vdp,8});
+   vec.push_back({vba, dd,9});
+   vec.push_back({vbp, dd,9});
+   vec.push_back({dd, vda,10});   
+   vec.push_back({dd, vda, 11});
+   vec.push_back({dd, vdp, 11});
+
+    vec.push_back({vda, vdp, 12});
+    vec.push_back({vba, vbp, 13});
+
+      if (u < par1.N_units){
+
+    vec.push_back({dd, ddNext,12});
+    vec.push_back({vdp, vdaNext,12});
+    vec.push_back({db, dbNext,13});
+    vec.push_back({vbp, vbaNext,13});
+     vec.push_back({vbp, dbNext,14});
+
+      }
+
+
+        }
+
+    }
+   
+
+   // cout << "setting streatch" << endl;
+
+    // Stretch receptor
+    //sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
+
+   
+
+    j["Stretch receptor"]["SRvncgain"]["evolvable"] = 15;
+    j["Stretch receptor"]["SRheadgain"]["evolvable"] = 29;
+
+    //sr_ptr->SRvncgain = v(14);
+    //sr_ptr->SRheadgain = v(28);
+
+vector<intPair> nmjvecd;
+nmjvecd.push_back({DB,16});
+nmjvecd.push_back({DD,17});
+nmjvecd.push_back({SMDD,30});
+nmjvecd.push_back({RMDD,31});
+
+vector<intPair> nmjvecv;
+nmjvecv.push_back({VBA,16});
+nmjvecv.push_back({VBP,16});
+nmjvecv.push_back({VDA,17});
+nmjvecv.push_back({VDP,17});
+nmjvecv.push_back({SMDV,30});
+nmjvecv.push_back({RMDV,31});
+
+
+
+
+j["VNC 18"]["V inds"]["evolvable"] = nmjvecv;
+j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
+
+ 
+
+    // Head Circuit
+    //h.SetCircuitSize(4, 3, 2);
+
+    // Bias
+
+
+
+    {vector<intPair> & vec = biasvec;
+    vec.push_back({SMDD,18});
+    vec.push_back({SMDV,18});
+    vec.push_back({RMDD,19});
+    vec.push_back({RMDV,19});
+    }
+
+  {vector<intPair> & vec = tauvec;
+    vec.push_back({SMDD,20});
+    vec.push_back({SMDV,20});
+    vec.push_back({RMDD,21});
+    vec.push_back({RMDV,21});
+    }
+
+  {
+            vector<fromToInt> & vec = chemvec;
+            vec.push_back({SMDD, SMDD,22});
+            vec.push_back({SMDV, SMDV,22});
+            vec.push_back({RMDD, RMDD,23});
+            vec.push_back({RMDV, RMDV,23});
+             vec.push_back({SMDD, SMDV,24});
+            vec.push_back({SMDV, SMDD,24});
+            vec.push_back({SMDD, RMDV,25});
+            vec.push_back({SMDV, RMDD,25});
+            vec.push_back({RMDD, RMDV,26});
+            vec.push_back({RMDV, RMDD,26});
+  }
+
+   {vector<fromToInt> & vec = elecvec;
+         vec.push_back({SMDD, RMDD,27});
+        vec.push_back({SMDV, RMDV,27});
+         vec.push_back({RMDV, RMDD,28});    
+        }
+
+
+ j["Nervous system"]["taus"]["evolvable"] = tauvec;
+    j["Nervous system"]["biases"]["evolvable"] = biasvec;
+  j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
+  j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+ 
+
+}
+
+
 void Worm18::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
     // --------------------------------

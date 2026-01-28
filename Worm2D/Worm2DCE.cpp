@@ -340,8 +340,8 @@ nmjvecv.push_back({VB,16});
 nmjvecv.push_back({VD,17});
 
 
-//j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
-//j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
+j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
+j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 
 
 }
