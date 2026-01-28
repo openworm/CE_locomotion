@@ -17,7 +17,8 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,n_ptr_, sr_ptr_
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
     sr_ptr(sr_ptr_)
 {
-    initConst(); 
+    //hasVNCNMJ = true;
+    //initConst(); 
 }
 
 void Worm2DCE::initConst()
@@ -89,7 +90,7 @@ Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_,
 {
 
   setWormPars(cmd);
-  initConst();
+ // initConst();
 
 }
 
@@ -220,6 +221,131 @@ WormCE::WormCE(json j):WormCE()
 
   
 }
+
+
+void WormCE::addEvolvableToJson(json & j)
+{
+ 
+  {vector<doubDoub> vec; 
+  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
+
+
+    // Genotype -> Phenotype Mapping Ranges
+    const double    BiasRange               = 16.0; //15.0;
+    const double    SCRange                 = 16.0; //15.0;
+    const double    CSRange                 = 16.0; //15.0;
+    const double    ESRange                 = 2.0;
+    const double    SRmax                   = 200.0;
+    const double    NMJmax                  = 0.8; //1.2;
+    const double    NMJmin                  = 0.0;
+    
+
+    vec.push_back({w1->SREvoBotA, w1->SREvoTopA});
+    vec.push_back({w1->SREvoBot, w1->SREvoTop});
+    for (int i = 1; i <= 3; i++) vec.push_back({-BiasRange, BiasRange});
+    for (int i = 1; i <= 3; i++) vec.push_back({-SCRange, SCRange});
+    for (int i = 1; i <= 2; i++)  vec.push_back({0.0, CSRange});
+    for (int i = 1; i <= 2; i++) vec.push_back({ -CSRange, 0.0});
+    for (int i = 1; i <= 2; i++)  vec.push_back({0.0, ESRange});
+     for (int i = 1; i <= 2; i++) vec.push_back({NMJmin, NMJmax});
+     for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
+
+    j["Evolvable"]["value"] = toIntDoubDoub(vec);
+  }
+ 
+
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
+
+
+  vector<intPair> biasvec;
+  vector<fromToInt> chemvec, elecvec;
+
+  int da, db, dd, vd, vb, va;
+  int ddNext, vdNext, vbNext, dbNext;
+
+
+  for (int u = 1; u <= par1.N_units; u++){
+    // Find the numbers that identify each neuron within a certain repeating unit
+
+    da = nn(DA, u);
+    db = nn(DB, u);
+    dd = nn(DD, u);
+    vd = nn(VD, u);
+    va = nn(VA, u);
+    vb = nn(VB, u);
+
+    // neurons for interunit connections
+    ddNext = nn(DD, u+1);
+    vdNext = nn(VD, u+1);
+    vbNext = nn(VB, u+1);
+    dbNext = nn(DB, u+1);
+
+            {vector<intPair> & vec = biasvec;
+            vec.push_back({da,3});
+            vec.push_back({va,3});
+            vec.push_back({db,4});
+            vec.push_back({vb,4});
+            vec.push_back({dd,5});
+            vec.push_back({vd,5});
+            }
+
+          {
+            vector<fromToInt> & vec = chemvec;
+            vec.push_back({da,da,6});
+            vec.push_back({va,va,6});
+            vec.push_back({db,db,7});
+            vec.push_back({vb,vb,7});
+            vec.push_back({dd,dd,8});
+            vec.push_back({vd,vd,8});
+            vec.push_back({da,vd,9});
+            vec.push_back({va,dd,9});
+            vec.push_back({vb,dd,10});
+            vec.push_back({db,vd,10});
+
+            vec.push_back({vd,va,11});
+            vec.push_back({dd,da,11});
+            vec.push_back({vd,vb,12});
+            vec.push_back({dd,db,12});
+
+          }
+
+        {vector<fromToInt> & vec = elecvec;
+
+          if (u < par1.N_units){
+          vec.push_back({dd,ddNext,13});
+          vec.push_back({vd,vdNext,13});
+          vec.push_back({db,dbNext,14});
+          vec.push_back({vb,vbNext,14});
+
+        }
+        }
+
+  
+  }
+
+  j["Nervous system"]["biases"]["evolvable"] = biasvec;
+  j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
+  j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+
+vector<intPair> nmjvecd;
+nmjvecd.push_back({DA,15});
+nmjvecd.push_back({DB,16});
+nmjvecd.push_back({DD,17});
+
+vector<intPair> nmjvecv;
+nmjvecv.push_back({VA,15});
+nmjvecv.push_back({VB,16});
+nmjvecv.push_back({VD,17});
+
+
+//j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
+//j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
+
+
+}
+
 
 
 void WormCE::setParsFromPheno(const TVector<double> &pheno)
@@ -445,7 +571,7 @@ vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
 
 //return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 
-//hasVNCNMJ = true;
+hasVNCNMJ = true;
 //doubVars.setVal("NMJ gain map D", 0);
 //doubVars.setVal("NMJ gain fact", 1);
 
@@ -473,7 +599,7 @@ vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 
 //return makeMuscleConn(ventralNeurons, ventralNMJ);
 
-//hasVNCNMJ = true;
+hasVNCNMJ = true;
 namedVars["NMJ gain map V"] = 0;
 namedVars["NMJ gain fact"] = 1;
 

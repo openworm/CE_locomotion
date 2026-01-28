@@ -72,7 +72,7 @@ const string getModelName() {return "W2DSR";}
 
 };
 
-struct Worm2DSREpars
+/* struct Worm2DSREpars
 {
 
 public:
@@ -83,7 +83,7 @@ vector<vector<intPair> > IPvec;
 vector<int> singVals; 
 
 };
-
+ */
 
 class Worm2DSRE : public Worm2DSR, public EvolvableS
 {

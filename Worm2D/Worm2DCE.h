@@ -231,7 +231,9 @@ public:
     void setEvolPars(W2Dparameters & w2par_, string evotype_);
     //W2Dparameters & getWormPars() {return W2DCEpars1;}
   
-    
+    void addEvolvableToJson(json & j);
+
+
     //shared_ptr<const W2Dparameters> getWormPars();
 
 

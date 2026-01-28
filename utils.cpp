@@ -10,3 +10,23 @@ double angle_diff(double a, double b)
         d += 2.0 * pi;
     return d - pi;
 }
+
+vector<intDoubDoub> toIntDoubDoub(const vector<doubDoub> & vec)
+{
+
+    vector<intDoubDoub> vec2;
+    for (int i=0;i<vec.size();i++) vec2.push_back({i+1,vec[i].val1,vec[i].val2});
+    return vec2;
+
+}
+
+vector<doubDoub> todoubDoub(const vector<intDoubDoub> & vec)
+{
+
+    vector<doubDoub> vec2(vec.size(), {123456,123456});
+    for (int i=0;i<vec.size();i++) vec2[vec[i].ind-1] = {vec[i].val1,vec[i].val2};
+    
+    for (int i=0;i<vec2.size();i++) assert(vec2[i].val1 != 123456);
+    return vec2;
+
+}

@@ -1241,8 +1241,8 @@ vector<toFromWeight> Worm2D::makeMuscleConnVNCV()
 
      //const double & NMJ_gain_map_V = doubVars.getVal("NMJ gain map V");
     //const double & NMJ_gain_fact = doubVars.getVal("NMJ gain fact");
- const double NMJ_gain_map_V = namedVars["NMJ gain map V"].get<double>(); //doubVars.getVal("NMJ gain map D");
-    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
+const double NMJ_gain_map_V = namedVars["NMJ gain map V"].get<double>(); //doubVars.getVal("NMJ gain map D");
+const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
     
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
@@ -1276,7 +1276,7 @@ void Worm2D::setUpMuscleConn(const json & j)
 {
 
 
-if (false)
+    if (false)
     {
     vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
     vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();

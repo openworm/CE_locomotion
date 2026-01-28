@@ -117,6 +117,10 @@ struct stringPair {string s1; string s2;};
 struct doubDoub {double val1; double val2;};
 template<class T> struct namedVal {string name; T val;};
 
+
+vector<intDoubDoub> toIntDoubDoub(const vector<doubDoub> & vec);
+vector<doubDoub> todoubDoub(const vector<intDoubDoub> & vec);
+
 template<class T> 
 class namedValVec 
 {

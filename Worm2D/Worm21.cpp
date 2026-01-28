@@ -263,7 +263,7 @@ vec.push_back({0.0, ESRange});
 vec.push_back({0.0, ESRange});
 
 
-  j["Evolvable"]["value"] = vec; 
+  j["Evolvable"]["value"] = toIntDoubDoub(vec);
   }
 
 vector<intPair> biasvec, tauvec;
@@ -353,7 +353,7 @@ int as, da, db, dd, vd, vb, va;
 
 }
 
- j["Nervous system"]["biases"]["evolvable"] = biasvec;
+j["Nervous system"]["biases"]["evolvable"] = biasvec;
 j["Nervous system"]["taus"]["evolvable"] = tauvec;
 j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
 j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;

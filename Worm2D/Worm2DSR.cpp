@@ -334,7 +334,9 @@ vector<doubDoub> Worm2DSRE::makeVals(const json & j)
   //v1.push_back("Evolvable");
   //v1.push_back("value");
   
-  return j["Evolvable"]["value"].template get< vector<doubDoub> >();
+  vector<intDoubDoub> v1 = j["Evolvable"]["value"].template get< vector<intDoubDoub> >();
+
+  return todoubDoub(v1);
 
   //genPhenLims.swap(values);
 
@@ -1040,7 +1042,7 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
   SensorPars sp1;
   sp1.setParsFromJson(j2["Sensor_" + to_string(ind)]);
   spvec.push_back(sp1);
-
+  ind++;
   }
   
  }else if (j["Worm"].contains("sensorM"))
