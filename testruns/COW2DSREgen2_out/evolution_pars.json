@@ -1,0 +1,12 @@
+{
+    "Duration": 50.0,
+    "PopulationSize": 10,
+    "randomseed": 173257,
+    "MaxGenerations": 5,
+    "Transient": 50.0,
+    "CheckpointInterval": 0,
+    "EvolutionType": "Evo21",
+    "doOrigMuscInput": false,
+    "doOrigSRInput": false,
+    "resetAgentBody": true
+}
