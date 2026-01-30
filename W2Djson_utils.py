@@ -92,7 +92,7 @@ def run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
 
-def mergeJsons(file1, file2):
+def mergeJsons(file1, file2, outdir):
     print(file1)
     print(file2)
     # worm_file = a.file1  # + "/worm_data.json"
@@ -204,10 +204,10 @@ def mergeJsons(file1, file2):
 
     print(addedNeurons)
     # unity indices
-    hf.make_directory("testruns/COW2DSREgen", True)
+    hf.make_directory(outdir, True)
 
     with open(
-        "testruns/COW2DSREgen/worm_data.json", "w", encoding="utf-8"
+        outdir + "/worm_data.json", "w", encoding="utf-8"
     ) as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 

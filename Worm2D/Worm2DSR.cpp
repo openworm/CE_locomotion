@@ -1065,18 +1065,16 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
  
 }
 
-void  Sensor::writeParsToJson(json & j) const
+void  Sensor::addParsToJson(json & j) const
 {
 
-json j2 = j["Sensors"];
+json & j2 = j["Sensors"];
 
 for (int i =0; i<spvec.size(); i++)
 {
 
 const SensorPars & sp1 = spvec[i];
 sp1.writeParsToJson(j2["Sensor_" + to_string(i+1)]);
-
-
 
 }
 if (spvec.size()>0)
@@ -1085,7 +1083,6 @@ const SensorPars & sp1 = spvec[0];
 sp1.writeParsToJson(j["Worm"]);
 
 }
-
 
 
 }

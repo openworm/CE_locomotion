@@ -158,7 +158,7 @@ wb(wb_)
 
 void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
 //void setParsFromJson(const json & j);
-void writeParsToJson(json & j) const;
+void addParsToJson(json & j) const;
 
 double distanceToCenter() const {return wb.headDistanceToCenter();}
 double headDistanceToLocation(const double & x, const double & y) const {return wb.headDistanceToLocation(x,y);}
@@ -201,7 +201,12 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
   Worm2DSRE(j,cmd,callInit),Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   {}
 
+void addParsToJson(json & j){
 
+  Worm2DSRE::addParsToJson(j);
+  Sensor::addParsToJson(j);
+
+}
 
 //WormCO2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
 //Worm2DSR(par1_,n_ptr_,sr_ptr_),Worm2Dm(par1_, n_ptr_){}
