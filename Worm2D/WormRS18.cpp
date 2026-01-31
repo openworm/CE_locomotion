@@ -1019,7 +1019,11 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
              vec.push_back({db, vdp,8});
    vec.push_back({vba, dd,9});
    vec.push_back({vbp, dd,9});
-   vec.push_back({dd, vda,10});   
+   vec.push_back({dd, vda,10});   }
+
+
+    {
+    vector<fromToInt> & vec = elecvec;
    vec.push_back({dd, vda, 11});
    vec.push_back({dd, vdp, 11});
 

@@ -36,6 +36,7 @@ int main (int argc, const char* argv[])
     json_filename = rename_file("worm_data_worm.json", directoryName);
 
 
+   
     json j_orig;
     if (directoryExists(json_filename)) 
     j_orig = getJsonFromFile(json_filename);
@@ -147,6 +148,8 @@ int main (int argc, const char* argv[])
 
     bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
     bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
+ 
+   
 
     if (sup_model_name == "W2DSR") 
     

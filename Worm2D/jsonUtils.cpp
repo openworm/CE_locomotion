@@ -5,13 +5,20 @@
 
 using json = nlohmann::json;
 
-json getJsonFromFile(const string & jsonfile_){
+json getJsonFromFile(const string & jsonfile_)
+{
+ 
+        cout << "jsonfile " << jsonfile_ << endl;
+
         ifstream json_in(jsonfile_);
-        json j;
+        json j = json::parse(json_in);
+       // assert(0);     
         //assert(0 && "Worm2DoscNML(const string & jsonfile_)");
-        json_in >> j;
+        //json_in >> j;
         json_in.close();
         return j;
+        
+   
 }
 
 template<class T>

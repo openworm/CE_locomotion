@@ -118,6 +118,7 @@ Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_pt
     W2Dbaseparameters1b(w2dpar_)//,W2Dbaseparameters1(new W2Dbaseparameters())
     //,muscForWDconst(false)
 {
+   
     if (W2Dbaseparameters1b == nullptr) assert(0);
     //zeroAllInputs();
 }
@@ -333,7 +334,8 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
-return
+  
+    return
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],

@@ -614,7 +614,119 @@ return (val<123456.001 && val>123455.999);
 }
 
 
+void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
+{
+ 
+        if (it2->at("evolvable").is_number()){
+        //cout << "ph " << it.key() << " " << it2.key() << endl;
+        cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
+        assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
+        pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
+        }
+  //        it2->at("value") = pheno[it2->at("evolvable")];
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          for (int i = 0; i<evols.size();i++)
+          for (int j = 0; j<values.size();j++)
+          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
+          {
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
+            assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
+            pheno[evols[i].val-1] = values[j].w.weight;
+            //values[j].w.weight = pheno[evols[i].val];
+            break;} 
+          //it2->at("value") = values;
+        }
+        else
+        {
+        if (it2->at("value")[0].is_number())
+        {
+        vector<double> values = it2->at("value").template get< vector<double> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++) 
+        {
+             //cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
+          assert(check123456(pheno[evols[i].val-1], values[evols[i].ind-1]));
+          pheno[evols[i].val-1] = values[evols[i].ind-1];
+        }
+        //values[evols[i].ind] = pheno[evols[i].val];
+        //it2->at("value") = values;
+
+        }
+        else{          
+        vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+           // cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            pheno[evols[i].val-1] = values[j].weight;
+            break;}
+        }
+
+        }
+        
+        }
+      
+
+
+}
+
+void recursive_iterate(vector<double> & pheno, const json& j)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) getInitGeno1(pheno,it);
+      else if (it->is_structured()) recursive_iterate(pheno,*it);
+        
+        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
+
+
+
 vector<double> Worm2DSRE::getInitGeno()
+{
+
+  const double checkval = 123456;
+  vector<double> pheno(getVectSize(), checkval); 
+
+
+  const json & js1 = itsJson;
+  recursive_iterate(pheno,js1);
+
+
+  
+  for (int i = 0; i< pheno.size(); i++){
+  cout << "pheno i " << pheno[i] << " " << i << endl;
+  assert(!check123456(pheno[i]) && "init pheno not set");
+  }
+
+  
+
+  vector<double> initialGeno(getVectSize());
+  //initialGeno.resize(getVectSize());
+  PhenGenMapping(initialGeno, pheno);
+
+  return initialGeno;
+
+}
+
+
+
+vector<double> Worm2DSRE::getInitGeno_old()
 {
 
 const double checkval = 123456;
@@ -627,6 +739,9 @@ vector<double> pheno(getVectSize(), checkval);
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
       if (it2->contains("evolvable"))
       {
+        getInitGeno1(pheno, it2);
+
+        if (false){
         if (it2->at("evolvable").is_number()){
         cout << "ph " << it.key() << " " << it2.key() << endl;
         cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
@@ -684,13 +799,18 @@ vector<double> pheno(getVectSize(), checkval);
             break;}
         }
 
+
         }
         
         }
       }
 
-for (int i = 0; i< pheno.size(); i++)
+    }
+
+for (int i = 0; i< pheno.size(); i++){
+  cout << "pheno i " << pheno[i] << " " << i << endl;
 assert(!check123456(pheno[i]) && "init pheno not set");
+}
 
 vector<double> initialGeno(getVectSize());
 //initialGeno.resize(getVectSize());
@@ -1033,6 +1153,7 @@ void SensorPars::setParsFromJson(const json & j)
 void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_)
 {
 
+
   if (j.contains("Sensors"))
  {
   json j2 = j["Sensors"];
@@ -1068,6 +1189,7 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
 void  Sensor::addParsToJson(json & j) const
 {
 
+  
 json & j2 = j["Sensors"];
 
 for (int i =0; i<spvec.size(); i++)
