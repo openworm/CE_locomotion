@@ -395,9 +395,105 @@ vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 }
 
 
+void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
+{
+ 
+        if (it2->at("evolvable").is_number())
+          it2->at("value") = pheno[it2->at("evolvable").get<int>()];
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          for (int i = 0; i<evols.size();i++)
+          for (int j = 0; j<values.size();j++)
+          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
+          {values[j].w.weight = pheno[evols[i].val];break;} 
+          it2->at("value") = values;
+        }
+        else
+        {
+          if (it2->at("value")[0].is_number())
+        {
+        vector<double> values = it2->at("value").template get< vector<double> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
+        it2->at("value") = values;
+        }
+        else{
 
+        vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            //assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            values[j].weight = pheno[evols[i].val];
+            //pheno[evols[i].val-1] = values[j].weight;
+            break;
+          }
+
+          it2->at("value") = values;
+        }
+
+
+
+      }
+        }
+      
+}
+
+
+
+void recursive_iterate2(const TVector<double> & pheno, json& j)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) setParsFromPheno1(pheno,it);
+      else if (it->is_structured()) recursive_iterate2(pheno,*it);
+        
+        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
+{
+  json & js1 = itsJson;
+  recursive_iterate2(pheno,js1);
+  
+  NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    setNSFromJson(js1,n);
+
+    //if (js1["Nervous system"].contains("section sizes"))
+    //  jsects = js1["Nervous system"]["section sizes"];
+
+    W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
+   
+
+    //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    
+    Worm2DSRb::setParsFromJson(js1);
+    setMuscBodExt(js1);
+    
+}
+
+void WormCO2DSR::setParsFromPheno(const TVector<double> &pheno)
+{
+
+Worm2DSRE::setParsFromPheno(pheno);
+Sensor::setParsFromJson(itsJson);
+    
+}
+
+
+void Worm2DSRE::setParsFromPheno_old(const TVector<double> &pheno)
 {
 
 
@@ -1150,7 +1246,37 @@ void SensorPars::setParsFromJson(const json & j)
 
 }
 
-void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_)
+void Sensor::setParsFromJson(const json & j)
+{
+
+if (j.contains("Sensors")){
+json j2 = j["Sensors"];
+for (int i=0; i<spvec.size(); i++)
+{
+SensorPars & sp1 = spvec[i];
+sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
+}
+}else if (j["Worm"].contains("sensorM"))
+{
+
+  SensorPars & sp1 = spvec[0];
+
+  sp1.gradSteep = CO2DSRpars->gradSteep;
+  sp1.HSStepSize = CO2DSRpars->HSStepSize;
+  sp1.extInp1 = 0;
+  sp1.extInp2 = 1;
+  sp1.sensorM = j["Worm"]["sensorM"]["value"];
+  sp1.sensorN = j["Worm"]["sensorN"]["value"];
+  sp1.x_center = 0, sp1.y_center = 0;
+ 
+}
+
+
+
+}
+
+
+void Sensor::construct(const json & j)
 {
 
 
@@ -1171,8 +1297,8 @@ void Sensor::setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpa
 
 
   SensorPars sp1;
-  sp1.gradSteep = CO2DSRpars_->gradSteep;
-  sp1.HSStepSize = CO2DSRpars_->HSStepSize;
+  sp1.gradSteep = CO2DSRpars->gradSteep;
+  sp1.HSStepSize = CO2DSRpars->HSStepSize;
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
   sp1.sensorM = j["Worm"]["sensorM"]["value"];
@@ -1250,8 +1376,11 @@ void Sensor::UpdateChemCon()
 
 void Sensor::assignExternalInput(vector<double> & externalInputs)
 {
+  
   for (int i = 0; i<spvec.size(); i++){
     
+   
+
   SensorPars & sp1 = spvec[i];
 
   double dSensorN = (double) sp1.iSensorN;

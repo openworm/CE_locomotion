@@ -111,6 +111,7 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 //vector<double> getInitGeno_old();
 void addParsToJson(json & j){j = itsJson;}
 vector<double> getInitGeno_old();
+void setParsFromPheno_old(const TVector<double> &pheno);
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
@@ -153,13 +154,15 @@ Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_)
 CO2DSRpars(CO2DSRpars_),
 wb(wb_)
 {
-  setParsFromJson(j,CO2DSRpars_);
+  construct(j);
+  //setParsFromJson(j,CO2DSRpars_);
+  //setParsFromJson(j);
 }
 
-void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
-//void setParsFromJson(const json & j);
+//void setParsFromJson(const json & j, shared_ptr<gradParameters> CO2DSRpars_);
+void setParsFromJson(const json & j);
 void addParsToJson(json & j) const;
-
+void construct(const json & j);
 double distanceToCenter() const {return wb.headDistanceToCenter();}
 double headDistanceToLocation(const double & x, const double & y) const {return wb.headDistanceToLocation(x,y);}
 
@@ -207,6 +210,8 @@ void addParsToJson(json & j){
   Sensor::addParsToJson(j);
 
 }
+
+void setParsFromPheno(const TVector<double> &pheno);
 
 //WormCO2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
 //Worm2DSR(par1_,n_ptr_,sr_ptr_),Worm2Dm(par1_, n_ptr_){}

@@ -206,9 +206,7 @@ def mergeJsons(file1, file2, outdir):
     # unity indices
     hf.make_directory(outdir, True)
 
-    with open(
-        outdir + "/worm_data.json", "w", encoding="utf-8"
-    ) as json_file:
+    with open(outdir + "/worm_data.json", "w", encoding="utf-8") as json_file:
         json.dump(network_json_data, json_file, indent=4, ensure_ascii=False)
 
 

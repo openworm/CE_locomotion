@@ -264,7 +264,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
 
-    if (evotype_=="EvoCO" || evotype_=="EvoCO2") 
+    if (evotype_=="EvoCO" || evotype_=="EvoCO2")
     return make_shared<const gradEvoPars>(cmd_);
     if (evotype_=="Evo21") 
     return make_shared<const EvolparametersCER>(cmd_, evol1_, evotype_);
@@ -1178,6 +1178,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
 
     shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
+    assert(w1!=nullptr);
 
     //w1.show();
     //assert(0);
@@ -1286,6 +1287,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     
     
     shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
+    assert(w1!=nullptr);
 
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);
@@ -1416,19 +1418,30 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 
 
     w.InitializeState(rs);
-    //w.initForSimulation(rs);
+    w.initForSimulation(rs);
     
+    
+    w.setStepSize(StepSize);
     
     shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
-
+    assert(w1!=nullptr);
+    
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);
 	//Worm->SetParameters(phenotype);
 	//Worm->setStepSize(evoPars1.StepSize);
 
+    const double Pi	=	3.1415926;
+
+    w1->resetAgentBody = true;         
+    w1->orient_orig = Pi;
+    w1->RunDuration = Transient + Duration;
+    w1->HSStepSize = StepSize;
+              
+
     WormGrad & wg = dynamic_cast<WormGrad&>(w);
     
-    const double Pi	=	3.1415926;
+    
 
 	double f, accdist, totaldist;
 	int k = 0;
@@ -1442,13 +1455,14 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
 		{
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
+            //for (double orient = 0.0; orient < 2*Pi; orient +=2* Pi)
+            //for (int i1=0;i1<2;i1++)
 			{
 
+                //double orient = 0.0;
+
                 w1->worm_rotation = orient;
-                w1->orient_orig = Pi;
                 w1->gradSteep = gradSteep;
-                w1->RunDuration = Transient + Duration;
-                w1->HSStepSize = StepSize;
                 w1->taxis = taxis;
                 w1->kinesis = kinesis;
 
@@ -1469,10 +1483,11 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 				Worm->UpdateChemCon(gradSteep); */
  
 				for (int repeats = 1; repeats <= 1; repeats++)
-				{
-                    //w.initForSimulation(rs);
-					wg.ResetAgentsBody();
-                    wg.InitializeSensors(rs);
+				{   
+                    w.InitializeState(rs);
+                    w.initForSimulation(rs);
+					//wg.ResetAgentsBody();
+                    //wg.InitializeSensors(rs);
 					w.setTime(0);
 					for (double t = StepSize; t <= Transient; t += StepSize)
 					{
@@ -1495,15 +1510,16 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 						//Worm->UpdateSensors();
 						//Worm->Step(evoPars1.StepSize,rs,t,taxis,kinesis);
 						//Worm->UpdateChemCon(gradSteep);
-                    
-                        accdist += wg.distanceToCenter();
-
+                        double dtc = wg.distanceToCenter();
+                        accdist += dtc;
+                        //cout << "dtc " << w1->MaxDist << " " << dtc << endl;
 						//accdist += Worm->DistanceToCentre();
 						//cout << "D " << Worm->DistanceToCentre() << endl;
 					}
 					totaldist = (accdist/(Duration/StepSize));
 					f = (w1->MaxDist - totaldist)/w1->MaxDist;
 					f = f < 0 ? 0.0 : f;
+                    //cout << "f " << f << endl;
 					fitness += f;
 					k++;
 					//cout << k << " " << totaldist << endl;
@@ -1512,6 +1528,7 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 		}
 	}
 
-   
+  
+    //assert(0);
 	return fitness/k;
 }

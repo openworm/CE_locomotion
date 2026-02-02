@@ -263,8 +263,11 @@ void Worm2Dbody::shiftY(double shiftdist_)
 
 void Worm2Dbody::ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars)
 {
+    //assert(0);
     //orient = gradPars->orient_orig;
+    
     b.InitializeBodyState();
+
     if (CO2DSRpars->resetAgentBody){
     zeroX();
     zeroY();
