@@ -11,15 +11,16 @@ Pi = 3.1415926
 
 file1 = "testruns/COW2DSREfiles/RS18_worm_data.json"
 file2 = "testruns/COW2DSREfiles/CO18Full_worm_data_evo.json"
+outdir = "testruns/COW2DSREgen"
 
-mergeJsons(file1, file2)
+mergeJsons(file1, file2, outdir)
 
 doOrig = True
 doNML = False
 doMuscles = False
 
-inputFolderName = "testruns/COW2DSREgen"
-outputFolderName = "testruns/COW2DSREgen_out"
+inputFolderName = outdir
+outputFolderName = outdir + "_out"
 
 args = dict(
     simduration=300,
