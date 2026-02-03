@@ -21,7 +21,7 @@ def plot_orients(a=None, **kwargs):
     fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
     for dir in path_list:
-        body_data = np.loadtxt(dir + "/RS18_body.dat").T
+        body_data = np.loadtxt(dir + "/body.dat").T
         bearing_mid, trajectory_diff = hf.make_orients(
             body_data, t_start_off=1000, t_end_off=1000
         )

@@ -5,9 +5,13 @@ import os
 import math
 from scipy.stats import binned_statistic
 import sys
+from functools import partial
 
 dir_name = None
 file_prefix = None
+
+title_font_size = 16
+label_font_size = 14
 
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
@@ -178,6 +182,13 @@ def make_orients(body_data, **kwargs):
     return bearing_mid, trajectory_diff_u
 
 
+
+
+def movingaverage(interval, window_size):
+    window= np.ones(int(window_size))/float(window_size)
+    return np.convolve(interval, window, 'same')
+
+
 def plot_path(body_data, ax):
     tmax = body_data.shape[1]
     num = 60.0
@@ -204,107 +215,162 @@ def plot_path(body_data, ax):
             )
 
 
-def plot_orients(body_data):
-    fig_orient, ax_orient = plt.subplots(5, 2, figsize=(10, 15))
+
+
+
+def plot_orients(body_data, plot_list = 
+                  ["body orientation", "direction to peak", 
+                      "distance to peak", "bearing from peak direction"]
+                 ):
+
+    num_cols = 2
+    num_rows = math.ceil(len(plot_list)/num_cols)
+    fig_orient, ax_orient = plt.subplots(num_rows, num_cols, figsize=(num_cols*4, num_rows*4))
 
     tmax = body_data.shape[1]
-    t_start = 1000
-    t_end = tmax - 1000
-    trange = range(t_start, t_end)
-    body_data_res = body_data[:, trange]
+    trange = body_data[0,:]
+    t_offset = 0
+    t_start = t_offset
+    t_end = tmax - t_offset
+    trange_inds = (trange >= t_start) & (trange < t_end) 
+    trange  = trange[trange_inds]
+    body_data_res = body_data[:, trange_inds]
 
     w_head = 0
     w_tail = 50
-    body_diff = np.diff(body_data_res, axis=1)
-    # print(body_diff.shape)
-    trajectory = np.arctan2(body_diff[w_head * 3 + 2], body_diff[w_head * 3 + 1])
-    # print(trajectory.shape)
 
+    body_diff = np.diff(body_data_res, axis=1)
+   
+    trajectory = np.arctan2(body_diff[w_head * 3 + 2], body_diff[w_head * 3 + 1])
+  
     body_data_res_mid = (body_data_res[:, 1:] + body_data_res[:, :-1]) / 2.0
+
     dir_to_origin_mid = np.arctan2(
         body_data_res_mid[w_head * 3 + 2] * -1, body_data_res_mid[w_head * 3 + 1] * -1
     )
+
     dir_to_origin = np.arctan2(
         body_data_res[w_head * 3 + 2] * -1, body_data_res[w_head * 3 + 1] * -1
     )
 
-    # (pi - x) - (-pi + y) = 2 * pi - (y + x)
-
-    # trajectory_diff = np.diff(trajectory)
-    # trajectory_diff_u =  np.unwrap(trajectory_diff)
-    # bearing_mid = np.unwrap(trajectory - dir_to_origin_mid)
-
     trajectory_diff_u = angle_diff(trajectory[1:], trajectory[:-1])
-    # trajectory_diff = np.diff(trajectory)
-    # trajectory_diff_u =  np.unwrap(trajectory_diff)
-    bearing_mid = angle_diff(trajectory, dir_to_origin_mid)
 
-    # trajectory_diff_1 = trajectory_diff - (trajectory_diff>np.pi)*np.pi*2 + (trajectory_diff<np.pi*-1)*np.pi*2
+    bearing_mid = angle_diff(trajectory, dir_to_origin_mid)
 
     orientation = np.arctan2(
         body_data_res[w_head * 3 + 2] - body_data_res[w_tail * 3 + 2],
         body_data_res[w_head * 3 + 1] - body_data_res[w_tail * 3 + 1],
     )
 
-    # dOrientation = orientation[1:] - orientation[:-1]
     dOrientation = angle_diff(orientation[1:], orientation[:-1])
-
-    # dOrientation = np.diff(orientation, axis = 0)
-    # dOrientation_mask_1 = dOrientation > np.pi
-    # dOrientation_mask_2 = dOrientation < np.pi*-1
-    # dOrientation = dOrientation - dOrientation_mask_1*np.pi*2 + dOrientation_mask_2*np.pi*2
-    # dOrientation = dOrientation
 
     distToOrigin = np.sqrt(
         np.multiply(body_data_res[w_head * 3 + 2], body_data_res[w_head * 3 + 2])
         + np.multiply(body_data_res[w_head * 3 + 1], body_data_res[w_head * 3 + 1])
     )
 
-    # dirToOrigin = np.arctan2(body_data_res[w_head*3+2], body_data_res[w_head*3+1])
-
     bearing = angle_diff(trajectory, dir_to_origin[1:])
-    # bearing = dir_to_origin[:-1] - trajectory
-    # bearing = bearing - (bearing>np.pi)*np.pi*2 + (bearing<np.pi*-1)*np.pi*2
+    
+    plottables = { "bearing from peak direction" :  bearing_mid,
+                   "distance to peak" : distToOrigin,
+                   "orientation variation" : dOrientation,
+                   "body orientation" : orientation,
+                    "direction to peak" : dir_to_origin,
+                    "head trajectory variation" : trajectory_diff_u,
+                    "head trajectory" : trajectory }
+    
+    for key, val in plottables.items():
+        newval = {}
+        newval["value"] = val
+        if key == "distance to peak":
+            newval["y_label"] = "distance (cm)"
+        else:
+            newval["y_label"] = "angle (rad)"
+        plottables[key] = newval 
 
-    mark_size = 1
-    ax_orient[0, 0].plot(trange, orientation)  # body orientation
-    ax_orient[1, 0].plot(trange, distToOrigin)
-    ax_orient[2, 0].plot(trange, dir_to_origin)
-    ax_orient[3, 0].plot(trange[:-1], dOrientation)
-    ax_orient[4, 0].plot(trange[1:-1], trajectory_diff_u)
-    ax_orient[0, 1].plot(trange[:-1], bearing_mid)
-    ax_orient[1, 1].plot(trange[:-1], trajectory)
+    print(plottables)
+    sys.exit
 
-    # ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
-    ax_orient[2, 1].scatter(bearing[:-1], trajectory_diff_u * 10, s=mark_size)
+    mark_size = 0.2
+    tav_window = 1
+    plot_func = partial(movingaverage, window_size = tav_window)
 
-    # heatmap, xedges, yedges = np.histogram2d(bearing[:-1], trajectory_diff_u*10.0, bins=50)
-    # extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-    # ax_orient[1,1].imshow(heatmap.T, extent=extent, origin='lower')
+    for ind, val in enumerate(plot_list):
+        col_num = ind % 2
+        row_num = math.floor(ind / 2)
+        r_diff = len(trange) - len(plottables[val]["value"])
+        t_start_ind = 0
+        t_end_ind = len(trange)
+        if r_diff > 0:
+            t_end_ind = -1
+        if r_diff > 1:
+            t_start_ind = 1
+        print(val, t_start_ind, t_end_ind, r_diff)
+        ax_orient[row_num, col_num].plot(plot_func(trange[t_start_ind:t_end_ind]), 
+                                         plot_func(plottables[val]["value"]), 
+        'o', markersize = mark_size)
+        ax_orient[row_num, col_num].set_title(val, fontsize=title_font_size)
+        ax_orient[row_num, col_num].set_ylabel(plottables[val]["y_label"], fontsize=label_font_size)
+        if row_num == num_rows - 1:
+            ax_orient[row_num, col_num].set_xlabel("Time (s)", fontsize=label_font_size)
 
-    ax_orient[3, 1].scatter(bearing_mid[:-1], trajectory_diff_u * 10, s=mark_size)
 
-    heatmap, xedges, yedges = np.histogram2d(
-        bearing_mid[:-1], trajectory_diff_u * 10.0, bins=50
-    )
-    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-    ax_orient[4, 1].imshow(heatmap.T, extent=extent, origin="lower")
 
-    # ax_orient[1,1].scatter(dir_to_origin[:-1], dOrientation, s=mark_size)
+    if False:
+        trange_av = movingaverage(trange, tav_window)
+        ax_orient[0, 0].plot(trange, orientation, 'o', markersize = mark_size)  # body orientation
+        ax_orient[0, 0].set_title("body orientation", fontsize=title_font_size)
+        ax_orient[1, 0].plot(trange, distToOrigin, 'o', markersize = mark_size)
+        ax_orient[1, 0].set_title("distance to peak", fontsize=title_font_size)
+        ax_orient[2, 0].plot(trange, dir_to_origin, 'o', markersize = mark_size)
+        ax_orient[2, 0].set_title("direction to origin", fontsize=title_font_size)
+        ax_orient[3, 0].plot(movingaverage(trange[:-1], tav_window), 
+                            movingaverage(dOrientation,tav_window),  'o', markersize = mark_size)
+        ax_orient[3, 0].set_title("orientation variation", fontsize=title_font_size)
+        ax_orient[4, 0].plot(movingaverage(trange[1:-1], tav_window), 
+                            movingaverage(trajectory_diff_u, tav_window), 'o', markersize = mark_size)
+        ax_orient[4, 0].set_title("head trajectory variation", fontsize=title_font_size)
 
-    # heatmap, xedges, yedges = np.histogram2d(bearing_mid[:-1], trajectory_diff_u*10.0, bins=50)
-    # extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
-    # plt.clf()
+        ax_orient[0, 1].plot(movingaverage(trange[:-1], tav_window), 
+                            movingaverage(bearing_mid, tav_window), 'o', markersize = mark_size)
+        ax_orient[0, 1].set_title("bearing from origin direction", fontsize=title_font_size)
+        ax_orient[1, 1].plot(movingaverage(trange[:-1], tav_window), 
+                            movingaverage(trajectory, tav_window), 'o', markersize = mark_size)
+        ax_orient[1, 1].set_title("head trajectory", fontsize=title_font_size)
 
-    # ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
-    # ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
+        # ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
+        ax_orient[2, 1].scatter(bearing[:-1], trajectory_diff_u * 10, s=mark_size)
+
+        # heatmap, xedges, yedges = np.histogram2d(bearing[:-1], trajectory_diff_u*10.0, bins=50)
+        # extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        # ax_orient[1,1].imshow(heatmap.T, extent=extent, origin='lower')
+
+        ax_orient[3, 1].scatter(bearing_mid[:-1], trajectory_diff_u * 10, s=mark_size)
+
+        heatmap, xedges, yedges = np.histogram2d(
+            bearing_mid[:-1], trajectory_diff_u * 10.0, bins=50
+        )
+        extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        ax_orient[4, 1].imshow(heatmap.T, extent=extent, origin="lower")
+
+        # ax_orient[1,1].scatter(dir_to_origin[:-1], dOrientation, s=mark_size)
+
+        # heatmap, xedges, yedges = np.histogram2d(bearing_mid[:-1], trajectory_diff_u*10.0, bins=50)
+        # extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+        # plt.clf()
+
+        # ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
+        # ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
+
 
     fig_orient.tight_layout()
     filename = rename_file("Orient.png")
     # fig_orient.show()
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
-    # fig_orient.close()
+    plt.close(fig_orient)
+    #fig_orient.close()
 
 
 def angle_diff(a, b):

@@ -30,8 +30,8 @@ def run_main(args=None):
     reload_single_run(a=args)
 
 
-title_font_size = 16
-label_font_size = 14
+title_font_size = hf.title_font_size
+label_font_size = hf.label_font_size
 
 
 def getRowsCols(plot_num, plot_cols):
@@ -235,6 +235,7 @@ def plot_evols(a=None, **kwargs):
     filename = hf.rename_file("Evolution.png")
     plt.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
+    plt.close()
 
     if doPhenNames:
         plot_cols = 1
@@ -265,6 +266,7 @@ def plot_evols(a=None, **kwargs):
         filename = hf.rename_file("Evolution_averages.png")
         plt.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
+        plt.close()
 
         if False:
             fig, axs = plt.subplots(1, 1, figsize=(20, 10), squeeze=False)
@@ -359,7 +361,7 @@ def reload_single_run(a=None, **kwargs):
 
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
         axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
-        axs[plot_num, 1].xaxis.set_ticklabels([])
+        #axs[plot_num, 1].xaxis.set_ticklabels([])
         axs[plot_num, 1].yaxis.set_major_locator(MaxNLocator(integer=True))
 
     plot_rows = len(plot_format["fig_titles"])
@@ -382,10 +384,13 @@ def reload_single_run(a=None, **kwargs):
         plot_format["data_sizes"], plot_format["fig_titles"], plot_format["fig_labels"]
     ):
         makeFigure(offset, *val, count_num)
-        if count_num < len(plot_format["data_sizes"]) - 1:
-            axs[count_num, 0].xaxis.set_ticklabels([])
-        else:
-            axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+        if False:
+            if count_num < len(plot_format["data_sizes"]) - 1:
+                axs[count_num, 0].xaxis.set_ticklabels([])
+            else:
+                axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+        axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+        axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
         count_num += 1
         offset += val[0]
 
@@ -397,13 +402,18 @@ def reload_single_run(a=None, **kwargs):
         curv_data_less_time = curv_data[1:, data_seg]
         t_data = t_data[data_seg]
 
+        dy = 1
+        dx = t_data[1]-t_data[0]
         axs[count_num, 1].set_title("Body curvature", fontsize=title_font_size)
-        axs[count_num, 1].imshow(curv_data_less_time, aspect="auto")
-        axs[count_num, 1].set_xticks(np.linspace(0, len(data_seg), 8))
-        # axs[count_num, 1].set_xticks(np.linspace(t_data[0]/t_inc,t_data[-1]/t_inc, 8))
-        axs[count_num, 1].xaxis.set_ticklabels(
-            np.around(np.linspace(t_data[0], t_data[-1], 8), 2)
-        )
+        axs[count_num, 1].imshow(curv_data_less_time, aspect="auto", 
+                                 extent=[0, curv_data_less_time.shape[1] * dx, 0, 
+                                         curv_data_less_time.shape[0] * dy],)
+        if False:
+            axs[count_num, 1].set_xticks(np.linspace(0, len(data_seg), 8))
+            # axs[count_num, 1].set_xticks(np.linspace(t_data[0]/t_inc,t_data[-1]/t_inc, 8))
+            axs[count_num, 1].xaxis.set_ticklabels(
+                np.around(np.linspace(t_data[0], t_data[-1], 8), 2)
+            )
         axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
 
         ###  Body position
@@ -515,7 +525,8 @@ def reload_single_run(a=None, **kwargs):
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
         fig_body.savefig(filename, bbox_inches="tight", dpi=300)
-        # fig_body.close()
+        #fig_body.close()
+        plt.close(fig_body)
 
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
@@ -523,8 +534,7 @@ def reload_single_run(a=None, **kwargs):
     filename = hf.rename_file("ExampleActivity.png")
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-    plt.close()
-
+  
     if a.showPlot:
         print("Showing plot")
         plt.show()
