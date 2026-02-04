@@ -246,6 +246,9 @@ def process_args():
     return parser.parse_args()
 
 
+
+jsonToStringMap = {'head' : 'Head neuron', 'interneuron' : 'Interneuron'}
+
 def getPlotFormat(network_json_data):
     plot_format = {}
     plot_format["fig_titles"] = []
@@ -270,20 +273,28 @@ def getPlotFormat(network_json_data):
         ind = 1
         for val in section_names[1:]:
             if oldval != val:
-                plot_format["fig_titles"].append(oldval)
-                plot_format["fig_labels"].append("Neu")
-                plot_format["data_sizes"].append(ind)
+                if oldval != "VNC":
+                    oldval1 = oldval
+                    if oldval in jsonToStringMap:
+                        oldval1 =  jsonToStringMap[oldval]
+                    plot_format["fig_titles"].append(oldval1)
+                    plot_format["fig_labels"].append("Neu")
+                    plot_format["data_sizes"].append(ind)
                 ind = 0
                 oldval = val
             ind = ind + 1
-        plot_format["fig_titles"].append(oldval)
-        plot_format["fig_labels"].append("Neu")
-        plot_format["data_sizes"].append(ind)
+        if oldval != "VNC":
+            oldval1 = oldval
+            if oldval in jsonToStringMap:
+                oldval1 =  jsonToStringMap[oldval]
+            plot_format["fig_titles"].append(oldval1)
+            plot_format["fig_labels"].append("Neu")
+            plot_format["data_sizes"].append(ind)
 
-        vncind = plot_format["fig_titles"].index("VNC")
+        """ vncind = plot_format["fig_titles"].index("VNC")
         plot_format["fig_titles"].append(plot_format["fig_titles"].pop(vncind))
         plot_format["fig_labels"].append(plot_format["fig_labels"].pop(vncind))
-        plot_format["data_sizes"].append(plot_format["data_sizes"].pop(vncind))
+        plot_format["data_sizes"].append(plot_format["data_sizes"].pop(vncind)) """
 
     if False:
         sects = network_json_data["Nervous system"]["section sizes"]
