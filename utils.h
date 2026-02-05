@@ -168,7 +168,10 @@ bool namedValVec<T>::setVal(const string & name, const T & val)
 {
     for (int i=0;i<vec.size();i++)
         if (vec[i].name == name) {vec[i].val = val;return true;}
-    vec.push_back(namedVal<T>({name,val}));
+    namedVal<T> nv;
+    nv.name = name;
+    nv.val = val;
+    vec.push_back(nv);
     return false;
 }
 
