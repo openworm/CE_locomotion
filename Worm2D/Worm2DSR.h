@@ -120,8 +120,11 @@ void setParsFromPheno_old(const TVector<double> &pheno);
 //vector<vector<intPair> > IPvec;
 //vector<double> initialGeno;
 
+//void getEvoNames(string & evoName, const json& j, vector<string> &);
+//void getEvoNames1(string & evoName, json::const_iterator it2, vector<string>&);
 const vector<doubDoub> genPhenLims;
-
+//vector<string> evoNames;
+//string evoName;
 //bool directMuscEvo = false;
 json itsJson;
 };

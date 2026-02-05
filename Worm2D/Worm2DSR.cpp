@@ -322,77 +322,100 @@ void Worm2DSRE::addEvolvableToJson(json & j)
  */
 }
 
+
+
+
+
+
+void setEvoStr(string & vecval,const string & evoName)
+{
+  if (vecval=="not_set") {vecval = evoName;return;}
+  else if (vecval==evoName) return;
+  cout << "evoName " << evoName << " " << vecval << endl;
+  assert(0);
+
+}
+
+
+void getEvoNames1(json::const_iterator it2, vector<string> & evoNames, vector<string> & path)
+{
+
+  string keyval = "";
+  for (int i=0;i<path.size();i++) {keyval.append("_");keyval.append(path[i]);};
+ 
+  //path.clear();
+
+  if (it2->at("evolvable").is_number()){
+  int ind1 = it2->at("evolvable").get<int>();
+  //setEvoStr(evoNames[ind1-1],evoName);
+  //setEvoStr(evoNames[ind1-1],it2.key());
+  setEvoStr(evoNames[ind1-1],keyval);
+
+  return;
+  }
+  else{
+  size_t idx = it2.key().find("weights");
+  if(idx != string::npos)
+        {
+          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
+          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],keyval);
+          return;
+        }
+  else
+        {
+      
+          vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
+          //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
+          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],keyval);
+          return;                  
+        }
+  }
+
+ 
+}
+
+void getEvoNames(const json& j, vector<string> & evoNames, vector<string> & path)
+{
+  
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) getEvoNames1(it, evoNames, path);
+      else if (it->is_structured()) {
+      //evoName.append("tx");
+      //evoName.append(it.key()); 
+      //evoName.append("_"); 
+      path.push_back("_");
+      //path.push_back(it.key());
+      getEvoNames(*it, evoNames, path);
+      path.pop_back();
+      }
+    }
+
+
+    
+}
+
+
 vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 {
 
   if (!j.contains("Evolvable")) return vector<doubDoub>(0);
-
-  //Worm2DSREpars w1pars;
-
-  //assert(0);
-  //vector<string> v1;
-  //v1.push_back("Evolvable");
-  //v1.push_back("value");
   
   vector<intDoubDoub> v1 = j["Evolvable"]["value"].template get< vector<intDoubDoub> >();
 
+  vector<string> evoNames(v1.size(), "not_set");
+  
+  vector<string> path;
+  getEvoNames(j, evoNames, path);
+
+  //itsJson["evoNames"] = evoNames;
+
   return todoubDoub(v1);
 
-  //genPhenLims.swap(values);
-
-
-  //genPhenLims = getEvoVecFromJ<doubDoub>(j,v1);
-
-
-
- /*  for (auto it = j.begin(); it != j.end(); ++it)
-    for (auto it2 = it->begin(); it2 != it->end(); ++it2)
-      if (it2->contains("evolvable"))
-      {
-        if (it2->at("evolvable").is_number())
-        {
-        vector<string> v1;
-        v1.push_back(it.key());
-        v1.push_back(it2.key());
-        w1pars.singValnames.push_back(v1);
-        v1.push_back("evolvable");
-        w1pars.singVals.push_back(getEvoValFromJ<int>(j,v1));
-        cout << it.key() << " " << it2.key() << endl;
-
-        }else{
-        
-        size_t idx = it2.key().find("weights");
-        if(idx != string::npos)
-        {
-        //TFIvec.push_back(getEvoVecFromJ<toFromInt>(j,it.key(), it2.key()));
-        vector<string> v1;
-        v1.push_back(it.key());
-        v1.push_back(it2.key());
-        w1pars.TFnames.push_back(v1);
-        v1.push_back("evolvable");
-        w1pars.TFIvec.push_back(getEvoVecFromJ<fromToInt>(j,v1));
-        
-        //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
-   
-        }
-        else 
-        {
-        //IPvec.push_back(getEvoVecFromJ<intPair>(j,it.key(), it2.key()));
-        //IPnames.push_back({it.key(),it2.key()});
-        vector<string> v1;
-        v1.push_back(it.key());
-        v1.push_back(it2.key());
-        w1pars.IPnames.push_back(v1);
-        v1.push_back("evolvable");
-        w1pars.IPvec.push_back(getEvoVecFromJ<intPair>(j,v1));
-        //cout << "k1 " << it.key() << " k2 " << it2.key() << endl;
-        }
-      }
-      }
-    // assert(0);
-     return w1pars; */
 
 }
+
 
 
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
@@ -418,7 +441,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
           if (it2->at("value")[0].is_number())
         {
         vector<double> values = it2->at("value").template get< vector<double> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
         for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
         it2->at("value") = values;
         }

@@ -42,12 +42,15 @@ def sign(val):
     return (val > 0) * 2.0 - 1.0
 
 
-def plot_phenonames(a=None, **kwargs):
+def plot_phenonames(plot_list = ["rel_var", "var", 
+                                 ["initial_log", "final_log"],
+                                 ["initial", "final"]
+                                 ], a=None, **kwargs):
 
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
-    hf.setFolder(a)
+    
 
-    evol_data = np.loadtxt(hf.rename_file("genhistory.dat"))
+    evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
     worm_file = hf.rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
         worm_file = hf.rename_file("worm_data_worm.json")
@@ -57,7 +60,6 @@ def plot_phenonames(a=None, **kwargs):
     vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
         "value"
     ]
-
    
     if "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
@@ -73,6 +75,22 @@ def plot_phenonames(a=None, **kwargs):
 
     phen_offset = vectsize * 2
     phen_size = vectsize
+
+    avlentop = 5
+    if evol_data_1.ndim == 1:
+        evol_data_1 = evol_data_1[np.newaxis, :]
+    avlen = evol_data_1.shape[0] - 1
+    if avlen > avlentop:
+        avlen = avlentop
+    if avlen == 0:
+        avlen = 1
+    
+    print(evol_data_1.shape)
+    evol_data = np.zeros((evol_data_1.shape[0] - avlen + 1, evol_data_1.shape[1]))
+    for phen in range(evol_data_1.shape[1]):
+        evol_data[:, phen] = np.convolve(
+            evol_data_1[:, phen], np.ones(avlen) / avlen, mode="valid"
+        )
 
     gen_index_orig = evol_data[:, 0]  # generation number, phenotype number (first is gen index)
 
@@ -103,16 +121,20 @@ def plot_phenonames(a=None, **kwargs):
     evol_data_dict = {
     "rel_var" : {"value" : evol_data_full_diff, "title": "Signed log relative variation"},
     "var" :  {"value" : evol_data_full_diff2, "title": "Signed log variation"},
-    "final log" :  {"value" :  evol_data_fin, "title": "Signed log final value"},
-    "initial log" :  {"value" :  evol_data_init, "title": "Signed log initial value"},
+    "final_log" :  {"value" :  evol_data_fin, "title": "Signed log final value"},
+    "initial_log" :  {"value" :  evol_data_init, "title": "Signed log initial value"},
     "final" :  {"value" :  evol_data_fin_actual, "title": "Final value"},
     "initial" :  {"value" :  evol_data_init_actual, "title": "Initial value"}
     }
 
+    for data_val in evol_data_dict.values():
+        data_val["value"][np.isnan(data_val["value"])] = 0
+        data_val["value"][np.isinf(data_val["value"])] = 0
+
 
     phen_names_set = sorted(set(phen_names))
     phen_name_list = []
-    evol_data_avs = [[] for x in range(len(evol_data_list))]
+
     for phen_name in phen_names_set:
         phen_name_list.append(phen_name)
         indices = [
@@ -120,49 +142,66 @@ def plot_phenonames(a=None, **kwargs):
             for ind, val in enumerate(phen_names)
             if val == phen_name
         ]
-        for ind, val in enumerate(evol_data_list):
-        #for av_val, val in zip(evol_data_avs, evol_data_list):
-            evol_data_avs[ind].append(np.mean(val[indices]))
+        for val in evol_data_dict.values():
+            if "pheno_avs" not in val:
+                val["pheno_avs"] = []
+            val["pheno_avs"].append(np.mean(val["value"][indices]))
 
-    # phen_name_list = sorted(phen_name_list_1)
-    # evol_data_av = [evol_data_av_1[phen_name_list_1.index(phen_name)] for phen_name in phen_name_list]
-    # evol_data_av = evol_data_av_1[sorted_indices]
-
+   
     print(phen_name_list)
-    # print(evol_data_avs[0])
+  
 
 
 
     plot_cols = 1
-    plot_rows = len(evol_data_avs_titles)
+    plot_rows = len(plot_list)
     fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
-    # for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
-    for ind, val in zip(evol_data_list_inds, evol_data_avs):
+    fig2, axs2 = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
+    
+    for ind, val in enumerate(plot_list):
         row_num, col_num = getRowsCols(ind, plot_cols)
-        axs[row_num, col_num].plot(range(len(val)), val)
-        if axs[row_num, col_num].get_title() == "":
-            axs[row_num, col_num].set_title(
-                evol_data_avs_titles[ind], fontsize=title_font_size
-            )
-            # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-            axs[row_num, col_num].set_xticks(range(len(val)))
-            # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
-            axs[row_num, col_num].grid(axis="x")
-            axs[row_num, col_num].grid(axis="y")
-
+        if type(val) is list:
+            for val2 in val:
+                val3 = evol_data_dict[val2]["pheno_avs"]
+                axs[row_num, col_num].plot(range(len(val3)), val3, 
+                                           label= evol_data_dict[val2]["title"])
+                val3 = evol_data_dict[val2]["value"]
+                axs2[row_num, col_num].plot(range(len(val3)), val3, 
+                                           label= evol_data_dict[val2]["title"])
+        else:
+            val3 = evol_data_dict[val]["pheno_avs"]
+            axs[row_num, col_num].plot(range(len(val3)), val3,  label= evol_data_dict[val]["title"])
+            val3 = evol_data_dict[val]["value"]
+            axs2[row_num, col_num].plot(range(len(val3)), val3,  label= evol_data_dict[val]["title"])
+        axs[row_num, col_num].grid(axis="x")
+        axs[row_num, col_num].grid(axis="y")
+        axs2[row_num, col_num].grid(axis="x")
+        axs2[row_num, col_num].grid(axis="y")
+        axs2[row_num, col_num].set_xticks(range(len(val3)))    
+        axs[row_num, col_num].set_xticks(range(len(phen_name_list)))
+        axs[row_num, col_num].legend()
+        axs2[row_num, col_num].legend()
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-    # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
+    axs2[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+
 
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages.png")
-    plt.savefig(filename, bbox_inches="tight", dpi=300)
+    filename = hf.rename_file("Evolution_averages_redo.png")
+    fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
-    plt.close()
+    plt.close(fig)
 
+
+    fig2.tight_layout()
+    # fig.subplots_adjust(hspace=0.5)
+
+    filename = hf.rename_file("Evolution_averages_redo_2.png")
+    fig2.savefig(filename, bbox_inches="tight", dpi=300)
+    print("Saved plot image to: %s" % filename)
+    plt.close(fig2)
 
 
 
@@ -171,6 +210,8 @@ def plot_evols(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     hf.setFolder(a)
+    
+   
 
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
@@ -184,6 +225,8 @@ def plot_evols(a=None, **kwargs):
             "doPlotEvol is True, but genhistory.dat file is necessary for evolution plots."
         )
         return
+
+    plot_phenonames(folderName=a.folderName, modelName=a.modelName)
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
     worm_file = hf.rename_file("worm_data_evo.json")
