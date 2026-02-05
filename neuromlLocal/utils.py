@@ -246,8 +246,8 @@ def process_args():
     return parser.parse_args()
 
 
+jsonToStringMap = {"head": "Head neuron", "interneuron": "Interneuron"}
 
-jsonToStringMap = {'head' : 'Head neuron', 'interneuron' : 'Interneuron'}
 
 def getPlotFormat(network_json_data):
     plot_format = {}
@@ -276,7 +276,7 @@ def getPlotFormat(network_json_data):
                 if oldval != "VNC":
                     oldval1 = oldval
                     if oldval in jsonToStringMap:
-                        oldval1 =  jsonToStringMap[oldval]
+                        oldval1 = jsonToStringMap[oldval]
                     plot_format["fig_titles"].append(oldval1)
                     plot_format["fig_labels"].append("Neu")
                     plot_format["data_sizes"].append(ind)
@@ -286,7 +286,7 @@ def getPlotFormat(network_json_data):
         if oldval != "VNC":
             oldval1 = oldval
             if oldval in jsonToStringMap:
-                oldval1 =  jsonToStringMap[oldval]
+                oldval1 = jsonToStringMap[oldval]
             plot_format["fig_titles"].append(oldval1)
             plot_format["fig_labels"].append("Neu")
             plot_format["data_sizes"].append(ind)

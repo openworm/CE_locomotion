@@ -182,11 +182,9 @@ def make_orients(body_data, **kwargs):
     return bearing_mid, trajectory_diff_u
 
 
-
-
 def movingaverage(interval, window_size):
-    window= np.ones(int(window_size))/float(window_size)
-    return np.convolve(interval, window, 'same')
+    window = np.ones(int(window_size)) / float(window_size)
+    return np.convolve(interval, window, "same")
 
 
 def plot_path(body_data, ax):
@@ -215,34 +213,37 @@ def plot_path(body_data, ax):
             )
 
 
-
-
-
-def plot_orients(body_data, plot_list = 
-                  ["body orientation", "direction to peak", 
-                      "distance to peak", "bearing from peak direction"]
-                 ):
-
+def plot_orients(
+    body_data,
+    plot_list=[
+        "body orientation",
+        "direction to peak",
+        "distance to peak",
+        "bearing from peak direction",
+    ],
+):
     num_cols = 2
-    num_rows = math.ceil(len(plot_list)/num_cols)
-    fig_orient, ax_orient = plt.subplots(num_rows, num_cols, figsize=(num_cols*4, num_rows*4))
+    num_rows = math.ceil(len(plot_list) / num_cols)
+    fig_orient, ax_orient = plt.subplots(
+        num_rows, num_cols, figsize=(num_cols * 4, num_rows * 4)
+    )
 
     tmax = body_data.shape[1]
-    trange = body_data[0,:]
+    trange = body_data[0, :]
     t_offset = 0
     t_start = t_offset
     t_end = tmax - t_offset
-    trange_inds = (trange >= t_start) & (trange < t_end) 
-    trange  = trange[trange_inds]
+    trange_inds = (trange >= t_start) & (trange < t_end)
+    trange = trange[trange_inds]
     body_data_res = body_data[:, trange_inds]
 
     w_head = 0
     w_tail = 50
 
     body_diff = np.diff(body_data_res, axis=1)
-   
+
     trajectory = np.arctan2(body_diff[w_head * 3 + 2], body_diff[w_head * 3 + 1])
-  
+
     body_data_res_mid = (body_data_res[:, 1:] + body_data_res[:, :-1]) / 2.0
 
     dir_to_origin_mid = np.arctan2(
@@ -270,15 +271,17 @@ def plot_orients(body_data, plot_list =
     )
 
     bearing = angle_diff(trajectory, dir_to_origin[1:])
-    
-    plottables = { "bearing from peak direction" :  bearing_mid,
-                   "distance to peak" : distToOrigin,
-                   "orientation variation" : dOrientation,
-                   "body orientation" : orientation,
-                    "direction to peak" : dir_to_origin,
-                    "head trajectory variation" : trajectory_diff_u,
-                    "head trajectory" : trajectory }
-    
+
+    plottables = {
+        "bearing from peak direction": bearing_mid,
+        "distance to peak": distToOrigin,
+        "orientation variation": dOrientation,
+        "body orientation": orientation,
+        "direction to peak": dir_to_origin,
+        "head trajectory variation": trajectory_diff_u,
+        "head trajectory": trajectory,
+    }
+
     for key, val in plottables.items():
         newval = {}
         newval["value"] = val
@@ -286,14 +289,14 @@ def plot_orients(body_data, plot_list =
             newval["y_label"] = "distance (cm)"
         else:
             newval["y_label"] = "angle (rad)"
-        plottables[key] = newval 
+        plottables[key] = newval
 
     print(plottables)
     sys.exit
 
     mark_size = 0.2
     tav_window = 1
-    plot_func = partial(movingaverage, window_size = tav_window)
+    plot_func = partial(movingaverage, window_size=tav_window)
 
     for ind, val in enumerate(plot_list):
         col_num = ind % 2
@@ -306,37 +309,59 @@ def plot_orients(body_data, plot_list =
         if r_diff > 1:
             t_start_ind = 1
         print(val, t_start_ind, t_end_ind, r_diff)
-        ax_orient[row_num, col_num].plot(plot_func(trange[t_start_ind:t_end_ind]), 
-                                         plot_func(plottables[val]["value"]), 
-        'o', markersize = mark_size)
+        ax_orient[row_num, col_num].plot(
+            plot_func(trange[t_start_ind:t_end_ind]),
+            plot_func(plottables[val]["value"]),
+            "o",
+            markersize=mark_size,
+        )
         ax_orient[row_num, col_num].set_title(val, fontsize=title_font_size)
-        ax_orient[row_num, col_num].set_ylabel(plottables[val]["y_label"], fontsize=label_font_size)
+        ax_orient[row_num, col_num].set_ylabel(
+            plottables[val]["y_label"], fontsize=label_font_size
+        )
         if row_num == num_rows - 1:
             ax_orient[row_num, col_num].set_xlabel("Time (s)", fontsize=label_font_size)
 
-
-
     if False:
-        trange_av = movingaverage(trange, tav_window)
-        ax_orient[0, 0].plot(trange, orientation, 'o', markersize = mark_size)  # body orientation
+        # trange_av = movingaverage(trange, tav_window)
+        ax_orient[0, 0].plot(
+            trange, orientation, "o", markersize=mark_size
+        )  # body orientation
         ax_orient[0, 0].set_title("body orientation", fontsize=title_font_size)
-        ax_orient[1, 0].plot(trange, distToOrigin, 'o', markersize = mark_size)
+        ax_orient[1, 0].plot(trange, distToOrigin, "o", markersize=mark_size)
         ax_orient[1, 0].set_title("distance to peak", fontsize=title_font_size)
-        ax_orient[2, 0].plot(trange, dir_to_origin, 'o', markersize = mark_size)
+        ax_orient[2, 0].plot(trange, dir_to_origin, "o", markersize=mark_size)
         ax_orient[2, 0].set_title("direction to origin", fontsize=title_font_size)
-        ax_orient[3, 0].plot(movingaverage(trange[:-1], tav_window), 
-                            movingaverage(dOrientation,tav_window),  'o', markersize = mark_size)
+        ax_orient[3, 0].plot(
+            movingaverage(trange[:-1], tav_window),
+            movingaverage(dOrientation, tav_window),
+            "o",
+            markersize=mark_size,
+        )
         ax_orient[3, 0].set_title("orientation variation", fontsize=title_font_size)
-        ax_orient[4, 0].plot(movingaverage(trange[1:-1], tav_window), 
-                            movingaverage(trajectory_diff_u, tav_window), 'o', markersize = mark_size)
+        ax_orient[4, 0].plot(
+            movingaverage(trange[1:-1], tav_window),
+            movingaverage(trajectory_diff_u, tav_window),
+            "o",
+            markersize=mark_size,
+        )
         ax_orient[4, 0].set_title("head trajectory variation", fontsize=title_font_size)
 
-
-        ax_orient[0, 1].plot(movingaverage(trange[:-1], tav_window), 
-                            movingaverage(bearing_mid, tav_window), 'o', markersize = mark_size)
-        ax_orient[0, 1].set_title("bearing from origin direction", fontsize=title_font_size)
-        ax_orient[1, 1].plot(movingaverage(trange[:-1], tav_window), 
-                            movingaverage(trajectory, tav_window), 'o', markersize = mark_size)
+        ax_orient[0, 1].plot(
+            movingaverage(trange[:-1], tav_window),
+            movingaverage(bearing_mid, tav_window),
+            "o",
+            markersize=mark_size,
+        )
+        ax_orient[0, 1].set_title(
+            "bearing from origin direction", fontsize=title_font_size
+        )
+        ax_orient[1, 1].plot(
+            movingaverage(trange[:-1], tav_window),
+            movingaverage(trajectory, tav_window),
+            "o",
+            markersize=mark_size,
+        )
         ax_orient[1, 1].set_title("head trajectory", fontsize=title_font_size)
 
         # ax_orient[4,0].plot(trange[1:-1], trajectory_diff_1)
@@ -364,13 +389,12 @@ def plot_orients(body_data, plot_list =
         # ax_orient[3,1].scatter(dir_to_origin[1:-1], trajectory_diff, s=mark_size)
         # ax_orient[4,1].scatter(dir_to_origin[1:-1], trajectory_diff_1, s=mark_size)
 
-
     fig_orient.tight_layout()
     filename = rename_file("Orient.png")
     # fig_orient.show()
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
     plt.close(fig_orient)
-    #fig_orient.close()
+    # fig_orient.close()
 
 
 def angle_diff(a, b):

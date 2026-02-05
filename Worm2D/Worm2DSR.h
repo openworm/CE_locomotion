@@ -88,6 +88,10 @@ vector<int> singVals;
 class Worm2DSRE : public Worm2DSR, public EvolvableS
 {
     public:
+
+json itsJson;
+const vector<doubDoub> genPhenLims;
+
 Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
 //Worm2DSR(json & j);
 Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
@@ -122,11 +126,12 @@ void setParsFromPheno_old(const TVector<double> &pheno);
 
 //void getEvoNames(string & evoName, const json& j, vector<string> &);
 //void getEvoNames1(string & evoName, json::const_iterator it2, vector<string>&);
-const vector<doubDoub> genPhenLims;
+//const vector<doubDoub> genPhenLims;
 //vector<string> evoNames;
 //string evoName;
 //bool directMuscEvo = false;
-json itsJson;
+//json itsJson;
+
 };
 
 

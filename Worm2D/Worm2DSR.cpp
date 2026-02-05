@@ -23,7 +23,8 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd),genPhenLims(makeVals(j)),itsJson(j){
+  Worm2DSR(j,cmd),genPhenLims(makeVals(j)),itsJson(j)
+  {
     if (callInit) writeOrigGen(cmd);
   }
   
@@ -327,31 +328,46 @@ void Worm2DSRE::addEvolvableToJson(json & j)
 
 
 
-void setEvoStr(string & vecval,const string & evoName)
+void setEvoStr(vector<string> & vecval, const vector<string> & evoName)
 {
-  if (vecval=="not_set") {vecval = evoName;return;}
-  else if (vecval==evoName) return;
-  cout << "evoName " << evoName << " " << vecval << endl;
-  assert(0);
+  if (vecval.size() == 0) {vecval = evoName; return;}
+
+  vector<string> vecval1 = vecval;
+  for (int i=0;i<vecval1.size();i++)
+  if (vecval1[i]!=evoName[i]) {
+    for (int j = i;j<evoName.size();j++) vecval.push_back(evoName[j]);
+    break;
+  }
+
+  return;
+
+  //if (vecval=="not_set") {vecval = evoName;return;}
+  //else if (vecval==evoName) return;
+  //cout << "evoName " << evoName << " " << vecval << endl;
+  //assert(0);
 
 }
 
 
-void getEvoNames1(json::const_iterator it2, vector<string> & evoNames, vector<string> & path)
+void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames, 
+  vector<string> & path)
 {
 
-  string keyval = "";
-  for (int i=0;i<path.size();i++) {keyval.append("_");keyval.append(path[i]);};
+  path.push_back(it2.key());
+  //string keyval = "";
+  //for (int i=0;i<path.size();i++) {keyval.append("_");keyval.append(path[i]);};
  
+  
+
   //path.clear();
 
   if (it2->at("evolvable").is_number()){
   int ind1 = it2->at("evolvable").get<int>();
   //setEvoStr(evoNames[ind1-1],evoName);
   //setEvoStr(evoNames[ind1-1],it2.key());
-  setEvoStr(evoNames[ind1-1],keyval);
+  setEvoStr(evoNames[ind1-1],path);
 
-  return;
+  
   }
   else{
   size_t idx = it2.key().find("weights");
@@ -359,34 +375,39 @@ void getEvoNames1(json::const_iterator it2, vector<string> & evoNames, vector<st
         {
           vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],keyval);
-          return;
+          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+          
         }
   else
         {
       
           vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],keyval);
-          return;                  
+          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+                            
         }
   }
 
+  path.pop_back();
  
+
+
 }
 
-void getEvoNames(const json& j, vector<string> & evoNames, vector<string> & path)
+void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
 {
   
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("evolvable")) getEvoNames1(it, evoNames, path);
-      else if (it->is_structured()) {
+      //else if (it->is_structured()) {
+      else if (it->is_object()) {
       //evoName.append("tx");
       //evoName.append(it.key()); 
       //evoName.append("_"); 
-      path.push_back("_");
-      //path.push_back(it.key());
+      //path.push_back("_");
+      cout << "keyval " << it.key() << endl;
+      path.push_back(it.key());
       getEvoNames(*it, evoNames, path);
       path.pop_back();
       }
@@ -400,16 +421,37 @@ void getEvoNames(const json& j, vector<string> & evoNames, vector<string> & path
 vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 {
 
+  
   if (!j.contains("Evolvable")) return vector<doubDoub>(0);
   
   vector<intDoubDoub> v1 = j["Evolvable"]["value"].template get< vector<intDoubDoub> >();
 
-  vector<string> evoNames(v1.size(), "not_set");
+  //vector<string> evoNames(v1.size(), "not_set");
+
+  vector<vector<string> > evoNames(v1.size());
   
   vector<string> path;
   getEvoNames(j, evoNames, path);
 
-  //itsJson["evoNames"] = evoNames;
+  if (false){
+  for (int i=0;i<evoNames.size();i++)
+    for (int j=0;j<evoNames[i].size();j++) cout << "eN " << evoNames[i][j] << endl;
+
+
+    assert(0);
+
+  }
+  
+  vector<string> evoKeys(v1.size());
+  for (int i=0;i<evoNames.size();i++)
+  { evoKeys[i] = "";
+    for (int j=0;j<evoNames[i].size()-1;j++) 
+    {evoKeys[i].append(evoNames[i][j]);evoKeys[i].append("_");}
+    evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
+  }
+
+  itsJson["evoNames"] = evoKeys;
+
 
   return todoubDoub(v1);
 
@@ -479,7 +521,8 @@ void recursive_iterate2(const TVector<double> & pheno, json& j)
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("evolvable")) setParsFromPheno1(pheno,it);
-      else if (it->is_structured()) recursive_iterate2(pheno,*it);
+      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
+      else if (it->is_object()) recursive_iterate2(pheno,*it);
         
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
@@ -807,8 +850,9 @@ void recursive_iterate(vector<double> & pheno, const json& j)
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("evolvable")) getInitGeno1(pheno,it);
-      else if (it->is_structured()) recursive_iterate(pheno,*it);
-        
+      //else if (it->is_structured()) recursive_iterate(pheno,*it);
+      else if (it->is_object()) recursive_iterate(pheno,*it);
+
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
     }
