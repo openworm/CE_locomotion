@@ -29,11 +29,11 @@ int main (int argc, const char* argv[])
     int skip_steps;
     string model_name = sup_model_name;
 
-    string json_filename = rename_file("worm_data_evo.json", directoryName);
+    string json_filename = rename_file("worm_data_worm.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
-    if (!directoryExists(json_filename))
-    json_filename = rename_file("worm_data_worm.json", directoryName);
 
 
    
@@ -110,7 +110,9 @@ int main (int argc, const char* argv[])
         skip_steps = evo->itsEvoPars().skip_steps;
         evo->configure();
      
-        evo->addParsToJson(j);
+        //evo->addParsToJson(j);
+
+        //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         delete evo;
         //assert(0);
         string json_filename = rename_file("worm_data_evo.json", directoryName);
@@ -126,11 +128,11 @@ int main (int argc, const char* argv[])
 
     
     json_filename = rename_file("worm_data_evo.json", directoryName);
+     if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data_worm.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
-    if (!directoryExists(json_filename))
-    json_filename = rename_file("worm_data_worm.json", directoryName);
-
+   
    //delete w1;
     
     //cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
@@ -212,9 +214,9 @@ int main (int argc, const char* argv[])
 
     json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
-    json_filename = rename_file("worm_data.json", directoryName);
-    if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
+    if (!directoryExists(json_filename))
+    json_filename = rename_file("worm_data.json", directoryName);
 
     const json j_evo = getJsonFromFile(json_filename);
     long simrandseed = j_evo["Evolutionary Optimization Parameters"]["randomseed"]["value"];
@@ -328,10 +330,15 @@ int main (int argc, const char* argv[])
         s1.runSimulation(*w2);
     }
     */
-
+    j["Simulation"]["StepSize"]["value"] = StepSize;
+    j["Simulation"]["skip_steps"]["value"] = skip_steps;
+   
     //cout << "const 1" << endl;
     j["Worm"]["Main model name"]["value"] = model_name;
     j["Nervous system"]["Model name"]["value"] = model_name;
+
+
+    j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << std::setw(4) << j << std::endl;
     json_out.close();

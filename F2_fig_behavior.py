@@ -49,11 +49,14 @@ def make_fig(model_name):
     curv = np.loadtxt(hf.rename_file(file_prefix + "curv.dat"))
     act_data = np.loadtxt(hf.rename_file(file_prefix + "ns.dat")).T
 
-    worm_file = hf.rename_file("worm_data_evo.json")
-    if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data.json")
-    if not os.path.isfile(worm_file):
-        worm_file = hf.rename_file("worm_data_worm.json")
+    worm_file = hf.get_worm_file()    
+    if False:
+        worm_file = hf.rename_file("worm_data_evo.json")
+        if not os.path.isfile(worm_file):
+            worm_file = hf.rename_file("worm_data.json")
+        if not os.path.isfile(worm_file):
+            worm_file = hf.rename_file("worm_data_worm.json")
+
 
     network_json_data = utils.getJsonFile(worm_file)
     # pop_names = utils.getPopNames(network_json_data)
@@ -65,12 +68,18 @@ def make_fig(model_name):
     # cell_names = utils.getCellNames(network_json_data)
     cell_names = utils.default_cells[model_name]["names"]
 
-    step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
-        "value"
-    ]
-    skip_steps = network_json_data["Evolutionary Optimization Parameters"][
-        "skip_steps"
-    ]["value"]
+ 
+
+    if hf.checkDictName(network_json_data, ['Simulation']):
+        step_size = network_json_data["Simulation"]["StepSize"]["value"]
+        skip_steps = network_json_data["Simulation"]["skip_steps"]["value"]
+    else:
+        step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
+            "value"
+        ]
+        skip_steps = network_json_data["Evolutionary Optimization Parameters"][
+            "skip_steps"
+        ]["value"]
 
     plot_transient = act_data[0, 0]
     plot_time = plot_format["plot_time"]

@@ -43,7 +43,7 @@ class EvoBase
     const TVector<double> & getBestGenotype();
     
     
-    void addParsToJson(json & j);
+    virtual void addParsToJson(json & j);
     
     
     
@@ -166,6 +166,8 @@ void EvolutionaryRunDisplay_try(int Generation, double BestPerf, double AvgPerf,
 template<class T>
 class Evolvable_ptr
 {
+ 
+  
 
 protected:
 shared_ptr<T> evolvable1;
@@ -198,6 +200,14 @@ const shared_ptr<const json> json_ptr = nullptr;
 template<class T>
 class Evolvable_ptrB: public Evolvable_ptr<T>, public Evolution
 {
+
+public:
+
+ void addParsToJson(json & j){
+    Evolution::addParsToJson(j); 
+    this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+}
+
 
 protected:
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
@@ -250,6 +260,8 @@ double EvaluationFunction(TVector<double> &geno, RandomState &rs);
   
     void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) 
     {this->evolvable1->GenPhenMapping(gen,phen);}
+
+   
 
 };
 
@@ -438,7 +450,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         w_ptr->addParsToJson(j);
         addParsToJson(j);
 
-        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
 
         

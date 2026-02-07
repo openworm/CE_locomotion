@@ -119,13 +119,15 @@ void EvoBase::setFromCPT2()
     popsize = evoPars1.PopulationSize;
     
     const string filename_ = rename_file("search.cpt");
-    cout << filename_ << endl;
+    ;
     //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
    
 
     struct stat buffer;   
     if (doCPT && evoPars1.CheckpointInterval>0 && (stat (filename_.c_str(), &buffer) == 0)) {
-        
+
+        cout << filename_ << endl; 
+
         s = new TSearch(1);
         s->cptfilename = filename_;
         s->ReadCheckpointFile();

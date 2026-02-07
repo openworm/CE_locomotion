@@ -929,7 +929,9 @@ vec.push_back({-SCRange, SCRange});
 
 vec.push_back({ -CSRange, CSRange});
 vec.push_back({ -CSRange, CSRange});
-vec.push_back({ -CSRange, CSRange});
+
+//vec.push_back({ -CSRange, CSRange}); // added this - number 9
+
 vec.push_back({ -CSRange, CSRange});
 
 vec.push_back({0.0, ESRange});
@@ -1017,26 +1019,29 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             vec.push_back({vbp, vdp,7});
             vec.push_back({db, vda,8});
              vec.push_back({db, vdp,8});
-   vec.push_back({vba, dd,9});
-   vec.push_back({vbp, dd,9});
-   vec.push_back({dd, vda,10});   }
+
+// reduce all by unity below here
+
+   vec.push_back({vba, dd,8});
+   vec.push_back({vbp, dd,8});
+   vec.push_back({dd, vda,9});   }
 
 
     {
     vector<fromToInt> & vec = elecvec;
-   vec.push_back({dd, vda, 11});
-   vec.push_back({dd, vdp, 11});
+   vec.push_back({dd, vda, 10});
+   vec.push_back({dd, vdp, 10});
 
-    vec.push_back({vda, vdp, 12});
-    vec.push_back({vba, vbp, 13});
+    vec.push_back({vda, vdp, 11});
+    vec.push_back({vba, vbp, 12});
 
       if (u < par1.N_units){
 
-    vec.push_back({dd, ddNext,12});
-    vec.push_back({vdp, vdaNext,12});
-    vec.push_back({db, dbNext,13});
-    vec.push_back({vbp, vbaNext,13});
-     vec.push_back({vbp, dbNext,14});
+    vec.push_back({dd, ddNext,11});
+    vec.push_back({vdp, vdaNext,11});
+    vec.push_back({db, dbNext,12});
+    vec.push_back({vbp, vbaNext,12});
+     vec.push_back({vbp, dbNext,13});
 
       }
 
@@ -1053,25 +1058,25 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
    
 
-    j["Stretch receptor"]["SRvncgain"]["evolvable"] = 15;
-    j["Stretch receptor"]["SRheadgain"]["evolvable"] = 29;
+    j["Stretch receptor"]["SRvncgain"]["evolvable"] = 14;
+    j["Stretch receptor"]["SRheadgain"]["evolvable"] = 28;
 
     //sr_ptr->SRvncgain = v(14);
     //sr_ptr->SRheadgain = v(28);
 
 vector<intPair> nmjvecd;
-nmjvecd.push_back({DB,16});
-nmjvecd.push_back({DD,17});
-nmjvecd.push_back({SMDD,30});
-nmjvecd.push_back({RMDD,31});
+nmjvecd.push_back({DB,15});
+nmjvecd.push_back({DD,16});
+nmjvecd.push_back({SMDD,29});
+nmjvecd.push_back({RMDD,30});
 
 vector<intPair> nmjvecv;
-nmjvecv.push_back({VBA,16});
-nmjvecv.push_back({VBP,16});
-nmjvecv.push_back({VDA,17});
-nmjvecv.push_back({VDP,17});
-nmjvecv.push_back({SMDV,30});
-nmjvecv.push_back({RMDV,31});
+nmjvecv.push_back({VBA,15});
+nmjvecv.push_back({VBP,15});
+nmjvecv.push_back({VDA,16});
+nmjvecv.push_back({VDP,16});
+nmjvecv.push_back({SMDV,29});
+nmjvecv.push_back({RMDV,30});
 
 
 
@@ -1089,37 +1094,37 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
 
 
     {vector<intPair> & vec = biasvec;
-    vec.push_back({SMDD,18});
-    vec.push_back({SMDV,18});
-    vec.push_back({RMDD,19});
-    vec.push_back({RMDV,19});
+    vec.push_back({SMDD,17});
+    vec.push_back({SMDV,17});
+    vec.push_back({RMDD,18});
+    vec.push_back({RMDV,18});
     }
 
   {vector<intPair> & vec = tauvec;
-    vec.push_back({SMDD,20});
-    vec.push_back({SMDV,20});
-    vec.push_back({RMDD,21});
-    vec.push_back({RMDV,21});
+    vec.push_back({SMDD,19});
+    vec.push_back({SMDV,19});
+    vec.push_back({RMDD,20});
+    vec.push_back({RMDV,20});
     }
 
   {
             vector<fromToInt> & vec = chemvec;
-            vec.push_back({SMDD, SMDD,22});
-            vec.push_back({SMDV, SMDV,22});
-            vec.push_back({RMDD, RMDD,23});
-            vec.push_back({RMDV, RMDV,23});
-             vec.push_back({SMDD, SMDV,24});
-            vec.push_back({SMDV, SMDD,24});
-            vec.push_back({SMDD, RMDV,25});
-            vec.push_back({SMDV, RMDD,25});
-            vec.push_back({RMDD, RMDV,26});
-            vec.push_back({RMDV, RMDD,26});
+            vec.push_back({SMDD, SMDD,21});
+            vec.push_back({SMDV, SMDV,21});
+            vec.push_back({RMDD, RMDD,22});
+            vec.push_back({RMDV, RMDV,22});
+             vec.push_back({SMDD, SMDV,23});
+            vec.push_back({SMDV, SMDD,23});
+            vec.push_back({SMDD, RMDV,24});
+            vec.push_back({SMDV, RMDD,24});
+            vec.push_back({RMDD, RMDV,25});
+            vec.push_back({RMDV, RMDD,25});
   }
 
    {vector<fromToInt> & vec = elecvec;
-         vec.push_back({SMDD, RMDD,27});
-        vec.push_back({SMDV, RMDV,27});
-         vec.push_back({RMDV, RMDD,28});    
+         vec.push_back({SMDD, RMDD,26});
+        vec.push_back({SMDV, RMDV,26});
+         vec.push_back({RMDV, RMDD,27});    
         }
 
 

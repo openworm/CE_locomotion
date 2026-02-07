@@ -414,11 +414,6 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
       if (it->contains("evolvable")) getEvoNames1(it, evoNames, path);
       //else if (it->is_structured()) {
       else if (it->is_object()) {
-      //evoName.append("tx");
-      //evoName.append(it.key()); 
-      //evoName.append("_"); 
-      //path.push_back("_");
-      //cout << "keyval " << it.key() << endl;
       path.push_back(it.key());
       getEvoNames(*it, evoNames, path);
       path.pop_back();

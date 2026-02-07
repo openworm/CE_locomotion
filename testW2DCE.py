@@ -15,7 +15,7 @@ run(
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
-    doPlotEvol=False,
+    doPlotEvol=True,
     doNML=False,
     # doCPT=True,
     evoType="EvoCE",
