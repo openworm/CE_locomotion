@@ -41,15 +41,19 @@ def getRowsCols(plot_num, plot_cols):
 def sign(val):
     return (val > 0) * 2.0 - 1.0
 
-short_phen_names = {'Nervous system' : 'NS',
-                    'Chemical weights' : 'ChemWei',
-                    'Electrical weights' : 'ElecWei',
-                    'Stretch receptor' : 'SR',
-                    'D inds' : 'D',
-                    'V inds' : 'V',
-                    'Sensors_Sensor_' : 'Sen',
-                    'Driving input' : 'Dri'
-                    }
+
+short_phen_names = {
+    "Nervous system": "NS",
+    "Chemical weights": "ChemWei",
+    "Electrical weights": "ElecWei",
+    "Stretch receptor": "SR",
+    "D inds": "D",
+    "V inds": "V",
+    "Sensors_Sensor_": "Sen",
+    "Driving input": "Dri",
+    "NMJ gain map D": "NMJGMD",
+    "NMJ gain map V": "NMJGMV",
+}
 
 
 def plot_phenonames(
@@ -60,7 +64,7 @@ def plot_phenonames(
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
-   
+
     worm_file = hf.get_worm_file()
 
     if False:
@@ -75,17 +79,16 @@ def plot_phenonames(
         "value"
     ]
 
-    if hf.checkDictName(network_json_data, ['Evolvable', 'value', 0, 'name']):
-        evolvables = network_json_data['Evolvable']['value']
+    if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
+        evolvables = network_json_data["Evolvable"]["value"]
         phen_names = []
         phen_nums = []
         for val in evolvables:
-            name = val['name']
+            name = val["name"]
             for key, val2 in short_phen_names.items():
-                name = name.replace(key,val2)
+                name = name.replace(key, val2)
             phen_names.append(name)
-            phen_nums.append(val['ind'])
-
+            phen_nums.append(val["ind"])
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
@@ -94,11 +97,8 @@ def plot_phenonames(
         print("PhenoNames needed for pheno plot")
         return
 
-    print('checkDict')
+    print("checkDict")
     print(phen_names)
-   
-
-
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
@@ -267,8 +267,6 @@ def plot_evols(a=None, **kwargs):
             worm_file = hf.rename_file("worm_data_worm.json")
         if not os.path.isfile(worm_file):
             worm_file = hf.rename_file("worm_data.json")
-
-
 
     network_json_data = utils.getJsonFile(worm_file)
     vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
@@ -513,8 +511,8 @@ def reload_single_run(a=None, **kwargs):
     if not os.path.isfile(act_file):
         hf.file_prefix = None
 
-    worm_file = hf.get_worm_file()  
-    #print(worm_file)
+    worm_file = hf.get_worm_file()
+    # print(worm_file)
 
     if False:
         worm_file = hf.rename_file("worm_data_evo.json")

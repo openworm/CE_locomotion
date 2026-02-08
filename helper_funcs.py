@@ -16,25 +16,27 @@ label_font_size = 14
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
-def get_worm_file():
 
+def get_worm_file():
     worm_file = rename_file("worm_data_worm.json")
     if not os.path.isfile(worm_file):
         worm_file = rename_file("worm_data_evo.json")
     if not os.path.isfile(worm_file):
         worm_file = rename_file("worm_data.json")
-    
+
     return worm_file
+
 
 def checkDictName(dictval, namelist):
     dictval1 = dictval
     for val in namelist:
         print(val)
-        #if isinstance(val, int):   
+        # if isinstance(val, int):
         if not isinstance(val, int) and val not in dictval1:
             return False
-        dictval1 = dictval1[val]        
+        dictval1 = dictval1[val]
     return True
+
 
 def process_args():
     """Parse command-line arguments.
