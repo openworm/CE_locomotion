@@ -510,6 +510,7 @@ def run(a=None, **kwargs):
             "best.pheno.dat",
             "search.cpt",
             "worm_data_evo.json",
+            "worm_data_worm.json",
             "genhistory.dat",
         ]
 

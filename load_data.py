@@ -51,8 +51,8 @@ short_phen_names = {
     "V inds": "V",
     "Sensors_Sensor_": "Sen",
     "Driving input": "Dri",
-    "NMJ gain map D": "NMJGMD",
-    "NMJ gain map V": "NMJGMV",
+    "NMJ gain map D": "GMapD",
+    "NMJ gain map V": "GMapV",
 }
 
 

@@ -959,13 +959,14 @@ vec.push_back({0.0, NMJmax});
 
 j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
-
  }
 
     vector<intPair> biasvec, tauvec;
     vector<fromToInt> chemvec, elecvec;
+    json chemvecj = json::array();
+    json biasvecj = json::array();
+    //json biasvecj = json::object();
 
-   
     for (int u = 1; u <= par1.N_units; u++){
 
     int db, dd, vba, vda, vbp, vdp;
@@ -984,7 +985,26 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         vdaNext = nn(VDA,u+1);
         vbaNext = nn(VBA,u+1);
 
-      
+
+        //biasvecj += json::object_t::value_type({"ind", 1}, {"val", db});
+        //json o2 = R"( {"ind": 1, "val": db} )"_json;
+        //biasvecj += json::object_t::value_type({{"ind", db}, {"val", 1}});
+        //biasvecj += json::object_t::value_type({{"ind", vba}, {"val", 1}});
+
+        biasvecj.push_back({{"ind", db}, {"val", 1}});
+        biasvecj.push_back({{"ind", vba}, {"val", 1}});
+        biasvecj.push_back({{"ind", vbp}, {"val", 1}});
+        biasvecj.push_back({{"ind", dd}, {"val", 2}});
+        biasvecj.push_back({{"ind", vda}, {"val", 2}});
+        biasvecj.push_back({{"ind", vdp}, {"val", 2}});
+
+
+         /*    biasvecj.push_back({db,1});
+            biasvecj.push_back({vba,1});
+            biasvecj.push_back({vbp,1});
+            biasvecj.push_back({dd,2});
+            biasvecj.push_back({vda,2});
+            biasvecj.push_back({vdp,2}); */
 
             {vector<intPair> & vec = biasvec;
             vec.push_back({db,1});
@@ -1006,6 +1026,24 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         }
 
 
+
+        chemvecj.push_back({{"from", db}, {"to", db}, {"val", 5}});
+        chemvecj.push_back({{"from", vba}, {"to", vba}, {"val", 5}});
+        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"val", 5}});
+        chemvecj.push_back({{"from", dd}, {"to", dd}, {"val", 6}});
+        chemvecj.push_back({{"from", vda}, {"to", vda}, {"val", 6}});
+        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"val", 6}});
+        chemvecj.push_back({{"from", db}, {"to", dd}, {"val", 7}});
+        chemvecj.push_back({{"from", vba}, {"to", vda}, {"val", 7}});
+        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"val", 7}});
+        chemvecj.push_back({{"from", db}, {"to", vda}, {"val", 8}});
+        chemvecj.push_back({{"from", db}, {"to", vdp}, {"val", 8}});
+        chemvecj.push_back({{"from", vba}, {"to", dd}, {"val", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"val", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", dd}, {"to", vda}, {"val", 9}});
+
+
+
         {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({db,db,5});
@@ -1019,6 +1057,11 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             vec.push_back({vbp, vdp,7});
             vec.push_back({db, vda,8});
              vec.push_back({db, vdp,8});
+
+ /*        n.SetChemicalSynapseWeight(db, vda, v(8));      // Darker Green
+        n.SetChemicalSynapseWeight(db, vdp, v(8));
+        n.SetChemicalSynapseWeight(vba, dd, v(8)/2);
+        n.SetChemicalSynapseWeight(vbp, dd, v(8)/2); */
 
 // reduce all by unity below here
 
@@ -1048,8 +1091,12 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
         }
 
+
+
+
     }
    
+    
 
    // cout << "setting streatch" << endl;
 
@@ -1091,7 +1138,15 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
 
     // Bias
 
-
+/* 
+    biasvecj.push_back({SMDD,17});
+    biasvecj.push_back({SMDV,17});
+    biasvecj.push_back({RMDD,18});
+    biasvecj.push_back({RMDV,18}); */
+    biasvecj.push_back({{"ind", SMDD}, {"val", 17}});
+    biasvecj.push_back({{"ind", SMDV}, {"val", 17}});
+    biasvecj.push_back({{"ind", RMDD}, {"val", 18}});
+    biasvecj.push_back({{"ind", RMDV}, {"val", 18}});
 
     {vector<intPair> & vec = biasvec;
     vec.push_back({SMDD,17});
@@ -1106,6 +1161,19 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
     vec.push_back({RMDD,20});
     vec.push_back({RMDV,20});
     }
+
+
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"val", 21}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"val", 21}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"val", 22}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"val", 22}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"val", 23}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"val", 23}});
+    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"val", 24}});
+    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"val", 24}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"val", 25}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"val", 25}});
+
 
   {
             vector<fromToInt> & vec = chemvec;
@@ -1128,14 +1196,23 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
         }
 
 
+
  j["Nervous system"]["taus"]["evolvable"] = tauvec;
-    j["Nervous system"]["biases"]["evolvable"] = biasvec;
-  j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
+    j["Nervous system"]["biases"]["evolvable"] = biasvecj;
+  j["Nervous system"]["Chemical weights"]["evolvable"] = chemvecj;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
- 
+  //json & j2 = j["Nervous system"]["Chemical weights"]["evolvable"];
 
-}
+    /* for(auto it = j2.begin(); it != j2.end(); ++it)
+        {
+
+            if (it->at("from")==vba && it->at("to")==dd);
+
+        }   
+ */
+
+    }
 
 
 void Worm18::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)

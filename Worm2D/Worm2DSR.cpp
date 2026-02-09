@@ -479,6 +479,16 @@ vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 }
 
 
+double eFunc(const double & val, const json & j)
+{
+
+  //cout << "eFunc " << " " << val << endl;
+
+  if (j.at("f_ind") == 1) return val * j.at("fact").get<double>();
+  assert(0);
+
+}
+
 
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
 {
@@ -491,11 +501,28 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
         if(idx != string::npos)
         {
           vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
-          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          json jevol = it2->at("evolvable");
+          for (auto itjevol = jevol.begin(); itjevol != jevol.end(); ++itjevol)
+          for (int j = 0; j<values.size();j++)
+          if (itjevol->at("from").get<int>() == values[j].w.from 
+          && itjevol->at("to").get<int>()  == values[j].to)
+          {
+            int phenind = itjevol->at("val").get<int>();
+            if (itjevol->contains("mfunc"))
+            values[j].w.weight = eFunc(pheno[phenind], itjevol->at("mfunc"));
+            else values[j].w.weight = pheno[phenind];
+            break;
+          } 
+
+
+       /*    vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
           for (int i = 0; i<evols.size();i++)
           for (int j = 0; j<values.size();j++)
           if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
-          {values[j].w.weight = pheno[evols[i].val];break;} 
+          {values[j].w.weight = pheno[evols[i].val];break;}  */
+
+
+
           it2->at("value") = values;
         }
         else
@@ -785,9 +812,12 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 bool check123456(double val, double val2)
 {
-bool b1 = (val<123456.001 && val>123455.999);
-bool b2 = (val==val2);
-return b1 || b2;
+
+if (val<123456.001 && val>123455.999) return true;
+if (val==val2) return false;
+
+assert(0);
+
 }
 
 bool check123456(double val)
@@ -802,7 +832,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
         if (it2->at("evolvable").is_number()){
         //cout << "ph " << it.key() << " " << it2.key() << endl;
         cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
-        assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
+        //assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
+        if (check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")))
         pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
         }
   //        it2->at("value") = pheno[it2->at("evolvable")];
@@ -812,17 +843,51 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
         if(idx != string::npos)
         {
           vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
-          vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+          //vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
+
+          json jevol = it2->at("evolvable");
+          int iind = 0;
+          for (auto itjevol = jevol.begin(); itjevol != jevol.end(); ++itjevol){
+          for (int j = 0; j<values.size();j++)
+          if (itjevol->at("from").get<int>() == values[j].w.from && 
+          itjevol->at("to").get<int>() == values[j].to)
+          {
+            int phenind = itjevol->at("val").get<int>() - 1;
+            double phenval;
+            if (itjevol->contains("mfunc"))
+              phenval = eFunc(pheno[phenind], itjevol->at("mfunc"));
+            else phenval = pheno[phenind];
+
+            cout << "phvals " << iind << " " << j << " " 
+            <<  itjevol->at("val").get<int>()
+            << " " << itjevol->at("from").get<int>() << " " <<  itjevol->at("to").get<int>()  << endl;
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            cout << "ph " << phenval << " " << pheno[phenind] << " " << values[j].w.weight << endl;
+
+            //assert(check123456(phenval, values[j].w.weight));
+            if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
+            break;
+          
+          } 
+        iind ++;
+        }
+
+/* 
           for (int i = 0; i<evols.size();i++)
           for (int j = 0; j<values.size();j++)
           if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
           {
+            cout << "phvals " << i << " " << j << " " 
+            <<  evols[i].val << " " << evols[i].from << " " << evols[i].to << endl;
             //cout << "ph " << it.key() << " " << it2.key() << endl;
             cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
             assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
             pheno[evols[i].val-1] = values[j].w.weight;
             //values[j].w.weight = pheno[evols[i].val];
-            break;} 
+            break;
+          } */
+          
+          
           //it2->at("value") = values;
         }
         else
@@ -835,7 +900,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
         {
              //cout << "ph " << it.key() << " " << it2.key() << endl;
             cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
-          assert(check123456(pheno[evols[i].val-1], values[evols[i].ind-1]));
+          if (check123456(pheno[evols[i].val-1], values[evols[i].ind-1]))
           pheno[evols[i].val-1] = values[evols[i].ind-1];
         }
         //values[evols[i].ind] = pheno[evols[i].val];
@@ -851,7 +916,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
           { 
            // cout << "ph " << it.key() << " " << it2.key() << endl;
             cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
-            assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            if (check123456(pheno[evols[i].val-1], values[j].weight))
             pheno[evols[i].val-1] = values[j].weight;
             break;}
         }
@@ -1402,7 +1467,8 @@ void Sensor::construct(const json & j)
 void  Sensor::addParsToJson(json & j) const
 {
 
-  
+if (spvec.size()<1) return;
+
 json & j2 = j["Sensors"];
 
 for (int i =0; i<spvec.size(); i++)
