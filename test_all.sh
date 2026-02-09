@@ -70,6 +70,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSRE21
     rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
     rm -rf testruns/COW2DSRE_test_out
+    rm -rf testruns/exW2DSR18E
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -89,6 +90,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.osc_sim_21all.omt
     omv test -V .test.W2D18gen.omt
     omv test -V .test.W2DSR18.omt
+    omv test -V .test.W2DSR18E.omt
     omv test -V .test.COW2D.omt
     omv test -V .test.W2DCO.omt
     omv test -V .test.izq_sim.omt
