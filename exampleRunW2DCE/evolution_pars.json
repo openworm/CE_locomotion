@@ -5,5 +5,7 @@
     "MaxGenerations": 10,
     "Transient": 8,
     "CheckpointInterval": 5,
-    "EvolutionType": "EvoCE"
+    "EvolutionType": "EvoCE",
+    "AvgSpeed": 0.0001,
+    "doOrigMuscInput": true
 }

@@ -23,7 +23,7 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j,cmd),genPhenLims(makeVals(j)),itsJson(j)
+  Worm2DSR(j,cmd),genPhenLims(makeVals(j))//,itsJson(j)
   {
     if (callInit) writeOrigGen(cmd);
   }
@@ -428,9 +428,11 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 vector<doubDoub> Worm2DSRE::makeVals(const json & j)
 {
 
-  
+  itsJson = j;
+
   if (!j.contains("Evolvable")) return vector<doubDoub>(0);
 
+  
 
 
   vector<doubDoub> vdd;

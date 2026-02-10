@@ -5,7 +5,7 @@
 W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 {
     assert(0 && "This is depreciated");
-    randomInitialState = getParameterInt(argc,argv,"--randInitState","0");;
+    randomInitialState = getParameterInt(argc,argv,"--randomInitialState","0");;
     //cout << "ran " << randomInitialState << endl;
     //assert(0);
 }
@@ -14,7 +14,7 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 
 void W2DbaseparametersNML::setPars(shared_ptr<const CmdArgs> cmd)
 {
-    randomInitialState = cmd->getArgValInt("--randInitState", randomInitialState);
+    randomInitialState = cmd->getArgValInt("--randomInitialState", randomInitialState);
     //cout << "randomInitialState " << randomInitialState << endl;
     //assert(0);
 

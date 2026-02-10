@@ -1,5 +1,8 @@
 {
     "Driving input": {
+        "size": {
+            "value": 0
+        },
         "strengths": {
             "message": "Driving input strength to Nervous System in sparse format",
             "value": []
@@ -106,6 +109,9 @@
         "VectSize": {
             "value": 93
         },
+        "VectSize_temo": {
+            "value": 93
+        },
         "evoType": {
             "value": "Evo21"
         },
@@ -117,6 +123,12 @@
         },
         "skip_steps": {
             "value": 1
+        }
+    },
+    "InputNS": {
+        "weights": {
+            "message": "Weights of driving inputs to NS from another NS",
+            "value": []
         }
     },
     "Nervous system": {
@@ -580,6 +592,12 @@
                 0.0
             ]
         },
+        "section sizes": {
+            "interneurons": {
+                "plot order": 0,
+                "value": 10
+            }
+        },
         "size": {
             "value": 10
         },
@@ -610,6 +628,12 @@
                 0.6109930486584372,
                 0.6109930486584372
             ]
+        }
+    },
+    "OutputNS": {
+        "weights": {
+            "message": "Weights of driving inputs from NS to another NS",
+            "value": []
         }
     },
     "Sensory": {
@@ -693,6 +717,12 @@
         },
         "outputGain": {
             "value": 1.3456551425662862
+        },
+        "resetAgentBody": {
+            "value": false
+        },
+        "rotation": {
+            "value": 0.0
         },
         "sensorM": {
             "value": 0.7279234416565863

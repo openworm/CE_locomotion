@@ -38,9 +38,20 @@ if (j.contains(key)){
         return j[key];
  }
 return default_;
-
-
 }
+
+template<class T>
+bool getJsonValTF(const json & j, const string & key, T & val, bool doValue = false)
+{
+
+if (j.contains(key)){
+        if (doValue) if (j[key].contains("value")) val = j[key]["value"];
+        return true;
+ }
+ 
+return false;
+}
+
 
 template<class T>
 vector<T> & append(vector<T> & v1, const vector<T> & v2)
@@ -224,6 +235,7 @@ void mergeJson(json & j1, const json & j2);
 class CmdArgs {
     vector<string> args;
 public:
+
     CmdArgs(int argc, const char* argv[]) 
         : args(argv, argv + argc) 
         {
@@ -237,12 +249,29 @@ public:
 
     //const vector<string>& all() const { return args; }
 
-    const string getArgVal(const string & str, const  string & defaultstr) const
+
+    template<class T>
+    bool getArgValT(const string & str, T & val) const
+    {
+ 
+      const int arg = getArgVal(str);
+      if (arg==-1) return false;
+     
+      if (std::is_same<T, string>::value) val = args[arg+1].c_str();
+      if (std::is_same<T, double>::value) val = stod(args[arg+1].c_str());
+      if (std::is_same<T, int>::value) val = stoi(args[arg+1].c_str());
+      if (std::is_same<T, long>::value) val = stol(args[arg+1].c_str());
+      if (std::is_same<T, bool>::value) val = stoi(args[arg+1].c_str());
+      return true;
+
+    }
+
+    const string getArgVal(const string & str, const  string & val) const
     { 
       for (int i = 1; i<args.size(); i+=2)
       //for (int i =0;i<args.size();i++)
         if (args[i]==str) return args[i+1];
-      return defaultstr;
+      return val;
     }
 
     const int getArgVal(const string & str) const

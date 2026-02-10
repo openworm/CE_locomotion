@@ -342,9 +342,16 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
 void Worm18::InitializeState(RandomState &rs)
 {
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    
     shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
     assert(w1parss!=nullptr);
-    if (w1parss->randomInitialState){
+
+    bool rIS = false;
+    getValCJ<bool>("randomInitialState", rIS);
+    
+
+    if (rIS){
+    //if (w1parss->randomInitialState){
         //assert(0);
     n.RandomizeCircuitState(-0.5, 0.5, rs);}
     else //n.RandomizeCircuitState(0.7, 0.7, rs);

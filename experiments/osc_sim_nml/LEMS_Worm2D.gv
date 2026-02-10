@@ -13,195 +13,195 @@ subgraph cluster_network {
 
     node [shape=rectangle]; Worm2DNet;
     #    Population PopND0 contains components of: Component(id=ND0 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dc9d79",fontcolor="black"]; PopND0;    
+    node [shape=ellipse,color="#85ce01",fontcolor="black"]; PopND0;    
     Worm2DNet -> PopND0 [len=1.00, arrowhead=diamond]
 
     #    Population PopND1 contains components of: Component(id=ND1 type=cellW2Dosc) 
-    node [shape=ellipse,color="#7db36b",fontcolor="black"]; PopND1;    
+    node [shape=ellipse,color="#c9084d",fontcolor="black"]; PopND1;    
     Worm2DNet -> PopND1 [len=1.00, arrowhead=diamond]
 
     #    Population PopND10 contains components of: Component(id=ND10 type=cellW2Dosc) 
-    node [shape=ellipse,color="#842248",fontcolor="white"]; PopND10;    
+    node [shape=ellipse,color="#03fc5b",fontcolor="black"]; PopND10;    
     Worm2DNet -> PopND10 [len=1.00, arrowhead=diamond]
 
     #    Population PopND11 contains components of: Component(id=ND11 type=cellW2Dosc) 
-    node [shape=ellipse,color="#697e3e",fontcolor="black"]; PopND11;    
+    node [shape=ellipse,color="#cc5210",fontcolor="black"]; PopND11;    
     Worm2DNet -> PopND11 [len=1.00, arrowhead=diamond]
 
     #    Population PopND12 contains components of: Component(id=ND12 type=cellW2Dosc) 
-    node [shape=ellipse,color="#a7428d",fontcolor="black"]; PopND12;    
+    node [shape=ellipse,color="#9b2d2f",fontcolor="white"]; PopND12;    
     Worm2DNet -> PopND12 [len=1.00, arrowhead=diamond]
 
     #    Population PopND13 contains components of: Component(id=ND13 type=cellW2Dosc) 
-    node [shape=ellipse,color="#b38fc7",fontcolor="black"]; PopND13;    
+    node [shape=ellipse,color="#fef673",fontcolor="black"]; PopND13;    
     Worm2DNet -> PopND13 [len=1.00, arrowhead=diamond]
 
     #    Population PopND14 contains components of: Component(id=ND14 type=cellW2Dosc) 
-    node [shape=ellipse,color="#4ccccb",fontcolor="black"]; PopND14;    
+    node [shape=ellipse,color="#e16299",fontcolor="black"]; PopND14;    
     Worm2DNet -> PopND14 [len=1.00, arrowhead=diamond]
 
     #    Population PopND15 contains components of: Component(id=ND15 type=cellW2Dosc) 
-    node [shape=ellipse,color="#3f13a8",fontcolor="black"]; PopND15;    
+    node [shape=ellipse,color="#ceac58",fontcolor="black"]; PopND15;    
     Worm2DNet -> PopND15 [len=1.00, arrowhead=diamond]
 
     #    Population PopND16 contains components of: Component(id=ND16 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dfa46f",fontcolor="black"]; PopND16;    
+    node [shape=ellipse,color="#e45815",fontcolor="black"]; PopND16;    
     Worm2DNet -> PopND16 [len=1.00, arrowhead=diamond]
 
     #    Population PopND17 contains components of: Component(id=ND17 type=cellW2Dosc) 
-    node [shape=ellipse,color="#208920",fontcolor="white"]; PopND17;    
+    node [shape=ellipse,color="#b8e00d",fontcolor="black"]; PopND17;    
     Worm2DNet -> PopND17 [len=1.00, arrowhead=diamond]
 
     #    Population PopND18 contains components of: Component(id=ND18 type=cellW2Dosc) 
-    node [shape=ellipse,color="#29d9df",fontcolor="black"]; PopND18;    
+    node [shape=ellipse,color="#0e9cd0",fontcolor="black"]; PopND18;    
     Worm2DNet -> PopND18 [len=1.00, arrowhead=diamond]
 
     #    Population PopND19 contains components of: Component(id=ND19 type=cellW2Dosc) 
-    node [shape=ellipse,color="#86708d",fontcolor="black"]; PopND19;    
+    node [shape=ellipse,color="#fd251d",fontcolor="black"]; PopND19;    
     Worm2DNet -> PopND19 [len=1.00, arrowhead=diamond]
 
     #    Population PopND2 contains components of: Component(id=ND2 type=cellW2Dosc) 
-    node [shape=ellipse,color="#956f1b",fontcolor="black"]; PopND2;    
+    node [shape=ellipse,color="#169b1a",fontcolor="white"]; PopND2;    
     Worm2DNet -> PopND2 [len=1.00, arrowhead=diamond]
 
     #    Population PopND20 contains components of: Component(id=ND20 type=cellW2Dosc) 
-    node [shape=ellipse,color="#36ecde",fontcolor="black"]; PopND20;    
+    node [shape=ellipse,color="#b99444",fontcolor="black"]; PopND20;    
     Worm2DNet -> PopND20 [len=1.00, arrowhead=diamond]
 
     #    Population PopND21 contains components of: Component(id=ND21 type=cellW2Dosc) 
-    node [shape=ellipse,color="#26156f",fontcolor="white"]; PopND21;    
+    node [shape=ellipse,color="#fa8066",fontcolor="black"]; PopND21;    
     Worm2DNet -> PopND21 [len=1.00, arrowhead=diamond]
 
     #    Population PopND22 contains components of: Component(id=ND22 type=cellW2Dosc) 
-    node [shape=ellipse,color="#fc52ca",fontcolor="black"]; PopND22;    
+    node [shape=ellipse,color="#3f42a4",fontcolor="black"]; PopND22;    
     Worm2DNet -> PopND22 [len=1.00, arrowhead=diamond]
 
     #    Population PopND23 contains components of: Component(id=ND23 type=cellW2Dosc) 
-    node [shape=ellipse,color="#939242",fontcolor="black"]; PopND23;    
+    node [shape=ellipse,color="#9ff6c9",fontcolor="black"]; PopND23;    
     Worm2DNet -> PopND23 [len=1.00, arrowhead=diamond]
 
     #    Population PopND3 contains components of: Component(id=ND3 type=cellW2Dosc) 
-    node [shape=ellipse,color="#cd013b",fontcolor="black"]; PopND3;    
+    node [shape=ellipse,color="#b80814",fontcolor="white"]; PopND3;    
     Worm2DNet -> PopND3 [len=1.00, arrowhead=diamond]
 
     #    Population PopND4 contains components of: Component(id=ND4 type=cellW2Dosc) 
-    node [shape=ellipse,color="#5ee169",fontcolor="black"]; PopND4;    
+    node [shape=ellipse,color="#e5a616",fontcolor="black"]; PopND4;    
     Worm2DNet -> PopND4 [len=1.00, arrowhead=diamond]
 
     #    Population PopND5 contains components of: Component(id=ND5 type=cellW2Dosc) 
-    node [shape=ellipse,color="#957129",fontcolor="black"]; PopND5;    
+    node [shape=ellipse,color="#49e0c9",fontcolor="black"]; PopND5;    
     Worm2DNet -> PopND5 [len=1.00, arrowhead=diamond]
 
     #    Population PopND6 contains components of: Component(id=ND6 type=cellW2Dosc) 
-    node [shape=ellipse,color="#1afe15",fontcolor="black"]; PopND6;    
+    node [shape=ellipse,color="#e59dce",fontcolor="black"]; PopND6;    
     Worm2DNet -> PopND6 [len=1.00, arrowhead=diamond]
 
     #    Population PopND7 contains components of: Component(id=ND7 type=cellW2Dosc) 
-    node [shape=ellipse,color="#83b389",fontcolor="black"]; PopND7;    
+    node [shape=ellipse,color="#4438f5",fontcolor="black"]; PopND7;    
     Worm2DNet -> PopND7 [len=1.00, arrowhead=diamond]
 
     #    Population PopND8 contains components of: Component(id=ND8 type=cellW2Dosc) 
-    node [shape=ellipse,color="#47e107",fontcolor="black"]; PopND8;    
+    node [shape=ellipse,color="#e2f401",fontcolor="black"]; PopND8;    
     Worm2DNet -> PopND8 [len=1.00, arrowhead=diamond]
 
     #    Population PopND9 contains components of: Component(id=ND9 type=cellW2Dosc) 
-    node [shape=ellipse,color="#0f4e7a",fontcolor="white"]; PopND9;    
+    node [shape=ellipse,color="#d634c1",fontcolor="black"]; PopND9;    
     Worm2DNet -> PopND9 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV0 contains components of: Component(id=NV0 type=cellW2Dosc) 
-    node [shape=ellipse,color="#891986",fontcolor="black"]; PopNV0;    
+    node [shape=ellipse,color="#f32c8d",fontcolor="black"]; PopNV0;    
     Worm2DNet -> PopNV0 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV1 contains components of: Component(id=NV1 type=cellW2Dosc) 
-    node [shape=ellipse,color="#5dd195",fontcolor="black"]; PopNV1;    
+    node [shape=ellipse,color="#c64bca",fontcolor="black"]; PopNV1;    
     Worm2DNet -> PopNV1 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV10 contains components of: Component(id=NV10 type=cellW2Dosc) 
-    node [shape=ellipse,color="#bbb224",fontcolor="black"]; PopNV10;    
+    node [shape=ellipse,color="#9b26a1",fontcolor="black"]; PopNV10;    
     Worm2DNet -> PopNV10 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV11 contains components of: Component(id=NV11 type=cellW2Dosc) 
-    node [shape=ellipse,color="#844112",fontcolor="white"]; PopNV11;    
+    node [shape=ellipse,color="#41ebb5",fontcolor="black"]; PopNV11;    
     Worm2DNet -> PopNV11 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV12 contains components of: Component(id=NV12 type=cellW2Dosc) 
-    node [shape=ellipse,color="#c5609e",fontcolor="black"]; PopNV12;    
+    node [shape=ellipse,color="#d742da",fontcolor="black"]; PopNV12;    
     Worm2DNet -> PopNV12 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV13 contains components of: Component(id=NV13 type=cellW2Dosc) 
-    node [shape=ellipse,color="#96b741",fontcolor="black"]; PopNV13;    
+    node [shape=ellipse,color="#36cd96",fontcolor="black"]; PopNV13;    
     Worm2DNet -> PopNV13 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV14 contains components of: Component(id=NV14 type=cellW2Dosc) 
-    node [shape=ellipse,color="#fe3b8b",fontcolor="black"]; PopNV14;    
+    node [shape=ellipse,color="#6a4756",fontcolor="black"]; PopNV14;    
     Worm2DNet -> PopNV14 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV15 contains components of: Component(id=NV15 type=cellW2Dosc) 
-    node [shape=ellipse,color="#26b7b3",fontcolor="black"]; PopNV15;    
+    node [shape=ellipse,color="#1c50d0",fontcolor="black"]; PopNV15;    
     Worm2DNet -> PopNV15 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV16 contains components of: Component(id=NV16 type=cellW2Dosc) 
-    node [shape=ellipse,color="#7a98f9",fontcolor="black"]; PopNV16;    
+    node [shape=ellipse,color="#95ce31",fontcolor="black"]; PopNV16;    
     Worm2DNet -> PopNV16 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV17 contains components of: Component(id=NV17 type=cellW2Dosc) 
-    node [shape=ellipse,color="#740563",fontcolor="white"]; PopNV17;    
+    node [shape=ellipse,color="#98023b",fontcolor="white"]; PopNV17;    
     Worm2DNet -> PopNV17 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV18 contains components of: Component(id=NV18 type=cellW2Dosc) 
-    node [shape=ellipse,color="#adc8a3",fontcolor="black"]; PopNV18;    
+    node [shape=ellipse,color="#1882e9",fontcolor="black"]; PopNV18;    
     Worm2DNet -> PopNV18 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV19 contains components of: Component(id=NV19 type=cellW2Dosc) 
-    node [shape=ellipse,color="#316331",fontcolor="white"]; PopNV19;    
+    node [shape=ellipse,color="#037052",fontcolor="white"]; PopNV19;    
     Worm2DNet -> PopNV19 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV2 contains components of: Component(id=NV2 type=cellW2Dosc) 
-    node [shape=ellipse,color="#e5679d",fontcolor="black"]; PopNV2;    
+    node [shape=ellipse,color="#7d0c89",fontcolor="black"]; PopNV2;    
     Worm2DNet -> PopNV2 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV20 contains components of: Component(id=NV20 type=cellW2Dosc) 
-    node [shape=ellipse,color="#9ddda8",fontcolor="black"]; PopNV20;    
+    node [shape=ellipse,color="#dd4be9",fontcolor="black"]; PopNV20;    
     Worm2DNet -> PopNV20 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV21 contains components of: Component(id=NV21 type=cellW2Dosc) 
-    node [shape=ellipse,color="#962d05",fontcolor="white"]; PopNV21;    
+    node [shape=ellipse,color="#0fd887",fontcolor="black"]; PopNV21;    
     Worm2DNet -> PopNV21 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV22 contains components of: Component(id=NV22 type=cellW2Dosc) 
-    node [shape=ellipse,color="#5dc001",fontcolor="black"]; PopNV22;    
+    node [shape=ellipse,color="#ae2ffe",fontcolor="black"]; PopNV22;    
     Worm2DNet -> PopNV22 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV23 contains components of: Component(id=NV23 type=cellW2Dosc) 
-    node [shape=ellipse,color="#9c7d31",fontcolor="black"]; PopNV23;    
+    node [shape=ellipse,color="#cdb08b",fontcolor="black"]; PopNV23;    
     Worm2DNet -> PopNV23 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV3 contains components of: Component(id=NV3 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dd287d",fontcolor="black"]; PopNV3;    
+    node [shape=ellipse,color="#1a4c81",fontcolor="white"]; PopNV3;    
     Worm2DNet -> PopNV3 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV4 contains components of: Component(id=NV4 type=cellW2Dosc) 
-    node [shape=ellipse,color="#d9ecce",fontcolor="black"]; PopNV4;    
+    node [shape=ellipse,color="#24a25a",fontcolor="black"]; PopNV4;    
     Worm2DNet -> PopNV4 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV5 contains components of: Component(id=NV5 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dfd171",fontcolor="black"]; PopNV5;    
+    node [shape=ellipse,color="#c606eb",fontcolor="black"]; PopNV5;    
     Worm2DNet -> PopNV5 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV6 contains components of: Component(id=NV6 type=cellW2Dosc) 
-    node [shape=ellipse,color="#10e706",fontcolor="black"]; PopNV6;    
+    node [shape=ellipse,color="#08d75c",fontcolor="black"]; PopNV6;    
     Worm2DNet -> PopNV6 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV7 contains components of: Component(id=NV7 type=cellW2Dosc) 
-    node [shape=ellipse,color="#092a6d",fontcolor="white"]; PopNV7;    
+    node [shape=ellipse,color="#8dcb44",fontcolor="black"]; PopNV7;    
     Worm2DNet -> PopNV7 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV8 contains components of: Component(id=NV8 type=cellW2Dosc) 
-    node [shape=ellipse,color="#b6f437",fontcolor="black"]; PopNV8;    
+    node [shape=ellipse,color="#cc15a1",fontcolor="black"]; PopNV8;    
     Worm2DNet -> PopNV8 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV9 contains components of: Component(id=NV9 type=cellW2Dosc) 
-    node [shape=ellipse,color="#cc9caa",fontcolor="black"]; PopNV9;    
+    node [shape=ellipse,color="#7f729a",fontcolor="black"]; PopNV9;    
     Worm2DNet -> PopNV9 [len=1.00, arrowhead=diamond]
 
 }
@@ -212,148 +212,148 @@ subgraph cluster_comps {
     node [style=filled,color=white];
     label = "Components";
 
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND0 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 5.2603668807223425, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND0 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND0 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 0.8805864868469708, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND0 (cellW2Dosc)";
 
     "PopND0" -> "ND0 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND1 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 11.152206109931658, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND1 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND1 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 7.004532375478068, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND1 (cellW2Dosc)";
 
     "PopND1" -> "ND1 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND10 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 64.1787591728155, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND10 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND10 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 62.12004537315795, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND10 (cellW2Dosc)";
 
     "PopND10" -> "ND10 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND11 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 70.07059840202481, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND11 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND11 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 68.24399126178903, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND11 (cellW2Dosc)";
 
     "PopND11" -> "ND11 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND12 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 75.96243763123412, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND12 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND12 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 74.36793715042013, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND12 (cellW2Dosc)";
 
     "PopND12" -> "ND12 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND13 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 81.85427686044345, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND13 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND13 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 80.49188303905123, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND13 (cellW2Dosc)";
 
     "PopND13" -> "ND13 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND14 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 87.74611608965276, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND14 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND14 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 86.61582892768233, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND14 (cellW2Dosc)";
 
     "PopND14" -> "ND14 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND15 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 93.63795531886208, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND15 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND15 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 92.73977481631343, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND15 (cellW2Dosc)";
 
     "PopND15" -> "ND15 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND16 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 99.5297945480714, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND16 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND16 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 98.86372070494453, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND16 (cellW2Dosc)";
 
     "PopND16" -> "ND16 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND17 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 105.4216337772807, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND17 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND17 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 104.98766659357563, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND17 (cellW2Dosc)";
 
     "PopND17" -> "ND17 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND18 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 111.31347300649003, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND18 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND18 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 111.11161248220672, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND18 (cellW2Dosc)";
 
     "PopND18" -> "ND18 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND19 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 117.20531223569934, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND19 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND19 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 117.23555837083782, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND19 (cellW2Dosc)";
 
     "PopND19" -> "ND19 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND2 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 17.044045339140972, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND2 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND2 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 13.128478264109166, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND2 (cellW2Dosc)";
 
     "PopND2" -> "ND2 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND20 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 123.09715146490866, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND20 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND20 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 123.35950425946892, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND20 (cellW2Dosc)";
 
     "PopND20" -> "ND20 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND21 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 128.98899069411797, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND21 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND21 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 129.48345014810002, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND21 (cellW2Dosc)";
 
     "PopND21" -> "ND21 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND22 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 134.88082992332727, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND22 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND22 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 135.6073960367311, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND22 (cellW2Dosc)";
 
     "PopND22" -> "ND22 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND23 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 140.7726691525366, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND23 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND23 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 141.73134192536222, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND23 (cellW2Dosc)";
 
     "PopND23" -> "ND23 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND3 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 22.93588456835029, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND3 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND3 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 19.25242415274026, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND3 (cellW2Dosc)";
 
     "PopND3" -> "ND3 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND4 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 28.827723797559607, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND4 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND4 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 25.37637004137136, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND4 (cellW2Dosc)";
 
     "PopND4" -> "ND4 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND5 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 34.719563026768924, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND5 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND5 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 31.500315930002458, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND5 (cellW2Dosc)";
 
     "PopND5" -> "ND5 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND6 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 40.611402255978234, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND6 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND6 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 37.624261818633556, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND6 (cellW2Dosc)";
 
     "PopND6" -> "ND6 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND7 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 46.50324148518755, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND7 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND7 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 43.748207707264655, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND7 (cellW2Dosc)";
 
     "PopND7" -> "ND7 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND8 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 52.39508071439687, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND8 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND8 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 49.87215359589575, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND8 (cellW2Dosc)";
 
     "PopND8" -> "ND8 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND9 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 58.286919943606186, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND9 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>ND9 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 55.99609948452685, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "ND9 (cellW2Dosc)";
 
     "PopND9" -> "ND9 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV0 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 0, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV0 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV0 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 0, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV0 (cellW2Dosc)";
 
     "PopNV0" -> "NV0 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV1 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 5.891839229209316, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV1 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV1 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 6.123945888631098, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV1 (cellW2Dosc)";
 
     "PopNV1" -> "NV1 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV10 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 58.91839229209316, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV10 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV10 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 61.23945888631098, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV10 (cellW2Dosc)";
 
     "PopNV10" -> "NV10 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV11 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 64.81023152130247, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV11 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV11 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 67.36340477494207, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV11 (cellW2Dosc)";
 
     "PopNV11" -> "NV11 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV12 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 70.70207075051178, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV12 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV12 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 73.48735066357317, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV12 (cellW2Dosc)";
 
     "PopNV12" -> "NV12 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV13 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 76.5939099797211, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV13 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV13 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 79.61129655220427, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV13 (cellW2Dosc)";
 
     "PopNV13" -> "NV13 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV14 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 82.48574920893041, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV14 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV14 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 85.73524244083536, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV14 (cellW2Dosc)";
 
     "PopNV14" -> "NV14 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV15 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 88.37758843813974, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV15 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV15 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 91.85918832946646, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV15 (cellW2Dosc)";
 
     "PopNV15" -> "NV15 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV16 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 94.26942766734905, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV16 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV16 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 97.98313421809756, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV16 (cellW2Dosc)";
 
     "PopNV16" -> "NV16 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV17 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 100.16126689655836, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV17 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV17 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 104.10708010672866, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV17 (cellW2Dosc)";
 
     "PopNV17" -> "NV17 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV18 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 106.05310612576768, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV18 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV18 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 110.23102599535976, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV18 (cellW2Dosc)";
 
     "PopNV18" -> "NV18 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV19 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 111.944945354977, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV19 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV19 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 116.35497188399086, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV19 (cellW2Dosc)";
 
     "PopNV19" -> "NV19 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV2 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 11.783678458418631, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV2 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV2 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 12.247891777262195, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV2 (cellW2Dosc)";
 
     "PopNV2" -> "NV2 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV20 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 117.83678458418632, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV20 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV20 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 122.47891777262195, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV20 (cellW2Dosc)";
 
     "PopNV20" -> "NV20 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV21 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 123.72862381339563, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV21 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV21 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 128.60286366125305, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV21 (cellW2Dosc)";
 
     "PopNV21" -> "NV21 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV22 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 129.62046304260494, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV22 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV22 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 134.72680954988414, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV22 (cellW2Dosc)";
 
     "PopNV22" -> "NV22 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV23 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 135.51230227181426, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV23 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV23 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 140.85075543851525, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV23 (cellW2Dosc)";
 
     "PopNV23" -> "NV23 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV3 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 17.675517687627945, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV3 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV3 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 18.371837665893292, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV3 (cellW2Dosc)";
 
     "PopNV3" -> "NV3 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV4 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 23.567356916837262, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV4 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV4 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 24.49578355452439, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV4 (cellW2Dosc)";
 
     "PopNV4" -> "NV4 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV5 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 29.45919614604658, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV5 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV5 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 30.61972944315549, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV5 (cellW2Dosc)";
 
     "PopNV5" -> "NV5 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV6 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 35.35103537525589, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV6 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV6 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 36.743675331786584, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV6 (cellW2Dosc)";
 
     "PopNV6" -> "NV6 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV7 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 41.24287460446521, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV7 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV7 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 42.86762122041768, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV7 (cellW2Dosc)";
 
     "PopNV7" -> "NV7 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV8 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 47.134713833674525, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV8 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV8 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 48.99156710904878, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV8 (cellW2Dosc)";
 
     "PopNV8" -> "NV8 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
-    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV9 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.4346611061018528, phase = 53.02655306288384, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV9 (cellW2Dosc)";
+    node [shape=ellipse label=<<table border="0" cellborder="0"><tr><td>NV9 (cellW2Dosc)</td></tr><tr><td><font color="#666666">amp = 1, freq = 0.516020845318472, phase = 55.11551299767988, <br/>C = 1.0E-9 F</font></td></tr></table>>]; "NV9 (cellW2Dosc)";
 
     "PopNV9" -> "NV9 (cellW2Dosc)" [label="1",len=1.00, arrowhead=diamond]
 }

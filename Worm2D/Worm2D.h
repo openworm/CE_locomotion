@@ -166,7 +166,35 @@ class Worm2Dbody : virtual public DataWriter
 
 };
 
-class Worm2Dbase : virtual public DataWriter
+
+class baseParameters
+{
+
+    public:
+    template<class T>
+    bool getValCJ(const string & name_str, T & val)
+    {
+        return getValCJ<T>(name_str, val, itsJson);
+    }
+
+    template<class T>
+    bool getValCJ(const string & name_str, T & val, const json & j)
+    {
+        if (itsCmdArgs->getArgValT<T>("--" + name_str, val)) return true;
+        if (!j.empty() && j.contains("Worm")) 
+        if (getJsonValTF<T>(j["Worm"], name_str, val, true)) return true;
+        return false;
+    }
+
+
+    protected:
+    json itsJson;
+    shared_ptr<const CmdArgs> itsCmdArgs;
+    
+};
+
+
+class Worm2Dbase : public baseParameters, virtual public DataWriter
 {
 
 public:
@@ -214,9 +242,15 @@ void incSimTimes();
 //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
-{W2Dbaseparameters1b->setPars(cmd);}
+{
+    itsCmdArgs = cmd;    
+    W2Dbaseparameters1b->setPars(cmd);
 
-//shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+}
+
+// not this, shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
+
+
 shared_ptr<W2Dparameters> W2Dbaseparameters1b;
 
 void zeroAllInputs(){

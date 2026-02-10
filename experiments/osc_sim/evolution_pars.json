@@ -1,8 +1,10 @@
 {
     "Duration": 50,
-    "PopulationSize": 22,
-    "randomseed": 4012128,
-    "MaxGenerations": 100,
-    "Transient": 30,
-    "CheckpointInterval": 5
+    "PopulationSize": 62,
+    "randomseed": 4077,
+    "MaxGenerations": 10,
+    "Transient": 0,
+    "CheckpointInterval": 5,
+    "EvolutionType": "Evo21",
+    "doOrigMuscInput": false
 }
