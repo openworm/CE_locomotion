@@ -57,7 +57,7 @@ jobs:
 
     - name: Install Python requirements
       run: |
-        pip install setuptools # FOR NEURON 8.2.6...
+        pip install setuptools --upgrade # needed for Neuron on py >=3.12
         pip install NEURON==8.2.6
         pip install OSBModelValidation
         pip install pyNeuroML
