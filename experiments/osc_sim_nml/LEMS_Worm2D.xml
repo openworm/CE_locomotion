@@ -15,6 +15,7 @@
     <Include file="Simulation.xml"/>
 
     <Include file="cell_W2Dosc.xml"/>
+    <Include file="syn_W2D.xml"/>
     <Include file="cell_W2Dosc_cells.xml"/>
     <Include file="Worm2D.net.nml"/>
 

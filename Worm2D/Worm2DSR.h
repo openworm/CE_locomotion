@@ -89,7 +89,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
 {
     public:
 
-json itsJson;
+//json itsJson;
 const vector<doubDoub> genPhenLims;
 
 Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
