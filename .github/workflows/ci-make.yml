@@ -63,6 +63,9 @@ jobs:
         pip install numpy matplotlib
         pip install ruff 
         pip install scipy
+
+        which nrnivmodl
+        nrnivmodl 
         
     - name: Test directly running main program
       run: |
