@@ -58,6 +58,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRunCO
     rm -rf exampleRunW2DCE
     rm -rf experiments/izq_runs_nets/103 experiments/izq_runs_nets_nml/103 experiments/izq_runs_nets_nml_musc/103
+    rm -rf experiments/izq_runs_nets/23 experiments/izq_runs_nets_nml/23 experiments/izq_runs_nets_nml_musc/23
     rm -rf testruns/exW2DSR testruns/exW2DSR_nml testruns/exW2DSR_nml_musc
     rm -rf testruns/exW2D18
     rm -rf testruns/exW2DCO

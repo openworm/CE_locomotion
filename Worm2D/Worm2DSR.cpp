@@ -1429,6 +1429,15 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 
 }
 
+void InputSwitcher::construct(const json & j)
+{
+   if (j.contains("InputSwitcher"))
+ {
+
+  
+ }
+
+}
 
 void Sensor::construct(const json & j)
 {

@@ -521,7 +521,7 @@ void Worm2DCE::setForward()
   sr_ptr->SR_B_gain = pheno_B_gain;
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
-  if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_A_gain = 0.0;
+  if (sr_ptr->srcepars->zeroGainsType == 0) sr_ptr->SR_A_gain = 0.0;
   //AVA_output =  1;
   //AVB_output =  0;
   //sr_ptr->setWeights();

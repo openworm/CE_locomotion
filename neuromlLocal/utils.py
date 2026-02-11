@@ -43,13 +43,13 @@ plot_formats["Net21"] = {}
 plot_formats["Net21"]["fig_titles"] = ["Neurons", "Muscles"]
 plot_formats["Net21"]["data_sizes"] = [49, 48]
 plot_formats["Net21"]["fig_labels"] = ["Neu", "Mu"]
-plot_formats["Net21"]["plot_cell_names"] = ["AS", "DA", "DB", "DD", "VA", "VB", "VD"]
+plot_formats["Net21"]["plot_cell_names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"]
 plot_formats["Net21"]["plot_col_divs"] = [4, 3]
 plot_formats["Net21"]["plot_time"] = 10
 plot_formats["Net21"]["worm_plot_time"] = 2
 plot_formats["Net21"]["do_body_plot"] = True
 plot_formats["Net21"]["do_curv_plot"] = True
-
+plot_formats["Net21"]["plot_cell_unit"] = 1
 
 plot_formats["CE"] = {}
 plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]
@@ -141,6 +141,8 @@ default_cells["Net21"]["add_PG"] = False
 default_cells["CE"]["add_PG"] = True
 default_cells["RS18"]["add_PG"] = False
 default_cells["CO"]["add_PG"] = False
+
+
 
 default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
 default_cells["CE"]["names"] = ["DA", "DB", "DD", "VD", "VA", "VB"] * 10
