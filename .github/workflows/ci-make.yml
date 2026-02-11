@@ -57,12 +57,15 @@ jobs:
 
     - name: Install Python requirements
       run: |
-        pip install NEURON==8.2.6
-        pip install OSBModelValidation
-        pip install pyNeuroML
-        pip install numpy matplotlib
-        pip install ruff 
-        pip install scipy
+        pip install setuptools --upgrade # needed for Neuron on py >=3.12
+        pip install NEURON==8.2.7
+        pip install OSBModelValidation pyNeuroML
+        pip install numpy matplotlib ruff  scipy
+        
+        pip list
+
+        which nrnivmodl
+        nrnivmodl 
         
     - name: Test directly running main program
       run: |
