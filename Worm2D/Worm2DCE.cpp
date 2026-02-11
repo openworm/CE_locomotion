@@ -526,7 +526,7 @@ void Worm2DCE::setForward()
   //AVB_output =  0;
   //sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  0;
-  W2DCEpars1->AVB_output =  W2DCEpars1->AB_output_level;
+  W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
 }
 
 void Worm2DCE::setBackward()
@@ -540,7 +540,7 @@ void Worm2DCE::setBackward()
   //AVB_output =  1;
 
   //sr_ptr->setWeights();
-  W2DCEpars1->AVA_output =  W2DCEpars1->AB_output_level;
+  W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
   W2DCEpars1->AVB_output =  0;
 }
 
@@ -792,17 +792,20 @@ void Worm2DCE::setBodyInputOrig(){
 
 void Worm2DCE::assignExternalInput(){
 
-  externalInputs[0] = W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level;
-  externalInputs[1] = W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level;
+  //externalInputs[0] = W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level;
+  //externalInputs[1] = W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level;
+  externalInputs[0] = W2DCEpars1->AVA_output;//*W2DCEpars1->AB_output_level;
+  externalInputs[1] = W2DCEpars1->AVB_output;//*W2DCEpars1->AB_output_level;
 }
 
 
 void Worm2DCE::makeExternalInputConn()
 {
 
+  //const double & weightval = W2DCEpars1->AB_output_level;
   vector<toFromWeight>  vec1;
   for (int i = 1; i <= par1.N_units; i++){
-    double weight = 1.0;
+    double weight = W2DCEpars1->AB_output_level;
     {int from_inp = 1;
     {int to_neuron = nn(DA,i);
     toFromWeight tv({from_inp,weight},to_neuron);
