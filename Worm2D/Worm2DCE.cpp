@@ -38,6 +38,14 @@ void Worm2DCE::initConst()
       sr_ptr->setWeights();
       sr_ptr->setNSWeights(*this);
 
+      vector<vector<int> > input_indvec;
+      vector<vector<double> > input_valvec;
+      input_indvec.push_back(vector<int>({0,1}));
+      input_valvec.push_back(vector<double>({0,1}));
+      input_indvec.push_back(vector<int>({0,1}));
+      input_valvec.push_back(vector<double>({1,0}));
+      InputSwitcher::inds.swap(input_indvec);
+      InputSwitcher::vals.swap(input_valvec);
 
       setUpMuscleConn();
       setUpBodyConn();
@@ -65,6 +73,8 @@ Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
 
   W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
+ 
+  
 
   NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
   NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
@@ -160,6 +170,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(c
 
 WormCE::WormCE(json j, const string & filename_):WormCE()
 {
+   
     W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
     setParsFromFile(filename_);
@@ -184,6 +195,8 @@ WormCE::WormCE(json j):WormCE()
   assert(n.maxelecconns == 2);
 
 
+ 
+ 
   W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
   
@@ -527,6 +540,11 @@ void Worm2DCE::setForward()
   //sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  0;
   W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
+  
+  setInputOnce(0);
+
+  //assignExternalInputOnce(0,0);
+  //assignExternalInputOnce(1,1);
 }
 
 void Worm2DCE::setBackward()
@@ -542,6 +560,11 @@ void Worm2DCE::setBackward()
   //sr_ptr->setWeights();
   W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
   W2DCEpars1->AVB_output =  0;
+
+  setInputOnce(1);
+
+  //assignExternalInputOnce(0,1);
+  //assignExternalInputOnce(1,0);
 }
 
 
@@ -792,10 +815,14 @@ void Worm2DCE::setBodyInputOrig(){
 
 void Worm2DCE::assignExternalInput(){
 
+  return;
+
+  
   //externalInputs[0] = W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level;
   //externalInputs[1] = W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level;
-  externalInputs[0] = W2DCEpars1->AVA_output;//*W2DCEpars1->AB_output_level;
-  externalInputs[1] = W2DCEpars1->AVB_output;//*W2DCEpars1->AB_output_level;
+  
+  //externalInputs[0] = W2DCEpars1->AVA_output;//*W2DCEpars1->AB_output_level;
+  //externalInputs[1] = W2DCEpars1->AVB_output;//*W2DCEpars1->AB_output_level;
 }
 
 

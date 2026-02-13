@@ -685,7 +685,7 @@ void Worm2Dbase::addParsToJson(json & j)
     W2Dbaseparameters1b->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
-
+    InputSwitcher::addParsToJson(j);
     addEvolvableToJson(j);
 }
 
@@ -1556,3 +1556,121 @@ dBodyConnvec.swap(dBodyConnvec1);
 }
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}
+
+
+
+void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInputs)
+{
+  vector<int> & indvec = inds[ind];
+  vector<double> & valvec = vals[ind];
+  for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
+
+}
+
+void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double> & externalInputs)
+{
+
+    const json & j2 = j["input_switcher"]["inputs"]["value"];
+    for (auto it = j2.begin(); it != j2.end(); ++it)
+    {
+      //vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
+      //vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+      const json & j3 = j2["value"];
+      for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
+      {
+        //indvec.push_back(it2->at("ind").get<int>());
+        //valvec.push_back(it2->at("val").get<double>());
+      } 
+
+    }
+
+}
+
+
+
+void InputSwitcher::addParsToJson(json & j) const
+{
+    if (inds.size()<=0) return;
+
+    j["input_switcher"]["size"]["value"] = inds.size();
+    if (timeperiods.size()>0){
+    j["input_switcher"]["time_offset"]["value"] = time_offset;
+        json timeperiods_j = json::array();
+        for (int i=0;i<timeperiods.size();i++)
+            timeperiods_j.push_back({{"ind", i}, {"val", timeperiods[i]}});
+    j["input_switcher"]["time_periods"]["value"] = timeperiods_j;
+    }
+
+    {
+    json arr1 = json::array();
+    for (int i=0;i<inds.size();i++)
+    {
+    const vector<int> & indvec = inds[i];
+    const vector<double> & valvec = vals[i];
+    json arr2 = json::array();
+    for (int j=0;j<indvec.size();j++)
+    arr2.push_back({{"ind", indvec[i]}, {"val", valvec[i]}});
+    arr1.push_back({{"value", arr2},{"ind", i}});
+    }
+    j["input_switcher"]["inputs"]["value"] = arr1;
+
+    }
+}
+
+
+void InputSwitcher::construct(const json & j)
+{
+   if (!j.contains("input_switcher")) return;
+ 
+
+  int size = j["input_switcher"]["size"]["value"].get<int>();
+
+  if (j["input_switcher"].contains("time_periods"))
+  {
+  time_offset =  j["input_switcher"]["time_offset"]["value"].get<double>();
+  {
+  
+  vector<double> periods1(size, 123456);
+  total_period = 0;
+  const json & j2 = j["input_switcher"]["time_periods"]["value"];
+  for (auto it = j2.begin(); it != j2.end(); ++it)
+  {
+    double period = it->at("val").get<double>();
+    total_period += period;
+    periods1[it->at("ind").get<int>()-1] = period;
+  }
+
+  for (int i=0;i<periods1.size();i++) assert(check123456(periods1[i]));
+
+    timeperiods.swap(periods1);
+
+  } 
+  }
+
+  {
+  
+    vector<vector<int> > inds1(size);
+    vector<vector<double> > vals1(size);
+    const json & j2 = j["input_switcher"]["inputs"]["value"];
+    for (auto it = j2.begin(); it != j2.end(); ++it)
+    {
+      vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
+      vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+      const json & j3 = it->at("value");
+      for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
+      {
+        indvec.push_back(it2->at("ind").get<int>());
+        valvec.push_back(it2->at("val").get<double>());
+      } 
+
+    }
+
+    inds.swap(inds1);
+    vals.swap(vals1);
+
+  
+  }
+
+ 
+
+}

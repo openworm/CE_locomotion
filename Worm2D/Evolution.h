@@ -1191,24 +1191,33 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
 
     //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
 
-    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
-    assert(w1!=nullptr);
+    //shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
+    //assert(w1!=nullptr);
 
     //w1.show();
     //assert(0);
 
     if (direction == 1){
-    w1->AVA_output =  0.0;
-    w1->AVB_output =  1.0;
+        w.assignExternalInputOnce(0,0);
+        w.assignExternalInputOnce(1,1);
+    //w1->AVA_output =  0.0;
+    //w1->AVB_output =  1.0;
     }
     else if  (direction == -1) {
-        w1->AVA_output =  1.0;
-        w1->AVB_output =  0.0; // Command Interneuron Activation Backward
+        w.assignExternalInputOnce(0,1);
+        w.assignExternalInputOnce(1,0);
+
+        //w1->AVA_output =  1.0;
+        //w1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
     else if  (direction == 2)
     {
-    w1->AVA_output =  0.0;
-    w1->AVB_output =  0.0; 
+
+        w.assignExternalInputOnce(0,0);
+        w.assignExternalInputOnce(1,0);
+
+    //w1->AVA_output =  0.0;
+    //w1->AVB_output =  0.0; 
     }
     else assert(0 && "direction not set properly");
 

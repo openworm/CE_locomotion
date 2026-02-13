@@ -5,9 +5,10 @@ class baseParameters
 {
 
     public:
-    baseParameters(shared_ptr<json> itsJson_, shared_ptr<const CmdArgs> itsCmdArgs_)
+    baseParameters(const json & itsJson_, shared_ptr<const CmdArgs> itsCmdArgs_)
     :itsJson(itsJson_),itsCmdArgs(itsCmdArgs_){}
 
+    baseParameters(){}
     template<class T>
     bool getValCJ(const string & name_str, T & val)
     {
@@ -25,8 +26,8 @@ class baseParameters
 
 
     protected:
-    //json itsJson;
-    shared_ptr<json> itsJson = nullptr;
+    json itsJson;
+    //shared_ptr<json> itsJson = nullptr;
     shared_ptr<const CmdArgs> itsCmdArgs = nullptr;
     
 };
@@ -53,9 +54,8 @@ class Worm2DSRm : public baseParameters, public Worm2Dm, public Worm2DSRb
 {
 public:
 //Worm2DSRm(json & j, shared_ptr<const CmdArgs> cmd);
-//Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd);
+Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd);
 Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
-Worm2DSRm(shared_ptr<json> j, shared_ptr<const CmdArgs> cmd);
 
 //void setWormPars(shared_ptr<const CmdArgs> cmd){Worm2Dm::setWormPars(cmd);}
 
@@ -77,7 +77,7 @@ const string getModelName() {return "W2DSRm";}
 class Worm2DSR : public baseParameters, public Worm2D, public Worm2DSRb
 {
 public:
-Worm2DSR(shared_ptr<json> j, shared_ptr<const CmdArgs> cmd);
+Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd);
 //Worm2DSR(json & j);
 Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
@@ -123,7 +123,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
 //json itsJson;
 const vector<doubDoub> genPhenLims;
 
-Worm2DSRE(shared_ptr<json> j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
 //Worm2DSR(json & j);
 Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
@@ -145,7 +145,7 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 //vector<toFromInt> chem_weights_evo, elec_weights_evo;
 //vector<intPair> biases_evo, taus_evo, gains_evo;
 //vector<double> getInitGeno_old();
-void addParsToJson(json & j){j = *itsJson;}
+void addParsToJson(json & j){j = itsJson;}
 vector<double> getInitGeno_old();
 void setParsFromPheno_old(const TVector<double> &pheno);
 
@@ -229,17 +229,6 @@ vector<SensorPars> spvec;
 //int timer;
 };
 
-class InputSwitcher
-{
-
-  void construct(const json & j);
-
-
-  protected:
-  vector<double> timeperiods;
-
-
-};
 
 class WormCO2DSR : public Worm2DSRE, public Sensor
 {
@@ -247,13 +236,12 @@ public:
 //WormCO18Full(const string & filename_, shared_ptr<const CmdArgs> cmd_):    
 //Worm2DSR(jsonfilename_,cmd){}
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
-WormCO2DSR(make_shared<json>(getJsonFromFile(jsonfilename_)),cmd){}
+WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
-WormCO2DSR(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd, bool callInit = false)
-:Worm2Dm(getIzqPars(*j_ptr),getNS(cmd, *j_ptr), shared_ptr<gradParameters>(make_shared<gradParameters>())),
-  Worm2DSRE(j_ptr,cmd,callInit),
-  Sensor(*j_ptr, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
+WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),
+  Worm2DSRE(j,cmd,callInit),Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   {}
 
 void addParsToJson(json & j){

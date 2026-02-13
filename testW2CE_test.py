@@ -6,7 +6,7 @@ run(
     duration=10,
     transient=10,
     maxGens=10,
-    popSize=126,
+    popSize=26,
     RandSeed=939712,
     modelName="W2DCE",
     modelFolder="Worm2D",

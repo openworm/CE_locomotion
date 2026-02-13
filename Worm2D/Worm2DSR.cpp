@@ -12,19 +12,27 @@ Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
-Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_),baseParameters(nullptr,nullptr){} 
+Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
 
 Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
-Worm2DSR(make_shared<json>(getJsonFromFile(jsonfilename_)),cmd){}
+Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
+Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
+Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
-Worm2DSR::Worm2DSR(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(*j_ptr),
-  getNS(cmd, *j_ptr), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2D(getIzqPars(*j_ptr) ,nullptr), Worm2DSRb(*j_ptr),baseParameters(j_ptr,cmd)
+Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
+  Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
+  {
+    if (callInit) writeOrigGen(cmd);
+  }
+  
+
+Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
+  Worm2D(getIzqPars(j) ,nullptr), Worm2DSRb(j),baseParameters(j,cmd)
 {
-
-    const json & j = *j_ptr;
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
@@ -46,21 +54,16 @@ Worm2DSR::Worm2DSR(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd):Worm2D
     //setUpMuscleConn(j);
     //setUpBodyConn(j);
     //makeExternalInputConnFromJson(j);
-  
+
 }
 
-
-
 Worm2DSRm::Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
-Worm2DSRm(make_shared<json>(getJsonFromFile(jsonfilename_)), cmd){}
+Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 
-
-Worm2DSRm::Worm2DSRm(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(*j_ptr),
-  getNS(cmd, *j_ptr), shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()), 0),
- Worm2DSRb(*j_ptr),baseParameters(j_ptr,cmd)
+Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()), 0),
+ Worm2DSRb(j),baseParameters(j,cmd)
 {
-
-    const json & j = *j_ptr;
 
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setWormPars(cmd);
@@ -75,24 +78,6 @@ Worm2DSRm::Worm2DSRm(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd):Worm
 }
 
 
-Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
-Worm2DSRE(make_shared<json>(getJsonFromFile(jsonfilename_)),cmd){}
-
-
-Worm2DSRE::Worm2DSRE(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd, bool callInit)
-:Worm2Dm(getIzqPars(*j_ptr), getNS(cmd, *j_ptr), 
-shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2DSR(j_ptr,cmd),genPhenLims(makeVals())//,itsJson(j)
-  {
-    if (callInit) writeOrigGen(cmd);
-  }
-  
-
-
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-///////////////////////////////////////////////
-/////////////////////////////////////////////////
 
 
 void Worm2DSR::addParsToJson(json & j)
@@ -303,7 +288,7 @@ void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
 
-  j["Evolvable"]["value"] = (*itsJson)["Evolvable"]["value"];
+  j["Evolvable"]["value"] = itsJson["Evolvable"]["value"];
 
   return;
 
@@ -441,12 +426,8 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 vector<doubDoub> Worm2DSRE::makeVals()
 {
 
-  //*itsJson = j;
-  //*itsJson = make_shared<json>(j);
-
-  //*itsJson = j;
-
-  const json & j = *itsJson;
+  const json & j = itsJson;
+  //itsJson = j;
 
   if (!j.contains("Evolvable")) return vector<doubDoub>(0);
 
@@ -481,7 +462,7 @@ vector<doubDoub> Worm2DSRE::makeVals()
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = (*itsJson)["Evolvable"]["value"];
+  json & j2 = itsJson["Evolvable"]["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -598,7 +579,7 @@ void recursive_iterate2(const TVector<double> & pheno, json& j)
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
-  json & js1 = *itsJson;
+  json & js1 = itsJson;
   recursive_iterate2(pheno,js1);
   
   NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -621,7 +602,7 @@ void WormCO2DSR::setParsFromPheno(const TVector<double> &pheno)
 {
 
 Worm2DSRE::setParsFromPheno(pheno);
-Sensor::setParsFromJson(*itsJson);
+Sensor::setParsFromJson(itsJson);
     
 }
 
@@ -630,7 +611,7 @@ void Worm2DSRE::setParsFromPheno_old(const TVector<double> &pheno)
 {
 
 
-  json & js1 = *itsJson;
+  json & js1 = itsJson;
 
  for (auto it = js1.begin(); it != js1.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
@@ -830,20 +811,6 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 }
 
-bool check123456(const double & val, const double & val2)
-{
-
-if (val<123456.001 && val>123455.999) return true;
-if (val==val2) return false;
-
-assert(0);
-
-}
-
-bool check123456(const double & val)
-{
-return (val<123456.001 && val>123455.999);
-}
 
 
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
@@ -972,7 +939,7 @@ vector<double> Worm2DSRE::getInitGeno()
   vector<double> pheno(getVectSize(), checkval); 
 
 
-  const json & js1 = *itsJson;
+  const json & js1 = itsJson;
   recursive_iterate(pheno,js1);
 
 
@@ -1001,7 +968,7 @@ const double checkval = 123456;
 vector<double> pheno(getVectSize(), checkval); 
 
 
-  json & js1 = *itsJson;
+  json & js1 = itsJson;
 
  for (auto it = js1.begin(); it != js1.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
@@ -1446,59 +1413,9 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
  
 }
 
-
-
 }
 
-void InputSwitcher::construct(const json & j)
-{
-   if (j.contains("InputSwitcher"))
- {
 
-  int size = j["InputSwitcher"]["size"]["value"].get<int>();
-  double time_offset =  j["InputSwitcher"]["time_offset"]["value"].get<double>();
-  {
-  
-  vector<double> periods(size, 123456);
-  double total_period = 0;
-  const json & j2 = j["InputSwitcher"]["time_periods"]["value"];
-  for (auto it = j2.begin(); it != j2.end(); ++it)
-  {
-    double period = it->at("val").get<double>();
-    total_period += period;
-    periods[it->at("ind").get<int>()-1] = period;
-  }
-
-  for (int i=0;i<periods.size();i++) assert(check123456(periods[i]));
-
-  }
-
-  {
-  
-    vector<vector<int> > inds(size);
-    vector<vector<double> > vals(size);
-    const json & j2 = j["InputSwitcher"]["inputs"]["value"];
-    for (auto it = j2.begin(); it != j2.end(); ++it)
-    {
-      vector<int> & indvec = inds[it->at("ind").get<int>()-1];
-      vector<double> & valvec = vals[it->at("ind").get<int>()-1];
-      const json & j3 = j2["value"];
-      for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
-      {
-        indvec.push_back(it2->at("ind").get<int>());
-        valvec.push_back(it2->at("val").get<double>());
-      } 
-
-
-    }
-
-  }
-
-
-
- }
-
-}
 
 void Sensor::construct(const json & j)
 {

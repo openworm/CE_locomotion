@@ -1,6 +1,23 @@
 #include "utils.h"
 #include <cmath>
 
+
+bool check123456(const double & val, const double & val2)
+{
+
+if (val<123456.001 && val>123455.999) return true;
+if (val==val2) return false;
+
+assert(0);
+
+}
+
+bool check123456(const double & val)
+{
+return (val<123456.001 && val>123455.999);
+}
+
+
 double angle_diff(double a, double b)
 {
     const double pi = 3.14159265358979323846;

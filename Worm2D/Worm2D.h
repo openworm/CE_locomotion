@@ -122,7 +122,26 @@ class DataWriter{
     
 };
 
+class InputSwitcher
+{
 
+  public:
+  
+  protected:
+
+  void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
+
+  void setInputOnce(const int & ind, vector<double> & externalInputs);
+  void construct(const json & j);
+ 
+  void setParsFromJson(const json & j){construct(j);}
+  void addParsToJson(json & j) const;
+
+  vector<double> timeperiods;
+  double time_offset = 0, total_period = 0;
+  vector<vector<int> > inds;
+  vector<vector<double> > vals;
+};
 
 class Worm2Dbody : virtual public DataWriter
 {
@@ -170,7 +189,7 @@ class Worm2Dbody : virtual public DataWriter
 
 
 
-class Worm2Dbase : virtual public DataWriter
+class Worm2Dbase : virtual public DataWriter, public InputSwitcher
 {
 
 public:
@@ -282,6 +301,9 @@ vector<double> externalInputs;
 //double sjdkdsdjddssdsloe;
 void setExternalInput();
 virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+
+void assignExternalInputOnce(const int & ind, const double & val){externalInputs[ind]=val;}
+void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 
 vector<toFromWeight> NSInputConn, NSOutputConn;
 void incInputFromNS(NSForW2D & ns_);
@@ -449,3 +471,5 @@ virtual double distanceToCenter() const = 0;
 virtual void InitializeSensors(RandomState& rs) = 0;
 
 };
+
+

@@ -195,3 +195,7 @@ double angle_diff(double a, double b);
 
 
  */
+
+
+ bool check123456(const double & val, const double & val2);
+ bool check123456(const double & val);
