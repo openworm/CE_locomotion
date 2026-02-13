@@ -42,6 +42,12 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
     //initConst();
 
 
+    //doOrigSRInput18 = true;
+    //getValCJ<bool>("doOrigSRInput", doOrigSRInput18);
+
+    //doOrigMuscInput18 = true;
+    //getValCJ<bool>("doOrigMuscInput", doOrigMuscInput18); 
+
 } //for WormCO18Full
 
 
@@ -343,14 +349,15 @@ void Worm18::InitializeState(RandomState &rs)
 {
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     
-    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    assert(w1parss!=nullptr);
+    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    //assert(w1parss!=nullptr);
 
-    bool rIS = false;
-    getValCJ<bool>("randomInitialState", rIS);
+    //bool rIS = false;
+    //getValCJ<bool>("randomInitialState", rIS);
     
 
-    if (rIS){
+    if(W2Dbaseparameters1->randomInitialState){
+    //if (rIS){
     //if (w1parss->randomInitialState){
         //assert(0);
     n.RandomizeCircuitState(-0.5, 0.5, rs);}
@@ -736,10 +743,10 @@ void Worm18::addParsToJson(json & j)
 
     //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
-    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    assert(w1parss!=nullptr);
+    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    //assert(w1parss!=nullptr);
 
-    if (w1parss->doOrigSRInput){
+    if (W2Dbaseparameters1->doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }

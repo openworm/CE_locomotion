@@ -197,6 +197,17 @@ vector<SensorPars> spvec;
 //int timer;
 };
 
+class InputSwitcher
+{
+
+  void construct(const json & j);
+
+
+  protected:
+  vector<double> timeperiods;
+
+
+};
 
 class WormCO2DSR : public Worm2DSRE, public Sensor
 {

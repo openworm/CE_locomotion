@@ -76,6 +76,8 @@ protected:
     const int VB = 6;
     const int VA = 7;
 
+
+
     shared_ptr<W2DCEparsA> W2DCEpars1;
 
 };

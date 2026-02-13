@@ -6,6 +6,6 @@
     "Transient": 10,
     "CheckpointInterval": 5,
     "EvolutionType": "Evo18",
-    "randInitState": false,
+    "randomInitialState": false,
     "doOrigMuscInput": true
 }
