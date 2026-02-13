@@ -37,19 +37,25 @@ int main (int argc, const char* argv[])
 
 
    
-    json j_orig;
+    shared_ptr<json> j_orig_ptr = nullptr;
     if (directoryExists(json_filename)) 
-    j_orig = getJsonFromFile(json_filename);
+    j_orig_ptr = make_shared<json>(getJsonFromFile(json_filename));
+
+
 
     if (model_name == "" || model_name == "W2DSR") {
     //if (model_name == ""){
     //if (directoryExists(json_filename)){
         //j_orig = getJsonFromFile(json_filename);
+
+        if (j_orig_ptr!=nullptr){
+        const json & j_orig = *j_orig_ptr;
         if (j_orig["Worm"].contains("Main model name"))
         model_name = j_orig["Worm"]["Main model name"]["value"];
         else if (j_orig["Nervous system"].contains("Model name"))
         model_name = j_orig["Nervous system"]["Model name"]["value"];
         
+        }
     }
     if (model_name == "") model_name = "W2DSR";
 
@@ -85,7 +91,7 @@ int main (int argc, const char* argv[])
     
         if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
         //evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
-        evo = new EvolutionFullWJ<WormCO2DSR>(j_orig,cmd);
+        evo = new EvolutionFullWJ<WormCO2DSR>(j_orig_ptr,cmd);
 
 
         else{

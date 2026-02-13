@@ -365,7 +365,9 @@ class EvolutionFullWJ: public Evolvable_ptrB<T>
     EvolutionFullWJ(const json & j, shared_ptr<const CmdArgs> cmd_):
     Evolvable_ptrB<T>(make_shared<T>(j,cmd_,true),cmd_,make_shared<const json>(j))
     {}
-    
+    EvolutionFullWJ(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd_):
+    Evolvable_ptrB<T>(make_shared<T>(j_ptr,cmd_,true),cmd_,j_ptr)
+    {}
     
 
     protected:

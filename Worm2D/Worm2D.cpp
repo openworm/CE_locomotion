@@ -178,6 +178,19 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 {  
     //cout << "Worm2Dbase init state" << endl;
     setTime(0);
+
+    shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
+    
+	if (l1!=nullptr && l1->randomInitialState)
+    {
+        NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
+        if (n!=nullptr){
+
+        n->RandomizeCircuitState(-1, 1, rs);
+        n->RandomizeCircuitOutput(0.2, 0.8, rs);
+        }
+    }
+
     //t = 0.0;
     //datatime =  0.0;
     //writeDataCheck();
