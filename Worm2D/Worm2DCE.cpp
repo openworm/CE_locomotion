@@ -265,8 +265,6 @@ void Worm2DCE::setInputSwitcher(const json & j)
   }
   else InputSwitcher::setParsFromJson(j);
 
-  
-  
 
 }
 
@@ -300,10 +298,12 @@ void WormCE::addEvolvableToJson(json & j)
     j["Evolvable"]["value"] = toIntDoubDoub(vec);
   }
  
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"val",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"val",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
 
-  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
-  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
-
+  //j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
+  //j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
+//chemvecj.push_back({{"from", vba}, {"to", dd}, {"val", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
 
   vector<intPair> biasvec;
   vector<fromToInt> chemvec, elecvec;
@@ -423,6 +423,12 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
 
   // Stretch receptor
 //  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
+ 
+  //{json jevol = {"mfunc", {{"f_ind", 2}, {"cond", 0}}};
+  //sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol); }
+  //{json jevol = {"mfunc", {{"f_ind", 2}, {"cond", 1}}};
+  //sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol); }
+
 
   sr_ptr->SR_A_gain = pheno(1);
   sr_ptr->SR_B_gain = pheno(2);

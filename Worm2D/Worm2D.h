@@ -314,7 +314,7 @@ virtual void makeNSOutputConn(){return;}
 json namedVars;
 static wormIzqParams getIzqPars(const json & j);
 
-
+Efunctor itsEf;
 };
 
 

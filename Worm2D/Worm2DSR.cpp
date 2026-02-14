@@ -371,13 +371,16 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
 
   //path.clear();
 
-  if (it2->at("evolvable").is_number()){
+  if (it2->at("evolvable").is_object()){
+    const json & j1 = it2->at("evolvable");
+    int ind1 = j1["val"].get<int>();
+    setEvoStr(evoNames[ind1-1],path);
+  }
+  else if (it2->at("evolvable").is_number()){
   int ind1 = it2->at("evolvable").get<int>();
   //setEvoStr(evoNames[ind1-1],evoName);
   //setEvoStr(evoNames[ind1-1],it2.key());
   setEvoStr(evoNames[ind1-1],path);
-
-  
   }
   else{
   size_t idx = it2.key().find("weights");
@@ -426,6 +429,7 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 vector<doubDoub> Worm2DSRE::makeVals()
 {
 
+  
   const json & j = itsJson;
   //itsJson = j;
 
@@ -480,21 +484,20 @@ vector<doubDoub> Worm2DSRE::makeVals()
 }
 
 
-double eFunc(const double & val, const json & j)
+
+
+void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef)
 {
 
-  //cout << "eFunc " << " " << val << endl;
-
-  if (j.at("f_ind") == 1) return val * j.at("fact").get<double>();
-  assert(0);
-
-}
-
-
-void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
-{
- 
-        if (it2->at("evolvable").is_number())
+        if (it2->at("evolvable").is_object())
+        {
+          const json & jevol = it2->at("evolvable");
+          int phenind = jevol.at("val").get<int>();
+          if (jevol.contains("mfunc"))
+          it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
+          else it2->at("value") = pheno[phenind];
+        }
+        else if (it2->at("evolvable").is_number())
           it2->at("value") = pheno[it2->at("evolvable").get<int>()];
         else
         {
@@ -502,7 +505,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
         if(idx != string::npos)
         {
           vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
-          json jevol = it2->at("evolvable");
+          const json & jevol = it2->at("evolvable");
           for (auto itjevol = jevol.begin(); itjevol != jevol.end(); ++itjevol)
           for (int j = 0; j<values.size();j++)
           if (itjevol->at("from").get<int>() == values[j].w.from 
@@ -510,7 +513,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
           {
             int phenind = itjevol->at("val").get<int>();
             if (itjevol->contains("mfunc"))
-            values[j].w.weight = eFunc(pheno[phenind], itjevol->at("mfunc"));
+            values[j].w.weight = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
             else values[j].w.weight = pheno[phenind];
             break;
           } 
@@ -563,14 +566,14 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2)
 
 
 
-void recursive_iterate2(const TVector<double> & pheno, json& j)
+void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef)
 {
 
     for(auto it = j.begin(); it != j.end(); ++it)
     {
-      if (it->contains("evolvable")) setParsFromPheno1(pheno,it);
+      if (it->contains("evolvable")) setParsFromPheno1(pheno,it,ef);
       //else if (it->is_structured()) recursive_iterate2(pheno,*it);
-      else if (it->is_object()) recursive_iterate2(pheno,*it);
+      else if (it->is_object()) recursive_iterate2(pheno,*it,ef);
         
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
@@ -579,8 +582,10 @@ void recursive_iterate2(const TVector<double> & pheno, json& j)
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
+
+
   json & js1 = itsJson;
-  recursive_iterate2(pheno,js1);
+  recursive_iterate2(pheno,js1,itsEf);
   
   NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
     setNSFromJson(js1,n);
@@ -813,10 +818,16 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 
 
-void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
+void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef)
 {
- 
-        if (it2->at("evolvable").is_number()){
+        if (it2->at("evolvable").is_object())
+        {
+          const json & jevol = it2->at("evolvable");
+          int phenind = jevol.at("val").get<int>() - 1;
+          if (check123456(pheno[phenind], it2->at("value")));
+          pheno[phenind] = it2->at("value");
+        }
+        else if (it2->at("evolvable").is_number()){
         //cout << "ph " << it.key() << " " << it2.key() << endl;
         cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
         //assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
@@ -842,7 +853,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
             int phenind = itjevol->at("val").get<int>() - 1;
             double phenval;
             if (itjevol->contains("mfunc"))
-              phenval = eFunc(pheno[phenind], itjevol->at("mfunc"));
+              phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
             else phenval = pheno[phenind];
 
             cout << "phvals " << iind << " " << j << " " 
@@ -876,6 +887,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
           
           
           //it2->at("value") = values;
+
         }
         else
         {
@@ -916,14 +928,14 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2)
 
 }
 
-void recursive_iterate(vector<double> & pheno, const json& j)
+void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
 {
 
     for(auto it = j.begin(); it != j.end(); ++it)
     {
-      if (it->contains("evolvable")) getInitGeno1(pheno,it);
+      if (it->contains("evolvable")) getInitGeno1(pheno,it,ef);
       //else if (it->is_structured()) recursive_iterate(pheno,*it);
-      else if (it->is_object()) recursive_iterate(pheno,*it);
+      else if (it->is_object()) recursive_iterate(pheno,*it,ef);
 
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
@@ -940,7 +952,7 @@ vector<double> Worm2DSRE::getInitGeno()
 
 
   const json & js1 = itsJson;
-  recursive_iterate(pheno,js1);
+  recursive_iterate(pheno,js1,itsEf);
 
 
   
@@ -974,7 +986,7 @@ vector<double> pheno(getVectSize(), checkval);
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
       if (it2->contains("evolvable"))
       {
-        getInitGeno1(pheno, it2);
+        getInitGeno1(pheno, it2, itsEf);
 
         if (false){
         if (it2->at("evolvable").is_number()){

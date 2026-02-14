@@ -2,6 +2,8 @@
 #include <cmath>
 
 
+
+
 bool check123456(const double & val, const double & val2)
 {
 

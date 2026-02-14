@@ -351,6 +351,7 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
   
+  
     return
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 

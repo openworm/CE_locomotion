@@ -3,7 +3,32 @@
 #include <iomanip>
 //#include "../argUtils.h"
 
+
+
 using json = nlohmann::json;
+
+
+
+
+
+double Efunctor::eFunc(const double & val, const json & j)
+{
+
+  //cout << "eFunc " << " " << val << endl;
+
+  if (j.at("f_ind") == 1) return val * j.at("fact").get<double>();
+  if (j.at("f_ind") == 2) {
+   
+    int cond = j.at("cond").get<int>();
+
+    if (cond == itsJson["condval"].get<int>()) return val;
+    else return 0;
+   
+
+  }
+
+
+}
 
 json getJsonFromFile(const string & jsonfile_)
 {

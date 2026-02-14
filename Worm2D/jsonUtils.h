@@ -14,6 +14,18 @@
 using json = nlohmann::json;
 using std::vector;
 
+
+
+class Efunctor
+{
+public:
+
+double eFunc(const double & val, const json & j);
+
+
+json itsJson;
+};
+
 json getJsonFromFile(const string & jsonfile_);
 
 //#include <vector>
