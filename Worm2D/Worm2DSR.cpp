@@ -823,9 +823,14 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
-          int phenind = jevol.at("val").get<int>() - 1;
-          if (check123456(pheno[phenind], it2->at("value")));
-          pheno[phenind] = it2->at("value");
+          int phenind = jevol.at("val").get<int>() - 1; //need mfunc
+
+          double phenval;
+          if (jevol.contains("mfunc"))
+            phenval = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
+          else phenval = pheno[phenind];
+          if (check123456(phenval, it2->at("value"))) pheno[phenind] = it2->at("value");
+
         }
         else if (it2->at("evolvable").is_number()){
         //cout << "ph " << it.key() << " " << it2.key() << endl;

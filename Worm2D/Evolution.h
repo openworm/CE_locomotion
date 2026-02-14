@@ -234,7 +234,7 @@ double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     //double Evaluation21(TVector<double> &geno, RandomState &rs);
     double Evaluation18(TVector<double> &genotype, RandomState &rs);
     double EvaluationCE(TVector<double> &genotype, RandomState &rs);
-    double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction);
+    double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction, shared_ptr<T> w_ptr);
     double Evaluation21R(TVector<double> &genotype, RandomState &rs);
     //double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
     double EvaluationCENZ(TVector<double> &genotype, RandomState &rs);
@@ -990,6 +990,9 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //Epars1.show();
     //assert(0);
 
+   
+    shared_ptr<T> w_ptr = this->getTw();
+
 
     const int SR_A = 1;
     const int SR_B = 2;
@@ -1020,16 +1023,28 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
         //  assert(0 && "dorev0");
-    if (Epars1.zeroGainsType == 1) genotype(SR_A)= -1.0;
-    genotype(SR_B)= srb;
-    fitness += EvaluationCEp1(genotype, rs, 1);
+
+    if (Epars1.zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
+
+    w_ptr->setParsFromGeno(genotype);
+
+    //if (Epars1.zeroGainsType == 1) genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+    
+    w_ptr->setInputOnce(0);
+ 
+    fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
        // assert(0 && "dorev1");
-    genotype(SR_A)= sra;
-    if (Epars1.zeroGainsType == 1) genotype(SR_B)= -1.0;
-    fitness += EvaluationCEp1(genotype, rs, -1);
+    //genotype(SR_A)= sra;
+    //if (Epars1.zeroGainsType == 1) genotype(SR_B)= -1.0;
+    if (Epars1.zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;
+
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(1);
+    fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
     count++;
     }
 
@@ -1057,7 +1072,7 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
 
     //Epars1.show();
     //assert(0);
-
+    shared_ptr<T> w_ptr = this->getTw();
 
     //const int SR_A = 1;
     //const int SR_B = 2;
@@ -1090,14 +1105,14 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
         //  assert(0 && "dorev0");
     //genotype(SR_A)= -1.0;
     //genotype(SR_B)= srb;
-    fitness += EvaluationCEp1(genotype, rs, 1);
+    fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
        // assert(0 && "dorev1");
     //genotype(SR_A)= sra;
     //genotype(SR_B)= -1.0;
-    fitness += EvaluationCEp1(genotype, rs, -1);
+    fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
     count++;
     }
 
@@ -1115,7 +1130,14 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
 }
 
 template<class T>
-double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState &rs, int direction){
+double Evolvable_ptrB<T>::EvaluationCEp1(
+    TVector<double> &genotype, 
+    RandomState &rs, int direction,
+    shared_ptr<T> w_ptr)
+{
+
+   
+
 
   const double & Duration = evoPars1.Duration;
   //const int & VectSize = evoPars1.VectSize;
@@ -1158,19 +1180,19 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //T w(argc,argv,genotype);
 
     //T w;
-    shared_ptr<T> w_ptr = this->getTw();
+    //shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
    
 
-   
 
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
     //w.setWormPars(argc,argv);
   
     //w.setWormPars(this->cmd);
-    w.setParsFromGeno(genotype);
+   // w.setParsFromGeno(genotype);
  
+    
 
     //EvolparametersCE & Epars1 = w.getWormPars();
 
@@ -1197,32 +1219,20 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //w1.show();
     //assert(0);
 
+    if (false){
     if (direction == 1){
         w.setInputOnce(0);
-        //w.assignExternalInputOnce(0,0);
-        //w.assignExternalInputOnce(1,1);
-    //w1->AVA_output =  0.0;
-    //w1->AVB_output =  1.0;
+     
     }
     else if  (direction == -1) {
         w.setInputOnce(1);
-        //w.assignExternalInputOnce(0,1);
-        //w.assignExternalInputOnce(1,0);
-
-        //w1->AVA_output =  1.0;
-        //w1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
     else if  (direction == 2)
     {
         w.setInputOnce(2);
-        //w.assignExternalInputOnce(0,0);
-        //w.assignExternalInputOnce(1,0);
-
-    //w1->AVA_output =  0.0;
-    //w1->AVB_output =  0.0; 
     }
     else assert(0 && "direction not set properly");
-
+    }
    
 
     //w1.show();

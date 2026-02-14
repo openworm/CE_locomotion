@@ -16,17 +16,23 @@ double Efunctor::eFunc(const double & val, const json & j)
 
   //cout << "eFunc " << " " << val << endl;
 
-  if (j.at("f_ind") == 1) return val * j.at("fact").get<double>();
-  if (j.at("f_ind") == 2) {
+
+  //cout << j << endl;
+
+
+  if (j.at("f_ind").get<int>() == 1) return val * j.at("fact").get<double>();
+
+  if (j.at("f_ind").get<int>() == 2) {
    
     int cond = j.at("cond").get<int>();
 
-    if (cond == itsJson["condval"].get<int>()) return val;
-    else return 0;
+    if (itsJson.contains("condval"))
+      if (cond == itsJson["condval"].get<int>()) return 0;
+    return val;
    
-
   }
 
+  assert(0);
 
 }
 
