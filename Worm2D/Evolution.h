@@ -1198,23 +1198,25 @@ double Evolvable_ptrB<T>::EvaluationCEp1(TVector<double> &genotype, RandomState 
     //assert(0);
 
     if (direction == 1){
-        w.assignExternalInputOnce(0,0);
-        w.assignExternalInputOnce(1,1);
+        w.setInputOnce(0);
+        //w.assignExternalInputOnce(0,0);
+        //w.assignExternalInputOnce(1,1);
     //w1->AVA_output =  0.0;
     //w1->AVB_output =  1.0;
     }
     else if  (direction == -1) {
-        w.assignExternalInputOnce(0,1);
-        w.assignExternalInputOnce(1,0);
+        w.setInputOnce(1);
+        //w.assignExternalInputOnce(0,1);
+        //w.assignExternalInputOnce(1,0);
 
         //w1->AVA_output =  1.0;
         //w1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
     else if  (direction == 2)
     {
-
-        w.assignExternalInputOnce(0,0);
-        w.assignExternalInputOnce(1,0);
+        w.setInputOnce(2);
+        //w.assignExternalInputOnce(0,0);
+        //w.assignExternalInputOnce(1,0);
 
     //w1->AVA_output =  0.0;
     //w1->AVB_output =  0.0; 

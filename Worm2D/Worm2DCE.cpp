@@ -38,15 +38,8 @@ void Worm2DCE::initConst()
       sr_ptr->setWeights();
       sr_ptr->setNSWeights(*this);
 
-      vector<vector<int> > input_indvec;
-      vector<vector<double> > input_valvec;
-      input_indvec.push_back(vector<int>({0,1}));
-      input_valvec.push_back(vector<double>({0,1}));
-      input_indvec.push_back(vector<int>({0,1}));
-      input_valvec.push_back(vector<double>({1,0}));
-      InputSwitcher::inds.swap(input_indvec);
-      InputSwitcher::vals.swap(input_valvec);
-
+    
+      setInputSwitcher();
       setUpMuscleConn();
       setUpBodyConn();
       makeExternalInputConn();
@@ -55,7 +48,7 @@ void Worm2DCE::initConst()
 }
 
 
-Worm2DCE::Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
+Worm2DCE::Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
@@ -115,7 +108,7 @@ Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10),cmd){}
 Worm2DCE::Worm2DCE(const string & jsonfilename_):
 Worm2DCE(getJsonFromFile(jsonfilename_)){}
 
-Worm2DCE::Worm2DCE(json j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
+Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
 
 //////////////////////////////////
 //// CE const
@@ -168,7 +161,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(c
 //    setParsFromFile(filename_);
 //}
 
-WormCE::WormCE(json j, const string & filename_):WormCE()
+WormCE::WormCE(const json & j, const string & filename_):WormCE()
 {
    
     W2DCEpars1->setParsFromJson(j["Worm"]);
@@ -183,7 +176,7 @@ WormCE::WormCE(const string & jsonfilename_):
 WormCE((json) getJsonFromFile(jsonfilename_)){}
 
 
-WormCE::WormCE(json j):WormCE()
+WormCE::WormCE(const json & j):WormCE()
 {
 
   //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
@@ -227,6 +220,12 @@ WormCE::WormCE(json j):WormCE()
 
   //sr_ptr->setNSWeights(*this);
   //sr_ptr->setNSWeights(shared_ptr<const Worm2DCE>(this));
+   
+  
+  setInputSwitcher(j);
+
+  
+  
 
   setUpMuscleConn(j);
   setUpBodyConn(j);
@@ -235,6 +234,41 @@ WormCE::WormCE(json j):WormCE()
   
 }
 
+void Worm2DCE::setInputSwitcher()
+{
+
+vector<vector<int> > input_indvec;
+      vector<vector<double> > input_valvec;
+      input_indvec.push_back(vector<int>({0,1}));
+      input_valvec.push_back(vector<double>({0,1}));
+      input_indvec.push_back(vector<int>({0,1}));
+      input_valvec.push_back(vector<double>({1,0}));
+      input_indvec.push_back(vector<int>({0,1}));
+      input_valvec.push_back(vector<double>({0,0}));
+
+      inds.swap(input_indvec);
+      vals.swap(input_valvec);
+
+  
+
+}
+
+
+void Worm2DCE::setInputSwitcher(const json & j)
+{
+
+ if (!j.contains("input_switcher"))
+  {
+    
+    setInputSwitcher();
+
+  }
+  else InputSwitcher::setParsFromJson(j);
+
+  
+  
+
+}
 
 void WormCE::addEvolvableToJson(json & j)
 {
@@ -817,7 +851,7 @@ void Worm2DCE::assignExternalInput(){
 
   return;
 
-  
+
   //externalInputs[0] = W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level;
   //externalInputs[1] = W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level;
   

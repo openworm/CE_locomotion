@@ -1601,6 +1601,9 @@ void InputSwitcher::addParsToJson(json & j) const
     j["input_switcher"]["time_periods"]["value"] = timeperiods_j;
     }
 
+  
+
+
     {
     json arr1 = json::array();
     for (int i=0;i<inds.size();i++)
@@ -1609,12 +1612,15 @@ void InputSwitcher::addParsToJson(json & j) const
     const vector<double> & valvec = vals[i];
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
-    arr2.push_back({{"ind", indvec[i]}, {"val", valvec[i]}});
-    arr1.push_back({{"value", arr2},{"ind", i}});
+    arr2.push_back({{"ind", indvec[j]}, {"val", valvec[j]}});
+    arr1.push_back({{"value", arr2},{"ind", i+1}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
     }
+
+  
+
 }
 
 
@@ -1667,8 +1673,15 @@ void InputSwitcher::construct(const json & j)
 
     inds.swap(inds1);
     vals.swap(vals1);
+    
+    
+    for (int i=0;i<inds.size();i++) 
+    for (int j=0;j<inds[i].size();j++)
+    cout << "is inds " << i << " " << j << " " <<  " iis " << inds[i][j] << " jis " <<  vals[i][j]  << endl;
+    
 
-  
+   // assert(0);
+
   }
 
  

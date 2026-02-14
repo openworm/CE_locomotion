@@ -70,7 +70,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //void Step(double StepSize);
     //void DumpActState(ofstream &ofs, int skips);
     void InitializeState(RandomState &rs);
-    Worm2DCE(json j);
+    Worm2DCE(const json & j);
     Worm2DCE(const string & jsonfilename);
     void addParsToJson(json & j);
     void writeAct();
@@ -113,7 +113,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
         shared_ptr<const CmdArgs> cmd);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
-    Worm2DCE(json & j, shared_ptr<SRCE> sr_ptr_);
+    Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_);
     
     void initConst();
 
@@ -127,7 +127,6 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     vector<intPair> makeUnitToMusc();
     
-
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
     //double AVA_output, AVB_output;
@@ -152,8 +151,9 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     void makeExternalInputConn();
     void assignExternalInput();
+    void setInputSwitcher(const json & j);
+    void setInputSwitcher();
 
-    
     void setExternalInputOrig();
     void setMuscleInputOrig();
     void setBodyInputOrig();
@@ -173,7 +173,7 @@ public:
     WormCE(const string & jsonfilename_, const string & filename_);
     WormCE(const string & filename_);
     WormCE();
-    WormCE(json j);
+    WormCE(const json & j);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
     WormCE(TVector<double> &pheno);
 
@@ -219,7 +219,7 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     WormCE(TVector<double> &phengen, bool isPheno);
-    WormCE(json j, const string & filename_);
+    WormCE(const json & j, const string & filename_);
     WormCE(shared_ptr<SRCE> sr_ptr_);
     WormCE(shared_ptr<const CmdArgs> cmd);
     WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
