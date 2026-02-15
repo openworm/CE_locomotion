@@ -1109,6 +1109,8 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
         //  assert(0 && "dorev0");
     //genotype(SR_A)= -1.0;
     //genotype(SR_B)= srb;
+      w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(0);
     fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
@@ -1116,6 +1118,8 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
        // assert(0 && "dorev1");
     //genotype(SR_A)= sra;
     //genotype(SR_B)= -1.0;
+      w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(1);
     fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
     count++;
     }
