@@ -990,12 +990,14 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //Epars1.show();
     //assert(0);
 
+    vector<double> initial_genotype(genotype.Size());
+    for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
    
     shared_ptr<T> w_ptr = this->getTw();
 
 
-    const int SR_A = 1;
-    const int SR_B = 2;
+    //const int SR_A = 1;
+    //const int SR_B = 2;
  
     const int gen_num = s->Generation();
     //evoPars1.MaxGenerations;
@@ -1008,8 +1010,8 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     //cout << "reverse is " << Epars1.doReverse << endl;
 
-    double sra = genotype(SR_A);
-    double srb = genotype(SR_B);
+    //double sra = genotype(SR_A);
+    //double srb = genotype(SR_B);
 
    // assert(0);
 
@@ -1048,9 +1050,11 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     count++;
     }
 
-    genotype(SR_A) = sra;
-    genotype(SR_B) = srb;
-
+    //genotype(SR_A) = sra;
+    //genotype(SR_B) = srb;
+  
+    for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
+   
 
     return fitness/count;
 
