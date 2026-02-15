@@ -1562,6 +1562,9 @@ dBodyConnvec.swap(dBodyConnvec1);
 
 void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInputs)
 {
+     
+
+  assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
   for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
@@ -1571,6 +1574,7 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
 void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double> & externalInputs)
 {
 
+    assert(0 && "unfinished");
     const json & j2 = j["input_switcher"]["inputs"]["value"];
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
@@ -1681,7 +1685,7 @@ void InputSwitcher::construct(const json & j)
     cout << "is inds " << i << " " << j << " " <<  " iis " << inds[i][j] << " jis " <<  vals[i][j]  << endl;
     
 
-   // assert(0);
+   //assert(0);
 
   }
 

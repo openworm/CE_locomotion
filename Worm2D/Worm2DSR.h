@@ -242,7 +242,9 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),
   Worm2DSRE(j,cmd,callInit),Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
-  {}
+  {
+ 
+  }
 
 void addParsToJson(json & j){
 

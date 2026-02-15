@@ -1021,20 +1021,26 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //genotype(SR_B)= srb;
     //return EvaluationCEp1(genotype, rs, 1); 
 
+
+  
+
     double fitness = 0;
     int count = 0;
     if (Epars1.doReverse==0 || doalt1f){
         //  assert(0 && "dorev0");
 
     if (Epars1.zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
-
+  
     w_ptr->setParsFromGeno(genotype);
 
+    
     //if (Epars1.zeroGainsType == 1) genotype(SR_A)= -1.0;
     //genotype(SR_B)= srb;
     
     w_ptr->setInputOnce(0);
- 
+
+    
+
     fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
@@ -1043,9 +1049,12 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //genotype(SR_A)= sra;
     //if (Epars1.zeroGainsType == 1) genotype(SR_B)= -1.0;
     if (Epars1.zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;
-
+      
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
+
+       
+
     fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
     count++;
     }
@@ -1192,6 +1201,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     T & w = *w_ptr; 
    
 
+    
 
     //T w(genotype, false);
     //w.setWormPars(&*wormpar_ptr);
@@ -1227,7 +1237,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //w1.show();
     //assert(0);
 
-    if (false){
+  /*   if (false){
     if (direction == 1){
         w.setInputOnce(0);
      
@@ -1240,7 +1250,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
         w.setInputOnce(2);
     }
     else assert(0 && "direction not set properly");
-    }
+    } */
    
 
     //w1.show();
