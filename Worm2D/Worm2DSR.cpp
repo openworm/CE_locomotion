@@ -38,6 +38,14 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
     W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setWormPars(cmd);
 
+
+    if (false){
+    shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    cout << "w2d1x " << W2Dbaseparameters1->doOrigMuscInput << endl;
+    cout << "w2dx " << w_ptr2->doOrigMuscInput << endl;
+    assert(0);
+    }
+
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
     InputSwitcher::construct(j);
     setMuscBodExt(j);
@@ -144,6 +152,13 @@ void Worm2DSR::Step1()
   n_ptr->EulerStep(settedStepSize);
  
   //setMuscleInput();
+
+  if (false){
+  shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+  cout << "w2d1 " << W2Dbaseparameters1->doOrigMuscInput << endl;
+  cout << "w2d " << w_ptr2->doOrigMuscInput << endl;
+  assert(0);
+  }
 
   if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
@@ -600,6 +615,9 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
     
     Worm2DSRb::setParsFromJson(js1);
+
+
+    setWormPars(itsCmdArgs);
     setMuscBodExt(js1);
     
 }

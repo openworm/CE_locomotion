@@ -213,24 +213,28 @@ protected:
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
     Evolvable_ptr<T>(evol1_,cmd_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
-    {this->evolvable1->setWormPars(cmd_);}
+    {//this->evolvable1->setWormPars(cmd_);
+    }
+
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
     Evolvable_ptr<T>(evol1_,cmd_,json_ptr_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
-    {this->evolvable1->setWormPars(cmd_);}
+    {//this->evolvable1->setWormPars(cmd_);
+    }
 
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, const string & prefix_):
     Evolvable_ptr<T>(evol1_,cmd_), 
     Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_)
-    {this->evolvable1->setWormPars(cmd_);}
+    {//this->evolvable1->setWormPars(cmd_);
+    }
 
-virtual shared_ptr<T> getTw() = 0;
+    virtual shared_ptr<T> getTw() = 0;
 
-double Evaluation21(TVector<double> &geno, RandomState &rs);
-//double Evaluation21R(TVector<double> &genotype, RandomState &rs);
-double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
+    double Evaluation21(TVector<double> &geno, RandomState &rs);
+    //double Evaluation21R(TVector<double> &genotype, RandomState &rs);
+    double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
 
-double EvaluationFunction(TVector<double> &geno, RandomState &rs);
+    double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     //double Evaluation21(TVector<double> &geno, RandomState &rs);
     double Evaluation18(TVector<double> &genotype, RandomState &rs);
     double EvaluationCE(TVector<double> &genotype, RandomState &rs);
@@ -342,10 +346,20 @@ class EvolutionFullW: public Evolvable_ptrB<T>
 {
     public:
     
-    EvolutionFullW(shared_ptr<const CmdArgs> cmd_):Evolvable_ptrB<T>(make_shared<T>(),cmd_){}
+    EvolutionFullW(shared_ptr<const CmdArgs> cmd_):Evolvable_ptrB<T>(make_shared<T>(),cmd_)
+    {
+        this->evolvable1->setWormPars(cmd_);
+    }
+    //EvolutionFullW(shared_ptr<const CmdArgs> cmd_):Evolvable_ptrB<T>(getTW(),cmd_){}
+
     EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
-    Evolvable_ptrB<T>(make_shared<T>(),cmd_,prefix_){} 
-    
+    Evolvable_ptrB<T>(make_shared<T>(),cmd_,prefix_)
+    {
+        this->evolvable1->setWormPars(cmd_);
+    } 
+
+    //EvolutionFullW(shared_ptr<const CmdArgs> cmd_, const string & prefix_):
+    //Evolvable_ptrB<T>(getTW(),cmd_,prefix_){} 
 
     protected:
     
@@ -363,11 +377,9 @@ class EvolutionFullWJ: public Evolvable_ptrB<T>
     public:
     
     EvolutionFullWJ(const json & j, shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptrB<T>(make_shared<T>(j,cmd_,true),cmd_,make_shared<const json>(j))
-    {}
+    Evolvable_ptrB<T>(make_shared<T>(j,cmd_,true),cmd_,make_shared<const json>(j)){}
     EvolutionFullWJ(shared_ptr<json> j_ptr, shared_ptr<const CmdArgs> cmd_):
-    Evolvable_ptrB<T>(make_shared<T>(j_ptr,cmd_,true),cmd_,j_ptr)
-    {}
+    Evolvable_ptrB<T>(make_shared<T>(j_ptr,cmd_,true),cmd_,j_ptr){}
     
 
     protected:

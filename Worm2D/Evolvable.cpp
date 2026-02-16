@@ -22,9 +22,12 @@ void W2DbaseparametersNML::setPars(shared_ptr<const CmdArgs> cmd)
 
 void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
+    
     doOrigSRInput = cmd->getArgValInt("--doOrigSRInput", doOrigSRInput);
     doOrigMuscInput = cmd->getArgValInt("--doOrigMuscInput", doOrigMuscInput);
     W2DbaseparametersNML::setPars(cmd);
+    //cout << "osm " << doOrigSRInput << " " << doOrigMuscInput << endl;
+    //assert(0);
 
 }
 

@@ -107,8 +107,8 @@ W2Dbaseparameters(){}
 W2Dbaseparameters(int argc, const char* argv[]);
 //W2Dbaseparameters(shared_ptr<const CmdArgs> cmd);
 
-bool doOrigSRInput = 1;
-bool doOrigMuscInput = 1;
+bool doOrigSRInput = true;
+bool doOrigMuscInput = true;
 
 void setParsFromJson(const json & j){
   doOrigMuscInput = j["doOrigMuscInput"]["value"];
@@ -283,6 +283,8 @@ class gradParameters : public W2Dbaseparameters
   taxis = getJsonVal<int>(j, "taxis", taxis,true); 
   kinesis = getJsonVal<int>(j, "kinesis", kinesis,true); 
 
+  W2Dbaseparameters::setParsFromJson(j);
+
  /*  worm_rotation = j["rotation"]["value"];
   orient_orig = j["orient"]["value"]; 
   gradSteep = j["gradSteep"]["value"];
@@ -304,6 +306,7 @@ void addParsToJson(json & j) const {
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
   addParsToJson1<bool>(j,{"resetAgentBody"}, {resetAgentBody});
 
+  W2Dbaseparameters::addParsToJson(j);
 
 }
 
