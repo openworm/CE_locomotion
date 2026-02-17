@@ -104,12 +104,14 @@ double EvolutionCE::Evaluation(TVector<double> &v, RandomState &rs, int directio
     w.InitializeState(rs);
 
     if (direction == 1){
-        w.W2DCEpars1->AVA_output =  0.0;
-        w.W2DCEpars1->AVB_output =  1.0;
+      w.setInputOnce(0);
+        //w.W2DCEpars1->AVA_output =  0.0;
+        //w.W2DCEpars1->AVB_output =  1.0;
     }
     else{
-        w.W2DCEpars1->AVA_output =  1.0;
-        w.W2DCEpars1->AVB_output =  0.0; // Command Interneuron Activation Backward
+      w.setInputOnce(1);
+        //w.W2DCEpars1->AVA_output =  1.0;
+        //w.W2DCEpars1->AVB_output =  0.0; // Command Interneuron Activation Backward
     }
 
     // Transient

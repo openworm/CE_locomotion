@@ -425,7 +425,7 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
 //  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
  
 
-  //if (false){
+  if (itsEf.itsJson.contains("condval")){
   {json jevol;
   jevol["mfunc"]["f_ind"] = 2;
   jevol["mfunc"]["cond"] = 0;
@@ -435,16 +435,13 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   jevol["mfunc"]["cond"] = 1;
   sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol["mfunc"]); }
   
-/* 
 
-  {json jevol = json::object({"mfunc", {{"f_ind", 2}, {"cond", 0}}});
-  sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol["mfunc"]); }
-  {json jevol = json::object({"mfunc", {{"f_ind", 2}, {"cond", 1}}});
-  sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol["mfunc"]); } 
- */
+  }
 
-  //sr_ptr->SR_A_gain = pheno(1);
-  //sr_ptr->SR_B_gain = pheno(2);
+else{
+  sr_ptr->SR_A_gain = pheno(1);
+  sr_ptr->SR_B_gain = pheno(2);
+}
 
   //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
 
