@@ -393,6 +393,7 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     w.addParsToJson(j);   
     addParsToJson(j);
    
+    json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;
     json_out.close(); 
   

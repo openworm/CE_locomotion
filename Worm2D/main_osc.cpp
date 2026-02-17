@@ -121,6 +121,7 @@ int main (int argc, const char* argv[])
         j_evo["Nervous system"]["Model name"]["value"] = model_name;
 
         ofstream json_out(json_filename);
+        json_out << setprecision(32);
         json_out << std::setw(4) << j_evo << std::endl;
         json_out.close();
 
@@ -340,6 +341,7 @@ int main (int argc, const char* argv[])
 
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
+    json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
 
