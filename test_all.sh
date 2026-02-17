@@ -75,6 +75,10 @@ if [ "$quick_test" == 0 ]; then
 
     rm -rf testruns/exW2DCEFR
 
+
+    
+
+
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
     
@@ -90,9 +94,7 @@ if [ "$quick_test" == 0 ]; then
 
     omv test -V .test.izq_sim.omt
 
-    omv test -V .test.CO.omt
-    omv test -V .test.example.omt
-    omv test -V .test.CEW2D.omt
+    
     omv test -V .test.2021.omt
     omv test -V .test.2021W2D.omt
     omv test -V .test.W2DCE.omt
@@ -114,7 +116,11 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.COW2DSR.omt
     omv test -V .test.COW2DSR2.omt
 
+    omv test -V .test.CO.omt
+    omv test -V .test.example.omt
+    omv test -V .test.CEW2D.omt
 
+    
     cd neuromlLocal
     set -ex
     ./clean.sh 

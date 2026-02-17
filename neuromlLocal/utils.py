@@ -104,6 +104,7 @@ plot_formats["W2Dosc"] = copy.deepcopy(plot_formats["Net21"])
 plot_formats["W2Dosc"]["data_sizes"] = [48, 48]
 plot_formats["W2Dosc"]["plot_cell_names"] = ["ND1", "NV1"]
 plot_formats["W2Dosc"]["plot_col_divs"] = [1, 1]
+plot_formats["W2Dosc"]["plot_cell_unit"] = 0
 plot_formats["W2Dosc21"] = copy.deepcopy(plot_formats["W2Dosc"])
 plot_formats["W2Dosc21"]["data_sizes"] = [14, 48]
 plot_formats["W2Dosc21all"] = plot_formats["W2Dosc21"]
@@ -141,7 +142,6 @@ default_cells["Net21"]["add_PG"] = False
 default_cells["CE"]["add_PG"] = True
 default_cells["RS18"]["add_PG"] = False
 default_cells["CO"]["add_PG"] = False
-
 
 
 default_cells["Net21"]["names"] = ["AS", "DA", "DB", "DD", "VD", "VB", "VA"] * 7
