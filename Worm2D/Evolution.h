@@ -170,7 +170,11 @@ class Evolvable_ptr
   
 
 protected:
+const shared_ptr<const json> json_ptr = nullptr;
 shared_ptr<T> evolvable1;
+shared_ptr<const CmdArgs> cmd = nullptr;
+const shared_ptr<const W2Dparameters> evopar_ptr = nullptr;
+
 
 //virtual ~Evolvable_ptr(){if (evolvable1) delete evolvable1;}
 //Evolvable_ptr(shared_ptr<EvolvableS> evol1_):evolvable1(evol1_),{}
@@ -187,12 +191,10 @@ evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
 evoPars getDefaultEvoPars(const string & evotype_);
 
 //shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
-static shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
+shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
     shared_ptr<T> evol1_);
 
-shared_ptr<const CmdArgs> cmd = nullptr;
-const shared_ptr<const W2Dparameters> evopar_ptr = nullptr;
-const shared_ptr<const json> json_ptr = nullptr;
+
 
 
 };
@@ -279,6 +281,26 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
     //const string & evotype_ = evoPars1.evoType;
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
+
+    shared_ptr<W2Dparameters> w_ptr1 = nullptr;
+    if (evotype_=="EvoCO" || evotype_=="EvoCO2")
+    w_ptr1 = dynamic_pointer_cast<W2Dparameters>(make_shared<gradEvoPars>(cmd_));
+    if (evotype_=="Evo21") 
+    w_ptr1 = dynamic_pointer_cast<W2Dparameters>(
+        make_shared<EvolparametersCER>(cmd_, evol1_, evotype_));
+    if (evotype_=="Evo18") 
+    w_ptr1 = dynamic_pointer_cast<W2Dparameters>(make_shared<AgarPars>(cmd_));
+    if (evotype_=="EvoCE" || evotype_=="EvoCENZ") 
+    w_ptr1 = dynamic_pointer_cast<W2Dparameters>(make_shared<EvolparametersCE>(cmd_));
+    if (evotype_=="Evo21R") 
+    w_ptr1 = dynamic_pointer_cast<W2Dparameters>(
+        make_shared<EvolparametersCER>(cmd_, evol1_, evotype_));
+
+    assert(w_ptr1!=nullptr);
+    
+    w_ptr1->setParsFromJson(*json_ptr);
+    w_ptr1->setPars(cmd_);
+    return w_ptr1;
 
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
     return make_shared<const gradEvoPars>(cmd_);
