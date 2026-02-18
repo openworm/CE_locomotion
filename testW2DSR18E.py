@@ -25,7 +25,7 @@ args = dict(
     doOrigMuscInput=False,
     evoType="Evo18",
     overwrite=True,
-    doCPT = True,
+    doCPT=True,
     checkPointInterval=5,
 )
 

@@ -22,6 +22,16 @@ T getParFromJson1(const json & j, const string & name)
 
 }
 
+template<class T>
+bool getParFromJson1(const json & j, const string & name, T & val)
+{
+
+  if (!j.contains(name)) return false;
+  val = j.at(name).at("value").get<T>();
+  return true;
+
+}
+
 
 class W2Dparameters
 {
@@ -144,9 +154,15 @@ double AvgSpeed = 0.00022;
 
 void setParsFromJson(const json & j){
 
-  OSCTbase = j["OSCTbase"]["value"]; 
-  agarfreq = j["agarfreq"]["value"];
-  AvgSpeed = j["AvgSpeed"]["value"];
+
+
+  getParFromJson1<double>(j,"OSCTbase",OSCTbase);
+  getParFromJson1<double>(j,"agarfreq",agarfreq);
+  getParFromJson1<double>(j,"AvgSpeed",AvgSpeed);
+
+  //OSCTbase = j["OSCTbase"]["value"]; 
+  //agarfreq = j["agarfreq"]["value"];
+  //AvgSpeed = j["AvgSpeed"]["value"];
 
 }
 void addParsToJson(json & j) const {

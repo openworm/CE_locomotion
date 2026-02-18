@@ -6022,11 +6022,23 @@
             "value": 0
         },
         "SR_A_gain": {
-            "evolvable": 1,
+            "evolvable": {
+                "mfunc": {
+                    "cond": 0,
+                    "f_ind": 2
+                },
+                "val": 1
+            },
             "value": 182.1006113418175
         },
         "SR_B_gain": {
-            "evolvable": 2,
+            "evolvable": {
+                "mfunc": {
+                    "cond": 1,
+                    "f_ind": 2
+                },
+                "val": 2
+            },
             "value": 165.7002176192561
         },
         "Type": {
@@ -7628,6 +7640,54 @@
         },
         "randomInitialState": {
             "value": false
+        }
+    },
+    "input_switcher": {
+        "inputs": {
+            "value": [
+                {
+                    "ind": 1,
+                    "value": [
+                        {
+                            "ind": 0,
+                            "val": 0.0
+                        },
+                        {
+                            "ind": 1,
+                            "val": 1.0
+                        }
+                    ]
+                },
+                {
+                    "ind": 2,
+                    "value": [
+                        {
+                            "ind": 0,
+                            "val": 1.0
+                        },
+                        {
+                            "ind": 1,
+                            "val": 0.0
+                        }
+                    ]
+                },
+                {
+                    "ind": 3,
+                    "value": [
+                        {
+                            "ind": 0,
+                            "val": 0.0
+                        },
+                        {
+                            "ind": 1,
+                            "val": 0.0
+                        }
+                    ]
+                }
+            ]
+        },
+        "size": {
+            "value": 3
         }
     }
 }
