@@ -117,6 +117,9 @@ void setParsFromJson(const json & j){
 }
 
 void addParsToJson(json & j) const {
+
+  //cout << "osmout " << doOrigSRInput << " " << doOrigMuscInput << endl;
+  //assert(0);
   j["doOrigMuscInput"]["value"] = doOrigMuscInput;
   j["doOrigSRInput"]["value"] = doOrigSRInput;
   W2DbaseparametersNML::addParsToJson(j);
@@ -196,10 +199,12 @@ int zeroGainsType = 1;
 int doAngleDiff = 0;
 
 void setParsFromJson(const json & j){
+  
   doReverse =  j["doReverse"]["value"];
   fitType = j["fitType"]["value"];
   zeroGainsType = j["zeroGainsType"]["value"];
   doAngleDiff = j["doAngleDiff"]["value"];
+
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {

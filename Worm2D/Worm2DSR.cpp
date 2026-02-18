@@ -91,6 +91,12 @@ Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callIni
 
 void Worm2DSR::addParsToJson(json & j)
 {
+
+  j = itsJson;
+  W2Dbaseparameters1b->addParsToJson(j["Worm"]);
+  addEvolvableToJson(j);
+
+  if (false){
   NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
   if (n!=nullptr){
   string nsHead = "Nervous system";
@@ -100,6 +106,7 @@ void Worm2DSR::addParsToJson(json & j)
   }
   Worm2D::addParsToJson(j);
   Worm2DSRb::addParsToJson(j);
+  }
 
 }
 

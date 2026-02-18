@@ -282,6 +282,9 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
 
+    if (json_ptr!=nullptr){
+
+       
     shared_ptr<W2Dparameters> w_ptr1 = nullptr;
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
     w_ptr1 = dynamic_pointer_cast<W2Dparameters>(make_shared<gradEvoPars>(cmd_));
@@ -298,9 +301,12 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     assert(w_ptr1!=nullptr);
     
-    w_ptr1->setParsFromJson(*json_ptr);
+    w_ptr1->setParsFromJson((*json_ptr)["Evolutionary Optimization Parameters"]);
     w_ptr1->setPars(cmd_);
     return w_ptr1;
+
+    }
+
 
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
     return make_shared<const gradEvoPars>(cmd_);
