@@ -269,7 +269,7 @@ public:
       const int arg = getArgVal(str);
       if (arg==-1) return false;
      
-      if (std::is_same<T, string>::value) val = args[arg+1].c_str();
+     // if (std::is_same<T, string>::value) val = args[arg+1].c_str();
       if (std::is_same<T, double>::value) val = stod(args[arg+1].c_str());
       if (std::is_same<T, int>::value) val = stoi(args[arg+1].c_str());
       if (std::is_same<T, long>::value) val = stol(args[arg+1].c_str());

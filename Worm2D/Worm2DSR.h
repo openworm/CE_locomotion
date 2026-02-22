@@ -11,17 +11,17 @@ class Worm2DSRb
 protected:
 
 vector<doubIntParamsHead> getWormParams();
-static shared_ptr<SR> getSR(const json & j);
+static shared_ptr<SR> getSR(const json & j, baseParameters * basePar1_);
 //static NSForW2D * getNS(shared_ptr<const CmdArgs> cmd);
 //static wormIzqParams getIzqPars(const json & j);
 shared_ptr<SR> w2dsr_ptr = nullptr;
-Worm2DSRb(const json & j);
+//Worm2DSRb(const json & j);
 Worm2DSRb(shared_ptr<SR> sr_ptr_);
 void setParsFromJson(const json & j);
 void addParsToJson(json & j);
 };
 
-class Worm2DSRm : public baseParameters, public Worm2Dm, public Worm2DSRb
+class Worm2DSRm : public Worm2Dm, public Worm2DSRb
 {
 public:
 //Worm2DSRm(json & j, shared_ptr<const CmdArgs> cmd);

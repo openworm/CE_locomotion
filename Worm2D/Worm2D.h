@@ -104,7 +104,7 @@ class baseParameters
     }
 
     template<class T>
-    bool getValCJWorm(const string & name_str, T & val) const
+    bool getValCJWorm(const string & name_str, T & val)
     {
 
         return getValCJ<T>(name_str,val,"Worm");
@@ -112,7 +112,7 @@ class baseParameters
     }
 
     template<class T>
-    bool getValCJEvo(const string & name_str, T & val) const
+    bool getValCJEvo(const string & name_str, T & val)
     {
 
         return getValCJ<T>(name_str,val,"Evolutionary Optimization Parameters");
@@ -145,7 +145,7 @@ class baseParameters
         defaultVals_["SRType"] = "None";
         defaultVals_["SRForm"] = 0;
         defaultVals_["SRSegPerSR"] = 6;
-        defaultVals_["SRZeroGainsType"] = 0;
+        defaultVals_["SRZeroGainsType"] = 1;
         defaultVals_["SROffset"] = 0;
         defaultVals_["NMJWeight"] = 1;
     

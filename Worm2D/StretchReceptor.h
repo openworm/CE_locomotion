@@ -111,7 +111,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 
 }
 
-shared_ptr<baseParameters> basePar1;
+baseParameters * basePar1;
 //SRVars srvars;
 //shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
@@ -119,7 +119,7 @@ string SRType = "Base";
 
 protected:
 const int nsegs;
-SR(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_, shared_ptr<SRVars> srvars_ptr_):
+SR(int nsegs_, int nstretch_, baseParameters * basePar1_, shared_ptr<SRVars> srvars_ptr_):
 nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_){}
 
 //SRWeights srweights, nssrweights;
@@ -209,7 +209,7 @@ class SRCE : public SR
 {
 
 public:
-SRCE(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_):
+SRCE(int nsegs_, int nstretch_, baseParameters* basePar1_):
 SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
 ,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
@@ -257,7 +257,7 @@ SRWeights srweights, nssrweights;
 class SRReg : public SRCE
 {
 public:
-SRReg(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_)
+SRReg(int nsegs_, int nstretch_, baseParameters* basePar1_)
 :SRCE(nsegs_,nstretch_,basePar1_)
 //,srregpars(dynamic_pointer_cast<SRRegpars>(srcepars))
 {}

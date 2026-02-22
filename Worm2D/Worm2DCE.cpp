@@ -100,15 +100,15 @@ Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_,
 
 
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10)){}
+Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10,this)){}
 
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd):
-Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10),cmd){}
+Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10,this),cmd){}
 
 Worm2DCE::Worm2DCE(const string & jsonfilename_):
 Worm2DCE(getJsonFromFile(jsonfilename_)){}
 
-Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
+Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10,this)){}
 
 //////////////////////////////////
 //// CE const
@@ -129,10 +129,10 @@ n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_){}
 //////////////////////////////////
 
 
-WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10)){}
+WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10,this)){}
 
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd):
-WormCE(make_shared<SRCE>(N_segments,10), cmd){}
+WormCE(make_shared<SRCE>(N_segments,10,this), cmd){}
 
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno):WormCE(cmd)
 {
@@ -551,14 +551,14 @@ else{
 //////////////////////////////
 
 
-WormCESR::WormCESR():WormCE(make_shared<SRReg>(N_segments,10)),
+WormCESR::WormCESR():WormCE(make_shared<SRReg>(N_segments,10,this)),
 //Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem())
 {}
 
 
 
-WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10),cmd),
+WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10,this),cmd),
 //Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem())
 {}
@@ -596,7 +596,9 @@ void Worm2DCE::setForward()
   sr_ptr->SR_B_gain = pheno_B_gain;
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
-  if (sr_ptr->srcepars->zeroGainsType == 0) sr_ptr->SR_A_gain = 0.0;
+  int zeroGainsType;
+  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  if (zeroGainsType == 0) sr_ptr->SR_A_gain = 0.0;
   AVA_output =  1;
   AVB_output =  0;
   //sr_ptr->setWeights();
@@ -615,7 +617,9 @@ void Worm2DCE::setBackward()
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
-  if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
+  int zeroGainsType;
+  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  if (zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
   AVA_output =  0;
   AVB_output =  1;
 

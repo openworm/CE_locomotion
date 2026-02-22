@@ -5,9 +5,10 @@
 //Worm2Dm(par1_, n_ptr_, new Muscles),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}
 Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}*/
 
-Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){
-  setParsFromJson(j);
-}
+//Worm2DSRb::Worm2DSRb(const json & j):w2dsr_ptr(getSR(j)){
+//  setParsFromJson(j);
+//}
+
 Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
@@ -20,7 +21,7 @@ Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):
-Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(j)
+Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(getSR(j, this))
 {
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
@@ -59,7 +60,7 @@ Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 
 Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), 0),
- Worm2DSRb(j),baseParameters(j,cmd)
+ Worm2DSRb(getSR(j,this))//,baseParameters(j,cmd)
 {
 
    // W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
@@ -124,14 +125,15 @@ if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
 void  Worm2DSRb::setParsFromJson(const json & j){if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
 
 
-shared_ptr<SR> Worm2DSRb::getSR(const json & j)
+shared_ptr<SR> Worm2DSRb::getSR(const json & j, baseParameters * basePar1_)
 {
 
     if (j.contains("Stretch receptor")){
     
     if (j["Stretch receptor"]["Type"]["value"] == "SR18") return make_shared<SR18>();
 
-    return make_shared<SRCE>(j["Stretch receptor"]["NSegs"]["value"],j["Stretch receptor"]["NStretch"]["value"]);
+    return make_shared<SRCE>(j["Stretch receptor"]["NSegs"]["value"],
+      j["Stretch receptor"]["NStretch"]["value"], basePar1_);
 
     }
     else return nullptr;
@@ -1516,7 +1518,7 @@ void Sensor::construct(const json & j)
 
   //sp1.gradSteep = CO2DSRpars->gradSteep;
   //sp1.HSStepSize = CO2DSRpars->HSStepSize;
-  
+
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
   sp1.sensorM = j["Worm"]["sensorM"]["value"];

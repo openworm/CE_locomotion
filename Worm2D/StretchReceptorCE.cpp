@@ -11,8 +11,8 @@
 #include <cassert>
 
 
-StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain):
-SRCE(nSegs,nSR)
+StretchReceptorCE::StretchReceptorCE(int nSegs, int nSR, double ASRgain, double BSRgain)
+//:SRCE(nSegs,nSR)
 {
     SetStretchReceptorParams(nSegs, nSR, ASRgain, BSRgain);
 }

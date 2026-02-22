@@ -234,7 +234,7 @@ protected:
 
     double Evaluation21(TVector<double> &geno, RandomState &rs);
     //double Evaluation21R(TVector<double> &genotype, RandomState &rs);
-    double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
+    double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction, shared_ptr<T> w_ptr);
 
     double EvaluationFunction(TVector<double> &geno, RandomState &rs);
     //double Evaluation21(TVector<double> &geno, RandomState &rs);
@@ -555,8 +555,11 @@ template<class T>
 //double EvolutionFullW<T>::Evaluation21(TVector<double> &genotype, RandomState &rs)
 double Evolvable_ptrB<T>::Evaluation21(TVector<double> &genotype, RandomState &rs)
 {
-
-    return Evaluation21Rp1(genotype,rs,2);
+ 
+    shared_ptr<T> w_ptr = this->getTw();
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(2);
+    return Evaluation21Rp1(genotype,rs,2, w_ptr);
 
 }
 
@@ -566,6 +569,14 @@ double Evolvable_ptrB<T>::Evaluation21(TVector<double> &genotype, RandomState &r
 template<class T>
 double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &rs)
 {
+
+     vector<double> initial_genotype(genotype.Size());
+    for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
+   
+    shared_ptr<T> w_ptr = this->getTw();
+
+
+
 
     shared_ptr<const EvolparametersCER> Epars1 = 
     dynamic_pointer_cast<const EvolparametersCER>(this->evopar_ptr);
@@ -590,11 +601,35 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     //genotype(SR_B)= srb;
     //return EvaluationCEp1(genotype, rs, 1); 
 
-    double sra = genotype(1);
-    double srb = genotype(2);
+   // double sra = genotype(1);
+   // double srb = genotype(2);
 
 
     double fitness = 0;
+    int count = 0;
+
+    if (Epars1->doReverse==0 || doalt1f)
+    {
+    if (Epars1->zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(0);
+    fitness += Evaluation21Rp1(genotype, rs, 1, w_ptr);
+    count++;
+    }
+
+    if (Epars1->doReverse==1 || doalt2f)
+    {
+    if (Epars1->zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(1);
+    fitness += Evaluation21Rp1(genotype, rs, -1, w_ptr);
+    count++;
+    }
+
+
+    for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
+
+    /* double fitness = 0;
     int count = 0;
     if (Epars1->doReverse==0 || doalt1f){
     if (Epars1->zeroGainsType == 1) genotype(1)= -1.0;
@@ -610,7 +645,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     }
 
     genotype(1) = sra;
-    genotype(2) = srb;
+    genotype(2) = srb; */
 
     return fitness/count;
 
@@ -623,403 +658,8 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
 }
 
 
-template<class T>
-double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, RandomState &rs, int direction){
 
-    const double & Duration = evoPars1.Duration;
-    //const int & VectSize = evoPars1.VectSize;
-    const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
-    const double & Transient = evoPars1.Transient;
-    const int & skip_steps = evoPars1.skip_steps;
 
-  
-    shared_ptr<const EvolparametersCER> EparsR = 
-    dynamic_pointer_cast<const EvolparametersCER>(this->evopar_ptr);
-
-    //const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*(this->evopar_ptr));
-    //const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
-
-//    assert(0);
-  
-    if (EparsR == nullptr) assert(0);
-
-    const double OSCT =  EparsR->OSCTbase* Duration;
-
-    //const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
-    //const double agarfreq = 0.44;
-    //const double    AvgSpeed = 0.00022;
-    const double AvgSpeed = EparsR->AvgSpeed;    // Average speed of the worm in meters per seconds
-    const double BBCfit = AvgSpeed*Duration;
-    const double agarfreq = EparsR->agarfreq;
-
-
-        // Fitness
-        double fitness_tr = 0.0;
-        double bodyorientation, anglediff;
-        double movementorientation, distancetravelled = 0, displacement, temp;
-        //TVector<double> curvature(1, N_curvs);
-        //TVector<double> antpostcurv(1, 2);
-        //antpostcurv.FillContents(0.0);
-    
-        // Evaluation of B-class neuron oscillation,and frequency in segment 2.
-        // The index of B class in this segment correspond to DBs2 = 10; VBs2 = 13
-        double DBp, VBp, dDB, dVB;
-        double oscDB = 0, oscVB = 0;
-        double FoDB, FoVB, FfDB, FfVB;
-    
-        double freqDB=0, freqVB=0;
-        int pDB = 0, pVB = 0, signtagDB, signtagVB, signDB, signVB;
-
-        TVector<double> peaksDB(1, 2*Duration);
-        TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
-        peaksDB.FillContents(0.0);
-        peaksVB.FillContents(0.0);
-
-        
-        // Genotype-Phenotype Mapping
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(v, phenotype);
-
-        //T w;
-        shared_ptr<T> w_ptr = this->getTw();
-        T & w = *w_ptr; 
-        //(genotype, false);
-        //w.setWormPars(argc,argv);
-       
-        //w.setWormPars(&*wormpar_ptr);
-        //w.setWormPars(this->cmd);
-        w.setParsFromGeno(genotype);
-     
-        //w.setEvolPars(EparsR,evoPars1.evoType);
-
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(geno, phenotype);
-        //setPfaFromPheno(phenotype);
-        //setParsFromPheno(phenotype);
-        //construct(phenotype);
-        //setUpMuscleConn();
-        w.InitializeState(rs);
-        w.initForSimulation(rs);
-        w.setStepSize(StepSize);
-
-        
-        shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
-
-       if (w1 != nullptr) {
-
-        //shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2)
-        //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
-
-
-        // Transient XXX
-        //w.SetAVB(0.0);
-        //w.SetAVA(0.0);
-        
-       if (direction == 1){
-        w1->AVA_output =  0.0;
-        w1->AVB_output =  1.0;
-        }
-        else if (direction == -1) {
-        w1->AVA_output =  1.0;
-        w1->AVB_output =  0.0; // Command Interneuron Activation Backward
-        }
-        else if (direction == 2)
-        {
-        w1->AVA_output =  0.0;
-        w1->AVB_output =  0.0; 
-        }
-
-        else assert(0 && "direction not set properly");
-
-
-        }
-
-        //w.setWormPars(&w1);
-     
-      
-
-        for (double t = 0.0; t <= Transient; t += StepSize){
-            w.Step();
-        }    
-
-        //cout << "EparsR->dbunit " << EparsR->dbunit << endl;
-        //cout << "EparsR->vbunit " << EparsR->vbunit << endl;
-       
-        //assert(0);
-       
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
-    
-        w.Step(); // determine sign of derivative
-    
-
-        dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-        dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
-        signtagDB = (dDB  > 0) ? 1 : -1;
-        signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
-        
-        double xt = w.CoMx(), xtp;
-        double yt = w.CoMy(), ytp;
-      
-        // Time loop
-        for (double t = 0.0; t <= Duration; t += StepSize) {
-            // Step simulation
-            w.Step();
-            
-            ///// Oscilation
-            // check changes in sign of derivative
-            dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-            dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
-            signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
-            signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
-    
-            oscDB += abs(DBp - w.n_ptr->NeuronOutput(EparsR->dbunit));
-            oscVB += abs(VBp - w.n_ptr->NeuronOutput(EparsR->vbunit));
-    
-            if ((signDB == -1) and (signtagDB >= 0)){
-                pDB +=1;
-                peaksDB[pDB] = t;
-                if (pDB >= 2*Duration){return 0;};
-            }
-            if ((signVB == -1) and (signtagVB >= 0)){
-                pVB +=1;
-                peaksVB[pVB] = t;
-                if (pVB >= 2*Duration){return 0;};
-            }
-    
-            signtagDB = signDB;
-            signtagVB = signVB;
-            DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-            VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
-            
-            //// Locomotion
-            // Current and past centroid position
-            xtp = xt; ytp = yt;
-            xt = w.CoMx(); yt = w.CoMy();
-            
-            // Integration error check
-            if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
-                return 0.0;
-            }
-            
-            // Fitness
-            bodyorientation = w.Orientation();                  // Orientation of the body position
-            movementorientation = atan2(yt-ytp,xt-xtp);
-            
-            if (EparsR->doAngleDiff)
-            anglediff = angle_diff(movementorientation,bodyorientation);
-            else
-            // Orientation of the movement
-            anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            if (direction == 1 || direction == 2){
-            if (EparsR->fitType == 0)
-            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-            else temp = cos(anglediff);
-            }
-            else{
-            if (EparsR->fitType == 0) 
-            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
-            else temp = cos(anglediff)*-1;
-            }
-        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
-        }
-
-
-        // B Oscillation evaluation
-        if ((pDB < 2) or (pVB < 2)){return 0;};
-        for (int i = 1; i<pDB; i+=1){freqDB += (1./(pDB-1))*(1./(peaksDB[i+1]- peaksDB[i]));} 
-        for (int i = 1; i<pVB; i+=1){freqVB += (1./(pVB-1))*(1./(peaksVB[i+1]- peaksVB[i]));} 
-    
-        FfDB = fabs(freqDB - agarfreq)/agarfreq < 1 ? fabs(freqDB - agarfreq)/agarfreq : 1;
-        FfVB = fabs(freqVB - agarfreq)/agarfreq < 1 ? fabs(freqVB - agarfreq)/agarfreq : 1;
-    
-        FoDB = oscDB > OSCT ? 1 : oscDB / OSCT;
-        FoVB = oscVB > OSCT ? 1 : oscVB / OSCT;
-    
-        // Locomotion evaluation
-        fitness_tr = (1 - (fabs(BBCfit-distancetravelled)/BBCfit));
-    
-    
-
-        return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
-    
-
-}
-
-
-template<class T>
-double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &rs)
-{
-    double fitness;
-    //ofstream fitfile;
-  
-    const double & Duration = evoPars1.Duration;
-    //const int & VectSize = evoPars1.VectSize;
-    const double & StepSize = evoPars1.StepSize;
-    const int & N_curvs = evoPars1.N_curvs;
-    const double & Transient = evoPars1.Transient;
-    //const int & skip_steps = evoPars1.skip_steps;
-
-
-    shared_ptr<const AgarPars> EparsR = dynamic_pointer_cast<const AgarPars>(this->evopar_ptr);
-
-    if (EparsR == nullptr) assert(0);
-
-    const double AvgSpeed = EparsR->AvgSpeed;
-    const double BBCfit = AvgSpeed*Duration;
-
-
-    
-
-    //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    //const double    BBCfit = AvgSpeed*Duration;
-    // Fitness
-    fitness = 0.0;
-    double bodyorientation, anglediff;
-    double movementorientation, distancetravelled = 0, temp;
-    //TVector<double> curvature(1, N_curvs);
-    //TVector<double> antpostcurv(1, 2);
-    //antpostcurv.FillContents(0.0);
-
-    // Genotype-Phenotype Mapping
-    //TVector<double> phenotype(1, VectSize);
-    //GenPhenMapping(v, phenotype);
-
- 
-
-    //T w;//(genotype, false);
-    //w.setWormPars(argc,argv);
-    shared_ptr<T> w_ptr = this->getTw();
-    T & w = *w_ptr; 
-    //w.setWormPars(this->cmd);
-
-    
-    w.setParsFromGeno(genotype);
-   
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(geno, phenotype);
-        //setPfaFromPheno(phenotype);
-        //setParsFromPheno(phenotype);
-        //construct(phenotype);
-        //setUpMuscleConn();
-    w.InitializeState(rs);
-    w.initForSimulation(rs);
-    w.setStepSize(StepSize);
-
-   
-
-    // Transient
-    for (double t = 0.0; t <= Transient; t += StepSize)
-    {
-        w.Step();
-
-    }
-
-    double xt = w.CoMx(), xtp;
-    double yt = w.CoMy(), ytp;
-
-    // Time loop
-    for (double t = 0.0; t <= Duration; t += StepSize) {
-
-        w.Step();
-
-        // Current and past centroid position
-        xtp = xt; ytp = yt;
-        xt = w.CoMx(); yt = w.CoMy();
-
-        // Integration error check
-        if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize)
-        {
-            return 0.0;
-        }
-
-        // Fitness
-        bodyorientation = w.Orientation();                  // Orientation of the body position
-        movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
-        anglediff = movementorientation - bodyorientation;  // Check how orientations align
-        temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
-        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
-
-    }
-    fitness = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
-
-
-    //assert(0);
-
-    return fitness;
-}
-
-
-/* int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar){
-    if (BestPerf > 0.99) return 1;
-    else return 0;
-}
- */
-/* template<class T>
-void EvolutionFullW<T>::configure_p2_Net21()
-{
-  
-    // Stage 1 //
-    {typedef int (*callback_t)(int, double, double, double);
-        Callback<int(int, double, double, double)>::func 
-        = std::bind(&finish_Bosc, this, 
-            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-        callback_t func = static_cast<callback_t>(Callback<int(int, double, double, double)>::callback); 
-        s->SetSearchTerminationFunction(func);}
-
-    //s->SetSearchTerminationFunction(finish_Bosc);
-
-    {typedef double (*callback_t)(TVector<double> &, RandomState &);
-        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction1, this, 
-                std::placeholders::_1, std::placeholders::_2);
-        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
-    s->SetEvaluationFunction(func);}
-
-    //s->SetEvaluationFunction(EvaluationFunction1);
-  
-
-    s->ExecuteSearch();
-
-    // Stage 2 //
-    s->SetSearchTerminationFunction(NULL);
-
-    {typedef double (*callback_t)(TVector<double> &, RandomState &);
-        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction2, this, 
-                std::placeholders::_1, std::placeholders::_2);
-        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
-    s->SetEvaluationFunction(func);}
-
-    //s->SetEvaluationFunction(EvaluationFunction2);
-    InitializeBodyConstants();
-    s->ExecuteSearch();
-}
-
-
-template<class T>
-void EvolutionFullW<T>::configure_p12_RS18()
-{
-   // configure_p1();
-    if (evo_seed)
-    {
-        ifstream BestIndividualFile;
-        TVector<double> bestVector(1, evoPars1.VectSize);
-        BestIndividualFile.open(rename_file("best.gen.dat"));
-        BestIndividualFile >> bestVector;
-        s->InitializeSearch();
-        for (int i = 1; i <= s->PopulationSize(); i++){
-            for (int j = 1; j <= evoPars1.VectSize; j++)
-            {
-                s->Individual(i)[j] = bestVector[j];
-            }
-        }
-    }
-   // configure_p2();
-
-}
- */
 
 template<class T>
 double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
@@ -1170,6 +810,247 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
     //assert(0 && "doReverse not set properly");
     // return fitnessBackward;
 }
+
+
+template<class T>
+double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, 
+    RandomState &rs, 
+    int direction,
+    shared_ptr<T> w_ptr){
+
+    const double & Duration = evoPars1.Duration;
+    //const int & VectSize = evoPars1.VectSize;
+    const double & StepSize = evoPars1.StepSize;
+    const int & N_curvs = evoPars1.N_curvs;
+    const double & Transient = evoPars1.Transient;
+    const int & skip_steps = evoPars1.skip_steps;
+
+  
+    shared_ptr<const EvolparametersCER> EparsR = 
+    dynamic_pointer_cast<const EvolparametersCER>(this->evopar_ptr);
+
+    //const EvolparametersCER & EparsR = dynamic_cast<const EvolparametersCER&>(*(this->evopar_ptr));
+    //const Evolparameters & EparsR = dynamic_cast<const Evolparameters&>(*evopar_ptr);
+
+//    assert(0);
+  
+    if (EparsR == nullptr) assert(0);
+
+    const double OSCT =  EparsR->OSCTbase* Duration;
+
+    //const double OSCT = 0.25 * Duration; // Cap for oscillation evaluation
+    //const double agarfreq = 0.44;
+    //const double    AvgSpeed = 0.00022;
+    const double AvgSpeed = EparsR->AvgSpeed;    // Average speed of the worm in meters per seconds
+    const double BBCfit = AvgSpeed*Duration;
+    const double agarfreq = EparsR->agarfreq;
+
+
+        // Fitness
+        double fitness_tr = 0.0;
+        double bodyorientation, anglediff;
+        double movementorientation, distancetravelled = 0, displacement, temp;
+        //TVector<double> curvature(1, N_curvs);
+        //TVector<double> antpostcurv(1, 2);
+        //antpostcurv.FillContents(0.0);
+    
+        // Evaluation of B-class neuron oscillation,and frequency in segment 2.
+        // The index of B class in this segment correspond to DBs2 = 10; VBs2 = 13
+        double DBp, VBp, dDB, dVB;
+        double oscDB = 0, oscVB = 0;
+        double FoDB, FoVB, FfDB, FfVB;
+    
+        double freqDB=0, freqVB=0;
+        int pDB = 0, pVB = 0, signtagDB, signtagVB, signDB, signVB;
+
+        TVector<double> peaksDB(1, 2*Duration);
+        TVector<double> peaksVB(1, 2*Duration);// longer vector if you want frequencies higer than 2 Hz.
+        peaksDB.FillContents(0.0);
+        peaksVB.FillContents(0.0);
+
+        
+        // Genotype-Phenotype Mapping
+        //TVector<double> phenotype(1, VectSize);
+        //GenPhenMapping(v, phenotype);
+
+        //T w;
+        //shared_ptr<T> w_ptr = this->getTw();
+
+        T & w = *w_ptr; 
+
+
+        //(genotype, false);
+        //w.setWormPars(argc,argv);
+       
+        //w.setWormPars(&*wormpar_ptr);
+        //w.setWormPars(this->cmd);
+
+        //w.setParsFromGeno(genotype);
+     
+        //w.setEvolPars(EparsR,evoPars1.evoType);
+
+        //TVector<double> phenotype(1, VectSize);
+        //GenPhenMapping(geno, phenotype);
+        //setPfaFromPheno(phenotype);
+        //setParsFromPheno(phenotype);
+        //construct(phenotype);
+        //setUpMuscleConn();
+
+
+        w.InitializeState(rs);
+        w.initForSimulation(rs);
+        w.setStepSize(StepSize);
+
+        
+     /*    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
+
+       if (w1 != nullptr) {
+
+        //shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2)
+        //W2DCEparsA w1(dynamic_cast<const W2DCEparsA&>(*wormpar_ptr));
+
+
+        // Transient XXX
+        //w.SetAVB(0.0);
+        //w.SetAVA(0.0);
+        
+       if (direction == 1){
+        w1->AVA_output =  0.0;
+        w1->AVB_output =  1.0;
+        }
+        else if (direction == -1) {
+        w1->AVA_output =  1.0;
+        w1->AVB_output =  0.0; // Command Interneuron Activation Backward
+        }
+        else if (direction == 2)
+        {
+        w1->AVA_output =  0.0;
+        w1->AVB_output =  0.0; 
+        }
+
+        else assert(0 && "direction not set properly");
+
+
+        } */
+
+        //w.setWormPars(&w1);
+     
+      
+
+        for (double t = 0.0; t <= Transient; t += StepSize){
+            w.Step();
+        }    
+
+        //cout << "EparsR->dbunit " << EparsR->dbunit << endl;
+        //cout << "EparsR->vbunit " << EparsR->vbunit << endl;
+       
+        //assert(0);
+       
+        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+    
+        w.Step(); // determine sign of derivative
+    
+
+        dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
+        dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+        signtagDB = (dDB  > 0) ? 1 : -1;
+        signtagVB = (dVB  > 0) ? 1 : -1;
+        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+        
+        double xt = w.CoMx(), xtp;
+        double yt = w.CoMy(), ytp;
+      
+        // Time loop
+        for (double t = 0.0; t <= Duration; t += StepSize) {
+            // Step simulation
+            w.Step();
+            
+            ///// Oscilation
+            // check changes in sign of derivative
+            dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
+            dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+            signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
+            signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
+    
+            oscDB += abs(DBp - w.n_ptr->NeuronOutput(EparsR->dbunit));
+            oscVB += abs(VBp - w.n_ptr->NeuronOutput(EparsR->vbunit));
+    
+            if ((signDB == -1) and (signtagDB >= 0)){
+                pDB +=1;
+                peaksDB[pDB] = t;
+                if (pDB >= 2*Duration){return 0;};
+            }
+            if ((signVB == -1) and (signtagVB >= 0)){
+                pVB +=1;
+                peaksVB[pVB] = t;
+                if (pVB >= 2*Duration){return 0;};
+            }
+    
+            signtagDB = signDB;
+            signtagVB = signVB;
+            DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
+            VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+            
+            //// Locomotion
+            // Current and past centroid position
+            xtp = xt; ytp = yt;
+            xt = w.CoMx(); yt = w.CoMy();
+            
+            // Integration error check
+            if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize){
+                return 0.0;
+            }
+            
+            // Fitness
+            bodyorientation = w.Orientation();                  // Orientation of the body position
+            movementorientation = atan2(yt-ytp,xt-xtp);
+            
+            if (EparsR->doAngleDiff)
+            anglediff = angle_diff(movementorientation,bodyorientation);
+            else
+            // Orientation of the movement
+            anglediff = movementorientation - bodyorientation;  // Check how orientations align
+            if (direction == 1 || direction == 2){
+            if (EparsR->fitType == 0)
+            temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+            else temp = cos(anglediff);
+            }
+            else{
+            if (EparsR->fitType == 0) 
+            temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
+            else temp = cos(anglediff)*-1;
+            }
+        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
+        }
+
+
+        // B Oscillation evaluation
+        if ((pDB < 2) or (pVB < 2)){return 0;};
+        for (int i = 1; i<pDB; i+=1){freqDB += (1./(pDB-1))*(1./(peaksDB[i+1]- peaksDB[i]));} 
+        for (int i = 1; i<pVB; i+=1){freqVB += (1./(pVB-1))*(1./(peaksVB[i+1]- peaksVB[i]));} 
+    
+        FfDB = fabs(freqDB - agarfreq)/agarfreq < 1 ? fabs(freqDB - agarfreq)/agarfreq : 1;
+        FfVB = fabs(freqVB - agarfreq)/agarfreq < 1 ? fabs(freqVB - agarfreq)/agarfreq : 1;
+    
+        FoDB = oscDB > OSCT ? 1 : oscDB / OSCT;
+        FoVB = oscVB > OSCT ? 1 : oscVB / OSCT;
+    
+        // Locomotion evaluation
+        fitness_tr = (1 - (fabs(BBCfit-distancetravelled)/BBCfit));
+    
+    
+
+        return fitness_tr * FoDB * FoVB * (1 - FfDB) * (1 - FfVB);
+    
+
+}
+
+
+
+
+
 
 template<class T>
 double Evolvable_ptrB<T>::EvaluationCEp1(
@@ -1364,8 +1245,8 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     //w.initForSimulation(rs);
     
     
-    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
-    assert(w1!=nullptr);
+    //shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
+    //assert(w1!=nullptr);
 
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);
@@ -1376,6 +1257,13 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     
     const double Pi	=	3.1415926;
 
+    double MaxDist;
+    w.getValCJWorm("MaxDist", MaxDist);
+
+
+    w.setValCJWorm("RunDuration",Transient + Duration);
+    w.setValCJWorm("HSStepSize",StepSize);
+
 	double f, accdist, totaldist;
 	int k = 0;
 	double fitness = 0.0;
@@ -1385,18 +1273,30 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 		if (mode==0){taxis = 0;kinesis = 1;}
 		else {taxis = 1;kinesis = 0;}
 
+
+        w.setValCJWorm("taxis",taxis);
+        w.setValCJWorm("kinesis",kinesis);
+
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
 		{
+
+            w.setValCJWorm("gradSteep",gradSteep);
+
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
 
+                w.setValCJWorm("orient",orient);
+                	
+                    
+                   
+
                 //w1->worm_rotation = orient;
-                w1->orient_orig = orient;
+              /*   w1->orient_orig = orient;
                 w1->gradSteep = gradSteep;
                 w1->RunDuration = Transient + Duration;
                 w1->HSStepSize = StepSize;
                 w1->taxis = taxis;
-                w1->kinesis = kinesis;
+                w1->kinesis = kinesis; */
 
 				//Worm->setSimPars(orient,
 				//	gradSteep,
@@ -1452,7 +1352,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 						//cout << "D " << Worm->DistanceToCentre() << endl;
 					}
 					totaldist = (accdist/(Duration/StepSize));
-					f = (w1->MaxDist - totaldist)/w1->MaxDist;
+					f = (MaxDist - totaldist)/MaxDist;
 					f = f < 0 ? 0.0 : f;
 					fitness += f;
 					k++;
@@ -1501,8 +1401,8 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     
     w.setStepSize(StepSize);
     
-    shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
-    assert(w1!=nullptr);
+    //shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
+    //assert(w1!=nullptr);
     
 	//RandomState rs2 = rs;
 	//Worm->InitializeState(rs2);
@@ -1511,11 +1411,18 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 
     const double Pi	=	3.1415926;
 
-    w1->resetAgentBody = true;         
-    w1->orient_orig = Pi;
-    w1->RunDuration = Transient + Duration;
-    w1->HSStepSize = StepSize;
+    //w1->resetAgentBody = true;         
+    //w1->orient_orig = Pi;
+    //w1->RunDuration = Transient + Duration;
+    //w1->HSStepSize = StepSize;
               
+    w.setValCJWorm("RunDuration",Transient + Duration);
+    w.setValCJWorm("HSStepSize",StepSize);
+    w.setValCJWorm("resetAgentBody",true);
+    w.setValCJWorm("orient",Pi);
+
+    double MaxDist;
+    w.getValCJWorm("MaxDist", MaxDist);
 
     WormGrad & wg = dynamic_cast<WormGrad&>(w);
     
@@ -1530,19 +1437,25 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 		if (mode==0){taxis = 0;kinesis = 1;}
 		else {taxis = 1;kinesis = 0;}
 
+        w.setValCJWorm("taxis",taxis);
+        w.setValCJWorm("kinesis",kinesis);
+
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
 		{
+                  w.setValCJWorm("gradSteep",gradSteep);
+
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
             //for (double orient = 0.0; orient < 2*Pi; orient +=2* Pi)
             //for (int i1=0;i1<2;i1++)
 			{
 
                 //double orient = 0.0;
+                w.setValCJWorm("rotation",orient);
 
-                w1->worm_rotation = orient;
-                w1->gradSteep = gradSteep;
-                w1->taxis = taxis;
-                w1->kinesis = kinesis;
+                //w1->worm_rotation = orient;
+                //w1->gradSteep = gradSteep;
+                //w1->taxis = taxis;
+                //w1->kinesis = kinesis;
 
 				//Worm->setSimPars(orient,
 				//	gradSteep,
@@ -1595,7 +1508,7 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 						//cout << "D " << Worm->DistanceToCentre() << endl;
 					}
 					totaldist = (accdist/(Duration/StepSize));
-					f = (w1->MaxDist - totaldist)/w1->MaxDist;
+					f = (MaxDist - totaldist)/MaxDist;
 					f = f < 0 ? 0.0 : f;
                     //cout << "f " << f << endl;
 					fitness += f;
@@ -1610,3 +1523,177 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     //assert(0);
 	return fitness/k;
 }
+
+
+template<class T>
+double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &rs)
+{
+    double fitness;
+    //ofstream fitfile;
+  
+    const double & Duration = evoPars1.Duration;
+    //const int & VectSize = evoPars1.VectSize;
+    const double & StepSize = evoPars1.StepSize;
+    const int & N_curvs = evoPars1.N_curvs;
+    const double & Transient = evoPars1.Transient;
+    //const int & skip_steps = evoPars1.skip_steps;
+
+
+    shared_ptr<const AgarPars> EparsR = dynamic_pointer_cast<const AgarPars>(this->evopar_ptr);
+
+    if (EparsR == nullptr) assert(0);
+
+    const double AvgSpeed = EparsR->AvgSpeed;
+    const double BBCfit = AvgSpeed*Duration;
+
+
+    
+
+    //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
+    //const double    BBCfit = AvgSpeed*Duration;
+    // Fitness
+    fitness = 0.0;
+    double bodyorientation, anglediff;
+    double movementorientation, distancetravelled = 0, temp;
+    //TVector<double> curvature(1, N_curvs);
+    //TVector<double> antpostcurv(1, 2);
+    //antpostcurv.FillContents(0.0);
+
+    // Genotype-Phenotype Mapping
+    //TVector<double> phenotype(1, VectSize);
+    //GenPhenMapping(v, phenotype);
+
+ 
+
+    //T w;//(genotype, false);
+    //w.setWormPars(argc,argv);
+    shared_ptr<T> w_ptr = this->getTw();
+    T & w = *w_ptr; 
+    //w.setWormPars(this->cmd);
+
+    
+    w.setParsFromGeno(genotype);
+   
+        //TVector<double> phenotype(1, VectSize);
+        //GenPhenMapping(geno, phenotype);
+        //setPfaFromPheno(phenotype);
+        //setParsFromPheno(phenotype);
+        //construct(phenotype);
+        //setUpMuscleConn();
+    w.InitializeState(rs);
+    w.initForSimulation(rs);
+    w.setStepSize(StepSize);
+
+   
+
+    // Transient
+    for (double t = 0.0; t <= Transient; t += StepSize)
+    {
+        w.Step();
+
+    }
+
+    double xt = w.CoMx(), xtp;
+    double yt = w.CoMy(), ytp;
+
+    // Time loop
+    for (double t = 0.0; t <= Duration; t += StepSize) {
+
+        w.Step();
+
+        // Current and past centroid position
+        xtp = xt; ytp = yt;
+        xt = w.CoMx(); yt = w.CoMy();
+
+        // Integration error check
+        if (isnan(xt) || isnan(yt) || sqrt(pow(xt-xtp,2)+pow(yt-ytp,2)) > 100*AvgSpeed*StepSize)
+        {
+            return 0.0;
+        }
+
+        // Fitness
+        bodyorientation = w.Orientation();                  // Orientation of the body position
+        movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
+        anglediff = movementorientation - bodyorientation;  // Check how orientations align
+        temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
+        distancetravelled += temp * sqrt(pow(xt-xtp,2)+pow(yt-ytp,2));
+
+    }
+    fitness = 1 - (fabs(BBCfit-distancetravelled)/BBCfit);
+
+
+    //assert(0);
+
+    return fitness;
+}
+
+
+/* int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar){
+    if (BestPerf > 0.99) return 1;
+    else return 0;
+}
+ */
+/* template<class T>
+void EvolutionFullW<T>::configure_p2_Net21()
+{
+  
+    // Stage 1 //
+    {typedef int (*callback_t)(int, double, double, double);
+        Callback<int(int, double, double, double)>::func 
+        = std::bind(&finish_Bosc, this, 
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+        callback_t func = static_cast<callback_t>(Callback<int(int, double, double, double)>::callback); 
+        s->SetSearchTerminationFunction(func);}
+
+    //s->SetSearchTerminationFunction(finish_Bosc);
+
+    {typedef double (*callback_t)(TVector<double> &, RandomState &);
+        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction1, this, 
+                std::placeholders::_1, std::placeholders::_2);
+        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
+    s->SetEvaluationFunction(func);}
+
+    //s->SetEvaluationFunction(EvaluationFunction1);
+  
+
+    s->ExecuteSearch();
+
+    // Stage 2 //
+    s->SetSearchTerminationFunction(NULL);
+
+    {typedef double (*callback_t)(TVector<double> &, RandomState &);
+        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction2, this, 
+                std::placeholders::_1, std::placeholders::_2);
+        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
+    s->SetEvaluationFunction(func);}
+
+    //s->SetEvaluationFunction(EvaluationFunction2);
+    InitializeBodyConstants();
+    s->ExecuteSearch();
+}
+
+
+template<class T>
+void EvolutionFullW<T>::configure_p12_RS18()
+{
+   // configure_p1();
+    if (evo_seed)
+    {
+        ifstream BestIndividualFile;
+        TVector<double> bestVector(1, evoPars1.VectSize);
+        BestIndividualFile.open(rename_file("best.gen.dat"));
+        BestIndividualFile >> bestVector;
+        s->InitializeSearch();
+        for (int i = 1; i <= s->PopulationSize(); i++){
+            for (int j = 1; j <= evoPars1.VectSize; j++)
+            {
+                s->Individual(i)[j] = bestVector[j];
+            }
+        }
+    }
+   // configure_p2();
+
+}
+ */
+
+
