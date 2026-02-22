@@ -1,36 +1,7 @@
 #include "StretchReceptor.h"
 #include "../neuromlLocal/c302ForW2D.h"
 
-class baseParameters
-{
 
-    public:
-    baseParameters(const json & itsJson_, shared_ptr<const CmdArgs> itsCmdArgs_)
-    :itsJson(itsJson_),itsCmdArgs(itsCmdArgs_){}
-
-    baseParameters(){}
-    template<class T>
-    bool getValCJ(const string & name_str, T & val)
-    {
-        return getValCJ<T>(name_str, val, itsJson);
-    }
-
-    template<class T>
-    bool getValCJ(const string & name_str, T & val, const json & j)
-    {
-        if (itsCmdArgs!=nullptr && itsCmdArgs->getArgValT<T>("--" + name_str, val)) return true;
-        if (!j.empty() && j.contains("Worm")) 
-        if (getJsonValTF<T>(j["Worm"], name_str, val, true)) return true;
-        return false;
-    }
-
-
-    protected:
-    json itsJson;
-    //shared_ptr<json> itsJson = nullptr;
-    shared_ptr<const CmdArgs> itsCmdArgs = nullptr;
-    
-};
 
 
 class Worm2DSRb
@@ -74,7 +45,7 @@ const string getModelName() {return "W2DSRm";}
 };
 
 
-class Worm2DSR : public baseParameters, public Worm2D, public Worm2DSRb
+class Worm2DSR :  public Worm2D, public Worm2DSRb
 {
 public:
 Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd);
@@ -190,8 +161,9 @@ class Sensor  : public WormGrad
 {
 public:
 
-Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):
-CO2DSRpars(CO2DSRpars_),
+//Sensor(const json & j, shared_ptr<gradParameters> CO2DSRpars_, Worm2Dbody & wb_):
+Sensor(const json & j, Worm2Dm & wb_):
+//CO2DSRpars(CO2DSRpars_),
 wb(wb_)
 {
   construct(j);
@@ -211,10 +183,14 @@ void UpdateChemCon();
 void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
 void InitializeSensors(RandomState& rs);
-void ResetAgentsBody(){wb.ResetAgentsBody(CO2DSRpars);}
+void ResetAgentsBody(){
+  //wb.ResetAgentsBody(CO2DSRpars);
+  wb.ResetAgentsBody(wb);
+}
 
-Worm2Dbody & wb;
-shared_ptr<gradParameters> CO2DSRpars;
+Worm2Dm & wb;
+//shared_ptr<gradParameters> CO2DSRpars;
+shared_ptr<baseParameters> sensor_basePars1;
 
 vector<SensorPars> spvec;
 
@@ -240,11 +216,13 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), shared_ptr<gradParameters>(make_shared<gradParameters>())),
-  Worm2DSRE(j,cmd,callInit),Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
+  getNS(cmd, j)), Worm2DSRE(j,cmd,callInit), Sensor(j, *this)
+  //Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   {
  
   }
+
+
 
 void addParsToJson(json & j){
 

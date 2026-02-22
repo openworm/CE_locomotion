@@ -170,7 +170,7 @@ void SRCE::addParsToJson(json & j) const
     j["Stretch receptor"]["NSegs"]["value"] = nsegs;
     j["Stretch receptor"]["NStretch"]["value"] = srvars_ptr->nstretch;
 
-    if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
+    //if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
 
 
     j["Stretch receptor"]["SR_A_gain"]["value"] = SR_A_gain;
@@ -187,7 +187,7 @@ void SRCE::addParsToJson(json & j) const
 
 void SR::setParsFromJson(const json & j) 
 {
-    if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
+    //if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
     SRType = j["Stretch receptor"]["Type"]["value"];
 }
 
@@ -440,35 +440,39 @@ void SRCE::makeSRWeights()
 
     SRWeights srw;
 
-    if (srcepars->SRForm == 0){
-    for (int j = 1; j <= srcepars->nsegperstr; j++){
+    int SRForm, nsegperstr;
+    basePar1->getValCJ<int>("SRForm",SRForm,"Stretch Receptor");
+    basePar1->getValCJ<int>("SRSegPerSR",nsegperstr,"Stretch Receptor");
+
+    if (SRForm == 0){
+    for (int j = 1; j <= nsegperstr; j++){
         int from = j, to = 1;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
     }
     for (int i = 2; i <= 10; i++)
-         for (int j = 1; j <= srcepars->nsegperstr; j++){
+         for (int j = 1; j <= nsegperstr; j++){
         int from = j+(i-2)*4, to = i;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
         }
     
     for (int i = 1; i <= 9; i++)
-        for (int j = 1; j <= srcepars->nsegperstr; j++){
+        for (int j = 1; j <= nsegperstr; j++){
         int from = 12+j+(i-1)*4, to = i;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
         }
 
-    for (int j = 1; j <= srcepars->nsegperstr; j++){
+    for (int j = 1; j <= nsegperstr; j++){
         int from = j + 44, to = 10;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -476,13 +480,13 @@ void SRCE::makeSRWeights()
 
 }
 
-    if (srcepars->SRForm == 1){
+    if (SRForm == 1){
   
     for (int i = 1; i <= 9; i++)   
-        for (int j = 1; j <= srcepars->nsegperstr; j++)
+        for (int j = 1; j <= nsegperstr; j++)
         {
         int from = 12+j+(i-1)*4, to = i;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -490,9 +494,9 @@ void SRCE::makeSRWeights()
 
 //    // Unit 10 (tail), receive same input as Unit 9
 
-    for (int j = 1; j <= srcepars->nsegperstr; j++){
+    for (int j = 1; j <= nsegperstr; j++){
     int from = j+44, to = 10;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -503,9 +507,9 @@ void SRCE::makeSRWeights()
 //    // B-class Stretch Receptors
 //    // first unit (head) receive same input as Unit 2
 
-    for (int j = 1; j <= srcepars->nsegperstr; j++){
+    for (int j = 1; j <= nsegperstr; j++){
         int from = j, to = 1;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -515,10 +519,10 @@ void SRCE::makeSRWeights()
 //    // Units 2 to 10 
 
     for (int i = 2; i <= 10; i++)
-        for (int j = 1; j <= srcepars->nsegperstr; j++)
+        for (int j = 1; j <= nsegperstr; j++)
         {
         int from = j+(i-2)*4, to = i;
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
@@ -538,31 +542,37 @@ void SRReg::makeSRWeights()
 
     double full_len = nsegs/srvars_ptr->nstretch ;//+ 1;
     //const int half_len = (int) (nsegs/(2*srvars.nstretch));
-
+    
+    
+    int SRForm, nsegperstr;
+    basePar1->getValCJ<int>("SRForm",SRForm,"Stretch Receptor");
+    basePar1->getValCJ<int>("SRSegPerSR",nsegperstr,"Stretch Receptor");
+    int offset;
+    basePar1->getValCJ<int>("SROffset",offset,"Stretch Receptor");
 
     SRWeights srw;
 
    for (int i = 1; i <= srvars_ptr->nstretch; i++){
  
     double midpoint = full_len*(i-0.5); 
-    int start = (int) (midpoint - (srcepars->nsegperstr/2.0));
-    int end = (int) (midpoint + (srcepars->nsegperstr/2.0));
+    int start = (int) (midpoint - (nsegperstr/2.0));
+    int end = (int) (midpoint + (nsegperstr/2.0));
 
     for (int j = start + 1; j< end + 1; j++)
        
    //for (int j = (i-1)*full_len - half_len + 1; j <= (i-1)*full_len + half_len + 1; j++)
     //for (int j = (i-1)*srcepars->nsegperstr + 1; j <= i*srcepars->nsegperstr; j++)
     {
-        {int from = j-srregpars->offset, to = i;
+        {int from = j-offset, to = i;
         if (from>0 && from<=nsegs){
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToB_D.push_back(tfw);
         srw.segToB_V.push_back(tfw);
         }}
-        {int from = j+srregpars->offset, to = i;
+        {int from = j+offset, to = i;
         if (from<=nsegs && from>0){
-        double weight = 1.0/srcepars->nsegperstr;
+        double weight = 1.0/nsegperstr;
         toFromWeight tfw({from,weight},to);
         srw.segToA_D.push_back(tfw);
         srw.segToA_V.push_back(tfw);
@@ -584,19 +594,23 @@ double SRCE::transformSegs(const double & val){
 
     double val1 = val;
 
-    if (srcepars->sr_type == "SR_TRANS_STRETCH")
+    string sr_type;
+    basePar1->getValCJ<string>("SRType",sr_type,"Stretch Receptor");
+
+
+    if (sr_type == "SR_TRANS_STRETCH")
     {
     val1 = val < 0.0 ? 0.0 : val;
     }
-    else if (srcepars->sr_type == "SR_TRANS_CONTRACT")
+    else if (sr_type == "SR_TRANS_CONTRACT")
     {
     val1 = val < 0.0 ? val : 0.0;
     }
-    else if (srcepars->sr_type == "SR_TRANS_ABS")
+    else if (sr_type == "SR_TRANS_ABS")
     {
     val1 = val < 0.0 ? -val : val;
     }
-    else if (srcepars->sr_type == "SR_TRANS_NEG")
+    else if (sr_type == "SR_TRANS_NEG")
     {
     val1 = -val;
     }

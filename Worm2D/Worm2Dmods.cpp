@@ -45,27 +45,24 @@ Worm2Dm(par1_,n_ptr_,w2par_ptr)//,pars1_ptr(w2par_ptr)
 
 
 Worm2DoscNML::Worm2DoscNML(int size_):
-Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(),
-shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>())),
-Worm2D({size_,24,0.1,1,size_}, nullptr),
-Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1b)){}
+Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D()),
+Worm2D({size_,24,0.1,1,size_}, nullptr),Worm2Dosc1((baseParameters&) *this){}
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_):Worm2DoscNML(48)
 {
     json j = getJsonFromFile(jsonfile_);
-    pars1->setParsFromJson(j["Worm"]);
+    //pars1->setParsFromJson(j["Worm"]);
     setMuscBodExt(j); 
 
 }
 
 Worm2DoscNMLm::Worm2DoscNMLm(int size_):
-Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),
-shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),0){}
 
 Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_):Worm2DoscNMLm(48)
 {
     json j = getJsonFromFile(jsonfile_);
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setBodExt(j); 
 }
 
@@ -78,15 +75,15 @@ Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_):Worm2DoscNMLm(48)
 //Worm2DPars::Worm2DPars(wormIzqParams par1_, NSForW2D * n_ptr_, W2Dparameters * w2par_ptr):
 //Worm2Dm(par1_,n_ptr_),pars1_ptr(w2par_ptr),Worm2D(par1_,0){}
 
-Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2par_ptr):
-Worm2D(par1_, nullptr), Worm2Dm(par1_, new NSosc(par1_.N_size), w2par_ptr),
+Worm2DoscBase::Worm2DoscBase(wormIzqParams par1_):
+Worm2D(par1_, nullptr), Worm2Dm(par1_, new NSosc(par1_.N_size)),
 n(dynamic_cast<NSosc&>(*n_ptr)){}
 
 
-Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1(dynamic_pointer_cast<Worm2Doscpars1>(W2Dbaseparameters1b)),
-Worm2DoscBase({size_,24,0.1,1,size_}, nullptr),
+Worm2Dosc::Worm2Dosc(int size_):Worm2Dosc1((baseParameters&) *this),
+Worm2DoscBase({size_,24,0.1,1,size_}),
 //pars1(dynamic_pointer_cast<Worm2Doscpars>(W2Dbaseparameters1)),
-Worm2Dm({size_,24,0.1,1,size_},new NSosc(size_),shared_ptr<Worm2Doscpars1>(make_shared<Worm2Doscpars1>()))
+Worm2Dm({size_,24,0.1,1,size_},new NSosc(size_))
 {
 
     //TVector<double> pheno;
@@ -138,10 +135,10 @@ Worm2Dm({24,24,0.1,1,24},new NSosc(24))
 
 
 Worm2Dosc21::Worm2Dosc21():
-Worm2DoscBase({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
-Worm2Dm({2,24,0.1,7,14},new NSosc(14), 
-shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2DoscBase({2,24,0.1,7,14}),
+Worm2Dosc21base(2, (baseParameters&) *this),
+Worm2Dm({2,24,0.1,7,14},new NSosc(14)) 
+//shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
@@ -173,22 +170,23 @@ Worm2Dosc21::Worm2Dosc21(TVector<double> & phengen, const bool & isPheno):Worm2D
 
 Worm2Dosc21NML::Worm2Dosc21NML():
 Worm2D({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2Dosc21base(2, (baseParameters&)*this),
+//dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
+//Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D())
 {
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
 
 
 Worm2Dosc21NMLm::Worm2Dosc21NMLm():
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
-shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(),0){}
 
 
 Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
 {
     json j = getJsonFromFile(jsonfile_);
-    pars1->setParsFromJson(j["Worm"]);
+    //pars1->setParsFromJson(j["Worm"]);
     setMuscBodExt(j);
 }
 
@@ -196,7 +194,7 @@ Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_):Worm2Dosc21NML()
 Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_):Worm2Dosc21NMLm()
 {
     json j = getJsonFromFile(jsonfile_);
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     
     setBodExt(j); 
         
@@ -205,8 +203,8 @@ Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_):Worm2Dosc21NMLm()
 
 
 Worm2Dosc21S::Worm2Dosc21S():Worm2Dosc21(),
-Worm2Dm({2,24,0.1,7,14},new NSosc(14),shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24))){}
-
+//Worm2Dm({2,24,0.1,7,14},new NSosc(14),shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24))){}
+Worm2Dm({2,24,0.1,7,14},new NSosc(14)){}
 
 Worm2Dosc21S::Worm2Dosc21S(const string & filename_):Worm2Dosc21S()
 //Worm2Dosc21(),
@@ -232,17 +230,17 @@ Worm2Dosc21S::Worm2Dosc21S(TVector<double> & phengen, const bool & isPheno):Worm
 }
 
 Worm2Dosc21all::Worm2Dosc21all():
-Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc(14),
-shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new NSosc(14))
+//shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 {
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
 
 
 Worm2Dosc21allNML::Worm2Dosc21allNML():
-Worm2D({2,24,0.1,7,14}, nullptr),
-Worm2Dosc21base(2, dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2D({2,24,0.1,7,14}, nullptr), Worm2Dosc21base(2, (baseParameters&) *this),
+//Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D())
 {
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
@@ -250,18 +248,17 @@ Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shar
 Worm2Dosc21allNML::Worm2Dosc21allNML(const string & jsonfile_):Worm2Dosc21allNML()
 {
     json j = getJsonFromFile(jsonfile_);
-    pars1->setParsFromJson(j["Worm"]);
+    //pars1->setParsFromJson(j["Worm"]);
     setMuscBodExt(j);
 }
 
 Worm2Dosc21allNMLm::Worm2Dosc21allNMLm():
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), 
-shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()),0){}
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(),0){}
 
 Worm2Dosc21allNMLm::Worm2Dosc21allNMLm(const string & jsonfile_):Worm2Dosc21allNMLm()
 {
     json j = getJsonFromFile(jsonfile_);
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     setBodExt(j); 
 }
 
@@ -273,7 +270,7 @@ Worm2Dosc21all::Worm2Dosc21all(const string & filename_, const bool & isGenJson)
     if (isGenJson) setParsFromFile(filename_);
     else {
     json j = getJsonFromFile(filename_);
-    pars1->setParsFromJson(j);
+    //pars1->setParsFromJson(j);
     assert(0 && "setPfafromjson not implemented");
     setMuscBodExt(j);
     }
@@ -299,8 +296,8 @@ Worm2Dosc21all::Worm2Dosc21all(TVector<double> & phengen, const bool & isPheno):
 
 
 Worm2Dosc21Coup::Worm2Dosc21Coup():
-Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec(),14),
-shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24))),
+Worm2Dosc21(),Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec(),14)),
+//shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24))),
 cn(dynamic_cast<CoupledOsc&>(*n_ptr))
 {
   
@@ -322,18 +319,15 @@ Worm2Dosc21Coup::Worm2Dosc21Coup(TVector<double> & phengen, const bool & isPheno
 //Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec())),
 //cn(dynamic_cast<CoupledOsc&>(*n_ptr))
 {
-   
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
     setParsFromPhenGen(phengen,isPheno);
     //if (isPheno) setParsFromPheno(phengen);
     //else setParsFromGeno(phengen);
-
-
 }
 
 Worm2Dosc21CF::Worm2Dosc21CF():Worm2Dosc21Coup(),
-Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec(),14),
-shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
+Worm2Dm({2,24,0.1,7,14},new CoupledOsc(getWeightVec(),14))
+//,shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
 //cn(dynamic_cast<CoupledOsc&>(*n_ptr))
 {
   
@@ -361,8 +355,6 @@ Worm2Dosc21CF::Worm2Dosc21CF(TVector<double> & phengen, const bool & isPheno):Wo
 
     //if (isPheno) setParsFromPheno(phengen);
     //else setParsFromGeno(phengen);
-
-
 }
 
 
@@ -397,21 +389,20 @@ n.pfa1.swap_all(pfa1);
 void Worm2Dosc::setEvolPars(W2Dparameters & w2par_, string evotype_)
 //void Worm2Dosc::setEvolPars(shared_ptr<W2Dparameters> w2par_ptr_, string evotype_)
 {
-
-    
     if (evotype_=="Evo21"){
     Evolparameters & Epars1 = dynamic_cast<Evolparameters&>(w2par_);
     Epars1.dbunit = 6;
     Epars1.vbunit = 30;
     }
-
 }
 
 void Worm2Dosc::setParsFromPheno(const TVector<double> &phen)
 {
     
-    if (pars1 == nullptr) assert(0);
-    pars1->NMJweight = phen(4);
+    setValCJWorm<double>("NMJWeight",phen(4));
+
+    //if (pars1 == nullptr) assert(0);
+    //pars1->NMJweight = phen(4);
     //pars1.dbunit = 6;
     //pars1.vbunit = 30;
     cout << "Worm2Dosc::setParsFromPheno" << endl;
@@ -436,7 +427,8 @@ void Worm2DoscHalf::setEvolPars(W2Dparameters & w2par_, string evotype_)
 
 void Worm2DoscHalf::setParsFromPheno(const TVector<double> &phen)
 {
-    pars1->NMJweight = phen(3);
+    setValCJWorm<double>("NMJWeight",phen(3));
+    //pars1->NMJweight = phen(3);
     //pars1.dbunit = 1;
     //pars1.vbunit = 1;
     construct(phen);
@@ -449,20 +441,28 @@ vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
 {
     //cout << "NMJweight " << pars1->NMJweight << endl;
     //assert(0);
+
+    double NMJweight;
+    basePar1.getValCJWorm<double>("NMJWeight",NMJweight);
+
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
     int from_neuron = to_musc+offset;
-    toFromWeight tv({from_neuron,pars1->NMJweight},to_musc);
+    toFromWeight tv({from_neuron,NMJweight},to_musc);
     vec1.push_back(tv);}
     return vec1;
 }
 
 vector<toFromWeight> Worm2DoscHalf::makeDVMuscleConn(double weig_amp)
 {
+    double NMJweight;
+    basePar1.getValCJWorm<double>("NMJWeight",NMJweight);
+
+
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
     int from_neuron = to_musc;
-    toFromWeight tv({from_neuron,pars1->NMJweight*weig_amp},to_musc);
+    toFromWeight tv({from_neuron,NMJweight*weig_amp},to_musc);
     vec1.push_back(tv);}
     return vec1;
 }
@@ -587,18 +587,30 @@ void Worm2DoscHalf::GenPhenMapping(const TVector<double> &gen, TVector<double> &
 
 vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector<double> NMJ)
 {
+
+    const int N_musc = 24;
+     double NMJ_Gain_Map;
+    basePar1.getValCJWorm<double>("NMJ_Gain_Map",NMJ_Gain_Map);
+
+
+    vector<double> NMJ_Gain;
+    for (int i=1; i<=N_musc; i++)
+    {
+    NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
+    }
+
     vector<toFromWeight> vec1;
     int unit = 1;
     for (int to_musc = 1; to_musc < 5; to_musc++) 
-    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, pars1->NMJ_Gain, N_neuronsperunit);
+    makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, N_neuronsperunit);
         
     for (int unit = 2; unit <= 5; unit++)
         for (int to_musc = 5 + 3*(unit-2); to_musc < 5 + 3*(unit-1); to_musc++)
-            makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, pars1->NMJ_Gain, N_neuronsperunit);
+            makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, N_neuronsperunit);
 
     for (int unit = 6; unit <= 7; unit++)
         for (int to_musc = 17 + 4*(unit-6); to_musc < 17 + 4*(unit-5); to_musc++)
-            makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, pars1->NMJ_Gain, N_neuronsperunit);
+            makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, N_neuronsperunit);
     
     cout << "made muscle con" << endl;
             //exit(1);
@@ -608,17 +620,26 @@ vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector
 
 vector<toFromWeight> Worm2Dosc21base::makeDorsalMuscleConn()
 {
+   //"NMJ_DN"
+   //double NMJ_VN = 1, NMJ_DN = 1, NMJ_Gain_Map = 1;
+ 
+double NMJ_DN;
+basePar1.getValCJWorm<double>("NMJ_DN",NMJ_DN);
+
 const int DN = 1;
 vector<int> dorsalNeurons({DN});
-vector<double> dorsalNMJ({pars1->NMJ_DN});
+vector<double> dorsalNMJ({NMJ_DN});
 return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 }
 
 vector<toFromWeight> Worm2Dosc21base::makeVentralMuscleConn()
 {
+double NMJ_VN;
+basePar1.getValCJWorm<double>("NMJ_VN",NMJ_VN);
+
 const int VN = 2;
 vector<int> ventralNeurons({VN});
-vector<double> ventralNMJ({pars1->NMJ_VN});
+vector<double> ventralNMJ({NMJ_VN});
 return makeMuscleConn(ventralNeurons, ventralNMJ);
 }
 
@@ -632,7 +653,7 @@ void Worm2DoscBase::addParsToJson(json & j)
 void Worm2Dosc::addParsToJson(json & j)
 {
     Worm2DoscBase::addParsToJson(j);
-    pars1->addParsToJson(j["Worm"]);
+    //pars1->addParsToJson(j["Worm"]);
     //Worm2D::addParsToJson(j);
     //n.pfa1.addParsToJson(j["Nervous system"]);
     //n.addParsToJson(j["Nervous system"]);
@@ -642,7 +663,7 @@ void Worm2Dosc::addParsToJson(json & j)
 void Worm2Dosc21::addParsToJson(json & j)
 {
     Worm2DoscBase::addParsToJson(j);
-    pars1->addParsToJson(j["Worm"]);
+    //pars1->addParsToJson(j["Worm"]);
     //Worm2D::addParsToJson(j);
     //n.pfa1.addParsToJson(j["Nervous system"]);
     //n.addParsToJson(j["Nervous system"]);
@@ -835,15 +856,25 @@ void Worm2Dosc21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 
 void Worm2Dosc21::setParsFromPheno(const TVector<double> &phen, int offset)
 {
-    pars1->NMJ_Gain_Map = phen(offset);
+
+
+    basePar1.setValCJWorm<double>("NMJ_Gain_Map",phen(offset));
+
+    basePar1.setValCJWorm<double>("NMJ_VN",phen(offset+1));
+    basePar1.setValCJWorm<double>("NMJ_DN",phen(offset+2));
+
+    //pars1->NMJ_Gain_Map = phen(offset);
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
-    for (int i=1; i<=pars1->N_musc; i++)
+
+    /* for (int i=1; i<=24; i++)
     {
     pars1->NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/pars1->N_musc));
     }
     
     pars1->NMJ_VN = phen(offset+1);
     pars1->NMJ_DN = phen(offset+2);
+
+     */
     //pars1.dbunit = nn(1,3);
     //pars1.vbunit = nn(2,3);
    
@@ -859,17 +890,30 @@ void Worm2Dosc21::setParsFromPheno(const TVector<double> &phen)
 
 void Worm2Dosc21S::setParsFromPheno(const TVector<double> &phen)
 {
-    pars1->NMJ_Gain_Map = phen(4);
+
+    basePar1.setValCJWorm<double>("NMJ_Gain_Map",phen(4));
+
+    basePar1.setValCJWorm<double>("NMJ_VN",phen(5));
+    basePar1.setValCJWorm<double>("NMJ_DN",phen(5));
+
+
+  /*   pars1->NMJ_Gain_Map = phen(4);
 
     //pars1.NMJ_Gain.SetBounds(1, par1.N_muscles);
     for (int i=1; i<=pars1->N_musc; i++)
     {
     pars1->NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*pars1->NMJ_Gain_Map)/pars1->N_musc));
     }
+
+
     pars1->NMJ_DN = phen(5);
-    pars1->NMJ_VN = phen(5);
+    pars1->NMJ_VN = phen(5); */
+
+
+
     //pars1.dbunit = nn(1,3);
     //pars1.vbunit = nn(2,3);
+    
     construct(phen);
 }
 

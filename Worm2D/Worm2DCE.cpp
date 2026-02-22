@@ -13,13 +13,13 @@
 
 
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
+Worm2Dm(par1_, n_ptr_), Worm2DSR(par1_,n_ptr_,sr_ptr_),sr_ptr(sr_ptr_){}
+
+/* Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
 Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,n_ptr_, sr_ptr_),
     W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
-    sr_ptr(sr_ptr_)
-{
-    //hasVNCNMJ = true;
-    //initConst(); 
-}
+    sr_ptr(sr_ptr_){} */
+
 
 void Worm2DCE::initConst()
 {
@@ -54,17 +54,17 @@ Worm2DCE::Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  }, new c302ForW2D(), make_shared<W2DCEpars>()),
+  }, new c302ForW2D()),
   Worm2DSR({j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
     j["Nervous system"]["size"]["value"]
-  } ,0, sr_ptr_),W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
+  } ,0, sr_ptr_),//W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
   sr_ptr(sr_ptr_)
 {
 
-  W2DCEpars1->setParsFromJson(j["Worm"]);
+  //W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
  
   
@@ -115,12 +115,12 @@ Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10))
 //////////////////////////////////
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd):
-Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
+Worm2Dm({6,24,0.1,10,60}, new NervousSystem()),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_,cmd){}
 
 
 WormCE::WormCE(shared_ptr<SRCE> sr_ptr_):
-Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>()),
+Worm2Dm({6,24,0.1,10,60}, new NervousSystem()),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_){}
 
 
@@ -164,7 +164,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(c
 WormCE::WormCE(const json & j, const string & filename_):WormCE()
 {
    
-    W2DCEpars1->setParsFromJson(j["Worm"]);
+    //W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
     setParsFromFile(filename_);
 }
@@ -190,7 +190,7 @@ WormCE::WormCE(const json & j):WormCE()
 
  
  
-  W2DCEpars1->setParsFromJson(j["Worm"]);
+  //W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
   
   
@@ -272,7 +272,8 @@ void WormCE::addEvolvableToJson(json & j)
 {
  
   {vector<doubDoub> vec; 
-  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
+  
+  //  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
 
 
     // Genotype -> Phenotype Mapping Ranges
@@ -285,8 +286,17 @@ void WormCE::addEvolvableToJson(json & j)
     const double    NMJmin                  = 0.0;
     
 
-    vec.push_back({w1->SREvoBotA, w1->SREvoTopA});
-    vec.push_back({w1->SREvoBot, w1->SREvoTop});
+    double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
+    getValCJWorm<double>("SREvoBotA",SREvoBotA);
+    getValCJWorm<double>("SREvoTopA",SREvoTopA);
+    getValCJWorm<double>("SREvoBot",SREvoBot);
+    getValCJWorm<double>("SREvoTop",SREvoTop);
+
+    //vec.push_back({w1->SREvoBotA, w1->SREvoTopA});
+    //vec.push_back({w1->SREvoBot, w1->SREvoTop});
+
+    vec.push_back({SREvoBotA, SREvoTopA});
+    vec.push_back({SREvoBot, SREvoTop});
     for (int i = 1; i <= 3; i++) vec.push_back({-BiasRange, BiasRange});
     for (int i = 1; i <= 3; i++) vec.push_back({-SCRange, SCRange});
     for (int i = 1; i <= 2; i++)  vec.push_back({0.0, CSRange});
@@ -542,13 +552,15 @@ else{
 
 
 WormCESR::WormCESR():WormCE(make_shared<SRReg>(N_segments,10)),
-Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
+//Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
+Worm2Dm({6,24,0.1,10,60}, new NervousSystem())
 {}
 
 
 
 WormCESR::WormCESR(shared_ptr<const CmdArgs> cmd):WormCE(make_shared<SRReg>(N_segments,10),cmd),
-Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
+//Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), make_shared<W2DCEpars>())
+Worm2Dm({6,24,0.1,10,60}, new NervousSystem())
 {}
 
 
@@ -561,7 +573,7 @@ setParsFromFile(filename_);
 WormCESR::WormCESR(json  j, const string & filename_):
 WormCESR()
 {
-  W2DCEpars1->setParsFromJson(j["Worm"]);
+  //W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
   setParsFromFile(filename_);
 }
@@ -585,11 +597,11 @@ void Worm2DCE::setForward()
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
   if (sr_ptr->srcepars->zeroGainsType == 0) sr_ptr->SR_A_gain = 0.0;
-  //AVA_output =  1;
-  //AVB_output =  0;
+  AVA_output =  1;
+  AVB_output =  0;
   //sr_ptr->setWeights();
-  W2DCEpars1->AVA_output =  0;
-  W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
+  //W2DCEpars1->AVA_output =  0;
+  //W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
   
   setInputOnce(0);
 
@@ -604,12 +616,12 @@ void Worm2DCE::setBackward()
   sr_ptr->SR_B_gain = pheno_B_gain;
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   if (sr_ptr->srcepars->zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
-  //AVA_output =  0;
-  //AVB_output =  1;
+  AVA_output =  0;
+  AVB_output =  1;
 
   //sr_ptr->setWeights();
-  W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
-  W2DCEpars1->AVB_output =  0;
+  //W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
+  //W2DCEpars1->AVB_output =  0;
 
   setInputOnce(1);
 
@@ -623,7 +635,7 @@ void Worm2DCE::setWormPars(shared_ptr<const CmdArgs> cmd)
 {
   
   //W2DCEpars1->setPars(cmd);
-  Worm2DSR::setWormPars(cmd);
+  //Worm2DSR::setWormPars(cmd);
   sr_ptr->setPars(cmd);
 
 }
@@ -879,10 +891,14 @@ void Worm2DCE::assignExternalInput(){
 void Worm2DCE::makeExternalInputConn()
 {
 
+
+   double AB_output_level;
+  getValCJWorm<double>("AB_output_level",AB_output_level);
+
   //const double & weightval = W2DCEpars1->AB_output_level;
   vector<toFromWeight>  vec1;
   for (int i = 1; i <= par1.N_units; i++){
-    double weight = W2DCEpars1->AB_output_level;
+    double weight = AB_output_level;
     {int from_inp = 1;
     {int to_neuron = nn(DA,i);
     toFromWeight tv({from_inp,weight},to_neuron);
@@ -910,16 +926,19 @@ void Worm2DCE::makeExternalInputConn()
 void Worm2DCE::setExternalInputOrig()
 {
 
+  double AB_output_level;
+  getValCJWorm<double>("AB_output_level",AB_output_level);
+
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(DA,i), AVA_output*AB_output_level);
     //n_ptr->SetNeuronExternalInput(nn(DA,i), sr_ptr->A_D_sr(i) + AVA_output);
-    n_ptr->SetNeuronExternalInput(nn(VA,i), W2DCEpars1->AVA_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VA,i), AVA_output*AB_output_level);
     //n_ptr->SetNeuronExternalInput(nn(VA,i), sr_ptr->A_V_sr(i) + AVA_output);
   }
   ////   To B_class motorneurons
   for (int i = 1; i <= par1.N_units; i++){
-    n_ptr->SetNeuronExternalInput(nn(DB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
-    n_ptr->SetNeuronExternalInput(nn(VB,i), W2DCEpars1->AVB_output*W2DCEpars1->AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(DB,i), AVB_output*AB_output_level);
+    n_ptr->SetNeuronExternalInput(nn(VB,i), AVB_output*AB_output_level);
     //n_ptr->SetNeuronExternalInput(nn(DB,i), sr_ptr->B_D_sr(i) + AVB_output);
     //n_ptr->SetNeuronExternalInput(nn(VB,i), sr_ptr->B_V_sr(i) + AVB_output);
   }
@@ -951,11 +970,15 @@ void Worm2DCE::setExternalInputOrig()
 
 void WormCE::randomizeNS(RandomState &rs)
 {
- shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+ //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
 
- assert(w1parss!=nullptr);
+ //assert(w1parss!=nullptr);
 
-  if (w1parss->randomInitialState) {
+   bool randomInitialState;
+  getValCJWorm<bool>("randomInitialState",randomInitialState);
+
+
+  if (randomInitialState) {
   n.RandomizeCircuitState(-1, 1, rs);
   n.RandomizeCircuitOutput(0.2, 0.8, rs);
   }
@@ -971,11 +994,15 @@ void WormCE::InitializeState(RandomState &rs)
   //cout << "sss2 " << W2DCEpars1->randomInitialState << endl;
   
   //assert(0);
+ 
+  bool randomInitialState;
+  getValCJWorm<bool>("randomInitialState",randomInitialState);
 
-  shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-  assert(w1parss!=nullptr);
 
-  if (w1parss->randomInitialState) {
+ // shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+ // assert(w1parss!=nullptr);
+
+  if (randomInitialState) {
     randomizeNS(rs);
   }
   else{
@@ -1010,7 +1037,7 @@ void WormCE::setEvolPars(W2Dparameters & w2par_, string evotype_)
 void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 {
  
-  shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
+  //shared_ptr<W2DCEpars> w1 = dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b);
 
 
     // Genotype -> Phenotype Mapping Ranges
@@ -1031,10 +1058,15 @@ void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
 
     //assert(0);
 
+    double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
+    getValCJWorm<double>("SREvoBotA",SREvoBotA);
+    getValCJWorm<double>("SREvoTopA",SREvoTopA);
+    getValCJWorm<double>("SREvoBot",SREvoBot);
+    getValCJWorm<double>("SREvoTop",SREvoTop);
 
      // Parameters for the Stretch Receptors
-  phen(SR_A) = MapSearchParameter(gen(SR_A), w1->SREvoBotA, w1->SREvoTopA);
-  phen(SR_B) = MapSearchParameter(gen(SR_B), w1->SREvoBot, w1->SREvoTop);
+  phen(SR_A) = MapSearchParameter(gen(SR_A), SREvoBotA, SREvoTopA);
+  phen(SR_B) = MapSearchParameter(gen(SR_B), SREvoBot, SREvoTop);
 
   //cout << "mms " << MapSearchParameter(-1.0, w1->SREvoBot, SRmax) << endl;
   //assert(0);
@@ -1216,7 +1248,7 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   append<string>(var1.parDoub.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
   append<string>(var1.parDoub.names,{"AVA_output", "AVB_output"});
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
-  append<double>(var1.parDoub.vals,{W2DCEpars1->AVA_output, W2DCEpars1->AVB_output});
+  append<double>(var1.parDoub.vals,{AVA_output, AVB_output});
 
   var1.parInt.head = "Worm";
   var1.parInt.vals = {N_stretchrec, NmusclePerNU};

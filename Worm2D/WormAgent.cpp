@@ -78,10 +78,13 @@ void WormAgent::SetWormParametersFromFile(const char* fnm)
 void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
 {
 	
-	Worm2Dbase::setWormPars(cmd_);
+	//Worm2Dbase::setWormPars(cmd_);
 	//size = cmd_->getArgValInt("--size", size);
 
-	setStepSize(gradPars->HSStepSize);
+    double HSStepSize;
+    getValCJWorm<double>("HSStepSize",HSStepSize);
+
+	setStepSize(HSStepSize);
 }
 
 
@@ -210,26 +213,25 @@ void WormAgent::zeroCircuit()
 
 void WormAgent::setSimParsDefault()
 {
-	gradPars->orient_orig = 0;
-	gradPars->gradSteep = 0.5;
-	gradPars->RunDuration = 1000;
-	gradPars->HSStepSize = 0.01; //itsStepSize();
-	gradPars->taxis = 1;
-	gradPars->kinesis = 0;
-	cout << "HS " << gradPars->HSStepSize << endl;
-	setStepSize(gradPars->HSStepSize);
+	double HSStepSize;
+    getValCJWorm<double>("HSStepSize",HSStepSize);
+	setStepSize(HSStepSize);
 }
+
 
 void WormAgent::setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_)
 {
-	gradPars->orient_orig = orient_orig_;
-	gradPars->gradSteep = gradSteep_;
-	gradPars->RunDuration = RunDuration_;
-	gradPars->HSStepSize = HSStepSize_;
-	gradPars->taxis = taxis_;
-	gradPars->kinesis = kinesis_;
-	setStepSize(gradPars->HSStepSize);
+
+	setValCJWorm<double>("orient",orient_orig_);
+	setValCJWorm<double>("gradSteep",gradSteep_);
+	setValCJWorm<double>("RunDuration",RunDuration_);
+	setValCJWorm<double>("HSStepSize",HSStepSize_);
+	setValCJWorm<int>("taxis",taxis_);
+	setValCJWorm<int>("kinesis",kinesis_);
+
+
+	setStepSize(HSStepSize_);
 
 }
 
@@ -276,12 +278,16 @@ void WormAgent::InitializeState(RandomState &rs_)
 
 void WormAgent::InitialiseAgent()
 {
-	VelDelta = (int) (HST/gradPars->HSStepSize);
-	iSensorN = (int) (sensorN/gradPars->HSStepSize);
+	double HSStepSize, RunDuration; 
+    getValCJWorm<double>("HSStepSize",HSStepSize);
+	getValCJWorm<double>("RunDuration",RunDuration);
+
+	VelDelta = (int) (HST/HSStepSize);
+	iSensorN = (int) (sensorN/HSStepSize);
 	dSensorN = (double) iSensorN;
-	iSensorM = (int) (sensorM/gradPars->HSStepSize);
+	iSensorM = (int) (sensorM/HSStepSize);
 	dSensorM = (double) iSensorM;
-	int upperbound = ((int) (((2*gradPars->RunDuration) + sensorN + sensorM) / gradPars->HSStepSize)) + 1;
+	int upperbound = ((int) (((2*RunDuration) + sensorN + sensorM) / HSStepSize)) + 1;
 
 	cout << "uppervel " << upperbound << " " << VelDelta << endl;
  	
@@ -300,25 +306,32 @@ void WormAgent::InitialiseAgent()
 
 void WormAgent::ResetAgentsBody()
 {
-	distanceToCentre = -MaxDist;
+
+	double MaxDist1, orient1;
+    getValCJWorm<double>("MaxDist",MaxDist1);
+	getValCJWorm<double>("orient",orient1);
+	distanceToCentre = -MaxDist1;
 
 	double tempangle = 0.0;
 
 	//SetPositionX(cos(tempangle) * distanceToCentre);
 	//SetPositionY(sin(tempangle) * distanceToCentre);
-	px = cos(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
-	py = sin(tempangle) * gradPars->MaxDist*-1; //DistanceToCentre();
+	px = cos(tempangle) * MaxDist1*-1; //DistanceToCentre();
+	py = sin(tempangle) * MaxDist1*-1; //DistanceToCentre();
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;
-	orient = gradPars->orient_orig;
+	orient = orient1;
 	CPGoffset = 0.0;
 	forward = 1;
 }
 
 void WormAgent::ResetChemCon()
 {
-	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+
+	double gradSteep; 
+    getValCJWorm<double>("gradSteep",gradSteep);
+	chemCon = -DistanceToCentre() * gradSteep;
 
 	//double dist = distanceToCenter();
 	//chemCon = -dist * gradPars->gradSteep;
@@ -353,12 +366,14 @@ double WormAgent::distanceToCenter() const
 
 void WormAgent::UpdateChemCon()
 {
+	double gradSteep; 
+    getValCJWorm<double>("gradSteep",gradSteep);
 	//double dist = distanceToCenter();
 	setDistanceToCentre();
 	//distanceToCentre = sqrt(pow(px_,2) + pow(py_,2));
 	//distanceToCentre = sqrt(pow(px,2) + pow(py,2));
 	pastCon = chemCon;
-	chemCon = -DistanceToCentre() * gradPars->gradSteep;
+	chemCon = -DistanceToCentre() * gradSteep;
 
 	//chemCon = -dist * gradPars->gradSteep;
 	chemConHistory(timer) = chemCon;
@@ -555,8 +570,12 @@ void WormAgent::preNStep()
 
 void WormAgent::postNStep()
 {
+	int taxis, kinesis; 
+    getValCJWorm<int>("taxis",taxis);
+	getValCJWorm<int>("kinesis",kinesis);
+
 // Update curvature
-	if (gradPars->taxis == 1){
+	if (taxis == 1){
 		NMdiff = n_ptr->NeuronOutput(size-1) - n_ptr->NeuronOutput(size);
 		theta = outputGain * NMdiff;
 		orient += settedStepSize * theta;
@@ -571,7 +590,7 @@ void WormAgent::postNStep()
 	}
 
 	// Update Forward -> Backward
-	if (gradPars->kinesis == 1){
+	if (kinesis == 1){
 		if ((forward == 1) && (n_ptr->NeuronOutput(size-2) > 0.6) && (n_ptr->NeuronOutput(size-3) < 0.4) )
 		{
 			forward = 0;

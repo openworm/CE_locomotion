@@ -29,6 +29,165 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
     const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
     const vector<double> & NMJ_Gain, int N_neuronsperunit);
 
+class baseParameters
+{
+
+    public:
+    baseParameters(const json & itsJson_, shared_ptr<const CmdArgs> itsCmdArgs_)
+    :BPitsJson(itsJson_),BPitsCmdArgs(itsCmdArgs_),defaultVals(setDefaultVals()){}
+
+    baseParameters(shared_ptr<const CmdArgs> itsCmdArgs_)
+    :BPitsCmdArgs(itsCmdArgs_),defaultVals(setDefaultVals()){}
+
+    baseParameters():defaultVals(setDefaultVals()){}
+
+
+    template<class T>
+    void setValCJWorm(const string & name_str, const T & val)
+    {
+        return setValCJ<T>(name_str,val,"Worm");
+    }
+
+    template<class T>
+    void setValCJ(const string & name_str, const T & val, const string & bstr)
+    {
+        if (!newSetVals.contains(bstr)) newSetVals[bstr] = json::object();
+        newSetVals[bstr][name_str]["value"] = val;
+        addValToJson(name_str,val,bstr);
+    }
+
+
+    template<class T>
+    bool getValCJ(const string & name_str, T & val, const string & bstr) 
+    {
+
+        if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
+        {
+            val = newSetVals[bstr][name_str]["value"];
+            return true;
+        }
+
+        if (BPitsCmdArgs!=nullptr && BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+        {
+            addValToJson(name_str,val,bstr);
+            return true;
+        }
+
+        if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
+        if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
+         
+        if (defaultVals.contains(name_str)) {
+            val = defaultVals.at(name_str).get<T>();
+            addValToJson(name_str,val,bstr);
+            return true;
+         }
+
+
+       /*  if (itsCmdArgs!=nullptr && itsCmdArgs->getArgValT<T>("--" + name_str, val))
+        {
+            if (!newPars.contains(bstr)) newPars[bstr] = json::object();
+            newPars[bstr][name_str]["value"] = val; 
+            return true;
+        }
+        if (itsJson!=nullptr && itsJson->contains(bstr)) 
+        if (getJsonValTF<T>(itsJson->at(bstr), name_str, val, true)) return true;
+        if (defaultVals.contains(name_str)) {
+        val = defaultVals.at(name_str).get<T>();
+        if (!newPars.contains(bstr)) newPars[bstr] = json::object();
+        newPars[bstr][name_str]["value"] = val; 
+        return true;
+        } */
+
+        cout << "getValCJ " << name_str << " " << bstr << endl;
+        assert(0);
+        return false;
+    }
+
+    template<class T>
+    bool getValCJWorm(const string & name_str, T & val) const
+    {
+
+        return getValCJ<T>(name_str,val,"Worm");
+
+    }
+
+    template<class T>
+    bool getValCJEvo(const string & name_str, T & val) const
+    {
+
+        return getValCJ<T>(name_str,val,"Evolutionary Optimization Parameters");
+
+    }
+
+
+
+    json setDefaultVals()
+    {
+        json defaultVals_;
+        defaultVals_["randomInitialState"] = false;
+        defaultVals_["doOrigMuscInput"] = true;
+        defaultVals_["doOrigSRInput"] = true;
+
+        defaultVals_["resetAgentBody"] = false;
+        defaultVals_["rotation"] = 0.0;
+        defaultVals_["orient"] = 0.0;
+        defaultVals_["gradSteep"] = 0.5;
+        defaultVals_["RunDuration"] = 1000;
+        defaultVals_["HSStepSize"] = 0.01;
+        defaultVals_["MaxDist"] = 4.5;
+        defaultVals_["taxis"] = 1;
+        defaultVals_["kinesis"] = 0;
+        defaultVals_["SREvoBot"]=0;
+        defaultVals_["SREvoTop"]=200;
+        defaultVals_["SREvoBotA"]=0;
+        defaultVals_["SREvoTopA"]=200;
+        defaultVals_["AB_output_level"] = 1.0;
+        defaultVals_["SRType"] = "None";
+        defaultVals_["SRForm"] = 0;
+        defaultVals_["SRSegPerSR"] = 6;
+        defaultVals_["SRZeroGainsType"] = 0;
+        defaultVals_["SROffset"] = 0;
+        defaultVals_["NMJWeight"] = 1;
+    
+        defaultVals_["NMJ_VN"] = 1; 
+        defaultVals_["NMJ_DN"] = 1; 
+        defaultVals_["NMJ_Gain_Map"] = 1;
+
+
+       return defaultVals_;
+    }
+
+    template<class T>
+    void addValToJson(const string & name_str, const T & val, const string & bstr)
+    {
+        if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
+        BPitsJson[bstr][name_str]["value"] = val;
+    }
+
+   /*  void addParsToJson(json & j)
+    {
+
+    for(auto it = newPars.begin(); it != newPars.end(); ++it)
+    {
+        if (!j.contains(it.key())) j[it.key()] = it.value(); 
+        if (j.contains(it.key()))  j[it.key()].push_back(it.value());
+
+    }        
+    }
+ */
+    //shared_ptr<const json itsJsonPtr()const {return &itsJson;} 
+
+    protected:
+    json BPitsJson;
+    //shared_ptr<const json> itsJson = nullptr;
+    //shared_ptr<json> itsJson = nullptr;
+    shared_ptr<const CmdArgs> BPitsCmdArgs = nullptr;
+    const json defaultVals;
+    json newSetVals;
+
+    
+};
+
 
 
 
@@ -162,7 +321,8 @@ class Worm2Dbody : virtual public DataWriter
     void shiftY(double shiftdist_);
     void zeroX();
     void zeroY();
-    void ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars);
+    //void ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars);
+    void ResetAgentsBody(baseParameters & basePar_);
 
     double headDistanceToCenter() const;
     double headDistanceToLocation(const double & x, const double & y) const;
@@ -189,7 +349,7 @@ class Worm2Dbody : virtual public DataWriter
 
 
 
-class Worm2Dbase : virtual public DataWriter, public InputSwitcher
+class Worm2Dbase : virtual public DataWriter, public InputSwitcher, public baseParameters
 {
 
 public:
@@ -212,6 +372,7 @@ void writeState();
 virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
 virtual void addEvolvableToJson(json & j) {return;}
+void addParsToJson();
 
 NSForW2D & itsNS(){return *n_ptr;}
 virtual void DumpParams(ofstream &ofs) {return;}
@@ -238,15 +399,20 @@ void incSimTimes();
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
 {
-    //itsCmdArgs = cmd;    
-    W2Dbaseparameters1b->setPars(cmd);
+    BPitsCmdArgs = cmd;
+    //W2Dbaseparameters1b->setPars(cmd);
 
 }
 
 // not this, shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
 
+//shared_ptr<baseParameters> basePar1 = nullptr;
 
-shared_ptr<W2Dparameters> W2Dbaseparameters1b;
+//baseParameters basePar1;
+
+//void setBasePar(shared_ptr<baseParameters> basePar1_){basePar1=basePar1_;}
+
+//shared_ptr<W2Dparameters> W2Dbaseparameters1b = nullptr;
 
 void zeroAllInputs(){
     for (int i=0;i<par1.N_size;i++)
@@ -259,7 +425,7 @@ protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dparameters>);
+//Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dparameters>);
 
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
 //    shared_ptr<W2Dbaseparameters> w2dpar_);
@@ -347,12 +513,11 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
     Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
-        shared_ptr<W2Dparameters> w2dpar_);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    //    shared_ptr<W2Dparameters> w2dpar_);
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
     //muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
-    shared_ptr<W2Dparameters> w2dpar_, bool);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool);
 
     //const bool muscForWDconst;
     void setBodyInput(); //takes muscle outputs to drive body segments
@@ -434,7 +599,7 @@ class Worm2D : virtual public Worm2Dm
     //NSToMuscles vMuscConn, dMuscConn;
     vector<toFromWeight> vMuscConnvec, dMuscConnvec;
         
-    shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;  //change this back
+    //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;  //change this back
 
     vector<weightentry> ventinds, dorsinds;
     vector<intPair> unitToMuscV, unitToMuscD;

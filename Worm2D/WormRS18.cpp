@@ -31,9 +31,7 @@ return {headsr,vncsr};
 //Worm18::Worm18():Worm18(readPhenotype(), 0){setRs18output(1);} //for WormCO18
 
 //Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
-Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem()
-,shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())
-), 
+Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem()), 
 n(dynamic_cast<NervousSystem&>(*n_ptr)),sr_ptr(make_shared<SR18>()),
 rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 {
@@ -355,8 +353,10 @@ void Worm18::InitializeState(RandomState &rs)
     //bool rIS = false;
     //getValCJ<bool>("randomInitialState", rIS);
     
+    bool randomInitialState;
+    getValCJWorm<bool>("randomInitialState",randomInitialState);
 
-    if(W2Dbaseparameters1->randomInitialState){
+    if(randomInitialState){
     //if (rIS){
     //if (w1parss->randomInitialState){
         //assert(0);
@@ -592,10 +592,12 @@ void Worm18::preNStep()
     b.StepBody(settedStepSize);
 
 
-   
+    bool doOrigSRInput;
+    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
 
-    if (W2Dbaseparameters1->doOrigSRInput){
+
+    if (doOrigSRInput){
    
     // Set input to Stretch Receptors from Body
     for(int i = 1; i <= N_segments; ++i){
@@ -664,7 +666,11 @@ else
 
 void Worm18::postNStep()
 {
-    if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+
+    bool doOrigMuscInput;
+    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+
+    if (doOrigMuscInput) setMuscleInputOrig();
     else setMuscleInput();
 
     
@@ -746,7 +752,12 @@ void Worm18::addParsToJson(json & j)
     //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
     //assert(w1parss!=nullptr);
 
-    if (W2Dbaseparameters1->doOrigSRInput){
+
+
+    bool doOrigSRInput;
+    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+
+    if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
@@ -806,7 +817,9 @@ void Worm18::writeAct()
 
 
    // StretchReceptor18 * sr_ptr2 = &sr;
-    
+
+    bool doOrigSRInput;
+    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
@@ -819,7 +832,7 @@ void Worm18::writeAct()
         ofs << datatime;
         //ofs << "\nSR: ";
         // Stretch receptors
-        if (W2Dbaseparameters1->doOrigSRInput){
+        if (doOrigSRInput){
 
         ofs <<  " " << sr.HeadDorsalOutput() << " " << sr.HeadVentralOutput();
         for (int i = 1; i <= N_stretchrec; i++) 
@@ -898,9 +911,14 @@ void Worm18::DumpParams(ofstream &ofs)
     ofs << "Chem Conns: \n DB->DD: " << n.ChemicalSynapseWeight(DB, DD) <<  "\n DB->VDA/VDP: " << n.ChemicalSynapseWeight(DB, VDA) << " / " << n.ChemicalSynapseWeight(DB, VDP) << "\n VBA/P->DD: " << n.ChemicalSynapseWeight(VBA, DD) << " / " << n.ChemicalSynapseWeight(VBP, DD) << "\n VBA/P->VDA/P: " << n.ChemicalSynapseWeight(VBA, VDA) << " / " << n.ChemicalSynapseWeight(VBP, VDP) << "\n VDA/P->VBA/P: " << n.ChemicalSynapseWeight(VDA, VBA) << " / " << n.ChemicalSynapseWeight(VDP, VBP) << "\n DD->VDA: " << n.ChemicalSynapseWeight(DD, VDA) <<endl;
     ofs << "Gap Juncs: \n DB-DB+1: " << n.ElectricalSynapseWeight(DB, DB+par1.N_neuronsperunit) << "\n VBA-VBP / VBP-VBP+1: " << n.ElectricalSynapseWeight(VBA, VBP) << " / " << n.ElectricalSynapseWeight(VBP, VBA+par1.N_neuronsperunit) << "\n VBP-DB+1: " << n.ElectricalSynapseWeight(VBP, DB+par1.N_neuronsperunit) << "\n DD-VDA/P: " << n.ElectricalSynapseWeight(DD, VDA) << " / " << n.ElectricalSynapseWeight(DD, VDP) << "\n DD-DD+1: " << n.ElectricalSynapseWeight(DD, DD+par1.N_neuronsperunit) << "\n VDA-VDP / VDP-VDP+1: " << n.ElectricalSynapseWeight(VDA, VDP) << " / " << n.ElectricalSynapseWeight(VDP, VDA+par1.N_neuronsperunit) <<  endl;
 
-    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    assert(w1parss!=nullptr);
-    if (w1parss->doOrigSRInput)
+    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    //assert(w1parss!=nullptr);
+
+
+    bool doOrigSRInput;
+    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+
+    if (doOrigSRInput)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;
     else 
     ofs << "SR Gain (VNC and Head): " << sr_ptr->SRvncgain << " " << sr_ptr->SRheadgain << endl;

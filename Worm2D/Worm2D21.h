@@ -36,8 +36,8 @@ public:
     //Worm21(TVector<double> &v);
    
     Worm2D21m();
-    void SetAVA(double value) {W2DCEpars1->AVA_output = value;};
-    void SetAVB(double value) {W2DCEpars1->AVB_output = value;};
+    //void SetAVA(double value) {W2DCEpars1->AVA_output = value;};
+    //void SetAVB(double value) {W2DCEpars1->AVB_output = value;};
     void initForSimulation(RandomState &);
     void InitializeState(RandomState &rs);
     //void DumpActState(ofstream &ofs, int skips);
@@ -67,6 +67,8 @@ protected:
     double wAVA_DA, wAVA_VA;
     double wAVB_DB, wAVB_VB;
    // double AVA, AVB;
+    double AVA_output = 0; 
+    double AVB_output = 0; 
 
     const int AS = 1;
     const int DA = 2;
@@ -78,7 +80,7 @@ protected:
 
 
 
-    shared_ptr<W2DCEparsA> W2DCEpars1;
+   // shared_ptr<W2DCEparsA> W2DCEpars1;
 
 };
 

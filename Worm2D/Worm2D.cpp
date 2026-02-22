@@ -95,8 +95,7 @@ void DataWriter::dataReset(){closeAll();
 
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
-W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)//,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
 {//zeroAllInputs();
 }
@@ -113,27 +112,28 @@ muscForWDconst(mfwc)
  if (W2Dbaseparameters1 == nullptr) assert(0);
 } */
 
-Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
-    shared_ptr<W2Dparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),
-    W2Dbaseparameters1b(w2dpar_)//,W2Dbaseparameters1(new W2Dbaseparameters())
+//Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
+//    shared_ptr<W2Dparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_){}
+    //,W2Dbaseparameters1b(w2dpar_)//,W2Dbaseparameters1(new W2Dbaseparameters())
     //,muscForWDconst(false)
-{
+
    
-    if (W2Dbaseparameters1b == nullptr) assert(0);
+    //if (W2Dbaseparameters1b == nullptr) assert(0);
     //zeroAllInputs();
-}
+
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
 {setUpBodyConn();}
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<W2Dparameters> w2dpar_):
-Worm2Dbase(par1_,n_ptr_,new Muscles(), w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false)
-{setUpBodyConn();} 
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
-    shared_ptr<W2Dparameters> w2dpar_, bool dumval):
-Worm2Dbase(par1_,n_ptr_,0,w2dpar_),
+/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
+Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
+{setUpBodyConn();}  */
+
+
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval):
+Worm2Dbase(par1_,n_ptr_,0),
 W2Dmparscalled(false),W2Dminitcalled(false){
     m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
     setUpBodyConn();
@@ -155,8 +155,8 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcall
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
-W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
+Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr))
+//,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
@@ -179,9 +179,13 @@ void Worm2Dbase::InitializeState(RandomState &rs)
     //cout << "Worm2Dbase init state" << endl;
     setTime(0);
 
-    shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
+   // shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
     
-	if (l1!=nullptr && l1->randomInitialState)
+    bool randomInitialState;
+    getValCJWorm<bool>("randomInitialState",randomInitialState);
+
+    if (randomInitialState)
+	//if (l1!=nullptr && l1->randomInitialState)
     {
         NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
         if (n!=nullptr){
@@ -273,22 +277,33 @@ void Worm2Dbody::shiftY(double shiftdist_)
     for (int i = 1; i <= N_rods; i++) b.Y(i)+=shiftdist_;
 }
 
+void Worm2Dbody::ResetAgentsBody(baseParameters & basePar_)
 
-void Worm2Dbody::ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars)
+//void Worm2Dbody::ResetAgentsBody(shared_ptr<baseParameters> CO2DSRpars)
+//void Worm2Dbody::ResetAgentsBody(shared_ptr<gradParameters> CO2DSRpars)
 {
     //assert(0);
     //orient = gradPars->orient_orig;
     
     b.InitializeBodyState();
+    bool resetAgentBody;
+    basePar_.getValCJWorm<bool>("resetAgentBody",resetAgentBody);
 
-    if (CO2DSRpars->resetAgentBody){
+    if (resetAgentBody)
+    {
     zeroX();
     zeroY();
     //w18->shiftX(-4.5);
-    shiftX(cos(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
-    shiftY(sin(CO2DSRpars->orient_orig)*CO2DSRpars->MaxDist*-1);
-	rotateBody(CO2DSRpars->worm_rotation);
+    double orient, MaxDist, worm_rotation;
+    basePar_.getValCJWorm<double>("orient", orient);
+    basePar_.getValCJWorm<double>("MaxDist", MaxDist);
+    basePar_.getValCJWorm<double>("rotation", worm_rotation);
+
+    shiftX(cos(orient)*MaxDist*-1);
+    shiftY(sin(orient)*MaxDist*-1);
+	rotateBody(worm_rotation);
     }
+
 }
 
 void Worm2Dbody::rotateBody(double theta)
@@ -630,11 +645,15 @@ externalInputConn.swap(vec1);
 
 }
 
+void Worm2Dbase::addParsToJson()
+{
+
+addParsToJson(BPitsJson);
+
+}
 
 void Worm2Dbase::addParsToJson(json & j)
 {  
-
-    
 
     doubIntParamsHead par1pars = par1.getParams();
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
@@ -683,7 +702,9 @@ void Worm2Dbase::addParsToJson(json & j)
     appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
     j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
 
-    W2Dbaseparameters1b->addParsToJson(j["Worm"]);
+    //basePar1->addParsToJson(j);
+
+    //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
     InputSwitcher::addParsToJson(j);
@@ -954,8 +975,11 @@ void Worm2D::Step1()
   //setExternalInputOrig();
 
   n_ptr->EulerStep(settedStepSize);
-  
-  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  bool doOrigMuscInput;
+    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+
+    if (doOrigMuscInput) setMuscleInputOrig();
+  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
   setBodyInput();

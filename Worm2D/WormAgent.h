@@ -23,8 +23,7 @@ public:
 	//WormAgent();
 	
 	WormAgent(int newsize):
-	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), nullptr, make_shared<gradParameters>()),
-	gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b)),size(newsize)
+	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), nullptr),size(newsize)
 	{InitialiseCircuit();}
 	WormAgent(TVector<double> & v, int newsize):WormAgent(newsize){SetParameters(v);}
 	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}
@@ -111,7 +110,7 @@ public:
 	const int size;
 	int forward;
 
-	shared_ptr<gradParameters> gradPars;
+	//shared_ptr<gradParameters> gradPars;
 
 	int		VelDelta;  //		=	(int) (HST/StepSize);
 
@@ -146,8 +145,10 @@ public:
 
 	//void setStepPars(double gradSteep_, RandomState &rs_, double t_, int taxis_, int kinesis_);
 	void setSimParsDefault();
+
 	void setSimPars(double orient_orig_,
 	double gradSteep_, double RunDuration_, double HSStepSize_, int taxis_, int kinesis_);
+
 	void DumpParams(ofstream &ofs){return;}
 	double getVelocity(){return avgvel;}
 	void writeBodyPos();

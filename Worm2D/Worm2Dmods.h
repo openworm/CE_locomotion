@@ -217,7 +217,7 @@ protected:
 
 void construct(const TVector<double> &pheno);
 
-Worm2DoscBase(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2par_ptr);
+Worm2DoscBase(wormIzqParams par1_);
 void addParsToJson(json & j);
 void setTime(const double & t_){Worm2D::setTime(t_);n.setTime(t_);}
 
@@ -229,14 +229,15 @@ void setTime(const double & t_){Worm2D::setTime(t_);n.setTime(t_);}
 class Worm2Dosc1 
 {
 public:
-Worm2Dosc1(shared_ptr<Worm2Doscpars1> pars1_):pars1(pars1_){if (pars1 == nullptr) assert(0);}
+Worm2Dosc1(baseParameters & pars1_):basePar1(pars1_){}//{if (pars1 == nullptr) assert(0);}
 vector<toFromWeight> makeVentralMuscleConn();
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeDVMuscleConn(int offset);
 
 protected:
 //Worm2Doscpars1 & pars1;
-shared_ptr<Worm2Doscpars1> pars1;
+baseParameters & basePar1;
+//shared_ptr<Worm2Doscpars1> pars1;
 };
 
 
@@ -346,14 +347,15 @@ const string getModelName() {return "Worm2DoscH";}
 class Worm2Dosc21base
 {
 public:
-Worm2Dosc21base(int N_neuronsperunit_, shared_ptr<Worm2Dosc21pars> pars1_):pars1(pars1_), 
+Worm2Dosc21base(int N_neuronsperunit_, baseParameters & pars1_):basePar1(pars1_), 
 N_neuronsperunit(N_neuronsperunit_){}
 vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeVentralMuscleConn();
 
 protected:
-shared_ptr<Worm2Dosc21pars> pars1;
+baseParameters & basePar1;
+//shared_ptr<Worm2Dosc21pars> pars1;
 const int N_neuronsperunit;
 //const wormIzqParams & par1ref;
 };

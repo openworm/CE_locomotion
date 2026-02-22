@@ -19,9 +19,8 @@ Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
-Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
-  Worm2D(getIzqPars(j) ,nullptr), Worm2DSRb(j),baseParameters(j,cmd)
+Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):
+Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(j)
 {
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
@@ -35,14 +34,14 @@ Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzq
 
     }
 
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-    setWormPars(cmd);
+    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+    //setWormPars(cmd);
 
 
     if (false){
-    shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    cout << "w2d1x " << W2Dbaseparameters1->doOrigMuscInput << endl;
-    cout << "w2dx " << w_ptr2->doOrigMuscInput << endl;
+    //shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    //cout << "w2d1x " << W2Dbaseparameters1->doOrigMuscInput << endl;
+    //cout << "w2dx " << w_ptr2->doOrigMuscInput << endl;
     assert(0);
     }
 
@@ -59,12 +58,12 @@ Worm2DSRm::Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd
 Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 
 Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), shared_ptr<W2DbaseparametersNML>(make_shared<W2DbaseparametersNML>()), 0),
+  getNS(cmd, j), 0),
  Worm2DSRb(j),baseParameters(j,cmd)
 {
 
-    W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-    setWormPars(cmd);
+   // W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
+   // setWormPars(cmd);
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
    
@@ -82,7 +81,7 @@ Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd
 Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), shared_ptr<W2Dbaseparameters>(make_shared<W2Dbaseparameters>())),
+  getNS(cmd, j)),
   Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
     if (callInit) writeOrigGen(cmd);
@@ -92,8 +91,8 @@ Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callIni
 void Worm2DSR::addParsToJson(json & j)
 {
 
-  j = itsJson;
-  W2Dbaseparameters1b->addParsToJson(j["Worm"]);
+  j = BPitsJson;
+  //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
   addEvolvableToJson(j);
 
   if (false){
@@ -161,13 +160,17 @@ void Worm2DSR::Step1()
   //setMuscleInput();
 
   if (false){
-  shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-  cout << "w2d1 " << W2Dbaseparameters1->doOrigMuscInput << endl;
-  cout << "w2d " << w_ptr2->doOrigMuscInput << endl;
+  //shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+  //cout << "w2d1 " << W2Dbaseparameters1->doOrigMuscInput << endl;
+  //cout << "w2d " << w_ptr2->doOrigMuscInput << endl;
   assert(0);
   }
 
-  if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+    bool doOrigMuscInput;
+    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+
+  if (doOrigMuscInput) setMuscleInputOrig();
+  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
   setBodyInput();
@@ -311,7 +314,7 @@ void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
 
-  j["Evolvable"]["value"] = itsJson["Evolvable"]["value"];
+  j["Evolvable"]["value"] = BPitsJson["Evolvable"]["value"];
 
   return;
 
@@ -453,14 +456,12 @@ vector<doubDoub> Worm2DSRE::makeVals()
 {
 
   
-  const json & j = itsJson;
+  const json & j = BPitsJson;
   //itsJson = j;
 
   if (!j.contains("Evolvable")) return vector<doubDoub>(0);
 
   
-
-
   vector<doubDoub> vdd;
   try {
 
@@ -489,7 +490,7 @@ vector<doubDoub> Worm2DSRE::makeVals()
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = itsJson["Evolvable"]["value"];
+  json & j2 = BPitsJson["Evolvable"]["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -607,7 +608,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
 
-  json & js1 = itsJson;
+  json & js1 = BPitsJson;
   recursive_iterate2(pheno,js1,itsEf);
   
   NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
@@ -616,7 +617,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
     //if (js1["Nervous system"].contains("section sizes"))
     //  jsects = js1["Nervous system"]["section sizes"];
 
-    W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
+    //W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
    
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
@@ -624,7 +625,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
     Worm2DSRb::setParsFromJson(js1);
 
 
-    setWormPars(itsCmdArgs);
+    //setWormPars(itsCmdArgs);
     setMuscBodExt(js1);
     
 }
@@ -633,7 +634,7 @@ void WormCO2DSR::setParsFromPheno(const TVector<double> &pheno)
 {
 
 Worm2DSRE::setParsFromPheno(pheno);
-Sensor::setParsFromJson(itsJson);
+Sensor::setParsFromJson(BPitsJson);
     
 }
 
@@ -642,7 +643,7 @@ void Worm2DSRE::setParsFromPheno_old(const TVector<double> &pheno)
 {
 
 
-  json & js1 = itsJson;
+  json & js1 = BPitsJson;
 
  for (auto it = js1.begin(); it != js1.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
@@ -704,7 +705,7 @@ void Worm2DSRE::setParsFromPheno_old(const TVector<double> &pheno)
     //if (js1["Nervous system"].contains("section sizes"))
     //  jsects = js1["Nervous system"]["section sizes"];
 
-    W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
+    //W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
    
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
@@ -982,7 +983,7 @@ vector<double> Worm2DSRE::getInitGeno()
   vector<double> pheno(getVectSize(), checkval); 
 
 
-  const json & js1 = itsJson;
+  const json & js1 = BPitsJson;
   recursive_iterate(pheno,js1,itsEf);
 
 
@@ -1011,7 +1012,7 @@ const double checkval = 123456;
 vector<double> pheno(getVectSize(), checkval); 
 
 
-  json & js1 = itsJson;
+  json & js1 = BPitsJson;
 
  for (auto it = js1.begin(); it != js1.end(); ++it)
     for (auto it2 = it->begin(); it2 != it->end(); ++it2)
@@ -1340,7 +1341,11 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 	NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
 
 	if (n!=nullptr){
-	if (W2Dbaseparameters1->randomInitialState)
+
+  bool randomInitialState;
+  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  if (randomInitialState)
+	//if (W2Dbaseparameters1->randomInitialState)
     {
         n->RandomizeCircuitState(-1, 1, rs);
         n->RandomizeCircuitOutput(0.2, 0.8, rs);
@@ -1359,8 +1364,17 @@ void Sensor::InitialiseAgent()
 	//VelDelta = (int) (HST/gradPars->HSStepSize);
 
   if (spvec.size()>0){
-  spvec[0].HSStepSize = CO2DSRpars->HSStepSize;
-  spvec[0].gradSteep = CO2DSRpars->gradSteep;
+
+  double HSStepSize;
+  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  double gradSteep;
+  wb.getValCJWorm<double>("gradSteep",gradSteep);
+
+  spvec[0].HSStepSize = HSStepSize;
+  spvec[0].gradSteep = gradSteep;
+
+  //spvec[0].HSStepSize = CO2DSRpars->HSStepSize;
+  //spvec[0].gradSteep = CO2DSRpars->gradSteep;
 
   }
 
@@ -1446,8 +1460,18 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 
   SensorPars & sp1 = spvec[0];
 
-  sp1.gradSteep = CO2DSRpars->gradSteep;
-  sp1.HSStepSize = CO2DSRpars->HSStepSize;
+  double HSStepSize;
+  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  double gradSteep;
+  wb.getValCJWorm<double>("gradSteep",gradSteep);
+
+  sp1.gradSteep = gradSteep;
+  sp1.HSStepSize = HSStepSize;
+
+  //sp1.gradSteep = CO2DSRpars->gradSteep;
+  //sp1.HSStepSize = CO2DSRpars->HSStepSize;
+
+
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
   sp1.sensorM = j["Worm"]["sensorM"]["value"];
@@ -1481,8 +1505,18 @@ void Sensor::construct(const json & j)
 
 
   SensorPars sp1;
-  sp1.gradSteep = CO2DSRpars->gradSteep;
-  sp1.HSStepSize = CO2DSRpars->HSStepSize;
+
+  double HSStepSize;
+  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  double gradSteep;
+  wb.getValCJWorm<double>("gradSteep",gradSteep);
+
+  sp1.gradSteep = gradSteep;
+  sp1.HSStepSize = HSStepSize;
+
+  //sp1.gradSteep = CO2DSRpars->gradSteep;
+  //sp1.HSStepSize = CO2DSRpars->HSStepSize;
+  
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
   sp1.sensorM = j["Worm"]["sensorM"]["value"];

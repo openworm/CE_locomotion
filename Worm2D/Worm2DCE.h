@@ -129,7 +129,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
-    //double AVA_output, AVB_output;
+    double AVA_output = 0, AVB_output = 0;
     double AVA_act, AVA_inact, AVB_act, AVB_inact;
 
     
@@ -147,7 +147,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     double pheno_A_gain, pheno_B_gain; 
     //W2DCEpars W2DCEpars1;
-    shared_ptr<W2DCEpars> W2DCEpars1;
+    //shared_ptr<W2DCEpars> W2DCEpars1;
 
     void makeExternalInputConn();
     void assignExternalInput();

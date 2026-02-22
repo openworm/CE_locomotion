@@ -15,7 +15,7 @@
 
 
 Worm21::Worm21():
-Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEparsA>()),
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem()),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
 Worm2D21(), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
 
@@ -37,7 +37,7 @@ Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
 }
 
 Worm21R::Worm21R():Worm21(),
-Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), make_shared<W2DCEparsA>()){}
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem()){}
 
 Worm21R::Worm21R(TVector<double> &phengen, bool isPheno):Worm21R()
 {
@@ -68,17 +68,17 @@ void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 
 }
 
-void Worm21::setWormPars(shared_ptr<const CmdArgs> cmd_)
+/* void Worm21::setWormPars(shared_ptr<const CmdArgs> cmd_)
 {
   
-    Worm2D21::setWormPars(cmd_);
+    //Worm2D21::setWormPars(cmd_);
 
   //W2DCEparsA w1(cmd_);
   //W2DCEpars1->setPars(cmd_); 
   
   //return W2Dbaseparameters1;
 
-}
+} */
 
 
 
@@ -197,10 +197,13 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
 void Worm21::InitializeState(RandomState &rs)
 {    
     Worm2D21::InitializeState(rs);
-    shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    assert(w1parss!=nullptr);
+    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+    //assert(w1parss!=nullptr);
+  
+    bool randomInitialState;
+    getValCJWorm<bool>("randomInitialState",randomInitialState);
 
-    if (w1parss->randomInitialState)
+    if (randomInitialState)
     {
         n.RandomizeCircuitState(-1, 1, rs);
         n.RandomizeCircuitOutput(0.2, 0.8, rs);

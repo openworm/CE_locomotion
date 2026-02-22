@@ -102,22 +102,25 @@ virtual void writeAct(ofstream & ofs) = 0;
 
 void setPars(shared_ptr<const CmdArgs> cmd){
 
-    if (srpars!=nullptr){
+    setWeights();
+
+    /* if (srpars!=nullptr){
     srpars->setPars(cmd); 
     setWeights();
-    }
+    } */
 
 }
 
+shared_ptr<baseParameters> basePar1;
 //SRVars srvars;
-shared_ptr<W2Dparameters> srpars;
+//shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
 string SRType = "Base";
 
 protected:
 const int nsegs;
-SR(int nsegs_, int nstretch_, shared_ptr<W2Dparameters> srpars_, shared_ptr<SRVars> srvars_ptr_):
-nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),srpars(srpars_){}
+SR(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_, shared_ptr<SRVars> srvars_ptr_):
+nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_){}
 
 //SRWeights srweights, nssrweights;
 vector<double> nslD, nslV;
@@ -206,9 +209,9 @@ class SRCE : public SR
 {
 
 public:
-SRCE(int nsegs_, int nstretch_):
-SR(nsegs_,nstretch_,make_shared<SRCEpars>(), make_shared<SRVarsCE>(nstretch_))
-,srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
+SRCE(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_):
+SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
+,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
 {SRType = "SRCE";}
 
@@ -224,7 +227,7 @@ void setParsFromJson(const json & j);
 void updateSegs();
 void incNS(NSForW2D & ns);
 
-shared_ptr<SRCEpars> srcepars;
+//shared_ptr<SRCEpars> srcepars;
 //int SRForm = 0;
 shared_ptr<SRVarsCE> srvars;
 
@@ -232,9 +235,9 @@ double SR_A_gain = 0;
 double SR_B_gain = 0;
 void writeAct(ofstream & ofs);
 protected:
-SRCE(int nsegs_, int nstretch_,shared_ptr<SRCEpars> srcepars_):
-SR(nsegs_,nstretch_,srcepars_,make_shared<SRVarsCE>(nstretch_)),
-srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){}
+/* SRCE(int nsegs_, int nstretch_,shared_ptr<baseParameters> basePar1_):
+SR(nsegs_,nstretch_,basePar1_,make_shared<SRVarsCE>(nstretch_)),
+srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){} */
 
 //int nsegperstr;
 
@@ -254,11 +257,11 @@ SRWeights srweights, nssrweights;
 class SRReg : public SRCE
 {
 public:
-SRReg(int nsegs_, int nstretch_)
-:SRCE(nsegs_,nstretch_,make_shared<SRRegpars>())
-,srregpars(dynamic_pointer_cast<SRRegpars>(srcepars))
+SRReg(int nsegs_, int nstretch_, shared_ptr<baseParameters> basePar1_)
+:SRCE(nsegs_,nstretch_,basePar1_)
+//,srregpars(dynamic_pointer_cast<SRRegpars>(srcepars))
 {}
 void makeSRWeights();
-shared_ptr<SRRegpars> srregpars;
+//shared_ptr<SRRegpars> srregpars;
 
 };

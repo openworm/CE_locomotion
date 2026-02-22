@@ -1063,38 +1063,23 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
 
   
-
     double fitness = 0;
     int count = 0;
-    if (Epars1.doReverse==0 || doalt1f){
-        //  assert(0 && "dorev0");
 
+    if (Epars1.doReverse==0 || doalt1f)
+    {
     if (Epars1.zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
-  
     w_ptr->setParsFromGeno(genotype);
-
-    
-    //if (Epars1.zeroGainsType == 1) genotype(SR_A)= -1.0;
-    //genotype(SR_B)= srb;
-    
     w_ptr->setInputOnce(0);
-
-    
-
     fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
-    if (Epars1.doReverse==1 || doalt2f){
-       // assert(0 && "dorev1");
-    //genotype(SR_A)= sra;
-    //if (Epars1.zeroGainsType == 1) genotype(SR_B)= -1.0;
-    if (Epars1.zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;
-      
+
+    if (Epars1.doReverse==1 || doalt2f)
+    {
+    if (Epars1.zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
-
-       
-
     fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
     count++;
     }

@@ -148,8 +148,8 @@ public:
 
     //const int Head = 1;
     //const int Tail = N_segments;
-    bool doOrigSRInput18 = true;
-    bool doOrigMuscInput18 = true;
+    //bool doOrigSRInput18 = true;
+    //bool doOrigMuscInput18 = true;
     bool rs18output;
     const RS18Macros rS18Macros;
     RS18Macros setMacros();
