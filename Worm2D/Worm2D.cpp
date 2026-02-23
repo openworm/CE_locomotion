@@ -94,11 +94,21 @@ void DataWriter::dataReset(){closeAll();
 /////////////////////////////
 
 
-Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)//,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)
+//,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
 {//zeroAllInputs();
+    setWormPars(cmd_);
 }
+
+
+/* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
+    Worm2Dbase(par1_,n_ptr_,m_ptr_){setWormPars(cmd_);}
+ */
+
 
 /* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(make_shared<W2Dbaseparameters>()),
@@ -122,23 +132,33 @@ muscForWDconst(mfwc)
     //zeroAllInputs();
 
 
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
+/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
 {setUpBodyConn();}
-
+ */
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_):
+Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_),W2Dmparscalled(false),W2Dminitcalled(false)
+{setUpBodyConn();}
 
 /* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
 {setUpBodyConn();}  */
 
-
-Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval):
-Worm2Dbase(par1_,n_ptr_,0),
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval, shared_ptr<const CmdArgs> cmd_):
+Worm2Dbase(par1_,n_ptr_,0, cmd_),
 W2Dmparscalled(false),W2Dminitcalled(false){
     m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
     setUpBodyConn();
 }
 
+
+/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval):
+Worm2Dbase(par1_,n_ptr_,0),
+W2Dmparscalled(false),W2Dminitcalled(false){
+    m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
+    setUpBodyConn();
+}
+ */
 //Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
 //Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
 //W2Dmparscalled(false),W2Dminitcalled(false){} 
@@ -161,6 +181,8 @@ doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput"))
 {
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
+    cout << "dom " << doOrigMuscInput << endl;
+    
     setUp();
     //setUpBodyConn();
 }
@@ -982,6 +1004,7 @@ void Worm2D::Step1()
   //bool doOrigMuscInput;
     //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
 
+    
     if (doOrigMuscInput) setMuscleInputOrig();
   //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();

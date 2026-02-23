@@ -414,9 +414,9 @@ void incSimTimes();
 
 //virtual shared_ptr<const W2Dparameters> setWormPars(shared_ptr<const CmdArgs> cmd) {return nullptr;}
 
-virtual void setWormPars(shared_ptr<const CmdArgs> cmd) 
+virtual void setWormPars(shared_ptr<const CmdArgs> cmd_) 
 {
-    BPitsCmdArgs = cmd;
+    BPitsCmdArgs = cmd_;
     //W2Dbaseparameters1b->setPars(cmd);
 
 }
@@ -441,7 +441,9 @@ template<class T> friend class Evolvable_ptrB;
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
-Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
+Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,
+    shared_ptr<const CmdArgs> cmd_ = nullptr);
+//Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dparameters>);
 
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
@@ -528,13 +530,17 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_);
 
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
     //Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters>);
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
     //    shared_ptr<W2Dparameters> w2dpar_);
     //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, 
     //muscForW2D * m_ptr_, shared_ptr<W2Dbaseparameters> w2dpar_);
-    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool);
+    //Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool);
+    Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
 
     //const bool muscForWDconst;
     void setBodyInput(); //takes muscle outputs to drive body segments

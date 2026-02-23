@@ -229,14 +229,15 @@ void setTime(const double & t_){Worm2D::setTime(t_);n.setTime(t_);}
 class Worm2Dosc1 
 {
 public:
-Worm2Dosc1(baseParameters & pars1_):basePar1(pars1_){}//{if (pars1 == nullptr) assert(0);}
+Worm2Dosc1(baseParameters * pars1_):basePar1(pars1_){}//{if (pars1 == nullptr) assert(0);}
+Worm2Dosc1(){}
 vector<toFromWeight> makeVentralMuscleConn();
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeDVMuscleConn(int offset);
 
 protected:
 //Worm2Doscpars1 & pars1;
-baseParameters & basePar1;
+baseParameters * basePar1 = nullptr;
 //shared_ptr<Worm2Doscpars1> pars1;
 };
 
@@ -247,10 +248,11 @@ class Worm2Dosc : public Worm2DoscBase, public Worm2Dosc1
 {
 public:
 //Worm2Dosc(const Worm2Dosc&);
-Worm2Dosc(int size_);
-Worm2Dosc(const string & filename_);
-Worm2Dosc();
+Worm2Dosc(int size_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+Worm2Dosc(const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
 Worm2Dosc(TVector<double> & phengen, const bool & isPheno);
+Worm2Dosc(shared_ptr<const CmdArgs> cmd_ = nullptr);
+
 //Worm2Dosc(TVector<double> &v);
 //Worm2Dosc(const pfa & pfa_, const Worm2Doscpars & par1_);
 const string getModelName() {return "Worm2Dosc";}
@@ -291,8 +293,8 @@ class Worm2DoscNMLm : public Worm2Dm
 {
 
     public:
-    Worm2DoscNMLm(int size);
-    Worm2DoscNMLm(const string & jsonfile);
+    Worm2DoscNMLm(int size, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2DoscNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2DoscNMLm";}
 };
@@ -302,8 +304,8 @@ class Worm2DoscNML : public Worm2D, public Worm2Dosc1
 {
 
     public:
-    Worm2DoscNML(int size);
-    Worm2DoscNML(const string & jsonfile);
+    Worm2DoscNML(int size, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2DoscNML(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc1::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
@@ -347,14 +349,15 @@ const string getModelName() {return "Worm2DoscH";}
 class Worm2Dosc21base
 {
 public:
-Worm2Dosc21base(int N_neuronsperunit_, baseParameters & pars1_):basePar1(pars1_), 
+Worm2Dosc21base(int N_neuronsperunit_, baseParameters * pars1_):basePar1(pars1_), 
 N_neuronsperunit(N_neuronsperunit_){}
+Worm2Dosc21base(int N_neuronsperunit_):N_neuronsperunit(N_neuronsperunit_){}
 vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
 vector<toFromWeight> makeDorsalMuscleConn();
 vector<toFromWeight> makeVentralMuscleConn();
 
 protected:
-baseParameters & basePar1;
+baseParameters * basePar1 = nullptr;
 //shared_ptr<Worm2Dosc21pars> pars1;
 const int N_neuronsperunit;
 //const wormIzqParams & par1ref;
@@ -364,8 +367,8 @@ const int N_neuronsperunit;
 class Worm2Dosc21NML: public Worm2D, public Worm2Dosc21base
 {
     public:
-    Worm2Dosc21NML();
-    Worm2Dosc21NML(const string & jsonfile_);
+    Worm2Dosc21NML(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21NML(const string & jsonfile_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
@@ -378,8 +381,8 @@ class Worm2Dosc21NMLm : public Worm2Dm
 {
 
     public:
-    Worm2Dosc21NMLm();
-    Worm2Dosc21NMLm(const string & jsonfile);
+    Worm2Dosc21NMLm(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21NMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2Dosc21NMLm";}
 };
@@ -388,8 +391,8 @@ class Worm2Dosc21 : public Worm2DoscBase, public Worm2Dosc21base
 {
 
 public:
-Worm2Dosc21();
-Worm2Dosc21(const string & filename_);
+Worm2Dosc21(shared_ptr<const CmdArgs> cmd_ = nullptr);
+Worm2Dosc21(const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
 Worm2Dosc21(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
@@ -424,8 +427,9 @@ const string getModelName() {return "Worm2Dosc21";}
 class Worm2Dosc21all : public Worm2Dosc21
 {
 public:
-Worm2Dosc21all();
-Worm2Dosc21all(const string & filename_, const bool & isGenJson = true);
+Worm2Dosc21all(shared_ptr<const CmdArgs> cmd_ = nullptr);
+Worm2Dosc21all(const string & filename_, const bool & isGenJson = true, 
+    shared_ptr<const CmdArgs> cmd_ = nullptr);
 Worm2Dosc21all(TVector<double> & pheno, const bool & isPheno);
 //static inline int evoVectSize = 6;
 void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
@@ -446,8 +450,8 @@ void setPhenoNames();
 class Worm2Dosc21allNML: public Worm2D, public Worm2Dosc21base
 {
     public:
-    Worm2Dosc21allNML();
-    Worm2Dosc21allNML(const string & jsonfile_);
+    Worm2Dosc21allNML(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21allNML(const string & jsonfile_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
@@ -459,8 +463,8 @@ class Worm2Dosc21allNMLm : public Worm2Dm
 {
 
     public:
-    Worm2Dosc21allNMLm();
-    Worm2Dosc21allNMLm(const string & jsonfile);
+    Worm2Dosc21allNMLm(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21allNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2Dosc21allNMLm";}
 };

@@ -92,11 +92,11 @@ int main (int argc, const char* argv[])
         if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
         if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
 
-        if (model_name == "W2Dosc") evo = new EvolutionFullW<Worm2Dosc>(cmd);
+        if (model_name == "W2Dosc") evo = new EvolutionFullWC<Worm2Dosc>(cmd);
         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(cmd);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullW<Worm2Dosc21>(cmd);
+        if (model_name == "W2Dosc21") evo = new EvolutionFullWC<Worm2Dosc21>(cmd);
         if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(cmd);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullW<Worm2Dosc21all>(cmd);
+        if (model_name == "W2Dosc21all") evo = new EvolutionFullWC<Worm2Dosc21all>(cmd);
         if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(cmd);
         if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(cmd);
         if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
@@ -167,11 +167,11 @@ int main (int argc, const char* argv[])
 
     const string gen_filename =  rename_file("best.gen.dat", directoryName);
 
-    if (model_name == "W2Dosc") w2 = new Worm2Dosc(gen_filename);
+    if (model_name == "W2Dosc") w2 = new Worm2Dosc(gen_filename, cmd);
     if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(gen_filename);
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(gen_filename);
+    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(gen_filename, cmd);
     if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(gen_filename);
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename, useGenJson);
+    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename, useGenJson, cmd);
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename);
@@ -190,20 +190,20 @@ int main (int argc, const char* argv[])
    
     if (model_name == "W2Dosc") 
     {
-        if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename);
-        else w2 = new Worm2DoscNML(json_filename);
+        if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename, cmd);
+        else w2 = new Worm2DoscNML(json_filename, cmd);
     }
 
     if (model_name == "W2Dosc21") 
     {
-        if (do_musclesim) w2 = new Worm2Dosc21NMLm(json_filename);
-        else w2 = new Worm2Dosc21NML(json_filename);
+        if (do_musclesim) w2 = new Worm2Dosc21NMLm(json_filename, cmd);
+        else w2 = new Worm2Dosc21NML(json_filename, cmd);
     }
 
     if (model_name == "W2Dosc21all") 
     {
-        if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename);
-        else w2 = new Worm2Dosc21allNML(json_filename);
+        if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename, cmd);
+        else w2 = new Worm2Dosc21allNML(json_filename, cmd);
     }
 
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
