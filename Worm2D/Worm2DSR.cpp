@@ -94,7 +94,8 @@ void Worm2DSR::addParsToJson(json & j)
 
   j = BPitsJson;
   //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
-  addEvolvableToJson(j);
+  
+  //addEvolvableToJson(j);
 
   if (false){
   NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
@@ -168,8 +169,8 @@ void Worm2DSR::Step1()
   assert(0);
   }
 
-    bool doOrigMuscInput;
-    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+    //bool doOrigMuscInput;
+    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
 
   if (doOrigMuscInput) setMuscleInputOrig();
   //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();

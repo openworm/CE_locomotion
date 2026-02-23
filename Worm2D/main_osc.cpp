@@ -89,7 +89,7 @@ int main (int argc, const char* argv[])
 
 
         else{
-        if (model_name == "W2DCE") evo = new EvolutionFullW<WormCE>(cmd); 
+        if (model_name == "W2DCE") evo = new EvolutionFullWC<WormCE>(cmd); 
         if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
 
         if (model_name == "W2Dosc") evo = new EvolutionFullWC<Worm2Dosc>(cmd);

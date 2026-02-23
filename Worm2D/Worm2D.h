@@ -8,7 +8,7 @@
 //#include "jsonUtils.h"
 #include "../neuromlLocal/NSBaseForW2D.h"
 #include "Evolvable.h"
-
+//#include "StretchReceptorCE.h"
 
 //datawriter->worm2dbase (nervous system and muscle pointers)
 //datawriter->worm2dbody (just body plus functions)
@@ -17,6 +17,9 @@
 //worm2dm -> worm2d21m (nn+musc ptrs + body + net21 specifics)
 //Worm2D21m + worm2d -> worm2d21 (cc musc + nn ptr + musc connections)
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
+
+
+class SRCE;
 
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
@@ -498,6 +501,9 @@ virtual void makeNSOutputConn(){return;}
 //namedValVec<double> doubVars;
 json namedVars;
 static wormIzqParams getIzqPars(const json & j);
+
+shared_ptr<SRCE> makeSRCE();
+
 
 Efunctor itsEf;
 };

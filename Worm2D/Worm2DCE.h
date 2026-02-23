@@ -13,6 +13,7 @@
 //#include "NervousSystem.h"
 //#include "Muscles.h"
 #include "StretchReceptorCE.h"
+//#include "StretchReceptor.h"
 //#include "NervousSystemBase.h"
 
 #include "Worm2DSR.h"
@@ -163,6 +164,8 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //string sr_type = "None";
     //bool SR_TRANS_STRETCH, SR_TRANS_CONTRACT, SR_TRANS_ABS, SR_TRANS_NEG;
    
+   
+
 };
 
 

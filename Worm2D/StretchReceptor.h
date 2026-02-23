@@ -111,7 +111,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 
 }
 
-baseParameters * basePar1 = nullptr;
+baseParameters * const basePar1;
 //SRVars srvars;
 //shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
@@ -122,13 +122,14 @@ const int nsegs;
 SR(int nsegs_, int nstretch_, baseParameters * basePar1_, shared_ptr<SRVars> srvars_ptr_):
 nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_)
 {
-    assert(0);
+    //assert(0);
 }
 
 SR(int nsegs_, int nstretch_, shared_ptr<SRVars> srvars_ptr_):
-nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0)
+nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(nullptr)
 {
- 
+    //assert(0);
+
 }
 
 
@@ -224,12 +225,13 @@ SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
 ,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
 {SRType = "SRCE";}
-SRCE(int nsegs_, int nstretch_):
-SR(nsegs_,nstretch_, make_shared<SRVarsCE>(nstretch_))
-,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
+
+
+/* SRCE(int nsegs_, int nstretch_):
+SR(nsegs_,nstretch_, make_shared<SRVarsCE>(nstretch_)),
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
 {SRType = "SRCE";}
-
+ */
 
 void makeNSSRWeights();
 void makeSRWeights();
