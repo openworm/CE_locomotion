@@ -4832,15 +4832,6 @@
         "VNCMuscleStart": {
             "message": "VNC motorneurons innervate starting from 7th muscle",
             "value": 7
-        },
-        "doOrigMuscInput": {
-            "value": true
-        },
-        "doOrigSRInput": {
-            "value": true
-        },
-        "randomInitialState": {
-            "value": false
         }
     }
 }

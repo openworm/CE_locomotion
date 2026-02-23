@@ -1600,15 +1600,6 @@
         "Main model name": {
             "value": "W2Dosc21"
         },
-        "NMJ_DN": {
-            "value": 5.531371691595071
-        },
-        "NMJ_Gain_Map": {
-            "value": 0.34778949541216847
-        },
-        "NMJ_VN": {
-            "value": 4.4280150212262095
-        },
         "N_muscles": {
             "value": 24
         },
@@ -1623,15 +1614,6 @@
         },
         "T_muscle": {
             "value": 0.1
-        },
-        "doOrigMuscInput": {
-            "value": false
-        },
-        "doOrigSRInput": {
-            "value": true
-        },
-        "randomInitialState": {
-            "value": false
         }
     }
 }

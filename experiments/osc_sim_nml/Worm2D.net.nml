@@ -2,291 +2,291 @@
     <pulseGenerator id="extStim" delay="0s" duration="10000s" amplitude="1 pA"/>
     <network id="Worm2DNet">
         <population id="PopND0" component="ND0" size="1" type="populationList">
-            <property tag="color" value="0.974245645215821 0.9564121529193327 0.03971808656941467 "/>
+            <property tag="color" value="0.275423357832014 0.8821637157301111 0.19452933127614624 "/>
             <instance id="0">
-                <location x="83.75739141007034" y="63.359825524520389" z="0.0"/>
+                <location x="21.679117201047717" y="58.563322723817869" z="0.0"/>
             </instance>
         </population>
         <population id="PopND1" component="ND1" size="1" type="populationList">
-            <property tag="color" value="0.10246611173409692 0.15930010213174328 0.5095403369341903 "/>
+            <property tag="color" value="0.5131192245050314 0.5052844706541709 0.5165805327995193 "/>
             <instance id="0">
-                <location x="94.546642612854583" y="1.795524510315649" z="0.0"/>
+                <location x="75.293900691942355" y="21.435461357322051" z="0.0"/>
             </instance>
         </population>
         <population id="PopND10" component="ND10" size="1" type="populationList">
-            <property tag="color" value="0.7045271880195443 0.47632256106462034 0.5279479693994886 "/>
+            <property tag="color" value="0.2061108793418136 0.8231170702255817 0.5785903234349671 "/>
             <instance id="0">
-                <location x="39.00000733572432" y="23.723993883617766" z="0.0"/>
+                <location x="5.439482549444941" y="79.40768253277038" z="0.0"/>
             </instance>
         </population>
         <population id="PopND11" component="ND11" size="1" type="populationList">
-            <property tag="color" value="0.8716200135016512 0.037395508459939 0.058603175245172 "/>
+            <property tag="color" value="0.8678781063646646 0.27367606220779117 0.3410423238008068 "/>
             <instance id="0">
-                <location x="53.703928402439935" y="90.789489007530051" z="0.0"/>
+                <location x="61.810469815130531" y="32.512371807618869" z="0.0"/>
             </instance>
         </population>
         <population id="PopND12" component="ND12" size="1" type="populationList">
-            <property tag="color" value="0.4604625195023404 0.016842615578839037 0.6297022827906444 "/>
+            <property tag="color" value="0.8041672924766956 0.860392434496273 0.9239000933978573 "/>
             <instance id="0">
-                <location x="83.748997169822303" y="36.677190960664952" z="0.0"/>
+                <location x="52.795275832469812" y="69.899237187887181" z="0.0"/>
             </instance>
         </population>
         <population id="PopND13" component="ND13" size="1" type="populationList">
-            <property tag="color" value="0.15059549816170048 0.6080005095841722 0.3616513664502463 "/>
+            <property tag="color" value="0.6632435211283815 0.0392996003935322 0.7004648813883371 "/>
             <instance id="0">
-                <location x="14.470305589829923" y="42.441096381673901" z="0.0"/>
+                <location x="61.392595433865928" y="32.070745176704932" z="0.0"/>
             </instance>
         </population>
         <population id="PopND14" component="ND14" size="1" type="populationList">
-            <property tag="color" value="0.7482054894800059 0.18985648354793494 0.4619152179585094 "/>
+            <property tag="color" value="0.8557649016656865 0.9939694046690348 0.04981793770037479 "/>
             <instance id="0">
-                <location x="4.403927612569703" y="92.89930641287711" z="0.0"/>
+                <location x="42.713064355474103" y="56.293780004049296" z="0.0"/>
             </instance>
         </population>
         <population id="PopND15" component="ND15" size="1" type="populationList">
-            <property tag="color" value="0.954995935999401 0.40742315901629955 0.7320706927512345 "/>
+            <property tag="color" value="0.2034302742189208 0.7062495020531258 0.8242490108751994 "/>
             <instance id="0">
-                <location x="46.100168812321975" y="57.301075737034488" z="0.0"/>
+                <location x="65.763724404641664" y="19.157311495022743" z="0.0"/>
             </instance>
         </population>
         <population id="PopND16" component="ND16" size="1" type="populationList">
-            <property tag="color" value="0.9687631328066295 0.5852441251866948 0.878624511499353 "/>
+            <property tag="color" value="0.4107906069106074 0.42413741203057953 0.40900463492483596 "/>
             <instance id="0">
-                <location x="32.01206585292897" y="61.7306399865993" z="0.0"/>
+                <location x="97.846143662917868" y="67.251451048005762" z="0.0"/>
             </instance>
         </population>
         <population id="PopND17" component="ND17" size="1" type="populationList">
-            <property tag="color" value="0.4679118775487562 0.09521242431066834 0.017858306844405925 "/>
+            <property tag="color" value="0.540874895007859 0.9304366745147258 0.9705979804461115 "/>
             <instance id="0">
-                <location x="35.072501627973885" y="53.173115505836655" z="0.0"/>
+                <location x="53.185810945872028" y="88.717780168910949" z="0.0"/>
             </instance>
         </population>
         <population id="PopND18" component="ND18" size="1" type="populationList">
-            <property tag="color" value="0.4079205662299997 0.7017459056408789 0.1711319144143566 "/>
+            <property tag="color" value="0.9380489913565638 0.7484022646606807 0.6641627932621573 "/>
             <instance id="0">
-                <location x="75.280396290179084" y="61.268452121002767" z="0.0"/>
+                <location x="35.869351217649466" y="46.045038225851606" z="0.0"/>
             </instance>
         </population>
         <population id="PopND19" component="ND19" size="1" type="populationList">
-            <property tag="color" value="0.5473618055106666 0.7355313192539874 0.7080178599135002 "/>
+            <property tag="color" value="0.34413433488446155 0.7942442006064653 0.6477494276493845 "/>
             <instance id="0">
-                <location x="82.616208542032695" y="68.672408509188514" z="0.0"/>
+                <location x="96.045235870545284" y="46.332302843518733" z="0.0"/>
             </instance>
         </population>
         <population id="PopND2" component="ND2" size="1" type="populationList">
-            <property tag="color" value="0.6638563224805254 0.3851042311262326 0.2706301576420398 "/>
+            <property tag="color" value="0.19275556811763916 0.14777378820976184 0.9301728567594426 "/>
             <instance id="0">
-                <location x="74.828291501398638" y="60.300644362947054" z="0.0"/>
+                <location x="34.252917978384602" y="87.931361793926214" z="0.0"/>
             </instance>
         </population>
         <population id="PopND20" component="ND20" size="1" type="populationList">
-            <property tag="color" value="0.9245729919668272 0.3316935780337732 0.9776999565517114 "/>
+            <property tag="color" value="0.383320986365162 0.854592152185012 0.5049227650739748 "/>
             <instance id="0">
-                <location x="52.646350069848694" y="50.906228373935988" z="0.0"/>
+                <location x="68.20385331912891" y="26.753984440230894" z="0.0"/>
             </instance>
         </population>
         <population id="PopND21" component="ND21" size="1" type="populationList">
-            <property tag="color" value="0.5954040423806014 0.9221911100302761 0.7061623671260656 "/>
+            <property tag="color" value="0.09576294106614092 0.28678925740933403 0.8024467918125944 "/>
             <instance id="0">
-                <location x="65.422713065104332" y="17.589220371370395" z="0.0"/>
+                <location x="72.396248895602781" y="36.56597951334124" z="0.0"/>
             </instance>
         </population>
         <population id="PopND22" component="ND22" size="1" type="populationList">
-            <property tag="color" value="0.004636827775403862 0.003927530340153251 0.1749170831646617 "/>
+            <property tag="color" value="0.8496362431004288 0.6792485015265527 0.17874709801138078 "/>
             <instance id="0">
-                <location x="17.833883962453168" y="78.214542707084604" z="0.0"/>
+                <location x="35.575004492041629" y="39.76607936783406" z="0.0"/>
             </instance>
         </population>
         <population id="PopND23" component="ND23" size="1" type="populationList">
-            <property tag="color" value="0.13665778543356177 0.7522626038453106 0.5329279825941732 "/>
+            <property tag="color" value="0.9096847577342477 0.6827998864130438 0.7142244760948158 "/>
             <instance id="0">
-                <location x="17.475421830768834" y="10.991301035960765" z="0.0"/>
+                <location x="48.622665475288883" y="24.294034563206978" z="0.0"/>
             </instance>
         </population>
         <population id="PopND3" component="ND3" size="1" type="populationList">
-            <property tag="color" value="0.8957450922594556 0.879491168701051 0.4193687901449892 "/>
+            <property tag="color" value="0.892557204097094 0.5640467529964698 0.29014194893548073 "/>
             <instance id="0">
-                <location x="63.258211045439573" y="84.873635592921616" z="0.0"/>
+                <location x="38.065766966136216" y="73.715330248915649" z="0.0"/>
             </instance>
         </population>
         <population id="PopND4" component="ND4" size="1" type="populationList">
-            <property tag="color" value="0.975257602295549 0.7403481080919927 0.785805309717191 "/>
+            <property tag="color" value="0.6152227781722016 0.5582876087193515 0.23442823675367808 "/>
             <instance id="0">
-                <location x="60.820112998856061" y="84.270151136167613" z="0.0"/>
+                <location x="68.342609035209719" y="65.387917729606698" z="0.0"/>
             </instance>
         </population>
         <population id="PopND5" component="ND5" size="1" type="populationList">
-            <property tag="color" value="0.7603184242154098 0.03743611905332167 0.645691179134653 "/>
+            <property tag="color" value="0.8350892103867961 0.4559460448138247 0.1247981668456618 "/>
             <instance id="0">
-                <location x="88.499108446752075" y="87.83274700371247" z="0.0"/>
+                <location x="14.948141954582461" y="13.951396669686256" z="0.0"/>
             </instance>
         </population>
         <population id="PopND6" component="ND6" size="1" type="populationList">
-            <property tag="color" value="0.5874177124438323 0.5897425473182808 0.7938673691554462 "/>
+            <property tag="color" value="0.566800627607523 0.18890050246163737 0.08060658357586314 "/>
             <instance id="0">
-                <location x="39.017832185941657" y="72.204949916894307" z="0.0"/>
+                <location x="32.508641402973048" y="43.604967834605212" z="0.0"/>
             </instance>
         </population>
         <population id="PopND7" component="ND7" size="1" type="populationList">
-            <property tag="color" value="0.6591883653828456 0.8890239369468826 0.0957301937840368 "/>
+            <property tag="color" value="0.7137091685639104 0.8592600982707534 0.07600486645029414 "/>
             <instance id="0">
-                <location x="58.694181471461938" y="14.924107227442452" z="0.0"/>
+                <location x="98.923785671572716" y="21.125798920274374" z="0.0"/>
             </instance>
         </population>
         <population id="PopND8" component="ND8" size="1" type="populationList">
-            <property tag="color" value="0.09472937705347251 0.20730508043132068 0.6483693519330055 "/>
+            <property tag="color" value="0.3410738224103744 0.14502309727911256 0.5669860116256844 "/>
             <instance id="0">
-                <location x="70.139016438410735" y="3.726792134357548" z="0.0"/>
+                <location x="6.866685958436558" y="56.148738823710609" z="0.0"/>
             </instance>
         </population>
         <population id="PopND9" component="ND9" size="1" type="populationList">
-            <property tag="color" value="0.3093300375006015 0.6337106333466391 0.5259440365699347 "/>
+            <property tag="color" value="0.006046318575270937 0.6440733517249211 0.7799519507733695 "/>
             <instance id="0">
-                <location x="62.666439760009041" y="40.924130779387312" z="0.0"/>
+                <location x="6.15303572542013" y="16.17393924324525" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV0" component="NV0" size="1" type="populationList">
-            <property tag="color" value="0.4786385165275837 0.696739401707719 0.8201098019115111 "/>
+            <property tag="color" value="0.09656610347461259 0.38031185729128003 0.6680978874337545 "/>
             <instance id="0">
-                <location x="25.087894973883152" y="7.826665536884869" z="0.0"/>
+                <location x="45.352466846072524" y="32.039857828777343" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV1" component="NV1" size="1" type="populationList">
-            <property tag="color" value="0.40351893975328323 0.05143465390774915 0.4590499485830217 "/>
+            <property tag="color" value="0.5055226561758598 0.3144052009210745 0.4277622447097812 "/>
             <instance id="0">
-                <location x="78.257142057248302" y="0.715122168751248" z="0.0"/>
+                <location x="62.918786958571062" y="82.941917586035956" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV10" component="NV10" size="1" type="populationList">
-            <property tag="color" value="0.8028096483821837 0.8702682170904105 0.8143210070131555 "/>
+            <property tag="color" value="0.010696755174346317 0.916356973484668 0.9968958545410606 "/>
             <instance id="0">
-                <location x="88.824856659187802" y="83.581701961230635" z="0.0"/>
+                <location x="37.146625182229485" y="36.923000181040145" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV11" component="NV11" size="1" type="populationList">
-            <property tag="color" value="0.974178905769447 0.6476842689562351 0.674528857914983 "/>
+            <property tag="color" value="0.6874563464932343 0.027351098330121948 0.5459829514825478 "/>
             <instance id="0">
-                <location x="67.076767484869976" y="54.47419055781296" z="0.0"/>
+                <location x="29.858674841374444" y="72.254941599010337" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV12" component="NV12" size="1" type="populationList">
-            <property tag="color" value="0.15486773762203188 0.2110137161170117 0.049919514023735734 "/>
+            <property tag="color" value="0.0013049165328099521 0.4370159625150456 0.2833286856222602 "/>
             <instance id="0">
-                <location x="89.615612807382846" y="12.102369755917742" z="0.0"/>
+                <location x="39.188189227666811" y="95.271575730622232" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV13" component="NV13" size="1" type="populationList">
-            <property tag="color" value="0.4810659300005129 0.45233957113008694 0.7797214898079561 "/>
+            <property tag="color" value="0.4543007961045057 0.501075595696241 0.05047540028966491 "/>
             <instance id="0">
-                <location x="11.751165977546464" y="26.704332552727116" z="0.0"/>
+                <location x="88.526771759283392" y="13.622783009184081" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV14" component="NV14" size="1" type="populationList">
-            <property tag="color" value="0.050169227189225674 0.38302239964082374 0.8104011474181082 "/>
+            <property tag="color" value="0.6237891655261647 0.9125561547326272 0.35553902525262093 "/>
             <instance id="0">
-                <location x="90.28189755852442" y="13.769810736380816" z="0.0"/>
+                <location x="53.334351485278177" y="44.865124071995069" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV15" component="NV15" size="1" type="populationList">
-            <property tag="color" value="0.1289603548524496 0.5382527321337126 0.1336714037896929 "/>
+            <property tag="color" value="0.3728937552702274 0.5941407325531753 0.1952226093351015 "/>
             <instance id="0">
-                <location x="90.81780186762083" y="43.393831967805397" z="0.0"/>
+                <location x="35.947540876023233" y="97.160890643606251" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV16" component="NV16" size="1" type="populationList">
-            <property tag="color" value="0.5487953994343194 0.09859275536881418 0.7311632409997343 "/>
+            <property tag="color" value="0.5428345655577876 0.8556713274032981 0.9950880574898776 "/>
             <instance id="0">
-                <location x="84.56784919048836" y="67.486964962159561" z="0.0"/>
+                <location x="59.581478469875748" y="65.325247475422827" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV17" component="NV17" size="1" type="populationList">
-            <property tag="color" value="0.14319592254467728 0.3737369829606404 0.802149878578562 "/>
+            <property tag="color" value="0.27115600605946033 0.7478428457389105 0.15297919541833604 "/>
             <instance id="0">
-                <location x="90.997975208571077" y="79.393044215083606" z="0.0"/>
+                <location x="87.084431859851591" y="22.471340093657886" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV18" component="NV18" size="1" type="populationList">
-            <property tag="color" value="0.28777647360116754 0.8532021654644463 0.798772466932096 "/>
+            <property tag="color" value="0.7956626052230551 0.5903483419898725 0.2090466090132197 "/>
             <instance id="0">
-                <location x="45.742445333672585" y="11.336907960345698" z="0.0"/>
+                <location x="63.163445168705614" y="70.491011595687695" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV19" component="NV19" size="1" type="populationList">
-            <property tag="color" value="0.9234437645426151 0.5890305004778741 0.2152791001109723 "/>
+            <property tag="color" value="0.5086942613585685 0.622043565037368 0.5786443612121828 "/>
             <instance id="0">
-                <location x="44.622244292667787" y="13.318985571853126" z="0.0"/>
+                <location x="75.384321582867059" y="1.805589362429838" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV2" component="NV2" size="1" type="populationList">
-            <property tag="color" value="0.16597947015962955 0.037291728325913875 0.7467720938358893 "/>
+            <property tag="color" value="0.7679587311928283 0.5147616203229978 0.07151154404069748 "/>
             <instance id="0">
-                <location x="76.348334316658082" y="7.325224283240484" z="0.0"/>
+                <location x="70.970749228367822" y="94.394684445206593" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV20" component="NV20" size="1" type="populationList">
-            <property tag="color" value="0.1902576638006528 0.45416250256295476 0.47214116720895904 "/>
+            <property tag="color" value="0.9308414296811445 0.9950439252864596 0.9992251023007027 "/>
             <instance id="0">
-                <location x="51.516976569154679" y="24.769909698964867" z="0.0"/>
+                <location x="77.603418566288966" y="63.787054832144548" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV21" component="NV21" size="1" type="populationList">
-            <property tag="color" value="0.1088836485431337 0.9062212915108826 0.5382361007752823 "/>
+            <property tag="color" value="0.6893270211532051 0.0542646260234072 0.12248784865191698 "/>
             <instance id="0">
-                <location x="67.200123643887423" y="11.592779680873955" z="0.0"/>
+                <location x="86.460438146799518" y="96.255131110649856" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV22" component="NV22" size="1" type="populationList">
-            <property tag="color" value="0.7422885800220933 0.6695878186747257 0.8843715664587937 "/>
+            <property tag="color" value="0.2569046964109222 0.9611764634989701 0.8634272064157068 "/>
             <instance id="0">
-                <location x="31.41002642527102" y="23.537675997967721" z="0.0"/>
+                <location x="95.221276618524826" y="27.916937532549959" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV23" component="NV23" size="1" type="populationList">
-            <property tag="color" value="0.803505011701122 0.4859090432927221 0.14020244550147876 "/>
+            <property tag="color" value="0.6855414005915698 0.9925225137337726 0.5545631483769338 "/>
             <instance id="0">
-                <location x="27.319658030065032" y="25.512221569475003" z="0.0"/>
+                <location x="20.795577365831853" y="68.563871639485811" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV3" component="NV3" size="1" type="populationList">
-            <property tag="color" value="0.11761400060376859 0.22018481366397824 0.719977902626232 "/>
+            <property tag="color" value="0.7312886056217197 0.6001519706080128 0.7104894831792654 "/>
             <instance id="0">
-                <location x="79.576672409096389" y="51.466696787178442" z="0.0"/>
+                <location x="25.309042601784093" y="55.373025802796036" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV4" component="NV4" size="1" type="populationList">
-            <property tag="color" value="0.9903045919942396 0.9222861017540295 0.9013985752952842 "/>
+            <property tag="color" value="0.24141853995014384 0.5511228983289883 0.7639907390983722 "/>
             <instance id="0">
-                <location x="56.893756840843345" y="73.734281081645165" z="0.0"/>
+                <location x="78.35194883997687" y="11.408862045475466" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV5" component="NV5" size="1" type="populationList">
-            <property tag="color" value="0.15051270671313577 0.4140287362220756 0.26295342259413845 "/>
+            <property tag="color" value="0.19142864399221993 0.2022033762548474 0.6058420403234498 "/>
             <instance id="0">
-                <location x="33.937977725223064" y="78.602538906283442" z="0.0"/>
+                <location x="74.173113245757008" y="67.565525170850051" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV6" component="NV6" size="1" type="populationList">
-            <property tag="color" value="0.8381115442175645 0.9884708342936915 0.5853566925495263 "/>
+            <property tag="color" value="0.22040292858944788 0.08986662563827696 0.7867211029509723 "/>
             <instance id="0">
-                <location x="41.200046343734002" y="43.761732021583867" z="0.0"/>
+                <location x="71.849484068326547" y="73.531165501259906" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV7" component="NV7" size="1" type="populationList">
-            <property tag="color" value="0.17740672327824714 0.8336349030673368 0.6447433924851667 "/>
+            <property tag="color" value="0.25119626352143287 0.8480292585143636 0.34648572427714086 "/>
             <instance id="0">
-                <location x="61.434019497737914" y="21.252984805674615" z="0.0"/>
+                <location x="66.149085755444673" y="56.076546063004763" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV8" component="NV8" size="1" type="populationList">
-            <property tag="color" value="0.4216156687207112 0.614086040644692 0.7661143271918969 "/>
+            <property tag="color" value="0.8979892320078594 0.1555579249297031 0.6383169155587568 "/>
             <instance id="0">
-                <location x="73.738698866558153" y="67.528118890857144" z="0.0"/>
+                <location x="86.184627431784619" y="56.862158961115171" z="0.0"/>
             </instance>
         </population>
         <population id="PopNV9" component="NV9" size="1" type="populationList">
-            <property tag="color" value="0.17641395008416672 0.10032777208983568 0.7696007451732584 "/>
+            <property tag="color" value="0.5500354383196133 0.5741866804898388 0.8176907911481315 "/>
             <instance id="0">
-                <location x="65.130384488816063" y="32.856030547785608" z="0.0"/>
+                <location x="57.077637311253973" y="15.189373298410702" z="0.0"/>
             </instance>
         </population>
         <inputList id="ExtStimPopND0" population="PopND0" component="extStim">

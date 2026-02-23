@@ -100,7 +100,8 @@ par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)
 //,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
 {//zeroAllInputs();
-    setWormPars(cmd_);
+    //setWormPars(cmd_);
+    BPitsCmdArgs = cmd_;
 }
 
 

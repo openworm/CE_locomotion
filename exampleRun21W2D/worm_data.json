@@ -5374,19 +5374,10 @@
         }
     },
     "Worm": {
-        "AB_output_level": {
-            "value": 1.0
-        },
         "AVA": {
             "value": 0.0
         },
-        "AVA_output": {
-            "value": 0.0
-        },
         "AVB": {
-            "value": 0.0
-        },
-        "AVB_output": {
             "value": 0.0
         },
         "NMJ_AS": {
@@ -5433,15 +5424,6 @@
         },
         "T_muscle": {
             "value": 0.1
-        },
-        "doOrigMuscInput": {
-            "value": true
-        },
-        "doOrigSRInput": {
-            "value": true
-        },
-        "randomInitialState": {
-            "value": false
         },
         "startingMuscleA": {
             "value": 1

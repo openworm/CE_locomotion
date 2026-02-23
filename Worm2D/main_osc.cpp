@@ -206,7 +206,7 @@ int main (int argc, const char* argv[])
         else w2 = new Worm2Dosc21allNML(json_filename, cmd);
     }
 
-    if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename);
+    if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename, cmd);
 
     }
 

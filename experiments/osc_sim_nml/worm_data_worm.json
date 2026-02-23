@@ -1523,9 +1523,6 @@
         "Main model name": {
             "value": "W2Dosc"
         },
-        "NMJWeight": {
-            "value": 2.4134231766259795
-        },
         "N_muscles": {
             "value": 24
         },
@@ -1540,15 +1537,6 @@
         },
         "T_muscle": {
             "value": 0.1
-        },
-        "doOrigMuscInput": {
-            "value": false
-        },
-        "doOrigSRInput": {
-            "value": true
-        },
-        "randomInitialState": {
-            "value": false
         }
     }
 }

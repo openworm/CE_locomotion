@@ -70,8 +70,9 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //void Step(double StepSize);
     //void DumpActState(ofstream &ofs, int skips);
     void InitializeState(RandomState &rs);
-    Worm2DCE(const json & j);
-    Worm2DCE(const string & jsonfilename);
+    Worm2DCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2DCE(const string & jsonfilename, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
     void addParsToJson(json & j);
     void writeAct();
 
@@ -108,12 +109,12 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //void Step1();
     //void Step1_old();
   
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd);
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, 
-        shared_ptr<const CmdArgs> cmd);
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
-    Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_);
+        shared_ptr<const CmdArgs> cmd = nullptr);
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
+    Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     
     void initConst();
 
@@ -170,12 +171,12 @@ class WormCE : public EvolvableS, public Worm2DCE
 public:
     //WormCE(int argc, const char* argv[]);
     
-    WormCE(const string & jsonfilename_, const string & filename_);
-    WormCE(const string & filename_);
-    WormCE();
-    WormCE(const json & j);
+    WormCE(const string & jsonfilename_, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
-    WormCE(TVector<double> &pheno);
+    //WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);
@@ -219,10 +220,10 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     WormCE(TVector<double> &phengen, bool isPheno);
-    WormCE(const json & j, const string & filename_);
-    WormCE(shared_ptr<SRCE> sr_ptr_);
-    WormCE(shared_ptr<const CmdArgs> cmd);
-    WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd);
+    WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    //WormCE(shared_ptr<SRCE> sr_ptr_);
+    //WormCE(shared_ptr<const CmdArgs> cmd);
+    WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
 
     void setParsFromJson(json & j);
     void setParsFromPheno(const TVector<double> &pheno);

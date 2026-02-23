@@ -416,7 +416,7 @@ void incSimTimes();
 
 virtual void setWormPars(shared_ptr<const CmdArgs> cmd_) 
 {
-    BPitsCmdArgs = cmd_;
+    //BPitsCmdArgs = cmd_;
     //W2Dbaseparameters1b->setPars(cmd);
 
 }
