@@ -558,7 +558,8 @@ double Evolvable_ptrB<T>::Evaluation21(TVector<double> &genotype, RandomState &r
  
     shared_ptr<T> w_ptr = this->getTw();
     w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(2);
+    //w_ptr->setInputOnce(2); 
+   
     return Evaluation21Rp1(genotype,rs,2, w_ptr);
 
 }

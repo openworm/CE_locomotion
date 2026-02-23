@@ -60,9 +60,15 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
+        cout << "nssd " << name_str << " " << bstr << endl;
+ 
+     
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
+            cout << "nesws" << endl;
+            cout << newSetVals << endl;
+          
             val = newSetVals[bstr][name_str]["value"];
             return true;
         }
@@ -75,7 +81,9 @@ class baseParameters
 
         if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
         if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
-         
+
+       
+       
         if (defaultVals.contains(name_str)) {
             val = defaultVals.at(name_str).get<T>();
             addValToJson(name_str,val,bstr);
@@ -110,6 +118,15 @@ class baseParameters
         return getValCJ<T>(name_str,val,"Worm");
 
     }
+
+    template<class T>
+    T getValCJWorm(const string & name_str)
+    {
+        T val;
+        getValCJ<T>(name_str,val,"Worm");
+        return val;
+    }
+     
 
     template<class T>
     bool getValCJEvo(const string & name_str, T & val)
@@ -605,7 +622,7 @@ class Worm2D : virtual public Worm2Dm
     vector<intPair> unitToMuscV, unitToMuscD;
     //double NMJ_gain_map_V, NMJ_gain_map_D, NMJ_gain_fact = 0.7;
     
-    
+    const bool doOrigMuscInput;
     bool hasVNCNMJ = false, hasVNC18 = false;
     vector<toFromWeight> makeMuscleConnVNCV();
     vector<toFromWeight> makeMuscleConnVNCD();

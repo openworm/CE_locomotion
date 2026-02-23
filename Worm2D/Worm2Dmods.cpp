@@ -593,7 +593,7 @@ vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector
     basePar1.getValCJWorm<double>("NMJ_Gain_Map",NMJ_Gain_Map);
 
 
-    vector<double> NMJ_Gain;
+    vector<double> NMJ_Gain(N_musc,0);
     for (int i=1; i<=N_musc; i++)
     {
     NMJ_Gain[i-1] = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/N_musc));
@@ -613,6 +613,7 @@ vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector
             makeMuscleConnHelp1(vec1, neurons, NMJ, unit, to_musc, NMJ_Gain, N_neuronsperunit);
     
     cout << "made muscle con" << endl;
+    
             //exit(1);
     return vec1;
 
@@ -634,9 +635,14 @@ return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 
 vector<toFromWeight> Worm2Dosc21base::makeVentralMuscleConn()
 {
+    
 double NMJ_VN;
 basePar1.getValCJWorm<double>("NMJ_VN",NMJ_VN);
 
+//cout << "NMJ_VN " << NMJ_VN << endl;
+
+ 
+    
 const int VN = 2;
 vector<int> ventralNeurons({VN});
 vector<double> ventralNMJ({NMJ_VN});
@@ -729,6 +735,8 @@ void Worm2DoscBase::setPfaFromGeno(TVector<double> &v)
 
 void Worm2Dosc21::setPfaFromPheno(const TVector<double> &phen)
 {
+
+
 assert(n.pfa1.size==14);
 pfa pfa1(n.pfa1.size);
 //pfa1.size = 14;
@@ -913,7 +921,7 @@ void Worm2Dosc21S::setParsFromPheno(const TVector<double> &phen)
 
     //pars1.dbunit = nn(1,3);
     //pars1.vbunit = nn(2,3);
-    
+
     construct(phen);
 }
 

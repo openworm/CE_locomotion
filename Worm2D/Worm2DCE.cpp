@@ -13,7 +13,10 @@
 
 
 Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
-Worm2Dm(par1_, n_ptr_), Worm2DSR(par1_,n_ptr_,sr_ptr_),sr_ptr(sr_ptr_){}
+Worm2Dm(par1_, n_ptr_), Worm2DSR(par1_,n_ptr_,sr_ptr_),sr_ptr(sr_ptr_)
+{
+  sr_ptr->basePar1 = this;
+}
 
 /* Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_):
 Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,n_ptr_, sr_ptr_),
@@ -21,31 +24,7 @@ Worm2Dm(par1_, n_ptr_, make_shared<W2DCEpars>()), Worm2DSR(par1_,n_ptr_, sr_ptr_
     sr_ptr(sr_ptr_){} */
 
 
-void Worm2DCE::initConst()
-{
-      AVA_act = 0;
-      AVA_inact = 0;
-      AVB_act = 0;
-      AVB_inact = 0;
 
-      //assert(0);
-      //W2DCEpars1->AVA_output = 0.0;
-      //W2DCEpars1->AVB_output = 0.0;
-
-      //sr_ptr->SRForm = W2DCEpars1->SRForm;
-      pheno_A_gain = sr_ptr->SR_A_gain;
-      pheno_B_gain = sr_ptr->SR_B_gain;
-      sr_ptr->setWeights();
-      sr_ptr->setNSWeights(*this);
-
-    
-      setInputSwitcher();
-      setUpMuscleConn();
-      setUpBodyConn();
-      makeExternalInputConn();
-      //assert(0);
-
-}
 
 
 Worm2DCE::Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
@@ -63,6 +42,8 @@ Worm2DCE::Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_):Worm2Dm(
   } ,0, sr_ptr_),//W2DCEpars1(dynamic_pointer_cast<W2DCEpars>(W2Dbaseparameters1b)),
   sr_ptr(sr_ptr_)
 {
+
+  sr_ptr->basePar1 = this;
 
   //W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
@@ -100,15 +81,18 @@ Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_,
 
 
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10,this)){}
+Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10))
+{
+
+}
 
 Worm2DCE:: Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd):
-Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10,this),cmd){}
+Worm2DCE(par1_,n_ptr_,make_shared<SRCE>(N_segments,10),cmd){}
 
 Worm2DCE::Worm2DCE(const string & jsonfilename_):
 Worm2DCE(getJsonFromFile(jsonfilename_)){}
 
-Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10,this)){}
+Worm2DCE::Worm2DCE(const json & j):Worm2DCE(j, make_shared<SRCE>(N_segments,10)){}
 
 //////////////////////////////////
 //// CE const
@@ -129,10 +113,10 @@ n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},0,sr_ptr_){}
 //////////////////////////////////
 
 
-WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10,this)){}
+WormCE::WormCE():WormCE(make_shared<SRCE>(N_segments,10)){}
 
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd):
-WormCE(make_shared<SRCE>(N_segments,10,this), cmd){}
+WormCE(make_shared<SRCE>(N_segments,10), cmd){}
 
 WormCE::WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno):WormCE(cmd)
 {
@@ -233,6 +217,33 @@ WormCE::WormCE(const json & j):WormCE()
 
   
 }
+
+void Worm2DCE::initConst()
+{
+      AVA_act = 0;
+      AVA_inact = 0;
+      AVB_act = 0;
+      AVB_inact = 0;
+
+      //assert(0);
+      //W2DCEpars1->AVA_output = 0.0;
+      //W2DCEpars1->AVB_output = 0.0;
+
+      //sr_ptr->SRForm = W2DCEpars1->SRForm;
+      pheno_A_gain = sr_ptr->SR_A_gain;
+      pheno_B_gain = sr_ptr->SR_B_gain;
+      sr_ptr->setWeights();
+      sr_ptr->setNSWeights(*this);
+
+    
+      setInputSwitcher();
+      setUpMuscleConn();
+      setUpBodyConn();
+      makeExternalInputConn();
+      //assert(0);
+
+}
+
 
 void Worm2DCE::setInputSwitcher()
 {

@@ -155,7 +155,8 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcall
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr))
+Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
+doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
     //assert(0 && "what is calling this?");
@@ -219,7 +220,9 @@ void Worm2Dm::InitializeState(RandomState &rs)
 
 void Worm2D::setUp()
 {
-    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);  
+    m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
+    
+  
     //InitializeState(rs);
 }
 
@@ -975,8 +978,9 @@ void Worm2D::Step1()
   //setExternalInputOrig();
 
   n_ptr->EulerStep(settedStepSize);
-  bool doOrigMuscInput;
-    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+  
+  //bool doOrigMuscInput;
+    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
 
     if (doOrigMuscInput) setMuscleInputOrig();
   //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
@@ -1003,9 +1007,12 @@ void Worm2D::setMuscBodExt(const json & j){
         Worm2Dm::setBodExt(j);
 }
 
-void Worm2D::setMuscBodExt(){ 
+void Worm2D::setMuscBodExt(){
+         
         setUpMuscleConn();
         Worm2Dm::setBodExt();
+    
+
         //setUpBodyConn();
         //makeExternalInputConn();
 }

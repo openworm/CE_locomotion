@@ -192,8 +192,8 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
   w.InitializeState(rs);
   w.sr_ptr->SR_A_gain = 0.0;
   w.sr_ptr->SR_B_gain = srb;
-  w.W2DCEpars1->AVA_output =  w.AVA_inact;
-  w.W2DCEpars1->AVB_output =  w.AVB_act;
+  w.AVA_output =  w.AVA_inact;
+  w.AVB_output =  w.AVB_act;
   w.sr_ptr->setWeights();
 
 
@@ -219,8 +219,8 @@ double EvolutionCE::save_traces(TVector<double> &v, RandomState &rs){
 
    w.sr_ptr->SR_A_gain = sra;
    w.sr_ptr->SR_B_gain = 0.0;
-   w.W2DCEpars1->AVA_output =  w.AVA_act;
-   w.W2DCEpars1->AVB_output =  w.AVB_inact;
+   w.AVA_output =  w.AVA_act;
+   w.AVB_output =  w.AVB_inact;
    w.sr_ptr->setWeights();
 
    for (double t = 0.0; t <= (20); t += StepSize){
@@ -270,16 +270,16 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   double sra = w.sr_ptr->SR_A_gain;
   double srb = w.sr_ptr->SR_B_gain;
-  double wao = w.W2DCEpars1->AVA_output;
-  double wbo = w.W2DCEpars1->AVB_output;
+  double wao = w.AVA_output;
+  double wbo = w.AVB_output;
 
   cout << "ce evo" << sra << " " << srb << " " << wao << " " << wbo << endl;
 
   w.InitializeState(rs);
   w.sr_ptr->SR_A_gain = 0.0;
   w.sr_ptr->SR_B_gain = srb;
-  w.W2DCEpars1->AVA_output =  w.AVA_inact;
-  w.W2DCEpars1->AVB_output =  w.AVB_act;
+  w.AVA_output =  w.AVA_inact;
+  w.AVB_output =  w.AVB_act;
   w.sr_ptr->setWeights();
 
 
@@ -305,8 +305,8 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
    w.sr_ptr->SR_A_gain = sra;
    w.sr_ptr->SR_B_gain = 0.0;
-   w.W2DCEpars1->AVA_output =  w.AVA_act;
-   w.W2DCEpars1->AVB_output =  w.AVB_inact;
+   w.AVA_output =  w.AVA_act;
+   w.AVB_output =  w.AVB_inact;
 
    w.sr_ptr->setWeights();
 
@@ -334,8 +334,8 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
 
   w.sr_ptr->SR_A_gain = sra;
   w.sr_ptr->SR_B_gain = srb;
-  w.W2DCEpars1->AVA_output =  wao;
-  w.W2DCEpars1->AVB_output =  wbo;
+  w.AVA_output =  wao;
+  w.AVB_output =  wbo;
    w.sr_ptr->setWeights();
   //bodyfile.close();
   //curvfile.close();

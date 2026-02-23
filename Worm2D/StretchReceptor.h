@@ -111,7 +111,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 
 }
 
-baseParameters * basePar1;
+baseParameters * basePar1 = nullptr;
 //SRVars srvars;
 //shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
@@ -120,7 +120,17 @@ string SRType = "Base";
 protected:
 const int nsegs;
 SR(int nsegs_, int nstretch_, baseParameters * basePar1_, shared_ptr<SRVars> srvars_ptr_):
-nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_){}
+nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_)
+{
+    assert(0);
+}
+
+SR(int nsegs_, int nstretch_, shared_ptr<SRVars> srvars_ptr_):
+nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0)
+{
+ 
+}
+
 
 //SRWeights srweights, nssrweights;
 vector<double> nslD, nslV;
@@ -133,7 +143,7 @@ vector<double> nslD, nslV;
 class SR18 : public SR //bug should be 6 not 7 streatch receptors?
 {
 public:
-    SR18():SR(50, 6, nullptr, make_shared<SRVarsSimp>(6)),
+    SR18():SR(50, 6, make_shared<SRVarsSimp>(6)),
     srvars(dynamic_pointer_cast<SRVarsSimp>(srvars_ptr)){SRType = "SR18";}
 
     SR18(shared_ptr<const CmdArgs> cmd):SR18()
@@ -214,6 +224,12 @@ SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
 ,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
 {SRType = "SRCE";}
+SRCE(int nsegs_, int nstretch_):
+SR(nsegs_,nstretch_, make_shared<SRVarsCE>(nstretch_))
+,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
+srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
+{SRType = "SRCE";}
+
 
 void makeNSSRWeights();
 void makeSRWeights();

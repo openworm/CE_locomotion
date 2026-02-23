@@ -36,8 +36,8 @@ public:
     //Worm21(TVector<double> &v);
    
     Worm2D21m();
-    //void SetAVA(double value) {W2DCEpars1->AVA_output = value;};
-    //void SetAVB(double value) {W2DCEpars1->AVB_output = value;};
+    void SetAVA(double value) {AVA_output = value;};
+    void SetAVB(double value) {AVB_output = value;};
     void initForSimulation(RandomState &);
     void InitializeState(RandomState &rs);
     //void DumpActState(ofstream &ofs, int skips);
