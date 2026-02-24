@@ -7,7 +7,7 @@ run(
     transient=50,
     maxGens=25,
     popSize=78,
-    RandSeed=174510,
+    RandSeed=1749493257,
     modelName="W2DCO",
     modelFolder="Worm2D",
     outputFolderName="testruns/exW2DCO",
