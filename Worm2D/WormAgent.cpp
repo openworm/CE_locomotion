@@ -285,6 +285,9 @@ void WormAgent::InitialiseAgent()
     getValCJWorm<double>("HSStepSize",HSStepSize);
 	getValCJWorm<double>("RunDuration",RunDuration);
 
+	setStepSize(HSStepSize);
+
+
 	VelDelta = (int) (HST/HSStepSize);
 	iSensorN = (int) (sensorN/HSStepSize);
 	dSensorN = (double) iSensorN;

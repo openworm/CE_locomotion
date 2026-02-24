@@ -210,6 +210,10 @@ void Worm2Dbase::InitializeState(RandomState &rs)
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
 
+
+    //cout << "randomInitialState"  << randomInitialState << endl;
+    //assert(0);
+
     if (randomInitialState)
 	//if (l1!=nullptr && l1->randomInitialState)
     {

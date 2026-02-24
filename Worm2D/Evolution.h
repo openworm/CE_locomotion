@@ -1239,10 +1239,13 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     //w.setStepSize(StepSize);
 
     //w.setWormPars(cmd);
+
+    
     w.setParsFromGeno(genotype);
 
-
     w.InitializeState(rs);
+
+    
     //w.initForSimulation(rs);
     
     
@@ -1264,6 +1267,8 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 
     w.setValCJWorm("RunDuration",Transient + Duration);
     w.setValCJWorm("HSStepSize",StepSize);
+
+    
 
 	double f, accdist, totaldist;
 	int k = 0;
