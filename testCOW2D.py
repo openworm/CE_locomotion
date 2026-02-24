@@ -7,7 +7,7 @@ run(
     transient=50,
     maxGens=25,
     popSize=78,
-    RandSeed=1749493257,
+    RandSeed=174510,
     modelName="CO",
     modelFolder="Worm2D",
     outputFolderName="exampleRunCOW2D",
