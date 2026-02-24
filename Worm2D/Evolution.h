@@ -1310,7 +1310,6 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
                 //w.initForSimulation(rs);
 
                 wg.ResetAgentsBody();
-
                 wg.InitializeSensors(rs);
 
 				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);

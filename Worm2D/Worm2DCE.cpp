@@ -151,7 +151,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isP
     else setParsFromGeno(phengen);
 } */
 
-//WormCE::WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):WormCE(pheno, true){}
+WormCE::WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):WormCE(cmd_,pheno){}
 
 
 

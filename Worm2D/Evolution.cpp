@@ -641,6 +641,8 @@ void Evolution::configure_p1()
 {
     
     s->SetRandomSeed(evoPars1.randomseed);
+    //cout << "tad " << evoPars1.randomseed << endl;
+    //assert(0);
 
     if (true){
     {typedef void (*callback_t)(int, double, double, double);

@@ -24,6 +24,7 @@ gradPars(dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1)),size(newsize)
 // The destructor
 WormAgent::~WormAgent()
 {
+	wa_rs = nullptr;
 	zeroCircuit();
 	//InitialiseCircuit(0);
 }
@@ -239,10 +240,11 @@ void WormAgent::setSimPars(double orient_orig_,
 
 void WormAgent::InitializeSensors(RandomState &rs_)
 {
-	rs = &rs_;
+	//rs = &rs_;
 	InitialiseAgent();
 	ResetChemCon();
-	ResetAgentIntState(*rs);
+	ResetAgentIntState(rs_);
+
 	UpdateChemCon();
 }
 
@@ -273,6 +275,7 @@ void WormAgent::initForSimulation(RandomState &rs_)
 
 void WormAgent::InitializeState(RandomState &rs_)
 {
+	setInternalRandomState(rs_);
 	Worm2Dbase::InitializeState(rs_);
 }
 
@@ -593,6 +596,8 @@ void WormAgent::postNStep()
 
 	// Update Forward -> Backward
 	if (kinesis == 1){
+
+		assert(0);
 		if ((forward == 1) && (n_ptr->NeuronOutput(size-2) > 0.6) && (n_ptr->NeuronOutput(size-3) < 0.4) )
 		{
 			forward = 0;
@@ -601,7 +606,7 @@ void WormAgent::postNStep()
 		if ((forward == 0) && (n_ptr->NeuronOutput(size-2) < 0.4) && (n_ptr->NeuronOutput(size-3) > 0.6) )
 		{
 			forward = 1;
-			orient = rs->UniformRandom(0, 2*Pi);
+			orient = wa_rs->UniformRandom(0, 2*Pi);
 		}
 		if (forward == 0)
 			{avgvel = -MaxVel;}

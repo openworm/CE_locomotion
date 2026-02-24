@@ -83,6 +83,8 @@ public:
 	void PrintPath(ofstream &file);
 	void StepOrig();
 
+	void setInternalRandomState(RandomState &rs){wa_rs = &rs;}
+	
 	//VMCO::TVector<double> chemConHistory;
 	TVector<double> chemConHistory;
 	double sensorN, sensorM;
@@ -115,7 +117,10 @@ public:
 
 	//using Worm2Dbase::Step;
 
-	RandomState * rs = nullptr;
+	//RandomState * rs = nullptr;
+
+	RandomState * wa_rs  = nullptr;
+
 
 	//double gradSteep, orient_orig, RunDuration, HSStepSize;
 	int taxis, kinesis;

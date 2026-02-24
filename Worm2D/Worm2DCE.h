@@ -185,7 +185,7 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd_ = nullptr);
     WormCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
-    //WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);

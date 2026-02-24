@@ -90,8 +90,8 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 	
 	//WormAgent Worm(CircuitSize);
 
-	RandomState rs2 = rs;
-	Worm->InitializeState(rs2);
+	//RandomState rs2 = rs;
+	Worm->InitializeState(rs);
 	Worm->SetParameters(phenotype);
 	Worm->setStepSize(evoPars1.StepSize);
 
@@ -163,7 +163,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 		}
 	}
 
-	cout << " evaluation CO " << fitness << endl;
+//	cout << " evaluation CO " << fitness << endl;
 	
 	return fitness/k;
 }
