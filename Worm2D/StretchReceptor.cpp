@@ -57,6 +57,8 @@ void SR::updateSegs2(const vector<toFromWeight> & seg_, vector<double> & nsl_, v
 }
 
 
+
+
 void SRCE::incNS(NSForW2D & ns_)
 {
 
@@ -594,8 +596,7 @@ double SRCE::transformSegs(const double & val){
 
     double val1 = val;
 
-    string sr_type;
-    basePar1->getValCJ<string>("SRType",sr_type,"Stretch Receptor");
+    
 
 
     if (sr_type == "SR_TRANS_STRETCH")

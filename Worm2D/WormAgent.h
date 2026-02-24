@@ -25,17 +25,16 @@ public:
 	WormAgent(int newsize):
 	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), nullptr),size(newsize)
 	{InitialiseCircuit();}
+	
 	WormAgent(TVector<double> & v, int newsize):WormAgent(newsize){SetParameters(v);}
-	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}
 
+	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}
 
 	WormAgent(shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_->getArgValInt("--network_size", 10))
 	{setWormPars(cmd_);}
+
 	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
 	{setParsFromFile(filename_);}
-
-
-
 
 	// The destructor
 	~WormAgent();
@@ -119,7 +118,8 @@ public:
 	RandomState * rs = nullptr;
 
 	//double gradSteep, orient_orig, RunDuration, HSStepSize;
-	//int taxis, kinesis;
+	int taxis, kinesis;
+	double gradSteep;
 
 
 	//double sjadd;	

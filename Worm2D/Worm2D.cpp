@@ -198,10 +198,6 @@ void Worm2Dbody::InitializeState(RandomState &rs)
     return;
 }
 
-shared_ptr<SRCE> Worm2Dbase::makeSRCE(){
-        
-        return make_shared<SRCE>(N_segments,10, this);
-}
 
 
 void Worm2Dbase::InitializeState(RandomState &rs)

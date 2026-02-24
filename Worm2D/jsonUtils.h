@@ -262,6 +262,16 @@ public:
     //const vector<string>& all() const { return args; }
 
 
+    bool getArgValT(const string & str, string & val) const
+    {
+
+      const int arg = getArgVal(str);
+      if (arg==-1) return false;
+      val = args[arg+1].c_str();
+      return true;
+
+    }
+
     template<class T>
     bool getArgValT(const string & str, T & val) const
     {

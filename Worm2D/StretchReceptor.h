@@ -122,7 +122,7 @@ const int nsegs;
 SR(int nsegs_, int nstretch_, baseParameters * basePar1_, shared_ptr<SRVars> srvars_ptr_):
 nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_)
 {
-    //assert(0);
+   
 }
 
 SR(int nsegs_, int nstretch_, shared_ptr<SRVars> srvars_ptr_):
@@ -223,9 +223,14 @@ public:
 SRCE(int nsegs_, int nstretch_, baseParameters* basePar1_):
 SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
 ,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
-srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr))
-{SRType = "SRCE";}
+srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)),sr_type(getSRtype())
+{
+    //assert(0);
+    SRType = "SRCE";
 
+}
+
+//static shared_ptr<SRCE> makeSRCE();
 
 /* SRCE(int nsegs_, int nstretch_):
 SR(nsegs_,nstretch_, make_shared<SRVarsCE>(nstretch_)),
@@ -256,6 +261,16 @@ protected:
 /* SRCE(int nsegs_, int nstretch_,shared_ptr<baseParameters> basePar1_):
 SR(nsegs_,nstretch_,basePar1_,make_shared<SRVarsCE>(nstretch_)),
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){} */
+
+const string sr_type;
+
+string getSRtype(){
+
+    string sr_type;
+    basePar1->getValCJ<string>("SRType",sr_type,"Stretch receptor");
+    return sr_type;
+
+}
 
 //int nsegperstr;
 

@@ -289,7 +289,7 @@ void WormAgent::InitialiseAgent()
 	dSensorM = (double) iSensorM;
 	int upperbound = ((int) (((2*RunDuration) + sensorN + sensorM) / HSStepSize)) + 1;
 
-	cout << "uppervel " << upperbound << " " << VelDelta << endl;
+	//cout << "uppervel " << upperbound << " " << VelDelta << endl;
  	
 	chemConHistory.SetBounds(1, upperbound);
 	chemConHistory.FillContents(0.0);
@@ -306,6 +306,9 @@ void WormAgent::InitialiseAgent()
 
 void WormAgent::ResetAgentsBody()
 {
+	
+    getValCJWorm<int>("taxis",taxis);
+	getValCJWorm<int>("kinesis",kinesis);
 
 	double MaxDist1, orient1;
     getValCJWorm<double>("MaxDist",MaxDist1);
@@ -329,7 +332,7 @@ void WormAgent::ResetAgentsBody()
 void WormAgent::ResetChemCon()
 {
 
-	double gradSteep; 
+	//double gradSteep; 
     getValCJWorm<double>("gradSteep",gradSteep);
 	chemCon = -DistanceToCentre() * gradSteep;
 
@@ -366,8 +369,9 @@ double WormAgent::distanceToCenter() const
 
 void WormAgent::UpdateChemCon()
 {
-	double gradSteep; 
-    getValCJWorm<double>("gradSteep",gradSteep);
+	//double gradSteep; 
+    //getValCJWorm<double>("gradSteep",gradSteep);
+
 	//double dist = distanceToCenter();
 	setDistanceToCentre();
 	//distanceToCentre = sqrt(pow(px_,2) + pow(py_,2));
@@ -570,9 +574,7 @@ void WormAgent::preNStep()
 
 void WormAgent::postNStep()
 {
-	int taxis, kinesis; 
-    getValCJWorm<int>("taxis",taxis);
-	getValCJWorm<int>("kinesis",kinesis);
+	
 
 // Update curvature
 	if (taxis == 1){

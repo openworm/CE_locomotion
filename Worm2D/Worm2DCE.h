@@ -61,6 +61,7 @@ using namespace std;
 
 //bool checkNervousSystemForJson();
 
+
 using json = nlohmann::json;
 
 
@@ -83,7 +84,8 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     const string getModelName() {return {"W2DCE"};}
 
     vector<doubIntParamsHead> getWormParams();
-
+    
+    shared_ptr<SRCE> makeSRCE();
     //StretchReceptorCE sr;
     shared_ptr<SRCE> sr_ptr;
 
@@ -109,13 +111,17 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     
     //void Step1();
     //void Step1_old();
-  
+
+    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_, 
+    shared_ptr<const CmdArgs> cmd_  = nullptr);
+
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
+
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, 
-        shared_ptr<const CmdArgs> cmd = nullptr);
+    
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
-    Worm2DCE(const json & j, shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    //Worm2DCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     
     void initConst();
 
@@ -224,9 +230,11 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     WormCE(TVector<double> &phengen, bool isPheno);
     WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
     //WormCE(shared_ptr<SRCE> sr_ptr_);
     //WormCE(shared_ptr<const CmdArgs> cmd);
-    WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
+    //WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
 
     void setParsFromJson(json & j);
     void setParsFromPheno(const TVector<double> &pheno);

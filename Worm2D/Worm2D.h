@@ -19,7 +19,7 @@
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
 
-class SRCE;
+//class SRCE;
 
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
@@ -63,14 +63,14 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
-        cout << "nssd " << name_str << " " << bstr << endl;
+        //cout << "nssd " << name_str << " " << bstr << endl;
  
      
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
-            cout << "nesws" << endl;
-            cout << newSetVals << endl;
+            //cout << "nesws" << endl;
+            //cout << newSetVals << endl;
           
             val = newSetVals[bstr][name_str]["value"];
             return true;
@@ -109,6 +109,7 @@ class baseParameters
         return true;
         } */
 
+        cout << "dffd " << defaultVals << endl;
         cout << "getValCJ " << name_str << " " << bstr << endl;
         assert(0);
         return false;
@@ -502,7 +503,7 @@ virtual void makeNSOutputConn(){return;}
 json namedVars;
 static wormIzqParams getIzqPars(const json & j);
 
-shared_ptr<SRCE> makeSRCE();
+
 
 
 Efunctor itsEf;
