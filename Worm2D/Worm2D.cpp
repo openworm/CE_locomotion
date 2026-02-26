@@ -192,7 +192,7 @@ doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput"))
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
     //cout << "Worm2Dbody init state" << endl;
-    InitializeBodyConstants();
+    //InitializeBodyConstants();
     b.InitializeBodyState();
     //writeDataCheck();
     return;
@@ -209,6 +209,7 @@ void Worm2Dbase::InitializeState(RandomState &rs)
     
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
+
 
 
     //cout << "randomInitialState"  << randomInitialState << endl;

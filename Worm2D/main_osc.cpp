@@ -17,7 +17,8 @@ int main (int argc, const char* argv[])
 {
 
     shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
-
+    
+    InitializeBodyConstants();
     
     string directoryName = cmd->getArgVal("--folder","HJUYGYT");
     if (!directoryExists(directoryName))

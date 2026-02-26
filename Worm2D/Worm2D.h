@@ -72,7 +72,7 @@ class baseParameters
             //cout << "nesws" << endl;
             //cout << newSetVals << endl;
           
-            val = newSetVals[bstr][name_str]["value"];
+            val = newSetVals[bstr][name_str]["value"].get<T>();
             return true;
         }
 
@@ -446,7 +446,7 @@ protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,
-    shared_ptr<const CmdArgs> cmd_ = nullptr);
+    shared_ptr<const CmdArgs> cmd_);
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_);
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, shared_ptr<W2Dparameters>);
 

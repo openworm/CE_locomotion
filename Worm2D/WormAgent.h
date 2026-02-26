@@ -22,16 +22,18 @@ public:
 	// The constructor
 	//WormAgent();
 	
-	WormAgent(int newsize):
-	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), nullptr),size(newsize)
+	WormAgent(int newsize, shared_ptr<const CmdArgs> cmd_ = nullptr):
+	Worm2Dbase({newsize,0,1,1,newsize}, new NervousSystem(), nullptr, cmd_),size(newsize)
 	{InitialiseCircuit();}
 	
 	WormAgent(TVector<double> & v, int newsize):WormAgent(newsize){SetParameters(v);}
 
 	WormAgent(int newsize, const char* fnm):WormAgent(newsize){SetWormParametersFromFile(fnm);}
 
-	WormAgent(shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_->getArgValInt("--network_size", 10))
-	{setWormPars(cmd_);}
+	WormAgent(shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_->getArgValInt("--network_size", 10), cmd_)
+	{
+		//setWormPars(cmd_);
+	}
 
 	WormAgent(const string & filename_, shared_ptr<const CmdArgs> cmd_):WormAgent(cmd_)
 	{setParsFromFile(filename_);}
@@ -61,7 +63,7 @@ public:
 	void SetChemCon(double newc) {chemCon = newc;};
 	double OutputGain(void) {return outputGain;};
 	void SetOutputGain(double newdc) {outputGain = newdc;};
-	double DistanceToCentre(void) {return distanceToCentre;};
+	double DistanceToCentre(void);// {return distanceToCentre;};
 	double distanceToCenter(void) const;
 	double CoMx() const {return px;}
     double CoMy() const {return py;}

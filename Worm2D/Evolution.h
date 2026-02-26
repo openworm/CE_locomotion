@@ -171,7 +171,7 @@ class Evolvable_ptr
 
 protected:
 const shared_ptr<const json> json_ptr = nullptr;
-shared_ptr<T> evolvable1;
+shared_ptr<T> evolvable1 = nullptr;
 shared_ptr<const CmdArgs> cmd = nullptr;
 const shared_ptr<const W2Dparameters> evopar_ptr = nullptr;
 
@@ -183,18 +183,20 @@ Evolvable_ptr(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
 evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)),json_ptr(nullptr){}
 //{evolvable1->setWormPars(cmd_);}
 Evolvable_ptr(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
-evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_)),json_ptr(json_ptr_){}
+evolvable1(evol1_),cmd(cmd_),evopar_ptr(getParameters(cmd_, evol1_, json_ptr_)),json_ptr(json_ptr_){}
 
 //evoPars getDefaultEvoPars(int argc, const char* argv[]);
 //evoPars getDefaultEvoPars(const string &);
-evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd);
-evoPars getDefaultEvoPars(const string & evotype_);
+static evoPars getDefaultEvoPars(shared_ptr<const CmdArgs> cmd, shared_ptr<T> evol1);
+static evoPars getDefaultEvoPars(const string & evotype_, shared_ptr<T> evol1);
 
 //shared_ptr<const W2Dparameters> getParameters(int argc, const char* argv[]);
-shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
-    shared_ptr<T> evol1_);
 
+//shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
+//    shared_ptr<T> evol1_);
 
+static shared_ptr<const W2Dparameters> getParameters(shared_ptr<const CmdArgs> cmd_, 
+    shared_ptr<T> evol1T_, shared_ptr<const json> json_ptr_ = nullptr);
 
 
 };
@@ -214,19 +216,19 @@ public:
 protected:
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
     Evolvable_ptr<T>(evol1_,cmd_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize())
     {//this->evolvable1->setWormPars(cmd_);
     }
 
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
     Evolvable_ptr<T>(evol1_,cmd_,json_ptr_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize())
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize())
     {//this->evolvable1->setWormPars(cmd_);
     }
 
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, const string & prefix_):
     Evolvable_ptr<T>(evol1_,cmd_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_),this->evolvable1->getVectSize(), prefix_)
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize(), prefix_)
     {//this->evolvable1->setWormPars(cmd_);
     }
 
@@ -256,7 +258,7 @@ protected:
         //if (false){
         //if (model_name == "CO18Full"){
         if (usj){
-        EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18"), "RS18_");
+        EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18", this->evolvable1), "RS18_");
         setFromEvol(er18, 0); 
        
        }
@@ -275,14 +277,14 @@ protected:
 
 template<class T>
 shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const CmdArgs> cmd_, 
-    shared_ptr<T> evol1T_)
+    shared_ptr<T> evol1T_, shared_ptr<const json> json_ptr_)
 {
     string evotype_ = cmd_->getArgVal("--evoType","Evo21");
     //const string & evotype_ = evoPars1.evoType;
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
 
-    if (json_ptr!=nullptr){
+    if (json_ptr_!=nullptr){
 
        
     shared_ptr<W2Dparameters> w_ptr1 = nullptr;
@@ -301,7 +303,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     assert(w_ptr1!=nullptr);
     
-    w_ptr1->setParsFromJson((*json_ptr)["Evolutionary Optimization Parameters"]);
+    w_ptr1->setParsFromJson((*json_ptr_)["Evolutionary Optimization Parameters"]);
     w_ptr1->setPars(cmd_);
     return w_ptr1;
 
@@ -333,13 +335,13 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 } */
 
 template<class T>
-evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_) 
+evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<T> evol1) 
 {
 
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, evolvable1->itsStepSize(), 23, -1 , "", evotype_};
+        1.1, 0.1, 1, 0, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
@@ -361,10 +363,10 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_)
 }
 
 template<class T>
-evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_) 
+evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shared_ptr<T> evol1) 
 {
     string evotype_ = cmd_->getArgVal("--evoType","Evo21");
-    return getDefaultEvoPars(evotype_);    
+    return getDefaultEvoPars(evotype_,evol1);    
 }
 
 
@@ -1240,12 +1242,15 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 
     //w.setWormPars(cmd);
 
-    
-    w.setParsFromGeno(genotype);
+    w.setValCJWorm("HSStepSize",StepSize);
+
+    //double t1;
+    //w.getValCJWorm("HSStepSize", t1);
 
     w.InitializeState(rs);
+    w.setParsFromGeno(genotype);
 
-    
+        
     //w.initForSimulation(rs);
     
     
@@ -1264,11 +1269,15 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     double MaxDist;
     w.getValCJWorm("MaxDist", MaxDist);
 
-
     w.setValCJWorm("RunDuration",Transient + Duration);
-    w.setValCJWorm("HSStepSize",StepSize);
-
     
+
+    //double rd;
+    //w.getValCJWorm("RunDuration",rd);
+
+
+    //cout << "rd ... " << Transient + Duration << " " << rd << " " << MaxDist << endl;
+    //assert(0);
 
 	double f, accdist, totaldist;
 	int k = 0;
@@ -1278,7 +1287,6 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 	{
 		if (mode==0){taxis = 0;kinesis = 1;}
 		else {taxis = 1;kinesis = 0;}
-
 
         w.setValCJWorm("taxis",taxis);
         w.setValCJWorm("kinesis",kinesis);
@@ -1292,9 +1300,8 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 			{
 
                 w.setValCJWorm("orient",orient);
-                	
-                    
-                   
+      
+                
 
                 //w1->worm_rotation = orient;
               /*   w1->orient_orig = orient;
@@ -1312,10 +1319,10 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 				//Worm->InitializeSimulation(rs);
 				//Worm->initForSimulation(rs);
 
-                //w.initForSimulation(rs);
+                w.initForSimulation(rs);
 
-                wg.ResetAgentsBody();
-                wg.InitializeSensors(rs);
+                //wg.ResetAgentsBody();
+                //wg.InitializeSensors(rs);
 
 				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
 				Worm->ResetAgentsBody(orient, rs);
@@ -1352,6 +1359,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
 						//Worm->UpdateChemCon(gradSteep);
                     
                         accdist += wg.distanceToCenter();
+                        //accdist += wg.DistanceToCentre();
 
 						//accdist += Worm->DistanceToCentre();
 						//cout << "D " << Worm->DistanceToCentre() << endl;

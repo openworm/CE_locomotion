@@ -367,8 +367,11 @@ void WormAgent::setDistanceToCentre()
 
 }
 
+double WormAgent::DistanceToCentre(void) {return distanceToCentre;}
+
 double WormAgent::distanceToCenter() const
 {
+	return distanceToCentre;
 	//cout << "WormAgent::setDistanceToCentre()" << endl;
 	return sqrt(pow(PositionX(),2) + pow(PositionY(),2));
 }
@@ -653,10 +656,18 @@ const double MaxDifSensor = HST;
 
 const double TauMax = HST;
 
+double HSStepSize;
+getValCJWorm<double>("HSStepSize",HSStepSize);
+
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;
-const double TauMin = itsStepSize()*10; // = 10*evoPars1.StepSize;
-const double MinDifSensor = itsStepSize()*10; // = 10*evoPars1.StepSize;
+const double TauMin = HSStepSize*10; // = 10*evoPars1.StepSize;
+const double MinDifSensor = HSStepSize*10; // 
+
+
+
+//const double TauMin = itsStepSize()*10; // = 10*evoPars1.StepSize;
+//const double MinDifSensor = itsStepSize()*10; // = 10*evoPars1.StepSize;
 
 
 //	cout << "EvolutionCO::GenPhenMapping " << endl;
