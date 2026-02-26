@@ -316,9 +316,9 @@ void WormAgent::ResetAgentsBody()
     getValCJWorm<int>("taxis",taxis);
 	getValCJWorm<int>("kinesis",kinesis);
 
-	double MaxDist1, orient1;
+	double MaxDist1;//, orient1;
     getValCJWorm<double>("MaxDist",MaxDist1);
-	getValCJWorm<double>("orient",orient1);
+	getValCJWorm<double>("orient",orient);
 	distanceToCentre = -MaxDist1;
 
 	double tempangle = 0.0;
@@ -330,7 +330,7 @@ void WormAgent::ResetAgentsBody()
 	vx = 0.0;
 	vy = 0.0;
 	theta = 0.0;
-	orient = orient1;
+	//orient = orient1;
 	CPGoffset = 0.0;
 	forward = 1;
 }

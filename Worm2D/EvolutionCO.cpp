@@ -95,6 +95,11 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 	Worm->SetParameters(phenotype);
 	Worm->setStepSize(evoPars1.StepSize);
 
+    double rundur = evoPars1.Transient + evoPars1.Duration;
+
+	Worm->setValCJWorm<double>("RunDuration",rundur);
+	Worm->setValCJWorm<double>("HSStepSize",evoPars1.StepSize);
+
 	double f, accdist, totaldist;
 	int k = 0;
 	double fitness = 0.0;
@@ -103,15 +108,34 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 	{
 		if (mode==0){taxis = 0;kinesis = 1;}
 		else {taxis = 1;kinesis = 0;}
+
+		Worm->setValCJWorm<int>("taxis",taxis);
+		Worm->setValCJWorm<int>("kinesis",kinesis);
+
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
 		{
+
+		Worm->setValCJWorm<double>("gradSteep",gradSteep);
+		
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
-				Worm->setSimPars(orient,
+
+				Worm->setValCJWorm<double>("orient",orient);
+		
+				//cout << Worm->itsNewSetVals() << endl;
+/* 
+				if (orient>Pi){
+				cout << Worm->itsNewSetVals() << endl;
+				assert(0);
+				}  */
+
+				/* Worm->setSimPars(orient,
 					gradSteep,
 					evoPars1.Transient + evoPars1.Duration,
 					evoPars1.StepSize, taxis, kinesis);
+ */
 				//Worm->InitializeSimulation(rs);
+
 				Worm->initForSimulation(rs);
 
 				/* Worm->InitialiseAgent(2*RunDuration, evoPars1.StepSize);
@@ -165,6 +189,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
 
 //	cout << " evaluation CO " << fitness << endl;
 	
+//assert(0);
 	return fitness/k;
 }
 

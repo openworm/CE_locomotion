@@ -89,33 +89,33 @@ public:
 	
 	//VMCO::TVector<double> chemConHistory;
 	TVector<double> chemConHistory;
-	double sensorN, sensorM;
-	double dSensorN, dSensorM;
-	int iSensorN, iSensorM;
-	double tempDiff;
+	double sensorN = 0, sensorM = 0;
+	double dSensorN = 0, dSensorM = 0;
+	int iSensorN = 0, iSensorM = 0;
+	double tempDiff = 0;
 
 	TVector<double> w_ASER, w_ASEL;
 	//VMCO::TVector<double> w_ASER, w_ASEL;
-	double oASEL, oASER;
-	double w_CPG_SMBV, w_CPG_SMBD;
-	double avgvel,avgtheta;
-	double pastTheta,DthetaDt;
-	int timer;
-	double NMdiff;
-	double pushCurv;
+	double oASEL = 0, oASER = 0;
+	double w_CPG_SMBV = 0, w_CPG_SMBD = 0;
+	double avgvel= 0,avgtheta= 0;
+	double pastTheta= 0,DthetaDt= 0;
+	int timer= 0;
+	double NMdiff= 0;
+	double pushCurv= 0;
 	//VMCO::TVector<double> histCurv,histTheta;
 	TVector<double> histCurv,histTheta;
-	double px, py, vx, vy, orient, theta;
+	double px= 0, py= 0, vx= 0, vy= 0, orient= 0, theta= 0;
 
-	double distanceToCentre;
+	double distanceToCentre = 0;
 	
-	double CPGoffset, chemCon, pastCon, presentAvgCon, pastAvgCon, outputGain;
+	double CPGoffset= 0, chemCon= 0, pastCon= 0, presentAvgCon= 0, pastAvgCon= 0, outputGain= 0;
 	const int size;
-	int forward;
+	int forward= 0;
 
 	//shared_ptr<gradParameters> gradPars;
 
-	int		VelDelta;  //		=	(int) (HST/StepSize);
+	int		VelDelta= 0;  //		=	(int) (HST/StepSize);
 
 	//using Worm2Dbase::Step;
 
@@ -125,8 +125,8 @@ public:
 
 
 	//double gradSteep, orient_orig, RunDuration, HSStepSize;
-	int taxis, kinesis;
-	double gradSteep;
+	int taxis= 0, kinesis= 0;
+	double gradSteep= 0;
 
 
 	//double sjadd;	

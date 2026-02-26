@@ -1269,7 +1269,8 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     double MaxDist;
     w.getValCJWorm("MaxDist", MaxDist);
 
-    w.setValCJWorm("RunDuration",Transient + Duration);
+    double rundur = Transient + Duration;
+    w.setValCJWorm("RunDuration", rundur);
     
 
     //double rd;
@@ -1279,10 +1280,10 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     //cout << "rd ... " << Transient + Duration << " " << rd << " " << MaxDist << endl;
     //assert(0);
 
-	double f, accdist, totaldist;
+	double f = 0, accdist = 0, totaldist = 0;
 	int k = 0;
 	double fitness = 0.0;
-	int taxis,kinesis;
+	int taxis =0 ,kinesis = 0;
 	for (int mode = 1; mode <= 1; mode++)
 	{
 		if (mode==0){taxis = 0;kinesis = 1;}

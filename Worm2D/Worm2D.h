@@ -55,7 +55,9 @@ class baseParameters
     void setValCJ(const string & name_str, const T & val, const string & bstr)
     {
         if (!newSetVals.contains(bstr)) newSetVals[bstr] = json::object();
+        if (!newSetVals.at(bstr).contains(name_str)) newSetVals[bstr][name_str] =  json::object();
         newSetVals[bstr][name_str]["value"] = val;
+
         addValToJson(name_str,val,bstr);
     }
 
@@ -72,7 +74,7 @@ class baseParameters
             //cout << "nesws" << endl;
             //cout << newSetVals << endl;
           
-            val = newSetVals[bstr][name_str]["value"].get<T>();
+            val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
 
@@ -182,6 +184,7 @@ class baseParameters
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
         if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
+        if (!BPitsJson.at(bstr).contains(name_str)) BPitsJson[bstr][name_str] = json::object();
         BPitsJson[bstr][name_str]["value"] = val;
     }
 
@@ -197,6 +200,8 @@ class baseParameters
     }
  */
     //shared_ptr<const json itsJsonPtr()const {return &itsJson;} 
+
+    const json & itsNewSetVals(){return newSetVals;}
 
     protected:
     json BPitsJson;

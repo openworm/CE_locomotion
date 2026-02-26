@@ -505,7 +505,8 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     
     assert(s && "s not set ");
 
-    cout << "EvolutionaryRunDisplay" << endl;
+    //cout << "EvolutionaryRunDisplay" << endl;
+    
     evolfile << Generation;
     vector<double> evovals{BestPerf,AvgPerf,PerfVar};
     for (int i=0;i<evovals.size();i++) 
@@ -559,7 +560,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     
     genhistfile << " " << avphen << endl;
 
-    cout << phencur.Size() << " " << phencur << endl;
+    //cout << phencur.Size() << " " << phencur << endl;
     writeJson(phencur);
   
     
