@@ -35,10 +35,10 @@ class Worm21 : public Worm2D21, public EvolvableS
 {
 public:
     
-    Worm21(TVector<double> &pheno);
-    Worm21(TVector<double> &pheno, bool isPheno);
-    Worm21();
-    Worm21(const string & filename_);
+    Worm21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm21(TVector<double> &pheno, bool isPheno, shared_ptr<const CmdArgs> cmd_);
+    Worm21(shared_ptr<const CmdArgs> cmd_);
+    Worm21(const string & filename_, shared_ptr<const CmdArgs> cmd_);
 
     void InitializeState(RandomState &rs);
     void DumpParams(ofstream &ofs);
@@ -74,10 +74,10 @@ class Worm21R : public Worm21
 {
 public:
     
-    Worm21R(TVector<double> &pheno);
-    Worm21R(TVector<double> &pheno, bool isPheno);
-    Worm21R();
-    Worm21R(const string & filename_);
+    Worm21R(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm21R(TVector<double> &pheno, bool isPheno, shared_ptr<const CmdArgs> cmd_);
+    Worm21R(shared_ptr<const CmdArgs> cmd_);
+    Worm21R(const string & filename_, shared_ptr<const CmdArgs> cmd_);
 
     template<class T> friend class EvolutionFullW;
     template<class T> friend class EvolutionFullWC;

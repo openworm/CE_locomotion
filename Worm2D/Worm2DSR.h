@@ -61,7 +61,7 @@ void writeAct();
 //void writeAct(){return Worm2DSRm::writeAct();}
 protected:
 
-Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_);
+Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_, shared_ptr<const CmdArgs> cmd);
 //shared_ptr<SR> w2dsr_ptr = nullptr;
 void Step1();
 const string getModelName() {return "W2DSR";}
@@ -216,7 +216,7 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j)), Worm2DSRE(j,cmd,callInit), Sensor(j, *this)
+  getNS(cmd, j), cmd), Worm2DSRE(j,cmd,callInit), Sensor(j, *this)
   //Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   {
  

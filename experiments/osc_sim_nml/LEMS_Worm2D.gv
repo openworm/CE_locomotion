@@ -13,195 +13,195 @@ subgraph cluster_network {
 
     node [shape=rectangle]; Worm2DNet;
     #    Population PopND0 contains components of: Component(id=ND0 type=cellW2Dosc) 
-    node [shape=ellipse,color="#46e031",fontcolor="black"]; PopND0;    
+    node [shape=ellipse,color="#2a9f45",fontcolor="black"]; PopND0;    
     Worm2DNet -> PopND0 [len=1.00, arrowhead=diamond]
 
     #    Population PopND1 contains components of: Component(id=ND1 type=cellW2Dosc) 
-    node [shape=ellipse,color="#828083",fontcolor="black"]; PopND1;    
+    node [shape=ellipse,color="#e22eb5",fontcolor="black"]; PopND1;    
     Worm2DNet -> PopND1 [len=1.00, arrowhead=diamond]
 
     #    Population PopND10 contains components of: Component(id=ND10 type=cellW2Dosc) 
-    node [shape=ellipse,color="#34d193",fontcolor="black"]; PopND10;    
+    node [shape=ellipse,color="#ba4cab",fontcolor="black"]; PopND10;    
     Worm2DNet -> PopND10 [len=1.00, arrowhead=diamond]
 
     #    Population PopND11 contains components of: Component(id=ND11 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dd4556",fontcolor="black"]; PopND11;    
+    node [shape=ellipse,color="#15a9aa",fontcolor="black"]; PopND11;    
     Worm2DNet -> PopND11 [len=1.00, arrowhead=diamond]
 
     #    Population PopND12 contains components of: Component(id=ND12 type=cellW2Dosc) 
-    node [shape=ellipse,color="#cddbeb",fontcolor="black"]; PopND12;    
+    node [shape=ellipse,color="#a394c8",fontcolor="black"]; PopND12;    
     Worm2DNet -> PopND12 [len=1.00, arrowhead=diamond]
 
     #    Population PopND13 contains components of: Component(id=ND13 type=cellW2Dosc) 
-    node [shape=ellipse,color="#a90ab2",fontcolor="black"]; PopND13;    
+    node [shape=ellipse,color="#273630",fontcolor="white"]; PopND13;    
     Worm2DNet -> PopND13 [len=1.00, arrowhead=diamond]
 
     #    Population PopND14 contains components of: Component(id=ND14 type=cellW2Dosc) 
-    node [shape=ellipse,color="#dafd0c",fontcolor="black"]; PopND14;    
+    node [shape=ellipse,color="#05ee45",fontcolor="black"]; PopND14;    
     Worm2DNet -> PopND14 [len=1.00, arrowhead=diamond]
 
     #    Population PopND15 contains components of: Component(id=ND15 type=cellW2Dosc) 
-    node [shape=ellipse,color="#33b4d2",fontcolor="black"]; PopND15;    
+    node [shape=ellipse,color="#077c91",fontcolor="black"]; PopND15;    
     Worm2DNet -> PopND15 [len=1.00, arrowhead=diamond]
 
     #    Population PopND16 contains components of: Component(id=ND16 type=cellW2Dosc) 
-    node [shape=ellipse,color="#686c68",fontcolor="black"]; PopND16;    
+    node [shape=ellipse,color="#ecb59f",fontcolor="black"]; PopND16;    
     Worm2DNet -> PopND16 [len=1.00, arrowhead=diamond]
 
     #    Population PopND17 contains components of: Component(id=ND17 type=cellW2Dosc) 
-    node [shape=ellipse,color="#89edf7",fontcolor="black"]; PopND17;    
+    node [shape=ellipse,color="#bdf10e",fontcolor="black"]; PopND17;    
     Worm2DNet -> PopND17 [len=1.00, arrowhead=diamond]
 
     #    Population PopND18 contains components of: Component(id=ND18 type=cellW2Dosc) 
-    node [shape=ellipse,color="#efbea9",fontcolor="black"]; PopND18;    
+    node [shape=ellipse,color="#ecbae1",fontcolor="black"]; PopND18;    
     Worm2DNet -> PopND18 [len=1.00, arrowhead=diamond]
 
     #    Population PopND19 contains components of: Component(id=ND19 type=cellW2Dosc) 
-    node [shape=ellipse,color="#57caa5",fontcolor="black"]; PopND19;    
+    node [shape=ellipse,color="#abb744",fontcolor="black"]; PopND19;    
     Worm2DNet -> PopND19 [len=1.00, arrowhead=diamond]
 
     #    Population PopND2 contains components of: Component(id=ND2 type=cellW2Dosc) 
-    node [shape=ellipse,color="#3125ed",fontcolor="black"]; PopND2;    
+    node [shape=ellipse,color="#772081",fontcolor="black"]; PopND2;    
     Worm2DNet -> PopND2 [len=1.00, arrowhead=diamond]
 
     #    Population PopND20 contains components of: Component(id=ND20 type=cellW2Dosc) 
-    node [shape=ellipse,color="#61d980",fontcolor="black"]; PopND20;    
+    node [shape=ellipse,color="#f9eadd",fontcolor="black"]; PopND20;    
     Worm2DNet -> PopND20 [len=1.00, arrowhead=diamond]
 
     #    Population PopND21 contains components of: Component(id=ND21 type=cellW2Dosc) 
-    node [shape=ellipse,color="#1849cc",fontcolor="black"]; PopND21;    
+    node [shape=ellipse,color="#eb8763",fontcolor="black"]; PopND21;    
     Worm2DNet -> PopND21 [len=1.00, arrowhead=diamond]
 
     #    Population PopND22 contains components of: Component(id=ND22 type=cellW2Dosc) 
-    node [shape=ellipse,color="#d8ad2d",fontcolor="black"]; PopND22;    
+    node [shape=ellipse,color="#1db3d7",fontcolor="black"]; PopND22;    
     Worm2DNet -> PopND22 [len=1.00, arrowhead=diamond]
 
     #    Population PopND23 contains components of: Component(id=ND23 type=cellW2Dosc) 
-    node [shape=ellipse,color="#e7aeb6",fontcolor="black"]; PopND23;    
+    node [shape=ellipse,color="#4253a0",fontcolor="black"]; PopND23;    
     Worm2DNet -> PopND23 [len=1.00, arrowhead=diamond]
 
     #    Population PopND3 contains components of: Component(id=ND3 type=cellW2Dosc) 
-    node [shape=ellipse,color="#e38f49",fontcolor="black"]; PopND3;    
+    node [shape=ellipse,color="#e74ee0",fontcolor="black"]; PopND3;    
     Worm2DNet -> PopND3 [len=1.00, arrowhead=diamond]
 
     #    Population PopND4 contains components of: Component(id=ND4 type=cellW2Dosc) 
-    node [shape=ellipse,color="#9c8e3b",fontcolor="black"]; PopND4;    
+    node [shape=ellipse,color="#70208b",fontcolor="black"]; PopND4;    
     Worm2DNet -> PopND4 [len=1.00, arrowhead=diamond]
 
     #    Population PopND5 contains components of: Component(id=ND5 type=cellW2Dosc) 
-    node [shape=ellipse,color="#d4741f",fontcolor="black"]; PopND5;    
+    node [shape=ellipse,color="#26682b",fontcolor="white"]; PopND5;    
     Worm2DNet -> PopND5 [len=1.00, arrowhead=diamond]
 
     #    Population PopND6 contains components of: Component(id=ND6 type=cellW2Dosc) 
-    node [shape=ellipse,color="#903014",fontcolor="white"]; PopND6;    
+    node [shape=ellipse,color="#71aa5d",fontcolor="black"]; PopND6;    
     Worm2DNet -> PopND6 [len=1.00, arrowhead=diamond]
 
     #    Population PopND7 contains components of: Component(id=ND7 type=cellW2Dosc) 
-    node [shape=ellipse,color="#b5db13",fontcolor="black"]; PopND7;    
+    node [shape=ellipse,color="#f3d7ae",fontcolor="black"]; PopND7;    
     Worm2DNet -> PopND7 [len=1.00, arrowhead=diamond]
 
     #    Population PopND8 contains components of: Component(id=ND8 type=cellW2Dosc) 
-    node [shape=ellipse,color="#562490",fontcolor="black"]; PopND8;    
+    node [shape=ellipse,color="#f6965a",fontcolor="black"]; PopND8;    
     Worm2DNet -> PopND8 [len=1.00, arrowhead=diamond]
 
     #    Population PopND9 contains components of: Component(id=ND9 type=cellW2Dosc) 
-    node [shape=ellipse,color="#01a4c6",fontcolor="black"]; PopND9;    
+    node [shape=ellipse,color="#c8e37d",fontcolor="black"]; PopND9;    
     Worm2DNet -> PopND9 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV0 contains components of: Component(id=NV0 type=cellW2Dosc) 
-    node [shape=ellipse,color="#1860aa",fontcolor="black"]; PopNV0;    
+    node [shape=ellipse,color="#6c4884",fontcolor="black"]; PopNV0;    
     Worm2DNet -> PopNV0 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV1 contains components of: Component(id=NV1 type=cellW2Dosc) 
-    node [shape=ellipse,color="#80506d",fontcolor="black"]; PopNV1;    
+    node [shape=ellipse,color="#14b1ea",fontcolor="black"]; PopNV1;    
     Worm2DNet -> PopNV1 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV10 contains components of: Component(id=NV10 type=cellW2Dosc) 
-    node [shape=ellipse,color="#02e9fe",fontcolor="black"]; PopNV10;    
+    node [shape=ellipse,color="#880a51",fontcolor="white"]; PopNV10;    
     Worm2DNet -> PopNV10 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV11 contains components of: Component(id=NV11 type=cellW2Dosc) 
-    node [shape=ellipse,color="#af068b",fontcolor="black"]; PopNV11;    
+    node [shape=ellipse,color="#89e9eb",fontcolor="black"]; PopNV11;    
     Worm2DNet -> PopNV11 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV12 contains components of: Component(id=NV12 type=cellW2Dosc) 
-    node [shape=ellipse,color="#006f48",fontcolor="white"]; PopNV12;    
+    node [shape=ellipse,color="#3b2d59",fontcolor="white"]; PopNV12;    
     Worm2DNet -> PopNV12 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV13 contains components of: Component(id=NV13 type=cellW2Dosc) 
-    node [shape=ellipse,color="#737f0c",fontcolor="black"]; PopNV13;    
+    node [shape=ellipse,color="#e64db4",fontcolor="black"]; PopNV13;    
     Worm2DNet -> PopNV13 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV14 contains components of: Component(id=NV14 type=cellW2Dosc) 
-    node [shape=ellipse,color="#9fe85a",fontcolor="black"]; PopNV14;    
+    node [shape=ellipse,color="#4a9a55",fontcolor="black"]; PopNV14;    
     Worm2DNet -> PopNV14 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV15 contains components of: Component(id=NV15 type=cellW2Dosc) 
-    node [shape=ellipse,color="#5f9731",fontcolor="black"]; PopNV15;    
+    node [shape=ellipse,color="#31fdae",fontcolor="black"]; PopNV15;    
     Worm2DNet -> PopNV15 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV16 contains components of: Component(id=NV16 type=cellW2Dosc) 
-    node [shape=ellipse,color="#8adafd",fontcolor="black"]; PopNV16;    
+    node [shape=ellipse,color="#50c743",fontcolor="black"]; PopNV16;    
     Worm2DNet -> PopNV16 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV17 contains components of: Component(id=NV17 type=cellW2Dosc) 
-    node [shape=ellipse,color="#45be27",fontcolor="black"]; PopNV17;    
+    node [shape=ellipse,color="#a4b20b",fontcolor="black"]; PopNV17;    
     Worm2DNet -> PopNV17 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV18 contains components of: Component(id=NV18 type=cellW2Dosc) 
-    node [shape=ellipse,color="#ca9635",fontcolor="black"]; PopNV18;    
+    node [shape=ellipse,color="#f7ab3a",fontcolor="black"]; PopNV18;    
     Worm2DNet -> PopNV18 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV19 contains components of: Component(id=NV19 type=cellW2Dosc) 
-    node [shape=ellipse,color="#819e93",fontcolor="black"]; PopNV19;    
+    node [shape=ellipse,color="#d9ce73",fontcolor="black"]; PopNV19;    
     Worm2DNet -> PopNV19 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV2 contains components of: Component(id=NV2 type=cellW2Dosc) 
-    node [shape=ellipse,color="#c38312",fontcolor="black"]; PopNV2;    
+    node [shape=ellipse,color="#eea94d",fontcolor="black"]; PopNV2;    
     Worm2DNet -> PopNV2 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV20 contains components of: Component(id=NV20 type=cellW2Dosc) 
-    node [shape=ellipse,color="#edfdfe",fontcolor="black"]; PopNV20;    
+    node [shape=ellipse,color="#71ec6a",fontcolor="black"]; PopNV20;    
     Worm2DNet -> PopNV20 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV21 contains components of: Component(id=NV21 type=cellW2Dosc) 
-    node [shape=ellipse,color="#af0d1f",fontcolor="white"]; PopNV21;    
+    node [shape=ellipse,color="#c20b14",fontcolor="white"]; PopNV21;    
     Worm2DNet -> PopNV21 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV22 contains components of: Component(id=NV22 type=cellW2Dosc) 
-    node [shape=ellipse,color="#41f5dc",fontcolor="black"]; PopNV22;    
+    node [shape=ellipse,color="#9d9f77",fontcolor="black"]; PopNV22;    
     Worm2DNet -> PopNV22 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV23 contains components of: Component(id=NV23 type=cellW2Dosc) 
-    node [shape=ellipse,color="#aefd8d",fontcolor="black"]; PopNV23;    
+    node [shape=ellipse,color="#869bfb",fontcolor="black"]; PopNV23;    
     Worm2DNet -> PopNV23 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV3 contains components of: Component(id=NV3 type=cellW2Dosc) 
-    node [shape=ellipse,color="#ba99b5",fontcolor="black"]; PopNV3;    
+    node [shape=ellipse,color="#7d54e7",fontcolor="black"]; PopNV3;    
     Worm2DNet -> PopNV3 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV4 contains components of: Component(id=NV4 type=cellW2Dosc) 
-    node [shape=ellipse,color="#3d8cc2",fontcolor="black"]; PopNV4;    
+    node [shape=ellipse,color="#d4d9de",fontcolor="black"]; PopNV4;    
     Worm2DNet -> PopNV4 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV5 contains components of: Component(id=NV5 type=cellW2Dosc) 
-    node [shape=ellipse,color="#30339a",fontcolor="black"]; PopNV5;    
+    node [shape=ellipse,color="#fa3157",fontcolor="black"]; PopNV5;    
     Worm2DNet -> PopNV5 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV6 contains components of: Component(id=NV6 type=cellW2Dosc) 
-    node [shape=ellipse,color="#3816c8",fontcolor="black"]; PopNV6;    
+    node [shape=ellipse,color="#629bfa",fontcolor="black"]; PopNV6;    
     Worm2DNet -> PopNV6 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV7 contains components of: Component(id=NV7 type=cellW2Dosc) 
-    node [shape=ellipse,color="#40d858",fontcolor="black"]; PopNV7;    
+    node [shape=ellipse,color="#cdb446",fontcolor="black"]; PopNV7;    
     Worm2DNet -> PopNV7 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV8 contains components of: Component(id=NV8 type=cellW2Dosc) 
-    node [shape=ellipse,color="#e427a2",fontcolor="black"]; PopNV8;    
+    node [shape=ellipse,color="#8c64e3",fontcolor="black"]; PopNV8;    
     Worm2DNet -> PopNV8 [len=1.00, arrowhead=diamond]
 
     #    Population PopNV9 contains components of: Component(id=NV9 type=cellW2Dosc) 
-    node [shape=ellipse,color="#8c92d0",fontcolor="black"]; PopNV9;    
+    node [shape=ellipse,color="#a55d06",fontcolor="black"]; PopNV9;    
     Worm2DNet -> PopNV9 [len=1.00, arrowhead=diamond]
 
 }

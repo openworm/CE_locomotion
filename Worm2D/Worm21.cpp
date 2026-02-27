@@ -14,21 +14,21 @@
 
 
 
-Worm21::Worm21():
-Worm2Dm({7,24,0.1,7,49}, new NervousSystem()),
+Worm21::Worm21(shared_ptr<const CmdArgs> cmd_):
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), cmd_),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
-Worm2D21(), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
+Worm2D21(cmd_), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
 
-Worm21::Worm21(TVector<double> &pheno):Worm21(pheno, true){}
+Worm21::Worm21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):Worm21(pheno, true, cmd_){}
 
 
-Worm21::Worm21(const string & filename_):Worm21()
+Worm21::Worm21(const string & filename_, shared_ptr<const CmdArgs> cmd_):Worm21(cmd_)
 {
     setParsFromFile(filename_);
 }
 
 // The constructor
-Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
+Worm21::Worm21(TVector<double> &phengen, bool isPheno, shared_ptr<const CmdArgs> cmd_):Worm21(cmd_)
 {
 
     if (isPheno) setParsFromPheno(phengen);
@@ -36,10 +36,10 @@ Worm21::Worm21(TVector<double> &phengen, bool isPheno):Worm21()
 
 }
 
-Worm21R::Worm21R():Worm21(),
-Worm2Dm({7,24,0.1,7,49}, new NervousSystem()){}
+Worm21R::Worm21R(shared_ptr<const CmdArgs> cmd_):Worm21(cmd_),
+Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), cmd_){}
 
-Worm21R::Worm21R(TVector<double> &phengen, bool isPheno):Worm21R()
+Worm21R::Worm21R(TVector<double> &phengen, bool isPheno, shared_ptr<const CmdArgs> cmd_):Worm21R(cmd_)
 {
 
     if (isPheno) setParsFromPheno(phengen);
@@ -47,10 +47,10 @@ Worm21R::Worm21R(TVector<double> &phengen, bool isPheno):Worm21R()
 }
 
 
-Worm21R::Worm21R(TVector<double> &pheno):Worm21R(pheno, true){}
+Worm21R::Worm21R(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):Worm21R(pheno, true, cmd_){}
 
 
-Worm21R::Worm21R(const string & filename_):Worm21R()
+Worm21R::Worm21R(const string & filename_, shared_ptr<const CmdArgs> cmd_):Worm21R(cmd_)
 {
     setParsFromFile(filename_);
 }

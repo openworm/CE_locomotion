@@ -12,16 +12,15 @@ Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),w2dsr_ptr(sr_ptr_){}*/
 Worm2DSRb::Worm2DSRb(shared_ptr<SR> sr_ptr_):w2dsr_ptr(sr_ptr_){}
 
 
-Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
-Worm2Dm(par1_, n_ptr_),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
-
-
-Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
-Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
+Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, 
+  shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd):
+Worm2Dm(par1_, n_ptr_, cmd),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
 
 Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):
-Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(getSR(j, this))
+Worm2DSR(getIzqPars(j),getNS(cmd, j),getSR(j, this),cmd)
+//Worm2DSR::Worm2DSR(const json & j, shared_ptr<const CmdArgs> cmd):
+//Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(getSR(j, this))
 {
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
@@ -55,12 +54,15 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j)),Worm2D(getIzqPars(j) ,nullptr),Worm2DSRb(ge
 
 }
 
+Worm2DSR::Worm2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
+Worm2DSR(getJsonFromFile(jsonfilename_),cmd){}
+
+
 Worm2DSRm::Worm2DSRm(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 
 Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), 0),
- Worm2DSRb(getSR(j,this))//,baseParameters(j,cmd)
+  getNS(cmd, j), 0, cmd),Worm2DSRb(getSR(j,this))//,baseParameters(j,cmd)
 {
 
    // W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
@@ -81,9 +83,8 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 Worm2DSRE::Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 
-Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j)),
-  Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
+Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):
+Worm2Dm(getIzqPars(j),getNS(cmd, j),cmd),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
     if (callInit) writeOrigGen(cmd);
   }
@@ -171,6 +172,8 @@ void Worm2DSR::Step1()
 
     //bool doOrigMuscInput;
     //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+
+  
 
   if (doOrigMuscInput) setMuscleInputOrig();
   //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();

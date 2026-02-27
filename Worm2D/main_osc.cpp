@@ -91,7 +91,7 @@ int main (int argc, const char* argv[])
 
         else{
         if (model_name == "W2DCE") evo = new EvolutionFullWC<WormCE>(cmd); 
-        if (model_name == "W2DCESR") evo = new EvolutionFullW<WormCESR>(cmd);
+        if (model_name == "W2DCESR") evo = new EvolutionFullWC<WormCESR>(cmd);
 
         if (model_name == "W2Dosc") evo = new EvolutionFullWC<Worm2Dosc>(cmd);
         if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(cmd);
@@ -100,8 +100,8 @@ int main (int argc, const char* argv[])
         if (model_name == "W2Dosc21all") evo = new EvolutionFullWC<Worm2Dosc21all>(cmd);
         if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(cmd);
         if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(cmd);
-        if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
-        if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
+        if (model_name == "W2D21") evo = new EvolutionFullWC<Worm21>(cmd); 
+        if (model_name == "W2D21R") evo = new EvolutionFullWC<Worm21R>(cmd); 
 
         if (model_name == "W2D18") evo = new EvolutionFullWC<Worm18>(cmd);
         if (model_name == "W2DCO") evo = new EvolutionFullWC<WormAgent>(cmd);
@@ -175,14 +175,14 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename, useGenJson, cmd);
     if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
-    if (model_name == "W2D21") w2 = new Worm21(gen_filename);
+    if (model_name == "W2D21") w2 = new Worm21(gen_filename, cmd);
     //if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
     if (model_name == "W2DCE") w2 = new WormCE(json_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
-    if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
+    if (model_name == "W2D21R") w2 = new Worm21R(gen_filename, cmd);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
-    if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
+    if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename, cmd);
     if (model_name == "W2D18") w2 = new Worm18(gen_filename, cmd);
     if (model_name == "W2DCO") w2 = new WormAgent(gen_filename, cmd);
 

@@ -260,14 +260,14 @@ int main (int argc, const char* argv[])
     
     if (model_name == "Net21") {
     if (do_musclesim)
-    w = new Worm2D21m();
+    w = new Worm2D21m(cmd);
     else
-    w = new Worm2D21(j);
+    w = new Worm2D21(j,cmd);
     }
     }
     else{
     
-    if (model_name == "Net21") w = new Worm2D21(phenotype);
+    if (model_name == "Net21") w = new Worm2D21(phenotype,cmd);
 
     }
 

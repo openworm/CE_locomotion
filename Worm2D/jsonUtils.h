@@ -265,6 +265,7 @@ public:
     bool getArgValT(const string & str, string & val) const
     {
 
+
       const int arg = getArgVal(str);
       if (arg==-1) return false;
       val = args[arg+1].c_str();
@@ -276,6 +277,7 @@ public:
     bool getArgValT(const string & str, T & val) const
     {
  
+    
       const int arg = getArgVal(str);
       if (arg==-1) return false;
      

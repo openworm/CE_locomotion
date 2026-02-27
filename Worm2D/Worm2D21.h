@@ -35,7 +35,7 @@ public:
     
     //Worm21(TVector<double> &v);
    
-    Worm2D21m();
+    Worm2D21m(shared_ptr<const CmdArgs> cmd_);
     void SetAVA(double value) {AVA_output = value;};
     void SetAVB(double value) {AVB_output = value;};
     void initForSimulation(RandomState &);
@@ -88,17 +88,17 @@ class Worm2D21 : public Worm2D21m, public Worm2D {
 public:
     
     //Worm21(TVector<double> &v);
-    Worm2D21(TVector<double> &pheno);
-    Worm2D21();
-    Worm2D21(json & j);
+    Worm2D21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_);
+    Worm2D21(shared_ptr<const CmdArgs> cmd_);
+    Worm2D21(json & j, shared_ptr<const CmdArgs> cmd_);
     //Worm2D21(TVector<double> &pheno, bool isPheno);
     void InitializeState(RandomState &rs);
    
    
     protected:
 
-    Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_)
-    :Worm2Dm(par1_,n_ptr_),Worm2D21m(),Worm2D(par1_,0){}
+    //Worm2D21(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_)
+    //:Worm2Dm(par1_,n_ptr_, cmd_),Worm2D21m(cmd_),Worm2D(par1_,0){}
 
     void addParsToJson(json & j);
 

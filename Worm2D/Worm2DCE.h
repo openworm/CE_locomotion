@@ -87,6 +87,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     
     shared_ptr<SRCE> makeSRCE();
     //StretchReceptorCE sr;
+
     shared_ptr<SRCE> sr_ptr;
 
     void DumpParams(ofstream &ofs);
@@ -112,13 +113,14 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     //void Step1();
     //void Step1_old();
 
-    Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_, 
-    shared_ptr<const CmdArgs> cmd_  = nullptr);
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_, 
+    //shared_ptr<const CmdArgs> cmd_  = nullptr);
 
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
 
     Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
-    
+    //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd_);
+
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_);
     //Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SRCE> sr_ptr_);
     //Worm2DCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
@@ -230,7 +232,7 @@ public:
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     WormCE(TVector<double> &phengen, bool isPheno);
     WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
-    WormCE(shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    //WormCE(shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
 
     //WormCE(shared_ptr<SRCE> sr_ptr_);
     //WormCE(shared_ptr<const CmdArgs> cmd);
@@ -263,11 +265,11 @@ public:
 class WormCESR : public WormCE
 {
 public:
-WormCESR();
+//WormCESR();
 WormCESR(shared_ptr<const CmdArgs> cmd);
 WormCESR(shared_ptr<const CmdArgs> cmd, const string & filename_);
-WormCESR(json j, const string & filename_);
-WormCESR(const string & jsonfilename_, const string & filename_);
+WormCESR(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd);
+WormCESR(const string & jsonfilename_, const string & filename_, shared_ptr<const CmdArgs> cmd);
 const string getModelName() {return {"W2DCESR"};}
 
 };

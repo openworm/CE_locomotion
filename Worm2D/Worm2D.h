@@ -42,7 +42,7 @@ class baseParameters
     baseParameters(shared_ptr<const CmdArgs> itsCmdArgs_)
     :BPitsCmdArgs(itsCmdArgs_),defaultVals(setDefaultVals()){}
 
-    baseParameters():defaultVals(setDefaultVals()){}
+    //baseParameters():defaultVals(setDefaultVals()){}
 
 
     template<class T>
@@ -65,24 +65,39 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
+        
         //cout << "nssd " << name_str << " " << bstr << endl;
- 
+
+        assert(BPitsCmdArgs!=nullptr);
+
      
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
             //cout << "nesws" << endl;
             //cout << newSetVals << endl;
-          
+ 
+            //cout << "oosl  " << name_str << " " << bstr << endl;
+ 
+        
             val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
 
-        if (BPitsCmdArgs!=nullptr && BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+    
+        if (BPitsCmdArgs!=nullptr) {
+            // cout << "wet  " << name_str << " " << bstr << endl;
+         if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
+
+          //cout << "utit  " << name_str << " " << bstr << endl;
+ 
+     
+
             addValToJson(name_str,val,bstr);
             return true;
         }
+    }
 
         if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
         if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
@@ -90,6 +105,10 @@ class baseParameters
        
        
         if (defaultVals.contains(name_str)) {
+
+            cout << "djql  " << name_str << " " << bstr << endl;
+ 
+            
             val = defaultVals.at(name_str).get<T>();
             addValToJson(name_str,val,bstr);
             return true;
@@ -207,7 +226,7 @@ class baseParameters
     json BPitsJson;
     //shared_ptr<const json> itsJson = nullptr;
     //shared_ptr<json> itsJson = nullptr;
-    shared_ptr<const CmdArgs> BPitsCmdArgs = nullptr;
+    const shared_ptr<const CmdArgs> BPitsCmdArgs = nullptr;
     const json defaultVals;
     json newSetVals;
 
@@ -375,7 +394,7 @@ class Worm2Dbody : virtual public DataWriter
 
 
 
-class Worm2Dbase : virtual public DataWriter, public InputSwitcher, public baseParameters
+class Worm2Dbase : public baseParameters, virtual public DataWriter, public InputSwitcher
 {
 
 public:

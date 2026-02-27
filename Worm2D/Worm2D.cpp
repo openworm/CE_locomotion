@@ -96,13 +96,14 @@ void DataWriter::dataReset(){closeAll();
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_)
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_){}
+
 //,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
-{//zeroAllInputs();
+//{//zeroAllInputs();
     //setWormPars(cmd_);
-    BPitsCmdArgs = cmd_;
-}
+   // BPitsCmdArgs = cmd_;
+//}
 
 
 /* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
@@ -183,8 +184,8 @@ doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
 {
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
-    cout << "dom " << doOrigMuscInput << endl;
-    
+    cout << "dom " << doOrigMuscInput << " " << doOrigSRInput << endl;
+  
     setUp();
     //setUpBodyConn();
 }

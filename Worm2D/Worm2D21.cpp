@@ -18,7 +18,7 @@ void Worm2D21m::setPhenoNames()
 }
 
 
-Worm2D21m::Worm2D21m():Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0)
+Worm2D21m::Worm2D21m(shared_ptr<const CmdArgs> cmd_):Worm2Dm({7,24,0.1,7,49}, new c302ForW2D(), 0, cmd_)
 //,W2DCEpars1(dynamic_pointer_cast<W2DCEparsA>(W2Dbaseparameters1b))
 {
 
@@ -44,10 +44,14 @@ AVA_output = 0;
 AVB_output = 0; 
 }
 
+Worm2D21::Worm2D21(shared_ptr<const CmdArgs> cmd_):
+Worm2Dm({7,24,0.1,7,49},new c302ForW2D(),cmd_),
+Worm2D({7,24,0.1,7,49},0),Worm2D21m(cmd_){}
 
-Worm2D21::Worm2D21(TVector<double> & pheno):
-Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
-Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+
+
+Worm2D21::Worm2D21(TVector<double> & pheno, shared_ptr<const CmdArgs> cmd_):
+Worm2D21(cmd_)
 {
   
    // NMJ Weight
@@ -72,14 +76,9 @@ Worm2D({7,24,0.1,7,49},0),Worm2D21m()
 
 
 
-Worm2D21::Worm2D21():
-Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
-Worm2D({7,24,0.1,7,49},0),Worm2D21m(){}
 
 
-Worm2D21::Worm2D21(json & j):
-Worm2Dm({7,24,0.1,7,49},new c302ForW2D()),
-Worm2D({7,24,0.1,7,49},0),Worm2D21m()
+Worm2D21::Worm2D21(json & j, shared_ptr<const CmdArgs> cmd_):Worm2D21(cmd_)
 {
 
 // NMJ Weight
