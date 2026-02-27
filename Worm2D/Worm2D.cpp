@@ -177,7 +177,8 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcall
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
-doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput"))
+doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput")),
+doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
     //assert(0 && "what is calling this?");

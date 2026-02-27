@@ -30,12 +30,12 @@ bool vncsr;
 class Worm18 : public Worm2D , public EvolvableS{
 public:
 
-    Worm18();
-    Worm18(vector<double> v, double output);
-    Worm18(const TVector<double> &v, double output);
+    Worm18(shared_ptr<const CmdArgs> cmd);
+    Worm18(vector<double> v, double output, shared_ptr<const CmdArgs> cmd);
+    Worm18(const TVector<double> &v, double output, shared_ptr<const CmdArgs> cmd);
     //Worm18(bool dummy);
-    Worm18(const TVector<double> &v);
-    Worm18(const string & filename_);
+    Worm18(const TVector<double> &v, shared_ptr<const CmdArgs> cmd);
+    Worm18(const string & filename_,shared_ptr<const CmdArgs> cmd);
  
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
@@ -154,6 +154,7 @@ public:
     const RS18Macros rS18Macros;
     RS18Macros setMacros();
 
+     
 };
 
 

@@ -31,7 +31,7 @@ return {headsr,vncsr};
 //Worm18::Worm18():Worm18(readPhenotype(), 0){setRs18output(1);} //for WormCO18
 
 //Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), new Muscles), 
-Worm18::Worm18():Worm2Dm({6,24,0.1,6,40}, new NervousSystem()), 
+Worm18::Worm18(shared_ptr<const CmdArgs> cmd):Worm2Dm({6,24,0.1,6,40}, new NervousSystem(), cmd), 
 n(dynamic_cast<NervousSystem&>(*n_ptr)),sr_ptr(make_shared<SR18>()),
 rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 {
@@ -68,16 +68,16 @@ void Worm18::initConst()
 
 // The constructor
 
-Worm18::Worm18(const TVector<double> & v1, double output):Worm18()
+Worm18::Worm18(const TVector<double> & v1, double output, shared_ptr<const CmdArgs> cmd):Worm18(cmd)
 {
      SetParameters(v1);
 }
 
-Worm18::Worm18(const TVector<double> & v1):Worm18(v1,1){}
+Worm18::Worm18(const TVector<double> & v1, shared_ptr<const CmdArgs> cmd):Worm18(v1,1,cmd){}
 
 //Worm18(getVector<double>(v1), 0){}
 
-Worm18::Worm18(vector<double> v1, double output):Worm18()
+Worm18::Worm18(vector<double> v1, double output, shared_ptr<const CmdArgs> cmd):Worm18(cmd)
 {
     //supArgs1.writeMessage();
 
@@ -89,7 +89,7 @@ Worm18::Worm18(vector<double> v1, double output):Worm18()
     
 }
 
-Worm18::Worm18(const string & filename_):Worm18()
+Worm18::Worm18(const string & filename_,shared_ptr<const CmdArgs> cmd):Worm18(cmd)
 {
     setParsFromFile(filename_);
 }
@@ -592,8 +592,8 @@ void Worm18::preNStep()
     b.StepBody(settedStepSize);
 
 
-    bool doOrigSRInput;
-    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //bool doOrigSRInput;
+    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
 
 
@@ -667,8 +667,8 @@ else
 void Worm18::postNStep()
 {
 
-    bool doOrigMuscInput;
-    getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+    //bool doOrigMuscInput;
+    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
 
     if (doOrigMuscInput) setMuscleInputOrig();
     else setMuscleInput();
@@ -754,8 +754,8 @@ void Worm18::addParsToJson(json & j)
 
 
 
-    bool doOrigSRInput;
-    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+   // bool doOrigSRInput;
+    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
@@ -818,8 +818,8 @@ void Worm18::writeAct()
 
    // StretchReceptor18 * sr_ptr2 = &sr;
 
-    bool doOrigSRInput;
-    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+   // bool doOrigSRInput;
+   // getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
@@ -915,8 +915,8 @@ void Worm18::DumpParams(ofstream &ofs)
     //assert(w1parss!=nullptr);
 
 
-    bool doOrigSRInput;
-    getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //bool doOrigSRInput;
+    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
 
     if (doOrigSRInput)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;

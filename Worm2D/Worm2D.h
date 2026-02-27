@@ -640,7 +640,7 @@ class Worm2D : virtual public Worm2Dm
     vector<intPair> unitToMuscV, unitToMuscD;
     //double NMJ_gain_map_V, NMJ_gain_map_D, NMJ_gain_fact = 0.7;
     
-    const bool doOrigMuscInput;
+    const bool doOrigMuscInput, doOrigSRInput;
     bool hasVNCNMJ = false, hasVNC18 = false;
     vector<toFromWeight> makeMuscleConnVNCV();
     vector<toFromWeight> makeMuscleConnVNCD();

@@ -103,7 +103,7 @@ int main (int argc, const char* argv[])
         if (model_name == "W2D21") evo = new EvolutionFullW<Worm21>(cmd); 
         if (model_name == "W2D21R") evo = new EvolutionFullW<Worm21R>(cmd); 
 
-        if (model_name == "W2D18") evo = new EvolutionFullW<Worm18>(cmd);
+        if (model_name == "W2D18") evo = new EvolutionFullWC<Worm18>(cmd);
         if (model_name == "W2DCO") evo = new EvolutionFullWC<WormAgent>(cmd);
         }
         //assert(0);
@@ -183,8 +183,8 @@ int main (int argc, const char* argv[])
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
     if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename);
-    if (model_name == "W2D18") w2 = new Worm18(gen_filename);
-    if (model_name == "W2DCO") w2 = new WormAgent(gen_filename,cmd);
+    if (model_name == "W2D18") w2 = new Worm18(gen_filename, cmd);
+    if (model_name == "W2DCO") w2 = new WormAgent(gen_filename, cmd);
 
     }else{
 
