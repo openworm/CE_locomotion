@@ -97,6 +97,9 @@ void DataWriter::dataReset(){closeAll();
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_){}
+Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
+    muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_){}
 
 //,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
 //muscForWDconst(false)
@@ -142,12 +145,26 @@ Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArg
 Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_),W2Dmparscalled(false),W2Dminitcalled(false)
 {setUpBodyConn();}
 
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
+Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_, j),W2Dmparscalled(false),W2Dminitcalled(false)
+{setUpBodyConn();}
+
+
+
 /* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
 {setUpBodyConn();}  */
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval, shared_ptr<const CmdArgs> cmd_):
 Worm2Dbase(par1_,n_ptr_,0, cmd_),
+W2Dmparscalled(false),W2Dminitcalled(false){
+    m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
+    setUpBodyConn();
+}
+
+Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval, 
+    shared_ptr<const CmdArgs> cmd_, const json & j):
+Worm2Dbase(par1_,n_ptr_,0, cmd_,j),
 W2Dmparscalled(false),W2Dminitcalled(false){
     m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
     setUpBodyConn();
@@ -171,7 +188,6 @@ Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false)
 /* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
     bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_):
 Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();} */
-
 
 
 //Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}

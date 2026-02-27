@@ -111,7 +111,7 @@ void setPars(shared_ptr<const CmdArgs> cmd){
 
 }
 
-baseParameters * const basePar1;
+baseParameters * const basePar1 = nullptr;
 //SRVars srvars;
 //shared_ptr<W2Dparameters> srpars;
 shared_ptr<SRVars> srvars_ptr;
@@ -120,10 +120,7 @@ string SRType = "Base";
 protected:
 const int nsegs;
 SR(int nsegs_, int nstretch_, baseParameters * basePar1_, shared_ptr<SRVars> srvars_ptr_):
-nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_)
-{
-   
-}
+nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(basePar1_){}
 
 SR(int nsegs_, int nstretch_, shared_ptr<SRVars> srvars_ptr_):
 nsegs(nsegs_),srvars_ptr(srvars_ptr_),nslD(nsegs_,0),nslV(nsegs_,0),basePar1(nullptr)
