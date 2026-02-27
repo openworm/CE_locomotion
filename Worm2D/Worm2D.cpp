@@ -207,13 +207,9 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 
    // shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
     
+   if (false){
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
-
-
-
-    //cout << "randomInitialState"  << randomInitialState << endl;
-    //assert(0);
 
     if (randomInitialState)
 	//if (l1!=nullptr && l1->randomInitialState)
@@ -225,6 +221,8 @@ void Worm2Dbase::InitializeState(RandomState &rs)
         n->RandomizeCircuitOutput(0.2, 0.8, rs);
         }
     }
+
+}
 
     //t = 0.0;
     //datatime =  0.0;
