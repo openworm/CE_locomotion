@@ -1430,7 +1430,8 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     //w1->RunDuration = Transient + Duration;
     //w1->HSStepSize = StepSize;
               
-    w.setValCJWorm("RunDuration",Transient + Duration);
+    double rundur = Transient + Duration;
+    w.setValCJWorm("RunDuration",rundur);
     w.setValCJWorm("HSStepSize",StepSize);
     w.setValCJWorm("resetAgentBody",true);
     w.setValCJWorm("orient",Pi);
