@@ -17,6 +17,7 @@ static shared_ptr<SR> getSR(const json & j, baseParameters * basePar1_);
 shared_ptr<SR> w2dsr_ptr = nullptr;
 //Worm2DSRb(const json & j);
 Worm2DSRb(shared_ptr<SR> sr_ptr_);
+
 void setParsFromJson(const json & j);
 void addParsToJson(json & j);
 };

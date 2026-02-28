@@ -30,6 +30,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   
   //BPitsJson = j;
 
+
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
 
@@ -50,7 +51,12 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     //cout << "w2d1x " << W2Dbaseparameters1->doOrigMuscInput << endl;
     //cout << "w2dx " << w_ptr2->doOrigMuscInput << endl;
     assert(0);
+
     }
+
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+
+    //Worm2DSRb::setParsFromJson(j);
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
     InputSwitcher::construct(j);
@@ -77,7 +83,9 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
    // setWormPars(cmd);
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
-   
+
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+
     InputSwitcher::construct(j);
 
     setBodExt(j);

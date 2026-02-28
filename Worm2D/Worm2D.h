@@ -68,7 +68,7 @@ class baseParameters
         
         //cout << "nssd " << name_str << " " << bstr << endl;
 
-        assert(BPitsCmdArgs!=nullptr);
+        //assert(BPitsCmdArgs!=nullptr);
 
      
 
