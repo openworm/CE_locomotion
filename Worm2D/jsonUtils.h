@@ -9,6 +9,7 @@
 #include "../utils.h"
 #include "NSToMuscles.h"
 #include "../TSearch.h"
+#include <type_traits>
 
 
 using json = nlohmann::json;
@@ -243,7 +244,11 @@ void appendCellNamesToJson(json & j, const vector<string> & cell_names, const in
 void setNSFromJson(const json & j, NervousSystem & n);
 void mergeJson(json & j1, const json & j2);
 
-
+bool parseValue(const std::string& s, double& v);
+bool parseValue(const std::string& s, int&    v);
+bool parseValue(const std::string& s, long&   v);
+bool parseValue(const std::string& s, std::string& v);
+bool parseValue(const std::string& s, bool& v);
 class CmdArgs {
     vector<string> args;
 public:
@@ -262,34 +267,158 @@ public:
     //const vector<string>& all() const { return args; }
 
 
-    bool getArgValT(const string & str, string & val) const
+    /* bool getArgValT(const string & str, string & val) const
     {
-
-
+      
       const int arg = getArgVal(str);
       if (arg==-1) return false;
       val = args[arg+1].c_str();
+
+
+      cout << "zospr " << str << " sd " << val << endl;
       return true;
 
+    } */
+ 
+
+
+  template<class T>
+  bool getArgValT(const std::string& str, T& val) const
+  {
+    const int arg = getArgVal(str);
+    if (arg == -1) return false;
+
+    const std::size_t i = static_cast<std::size_t>(arg) + 1;
+    if (i >= args.size()) return false;
+
+    const std::string& s = args[i];
+
+    /* if constexpr (!std::is_same_v<T, std::remove_reference_t<T>>) {
+        // optional: normalize refs/cv if you pass those around
+    } */
+
+    // If no overload matches, you'll get a clear compile error.
+
+    bool result = parseValue(s, val);
+
+    cout << "popil " << str << " sdss " << val << endl;
+    return result;
+  }
+
+
+/* 
+    template<class T>
+    bool getArgValT(const std::string& str, T& val) const
+    {
+
+    const int arg = getArgVal(str);
+    if (arg == -1) return false;
+
+    const std::size_t i = static_cast<std::size_t>(arg) + 1;
+    if (i >= args.size()) return false; // no value after the flag
+
+    const std::string& s = args[i];
+
+    using U = std::remove_cv_t<std::remove_reference_t<T>>;
+
+    if constexpr (std::is_same_v<U, double>) {
+        val = std::stod(s);                 // stod takes std::string
+    } else if constexpr (std::is_same_v<U, std::string>) {
+        val = s;                            // simplest
+    } else if constexpr (std::is_same_v<U, int>) {
+        val = std::stoi(s);
+    } else if constexpr (std::is_same_v<U, long>) {
+        val = std::stol(s);
+    } else if constexpr (std::is_same_v<U, bool>) {
+        // accept 0/1/true/false (case-insensitive)
+        auto lower = [](unsigned char c){ return static_cast<char>(std::tolower(c)); };
+        std::string t; t.reserve(s.size());
+        for (unsigned char c : s) t.push_back(lower(c));
+
+        if (t == "1" || t == "true" || t == "yes" || t == "on")      val = true;
+        else if (t == "0" || t == "false" || t == "no" || t == "off") val = false;
+        else return false; // not a valid bool
+    } else {
+        static_assert(std::is_same_v<U, void>,
+                      "Unsupported T in getArgValT: use double, string, int, long, bool");
     }
 
+    return true;
+  }
+
+ */
+
+/* 
     template<class T>
     bool getArgValT(const string & str, T & val) const
     {
  
-    
+
       const int arg = getArgVal(str);
       if (arg==-1) return false;
      
-     // if (std::is_same<T, string>::value) val = args[arg+1].c_str();
-      if (std::is_same<T, double>::value) val = stod(args[arg+1].c_str());
-      if (std::is_same<T, int>::value) val = stoi(args[arg+1].c_str());
-      if (std::is_same<T, long>::value) val = stol(args[arg+1].c_str());
-      if (std::is_same<T, bool>::value) val = stoi(args[arg+1].c_str());
+    using U = std::remove_cv_t<std::remove_reference_t<T>>;
+
+    if constexpr (std::is_same_v<U, double>) {
+      val = stod(args[arg+1].c_str());
+        //std::cout << "double path: " << (x * 2.0) << "\n";
+    } else if constexpr (std::is_same_v<U, std::string>) {
+      //val = args[arg+1].c_str();
+      val = args[arg+1];
+        //std::cout << "string path: " << x.size() << " chars\n";
+    }
+    else if constexpr (std::is_same_v<U, std::int>) {
+      val = stoi(args[arg+1].c_str());
+    }
+    else if constexpr (std::is_same_v<U, std::long>) {
+      val = stol(args[arg+1].c_str());
+    }
+    else if constexpr (std::is_same_v<U, std::bool>) {
+       val = stoi(args[arg+1].c_str());
+    }
+    else 
+    { assert(0);}
+
+    return true;
+
+  }
+
+
+
+    template<class T>
+    bool getArgValT_v2(const string & str, T & val) const
+    {
+
+      const int arg = getArgVal(str);
+      if (arg==-1) return false;
+
+
+      //if (std::is_same<T, string>::value) val = args[arg+1];
+      
+      else if (std::is_same<T, double>::value) {
+        val = stod(args[arg+1].c_str());
+        cout << "doubl-" << str << " doublval-" << val << endl;
+      }
+      
+      else if (std::is_same<T, int>::value) 
+      {val = stoi(args[arg+1].c_str());
+        cout << "int-" << str << " intval-" << val << endl;
+      }
+      
+      else if (std::is_same<T, long>::value) val = stol(args[arg+1].c_str());
+      
+      else if (std::is_same<T, bool>::value) {
+        val = stoi(args[arg+1].c_str());
+        cout << "bool-" << str << " boolval-" << val << endl;
+      }
+      
+      else {assert(0);}
+    //cout << "popil " << str << " sd " << val << endl;
+
       return true;
 
     }
-
+ */
     const string getArgVal(const string & str, const  string & val) const
     { 
       for (int i = 1; i<args.size(); i+=2)

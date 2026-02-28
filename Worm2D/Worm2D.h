@@ -90,7 +90,7 @@ class baseParameters
          if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
 
-          //cout << "utit  " << name_str << " " << bstr << endl;
+          //cout << "utit  " << name_str << " " << bstr << " isi " << val << endl;
  
      
 
@@ -106,7 +106,7 @@ class baseParameters
        
         if (defaultVals.contains(name_str)) {
 
-            cout << "djql  " << name_str << " " << bstr << endl;
+            //cout << "djql  " << name_str << " " << bstr << endl;
  
             
             val = defaultVals.at(name_str).get<T>();

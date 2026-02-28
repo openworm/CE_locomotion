@@ -934,6 +934,13 @@ void Worm2DCE::makeExternalInputConn()
    double AB_output_level;
   getValCJWorm<double>("AB_output_level",AB_output_level);
 
+
+  cout << "about " << AB_output_level << endl;
+
+    //assert(0);
+
+
+
   //const double & weightval = W2DCEpars1->AB_output_level;
   vector<toFromWeight>  vec1;
   for (int i = 1; i <= par1.N_units; i++){
@@ -1037,6 +1044,8 @@ void WormCE::InitializeState(RandomState &rs)
   bool randomInitialState;
   getValCJWorm<bool>("randomInitialState",randomInitialState);
 
+  //cout << "randomInitialState zxxs" << randomInitialState << endl;
+  //assert(0);
 
  // shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
  // assert(w1parss!=nullptr);

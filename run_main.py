@@ -668,7 +668,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doReverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
     evol_extra_parameters["SRType"] = "None"
-    evol_extra_parameters["ABLevel"] = 1
+    #evol_extra_parameters["ABLevel"] = 1
+    evol_extra_parameters["AB_output_level"] = 1
     # evol_extra_parameters["randInitState"] = False
     evol_extra_parameters["randomInitialState"] = False
     evol_extra_parameters["MutVar"] = 0.1
@@ -734,7 +735,9 @@ def run(a=None, **kwargs):
         defaults_base["evoType"],
     ]
 
-    a_replacements = {"randInitState": "randomInitialState"}
+    a_replacements = {"randInitState": "randomInitialState",
+    "ABLevel" : "AB_output_level"
+    }
     for key, val in a_replacements.items():
         if hasattr(a, key):
             setattr(a, val, getattr(a, key))

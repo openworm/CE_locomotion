@@ -8,7 +8,16 @@
 using json = nlohmann::json;
 
 
+bool parseValue(const std::string& s, double& v) { v = std::stod(s); return true; }
+bool parseValue(const std::string& s, int&    v) { v = std::stoi(s); return true; }
+bool parseValue(const std::string& s, long&   v) { v = std::stol(s); return true; }
+bool parseValue(const std::string& s, std::string& v) { v = s; return true; }
 
+bool parseValue(const std::string& s, bool& v) {
+    if (s == "1" || s == "true" || s == "TRUE") { v = true; return true; }
+    if (s == "0" || s == "false"|| s == "FALSE") { v = false; return true; }
+    return false;
+}
 
 
 double Efunctor::eFunc(const double & val, const json & j)
