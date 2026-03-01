@@ -633,7 +633,7 @@ void Worm2DCE::setForward()
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
-  if (zeroGainsType == 0) sr_ptr->SR_A_gain = 0.0;
+  if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
   AVA_output =  1;
   AVB_output =  0;
   //sr_ptr->setWeights();
@@ -654,7 +654,7 @@ void Worm2DCE::setBackward()
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
-  if (zeroGainsType  == 0) sr_ptr->SR_B_gain = 0.0;
+  if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
   AVA_output =  0;
   AVB_output =  1;
 
