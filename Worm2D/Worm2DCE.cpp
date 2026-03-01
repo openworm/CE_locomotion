@@ -634,8 +634,8 @@ void Worm2DCE::setForward()
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
-  AVA_output =  1;
-  AVB_output =  0;
+  AVA_output =  0;
+  AVB_output =  1;
   //sr_ptr->setWeights();
   //W2DCEpars1->AVA_output =  0;
   //W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
@@ -655,8 +655,8 @@ void Worm2DCE::setBackward()
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
-  AVA_output =  0;
-  AVB_output =  1;
+  AVA_output =  1;
+  AVB_output =  0;
 
   //sr_ptr->setWeights();
   //W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
