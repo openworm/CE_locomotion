@@ -679,6 +679,12 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     shared_ptr<T> w_ptr = this->getTw();
 
 
+    int zeroGainsType;
+    w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    int doReverse;
+    w_ptr->getValCJWorm("doReverse", doReverse);
+
+
     //const int SR_A = 1;
     //const int SR_B = 2;
  
@@ -686,10 +692,17 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //evoPars1.MaxGenerations;
     //Epars1.doAlternateEvo;
 
-    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
-    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
-    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
-    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+    //const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    //const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    //const bool doalt1f = Epars1.doReverse==2 || (doalt1);
+    //const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+
+
+    const bool doalt1 = doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    const bool doalt1f = doReverse==2 || (doalt1);
+    const bool doalt2f = doReverse==2 || (doalt2);
+
 
     //cout << "reverse is " << Epars1.doReverse << endl;
 
@@ -705,22 +718,21 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //return EvaluationCEp1(genotype, rs, 1); 
 
 
-  
     double fitness = 0;
     int count = 0;
 
-    if (Epars1.doReverse==0 || doalt1f)
+    if (doReverse==0 || doalt1f)
     {
-    if (Epars1.zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
+    if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(0);
     fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
     count++;
     }
 
-    if (Epars1.doReverse==1 || doalt2f)
+    if (doReverse==1 || doalt2f)
     {
-    if (Epars1.zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
+    if (zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
     fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
@@ -732,10 +744,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
   
     for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
    
-
     return fitness/count;
-
-
 
     //if (Epars1.doReverse==0) return fitnessForward;
     //if (Epars1.doReverse==1) return fitnessBackward;

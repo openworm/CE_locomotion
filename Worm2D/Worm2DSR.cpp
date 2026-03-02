@@ -35,7 +35,8 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     if (!do_nml){
 
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-    setNSFromJson(j,n);
+    setNSFromJson(BPitsJson,n);
+
 
     //if (j["Nervous system"].contains("section sizes"))
       //jsects = j["Nervous system"]["section sizes"];
@@ -54,13 +55,13 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 
     }
 
-    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(BPitsJson);
 
     //Worm2DSRb::setParsFromJson(j);
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
-    InputSwitcher::construct(j);
-    setMuscBodExt(j);
+    InputSwitcher::construct(BPitsJson);
+    setMuscBodExt(BPitsJson);
     //setUpMuscleConn(j);
     //setUpBodyConn(j);
     //makeExternalInputConnFromJson(j);
@@ -1555,6 +1556,7 @@ void Sensor::construct(const json & j)
 void  Sensor::addParsToJson(json & j) const
 {
 
+ 
 if (spvec.size()<1) return;
 
 json & j2 = j["Sensors"];

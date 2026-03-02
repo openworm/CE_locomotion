@@ -195,7 +195,7 @@ void ResetAgentsBody(){
 
 Worm2Dm & wb;
 //shared_ptr<gradParameters> CO2DSRpars;
-shared_ptr<baseParameters> sensor_basePars1;
+//shared_ptr<baseParameters> sensor_basePars1;
 
 vector<SensorPars> spvec;
 

@@ -190,7 +190,9 @@ class baseParameters
         defaultVals_["SRZeroGainsType"] = 1;
         defaultVals_["SROffset"] = 0;
         defaultVals_["NMJWeight"] = 1;
-    
+        defaultVals_["doReverse"] = 0;
+
+
         defaultVals_["NMJ_VN"] = 1; 
         defaultVals_["NMJ_DN"] = 1; 
         defaultVals_["NMJ_Gain_Map"] = 1;
