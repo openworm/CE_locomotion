@@ -192,10 +192,15 @@ class baseParameters
         defaultVals_["NMJWeight"] = 1;
         defaultVals_["doReverse"] = 0;
 
+        defaultVals_["OSCTbase"] = 0.25; // Cap for oscillation evaluation
+        defaultVals_["agarfreq"] = 0.44;
+        defaultVals_["AvgSpeed"] = 0.00022; 
 
         defaultVals_["NMJ_VN"] = 1; 
         defaultVals_["NMJ_DN"] = 1; 
         defaultVals_["NMJ_Gain_Map"] = 1;
+        defaultVals_["fitType"] = 0;
+        defaultVals_["doAngleDiff"] = 0;
 
 
        return defaultVals_;

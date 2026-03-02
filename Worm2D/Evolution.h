@@ -668,7 +668,7 @@ template<class T>
 double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
 {
   
-    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
+    //const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
 
     //Epars1.show();
     //assert(0);
@@ -1081,12 +1081,20 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
 
   //const AgarPars & EparsR = dynamic_cast<const AgarPars&>(*evopar_ptr);
     //const EvolparametersCE & EparsR = dynamic_cast<const EvolparametersCE&>(*evopar_ptr);
-    shared_ptr<const EvolparametersCE> EparsR = 
-    dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
-  
-    
 
-    const double AvgSpeed = EparsR->AvgSpeed;
+    //shared_ptr<const EvolparametersCE> EparsR = 
+    //dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
+  
+    int fitType; //, doAngleDiff;
+    w_ptr->getValCJWorm("fitType", fitType);
+    //w_ptr->getValCJWorm("doAngleDiff", doAngleDiff);
+
+ 
+    double AvgSpeed;
+    w_ptr->getValCJWorm("AvgSpeed", AvgSpeed);
+
+
+    //const double AvgSpeed = EparsR->AvgSpeed;
     
     //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
     
@@ -1200,12 +1208,12 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
         movementorientation = atan2(yt-ytp,xt-xtp);         // Orientation of the movement
         anglediff = movementorientation - bodyorientation;  // Check how orientations align
          if (direction == 1 || direction == 2){
-            if (EparsR->fitType == 0)
+            if (fitType == 0)
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             else temp = cos(anglediff);
             }
             else{
-            if (EparsR->fitType == 0) 
+            if (fitType == 0) 
             temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
             else temp = cos(anglediff)*-1;
             }
