@@ -177,8 +177,9 @@ int main (int argc, const char* argv[])
     if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename, cmd);
     //if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
-    if (model_name == "W2DCE") w2 = new WormCE(json_filename, cmd);
-    //if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
+    //if (model_name == "W2DCE") w2 = new WormCE(json_filename, cmd);
+
+    if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
     if (model_name == "W2D21R") w2 = new Worm21R(gen_filename, cmd);
     //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
@@ -279,6 +280,9 @@ int main (int argc, const char* argv[])
     }
     
     else{
+
+    int zeroGainsType;
+    w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
 
     j["Simulation"]["transient"]["value"] = simtransient;
     j["Simulation"]["duration"]["value"] = simduration*2;

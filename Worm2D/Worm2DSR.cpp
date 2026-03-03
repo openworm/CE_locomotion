@@ -998,26 +998,29 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
 }
 
 
-
-vector<double> Worm2DSRE::getInitGeno()
+vector<double> Worm2DSRE::getInitPheno()
 {
 
   const double checkval = 123456;
   vector<double> pheno(getVectSize(), checkval); 
 
-
   const json & js1 = BPitsJson;
   recursive_iterate(pheno,js1,itsEf);
-
-
   
   for (int i = 0; i< pheno.size(); i++){
   cout << "pheno i " << pheno[i] << " " << i << endl;
   assert(!check123456(pheno[i]) && "init pheno not set");
   }
 
-  
+  return pheno;  
 
+}
+
+vector<double> Worm2DSRE::getInitGeno()
+{
+
+  vector<double> pheno = getInitPheno();
+  
   vector<double> initialGeno(getVectSize());
   //initialGeno.resize(getVectSize());
   PhenGenMapping(initialGeno, pheno);

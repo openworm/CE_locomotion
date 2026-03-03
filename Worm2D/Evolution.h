@@ -242,7 +242,7 @@ protected:
     //double Evaluation21(TVector<double> &geno, RandomState &rs);
     double Evaluation18(TVector<double> &genotype, RandomState &rs);
     double EvaluationCE(TVector<double> &genotype, RandomState &rs);
-    double EvaluationCEp1(TVector<double> &v, RandomState &rs, int direction, shared_ptr<T> w_ptr);
+    double EvaluationCEp1(RandomState &rs, int direction, shared_ptr<T> w_ptr);
     double Evaluation21R(TVector<double> &genotype, RandomState &rs);
     //double Evaluation21Rp1(TVector<double> &v, RandomState &rs, int direction);
     double EvaluationCENZ(TVector<double> &genotype, RandomState &rs);
@@ -726,7 +726,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(0);
-    fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
+    fitness += EvaluationCEp1(rs, 1, w_ptr);
     count++;
     }
 
@@ -735,7 +735,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     if (zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
-    fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
+    fitness += EvaluationCEp1(rs, -1, w_ptr);
     count++;
     }
 
@@ -797,7 +797,7 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
     //genotype(SR_B)= srb;
       w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(0);
-    fitness += EvaluationCEp1(genotype, rs, 1, w_ptr);
+    fitness += EvaluationCEp1(rs, 1, w_ptr);
     count++;
     }
     if (Epars1.doReverse==1 || doalt2f){
@@ -806,7 +806,7 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
     //genotype(SR_B)= -1.0;
       w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
-    fitness += EvaluationCEp1(genotype, rs, -1, w_ptr);
+    fitness += EvaluationCEp1(rs, -1, w_ptr);
     count++;
     }
 
@@ -1066,7 +1066,6 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
 
 template<class T>
 double Evolvable_ptrB<T>::EvaluationCEp1(
-    TVector<double> &genotype, 
     RandomState &rs, int direction,
     shared_ptr<T> w_ptr)
 {

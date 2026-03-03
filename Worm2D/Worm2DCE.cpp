@@ -156,10 +156,12 @@ WormCE::WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):WormCE(cm
 
 
 
-WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_):WormCE(cmd)
+WormCE::WormCE(shared_ptr<const CmdArgs> cmd, const string & genfilename_):WormCE(cmd)
 {
-    setParsFromFile(filename_);
+    setParsFromFile(genfilename_);
 }
+
+
 
 
 WormCE::WormCE(const string & jsonfilename_, const string & filename_, shared_ptr<const CmdArgs> cmd_):

@@ -115,6 +115,7 @@ void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
 vector<doubDoub> makeVals();
 void testJson(json & j);
 //void setInitGeno();
+vector<double> getInitPheno();
 vector<double> getInitGeno();
 void addEvolvableToJson(json & j);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd);

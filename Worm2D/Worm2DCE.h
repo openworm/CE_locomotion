@@ -183,11 +183,15 @@ public:
     //WormCE(int argc, const char* argv[]);
     
     WormCE(const string & jsonfilename_, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
-    WormCE(const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    WormCE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     WormCE(shared_ptr<const CmdArgs> cmd_ = nullptr);
     WormCE(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
+
+    WormCE(shared_ptr<const CmdArgs> cmd, const string & genfilename_);
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &pheno);
     WormCE(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
 
     //WormCE();
     //WormCE(int argc, const char* argv[], TVector<double> &geno);
@@ -228,10 +232,18 @@ public:
     
     
     //WormCE(const string & filename_);
-    WormCE(shared_ptr<const CmdArgs> cmd, const string & filename_);
+
+    
+
+
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
+    
     WormCE(TVector<double> &phengen, bool isPheno);
+    
     WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
+
+
+
     //WormCE(shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd_ = nullptr);
 
     //WormCE(shared_ptr<SRCE> sr_ptr_);
