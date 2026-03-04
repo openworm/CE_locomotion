@@ -68,8 +68,17 @@ class EvolvableS
   void callEfcond(const json & j1_);
   Efunctor itsEf;
   vector<double> current_pheno;
-  void setCurrentPheno(const vector<double> & pheno1){current_pheno = pheno1;}
+  
+  void setCurrentPheno(const vector<double> & pheno1){
+     
+    current_pheno.clear();
+    for (int i=0;i<pheno1.size(); i++) current_pheno.push_back(pheno1[i]);
+    //current_pheno = pheno1;
+  
+  }
+
   void setCurrentPheno(const TVector<double> &pheno);
+  virtual const vector<double> & getCurrentPheno(){return current_pheno;}
 
   private:
   //void setParsFromPheno(const vector<double> &pheno);

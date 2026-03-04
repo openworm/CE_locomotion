@@ -103,6 +103,7 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):
 Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
+    setInitPheno();
     if (callInit) writeOrigGen(cmd);
   }
   
@@ -845,8 +846,15 @@ return; */
 
 }
 
-
 void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
+{
+vector<double> initGeno = getInitGeno();
+writeOrigGen(cmd,initGeno);
+
+}
+
+
+void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno)
 {
 
   string directoryName = cmd->getArgVal("--folder","HJUYGYT");
@@ -859,7 +867,7 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
     BestIndividualFile.open(rename_file("EvoWJbest.gen.dat", directoryName));
     //BestIndividualFile.open(bestfilename);
     BestIndividualFile << setprecision(32);
-    vector<double> initGeno = getInitGeno();
+    //vector<double> initGeno = getInitGeno();
     BestIndividualFile << initGeno[0];
     for (int i=1;i<initGeno.size();i++)
     BestIndividualFile << " " << initGeno[i];
@@ -872,13 +880,16 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd)
 
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef)
 {
+
+        const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
+
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
           int phenind = jevol.at("val").get<int>() - 1; //need mfunc
 
           double phenval;
-          if (jevol.contains("mfunc"))
+          if (do_mfunc && jevol.contains("mfunc"))
             phenval = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
           else phenval = pheno[phenind];
           if (check123456(phenval, it2->at("value"))) pheno[phenind] = it2->at("value");
@@ -886,7 +897,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         }
         else if (it2->at("evolvable").is_number()){
         //cout << "ph " << it.key() << " " << it2.key() << endl;
-        cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
+        //cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
         //assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
         if (check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")))
         pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
@@ -909,15 +920,18 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           {
             int phenind = itjevol->at("val").get<int>() - 1;
             double phenval;
-            if (itjevol->contains("mfunc"))
+            if (do_mfunc && itjevol->contains("mfunc"))
               phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
             else phenval = pheno[phenind];
 
+            if (false){
             cout << "phvals " << iind << " " << j << " " 
             <<  itjevol->at("val").get<int>()
             << " " << itjevol->at("from").get<int>() << " " <<  itjevol->at("to").get<int>()  << endl;
             //cout << "ph " << it.key() << " " << it2.key() << endl;
             cout << "ph " << phenval << " " << pheno[phenind] << " " << values[j].w.weight << endl;
+
+            }
 
             //assert(check123456(phenval, values[j].w.weight));
             if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
@@ -1001,12 +1015,13 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
 
 
 
-vector<double> Worm2DSRE::getCurrentPheno()
+/* const vector<double> & Worm2DSRE::getCurrentPheno()
 {
-  return getInitPheno();
-}
+  setInitPheno();
+  return current_pheno;
+} */
 
-vector<double> Worm2DSRE::getInitPheno()
+void Worm2DSRE::setInitPheno()
 {
 
   const double checkval = 123456;
@@ -1021,18 +1036,18 @@ vector<double> Worm2DSRE::getInitPheno()
   }
 
   setCurrentPheno(pheno);
-  return pheno;  
+  
 
 }
 
 vector<double> Worm2DSRE::getInitGeno()
 {
 
-  vector<double> pheno = getInitPheno();
+  //setInitPheno();
   
   vector<double> initialGeno(getVectSize());
   //initialGeno.resize(getVectSize());
-  PhenGenMapping(initialGeno, pheno);
+  PhenGenMapping(initialGeno, current_pheno);
 
   return initialGeno;
 

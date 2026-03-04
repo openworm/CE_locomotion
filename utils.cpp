@@ -10,6 +10,7 @@ bool check123456(const double & val, const double & val2)
 if (val<123456.001 && val>123455.999) return true;
 if (val==val2) return false;
 
+cout << "che12 " << val << " che11 " << val2 << endl; 
 assert(0);
 
 }

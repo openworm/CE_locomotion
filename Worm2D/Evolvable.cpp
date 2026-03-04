@@ -12,6 +12,7 @@ void EvolvableS::callEfcond(const json & j1_)
 {
 //vector<double> pheno = getCurrentPheno();
 
+const vector<double> & phen1 = getCurrentPheno();
 
 for (auto& el : j1_.items())
 {
@@ -24,10 +25,10 @@ cout << itsEf.itsJson << endl;
 //setCurrentPheno(pheno);
 //current_pheno.swap(pheno);
 
-assert(current_pheno.size()>0);
+assert(phen1.size()>0);
 
-TVector<double> pheno1(1,current_pheno.size());
-for (int i=0;i<current_pheno.size();i++) pheno1(i+1) = current_pheno[i];
+TVector<double> pheno1(1,phen1.size());
+for (int i=0;i<phen1.size();i++) pheno1(i+1) = phen1[i];
 
 //cout << pheno1 << endl;
 //assert(0);

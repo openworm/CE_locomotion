@@ -126,7 +126,7 @@ void EvoBase::setFromCPT2()
     struct stat buffer;   
     if (doCPT && evoPars1.CheckpointInterval>0 && (stat (filename_.c_str(), &buffer) == 0)) {
 
-        cout << filename_ << endl; 
+      //  cout << "set from cpt " << filename_ << endl; 
 
         s = new TSearch(1);
         s->cptfilename = filename_;
