@@ -105,6 +105,7 @@ Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 void setParsFromPheno(const TVector<double> &pheno);
+//void setParsFromPheno(const vector<double> &pheno);
 int getVectSize() {assert(genPhenLims.size()>0); return genPhenLims.size();}
 void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
 void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
@@ -116,6 +117,7 @@ vector<doubDoub> makeVals();
 void testJson(json & j);
 //void setInitGeno();
 vector<double> getInitPheno();
+vector<double> getCurrentPheno();
 vector<double> getInitGeno();
 void addEvolvableToJson(json & j);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd);
@@ -141,6 +143,7 @@ void setParsFromPheno_old(const TVector<double> &pheno);
 //bool directMuscEvo = false;
 //json itsJson;
 
+//void callEfcond(const json & j);
 };
 
 

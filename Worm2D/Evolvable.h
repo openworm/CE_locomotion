@@ -52,15 +52,27 @@ class EvolvableS
   
   virtual void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen) = 0;
   virtual int getVectSize() = 0;
+  void setParsFromPhenoNZ(const TVector<double> &pheno);
   virtual void setParsFromPheno(const TVector<double> &pheno) = 0;
+  //void setParsFromPhenoAndSet(const TVector<double> &pheno);
+  //void setParsFromPhenoAndSet(const vector<double> &pheno);
   virtual void setEvolPars(W2Dparameters & w2par_, string evotype_) = 0;
+  //virtual const vector<double> & getCurrentPheno() const {return current_pheno;}
   //virtual void setWormPars(shared_ptr<const CmdArgs> cmd) = 0;
-
+ 
   virtual ~EvolvableS(){}
   
   void setParsFromFile(const string & genofilename_);
   void setParsFromGeno(const TVector<double> &geno);
   void setParsFromPhenGen(const TVector<double> &phengen, const bool & isPheno);
+  void callEfcond(const json & j1_);
+  Efunctor itsEf;
+  vector<double> current_pheno;
+  void setCurrentPheno(const vector<double> & pheno1){current_pheno = pheno1;}
+  void setCurrentPheno(const TVector<double> &pheno);
+
+  private:
+  //void setParsFromPheno(const vector<double> &pheno);
 
 };
 

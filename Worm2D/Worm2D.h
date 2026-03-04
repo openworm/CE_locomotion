@@ -414,7 +414,7 @@ void Step(double StepSize_);
 void Step();
 virtual void setStepSize(double val_){settedStepSize=val_;}
 
-
+virtual void randomizeNS(RandomState &rs);
 vector<double> readPhenotype();
 virtual void writeAct();
 void writeExtInp(ofstream & ofs);
@@ -473,6 +473,10 @@ void zeroAllInputs(){
 
 template<class T> friend class Evolvable_ptrB;
 
+void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
+
+
+
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
@@ -526,7 +530,6 @@ void setExternalInput();
 virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
 
 void assignExternalInputOnce(const int & ind, const double & val){externalInputs[ind]=val;}
-void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 
 vector<toFromWeight> NSInputConn, NSOutputConn;
 void incInputFromNS(NSForW2D & ns_);
@@ -540,7 +543,7 @@ static wormIzqParams getIzqPars(const json & j);
 
 
 
-Efunctor itsEf;
+//Efunctor itsEf;
 };
 
 
@@ -689,7 +692,7 @@ class WormFR
 public:
 virtual void setForward() = 0;
 virtual void setBackward() = 0;
-virtual void randomizeNS(RandomState &rs)  = 0;
+//virtual void randomizeNS(RandomState &rs)  = 0;
 
 };
 

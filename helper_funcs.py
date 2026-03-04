@@ -312,7 +312,7 @@ def plot_orients(
             newval["y_label"] = "angle (rad)"
         plottables[key] = newval
 
-    print(plottables)
+    #print(plottables)
     sys.exit
 
     mark_size = 0.2
@@ -329,7 +329,7 @@ def plot_orients(
             t_end_ind = -1
         if r_diff > 1:
             t_start_ind = 1
-        print(val, t_start_ind, t_end_ind, r_diff)
+        #print(val, t_start_ind, t_end_ind, r_diff)
         ax_orient[row_num, col_num].plot(
             plot_func(trange[t_start_ind:t_end_ind]),
             plot_func(plottables[val]["value"]),

@@ -254,17 +254,16 @@ int main (int argc, const char* argv[])
     w2->addParsToJson(j);
     
 
-
     const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
     double simduration = cmd->getArgValDoub("-sd",10);
     double simtransient = cmd->getArgValDoub("-st",10);   
     
-    WormFR* const w = dynamic_cast<WormFR*>(w2);
+    //WormFR* const w = dynamic_cast<WormFR*>(w2);
 
 
-    if (dotest || w==nullptr)
+    if (dotest)
     {
 
     //if (w!=nullptr) w->setForward();
@@ -281,8 +280,12 @@ int main (int argc, const char* argv[])
     
     else{
 
+    WormFR* const w = dynamic_cast<WormFR*>(w2);
+    EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
+
     int zeroGainsType;
     w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    
 
     j["Simulation"]["transient"]["value"] = simtransient;
     j["Simulation"]["duration"]["value"] = simduration*2;
@@ -290,38 +293,40 @@ int main (int argc, const char* argv[])
     bool forwardfirst = cmd->getArgValInt("--doForwardFirst",1);
     //forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
 
-
-    if (forwardfirst) w->setForward();
-    else w->setBackward();
-
-
-    /*  if (model_name == "W2DCE") 
-    {
-        //shared_ptr<W2DCEpars> W2DCEpars1(new W2DCEpars(argc,argv));
-        WormCE & w = dynamic_cast<WormCE&>(*w2);
-        //w.setWormPars(argc,argv);
-        //string SRType = getParameter(argc,argv,"--SRType","None");
-        //w.setW2DCEpars(W2DCEpars1);
-        if (forwardfirst) w.setForward();
-        else w.setBackward();
-    } */
-
-   
-
-    //double simduration = getParameterDouble(argc,argv,"-sd","10");
-    //double simtransient = getParameterDouble(argc,argv,"-st","10");    
-    
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
+
+    bool doforward = forwardfirst;
+    for (int mode=0;mode<2;mode++){
+    if (mode==1) {doforward = !forwardfirst; 
+        w2->randomizeNS(rs);
+        s1.sp.Transient = 0;
+        }
+
+    if (w!=nullptr) {if (doforward) w->setForward(); else w->setBackward();}
+    else {
+
+        if (ew!=nullptr && zeroGainsType == 1)
+        {
+        
+        json efconds;
+        if (doforward) efconds["condval"] = 0; else efconds["condval"] = 1;
+        ew->callEfcond(efconds);
+        }
+
+        if (doforward) w2->setInputOnce(0); else w2->setInputOnce(1);
+    }
+ 
     s1.runSimulation(*w2);
 
-    if (forwardfirst) w->setBackward();
-        else w->setForward();
+    //if (forwardfirst) w->setBackward();
+      //  else w->setForward();
 
-    s1.sp.Transient = 0; 
-    w->randomizeNS(rs);
-    s1.runSimulation(*w2);
+    //s1.sp.Transient = 0; 
+   
+    //s1.runSimulation(*w2);
     
+    }
     }
 
     /* 
@@ -336,6 +341,7 @@ int main (int argc, const char* argv[])
         s1.runSimulation(*w2);
     }
     */
+
     j["Simulation"]["StepSize"]["value"] = StepSize;
     j["Simulation"]["skip_steps"]["value"] = skip_steps;
    

@@ -1,5 +1,65 @@
 #include "Evolvable.h"
 
+void EvolvableS::setParsFromPhenoNZ(const TVector<double> &pheno)
+{
+
+    setCurrentPheno(pheno);
+    setParsFromPheno(pheno);
+}
+
+
+void EvolvableS::callEfcond(const json & j1_)
+{
+//vector<double> pheno = getCurrentPheno();
+
+
+for (auto& el : j1_.items())
+{
+itsEf.itsJson[el.key()] = el.value();
+}
+
+cout << itsEf.itsJson << endl;
+
+
+//setCurrentPheno(pheno);
+//current_pheno.swap(pheno);
+
+assert(current_pheno.size()>0);
+
+TVector<double> pheno1(1,current_pheno.size());
+for (int i=0;i<current_pheno.size();i++) pheno1(i+1) = current_pheno[i];
+
+//cout << pheno1 << endl;
+//assert(0);
+
+return setParsFromPheno(pheno1);
+//setParsFromPheno(pheno);
+
+}
+
+void EvolvableS::setCurrentPheno(const TVector<double> &pheno)
+{
+    current_pheno.clear();
+    for (int i=1;i<=pheno.Size(); i++) current_pheno.push_back(pheno(i));
+
+}
+
+
+/* void EvolvableS::setParsFromPhenoAndSet(const TVector<double> &pheno)
+{
+    current_pheno.clear();
+    for (int i=1;i<=pheno.Size(); i++) current_pheno.push_back(pheno(i));
+    setParsFromPheno(pheno);
+}
+
+
+ */
+/* void EvolvableS::setParsFromPheno(const vector<double> &pheno)
+{
+TVector<double> pheno1(1,pheno.size());
+for (int i=0;i<pheno.size();i++) pheno1(i+1) = pheno[i];
+return setParsFromPheno(pheno1);
+} */
 
 
 W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])

@@ -468,6 +468,25 @@ void Worm2Dbase::Step()
     //datatime += StepSize_; 
 }
 
+void Worm2Dbase::randomizeNS(RandomState &rs)
+{
+ //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
+
+ //assert(w1parss!=nullptr);
+
+  NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
+  if (n==nullptr) return;
+   
+  bool randomInitialState;
+  getValCJWorm<bool>("randomInitialState",randomInitialState);
+
+
+  if (randomInitialState) {
+  n->RandomizeCircuitState(-1, 1, rs);
+  n->RandomizeCircuitOutput(0.2, 0.8, rs);
+  }
+
+}
 
 void Worm2Dbase::incSimTimes()
 {

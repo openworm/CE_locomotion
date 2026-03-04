@@ -627,10 +627,12 @@ void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef)
     }
 }
 
+
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
-
+  setCurrentPheno(pheno);
+  
   json & js1 = BPitsJson;
   recursive_iterate2(pheno,js1,itsEf);
   
@@ -998,6 +1000,12 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
 }
 
 
+
+vector<double> Worm2DSRE::getCurrentPheno()
+{
+  return getInitPheno();
+}
+
 vector<double> Worm2DSRE::getInitPheno()
 {
 
@@ -1012,6 +1020,7 @@ vector<double> Worm2DSRE::getInitPheno()
   assert(!check123456(pheno[i]) && "init pheno not set");
   }
 
+  setCurrentPheno(pheno);
   return pheno;  
 
 }

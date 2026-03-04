@@ -25,6 +25,8 @@ Worm2DCE::Worm2DCE(wormIzqParams par1_, NSForW2D * n_ptr_,
   Worm2DSR(par1_, n_ptr_, nullptr, cmd_)//,sr_ptr(dynamic_pointer_cast<SRCE>(w2dsr_ptr))
   {
 
+   
+
    // w2dsr_ptr = makeSRCE();
    // sr_ptr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
 
@@ -107,7 +109,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd):
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), cmd),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},nullptr,cmd)
 {
- 
+  n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
   w2dsr_ptr = makeSRCE();
   sr_ptr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
  
@@ -480,7 +482,10 @@ j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 void WormCE::setParsFromPheno(const TVector<double> &pheno)
 {
 
+ setCurrentPheno(pheno);
 
+ //cout << pheno << endl;
+ //assert(0);
 
 //cout << "CE spfp " << par1.N_units << " " << par1.N_neuronsperunit << endl;
 //assert(0);
@@ -498,6 +503,8 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   // Muscles
   //m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
   // Nervous system
+
+  if (false)
   n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
 
   int da, db, dd, vd, vb, va;
@@ -508,21 +515,32 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
  
 
   if (itsEf.itsJson.contains("condval")){
+   
   {json jevol;
   jevol["mfunc"]["f_ind"] = 2;
   jevol["mfunc"]["cond"] = 0;
-  sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol["mfunc"]); }
+  sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol["mfunc"]); 
+  sr_ptr->SR_B_gain = pheno(2);
+  }
   {json jevol;
   jevol["mfunc"]["f_ind"] = 2;
   jevol["mfunc"]["cond"] = 1;
-  sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol["mfunc"]); }
+  sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol["mfunc"]); 
+  sr_ptr->SR_A_gain = pheno(1);
+  }
   
+  //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
+  //assert(0);
 
   }
 
 else{
   sr_ptr->SR_A_gain = pheno(1);
   sr_ptr->SR_B_gain = pheno(2);
+ 
+  //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
+  //assert(0);
+
 }
 
   //cout << "psps " << pheno(1) << " "  << pheno(2) << endl;
@@ -629,15 +647,23 @@ else{
 void Worm2DCE::setForward()
 {
   //assert(0);
+  
+  if (true){
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
+  }
+
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->)
+
+
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
-  AVA_output =  0;
-  AVB_output =  1;
+  
+  //AVA_output =  0;
+  //AVB_output =  1;
+
   //sr_ptr->setWeights();
   //W2DCEpars1->AVA_output =  0;
   //W2DCEpars1->AVB_output =  1; //W2DCEpars1->AB_output_level;
@@ -651,14 +677,22 @@ void Worm2DCE::setForward()
 void Worm2DCE::setBackward()
 {
   //assert(0);
+ 
+  if (true){
   sr_ptr->SR_A_gain = pheno_A_gain;
   sr_ptr->SR_B_gain = pheno_B_gain;
+  }
+
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
   getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
-  AVA_output =  1;
-  AVB_output =  0;
+  
+  //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
+
+  //assert(0);
+  //AVA_output =  1;
+  //AVB_output =  0;
 
   //sr_ptr->setWeights();
   //W2DCEpars1->AVA_output =  1; //W2DCEpars1->AB_output_level;
@@ -1016,13 +1050,14 @@ void Worm2DCE::setExternalInputOrig()
   
 }  */
 
+
 void WormCE::randomizeNS(RandomState &rs)
 {
  //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
 
  //assert(w1parss!=nullptr);
 
-   bool randomInitialState;
+  bool randomInitialState;
   getValCJWorm<bool>("randomInitialState",randomInitialState);
 
 
@@ -1032,6 +1067,7 @@ void WormCE::randomizeNS(RandomState &rs)
   }
 
 }
+
 
 void WormCE::InitializeState(RandomState &rs)
 {

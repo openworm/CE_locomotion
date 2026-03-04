@@ -33,12 +33,14 @@ double Efunctor::eFunc(const double & val, const json & j)
 
   if (j.at("f_ind").get<int>() == 2) {
    
-    int cond = j.at("cond").get<int>();
+    const int cond = j.at("cond").get<int>();
 
-    if (itsJson.contains("condval"))
-      if (cond == itsJson["condval"].get<int>()) return 0;
-    return val;
-   
+    if (itsJson.contains("condval")){
+      if (cond == itsJson.at("condval").get<int>()) return 0;
+      return val;
+    }
+    assert(0);
+    
   }
 
   assert(0);
