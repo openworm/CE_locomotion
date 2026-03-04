@@ -280,7 +280,7 @@ int main (int argc, const char* argv[])
     
     else{
 
-    WormFR* const w = dynamic_cast<WormFR*>(w2);
+    WormFR* const w = nullptr; //dynamic_cast<WormFR*>(w2);
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
 
     int zeroGainsType;

@@ -109,6 +109,7 @@ WormCE::WormCE(shared_ptr<const CmdArgs> cmd):
 Worm2Dm({6,24,0.1,10,60}, new NervousSystem(), cmd),
 n(dynamic_cast<NervousSystem&>(*n_ptr)),Worm2DCE({6,24,0.1,10,60},nullptr,cmd)
 {
+  if (true)
   n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
   w2dsr_ptr = makeSRCE();
   sr_ptr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
@@ -520,13 +521,13 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   jevol["mfunc"]["f_ind"] = 2;
   jevol["mfunc"]["cond"] = 0;
   sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol["mfunc"]); 
-  sr_ptr->SR_B_gain = pheno(2);
+  //sr_ptr->SR_B_gain = pheno(2);
   }
   {json jevol;
   jevol["mfunc"]["f_ind"] = 2;
   jevol["mfunc"]["cond"] = 1;
   sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol["mfunc"]); 
-  sr_ptr->SR_A_gain = pheno(1);
+  //sr_ptr->SR_A_gain = pheno(1);
   }
   
   //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
