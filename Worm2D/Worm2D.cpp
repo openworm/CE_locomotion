@@ -475,7 +475,8 @@ void Worm2Dbase::randomizeNS(RandomState &rs)
  //assert(w1parss!=nullptr);
 
   NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
-  if (n==nullptr) return;
+  
+  if (n){
    
   bool randomInitialState;
   getValCJWorm<bool>("randomInitialState",randomInitialState);
@@ -484,6 +485,7 @@ void Worm2Dbase::randomizeNS(RandomState &rs)
   if (randomInitialState) {
   n->RandomizeCircuitState(-1, 1, rs);
   n->RandomizeCircuitOutput(0.2, 0.8, rs);
+  }
   }
 
 }

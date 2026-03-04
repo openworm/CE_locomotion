@@ -1051,7 +1051,7 @@ void Worm2DCE::setExternalInputOrig()
 }  */
 
 
-void WormCE::randomizeNS(RandomState &rs)
+/* void WormCE::randomizeNS(RandomState &rs)
 {
  //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
 
@@ -1067,7 +1067,7 @@ void WormCE::randomizeNS(RandomState &rs)
   }
 
 }
-
+ */
 
 void WormCE::InitializeState(RandomState &rs)
 {

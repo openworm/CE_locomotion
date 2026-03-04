@@ -94,7 +94,8 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     virtual void initForSimulation(RandomState&);
     void setForward();
     void setBackward();
-    void randomizeNS(RandomState &rs){return;}
+    //void randomizeNS(RandomState &rs){return;}
+
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);//{W2DCEpars1 = W2DCEpars_;}
     //void setW2DCEpars(const W2DCEpars & W2DCEpars_);
     //void setPars(int argc, const char* argv[]);
@@ -201,7 +202,7 @@ public:
     void InitializeState(RandomState &rs);
     //void HeadStep(double StepSize, double output);
     //void Step(double StepSize, double output);
-    void randomizeNS(RandomState &rs);
+    //void randomizeNS(RandomState &rs);
 
     //void DumpBodyState(ofstream &ofs, int skips);
     //void DumpActState(ofstream &ofs, int skips);
