@@ -74,7 +74,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSR18E
 
     rm -rf testruns/exW2DCEFR
-
+    rm -rf testruns/exW2DCEFRv2
 
     
 
@@ -110,6 +110,7 @@ if [ "$quick_test" == 0 ]; then
     
 
     omv test -V .test.W2DCEFR.omt
+    omv test -V .test.W2DCEFRv2.omt
     omv test -V .test.W2DSR.omt
     omv test -V .test.W2DSR21.omt
     omv test -V .test.W2DSRE21.omt
