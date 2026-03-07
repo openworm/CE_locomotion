@@ -50,6 +50,7 @@ plot_formats["Net21"]["worm_plot_time"] = 2
 plot_formats["Net21"]["do_body_plot"] = True
 plot_formats["Net21"]["do_curv_plot"] = True
 plot_formats["Net21"]["plot_cell_unit"] = 1
+plot_formats["Net21"]["AvgSpeed"] = 0.22
 
 plot_formats["CE"] = {}
 plot_formats["CE"]["fig_titles"] = ["Stretch receptors", "Neurons", "Muscles"]

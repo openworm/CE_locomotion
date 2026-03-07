@@ -26,8 +26,9 @@ int main (int argc, const char* argv[])
 
     
     const string sup_model_name = cmd->getArgVal("--modelname","");
-    double StepSize;
-    int skip_steps;
+    double StepSize = 0.005;
+    int skip_steps = 10;
+    long simrandseed = 42;
     string model_name = sup_model_name;
 
     string json_filename = rename_file("worm_data_worm.json", directoryName);
@@ -42,7 +43,9 @@ int main (int argc, const char* argv[])
     if (directoryExists(json_filename)) 
     j_orig = getJsonFromFile(json_filename);
 
-    if (model_name == "" || model_name == "W2DSR") {
+   
+
+    if (!j_orig.empty() && (model_name == "" || model_name == "W2DSR")) {
     //if (model_name == ""){
     //if (directoryExists(json_filename)){
         //j_orig = getJsonFromFile(json_filename);
@@ -210,10 +213,20 @@ int main (int argc, const char* argv[])
 
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename, cmd);
 
+    if (model_name == "W2D21") 
+    {
+
+        if (do_musclesim) w2 = new Worm2D21m(cmd);
+        else w2 = new Worm2D21(json_filename, cmd);
+        
+
+    }
+
+ 
+   
     }
 
 }
-
 
     json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
@@ -221,10 +234,26 @@ int main (int argc, const char* argv[])
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
 
-    const json j_evo = getJsonFromFile(json_filename);
-    long simrandseed = j_evo["Evolutionary Optimization Parameters"]["randomseed"]["value"];
-    StepSize = j_evo["Evolutionary Optimization Parameters"]["StepSize"]["value"];
-    skip_steps = j_evo["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
+    json j_evo;
+    if (directoryExists(json_filename))
+    j_evo = getJsonFromFile(json_filename);
+
+
+  
+
+    if (!j_evo.empty()){
+    string jloc;
+    if (j_evo.contains("Simulation")) jloc = "Simulation";
+    else if (j_evo.contains("Evolutionary Optimization Parameters")) 
+    jloc = "Evolutionary Optimization Parameters";
+
+    simrandseed = j_evo[jloc]["randomseed"]["value"];
+    StepSize = j_evo[jloc]["StepSize"]["value"];
+    skip_steps = j_evo[jloc]["skip_steps"]["value"];
+    } 
+        
+
+//if (do_nml) assert(0);
 
     const bool prioritizeCmd = cmd->getArgValInt("--prioritizeCmd",0);
     
@@ -236,7 +265,6 @@ int main (int argc, const char* argv[])
     w2->setWormPars(cmd);
     }
 
-    
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
@@ -251,8 +279,11 @@ int main (int argc, const char* argv[])
     w2->InitializeData(directoryName);
     //w2->setWormPars(cmd);
 
+  //  if (do_nml) assert(0);
+
     w2->addParsToJson(j);
     
+
 
     const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
@@ -274,6 +305,7 @@ int main (int argc, const char* argv[])
     Simulation s1(sp1);
     s1.runSimulation(*w2);
 
+    //if (do_nml) assert(0);
     j["Simulation"]["transient"]["value"] = simtransient;
     j["Simulation"]["duration"]["value"] = simduration;
     }
@@ -319,38 +351,21 @@ int main (int argc, const char* argv[])
  
     s1.runSimulation(*w2);
 
-    //if (forwardfirst) w->setBackward();
-      //  else w->setForward();
-
-    //s1.sp.Transient = 0; 
-   
-    //s1.runSimulation(*w2);
-    
     }
     }
-
-    /* 
-    if (model_name == "W2DCE") 
-    {
-        s1.sp.Transient = 0;
-        WormCE & w = dynamic_cast<WormCE&>(*w2);
-        if (forwardfirst) w.setBackward();
-        else w.setForward();
-
-      
-        s1.runSimulation(*w2);
-    }
-    */
 
     j["Simulation"]["StepSize"]["value"] = StepSize;
     j["Simulation"]["skip_steps"]["value"] = skip_steps;
-   
+    j["Simulation"]["randomseed"]["value"] = simrandseed;
+
     //cout << "const 1" << endl;
     j["Worm"]["Main model name"]["value"] = model_name;
     j["Nervous system"]["Model name"]["value"] = model_name;
 
-
+    if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
+
+    
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;

@@ -90,7 +90,8 @@ public:
     //Worm21(TVector<double> &v);
     Worm2D21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_);
     Worm2D21(shared_ptr<const CmdArgs> cmd_);
-    Worm2D21(json & j, shared_ptr<const CmdArgs> cmd_);
+    Worm2D21(const json & j, shared_ptr<const CmdArgs> cmd_);
+    Worm2D21(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd_);
     //Worm2D21(TVector<double> &pheno, bool isPheno);
     void InitializeState(RandomState &rs);
    

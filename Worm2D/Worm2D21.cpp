@@ -75,10 +75,11 @@ Worm2D21(cmd_)
 }
 
 
+Worm2D21::Worm2D21(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd_):
+Worm2D21(getJsonFromFile(jsonfilename_), cmd_){}
 
 
-
-Worm2D21::Worm2D21(json & j, shared_ptr<const CmdArgs> cmd_):Worm2D21(cmd_)
+Worm2D21::Worm2D21(const json & j, shared_ptr<const CmdArgs> cmd_):Worm2D21(cmd_)
 {
 
 // NMJ Weight
@@ -98,6 +99,8 @@ for (int i=1; i<=par1.N_muscles; i++)
     NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
 }
     setUpMuscleConn();
+
+   
 }
 
 void Worm2D21m::initForSimulation(RandomState &rs)

@@ -81,21 +81,25 @@ def make_fig(model_name):
     plot_transient = act_data[0, 0]
     plot_time = plot_format["plot_time"]
 
-    worm_sim_file = hf.rename_file("worm_data_worm.json")
-    if os.path.isfile(worm_sim_file):
-        worm_sim_data = utils.getJsonFile(worm_sim_file)
-        if "Simulation" in worm_sim_data:
-            plot_time = worm_sim_data["Simulation"]["duration"]["value"]
+    if False:
+        worm_sim_file = hf.rename_file("worm_data_worm.json")
+        if os.path.isfile(worm_sim_file):
+            worm_sim_data = utils.getJsonFile(worm_sim_file)
+            if "Simulation" in worm_sim_data:
+                plot_time = worm_sim_data["Simulation"]["duration"]["value"]
 
     plot_ex = max(0, plot_time - 40)
     plot_transient = plot_transient + plot_ex / 2
     plot_time = plot_time - plot_ex
 
     worm_plot_time = plot_format["worm_plot_time"]
-    AvgSpeed = (
+    if "Evolutionary Optimization Parameters" in network_json_data:
+        AvgSpeed = (
         network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"]["value"]
         * 1000.0
-    )
+        )
+    elif "AvgSpeed" in plot_format:
+        AvgSpeed = plot_format["AvgSpeed"]
 
     # plot_velocity = True
     # if plot_velocity:
