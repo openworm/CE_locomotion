@@ -339,6 +339,10 @@ template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<T> evol1) 
 {
 
+    cout << "evotype " << evotype_ << endl;
+    
+
+
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
@@ -1579,7 +1583,10 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     const double BBCfit = AvgSpeed*Duration;
 
 
-    
+    //cout << "evo18 " << Duration << " " << StepSize << " " << N_curvs << " " << Transient << " "
+    //<< AvgSpeed << " " << BBCfit << endl;
+
+    //assert(0);
 
     //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
     //const double    BBCfit = AvgSpeed*Duration;

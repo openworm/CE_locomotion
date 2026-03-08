@@ -15,6 +15,8 @@ outputFolderName = "testruns/exW2DSRE21"
 args = dict(
     simduration=50,
     simtransient=0,
+    duration=40,
+    transient=10,
     maxGens=16,
     popSize=36,
     RandSeed=292,
@@ -29,6 +31,8 @@ args = dict(
     doEvol=True,
     checkPointInterval=5,
     evoType="Evo18",
+    SimStepSize = 0.01,
+    SimSkipSteps = 4,
 )
 
 if doOrig:

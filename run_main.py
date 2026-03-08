@@ -688,6 +688,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doOrigSRInput"] = True
     evol_extra_parameters["doAngleDiff"] = False
     evol_extra_parameters["StepSize"] = 0.005
+    
+
     evol_extra_parameters["resetAgentBody"] = False
     evol_extra_parameters["useSupCPT"] = False
     evol_extra_parameters["modPar"] = True
@@ -699,8 +701,11 @@ def run(a=None, **kwargs):
     sim_extra_parameters["doForwardFirst"] = True
     sim_extra_parameters["SRZeroGainsType"] = 0
     sim_extra_parameters["useGenJson"] = True
-
+    sim_extra_parameters["SimStepSize"] = 0.005
+    sim_extra_parameters["SimSkipSteps"] = 10
+    
     sim_extra_parameters["prioritizeCmd"] = 0
+    
 
     main_cmd = model_folder + "/" + mainProcessName
     cmd = [main_cmd]

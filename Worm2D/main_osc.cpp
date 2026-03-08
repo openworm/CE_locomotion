@@ -255,6 +255,9 @@ int main (int argc, const char* argv[])
     skip_steps = j_evo[jloc]["skip_steps"]["value"];
     } 
         
+    StepSize = cmd->getArgValDoub("--SimStepSize", StepSize);
+    skip_steps = cmd->getArgValDoub("--SimSkipSteps", skip_steps);
+
 
 //if (do_nml) assert(0);
 
@@ -268,6 +271,9 @@ int main (int argc, const char* argv[])
     w2->setWormPars(cmd);
     }
 
+
+    //cout << "ssed " << StepSize << " " << skip_steps << endl;
+    //assert(0);
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
