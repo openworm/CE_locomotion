@@ -9,7 +9,7 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-inputFolderName = "experiments/izq_runs_nets/103"
+inputFolderName = "experiments/izq_runs_nets_W2D21/103"
 outputFolderName = "testruns/exW2DSRE21"
 
 args = dict(

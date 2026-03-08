@@ -112,6 +112,9 @@ int main (int argc, const char* argv[])
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
+
+        
+
         evo->configure();
      
         //evo->addParsToJson(j);

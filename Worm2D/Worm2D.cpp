@@ -1202,7 +1202,10 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
   bool do_nml =  cmd->getArgValInt("--donml",0);
   if (do_nml) {
     double StepSize = 0;
-    if (j.contains("Evolutionary Optimization Parameters")){
+    if (j.contains("Simulation")){
+    StepSize = j["Simulation"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    else if (j.contains("Evolutionary Optimization Parameters")){
     StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
     StepSize = cmd->getArgValDoub("--StepSize",StepSize);

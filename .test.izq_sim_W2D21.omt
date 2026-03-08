@@ -15,7 +15,18 @@ experiments:
                 spike detection: 
                     method: threshold
                     threshold: 0.5
-                tolerance: 0.04
+                tolerance: 0.00
+    Test3:
+        observables:
+            spike times:
+                file: 
+                    path: experiments/izq_runs_nets_nml_musc_W2D21/103/act.dat
+                    columns: [0, 3]
+                    scaling: [1, 1]
+                spike detection: 
+                    method: threshold
+                    threshold: 0.5
+                tolerance: 0.00            
     Test4:
         observables:
             spike times:

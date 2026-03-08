@@ -6,16 +6,16 @@ from neuromlLocal.regenerate import run as regenerate_run
 
 
 doOrig = True
-doNML = True
-doMuscles = True
+doNML = False
+doMuscles = False
 
-inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2DSR21"
+inputFolderName = "experiments/izq_runs_nets/103"
+outputFolderName = "testruns/exW2D21"
 
 args = dict(
     simduration=58,
     simtransient=50,
-    modelName="W2DSR",
+    modelName="W2D21",
     modelFolder="Worm2D",
     inputFolderName=inputFolderName,
     outputFolderName=outputFolderName,

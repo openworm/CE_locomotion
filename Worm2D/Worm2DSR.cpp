@@ -103,8 +103,10 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):
 Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
+   
     setInitPheno();
     if (callInit) writeOrigGen(cmd);
+    
   }
   
 

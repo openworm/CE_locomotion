@@ -303,6 +303,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     assert(w_ptr1!=nullptr);
     
+    if (json_ptr_->contains("Evolutionary Optimization Parameters"))
     w_ptr1->setParsFromJson((*json_ptr_)["Evolutionary Optimization Parameters"]);
     w_ptr1->setPars(cmd_);
     return w_ptr1;
@@ -1595,6 +1596,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //GenPhenMapping(v, phenotype);
 
  
+
+   
 
     //T w;//(genotype, false);
     //w.setWormPars(argc,argv);
