@@ -121,6 +121,7 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     setInitPheno();
     if (callInit) writeOrigGen(cmd);
 
+
     if (false){
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
@@ -132,16 +133,12 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
 
     if (initNSFromJson) setNSFromJson(BPitsJson,n);
     else
-    {
+      {
     json & j2 = BPitsJson["Nervous system"];  
     n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
-
     appendAllNSJson(j2,n);
-
-    }
-  } 
-
-
+      }
+    } 
   }
   
  

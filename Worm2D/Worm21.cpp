@@ -187,10 +187,13 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
    
    // NMJ Gain XXX
    NMJ_Gain_Map = pheno(39);
+
+   if (false){
    NMJ_Gain.SetBounds(1, par1.N_muscles);
    for (int i=1; i<=par1.N_muscles; i++)
    {
        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+   }
    }
 
    setUpMuscleConn();
