@@ -201,7 +201,8 @@ class baseParameters
         defaultVals_["NMJ_Gain_Map"] = 1;
         defaultVals_["fitType"] = 0;
         defaultVals_["doAngleDiff"] = 0;
-
+        defaultVals_["doLegacy"] = true;
+        defaultVals_["initNSFromJson"] = true;
 
        return defaultVals_;
     }

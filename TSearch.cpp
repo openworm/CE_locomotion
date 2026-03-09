@@ -619,10 +619,10 @@ void TSearch::UpdatePopulationFitness(void)
 			}
 		// Calculate normalized fitness based on a rank-based method
 		case RANK_BASED:
-			if (psize == 1)
-			{cout << "Psize is too small" << endl;exit(1);}
+			//if (psize == 1){cout << "Psize is too small" << endl;exit(1);}
 			for (int i = 1; i <= psize; i++)
-				fitness[i] = (MaxExpOffspring + (2.0 - 2.0*MaxExpOffspring)*((i-1.0)/(psize-1)))/psize;
+				if (i==1) fitness[i] = (MaxExpOffspring + (2.0 - 2.0*MaxExpOffspring)*(0))/psize;
+				else fitness[i] = (MaxExpOffspring + (2.0 - 2.0*MaxExpOffspring)*((i-1.0)/(psize-1)))/psize;
 			break;
 		default: cerr << "Invalid selection mode" << endl; exit(1);
 	}

@@ -252,12 +252,12 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 
 void Worm2Dm::InitializeState(RandomState &rs)
 {
-    //if (W2Dminitcalled) return;
+    if (W2Dminitcalled) return;
     //cout << "Worm2Dm init state" << endl;
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
 
-    //W2Dminitcalled = true;
+    W2Dminitcalled = true;
 
     return;
 }

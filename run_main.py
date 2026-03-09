@@ -703,9 +703,9 @@ def run(a=None, **kwargs):
     sim_extra_parameters["useGenJson"] = True
     sim_extra_parameters["SimStepSize"] = 0.005
     sim_extra_parameters["SimSkipSteps"] = 10
-    
+    sim_extra_parameters["doLegacy"] = True
     sim_extra_parameters["prioritizeCmd"] = 0
-    
+    sim_extra_parameters["initNSFromJson"] = True
 
     main_cmd = model_folder + "/" + mainProcessName
     cmd = [main_cmd]

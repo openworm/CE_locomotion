@@ -115,8 +115,15 @@ void Worm2D21m::InitializeState(RandomState &rs)
 {    
     cout << "Worm2D21m init state" << endl;
     Worm2Dm::InitializeState(rs);
+
+    bool doLegacy;
+    getValCJWorm<bool>("doLegacy",doLegacy);
+
+    //if (false)
+    if (doLegacy)
     for (int i = 1; i <= par1.N_size; i++)
     n_ptr->SetNeuronExternalInput(i,0); //adam set all initial inputs to zero
+
     return;    
 }
 

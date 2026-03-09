@@ -177,8 +177,15 @@ void NervousSystem::RandomizeCircuitOutput(double lb, double ub)
 
 void NervousSystem::RandomizeCircuitOutput(double lb, double ub, RandomState &rs)
 {
+    cout << "RCO";
     for (int i = 1; i <= size; i++)
-        SetNeuronOutput(i, rs.UniformRandom(lb, ub));
+    {
+        double val = rs.UniformRandom(lb, ub);
+        cout << " " << val;
+        SetNeuronOutput(i, val);
+    }
+    cout << endl;
+    
 }
 
 

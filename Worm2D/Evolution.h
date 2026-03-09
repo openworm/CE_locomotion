@@ -912,11 +912,26 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
         //setParsFromPheno(phenotype);
         //construct(phenotype);
         //setUpMuscleConn();
+         
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
+    cout << "evo21 biases kkds " << n_ptr1->biases << endl;
+    cout << "evo21 taus kkds " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
 
+    w.InitializeState(rs);
+    w.initForSimulation(rs);
+    w.setStepSize(StepSize);
 
-        w.InitializeState(rs);
-        w.initForSimulation(rs);
-        w.setStepSize(StepSize);
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo21 states jsjs " << n_ptr1->states << endl << endl;
+    cout << "evo21 biases jsjs " << n_ptr1->biases << endl;
+    cout << "evo21 taus jsjs " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
+
+      
 
         
      /*    shared_ptr<W2DCEparsA> w1 = dynamic_pointer_cast<W2DCEparsA>(w.W2Dbaseparameters1b);
@@ -1562,7 +1577,7 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
 
 
 template<class T>
-double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &rs)
+double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & rs)
 {
     double fitness;
     //ofstream fitfile;
@@ -1575,6 +1590,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     //const int & skip_steps = evoPars1.skip_steps;
 
 
+    //assert(0);
+
     shared_ptr<const AgarPars> EparsR = dynamic_pointer_cast<const AgarPars>(this->evopar_ptr);
 
     if (EparsR == nullptr) assert(0);
@@ -1583,49 +1600,37 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
     const double BBCfit = AvgSpeed*Duration;
 
 
-    //cout << "evo18 " << Duration << " " << StepSize << " " << N_curvs << " " << Transient << " "
-    //<< AvgSpeed << " " << BBCfit << endl;
-
-    //assert(0);
-
-    //const double    AvgSpeed = 0.00022;             // Average speed of the worm in meters per seconds
-    //const double    BBCfit = AvgSpeed*Duration;
-    // Fitness
     fitness = 0.0;
     double bodyorientation, anglediff;
     double movementorientation, distancetravelled = 0, temp;
-    //TVector<double> curvature(1, N_curvs);
-    //TVector<double> antpostcurv(1, 2);
-    //antpostcurv.FillContents(0.0);
-
-    // Genotype-Phenotype Mapping
-    //TVector<double> phenotype(1, VectSize);
-    //GenPhenMapping(v, phenotype);
-
  
-
-   
-
-    //T w;//(genotype, false);
-    //w.setWormPars(argc,argv);
     shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
     //w.setWormPars(this->cmd);
 
-    
+    //cout << "evo18 geno " << genotype << endl;
+    //assert(0);
+
     w.setParsFromGeno(genotype);
    
-        //TVector<double> phenotype(1, VectSize);
-        //GenPhenMapping(geno, phenotype);
-        //setPfaFromPheno(phenotype);
-        //setParsFromPheno(phenotype);
-        //construct(phenotype);
-        //setUpMuscleConn();
+    
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo18 states kkds " << n_ptr1->states << endl << endl;
+    cout << "evo18 biases kkds " << n_ptr1->biases << endl;
+    cout << "evo18 taus kkds " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
+
     w.InitializeState(rs);
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
-   
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo18 states jsjs " << n_ptr1->states << endl << endl;
+    cout << "evo18 biases jsjs " << n_ptr1->biases << endl;
+    cout << "evo18 taus jsjs " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
 
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
@@ -1636,6 +1641,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
     double xt = w.CoMx(), xtp;
     double yt = w.CoMy(), ytp;
+
+    
 
     // Time loop
     for (double t = 0.0; t <= Duration; t += StepSize) {
@@ -1667,74 +1674,4 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState &r
 
     return fitness;
 }
-
-
-/* int finish_Bosc(int Generation,double BestPerf,double AvgPerf,double PerfVar){
-    if (BestPerf > 0.99) return 1;
-    else return 0;
-}
- */
-/* template<class T>
-void EvolutionFullW<T>::configure_p2_Net21()
-{
-  
-    // Stage 1 //
-    {typedef int (*callback_t)(int, double, double, double);
-        Callback<int(int, double, double, double)>::func 
-        = std::bind(&finish_Bosc, this, 
-            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-        callback_t func = static_cast<callback_t>(Callback<int(int, double, double, double)>::callback); 
-        s->SetSearchTerminationFunction(func);}
-
-    //s->SetSearchTerminationFunction(finish_Bosc);
-
-    {typedef double (*callback_t)(TVector<double> &, RandomState &);
-        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction1, this, 
-                std::placeholders::_1, std::placeholders::_2);
-        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
-    s->SetEvaluationFunction(func);}
-
-    //s->SetEvaluationFunction(EvaluationFunction1);
-  
-
-    s->ExecuteSearch();
-
-    // Stage 2 //
-    s->SetSearchTerminationFunction(NULL);
-
-    {typedef double (*callback_t)(TVector<double> &, RandomState &);
-        Callback<double(TVector<double> &, RandomState &)>::func = std::bind(&Evolution21::EvaluationFunction2, this, 
-                std::placeholders::_1, std::placeholders::_2);
-        callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
-    s->SetEvaluationFunction(func);}
-
-    //s->SetEvaluationFunction(EvaluationFunction2);
-    InitializeBodyConstants();
-    s->ExecuteSearch();
-}
-
-
-template<class T>
-void EvolutionFullW<T>::configure_p12_RS18()
-{
-   // configure_p1();
-    if (evo_seed)
-    {
-        ifstream BestIndividualFile;
-        TVector<double> bestVector(1, evoPars1.VectSize);
-        BestIndividualFile.open(rename_file("best.gen.dat"));
-        BestIndividualFile >> bestVector;
-        s->InitializeSearch();
-        for (int i = 1; i <= s->PopulationSize(); i++){
-            for (int j = 1; j <= evoPars1.VectSize; j++)
-            {
-                s->Individual(i)[j] = bestVector[j];
-            }
-        }
-    }
-   // configure_p2();
-
-}
- */
-
 

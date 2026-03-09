@@ -553,17 +553,19 @@ void setNSFromJson(const json & j, NervousSystem & n)
         j2["taus"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronTimeConstant(i+1, vals[i]);}
-    {vector<double> vals = 
+        if (false) //removed external inputs here
+        {vector<double> vals = 
         j2["states"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronState(i+1, vals[i]);}
-    {vector<double> vals = 
+
+        {vector<double> vals = 
         j2["gains"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronGain(i+1, vals[i]);}
 
-   // if (false) //removed external inputs here
-    {vector<double> vals = 
+        if (false) //removed external inputs here
+        {vector<double> vals = 
         j2["externalinputs"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronExternalInput(i+1, vals[i]);}

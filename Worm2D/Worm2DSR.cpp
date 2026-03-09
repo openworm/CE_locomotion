@@ -31,21 +31,34 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   //BPitsJson = j;
 
 
+    if (false){
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
 
     NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-    setNSFromJson(BPitsJson,n);
 
+    bool initNSFromJson;
+    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
 
-    //if (j["Nervous system"].contains("section sizes"))
-      //jsects = j["Nervous system"]["section sizes"];
+    if (initNSFromJson) setNSFromJson(BPitsJson,n);
+    else
+    {
+    json & j2 = BPitsJson["Nervous system"];  
+    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+
+    appendAllNSJson(j2,n);
 
     }
+    }
+    }
 
-    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-    //setWormPars(cmd);
+   
 
+    bool do_nml =  cmd->getArgValInt("--donml",0);
+    if (!do_nml){
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+    setNSFromJson(BPitsJson,n);
+    }
 
     if (false){
     //shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
@@ -103,12 +116,38 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):
 Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
+    
    
     setInitPheno();
     if (callInit) writeOrigGen(cmd);
-    
+
+    if (false){
+    bool do_nml =  cmd->getArgValInt("--donml",0);
+    if (!do_nml){
+
+    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
+
+    bool initNSFromJson;
+    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
+
+    if (initNSFromJson) setNSFromJson(BPitsJson,n);
+    else
+    {
+    json & j2 = BPitsJson["Nervous system"];  
+    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+
+    appendAllNSJson(j2,n);
+
+    }
+  } 
+
+
   }
   
+ 
+
+
+}
 
 void Worm2DSR::addParsToJson(json & j)
 {
@@ -640,7 +679,8 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   recursive_iterate2(pheno,js1,itsEf);
   
   NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-    setNSFromJson(js1,n);
+  
+  setNSFromJson(js1,n);
 
     //if (js1["Nervous system"].contains("section sizes"))
     //  jsects = js1["Nervous system"]["section sizes"];
@@ -864,7 +904,7 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double>
   if (stat(directoryName.c_str(), &sb) != 0) 
   {cout << "Directory doesn't exist." << endl;exit(1);}
 
-    ofstream BestIndividualFile;
+    {ofstream BestIndividualFile;
     //bestVector = s.BestIndividual();
     BestIndividualFile.open(rename_file("EvoWJbest.gen.dat", directoryName));
     //BestIndividualFile.open(bestfilename);
@@ -874,7 +914,22 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double>
     for (int i=1;i<initGeno.size();i++)
     BestIndividualFile << " " << initGeno[i];
     BestIndividualFile << endl;
-    BestIndividualFile.close();
+    BestIndividualFile.close();}
+
+    {ofstream BestIndividualFile;
+    //bestVector = s.BestIndividual();
+    BestIndividualFile.open(rename_file("EvoWJbest.phen.dat", directoryName));
+    //BestIndividualFile.open(bestfilename);
+    BestIndividualFile << setprecision(32);
+    //vector<double> initGeno = getInitGeno();
+    BestIndividualFile << current_pheno[0];
+    for (int i=1;i<current_pheno.size();i++)
+    BestIndividualFile << " " << current_pheno[i];
+    BestIndividualFile << endl;
+    BestIndividualFile.close();}
+
+
+
 
 }
 
@@ -931,7 +986,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             <<  itjevol->at("val").get<int>()
             << " " << itjevol->at("from").get<int>() << " " <<  itjevol->at("to").get<int>()  << endl;
             //cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << phenval << " " << pheno[phenind] << " " << values[j].w.weight << endl;
+            //cout << "ph " << phenval << " " << pheno[phenind] << " " << values[j].w.weight << endl;
 
             }
 
@@ -971,7 +1026,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         for (int i = 0; i<evols.size();i++) 
         {
              //cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
           if (check123456(pheno[evols[i].val-1], values[evols[i].ind-1]))
           pheno[evols[i].val-1] = values[evols[i].ind-1];
         }
@@ -987,7 +1042,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           if (evols[i].ind == values[j].from)
           { 
            // cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+           // cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
             if (check123456(pheno[evols[i].val-1], values[j].weight))
             pheno[evols[i].val-1] = values[j].weight;
             break;}
@@ -1033,7 +1088,7 @@ void Worm2DSRE::setInitPheno()
   recursive_iterate(pheno,js1,itsEf);
   
   for (int i = 0; i< pheno.size(); i++){
-  cout << "pheno i " << pheno[i] << " " << i << endl;
+  //cout << "pheno i " << pheno[i] << " " << i << endl;
   assert(!check123456(pheno[i]) && "init pheno not set");
   }
 
@@ -1074,8 +1129,8 @@ vector<double> pheno(getVectSize(), checkval);
 
         if (false){
         if (it2->at("evolvable").is_number()){
-        cout << "ph " << it.key() << " " << it2.key() << endl;
-        cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
+        //cout << "ph " << it.key() << " " << it2.key() << endl;
+        //cout << "ph " << pheno[it2->at("evolvable").get<int>()-1] << " " <<  it2->at("value") << endl;
         assert(check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")));
         pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
         }
@@ -1091,8 +1146,8 @@ vector<double> pheno(getVectSize(), checkval);
           for (int j = 0; j<values.size();j++)
           if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
           {
-            cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
             assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
             pheno[evols[i].val-1] = values[j].w.weight;
             //values[j].w.weight = pheno[evols[i].val];
@@ -1107,8 +1162,8 @@ vector<double> pheno(getVectSize(), checkval);
         vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++) 
         {
-             cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[evols[i].ind-1] << endl;
           assert(check123456(pheno[evols[i].val-1], values[evols[i].ind-1]));
           pheno[evols[i].val-1] = values[evols[i].ind-1];
         }
@@ -1123,8 +1178,8 @@ vector<double> pheno(getVectSize(), checkval);
          for (int j = 0; j<values.size();j++)
           if (evols[i].ind == values[j].from)
           { 
-            cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
             assert(check123456(pheno[evols[i].val-1], values[j].weight));
             pheno[evols[i].val-1] = values[j].weight;
             break;}
@@ -1139,7 +1194,7 @@ vector<double> pheno(getVectSize(), checkval);
     }
 
 for (int i = 0; i< pheno.size(); i++){
-  cout << "pheno i " << pheno[i] << " " << i << endl;
+  //cout << "pheno i " << pheno[i] << " " << i << endl;
 assert(!check123456(pheno[i]) && "init pheno not set");
 }
 
@@ -1388,7 +1443,7 @@ void WormCO2DSR::InitializeState(RandomState &rs)
   Worm2DSRE::InitializeState(rs);
 
   //return;
-  if (false){
+ /*  if (false){
 
 	NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
 
@@ -1404,7 +1459,9 @@ void WormCO2DSR::InitializeState(RandomState &rs)
     }
 	//else n->RandomizeCircuitState(0.0, 0.0, rs);
   }
-  }
+  } */
+
+
 
 }
 

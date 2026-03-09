@@ -17,7 +17,10 @@
 Worm21::Worm21(shared_ptr<const CmdArgs> cmd_):
 Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), cmd_),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
-Worm2D21(cmd_), n(dynamic_cast<NervousSystem&>(*n_ptr)){}
+Worm2D21(cmd_), n(dynamic_cast<NervousSystem&>(*n_ptr)){
+
+    if (true) n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
+}
 
 Worm21::Worm21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):Worm21(pheno, true, cmd_){}
 
@@ -85,10 +88,13 @@ void Worm21::setEvolPars(W2Dparameters & w2par_, string evotype_)
 void Worm21::setParsFromPheno(const TVector<double> &pheno)
 {
    
+    setCurrentPheno(pheno);
+
 // Muscles
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
     // Nervous system // Ventral cord
+    if (false)
     n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
     
     int as, da, db, dd, vd, vb, va;
@@ -199,7 +205,10 @@ void Worm21::InitializeState(RandomState &rs)
     Worm2D21::InitializeState(rs);
     //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
     //assert(w1parss!=nullptr);
-  
+    
+    bool doLegacy;
+    getValCJWorm<bool>("doLegacy",doLegacy);
+
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
 
@@ -208,8 +217,13 @@ void Worm21::InitializeState(RandomState &rs)
         n.RandomizeCircuitState(-1, 1, rs);
         n.RandomizeCircuitOutput(0.2, 0.8, rs);
     }
-    else
-    n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
+    //else if (true) n.RandomizeCircuitOutput(0.5, 0.5, rs);
+    else if (doLegacy) 
+    {
+        n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
+    //    assert(0);
+    }
+
     return;
 }
 

@@ -24,7 +24,7 @@ args = dict(
     modelFolder="Worm2D",
     inputFolderName=inputFolderName,
     outputFolderName=outputFolderName,
-    reRand=True,
+    reRand=False,
     doTestRun=True,
     doOrigMuscInput=False,
     modifyJson=False,
@@ -33,6 +33,7 @@ args = dict(
     evoType="Evo18",
     SimStepSize = 0.01,
     SimSkipSteps = 4,
+    randomInitialState = False
 )
 
 if doOrig:
