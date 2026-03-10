@@ -981,6 +981,8 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
         DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
         VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
     
+        cout << "db " << DBp << " " << VBp << endl;
+
         w.Step(); // determine sign of derivative
     
 
@@ -1641,6 +1643,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     double xt = w.CoMx(), xtp;
     double yt = w.CoMy(), ytp;
+
+    cout << "xxs " << xt << " " << yt << endl;
 
     
 
