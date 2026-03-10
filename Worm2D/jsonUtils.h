@@ -242,6 +242,9 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
 void mergeJson(json & j1, const json & j2);
+void appendNSToJson(json & j, NervousSystem& c);
+void appendChemNSToJson(json & j, NervousSystem& c);
+void appendElecNSToJson(json & j, NervousSystem& c);
 
 bool parseValue(const std::string& s, double& v);
 bool parseValue(const std::string& s, int&    v);

@@ -505,13 +505,22 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 }
 
-
-void appendNSToJson(json & j, NervousSystem& c)
+void appendChemNSToJson(json & j, NervousSystem& c)
 {
     j["Chemical weights"]["message"] = "chemical weights in sparse format";
     appendMatrixToJson(j["Chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
+}
+
+void appendElecNSToJson(json & j, NervousSystem& c)
+{
     appendMatrixToJson(j["Electrical weights"], c.electricalweights, c.NumElectricalConns, c.size);
     j["Electrical weights"]["message"] = "electrical weights in sparse format";
+}
+
+void appendNSToJson(json & j, NervousSystem& c)
+{
+  appendChemNSToJson(j,c);
+  appendElecNSToJson(j,c);   
 }
 
 void appendAllNSJson( json & j, CTRNN & n)
@@ -537,18 +546,24 @@ void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
     
     n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
    
+
     {vector<toFromWeight> weights = 
     j2["Chemical weights"]["value"].template get< vector<toFromWeight> >();
     for (int i = 0;i<weights.size();i++)
         n.SetChemicalSynapseWeight(weights[i].w.from, weights[i].to, weights[i].w.weight);}
+
+
     {vector<toFromWeight> weights = 
     j2["Electrical weights"]["value"].template get< vector<toFromWeight> >();
     for (int i = 0;i<weights.size();i++)
-        n.SetElectricalSynapseWeight(weights[i].w.from, weights[i].to, weights[i].w.weight);}    
+        n.SetElectricalSynapseWeight(weights[i].w.from, weights[i].to, weights[i].w.weight);}   
+
+
     {vector<double> vals = 
         j2["biases"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronBias(i+1, vals[i]);}
+
     {vector<double> vals = 
         j2["taus"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
@@ -565,7 +580,7 @@ void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronGain(i+1, vals[i]);}
 
-        if (false) //removed external inputs here
+        if (setStates) //removed external inputs here
         {vector<double> vals = 
         j2["externalinputs"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)

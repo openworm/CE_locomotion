@@ -912,7 +912,8 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
         //setParsFromPheno(phenotype);
         //construct(phenotype);
         //setUpMuscleConn();
-         
+    
+        if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
     cout << "evo21 biases kkds " << n_ptr1->biases << endl;
@@ -923,7 +924,7 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
     w.InitializeState(rs);
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
-
+if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo21 states jsjs " << n_ptr1->states << endl << endl;
     cout << "evo21 biases jsjs " << n_ptr1->biases << endl;
@@ -1614,8 +1615,17 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     //assert(0);
 
     w.setParsFromGeno(genotype);
-   
+
+    if (false)
+    {
+    NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    json j1;   
+    appendElecNSToJson(j1, *n_ptr1);
+    //j1["vbc"]  = n_ptr1->chemicalweights;
+    cout << j1 << endl;
+    }
     
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo18 states kkds " << n_ptr1->states << endl << endl;
     cout << "evo18 biases kkds " << n_ptr1->biases << endl;
@@ -1627,6 +1637,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo18 states jsjs " << n_ptr1->states << endl << endl;
     cout << "evo18 biases jsjs " << n_ptr1->biases << endl;
@@ -1634,12 +1645,32 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     //assert(0);
     }
 
+    if (false){
+    Worm2D * const w2d = dynamic_cast<Worm2D *>(&w);
+    if (w2d){
+    json j1;
+    j1["vbc"]  = w2d->itsvBodyConnvec();
+    cout << j1 << endl;
+    }
+}
+
+    
+
     // Transient
     for (double t = 0.0; t <= Transient; t += StepSize)
     {
         w.Step();
 
     }
+
+    if (false)
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo18 states iqw " << n_ptr1->states << endl << endl;
+    cout << "evo18 biases iqw " << n_ptr1->biases << endl;
+    cout << "evo18 taus iqw " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
+
 
     double xt = w.CoMx(), xtp;
     double yt = w.CoMy(), ytp;
@@ -1675,6 +1706,8 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
 
     //assert(0);
+
+    cout << "fitness " << fitness << endl;
 
     return fitness;
 }

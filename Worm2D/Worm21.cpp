@@ -19,7 +19,7 @@ Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), cmd_),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
 Worm2D21(cmd_), n(dynamic_cast<NervousSystem&>(*n_ptr)){
 
-    if (true) n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
+    if (false) n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
 }
 
 Worm21::Worm21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):Worm21(pheno, true, cmd_){}
@@ -94,7 +94,7 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
     // Nervous system // Ventral cord
-    if (false)
+    if (true)
     n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
     
     int as, da, db, dd, vd, vb, va;
@@ -157,6 +157,8 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
         // Electrical Synapse minimal network
         n.SetElectricalSynapseWeight(vd, dd, pheno(31));
 
+
+
 //        // Intersegment connections
 //        // Chemicals
         if (u < par1.N_units){
@@ -196,8 +198,8 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
    }
    }
 
-   setUpMuscleConn();
-
+   //setUpMuscleConn();
+    setMuscBodExt();
 
 
 }
@@ -306,7 +308,8 @@ int as, da, db, dd, vd, vb, va;
         vdNext = nn(VD, u+1);
         vbNext = nn(VB, u+1);
         vaNext = nn(VA, u+1);
-     
+      
+      
         {vector<intPair> & vec = biasvec;
             vec.push_back({as,1});
             vec.push_back({da,2});
@@ -356,14 +359,18 @@ int as, da, db, dd, vd, vb, va;
 
         //j["Nervous system"]["Chemical weights"]["evolvable"] = vec;        
         }
-{
+{ //evolution of electric connections must be bidirectional
   vector<fromToInt> & vec = elecvec;
   vec.push_back({vd, dd, 31});
+  vec.push_back({dd, vd, 31});
 
     if (u < par1.N_units){
         vec.push_back({as, vaNext, 42});
+        vec.push_back({vaNext, as, 42});
         vec.push_back({da, asNext, 43});
+        vec.push_back({asNext, da, 43});
         vec.push_back({vb, dbNext, 44});
+        vec.push_back({dbNext, vb, 44});
 }
 
  //j["Nervous system"]["Electrical weights"]["evolvable"] = vec;

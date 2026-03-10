@@ -566,6 +566,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
     virtual ~Worm2Dm(){}
+    const vector<toFromWeight> &  itsvBodyConnvec() const {return vBodyConnvec;}
 
     void writeData();
 
@@ -628,6 +629,10 @@ class Worm2D : virtual public Worm2Dm
     
     virtual void preNStep(){assert(0);}
     virtual void postNStep(){assert(0);}
+
+    const vector<toFromWeight> & itsvMuscConnvec() const {return vMuscConnvec;}
+ 
+    const vector<toFromWeight> & itsdMuscConnvec() const {return dMuscConnvec;}
 
     protected:
 
