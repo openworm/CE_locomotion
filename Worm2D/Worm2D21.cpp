@@ -298,7 +298,7 @@ void Worm2D21::setMuscleInputOrig()
 void Worm2D21m::Step1()
 {
     
-    assert(0 && "this not used");
+    //assert(0 && "this not used");
     
     // Update Body
     b.StepBody(settedStepSize);
