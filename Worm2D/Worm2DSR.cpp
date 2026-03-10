@@ -56,8 +56,14 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-    setNSFromJson(BPitsJson,n);
+      bool doLegacy;
+    getValCJWorm<bool>("doLegacy",doLegacy);
+
+    NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
+    assert(n);
+    cout << "doLegacy " << doLegacy << endl;
+    
+    setNSFromJson(BPitsJson,*n, doLegacy);
     }
 
     if (false){
@@ -117,8 +123,8 @@ Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callIni
 Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
     
-   
-    setInitPheno();
+  if (genPhenLims.size()>0) setInitPheno();
+    
     if (callInit) writeOrigGen(cmd);
 
 
@@ -204,9 +210,10 @@ shared_ptr<SR> Worm2DSRb::getSR(const json & j, baseParameters * basePar1_)
 void Worm2DSR::Step1()
 {
  
-  zeroAllInputs();
-  
+
   b.StepBody(settedStepSize);
+
+  zeroAllInputs();
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->updateAll(b);
   
@@ -217,22 +224,10 @@ void Worm2DSR::Step1()
  
   n_ptr->EulerStep(settedStepSize);
  
-  //setMuscleInput();
-
-  if (false){
-  //shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-  //cout << "w2d1 " << W2Dbaseparameters1->doOrigMuscInput << endl;
-  //cout << "w2d " << w_ptr2->doOrigMuscInput << endl;
-  assert(0);
-  }
-
-    //bool doOrigMuscInput;
-    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
-
+  
   
 
   if (doOrigMuscInput) setMuscleInputOrig();
-  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
   setBodyInput();
@@ -675,9 +670,13 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   json & js1 = BPitsJson;
   recursive_iterate2(pheno,js1,itsEf);
   
-  NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-  
-  setNSFromJson(js1,n);
+  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
+  assert(n);
+  bool doLegacy;
+  getValCJWorm<bool>("doLegacy",doLegacy);
+
+
+  setNSFromJson(js1,*n,doLegacy);
 
     //if (js1["Nervous system"].contains("section sizes"))
     //  jsects = js1["Nervous system"]["section sizes"];
@@ -936,6 +935,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
 {
 
         const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
+        //const bool do_mfunc = true;
 
         if (it2->at("evolvable").is_object())
         {
@@ -977,7 +977,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             if (do_mfunc && itjevol->contains("mfunc"))
               phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
             else phenval = pheno[phenind];
-
+ 
             if (false){
             cout << "phvals " << iind << " " << j << " " 
             <<  itjevol->at("val").get<int>()
@@ -995,23 +995,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         iind ++;
         }
 
-/* 
-          for (int i = 0; i<evols.size();i++)
-          for (int j = 0; j<values.size();j++)
-          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
-          {
-            cout << "phvals " << i << " " << j << " " 
-            <<  evols[i].val << " " << evols[i].from << " " << evols[i].to << endl;
-            //cout << "ph " << it.key() << " " << it2.key() << endl;
-            cout << "ph " << pheno[evols[i].val-1] << " " << values[j].w.weight << endl;
-            assert(check123456(pheno[evols[i].val-1], values[j].w.weight));
-            pheno[evols[i].val-1] = values[j].w.weight;
-            //values[j].w.weight = pheno[evols[i].val];
-            break;
-          } */
-          
-          
-          //it2->at("value") = values;
+
 
         }
         else
@@ -1077,7 +1061,6 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
 
 void Worm2DSRE::setInitPheno()
 {
-
   const double checkval = 123456;
   vector<double> pheno(getVectSize(), checkval); 
 

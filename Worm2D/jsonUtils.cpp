@@ -531,7 +531,7 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 }
 
 
-void setNSFromJson(const json & j, NervousSystem & n)
+void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
     const json & j2 = j["Nervous system"];
     
@@ -553,7 +553,8 @@ void setNSFromJson(const json & j, NervousSystem & n)
         j2["taus"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)
         n.SetNeuronTimeConstant(i+1, vals[i]);}
-        if (false) //removed external inputs here
+        
+        if (setStates) //removed external inputs here
         {vector<double> vals = 
         j2["states"]["value"].template get< vector<double> >();
         for (int i = 0;i<vals.size();i++)

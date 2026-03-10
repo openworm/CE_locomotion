@@ -231,7 +231,7 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
 
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
 
-
+void setNSFromJson(const json & j, NervousSystem & n, const bool setStates = true);
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);
 void appendMuscleToJson(json & j, Muscles & m);
@@ -241,7 +241,6 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps);
-void setNSFromJson(const json & j, NervousSystem & n);
 void mergeJson(json & j1, const json & j2);
 
 bool parseValue(const std::string& s, double& v);

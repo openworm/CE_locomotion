@@ -212,6 +212,7 @@ void Worm21::InitializeState(RandomState &rs)
     bool doLegacy;
     getValCJWorm<bool>("doLegacy",doLegacy);
 
+    if (doLegacy){
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
 
@@ -221,9 +222,7 @@ void Worm21::InitializeState(RandomState &rs)
         n.RandomizeCircuitOutput(0.2, 0.8, rs);
     }
     //else if (true) n.RandomizeCircuitOutput(0.5, 0.5, rs);
-    else if (doLegacy) 
-    {
-        n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
+    else n.RandomizeCircuitOutput(0.5, 0.5, rs); //fix this error?? adam (should be -0.5?)
     //    assert(0);
     }
 

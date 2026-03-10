@@ -1042,16 +1042,11 @@ void Worm2D::Step1()
   zeroAllInputs();
   setExternalInput();
 
-  //setExternalInputOrig();
 
   n_ptr->EulerStep(settedStepSize);
-  
-  //bool doOrigMuscInput;
-    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
 
     
-    if (doOrigMuscInput) setMuscleInputOrig();
-  //if (W2Dbaseparameters1->doOrigMuscInput) setMuscleInputOrig();
+  if (doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
   setBodyInput();

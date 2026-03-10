@@ -112,7 +112,8 @@ public:
     //vector<int> neurons, vector<double> NMJs, int mi, int to);
     vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
 
-    void Step1(){return Worm2D21m::Step1();}
+    //void Step1(){return Worm2D21m::Step1();}
+    void Step1(){return Worm2D::Step1();}
 
     const vector<string> getVMuscNames() {return {"MV1","MV2","MV3","MV4", 
         "MV1","MV2","MV3",  "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV1","MV2","MV3", "MV4",
