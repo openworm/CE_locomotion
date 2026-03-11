@@ -1,0 +1,6 @@
+system: Testing activity of some neurons
+
+experiments:
+    Test2:
+        expected:
+            spike times: [2.45, 4.73, 7.01, 9.29, 11.57, 13.85, 16.13, 18.41, 20.73, 23.01, 25.29, 27.57, 29.85, 32.17, 34.45, 36.73, 39.01, 41.29, 43.57, 45.89, 48.17]

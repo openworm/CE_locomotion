@@ -1,7 +1,7 @@
 # Framework for running automated tests on Open Source Brain
 # See https://github.com/OpenSourceBrain/osb-model-validation for more details
  
-target: testW2DSRE21.py
+target: testW2D21E.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
 mep: .test.W2DSR21E.mep
 experiments:
@@ -9,7 +9,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: testruns/exW2DSRE21/act.dat
+          path: testruns/exW2D21E/act.dat
           columns: [0, 3]
           scaling: [1, 1]
         spike detection: 

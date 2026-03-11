@@ -2,7 +2,11 @@
 #include <cmath>
 
 
-
+void push_back_double(const fromToInt & val, vector<fromToInt> & vec)
+{
+vec.push_back(val);
+vec.push_back({val.to,val.from,val.val});
+}
 
 bool check123456(const double & val, const double & val2)
 {

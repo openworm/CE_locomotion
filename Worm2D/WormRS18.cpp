@@ -1104,24 +1104,24 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
     {
     vector<fromToInt> & vec = elecvec;
-   vec.push_back({dd, vda, 10});
-   vec.push_back({dd, vdp, 10});
+    push_back_double({dd, vda, 10}, vec);
+    push_back_double({dd, vdp, 10}, vec);
 
-    vec.push_back({vda, vdp, 11});
-    vec.push_back({vba, vbp, 12});
+    push_back_double({vda, vdp, 11}, vec);
+    push_back_double({vba, vbp, 12}, vec);
 
       if (u < par1.N_units){
 
-    vec.push_back({dd, ddNext,11});
-    vec.push_back({vdp, vdaNext,11});
-    vec.push_back({db, dbNext,12});
-    vec.push_back({vbp, vbaNext,12});
-     vec.push_back({vbp, dbNext,13});
+    push_back_double({dd, ddNext,11}, vec);
+    push_back_double({vdp, vdaNext,11}, vec);
+    push_back_double({db, dbNext,12}, vec);
+    push_back_double({vbp, vbaNext,12}, vec);
+    push_back_double({vbp, dbNext,13}, vec);
 
       }
 
 
-        }
+    }
 
 
 
@@ -1222,9 +1222,9 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
   }
 
    {vector<fromToInt> & vec = elecvec;
-         vec.push_back({SMDD, RMDD,26});
-        vec.push_back({SMDV, RMDV,26});
-         vec.push_back({RMDV, RMDD,27});    
+        push_back_double({SMDD, RMDD,26}, vec);
+        push_back_double({SMDV, RMDV,26}, vec);
+        push_back_double({RMDV, RMDD,27}, vec);    
         }
 
 

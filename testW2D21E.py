@@ -10,7 +10,12 @@ doNML = False
 doMuscles = False
 
 inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2DSRE21"
+outputFolderName = "testruns/exW2D21E"
+
+#sre - states minus bias before and after init.
+# sre - states become minus bias on first gen, on later gens they stay the same although bias changes
+# me + legacy - before init states are zero, after init minus bias
+# me - legacy - before init states are zero, after init still zero
 
 args = dict(
     simduration=50,
@@ -20,7 +25,7 @@ args = dict(
     maxGens=5,
     popSize=5,
     RandSeed=292,
-    modelName="W2DSR",
+    modelName="W2D21",
     modelFolder="Worm2D",
     inputFolderName=inputFolderName,
     outputFolderName=outputFolderName,
@@ -35,7 +40,6 @@ args = dict(
     SimSkipSteps = 4,
     randomInitialState = False,
     doLegacy = False
-    #initNSFromJson = False
 )
 
 if doOrig:

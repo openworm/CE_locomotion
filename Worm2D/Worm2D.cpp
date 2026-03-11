@@ -225,12 +225,11 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 
    // shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
     
-   if (true){
+   
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
 
     if (randomInitialState)
-	//if (l1!=nullptr && l1->randomInitialState)
     {
         NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
         if (n!=nullptr){
@@ -240,7 +239,7 @@ void Worm2Dbase::InitializeState(RandomState &rs)
         }
     }
 
-}
+
 
     //t = 0.0;
     //datatime =  0.0;
@@ -254,6 +253,7 @@ void Worm2Dm::InitializeState(RandomState &rs)
 {
     if (W2Dminitcalled) return;
     //cout << "Worm2Dm init state" << endl;
+
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
 
