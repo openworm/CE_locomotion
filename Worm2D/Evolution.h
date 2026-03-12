@@ -682,8 +682,8 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //Epars1.show();
     //assert(0);
 
-    vector<double> initial_genotype(genotype.Size());
-    for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
+    //vector<double> initial_genotype(genotype.Size());
+    //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
    
     shared_ptr<T> w_ptr = this->getTw();
 
@@ -693,7 +693,12 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     int doReverse;
     w_ptr->getValCJWorm("doReverse", doReverse);
 
+    
 
+    cout << "zeroGainsType " << zeroGainsType << endl;
+    cout << "doReverse " << doReverse << endl;
+
+    
     //const int SR_A = 1;
     //const int SR_B = 2;
  
@@ -751,7 +756,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //genotype(SR_A) = sra;
     //genotype(SR_B) = srb;
   
-    for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
+    //for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
    
     return fitness/count;
 
@@ -1125,7 +1130,9 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
     
 
-    //cout << "AS " << AvgSpeed << endl;
+    cout << "AS " << AvgSpeed << " " << fitType << endl;
+
+    
     //assert(0);
     //const double    AvgSpeed = 0.0001;
 
