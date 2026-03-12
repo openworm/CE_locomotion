@@ -445,10 +445,10 @@ void WormCE::addEvolvableToJson(json & j)
         {vector<fromToInt> & vec = elecvec;
 
           if (u < par1.N_units){
-          vec.push_back({dd,ddNext,13});
-          vec.push_back({vd,vdNext,13});
-          vec.push_back({db,dbNext,14});
-          vec.push_back({vb,vbNext,14});
+          push_back_double({dd,ddNext,13}, vec);
+          push_back_double({vd,vdNext,13}, vec);
+          push_back_double({db,dbNext,14}, vec);
+          push_back_double({vb,vbNext,14}, vec);
 
         }
         }
@@ -1080,6 +1080,10 @@ void WormCE::InitializeState(RandomState &rs)
   
   //assert(0);
  
+   bool doLegacy;
+  getValCJWorm<bool>("doLegacy",doLegacy);
+
+  if (doLegacy){
   bool randomInitialState;
   getValCJWorm<bool>("randomInitialState",randomInitialState);
 
@@ -1103,6 +1107,7 @@ void WormCE::InitializeState(RandomState &rs)
     n.SetNeuronOutput(nn(VA,u), 0.9);
     n.SetNeuronOutput(nn(VB,u), 0.9);
     n.SetNeuronOutput(nn(VD,u), 0.1);
+  }
   }
   }
 

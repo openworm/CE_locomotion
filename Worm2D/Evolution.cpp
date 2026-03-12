@@ -119,12 +119,14 @@ void EvoBase::setFromCPT2()
     popsize = evoPars1.PopulationSize;
     
     const string filename_ = rename_file("search.cpt");
-    ;
+    
     //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
    
 
+    cout << "docpt " << doCPT << endl;
+
     struct stat buffer;   
-    if (doCPT && evoPars1.CheckpointInterval>0 && (stat (filename_.c_str(), &buffer) == 0)) {
+    if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
 
       //  cout << "set from cpt " << filename_ << endl; 
 
@@ -140,11 +142,13 @@ void EvoBase::setFromCPT2()
         {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
         popsize = s->PopulationSize();}
 
-
+        return;
         //assert(0);
 
     }
-    else doResume = false;
+    
+    doResume = false;
+    return;
    
 }
 
@@ -199,6 +203,7 @@ void EvoBase::setUp()
 void EvoBase::construct(int vsize_, int offset_)
 {
 
+
     if (!setFromCPTflag) setFromCPT2();
     if (doResume) return;
 
@@ -215,7 +220,7 @@ void EvoBase::construct(int vsize_, int offset_)
     if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
     }
 
-    if (doCPT && foundFile) {
+    if (foundFile) {
 
     cout << "const from best gen " << filename << endl;
     //assert(0 && "setting from best gen");
@@ -463,6 +468,9 @@ evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string pref
 {
 ep1.setFromArgs(cmd);
 doCPT = (bool) cmd->getArgValInt("-docpt",1);
+
+//cout << "docpt " << doCPT << endl;
+//assert(0);
 
 ep1.fileprefix = prefix_;
 

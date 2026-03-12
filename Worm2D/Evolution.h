@@ -32,6 +32,10 @@ class EvoBase
 {
 
     protected:
+
+
+    bool setFromCPTflag = false, doCPT = true;
+    bool configP1Called = false;
     const evoPars evoPars1;
     TSearch* s  =  nullptr;
     const simPars simPars1;
@@ -103,9 +107,9 @@ class EvoBase
     TVector<double> phenotype;//, phenprev, genprev; //(1, itsEvoPars().VectSize);   
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
-    bool doResume, setFromCPTflag = false, doCPT = true;//, doneFirst
+    bool doResume;
     int popsize;
-    bool configP1Called = false;
+    
 };
 
 
@@ -1148,7 +1152,13 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
    
-
+        if (false)
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
+    cout << "evo21 biases kkds " << n_ptr1->biases << endl;
+    cout << "evo21 taus kkds " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
     
 
     //T w(genotype, false);
@@ -1173,6 +1183,15 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     w.InitializeState(rs);
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
+
+
+    if (false)
+    {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
+    cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
+    cout << "evo21 biases kkds " << n_ptr1->biases << endl;
+    cout << "evo21 taus kkds " << n_ptr1->taus << endl << endl;
+    //assert(0);
+    }
 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
