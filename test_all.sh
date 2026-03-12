@@ -80,6 +80,8 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2D21E
     rm -rf testruns/exW2DSRE21
     rm -rf testruns/exW2DCEs
+    rm -rf testruns/exW2DCEE
+    rm -rf testruns/exW2DSRE
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -99,11 +101,18 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2D21.omt
     omv test -V .test.W2D21E.omt
     omv test -V .test.W2DSRE21.omt
+    omv test -V .test.W2DSR21.omt
 
     omv test -V .test.2021.omt
     omv test -V .test.2021W2D.omt
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DCEs.omt
+    omv test -V .test.W2DSR.omt
+    omv test -V .test.W2DSRE.omt
+    omv test -V .test.W2DCEE.omt
+
+    omv test -V .test.W2DCEFR.omt
+    omv test -V .test.W2DCEFRv2.omt
 
     omv test -V .test.osc_sim.omt
     omv test -V .test.osc_sim_21.omt
@@ -115,11 +124,10 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCO.omt
     
 
-    omv test -V .test.W2DCEFR.omt
-    omv test -V .test.W2DCEFRv2.omt
-    omv test -V .test.W2DSR.omt
-    omv test -V .test.W2DSR21.omt
-    omv test -V .test.W2DSRE21.omt
+  
+    
+    
+    
     omv test -V .test.COW2DSR.omt
     omv test -V .test.COW2DSR2.omt
 

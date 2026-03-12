@@ -200,7 +200,7 @@ doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
 {
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
-    cout << "dom " << doOrigMuscInput << " " << doOrigSRInput << endl;
+    //cout << "dom " << doOrigMuscInput << " " << doOrigSRInput << endl;
   
     setUp();
     //setUpBodyConn();
@@ -1540,7 +1540,7 @@ TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc)
     for (int i=0; i<unitToMusc.size();i++)
     makeMuscleConnHelp(vec1, neurons, NMJ, unitToMusc[i].ind, unitToMusc[i].val, NMJ_Gain);
 
-    cout << "made muscle con" << endl;
+    //cout << "made muscle con" << endl;
     return vec1;
 
 }
