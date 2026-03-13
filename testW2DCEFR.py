@@ -5,7 +5,7 @@ run(
     simtransient=10,
     duration=10,
     transient=10,
-    maxGens=25,
+    maxGens=15,
     popSize=36,
     RandSeed=879712,
     modelName="W2DCE",
@@ -29,6 +29,9 @@ run(
     # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
-    randInitState=True,
+    randInitState = True,
+    doOrigMuscInput = False,
+    doOrigSRInput = False,
+    doLegacy = False
     # MutVar = 0.5
 )

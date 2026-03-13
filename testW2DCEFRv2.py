@@ -5,12 +5,12 @@ run(
     simtransient=10,
     duration=10,
     transient=10,
-    maxGens=10,
+    maxGens=20,
     popSize=26,
     RandSeed=939712,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    # inputFolderName="exampleRunW2DCE_reverse",
+    inputFolderName="testruns/exW2DCEFR",
     outputFolderName="testruns/exW2DCEFRv2",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
@@ -33,4 +33,5 @@ run(
     # MutVar = 0.5
     doOrigMuscInput=False,
     doOrigSRInput=False,
+    doLegacy = False
 )
