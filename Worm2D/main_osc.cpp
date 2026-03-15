@@ -353,6 +353,14 @@ int main (int argc, const char* argv[])
         json efconds;
         if (doforward) efconds["condval"] = 0; else efconds["condval"] = 1;
         ew->callEfcond(efconds);
+
+        if (false)
+    {const NervousSystem & n_ptr1 = dynamic_cast<const NervousSystem&>(w2->itsNS());
+    cout << "evo21 states kkds " << n_ptr1.states << endl << endl;
+    cout << "evo21 biases kkds " << n_ptr1.biases << endl;
+    cout << "evo21 taus kkds " << n_ptr1.taus << endl << endl;
+    //assert(0);
+    }
         }
 
         if (doforward) w2->setInputOnce(0); else w2->setInputOnce(1);

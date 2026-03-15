@@ -582,8 +582,8 @@ template<class T>
 double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &rs)
 {
 
-     vector<double> initial_genotype(genotype.Size());
-    for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
+    //vector<double> initial_genotype(genotype.Size());
+    //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
    
     shared_ptr<T> w_ptr = this->getTw();
 
@@ -639,7 +639,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     }
 
 
-    for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
+    //for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
 
     /* double fitness = 0;
     int count = 0;
@@ -664,174 +664,6 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     //if (Epars1->doReverse==0) return fitnessForward;
     //if (Epars1->doReverse==1) return fitnessBackward;
     //if (Epars1->doReverse==2) return (fitnessForward + fitnessBackward)/2;
-
-    //assert(0 && "doReverse not set properly");
-    // return fitnessBackward;
-}
-
-
-
-
-
-template<class T>
-double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
-{
-  
-    //const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
-
-    //Epars1.show();
-    //assert(0);
-
-    //vector<double> initial_genotype(genotype.Size());
-    //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
-   
-    shared_ptr<T> w_ptr = this->getTw();
-
-
-    int zeroGainsType;
-    w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
-    int doReverse;
-    w_ptr->getValCJWorm("doReverse", doReverse);
-
-    
-
-    cout << "zeroGainsType " << zeroGainsType << endl;
-    cout << "doReverse " << doReverse << endl;
-
-    
-    //const int SR_A = 1;
-    //const int SR_B = 2;
- 
-    const int gen_num = s->Generation();
-    //evoPars1.MaxGenerations;
-    //Epars1.doAlternateEvo;
-
-    //const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
-    //const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
-    //const bool doalt1f = Epars1.doReverse==2 || (doalt1);
-    //const bool doalt2f = Epars1.doReverse==2 || (doalt2);
-
-
-    const bool doalt1 = doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
-    const bool doalt2 = doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
-    const bool doalt1f = doReverse==2 || (doalt1);
-    const bool doalt2f = doReverse==2 || (doalt2);
-
-
-    //cout << "reverse is " << Epars1.doReverse << endl;
-
-    //double sra = genotype(SR_A);
-    //double srb = genotype(SR_B);
-
-   // assert(0);
-
-    //double fitnessForward, fitnessBackward;
-
-    //genotype(SR_A)= -1.0;
-    //genotype(SR_B)= srb;
-    //return EvaluationCEp1(genotype, rs, 1); 
-
-
-    double fitness = 0;
-    int count = 0;
-
-    if (doReverse==0 || doalt1f)
-    {
-    if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
-    w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(0);
-    fitness += EvaluationCEp1(rs, 1, w_ptr);
-    count++;
-    }
-
-    if (doReverse==1 || doalt2f)
-    {
-    if (zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
-    w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(1);
-    fitness += EvaluationCEp1(rs, -1, w_ptr);
-    count++;
-    }
-
-    //genotype(SR_A) = sra;
-    //genotype(SR_B) = srb;
-  
-    //for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
-   
-    return fitness/count;
-
-    //if (Epars1.doReverse==0) return fitnessForward;
-    //if (Epars1.doReverse==1) return fitnessBackward;
-    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
-
-    //assert(0 && "doReverse not set properly");
-    // return fitnessBackward;
-}
-
-template<class T>
-double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState &rs)
-{
-
-    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
-
-    //Epars1.show();
-    //assert(0);
-    shared_ptr<T> w_ptr = this->getTw();
-
-    //const int SR_A = 1;
-    //const int SR_B = 2;
- 
-    const int gen_num = s->Generation();
-    //evoPars1.MaxGenerations;
-    //Epars1.doAlternateEvo;
-
-    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
-    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
-    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
-    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
-
-    //cout << "reverse is " << Epars1.doReverse << endl;
-
-    //double sra = genotype(SR_A);
-    //double srb = genotype(SR_B);
-
-   // assert(0);
-
-    //double fitnessForward, fitnessBackward;
-
-    //genotype(SR_A)= -1.0;
-    //genotype(SR_B)= srb;
-    //return EvaluationCEp1(genotype, rs, 1); 
-
-    double fitness = 0;
-    int count = 0;
-    if (Epars1.doReverse==0 || doalt1f){
-        //  assert(0 && "dorev0");
-    //genotype(SR_A)= -1.0;
-    //genotype(SR_B)= srb;
-      w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(0);
-    fitness += EvaluationCEp1(rs, 1, w_ptr);
-    count++;
-    }
-    if (Epars1.doReverse==1 || doalt2f){
-       // assert(0 && "dorev1");
-    //genotype(SR_A)= sra;
-    //genotype(SR_B)= -1.0;
-      w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(1);
-    fitness += EvaluationCEp1(rs, -1, w_ptr);
-    count++;
-    }
-
-    //genotype(SR_A) = sra;
-    //genotype(SR_B) = srb;
-
-    return fitness/count;
-
-    //if (Epars1.doReverse==0) return fitnessForward;
-    //if (Epars1.doReverse==1) return fitnessBackward;
-    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
 
     //assert(0 && "doReverse not set properly");
     // return fitnessBackward;
@@ -1095,6 +927,175 @@ if (false)
 
 
 
+template<class T>
+double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &rs)
+{
+  
+    //const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
+
+    //Epars1.show();
+    //assert(0);
+
+    //vector<double> initial_genotype(genotype.Size());
+    //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
+   
+    shared_ptr<T> w_ptr = this->getTw();
+
+
+    int zeroGainsType;
+    w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    int doReverse;
+    w_ptr->getValCJWorm("doReverse", doReverse);
+
+    
+
+    cout << "zeroGainsType " << zeroGainsType << endl;
+    cout << "doReverse " << doReverse << endl;
+
+   
+    
+    //const int SR_A = 1;
+    //const int SR_B = 2;
+ 
+    const int gen_num = s->Generation();
+    //evoPars1.MaxGenerations;
+    //Epars1.doAlternateEvo;
+
+    //const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    //const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    //const bool doalt1f = Epars1.doReverse==2 || (doalt1);
+    //const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+
+
+    const bool doalt1 = doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    const bool doalt1f = doReverse==2 || (doalt1);
+    const bool doalt2f = doReverse==2 || (doalt2);
+
+
+    //cout << "reverse is " << Epars1.doReverse << endl;
+
+    //double sra = genotype(SR_A);
+    //double srb = genotype(SR_B);
+
+   // assert(0);
+
+    //double fitnessForward, fitnessBackward;
+
+    //genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+    //return EvaluationCEp1(genotype, rs, 1); 
+
+
+    double fitness = 0;
+    int count = 0;
+
+    if (doReverse==0 || doalt1f)
+    {
+    if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(0);
+    fitness += EvaluationCEp1(rs, 1, w_ptr);
+    count++;
+    }
+
+    if (doReverse==1 || doalt2f)
+    {
+    if (zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
+    w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(1);
+    fitness += EvaluationCEp1(rs, -1, w_ptr);
+    count++;
+    }
+
+    //genotype(SR_A) = sra;
+    //genotype(SR_B) = srb;
+  
+    //for (int i=0;i<genotype.Size();i++) genotype(i+1)=initial_genotype[i];
+   
+    return fitness/count;
+
+    //if (Epars1.doReverse==0) return fitnessForward;
+    //if (Epars1.doReverse==1) return fitnessBackward;
+    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+
+    //assert(0 && "doReverse not set properly");
+    // return fitnessBackward;
+}
+
+template<class T>
+double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState &rs)
+{
+
+    const EvolparametersCE & Epars1 = dynamic_cast<const EvolparametersCE&>(*this->evopar_ptr);
+
+    //Epars1.show();
+    //assert(0);
+    shared_ptr<T> w_ptr = this->getTw();
+
+    //const int SR_A = 1;
+    //const int SR_B = 2;
+ 
+    const int gen_num = s->Generation();
+    //evoPars1.MaxGenerations;
+    //Epars1.doAlternateEvo;
+
+    const bool doalt1 = Epars1.doReverse==3 && (gen_num < evoPars1.MaxGenerations/2);
+    const bool doalt2 = Epars1.doReverse==3 && (gen_num >= evoPars1.MaxGenerations/2);
+    const bool doalt1f = Epars1.doReverse==2 || (doalt1);
+    const bool doalt2f = Epars1.doReverse==2 || (doalt2);
+
+    //cout << "reverse is " << Epars1.doReverse << endl;
+
+    //double sra = genotype(SR_A);
+    //double srb = genotype(SR_B);
+
+   // assert(0);
+
+    //double fitnessForward, fitnessBackward;
+
+    //genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+    //return EvaluationCEp1(genotype, rs, 1); 
+
+    double fitness = 0;
+    int count = 0;
+    if (Epars1.doReverse==0 || doalt1f){
+        //  assert(0 && "dorev0");
+    //genotype(SR_A)= -1.0;
+    //genotype(SR_B)= srb;
+      w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(0);
+    fitness += EvaluationCEp1(rs, 1, w_ptr);
+    count++;
+    }
+    if (Epars1.doReverse==1 || doalt2f){
+       // assert(0 && "dorev1");
+    //genotype(SR_A)= sra;
+    //genotype(SR_B)= -1.0;
+      w_ptr->setParsFromGeno(genotype);
+    w_ptr->setInputOnce(1);
+    fitness += EvaluationCEp1(rs, -1, w_ptr);
+    count++;
+    }
+
+    //genotype(SR_A) = sra;
+    //genotype(SR_B) = srb;
+
+    return fitness/count;
+
+    //if (Epars1.doReverse==0) return fitnessForward;
+    //if (Epars1.doReverse==1) return fitnessBackward;
+    //if (Epars1.doReverse==2) return (fitnessForward + fitnessBackward)/2;
+
+    //assert(0 && "doReverse not set properly");
+    // return fitnessBackward;
+}
+
+
+
+
+
 
 template<class T>
 double Evolvable_ptrB<T>::EvaluationCEp1(
@@ -1159,11 +1160,11 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
    
-        if (false)
+        //if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
-    cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
-    cout << "evo21 biases kkds " << n_ptr1->biases << endl;
-    cout << "evo21 taus kkds " << n_ptr1->taus << endl << endl;
+    cout << "evoCE states kkds " << n_ptr1->states << endl << endl;
+    cout << "evoCE biases kkds " << n_ptr1->biases << endl;
+    cout << "evoCE taus kkds " << n_ptr1->taus << endl << endl;
     //assert(0);
     }
     
@@ -1192,13 +1193,25 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     w.setStepSize(StepSize);
 
 
-    if (false)
+    //if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
-    cout << "evo21 states kkds " << n_ptr1->states << endl << endl;
-    cout << "evo21 biases kkds " << n_ptr1->biases << endl;
-    cout << "evo21 taus kkds " << n_ptr1->taus << endl << endl;
+    cout << "evo states kkds " << n_ptr1->states << endl << endl;
+    cout << "evo biases kkds " << n_ptr1->biases << endl;
+    cout << "evo taus kkds " << n_ptr1->taus << endl << endl;
     //assert(0);
     }
+
+    {
+    json j1;
+        w.addParsToJson(j1);
+        cout << "j1 ss" << j1["Stretch receptor"]["SR_A_gain"] << endl;
+        cout << "j1 ss" << j1["Stretch receptor"]["SR_B_gain"] << endl;
+         cout << "j1 ss" << j1["Driving input"] << endl;
+
+    }
+
+    //shared_ptr<Worm2DSRb> ws1 = dynamic_pointer_cast<Worm2DSRb>(w_ptr);
+    //const SRCE* srptr = dynamic_cast<SRCE*>(w_ptr->w2dsr_ptr);
 
     //EvolparametersCE & Epars1 = dynamic_cast<EvolparametersCE&>(*evopar_ptr);
     //WormCE & w2 = dynamic_cast<WormCE&>(w);
@@ -1277,7 +1290,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     fitB = (fitB > 0)? fitB : 0.0;
 
 
-    
+    cout << "evoCE fitness " << fitB << endl;
     return fitB;
 
 

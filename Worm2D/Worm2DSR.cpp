@@ -29,7 +29,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 {
   
   //BPitsJson = j;
-
+  
 
     if (false){
     bool do_nml =  cmd->getArgValInt("--donml",0);
@@ -56,7 +56,8 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
-      bool doLegacy;
+    
+    bool doLegacy;
     getValCJWorm<bool>("doLegacy",doLegacy);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
@@ -186,7 +187,8 @@ if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
 
 }
 
-void  Worm2DSRb::setParsFromJson(const json & j){if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
+void  Worm2DSRb::setParsFromJson(const json & j)
+{if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
 
 
 shared_ptr<SR> Worm2DSRb::getSR(const json & j, baseParameters * basePar1_)
@@ -675,7 +677,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   getValCJWorm<bool>("doLegacy",doLegacy);
 
 
-  setNSFromJson(js1,*n,doLegacy);
+  setNSFromJsonNZ(js1,*n,doLegacy);
 
     //if (js1["Nervous system"].contains("section sizes"))
     //  jsects = js1["Nervous system"]["section sizes"];

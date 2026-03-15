@@ -230,7 +230,7 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
 
 
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
-
+void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates = true);
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates = true);
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);

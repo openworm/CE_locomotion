@@ -427,6 +427,7 @@ void writeJsonFile(ofstream & json_out);
 virtual void addEvolvableToJson(json & j) {return;}
 void addParsToJson();
 
+const NSForW2D & itsNS() const {return *n_ptr;}
 NSForW2D & itsNS(){return *n_ptr;}
 virtual void DumpParams(ofstream &ofs) {return;}
 void DumpNSOrdered();
