@@ -280,6 +280,15 @@ int main (int argc, const char* argv[])
     
 
     w2->InitializeState(rs);
+
+    //if (false)
+    {const NervousSystem & n_ptr1 = dynamic_cast<const NervousSystem&>(w2->itsNS());
+    cout << "mo states kkds " << n_ptr1.states << endl << endl;
+    cout << "mo biases kkds " << n_ptr1.biases << endl;
+    cout << "mo taus kkds " << n_ptr1.taus << endl << endl;
+    //assert(0);
+    }
+
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
     w2->setStepSize(StepSize);
@@ -289,6 +298,8 @@ int main (int argc, const char* argv[])
     //w2->setWormPars(cmd);
 
   //  if (do_nml) assert(0);
+
+   
 
     w2->addParsToJson(j);
     
@@ -354,18 +365,15 @@ int main (int argc, const char* argv[])
         if (doforward) efconds["condval"] = 0; else efconds["condval"] = 1;
         ew->callEfcond(efconds);
 
-        if (false)
-    {const NervousSystem & n_ptr1 = dynamic_cast<const NervousSystem&>(w2->itsNS());
-    cout << "evo21 states kkds " << n_ptr1.states << endl << endl;
-    cout << "evo21 biases kkds " << n_ptr1.biases << endl;
-    cout << "evo21 taus kkds " << n_ptr1.taus << endl << endl;
-    //assert(0);
-    }
+  
         }
 
         if (doforward) w2->setInputOnce(0); else w2->setInputOnce(1);
     }
  
+   
+
+
     s1.runSimulation(*w2);
 
     }

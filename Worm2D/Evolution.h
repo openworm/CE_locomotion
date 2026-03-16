@@ -949,8 +949,8 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     
 
-    cout << "zeroGainsType " << zeroGainsType << endl;
-    cout << "doReverse " << doReverse << endl;
+    //cout << "zeroGainsType " << zeroGainsType << endl;
+    //cout << "doReverse " << doReverse << endl;
 
    
     
@@ -1131,7 +1131,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //const double    AvgSpeed = 0.0001; //0.00022;              // Average speed of the worm in meters per seconds
     
 
-    cout << "AS " << AvgSpeed << " " << fitType << endl;
+    //cout << "AS " << AvgSpeed << " " << fitType << endl;
 
     
     //assert(0);
@@ -1291,7 +1291,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     fitB = (fitB > 0)? fitB : 0.0;
 
 
-    cout << "evoCE fitness " << fitB << endl;
+    //cout << "evoCE fitness " << fitB << endl;
     return fitB;
 
 

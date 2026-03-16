@@ -976,7 +976,7 @@ void Worm2DCE::makeExternalInputConn()
   getValCJWorm<double>("AB_output_level",AB_output_level);
 
 
-  cout << "about " << AB_output_level << endl;
+  //cout << "about " << AB_output_level << endl;
 
     //assert(0);
 

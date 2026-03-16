@@ -1666,9 +1666,9 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
   for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
-  cout << " exx ";
-  for (int i=0;i<externalInputs.size();i++) cout << " " << externalInputs[i];
-  cout << endl;
+  //cout << " exx ";
+  //for (int i=0;i<externalInputs.size();i++) cout << " " << externalInputs[i];
+  //cout << endl;
 
 }
 
@@ -1781,9 +1781,9 @@ void InputSwitcher::construct(const json & j)
     vals.swap(vals1);
     
     
-    for (int i=0;i<inds.size();i++) 
-    for (int j=0;j<inds[i].size();j++)
-    cout << "is inds " << i << " " << j << " " <<  " iis " << inds[i][j] << " jis " <<  vals[i][j]  << endl;
+    //for (int i=0;i<inds.size();i++) 
+    //for (int j=0;j<inds[i].size();j++)
+    //cout << "is inds " << i << " " << j << " " <<  " iis " << inds[i][j] << " jis " <<  vals[i][j]  << endl;
     
 
    //assert(0);
