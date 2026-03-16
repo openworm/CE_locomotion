@@ -1160,7 +1160,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
    
-        //if (false)
+        if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evoCE states kkds " << n_ptr1->states << endl << endl;
     cout << "evoCE biases kkds " << n_ptr1->biases << endl;
@@ -1193,7 +1193,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     w.setStepSize(StepSize);
 
 
-    //if (false)
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo states kkds " << n_ptr1->states << endl << endl;
     cout << "evo biases kkds " << n_ptr1->biases << endl;
@@ -1201,6 +1201,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //assert(0);
     }
 
+    if (false)
     {
     json j1;
         w.addParsToJson(j1);

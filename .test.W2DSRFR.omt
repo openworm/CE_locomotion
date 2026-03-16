@@ -3,7 +3,7 @@
  
 target: testW2DSRFR.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
-mep: .test.W2DCEFR.mep
+mep: .test.W2DCEFRv2.mep
 experiments:
   Test:
     observables:

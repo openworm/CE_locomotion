@@ -157,6 +157,12 @@ void Worm2DSR::addParsToJson(json & j)
 {
 
   j = BPitsJson;
+  
+  vector<double> states;
+  for (int i = 1; i <= par1.N_size; i++) states.push_back(n_ptr->NeuronState(i));
+  j["Nervous system"]["states"]["value"] = states;      
+  j["Driving input"]["strengths"]["value"] = externalInputs;
+
   //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
   
   //addEvolvableToJson(j);
@@ -676,6 +682,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   bool doLegacy;
   getValCJWorm<bool>("doLegacy",doLegacy);
 
+  //copy in current states, external inputs here??
 
   setNSFromJsonNZ(js1,*n,doLegacy);
 

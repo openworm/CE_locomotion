@@ -272,12 +272,14 @@ WormCESR(cmd)
 WormCESR::WormCESR(const string & jsonfilename_, const string & filename_, shared_ptr<const CmdArgs> cmd):
 WormCESR((json) getJsonFromFile(jsonfilename_),filename_,cmd){}
 
-void Worm2DCE::initForSimulation(RandomState & rs)
+
+
+/* void Worm2DCE::initForSimulation(RandomState & rs)
 {
 
   return;
 
-}
+} */
 
 
 

@@ -408,7 +408,7 @@ class Worm2Dbase : public baseParameters, virtual public DataWriter, public Inpu
 public:
 
 virtual void InitializeState(RandomState &rs) = 0;
-virtual void initForSimulation(RandomState &) {return;}
+virtual void initForSimulation(RandomState &) {setTime(0);return;}
 
 
 void Step(double StepSize_);

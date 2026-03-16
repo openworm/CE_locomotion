@@ -221,7 +221,7 @@ void Worm2Dbody::InitializeState(RandomState &rs)
 void Worm2Dbase::InitializeState(RandomState &rs)
 {  
     //cout << "Worm2Dbase init state" << endl;
-    setTime(0);
+    //setTime(0);
 
    // shared_ptr<W2DbaseparametersNML> l1 = dynamic_pointer_cast<W2DbaseparametersNML>(W2Dbaseparameters1b);
     
@@ -251,13 +251,13 @@ void Worm2Dbase::InitializeState(RandomState &rs)
 
 void Worm2Dm::InitializeState(RandomState &rs)
 {
-    if (W2Dminitcalled) return;
+    //if (W2Dminitcalled) {W2Dminitcalled=false;return;}
     //cout << "Worm2Dm init state" << endl;
 
     Worm2Dbase::InitializeState(rs);
     Worm2Dbody::InitializeState(rs);
 
-    W2Dminitcalled = true;
+    //W2Dminitcalled = true;
 
     return;
 }
@@ -777,13 +777,14 @@ void Worm2Dbase::addParsToJson(json & j)
     //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
+    cout << "idi " << endl;
     InputSwitcher::addParsToJson(j);
     addEvolvableToJson(j);
 }
 
 void Worm2Dm::addParsToJson(json & j)
 {  
-    if (W2Dmparscalled) return;
+    //if (W2Dmparscalled) {W2Dmparscalled=false;return;}
 
 
     appendVectorToJson<toFromWeight>(j["Dorsal body"]["weights"], dBodyConnvec);
@@ -796,7 +797,7 @@ void Worm2Dm::addParsToJson(json & j)
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
 
-    W2Dmparscalled = true;
+    //W2Dmparscalled = true;
 
     Worm2Dbody::addParsToJson(j);
     Worm2Dbase::addParsToJson(j);
@@ -1665,6 +1666,9 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
   for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
+  cout << " exx ";
+  for (int i=0;i<externalInputs.size();i++) cout << " " << externalInputs[i];
+  cout << endl;
 
 }
 

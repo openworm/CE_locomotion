@@ -91,7 +91,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     shared_ptr<SRCE> sr_ptr;
 
     void DumpParams(ofstream &ofs);
-    virtual void initForSimulation(RandomState&);
+    //virtual void initForSimulation(RandomState&);
     void setForward();
     void setBackward();
     //void randomizeNS(RandomState &rs){return;}
