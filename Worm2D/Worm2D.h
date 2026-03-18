@@ -338,7 +338,9 @@ class InputSwitcher
 {
 
   public:
-  
+  InputSwitcher(const json & j){construct(j);}
+  InputSwitcher(){}
+
   protected:
 
   void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
@@ -484,6 +486,7 @@ protected:
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,
     shared_ptr<const CmdArgs> cmd_);
+
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,
     shared_ptr<const CmdArgs> cmd_, const json & j);
 
@@ -602,7 +605,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
     bool W2Dmparscalled, W2Dminitcalled;
     //shared_ptr<W2Dbaseparameters> W2Dbaseparameters1;
-     vector<toFromWeight> vBodyConnvec, dBodyConnvec;
+    vector<toFromWeight> vBodyConnvec, dBodyConnvec;
     
      void Step1();
 

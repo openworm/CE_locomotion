@@ -30,8 +30,10 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   
   //BPitsJson = j;
   
+    const json & js1 = BPitsJson;
 
     if (false){
+
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
 
@@ -50,6 +52,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 
     }
     }
+
     }
 
    
@@ -64,24 +67,19 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     assert(n);
     cout << "doLegacy " << doLegacy << endl;
     
-    setNSFromJson(BPitsJson,*n, doLegacy);
+    setNSFromJson(js1,*n, doLegacy);
     }
 
-    if (false){
-    //shared_ptr<W2Dbaseparameters> w_ptr2 = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    //cout << "w2d1x " << W2Dbaseparameters1->doOrigMuscInput << endl;
-    //cout << "w2dx " << w_ptr2->doOrigMuscInput << endl;
-    assert(0);
 
-    }
-
-    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(BPitsJson);
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(js1);
 
     //Worm2DSRb::setParsFromJson(j);
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
-    InputSwitcher::construct(BPitsJson);
-    setMuscBodExt(BPitsJson);
+    //InputSwitcher::construct(BPitsJson);
+
+    setMuscBodExt(js1);
+
     //setUpMuscleConn(j);
     //setUpBodyConn(j);
     //makeExternalInputConnFromJson(j);
@@ -98,6 +96,7 @@ Worm2DSRm(getJsonFromFile(jsonfilename_), cmd){}
 Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), 0, cmd, j),Worm2DSRb(getSR(j,this))//,baseParameters(j,cmd)
 {
+  const json & js1 = BPitsJson;
 
   //BPitsJson = j;
    // W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
@@ -105,11 +104,11 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 
     //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
 
-    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
+    if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(js1);
 
-    InputSwitcher::construct(j);
+    //InputSwitcher::construct(j);
 
-    setBodExt(j);
+    setBodExt(js1);
     //setUpMuscleConn(j);
     //setUpBodyConn(j);
     //makeExternalInputConnFromJson(j);
@@ -153,28 +152,47 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
 
 }
 
-void Worm2DSR::addParsToJson(json & j)
-{
+void WormCO2DSR::addParsToJson(json & j){
 
   j = BPitsJson;
+  
+  if (false){
   
   vector<double> states;
   for (int i = 1; i <= par1.N_size; i++) states.push_back(n_ptr->NeuronState(i));
   j["Nervous system"]["states"]["value"] = states;      
   j["Driving input"]["strengths"]["value"] = externalInputs;
 
+  }
+  else{
+  Worm2DSRE::addParsToJson(j);// needs fixing bpjson overwrites sensor
+  Sensor::addParsToJson(j);
+  }
+}
+
+void Worm2DSR::addParsToJson(json & j)
+{
+
+  //j = BPitsJson;
+  
+  //vector<double> states;
+  //for (int i = 1; i <= par1.N_size; i++) states.push_back(n_ptr->NeuronState(i));
+  //j["Nervous system"]["states"]["value"] = states;      
+  //j["Driving input"]["strengths"]["value"] = externalInputs;
+
   //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
   
   //addEvolvableToJson(j);
 
-  if (false){
+  if (true){
   NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
-  if (n!=nullptr){
+  if (n){
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], *n);
   
   //j[nsHead]["section sizes"] = jsects;
   }
+  
   Worm2D::addParsToJson(j);
   Worm2DSRb::addParsToJson(j);
   }
@@ -674,8 +692,8 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 
   setCurrentPheno(pheno);
   
-  json & js1 = BPitsJson;
-  recursive_iterate2(pheno,js1,itsEf);
+  
+  recursive_iterate2(pheno,BPitsJson,itsEf);
   
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   assert(n);
@@ -684,6 +702,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 
   //copy in current states, external inputs here??
 
+  const json & js1 = BPitsJson;
   setNSFromJsonNZ(js1,*n,doLegacy);
 
     //if (js1["Nervous system"].contains("section sizes"))
@@ -704,9 +723,9 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 
 void WormCO2DSR::setParsFromPheno(const TVector<double> &pheno)
 {
-
+const json & js1 = BPitsJson;
 Worm2DSRE::setParsFromPheno(pheno);
-Sensor::setParsFromJson(BPitsJson);
+Sensor::setParsFromJson(js1);
     
 }
 

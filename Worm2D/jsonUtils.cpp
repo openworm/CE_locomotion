@@ -509,8 +509,12 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
 
 void appendChemNSToJson(json & j, NervousSystem& c)
 {
-    j["Chemical weights"]["message"] = "chemical weights in sparse format";
-    appendMatrixToJson(j["Chemical weights"], c.chemicalweights, c.NumChemicalConns, c.size);
+  string sval = "Chemical weights";
+  
+  //if (!j.contains(sval)) j[sval] = json::object();
+
+  j[sval]["message"] = "chemical weights in sparse format";
+  appendMatrixToJson(j[sval], c.chemicalweights, c.NumChemicalConns, c.size);
 }
 
 void appendElecNSToJson(json & j, NervousSystem& c)
@@ -635,6 +639,7 @@ return par;
 
 void appendCellNamesToJson(json & j, const vector<string> & cell_names, const int & num_reps)
 {
+    if (cell_names[0] == "not implemented" && j.contains("Cell name")) return;
     Params< vector<string> > parvec = getNervousSysCellNames(cell_names, num_reps);
     appendToJson<vector<string> >(j,parvec);
 }

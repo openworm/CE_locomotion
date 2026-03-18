@@ -97,69 +97,32 @@ void DataWriter::dataReset(){closeAll();
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_){}
+
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_){}
-
-//,W2Dbaseparameters1b(make_shared<W2DbaseparametersNML>())
-//muscForWDconst(false)
-//{//zeroAllInputs();
-    //setWormPars(cmd_);
-   // BPitsCmdArgs = cmd_;
-//}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j){}
 
 
-/* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
-    muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
-    Worm2Dbase(par1_,n_ptr_,m_ptr_){setWormPars(cmd_);}
- */
+//////////////////////
 
 
-/* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(make_shared<W2Dbaseparameters>()),
-muscForWDconst(mfwc){} */
-
-/* Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc, 
-    shared_ptr<W2Dbaseparameters> w2dpar_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_),W2Dbaseparameters1(w2dpar_),
-muscForWDconst(mfwc)
-{
- if (W2Dbaseparameters1 == nullptr) assert(0);
-} */
-
-//Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
-//    shared_ptr<W2Dparameters> w2dpar_):par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_){}
-    //,W2Dbaseparameters1b(w2dpar_)//,W2Dbaseparameters1(new W2Dbaseparameters())
-    //,muscForWDconst(false)
-
-   
-    //if (W2Dbaseparameters1b == nullptr) assert(0);
-    //zeroAllInputs();
-
-
-/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
-{setUpBodyConn();}
- */
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_):
 Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_),W2Dmparscalled(false),W2Dminitcalled(false)
-{setUpBodyConn();}
+{//setUpBodyConn();
+    }
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
 Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_, j),W2Dmparscalled(false),W2Dminitcalled(false)
-{setUpBodyConn();}
+{//setUpBodyConn(j);
+}
 
 
-
-/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_):
-Worm2Dbase(par1_,n_ptr_,new Muscles()),W2Dmparscalled(false),W2Dminitcalled(false)
-{setUpBodyConn();}  */
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval, shared_ptr<const CmdArgs> cmd_):
 Worm2Dbase(par1_,n_ptr_,0, cmd_),
 W2Dmparscalled(false),W2Dminitcalled(false){
     m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    setUpBodyConn();
+    //setUpBodyConn();
 }
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval, 
@@ -167,30 +130,11 @@ Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval,
 Worm2Dbase(par1_,n_ptr_,0, cmd_,j),
 W2Dmparscalled(false),W2Dminitcalled(false){
     m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    setUpBodyConn();
+    //setUpBodyConn(j);
 }
 
+////////////////////////////
 
-/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, bool dumval):
-Worm2Dbase(par1_,n_ptr_,0),
-W2Dmparscalled(false),W2Dminitcalled(false){
-    m_ptr = new c302muscForW2D(dynamic_cast<c302ForW2D&>(*n_ptr));
-    setUpBodyConn();
-}
- */
-//Worm2Dm::Worm2Dm(wormIzqParams par1_, shared_ptr<W2Dbaseparameters> w2dpar_):
-//Worm2Dbase(par1_,new NervousSystem(),new Muscles(), w2dpar_),
-//W2Dmparscalled(false),W2Dminitcalled(false){} 
-
-/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc):
-Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();} */
-
-/* Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, 
-    bool mfwc, shared_ptr<W2Dbaseparameters> w2dpar_):
-Worm2Dbase(par1_,n_ptr_,m_ptr_,mfwc, w2dpar_),W2Dmparscalled(false),W2Dminitcalled(false){setUpBodyConn();} */
-
-
-//Worm2D::Worm2D():m(dynamic_cast<Muscles&>(*m_ptr)){}
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
@@ -795,6 +739,8 @@ void Worm2Dm::addParsToJson(json & j)
     
     string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
+
+   
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
 
     //W2Dmparscalled = true;
@@ -859,7 +805,8 @@ void Worm2D::addParsToJson(json & j)
 
     if (hasVNCNMJ){
 
-        j["VNC NMJ"] = {};
+        if (!j.contains("VNC NMJ")) j["VNC NMJ"] = {};
+
         json & j2 = j["VNC NMJ"];
     
 
@@ -875,7 +822,7 @@ void Worm2D::addParsToJson(json & j)
 
      if (hasVNC18){
 
-        j["VNC 18"] = {};
+        if (!j.contains("VNC 18")) j["VNC 18"] = {};
         json & j2 = j["VNC 18"];
     
 
@@ -1392,16 +1339,6 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 void Worm2D::setUpMuscleConn(const json & j)
 {
 
-
-    if (false)
-    {
-    vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-    vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
-    vMuscConnvec.swap(vMuscConnvec1);
-    dMuscConnvec.swap(dMuscConnvec1);
-
-    return;
-    }
     
     if (j.contains("VNC NMJ"))
     {

@@ -232,14 +232,9 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
   //Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   //{}
 
+void addParsToJson(json & j);
 
 
-void addParsToJson(json & j){
-
-  Worm2DSRE::addParsToJson(j);
-  Sensor::addParsToJson(j);
-
-}
 
 void setParsFromPheno(const TVector<double> &pheno);
 

@@ -12,7 +12,7 @@
 
 
 
-
+//cpbjvbk8yxl
 int main (int argc, const char* argv[])
 {
 
@@ -147,7 +147,7 @@ int main (int argc, const char* argv[])
 
     //bool do_nml =  getParameterInt(argc,argv,"--donml","0");
 
-    
+   cout << "shhd " << endl; 
     
     bool do_nml =  cmd->getArgValInt("--donml",0);
 
@@ -254,7 +254,8 @@ int main (int argc, const char* argv[])
     StepSize = j_evo[jloc]["StepSize"]["value"];
     skip_steps = j_evo[jloc]["skip_steps"]["value"];
     } 
-        
+    
+    cout << "shds " << simrandseed << " " << StepSize << " " << skip_steps << endl;
     StepSize = cmd->getArgValDoub("--SimStepSize", StepSize);
     skip_steps = cmd->getArgValDoub("--SimSkipSteps", skip_steps);
 
@@ -277,7 +278,7 @@ int main (int argc, const char* argv[])
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
-    
+    cout << "simrandseed " << simrandseed << endl;
 
     w2->InitializeState(rs);
 
@@ -288,6 +289,7 @@ int main (int argc, const char* argv[])
     cout << "mo taus kkds " << n_ptr1.taus << endl << endl;
     //assert(0);
     }
+    
 
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
