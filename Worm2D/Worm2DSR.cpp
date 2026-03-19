@@ -98,6 +98,8 @@ Worm2DSRm::Worm2DSRm(const json & j, shared_ptr<const CmdArgs> cmd):Worm2Dm(getI
 {
   const json & js1 = BPitsJson;
 
+  
+
   //BPitsJson = j;
    // W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
    // setWormPars(cmd);

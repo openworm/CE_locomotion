@@ -282,7 +282,7 @@ int main (int argc, const char* argv[])
 
     w2->InitializeState(rs);
 
-    //if (false)
+    if (false)
     {const NervousSystem & n_ptr1 = dynamic_cast<const NervousSystem&>(w2->itsNS());
     cout << "mo states kkds " << n_ptr1.states << endl << endl;
     cout << "mo biases kkds " << n_ptr1.biases << endl;

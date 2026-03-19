@@ -125,10 +125,6 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.COW2D.omt
     omv test -V .test.W2DCO.omt
     
-
-  
-    
-    
     
     omv test -V .test.COW2DSR.omt
     omv test -V .test.COW2DSR2.omt

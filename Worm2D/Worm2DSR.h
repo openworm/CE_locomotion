@@ -227,7 +227,12 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
+  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this)
+  {
+
+    //bool do_nml =  cmd->getArgValInt("--donml",0);
+    //if (do_nml) assert(0);
+  }
 
   //Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
   //{}

@@ -113,7 +113,8 @@ Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_),W2Dmparscalled(false),W2Dminitcalled
 
 Worm2Dm::Worm2Dm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
 Worm2Dbase(par1_,n_ptr_,new Muscles(),cmd_, j),W2Dmparscalled(false),W2Dminitcalled(false)
-{//setUpBodyConn(j);
+{
+    //setUpBodyConn(j);
 }
 
 
