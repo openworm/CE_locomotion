@@ -75,6 +75,7 @@ if [ "$quick_test" == 0 ]; then
 
     rm -rf testruns/exW2DCEFR
     rm -rf testruns/exW2DCEFRv2
+    rm -rf testruns/exW2DSRFR
     rm -rf experiments/izq_runs_nets_W2D21 experiments/izq_runs_nets_nml_W2D21 experiments/izq_runs_nets_nml_musc_W2D21
     rm -rf testruns/exW2D21
     rm -rf testruns/exW2D21E
@@ -113,6 +114,7 @@ if [ "$quick_test" == 0 ]; then
 
     omv test -V .test.W2DCEFR.omt
     omv test -V .test.W2DCEFRv2.omt
+    omv test -V .test.W2DSRFR.omt
 
     omv test -V .test.osc_sim.omt
     omv test -V .test.osc_sim_21.omt

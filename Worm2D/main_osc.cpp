@@ -57,6 +57,8 @@ int main (int argc, const char* argv[])
     }
     if (model_name == "") model_name = "W2DSR";
 
+    if (!j_orig.is_null()) j_orig.erase("Simulation");
+
     /* else{
     cout << "Model name is not in json file or the argument list. Exiting." << endl;
     return 0; */
@@ -112,8 +114,6 @@ int main (int argc, const char* argv[])
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
-
-        
 
         evo->configure();
      
