@@ -23,7 +23,7 @@ inputFolderName = outdir
 outputFolderName = outdir + "_out"
 
 args = dict(
-    simduration=300,
+    simduration=400,
     simtransient=0,
     RandSeed=173257,
     modelName="W2DSR",
