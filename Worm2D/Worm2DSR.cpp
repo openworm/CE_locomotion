@@ -127,6 +127,8 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     
   if (genPhenLims.size()>0) setInitPheno();
     
+  cout << "after setInitPheno" << endl;
+
     if (callInit) writeOrigGen(cmd);
 
 
@@ -626,15 +628,6 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
             break;
           } 
 
-
-       /*    vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
-          for (int i = 0; i<evols.size();i++)
-          for (int j = 0; j<values.size();j++)
-          if (evols[i].from == values[j].w.from && evols[i].to == values[j].to)
-          {values[j].w.weight = pheno[evols[i].val];break;}  */
-
-
-
           it2->at("value") = values;
         }
         else
@@ -960,11 +953,73 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double>
 
 
 
+void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
+{
+
+        if (it2->at("evolvable").is_object())
+        {
+          const json & jevol = it2->at("evolvable");
+          int phenind = jevol.at("val").get<int>() - 1; 
+          pheno[phenind] = it2->at("value");
+        }
+        else if (it2->at("evolvable").is_number())
+        pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+        
+          const json  & jevol = it2->at("evolvable");
+          int iind = 0;
+          for (auto itjevol = jevol.begin(); itjevol != jevol.end(); ++itjevol){
+          for (int j = 0; j<values.size();j++)
+          if (itjevol->at("from").get<int>() == values[j].w.from && 
+          itjevol->at("to").get<int>() == values[j].to)
+          {
+            int phenind = itjevol->at("val").get<int>() - 1;
+            pheno[phenind] = values[j].w.weight;
+            break;
+          
+          } 
+        iind ++;
+        }
+
+        }
+        else
+        {
+        if (it2->at("value")[0].is_number())
+        {
+        vector<double> values = it2->at("value").template get< vector<double> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++) pheno[evols[i].val-1] = values[evols[i].ind-1];
+        
+        }
+        else{          
+        vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+            pheno[evols[i].val-1] = values[j].weight;
+            break;
+          }
+        }
+
+        }
+        
+        }
+      
+
+}
+
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef)
 {
 
-        const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
-        //const bool do_mfunc = true;
+        //const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
+        const bool do_mfunc = true;
 
         if (it2->at("evolvable").is_object())
         {
@@ -972,10 +1027,15 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           int phenind = jevol.at("val").get<int>() - 1; //need mfunc
 
           double phenval;
-          if (do_mfunc && jevol.contains("mfunc"))
-            phenval = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
-          else phenval = pheno[phenind];
-          if (check123456(phenval, it2->at("value"))) pheno[phenind] = it2->at("value");
+          if (do_mfunc && jevol.contains("mfunc")){
+            json j2 = jevol.at("mfunc");
+            j2["doInverse"] = true;
+            phenval = ef.eFunc(it2->at("value"), j2);
+          }
+          else phenval = it2->at("value");
+          //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;
+          if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
+          //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;
 
         }
         else if (it2->at("evolvable").is_number()){
@@ -1003,9 +1063,14 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           {
             int phenind = itjevol->at("val").get<int>() - 1;
             double phenval;
-            if (do_mfunc && itjevol->contains("mfunc"))
-              phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
-            else phenval = pheno[phenind];
+            if (do_mfunc && itjevol->contains("mfunc")) {
+              json j2 = itjevol->at("mfunc");
+              j2["doInverse"] = true;
+              //phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
+              phenval = ef.eFunc(values[j].w.weight, j2);
+              //phenval = ef.eFunc(pheno[phenind], j2);
+            }
+            else phenval = values[j].w.weight;
  
             if (false){
             cout << "phvals " << iind << " " << j << " " 
@@ -1017,15 +1082,13 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             }
 
             //assert(check123456(phenval, values[j].w.weight));
-            if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
+            if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
+            //if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
             break;
           
           } 
         iind ++;
         }
-
-
-
         }
         else
         {
@@ -1080,6 +1143,15 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef)
     }
 }
 
+void recursive_iterate_pheno(vector<double> & pheno, const json& j)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) getInitPhenoVals(pheno,it);
+      else if (it->is_object()) recursive_iterate_pheno(pheno,*it);
+    }
+}
 
 
 /* const vector<double> & Worm2DSRE::getCurrentPheno()
@@ -1094,16 +1166,16 @@ void Worm2DSRE::setInitPheno()
   vector<double> pheno(getVectSize(), checkval); 
 
   const json & js1 = BPitsJson;
-  recursive_iterate(pheno,js1,itsEf);
-  
+  recursive_iterate(pheno,js1,itsEf); //this tries to recreate pheno from actual values
+  //recursive_iterate_pheno(pheno,js1); //this sets pheno as current parameter values not pheno
+
   for (int i = 0; i< pheno.size(); i++){
   //cout << "pheno i " << pheno[i] << " " << i << endl;
   assert(!check123456(pheno[i]) && "init pheno not set");
   }
 
-  setCurrentPheno(pheno);
+  setCurrentPheno(pheno); //this sets current parameter values not pheno
   
-
 }
 
 vector<double> Worm2DSRE::getInitGeno()

@@ -209,16 +209,16 @@ void EvoBase::construct(int vsize_, int offset_)
 
     string filename;
     bool foundFile = false;
-    //filename = rename_file("EvoWJbest.gen.dat");
     filename = rename_file("best.gen.dat");
     struct stat buffer;   
     if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
 
+    //if (false){ //this removed - either from provided best-gen or CPT or from scratch
     if (foundFile == false){
-    //filename = rename_file("best.gen.dat");
     filename = rename_file("EvoWJbest.gen.dat");
     if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
     }
+    //}
 
     if (foundFile) {
 

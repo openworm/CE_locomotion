@@ -38,7 +38,8 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
     //W2Dbaseparameters1->randomInitialState = 1;
     setRs18output(1);
     //initConst();
-
+    if (true)
+    n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
 
     //doOrigSRInput18 = true;
     //getValCJ<bool>("doOrigSRInput", doOrigSRInput18);
@@ -185,6 +186,7 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
 //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
     // Nervous system // Ventral cord
+    if (false)
     n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
 
     int db, dd, vba, vda, vbp, vdp;
@@ -1038,6 +1040,7 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             biasvecj.push_back({vda,2});
             biasvecj.push_back({vdp,2}); */
 
+            if (false)
             {vector<intPair> & vec = biasvec;
             vec.push_back({db,1});
             vec.push_back({vba,1});
@@ -1075,7 +1078,7 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         chemvecj.push_back({{"from", dd}, {"to", vda}, {"val", 9}});
 
 
-
+if (false)
         {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({db,db,5});
@@ -1099,7 +1102,8 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
    vec.push_back({vba, dd,8});
    vec.push_back({vbp, dd,8});
-   vec.push_back({dd, vda,9});   }
+   vec.push_back({dd, vda,9});   
+}
 
 
     {
@@ -1180,6 +1184,7 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
     biasvecj.push_back({{"ind", RMDD}, {"val", 18}});
     biasvecj.push_back({{"ind", RMDV}, {"val", 18}});
 
+    if (false)
     {vector<intPair> & vec = biasvec;
     vec.push_back({SMDD,17});
     vec.push_back({SMDV,17});
@@ -1206,7 +1211,7 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
     chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"val", 25}});
     chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"val", 25}});
 
-
+if (false)
   {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({SMDD, SMDD,21});
