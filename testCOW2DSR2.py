@@ -17,11 +17,11 @@ doInputFolder = True
 
 args = dict(
     duration=50,
-    transient=50,
-    simduration=100,
+    transient=10,
+    simduration=800,
     simtransient=0,
     maxGens=10,
-    popSize=46,
+    popSize=26,
     RandSeed=87057,
     modelName="W2DSR",
     modelFolder="Worm2D",
