@@ -9,14 +9,14 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DSR18E"
+outputFolderName = "testruns/exW2D18genE"
 
 args = dict(
     simduration=100,
     simtransient=0,
     maxGens=1,
     popSize=1,
-    modelName="W2DSR",
+    modelName="W2D18",
     modelFolder="Worm2D",
     inputFolderName="testruns/exW2D18gen",
     outputFolderName=outputFolderName,

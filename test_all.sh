@@ -45,11 +45,19 @@ ruff check *.py */*.py
 
 if [ "$quick_test" == 0 ]; then
 
+    rm -rf exampleRunRS18
+    rm -rf exampleRunRS18W2D
+    rm -rf testruns/exW2D18
+    rm -rf testruns/exW2D18gen
+    rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
+    rm -rf testruns/exW2DSR18E
+
+
     rm -rf exampleRun
     rm -rf exampleRun_nml
-    rm -rf exampleRunRS18
+    
     rm -rf exampleRunNet21
-    rm -rf exampleRunRS18W2D
+    
     rm -rf exampleRunCEW2D
     rm -rf exampleRun21W2D
     rm -rf exampleRunCEW2D_nml
@@ -60,17 +68,16 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/izq_runs_nets/103 experiments/izq_runs_nets_nml/103 experiments/izq_runs_nets_nml_musc/103
     rm -rf experiments/izq_runs_nets/23 experiments/izq_runs_nets_nml/23 experiments/izq_runs_nets_nml_musc/23
     rm -rf testruns/exW2DSR testruns/exW2DSR_nml testruns/exW2DSR_nml_musc
-    rm -rf testruns/exW2D18
+    
     rm -rf testruns/exW2DCO
-    rm -rf testruns/exW2D18gen
-    rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
+    
     rm -rf experiments/osc_sim experiments/osc_sim_nml experiments/osc_sim_nml_musc
     rm -rf experiments/osc_sim_21 experiments/osc_sim_21_nml experiments/osc_sim_21_nml_musc
     rm -rf experiments/osc_sim_21all experiments/osc_sim_21all_nml experiments/osc_sim_21all_nml_musc
     rm -rf testruns/exW2DSR21 testruns/exW2DSR21_nml testruns/exW2DSR21_nml_musc
     rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
     rm -rf testruns/COW2DSRE_test_out
-    rm -rf testruns/exW2DSR18E
+   
 
     rm -rf testruns/exW2DCEFR
     rm -rf testruns/exW2DCEFRv2
@@ -96,6 +103,12 @@ if [ "$quick_test" == 0 ]; then
         python testW2D18.py
     fi;
 
+    omv test -V .test.W2D18gen.omt
+    omv test -V .test.W2DSR18.omt #should be same as W2D18gen
+    omv test -V .test.W2DSR18E.omt
+
+    omv test -V .test.2021.omt
+    omv test -V .test.2021W2D.omt
     omv test -V .test.izq_sim.omt
     omv test .test.izq_sim_W2D21.omt
     omv test -V .test.W2D21.omt
@@ -103,14 +116,12 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSRE21.omt
     omv test -V .test.W2DSR21.omt
 
-    omv test -V .test.2021.omt
-    omv test -V .test.2021W2D.omt
+    omv test -V .test.CEW2D.omt
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DCEs.omt
     omv test -V .test.W2DSR.omt
     omv test -V .test.W2DSRE.omt
     omv test -V .test.W2DCEE.omt
-
     omv test -V .test.W2DCEFR.omt
     omv test -V .test.W2DCEFRv2.omt
     omv test -V .test.W2DSRFR.omt
@@ -118,19 +129,16 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.osc_sim.omt
     omv test -V .test.osc_sim_21.omt
     omv test -V .test.osc_sim_21all.omt
-    omv test -V .test.W2D18gen.omt
-    omv test -V .test.W2DSR18.omt
-    omv test -V .test.W2DSR18E.omt
+
+
     omv test -V .test.COW2D.omt
     omv test -V .test.W2DCO.omt
-    
-    
     omv test -V .test.COW2DSR.omt
     omv test -V .test.COW2DSR2.omt
 
     omv test -V .test.CO.omt
     omv test -V .test.example.omt
-    omv test -V .test.CEW2D.omt
+   
 
     
     cd neuromlLocal
