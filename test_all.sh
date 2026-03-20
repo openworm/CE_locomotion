@@ -51,7 +51,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2D18gen
     rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
     rm -rf testruns/exW2DSR18E
-
+    rm -rf testruns/exW2D18genE
 
     rm -rf exampleRun
     rm -rf exampleRun_nml
@@ -106,6 +106,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2D18gen.omt
     omv test -V .test.W2DSR18.omt #should be same as W2D18gen
     omv test -V .test.W2DSR18E.omt
+    omv test -V .test.W2D18genE.omt
 
     omv test -V .test.2021.omt
     omv test -V .test.2021W2D.omt

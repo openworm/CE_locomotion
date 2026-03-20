@@ -328,6 +328,8 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
     NMJ_RMDV = v(30);
 
     // NMJ Gain
+/* 
+    if (false){
     NMJ_Gain_Map = 0.5;
     NMJ_Gain.SetBounds(1, par1.N_muscles);
     for (int i=1; i<=par1.N_muscles; i++)
@@ -335,6 +337,7 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
     }
 
+} */
      
 
     initConst();
@@ -355,20 +358,21 @@ void Worm18::InitializeState(RandomState &rs)
     //bool rIS = false;
     //getValCJ<bool>("randomInitialState", rIS);
     
+    bool doLegacy;
+    getValCJWorm<bool>("doLegacy",doLegacy);
+
+    if (doLegacy){
+
     bool randomInitialState;
     getValCJWorm<bool>("randomInitialState",randomInitialState);
 
-    if(randomInitialState){
-    //if (rIS){
-    //if (w1parss->randomInitialState){
-        //assert(0);
-    n.RandomizeCircuitState(-0.5, 0.5, rs);}
-    else //n.RandomizeCircuitState(0.7, 0.7, rs);
-
+    if(randomInitialState)n.RandomizeCircuitState(-0.5, 0.5, rs);
+    else 
     { for (int i = 1; i <= n.size-4; i++)
         n.SetNeuronState(i, (i-0.5)/(n.size-4));
     for (int i = 1; i <= 4; i++)
         n.SetNeuronState(i + n.size-4, (i-0.5)/4); 
+    }
     }
 
     //n.RandomizeCircuitState(0.5, 0.5, rs); //fix initial conditions
@@ -398,7 +402,7 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
     return makeVentralMuscleConn18();
 
 
-
+/* 
     vector<toFromWeight> vec1;
 
         {vector<int> neurons({SMDV, RMDV});
@@ -439,6 +443,9 @@ vector<toFromWeight> Worm18::makeVentralMuscleConn()
     }
     
      return vec1;
+ */
+
+
 }
 
 
@@ -461,7 +468,7 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
     return makeDorsalMuscleConn18();
 
 
-
+/* 
 
     //cout << "making ventral muscle con" << endl;
     vector<toFromWeight> vec1;
@@ -478,7 +485,7 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
         makeMuscleConnHelp(vec1, neurons, NMJ, mi, i, NMJ_Gain);
     }}
 
-    return vec1;
+    return vec1; */
 
 }
 
@@ -490,6 +497,14 @@ vector<toFromWeight> Worm18::makeDorsalMuscleConn()
 
 void Worm18::setMuscleInputOrigDorsal()
 {
+    
+    double NMJ_Gain_Map = 0.5;
+    TVector<double> NMJ_Gain;
+    NMJ_Gain.SetBounds(1, par1.N_muscles);
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    }
 
     double dorsalHeadInput = NMJ_SMDD*n_ptr->NeuronOutput(SMDD) + NMJ_RMDV*n_ptr->NeuronOutput(RMDD);
 
@@ -509,6 +524,13 @@ void Worm18::setMuscleInputOrigVentral()
 {
    double ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
 
+     double NMJ_Gain_Map = 0.5;
+    TVector<double> NMJ_Gain;
+    NMJ_Gain.SetBounds(1, par1.N_muscles);
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    }
   
     ventralHeadInput = NMJ_SMDV*n_ptr->NeuronOutput(SMDV) + NMJ_RMDD*n_ptr->NeuronOutput(RMDV);
 
@@ -546,6 +568,15 @@ void Worm18::setMuscleInputOrigVentral()
 
 void Worm18::setMuscleInputOrig()
 {
+
+    double NMJ_Gain_Map = 0.5;
+    TVector<double> NMJ_Gain;
+    NMJ_Gain.SetBounds(1, par1.N_muscles);
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    }
+
    double dorsalHeadInput, ventralHeadInput, ventralHeadInputA, ventralHeadInputP;
 
     dorsalHeadInput = NMJ_SMDD*n_ptr->NeuronOutput(SMDD) + NMJ_RMDV*n_ptr->NeuronOutput(RMDD);
@@ -784,6 +815,8 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
 
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
+    double NMJ_Gain_Map = namedVars["NMJ gain map D"];
+    //namedVars["NMJ gain fact"] = 0.7;
 
     var1.parDoub.head = "Worm";
     var1.parDoub.names = {"NMJ_DB", "NMJ_VBa", "NMJ_VBp", "NMJ_DD", "NMJ_VDa", "NMJ_VDp",
@@ -924,6 +957,9 @@ void Worm18::DumpParams(ofstream &ofs)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;
     else 
     ofs << "SR Gain (VNC and Head): " << sr_ptr->SRvncgain << " " << sr_ptr->SRheadgain << endl;
+
+   double NMJ_Gain_Map = namedVars["NMJ gain map D"];
+
     ofs << "NMJ weights: \n B: " << NMJ_DB << " " << NMJ_VBa << " " << NMJ_VBp << "\n D: " <<  NMJ_DD << " " << NMJ_VDa << " " << NMJ_VDp << endl;
     ofs << "Head: \nBiases: \n SMD(D/V): " << n.NeuronBias(SMDD) << " " << n.NeuronBias(SMDV) << "\n RMD(D/V): "<< n.NeuronBias(RMDD) << " "<< n.NeuronBias(RMDV) << endl;
     ofs << "Time-constants: \n SMD(D/V): " << n.NeuronTimeConstant(SMDD) << " " << n.NeuronTimeConstant(SMDV) << "\n RMD(D/V): " << n.NeuronTimeConstant(RMDD) << " " << n.NeuronTimeConstant(RMDV) << endl;

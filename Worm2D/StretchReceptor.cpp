@@ -198,6 +198,7 @@ void SR::setParsFromJson(const json & j)
 void SR18::setParsFromJson(const json & j) 
 {
 
+
     const json & j2 =  j["Stretch receptor"];
 
     SRvncgain = j2["SRvncgain"]["value"];
@@ -205,11 +206,14 @@ void SR18::setParsFromJson(const json & j)
     vncsr = j2["SRvncsr"]["value"];
     headsr = j2["SRheadsr"]["value"];
 
+    //cout << "SR18 set from json init " << SRvncgain << " " << SRheadgain << " " << vncsr << " " << headsr << endl;
+
     SR::setParsFromJson(j); 
 
-    if (j2["SRvncgain"].contains("Evolvable") || j2["SRheadgain"].contains("Evolvable"))
+    if (j2["SRvncgain"].contains("evolvable") || j2["SRheadgain"].contains("evolvable"))
     {
 
+    //cout << "SR18 set from json " << SRvncgain << " " << SRheadgain << " " << vncsr << " " << headsr << endl;
     makeSRWeights(); 
     makeNSSRWeights(); 
 
@@ -310,6 +314,8 @@ to = 1 + srvars_ptr->nstretch + i */
 
     SRWeightsSimp srw;
 
+    //cout << "SR18 sr" << vncsr << " " << headsr << endl;
+
     //const Worm18 & w_ptr = dynamic_cast<const Worm18&>(w_ptr_);
 
     if (vncsr){
@@ -402,6 +408,11 @@ for (int i = 1; i <= N_units; i++){
 
 void SR18::makeSRWeights()
 {
+
+
+    //cout << "SR18 gain" << SRheadgain << " " << SRvncgain << endl;
+
+
     //weights from 50 segs to stretch receptors
     SRWeightsSimp srw;
 

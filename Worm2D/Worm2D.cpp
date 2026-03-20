@@ -1199,8 +1199,8 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
 
 
 
-    const int & SMDV = units[0], RMDV = units[1], VDA = units[2], VBA = units[3], VDP = units[4], VBP = units[5];
-    const double & NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
+    const int SMDV = units[0], RMDV = units[1], VDA = units[2], VBA = units[3], VDP = units[4], VBP = units[5];
+    const double NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
     NMJ_VDa = weights[2], NMJ_VBa = weights[3], NMJ_VDp = weights[4], NMJ_VBp = weights[5]; 
 
    /*  vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
@@ -1274,8 +1274,8 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
     splitWeightEntry(dorsinds,units,weights);
 
 
-    const int & SMDD = units[0], RMDD = units[1], DB = units[2], DD = units[3];
-    const double & NMJ_SMDD = weights[0], NMJ_RMDV = weights[1], 
+    const int SMDD = units[0], RMDD = units[1], DB = units[2], DD = units[3];
+    const double NMJ_SMDD = weights[0], NMJ_RMDV = weights[1], 
     NMJ_DD = weights[2], NMJ_DB = weights[3];
 
 

@@ -1656,7 +1656,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     w.setParsFromGeno(genotype);
 
-    if (true)
+    if (false)
     {
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     json j1;   
@@ -1665,7 +1665,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     cout << j1 << endl;
     }
     
-    if (true)
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo18 states kkds " << n_ptr1->states << endl << endl;
     cout << "evo18 biases kkds " << n_ptr1->biases << endl;
@@ -1677,7 +1677,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     w.initForSimulation(rs);
     w.setStepSize(StepSize);
 
-    if (true)
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo18 states jsjs " << n_ptr1->states << endl << endl;
     cout << "evo18 biases jsjs " << n_ptr1->biases << endl;
@@ -1685,7 +1685,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     //assert(0);
     }
 
-    if (true){
+    if (false){
     Worm2D * const w2d = dynamic_cast<Worm2D *>(&w);
     if (w2d){
     json j1;
@@ -1703,7 +1703,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     }
 
-    if (true)
+    if (false)
     {NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(w.n_ptr);
     cout << "evo18 states iqw " << n_ptr1->states << endl << endl;
     cout << "evo18 biases iqw " << n_ptr1->biases << endl;

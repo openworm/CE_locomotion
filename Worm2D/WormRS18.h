@@ -120,9 +120,10 @@ public:
     // Neuromuscular junctions
     double NMJ_DB, NMJ_VBa, NMJ_VBp, NMJ_DD, NMJ_VDa, NMJ_VDp;
     double NMJ_SMDD, NMJ_RMDD, NMJ_SMDV, NMJ_RMDV;
-    double NMJ_Gain_Map;
     
-    TVector<double> NMJ_Gain;
+    //double NMJ_Gain_Map;
+    
+    //TVector<double> NMJ_Gain;
     
     // Head oscillator
     //double dorsalinput1, ventralinput1, dorsalinput2, ventralinput2;
