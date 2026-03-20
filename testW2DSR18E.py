@@ -2,7 +2,7 @@ import os
 import sys
 from run_main import run
 from neuromlLocal.regenerate import run as regenerate_run
-# sys.path.append("./neuromlLocal")
+# sys.path.append("./neuromlLocal") add
 
 
 doOrig = True
