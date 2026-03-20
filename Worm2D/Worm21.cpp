@@ -19,7 +19,7 @@ Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), cmd_),
 //Worm2Dm({7,24,0.1,7,49}, new NervousSystem(), new Muscles),
 Worm2D21(cmd_), n(dynamic_cast<NervousSystem&>(*n_ptr)){
 
-    if (false) n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
+    if (true) n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
 }
 
 Worm21::Worm21(TVector<double> &pheno, shared_ptr<const CmdArgs> cmd_):Worm21(pheno, true, cmd_){}
@@ -94,7 +94,7 @@ void Worm21::setParsFromPheno(const TVector<double> &pheno)
    // m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
     
     // Nervous system // Ventral cord
-    if (true)
+    if (false)
     n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 9, 6);
     
     int as, da, db, dd, vd, vb, va;
@@ -361,16 +361,19 @@ int as, da, db, dd, vd, vb, va;
         }
 { //evolution of electric connections must be bidirectional
   vector<fromToInt> & vec = elecvec;
-  vec.push_back({vd, dd, 31});
-  vec.push_back({dd, vd, 31});
+  push_back_double({vd, dd, 31}, vec);
+  push_back_double({dd, vd, 31}, vec);
+         
+
+
 
     if (u < par1.N_units){
-        vec.push_back({as, vaNext, 42});
-        vec.push_back({vaNext, as, 42});
-        vec.push_back({da, asNext, 43});
-        vec.push_back({asNext, da, 43});
-        vec.push_back({vb, dbNext, 44});
-        vec.push_back({dbNext, vb, 44});
+        push_back_double({as, vaNext, 42}, vec);
+        push_back_double({vaNext, as, 42}, vec);
+        push_back_double({da, asNext, 43}, vec);
+        push_back_double({asNext, da, 43}, vec);
+        push_back_double({vb, dbNext, 44}, vec);
+        push_back_double({dbNext, vb, 44}, vec);
 }
 
  //j["Nervous system"]["Electrical weights"]["evolvable"] = vec;
