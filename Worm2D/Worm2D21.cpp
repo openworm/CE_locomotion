@@ -65,11 +65,12 @@ Worm2D21(cmd_)
    
    // NMJ Gain XXX
    NMJ_Gain_Map = pheno(39);
-   NMJ_Gain.SetBounds(1, par1.N_muscles);
+
+   /* NMJ_Gain.SetBounds(1, par1.N_muscles);
    for (int i=1; i<=par1.N_muscles; i++)
    {
        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
-   }
+   } */
 
    setUpMuscleConn();
 }
@@ -93,11 +94,15 @@ NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
 
 // NMJ Gain XXX
 NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
-NMJ_Gain.SetBounds(1, par1.N_muscles);
+
+
+/* NMJ_Gain.SetBounds(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)
 {
     NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
-}
+} */
+
+
     setUpMuscleConn();
 
    
@@ -237,6 +242,17 @@ vector<toFromWeight> Worm2D21::makeMuscleConn(vector<int> neurons, vector<double
     //vector<intPair> unitToMusc = makeUnitToMusc();
     //return makeMuscleConnW2D(neurons,NMJ,NMJ_Gain,unitToMusc);
 
+    //namedVars["NMJ gain map D"] = NMJ_Gain_Map;
+
+    TVector<double> NMJ_Gain;
+    NMJ_Gain.SetBounds(1, par1.N_muscles);
+
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    } 
+
+
 
     vector<toFromWeight> vec1;
     int unit = 1;
@@ -261,6 +277,15 @@ void Worm2D21::setMuscleInputOrig()
 {
 // Set input to Muscles
     // Head: 4 muscles one neural unit  //////////////////////
+
+
+    TVector<double> NMJ_Gain;
+    NMJ_Gain.SetBounds(1, par1.N_muscles);
+
+    for (int i=1; i<=par1.N_muscles; i++)
+    {
+        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
+    } 
 
     int mi;
     double dorsalInput, ventralInput;

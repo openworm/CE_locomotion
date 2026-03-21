@@ -133,7 +133,7 @@ public:
     double NMJ_AS, NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD;
     double NMJ_Gain_Map;
     
-    TVector<double> NMJ_Gain;
+    //TVector<double> NMJ_Gain;
     
     // Command neuron input
     

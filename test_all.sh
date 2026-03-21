@@ -57,16 +57,28 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRun_nml
     
     rm -rf exampleRunNet21
-    
-    rm -rf exampleRunCEW2D
     rm -rf exampleRun21W2D
-    rm -rf exampleRunCEW2D_nml
     rm -rf exampleRun21W2D_nml
+    rm -rf experiments/izq_runs_nets/103 experiments/izq_runs_nets_nml/103 experiments/izq_runs_nets_nml_musc/103
+    rm -rf experiments/izq_runs_nets/23 experiments/izq_runs_nets_nml/23 experiments/izq_runs_nets_nml_musc/23
+    rm -rf experiments/izq_runs_nets_W2D21 experiments/izq_runs_nets_nml_W2D21 experiments/izq_runs_nets_nml_musc_W2D21
+    rm -rf testruns/exW2DSR21 testruns/exW2DSR21_nml testruns/exW2DSR21_nml_musc
+    rm -rf testruns/exW2D21
+    rm -rf testruns/exW2D21E
+    rm -rf testruns/exW2DSRE21
+
+
+    rm -rf exampleRunCEW2D
+    
+    rm -rf exampleRunCEW2D_nml
+    
     rm -rf exampleRunCOW2D
     rm -rf exampleRunCO
     rm -rf exampleRunW2DCE
-    rm -rf experiments/izq_runs_nets/103 experiments/izq_runs_nets_nml/103 experiments/izq_runs_nets_nml_musc/103
-    rm -rf experiments/izq_runs_nets/23 experiments/izq_runs_nets_nml/23 experiments/izq_runs_nets_nml_musc/23
+
+
+    
+    
     rm -rf testruns/exW2DSR testruns/exW2DSR_nml testruns/exW2DSR_nml_musc
     
     rm -rf testruns/exW2DCO
@@ -74,7 +86,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/osc_sim experiments/osc_sim_nml experiments/osc_sim_nml_musc
     rm -rf experiments/osc_sim_21 experiments/osc_sim_21_nml experiments/osc_sim_21_nml_musc
     rm -rf experiments/osc_sim_21all experiments/osc_sim_21all_nml experiments/osc_sim_21all_nml_musc
-    rm -rf testruns/exW2DSR21 testruns/exW2DSR21_nml testruns/exW2DSR21_nml_musc
+    
     rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
     rm -rf testruns/COW2DSRE_test_out
    
@@ -82,10 +94,9 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DCEFR
     rm -rf testruns/exW2DCEFRv2
     rm -rf testruns/exW2DSRFR
-    rm -rf experiments/izq_runs_nets_W2D21 experiments/izq_runs_nets_nml_W2D21 experiments/izq_runs_nets_nml_musc_W2D21
-    rm -rf testruns/exW2D21
-    rm -rf testruns/exW2D21E
-    rm -rf testruns/exW2DSRE21
+    
+    
+    
     rm -rf testruns/exW2DCEs
     rm -rf testruns/exW2DCEE
     rm -rf testruns/exW2DSRE

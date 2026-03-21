@@ -2761,9 +2761,54 @@
                     "val": 31
                 },
                 {
+                    "from": 4,
+                    "to": 5,
+                    "val": 31
+                },
+                {
+                    "from": 4,
+                    "to": 5,
+                    "val": 31
+                },
+                {
+                    "from": 5,
+                    "to": 4,
+                    "val": 31
+                },
+                {
                     "from": 1,
                     "to": 14,
                     "val": 42
+                },
+                {
+                    "from": 14,
+                    "to": 1,
+                    "val": 42
+                },
+                {
+                    "from": 14,
+                    "to": 1,
+                    "val": 42
+                },
+                {
+                    "from": 1,
+                    "to": 14,
+                    "val": 42
+                },
+                {
+                    "from": 2,
+                    "to": 8,
+                    "val": 43
+                },
+                {
+                    "from": 8,
+                    "to": 2,
+                    "val": 43
+                },
+                {
+                    "from": 8,
+                    "to": 2,
+                    "val": 43
                 },
                 {
                     "from": 2,
@@ -2776,9 +2821,54 @@
                     "val": 44
                 },
                 {
+                    "from": 10,
+                    "to": 6,
+                    "val": 44
+                },
+                {
+                    "from": 10,
+                    "to": 6,
+                    "val": 44
+                },
+                {
+                    "from": 6,
+                    "to": 10,
+                    "val": 44
+                },
+                {
                     "from": 12,
                     "to": 11,
                     "val": 31
+                },
+                {
+                    "from": 11,
+                    "to": 12,
+                    "val": 31
+                },
+                {
+                    "from": 11,
+                    "to": 12,
+                    "val": 31
+                },
+                {
+                    "from": 12,
+                    "to": 11,
+                    "val": 31
+                },
+                {
+                    "from": 8,
+                    "to": 21,
+                    "val": 42
+                },
+                {
+                    "from": 21,
+                    "to": 8,
+                    "val": 42
+                },
+                {
+                    "from": 21,
+                    "to": 8,
+                    "val": 42
                 },
                 {
                     "from": 8,
@@ -2791,9 +2881,54 @@
                     "val": 43
                 },
                 {
+                    "from": 15,
+                    "to": 9,
+                    "val": 43
+                },
+                {
+                    "from": 15,
+                    "to": 9,
+                    "val": 43
+                },
+                {
+                    "from": 9,
+                    "to": 15,
+                    "val": 43
+                },
+                {
                     "from": 13,
                     "to": 17,
                     "val": 44
+                },
+                {
+                    "from": 17,
+                    "to": 13,
+                    "val": 44
+                },
+                {
+                    "from": 17,
+                    "to": 13,
+                    "val": 44
+                },
+                {
+                    "from": 13,
+                    "to": 17,
+                    "val": 44
+                },
+                {
+                    "from": 19,
+                    "to": 18,
+                    "val": 31
+                },
+                {
+                    "from": 18,
+                    "to": 19,
+                    "val": 31
+                },
+                {
+                    "from": 18,
+                    "to": 19,
+                    "val": 31
                 },
                 {
                     "from": 19,
@@ -2806,9 +2941,54 @@
                     "val": 42
                 },
                 {
+                    "from": 28,
+                    "to": 15,
+                    "val": 42
+                },
+                {
+                    "from": 28,
+                    "to": 15,
+                    "val": 42
+                },
+                {
+                    "from": 15,
+                    "to": 28,
+                    "val": 42
+                },
+                {
                     "from": 16,
                     "to": 22,
                     "val": 43
+                },
+                {
+                    "from": 22,
+                    "to": 16,
+                    "val": 43
+                },
+                {
+                    "from": 22,
+                    "to": 16,
+                    "val": 43
+                },
+                {
+                    "from": 16,
+                    "to": 22,
+                    "val": 43
+                },
+                {
+                    "from": 20,
+                    "to": 24,
+                    "val": 44
+                },
+                {
+                    "from": 24,
+                    "to": 20,
+                    "val": 44
+                },
+                {
+                    "from": 24,
+                    "to": 20,
+                    "val": 44
                 },
                 {
                     "from": 20,
@@ -2821,9 +3001,54 @@
                     "val": 31
                 },
                 {
+                    "from": 25,
+                    "to": 26,
+                    "val": 31
+                },
+                {
+                    "from": 25,
+                    "to": 26,
+                    "val": 31
+                },
+                {
+                    "from": 26,
+                    "to": 25,
+                    "val": 31
+                },
+                {
                     "from": 22,
                     "to": 35,
                     "val": 42
+                },
+                {
+                    "from": 35,
+                    "to": 22,
+                    "val": 42
+                },
+                {
+                    "from": 35,
+                    "to": 22,
+                    "val": 42
+                },
+                {
+                    "from": 22,
+                    "to": 35,
+                    "val": 42
+                },
+                {
+                    "from": 23,
+                    "to": 29,
+                    "val": 43
+                },
+                {
+                    "from": 29,
+                    "to": 23,
+                    "val": 43
+                },
+                {
+                    "from": 29,
+                    "to": 23,
+                    "val": 43
                 },
                 {
                     "from": 23,
@@ -2836,9 +3061,54 @@
                     "val": 44
                 },
                 {
+                    "from": 31,
+                    "to": 27,
+                    "val": 44
+                },
+                {
+                    "from": 31,
+                    "to": 27,
+                    "val": 44
+                },
+                {
+                    "from": 27,
+                    "to": 31,
+                    "val": 44
+                },
+                {
                     "from": 33,
                     "to": 32,
                     "val": 31
+                },
+                {
+                    "from": 32,
+                    "to": 33,
+                    "val": 31
+                },
+                {
+                    "from": 32,
+                    "to": 33,
+                    "val": 31
+                },
+                {
+                    "from": 33,
+                    "to": 32,
+                    "val": 31
+                },
+                {
+                    "from": 29,
+                    "to": 42,
+                    "val": 42
+                },
+                {
+                    "from": 42,
+                    "to": 29,
+                    "val": 42
+                },
+                {
+                    "from": 42,
+                    "to": 29,
+                    "val": 42
                 },
                 {
                     "from": 29,
@@ -2851,9 +3121,54 @@
                     "val": 43
                 },
                 {
+                    "from": 36,
+                    "to": 30,
+                    "val": 43
+                },
+                {
+                    "from": 36,
+                    "to": 30,
+                    "val": 43
+                },
+                {
+                    "from": 30,
+                    "to": 36,
+                    "val": 43
+                },
+                {
                     "from": 34,
                     "to": 38,
                     "val": 44
+                },
+                {
+                    "from": 38,
+                    "to": 34,
+                    "val": 44
+                },
+                {
+                    "from": 38,
+                    "to": 34,
+                    "val": 44
+                },
+                {
+                    "from": 34,
+                    "to": 38,
+                    "val": 44
+                },
+                {
+                    "from": 40,
+                    "to": 39,
+                    "val": 31
+                },
+                {
+                    "from": 39,
+                    "to": 40,
+                    "val": 31
+                },
+                {
+                    "from": 39,
+                    "to": 40,
+                    "val": 31
                 },
                 {
                     "from": 40,
@@ -2866,6 +3181,36 @@
                     "val": 42
                 },
                 {
+                    "from": 49,
+                    "to": 36,
+                    "val": 42
+                },
+                {
+                    "from": 49,
+                    "to": 36,
+                    "val": 42
+                },
+                {
+                    "from": 36,
+                    "to": 49,
+                    "val": 42
+                },
+                {
+                    "from": 37,
+                    "to": 43,
+                    "val": 43
+                },
+                {
+                    "from": 43,
+                    "to": 37,
+                    "val": 43
+                },
+                {
+                    "from": 43,
+                    "to": 37,
+                    "val": 43
+                },
+                {
                     "from": 37,
                     "to": 43,
                     "val": 43
@@ -2874,6 +3219,36 @@
                     "from": 41,
                     "to": 45,
                     "val": 44
+                },
+                {
+                    "from": 45,
+                    "to": 41,
+                    "val": 44
+                },
+                {
+                    "from": 45,
+                    "to": 41,
+                    "val": 44
+                },
+                {
+                    "from": 41,
+                    "to": 45,
+                    "val": 44
+                },
+                {
+                    "from": 47,
+                    "to": 46,
+                    "val": 31
+                },
+                {
+                    "from": 46,
+                    "to": 47,
+                    "val": 31
+                },
+                {
+                    "from": 46,
+                    "to": 47,
+                    "val": 31
                 },
                 {
                     "from": 47,
@@ -4082,6 +4457,50 @@
     },
     "PhenoNames": {
         "value": [
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ",
+            "Net21_Net21_NMJ_Gain_Map",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_bias",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_tau",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_electsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_chemsyn",
+            "Net21_Net21_electsyn",
+            "Net21_Net21_electsyn",
+            "Net21_Net21_electsyn",
             "Net21_NMJ",
             "Net21_NMJ",
             "Net21_NMJ",
@@ -4130,6 +4549,50 @@
     },
     "PhenoNamesNums": {
         "value": [
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            40,
+            41,
+            42,
+            43,
+            44,
             32,
             33,
             34,
