@@ -119,15 +119,6 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSR18E.omt
     omv test -V .test.W2D18genE.omt
 
-    omv test -V .test.2021.omt
-    omv test -V .test.2021W2D.omt
-    omv test -V .test.izq_sim.omt
-    
-    omv test -V .test.W2D21.omt
-    omv test -V .test.W2D21E.omt
-    omv test -V .test.W2DSRE21.omt
-    omv test -V .test.W2DSR21.omt
-
     omv test -V .test.example.omt
     omv test -V .test.CEW2D.omt
     omv test -V .test.W2DCE.omt
@@ -148,10 +139,17 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCO.omt
     omv test -V .test.COW2DSR.omt
     
-    omv test -V .test.COW2DSR2.omt
-    omv test -V .test.izq_sim_W2D21.omt
-
+    omv test -V .test.2021.omt
+    omv test -V .test.2021W2D.omt
+    omv test -V .test.izq_sim.omt
     
+    omv test -V .test.izq_sim_W2D21.omt
+    omv test -V .test.W2D21.omt
+    omv test -V .test.W2D21E.omt
+    omv test -V .test.W2DSRE21.omt
+    omv test -V .test.W2DSR21.omt
+
+    omv test -V .test.COW2DSR2.omt
    
 
     
