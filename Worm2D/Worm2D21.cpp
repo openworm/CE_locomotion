@@ -42,6 +42,8 @@ wAVA_VA = 1;
 //W2DCEpars1->AVB_output = 0; 
 AVA_output = 0; 
 AVB_output = 0; 
+
+setBodExt();
 }
 
 Worm2D21::Worm2D21(shared_ptr<const CmdArgs> cmd_):
@@ -54,6 +56,8 @@ Worm2D21::Worm2D21(TVector<double> & pheno, shared_ptr<const CmdArgs> cmd_):
 Worm2D21(cmd_)
 {
   
+    //assert(0);
+
    // NMJ Weight
    NMJ_AS = pheno(32);
    NMJ_DA = pheno(33);
@@ -72,7 +76,8 @@ Worm2D21(cmd_)
        NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
    } */
 
-   setUpMuscleConn();
+    //setMuscBodExt();
+    setUpMuscleConn();
 }
 
 
@@ -102,7 +107,7 @@ for (int i=1; i<=par1.N_muscles; i++)
     NMJ_Gain(i) = 0.7*(1.0 - (((i-1)*NMJ_Gain_Map)/par1.N_muscles));
 } */
 
-
+    //setMuscBodExt();
     setUpMuscleConn();
 
    
