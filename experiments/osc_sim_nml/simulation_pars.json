@@ -4,5 +4,6 @@
     "Duration": 10,
     "doRandInit": 0,
     "Transient": 10,
-    "doMuscSim": 0
+    "doMuscSim": 0,
+    "doTestRun": true
 }

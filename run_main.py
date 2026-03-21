@@ -459,6 +459,7 @@ def run(a=None, **kwargs):
     else:
         do_evol = 0
 
+    outputFolderName = a.outputFolderName
     if a.inputFolderName is not None:
         if not os.path.isdir(a.inputFolderName):
             print("Input folder does not exist!")
@@ -472,7 +473,7 @@ def run(a=None, **kwargs):
 
     if (
         not do_evol
-        and not os.path.isdir(a.outputFolderName)
+        and not os.path.isdir(outputFolderName)
         and a.inputFolderName is None
     ):
         print("Setting doEvol to True since the output folder will be created.")
