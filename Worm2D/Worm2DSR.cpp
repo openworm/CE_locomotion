@@ -65,7 +65,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
-    cout << "doLegacy " << doLegacy << endl;
+    //cout << "doLegacy " << doLegacy << endl;
     
     setNSFromJson(js1,*n, doLegacy);
     }
@@ -127,7 +127,7 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     
   if (genPhenLims.size()>0) setInitPheno();
     
-  cout << "after setInitPheno" << endl;
+  //cout << "after setInitPheno" << endl;
 
     if (callInit) writeOrigGen(cmd);
 

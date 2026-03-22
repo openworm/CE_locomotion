@@ -626,6 +626,7 @@ void Evolution::ResultsDisplay(TSearch &s)
 
 void EvoBase::configure_p11()
 {
+    int gentot = s->Generation() + evoPars1.MaxGenerations;
 
     if (configP1Called) return;
     configP1Called = true;
@@ -633,7 +634,7 @@ void EvoBase::configure_p11()
     s->SetSelectionMode(evoPars1.SelectionMode);             //{FITNESS_PROPORTIONATE,RANK_BASED}
     s->SetReproductionMode(evoPars1.ReproductionMode);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
     s->SetPopulationSize(popsize); //96
-    s->SetMaxGenerations(evoPars1.MaxGenerations); //1000
+    s->SetMaxGenerations(gentot); //1000
     s->SetMutationVariance(evoPars1.MutationVariance);                // For 71 parameters, an estimated avg change of 0.25 for weights (mapped to 15).
     s->SetCrossoverProbability(evoPars1.CrossoverProbability);
     s->SetCrossoverMode(evoPars1.CrossoverMode);              //{UNIFORM, TWO_POINT}
