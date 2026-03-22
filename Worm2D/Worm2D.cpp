@@ -690,7 +690,7 @@ void Worm2Dbase::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
 
-    cout << "worm2dbase add pars to json" << endl;
+    //cout << "worm2dbase add pars to json" << endl;
 
     setPhenoNames();
     if (phenoNames.size()>0) 
@@ -722,7 +722,7 @@ void Worm2Dbase::addParsToJson(json & j)
     //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
     //W2Dbaseparameters1->addParsToJson(j);
 
-    cout << "idi " << endl;
+    //cout << "idi " << endl;
     InputSwitcher::addParsToJson(j);
     addEvolvableToJson(j);
 }

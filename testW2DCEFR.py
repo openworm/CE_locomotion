@@ -32,6 +32,6 @@ run(
     randInitState = True,
     doOrigMuscInput = False,
     doOrigSRInput = False,
-    doLegacy = False
+    doLegacy = False,
     # MutVar = 0.5
 )

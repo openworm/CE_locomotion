@@ -252,7 +252,7 @@ void EvoBase::construct(int vsize_, int offset_)
     //configure_p1();
     //s->InitializeSearch();
     doResume = false;
-    cout << "const from default " << filename << " " << vsize_ << endl;
+    cout << "const from default with size " << vsize_ << endl;
     //cout << " construct filename " << filename << endl;
     //assert(0);
     return;

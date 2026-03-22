@@ -147,7 +147,7 @@ int main (int argc, const char* argv[])
 
     //bool do_nml =  getParameterInt(argc,argv,"--donml","0");
 
-   cout << "shhd " << endl; 
+   //cout << "shhd " << endl; 
     
     bool do_nml =  cmd->getArgValInt("--donml",0);
 
@@ -255,7 +255,7 @@ int main (int argc, const char* argv[])
     skip_steps = j_evo[jloc]["skip_steps"]["value"];
     } 
     
-    cout << "shds " << simrandseed << " " << StepSize << " " << skip_steps << endl;
+   // cout << "shds " << simrandseed << " " << StepSize << " " << skip_steps << endl;
     StepSize = cmd->getArgValDoub("--SimStepSize", StepSize);
     skip_steps = cmd->getArgValDoub("--SimSkipSteps", skip_steps);
 

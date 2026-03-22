@@ -708,6 +708,9 @@ def run(a=None, **kwargs):
     sim_extra_parameters["prioritizeCmd"] = 0
     sim_extra_parameters["initNSFromJson"] = True
 
+    run_extra_parameters = {}
+    run_extra_parameters["showPlot"] = False
+
     main_cmd = model_folder + "/" + mainProcessName
     cmd = [main_cmd]
 
@@ -756,6 +759,12 @@ def run(a=None, **kwargs):
             evol_defaults.append(evol_extra_parameters[parameter_key])
             cmd += ["--" + parameter_key, str(TFtoInt(getattr(a, parameter_key)))]
             # cmd += ["--" + parameter_key, str(getattr(a, parameter_key))]
+
+    for key, val in run_extra_parameters.items():
+        if hasattr(a, key):
+            newval = getattr(a, key)
+            run_extra_parameters[key] = newval
+           
 
     evol_data = {}
     evol_par_file_base = a.outputFolderName + "/evolution_pars.json"
