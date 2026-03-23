@@ -427,6 +427,7 @@ void writeState();
 virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
 virtual void addEvolvableToJson(json & j) {return;}
+virtual void addFuncableToJson(json & j) {return;}
 void addParsToJson();
 
 const NSForW2D & itsNS() const {return *n_ptr;}
@@ -480,6 +481,7 @@ template<class T> friend class Evolvable_ptrB;
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 
 
+//Efunctor itsEfbase;
 
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);

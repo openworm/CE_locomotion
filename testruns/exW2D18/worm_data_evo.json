@@ -1658,6 +1658,104 @@
                     "val": 25
                 }
             ],
+            "funcable": [
+                {
+                    "from": 3,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 2
+                },
+                {
+                    "from": 5,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 2
+                },
+                {
+                    "from": 9,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 8
+                },
+                {
+                    "from": 11,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 8
+                },
+                {
+                    "from": 15,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 14
+                },
+                {
+                    "from": 17,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 14
+                },
+                {
+                    "from": 21,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 20
+                },
+                {
+                    "from": 23,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 20
+                },
+                {
+                    "from": 27,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 26
+                },
+                {
+                    "from": 29,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 26
+                },
+                {
+                    "from": 33,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 32
+                },
+                {
+                    "from": 35,
+                    "mfunc": {
+                        "f_ind": 1,
+                        "fact": 0.5
+                    },
+                    "to": 32
+                }
+            ],
             "message": "chemical weights in sparse format",
             "value": [
                 {

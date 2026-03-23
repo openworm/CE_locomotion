@@ -347,6 +347,15 @@ void Worm2DCE::setInputSwitcher(const json & j)
 
 }
 
+void WormCE::addFuncableToJson(json & j)
+{
+
+  j["Stretch receptor"]["SR_A_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+
+}
+
+
 void WormCE::addEvolvableToJson(json & j)
 {
  

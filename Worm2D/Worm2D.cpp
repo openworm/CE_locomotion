@@ -725,6 +725,7 @@ void Worm2Dbase::addParsToJson(json & j)
     //cout << "idi " << endl;
     InputSwitcher::addParsToJson(j);
     addEvolvableToJson(j);
+    addFuncableToJson(j);
 }
 
 void Worm2Dm::addParsToJson(json & j)
@@ -1731,3 +1732,5 @@ void InputSwitcher::construct(const json & j)
  
 
 }
+
+

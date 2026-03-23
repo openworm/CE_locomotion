@@ -103,6 +103,8 @@ Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
 //Worm2DSR(json & j);
 Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
+void applyFuncables();
+
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 void setParsFromPheno(const TVector<double> &pheno);
 //void setParsFromPheno(const vector<double> &pheno);
@@ -121,6 +123,7 @@ void setInitPheno();
 //vector<double> getCurrentPheno();
 vector<double> getInitGeno();
 void addEvolvableToJson(json & j);
+//void addFuncableToJson(json & j);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd);
 void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno);
 //vector<toFromInt> chem_weights_evo, elec_weights_evo;

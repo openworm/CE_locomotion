@@ -124,6 +124,9 @@ Worm2DSRE(getJsonFromFile(jsonfilename_),cmd){}
 Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit):
 Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVals())//,itsJson(j)
   {
+
+  bool do_evol = cmd->getArgValInt("--doevol", 0);
+  if (!do_evol) return;
     
   if (genPhenLims.size()>0) setInitPheno();
     
@@ -396,6 +399,8 @@ void Worm2DSR::writeAct()
     
 } */
 
+
+
 void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
@@ -599,11 +604,13 @@ vector<doubDoub> Worm2DSRE::makeVals()
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef)
 {
 
+        const bool domfuncs = false;
+
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
           int phenind = jevol.at("val").get<int>();
-          if (jevol.contains("mfunc"))
+          if (domfuncs && jevol.contains("mfunc"))
           it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
           else it2->at("value") = pheno[phenind];
         }
@@ -622,7 +629,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
           && itjevol->at("to").get<int>()  == values[j].to)
           {
             int phenind = itjevol->at("val").get<int>();
-            if (itjevol->contains("mfunc"))
+            if (domfuncs && itjevol->contains("mfunc"))
             values[j].w.weight = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
             else values[j].w.weight = pheno[phenind];
             break;
@@ -682,6 +689,101 @@ void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef)
 }
 
 
+
+void applyFuncable1(json::iterator it2, Efunctor & ef)
+{
+
+        if (it2->at("funcable").is_object())
+        {
+          const json & jevol = it2->at("funcable");
+          //int phenind = jevol.at("val").get<int>();
+          it2->at("value") = ef.eFunc(it2->at("value"), jevol.at("mfunc"));
+          //if (jevol.contains("mfunc"))
+          //it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
+          //else it2->at("value") = pheno[phenind];
+        }
+        else if (it2->at("funcable").is_number()){}
+          //it2->at("value") = pheno[it2->at("funcable").get<int>()];
+        else
+        {
+        size_t idx = it2.key().find("weights");
+        if(idx != string::npos)
+        {
+          vector<toFromWeight> values = it2->at("value").template get< vector<toFromWeight> >();
+          const json & jevol = it2->at("funcable");
+          for (auto itjevol = jevol.begin(); itjevol != jevol.end(); ++itjevol)
+          for (int j = 0; j<values.size();j++)
+          if (itjevol->at("from").get<int>() == values[j].w.from 
+          && itjevol->at("to").get<int>()  == values[j].to)
+          {
+            //int phenind = itjevol->at("val").get<int>();
+            values[j].w.weight = ef.eFunc(values[j].w.weight, itjevol->at("mfunc"));
+            //if (itjevol->contains("mfunc"))
+            //values[j].w.weight = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
+            //else values[j].w.weight = pheno[phenind];
+            break;
+          } 
+
+          it2->at("value") = values;
+        }
+        else
+        {
+          if (it2->at("value")[0].is_number())
+        {
+        //vector<double> values = it2->at("value").template get< vector<double> >();
+        //vector<intPair> evols =  it2->at("funcable").template get< vector<intPair> >();
+        //for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
+        //it2->at("value") = values;
+        }
+        else{
+
+        /* vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
+        vector<intPair> evols =  it2->at("funcable").template get<vector<intPair> >();
+        for (int i = 0; i<evols.size();i++)
+         for (int j = 0; j<values.size();j++)
+          if (evols[i].ind == values[j].from)
+          { 
+            //cout << "ph " << it.key() << " " << it2.key() << endl;
+            //cout << "ph " << pheno[evols[i].val-1] << " " <<  values[j].weight << endl;
+            //assert(check123456(pheno[evols[i].val-1], values[j].weight));
+            values[j].weight = pheno[evols[i].val];
+            //pheno[evols[i].val-1] = values[j].weight;
+            break;
+          }
+
+          it2->at("value") = values; */
+        }
+
+
+
+      }
+        }
+      
+
+}
+
+void recursive_applyFuncable(json& j, Efunctor & ef)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("funcable")) applyFuncable1(it,ef);
+      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
+      else if (it->is_object()) recursive_applyFuncable(*it,ef);
+        
+        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
+
+
+void Worm2DSRE::applyFuncables()
+{
+
+recursive_applyFuncable(BPitsJson, itsEf);
+
+}
+
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
@@ -690,6 +792,8 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf);
   
+  applyFuncables();
+
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   assert(n);
   bool doLegacy;

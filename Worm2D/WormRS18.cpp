@@ -243,8 +243,18 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         // xB -> yD
         n.SetChemicalSynapseWeight(db, vda, v(8));      // Darker Green
         n.SetChemicalSynapseWeight(db, vdp, v(8));
-        n.SetChemicalSynapseWeight(vba, dd, v(8)/2);
-        n.SetChemicalSynapseWeight(vbp, dd, v(8)/2);
+        //n.SetChemicalSynapseWeight(vba, dd, v(8)/2);
+        //n.SetChemicalSynapseWeight(vbp, dd, v(8)/2);
+ 
+        {json jfunc;
+        jfunc["f_ind"] = 1;
+        jfunc["fact"] = 0.5;
+        n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc));
+        n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc));        
+        }
+
+
+
         // xD- -> yD
         n.SetChemicalSynapseWeight(dd, vda, v(9));     // Darker Blue
 
@@ -971,6 +981,36 @@ void Worm18::DumpParams(ofstream &ofs)
     ofs << "NMJ Gain: " << NMJ_Gain_Map << endl;
 }
 
+void Worm18::addFuncableToJson(json & j)
+{
+
+json chemvecj = json::array();
+
+  for (int u = 1; u <= par1.N_units; u++){
+
+    int db, dd, vba, vda, vbp, vdp;
+    int ddNext, dbNext, vdaNext, vbaNext;
+  
+          db = nn(DB,u);
+        dd = nn(DD,u);
+        vba = nn(VBA,u);
+        vbp = nn(VBP,u);
+        vda = nn(VDA,u);
+        vdp = nn(VDP,u);
+
+        ddNext = nn(DD,u+1);
+        dbNext = nn(DB,u+1);
+        vdaNext = nn(VDA,u+1);
+        vbaNext = nn(VBA,u+1);
+
+    chemvecj.push_back({{"from", vba}, {"to", dd}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+    chemvecj.push_back({{"from", vbp}, {"to", dd}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+
+  }
+
+  j["Nervous system"]["Chemical weights"]["funcable"] = chemvecj;
+
+}
 
 void Worm18::addEvolvableToJson(json & j)
 {

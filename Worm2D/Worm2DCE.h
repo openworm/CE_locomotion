@@ -259,7 +259,7 @@ public:
     //W2Dparameters & getWormPars() {return W2DCEpars1;}
   
     void addEvolvableToJson(json & j);
-
+    void addFuncableToJson(json & j);
 
     //shared_ptr<const W2Dparameters> getWormPars();
 

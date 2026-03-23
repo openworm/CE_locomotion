@@ -19,7 +19,7 @@ for (auto& el : j1_.items())
 itsEf.itsJson[el.key()] = el.value();
 }
 
-cout << itsEf.itsJson << endl;
+//cout << itsEf.itsJson << endl;
 
 
 //setCurrentPheno(pheno);
