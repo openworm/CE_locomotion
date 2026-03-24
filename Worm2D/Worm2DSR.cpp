@@ -693,7 +693,7 @@ void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef)
 void applyFuncable1(json::iterator it2, Efunctor & ef)
 {
 
-         cout << it2->at("funcable") << endl;
+         //cout << it2->at("funcable") << endl;
 
         if (it2->at("funcable").is_object())
         {
@@ -703,13 +703,13 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
           //if (jevol.contains("mfunc"))
           //it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
           //else it2->at("value") = pheno[phenind];
-           cout << "applying func1" << endl;
+           //cout << "applying func1" << endl;
       
 
         }
         else if (it2->at("funcable").is_number()){
 
-              cout << "applying func2" << endl;
+             // cout << "applying func2" << endl;
        
 
         }
@@ -726,7 +726,7 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
           if (itjevol->at("from").get<int>() == values[j].w.from 
           && itjevol->at("to").get<int>()  == values[j].to)
           {
-                    cout << "applying func3" << endl;
+               //     cout << "applying func3" << endl;
    
 
 
@@ -746,14 +746,14 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
           if (it2->at("value")[0].is_number())
         {
 
-             cout << "applying func4" << endl;
+         //    cout << "applying func4" << endl;
         //vector<double> values = it2->at("value").template get< vector<double> >();
         //vector<intPair> evols =  it2->at("funcable").template get< vector<intPair> >();
         //for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
         //it2->at("value") = values;
         }
         else{
-    cout << "applying func5" << endl;
+    //cout << "applying func5" << endl;
 
         /* vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
         vector<intPair> evols =  it2->at("funcable").template get<vector<intPair> >();
