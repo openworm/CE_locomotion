@@ -29,8 +29,8 @@ args = dict(
     overwrite=True,
     doCPT=True,
     checkPointInterval=5,
-    randomInitialState = False,
-    doLegacy = False
+    randomInitialState=False,
+    doLegacy=False,
 )
 
 if doOrig:

@@ -31,11 +31,11 @@ args = dict(
     doEvol=True,
     checkPointInterval=5,
     evoType="Evo21",
-    SimStepSize = 0.01,
-    SimSkipSteps = 4,
-    randomInitialState = False,
-    doLegacy = False
-    #initNSFromJson = False
+    SimStepSize=0.01,
+    SimSkipSteps=4,
+    randomInitialState=False,
+    doLegacy=False,
+    # initNSFromJson = False
 )
 
 if doOrig:
