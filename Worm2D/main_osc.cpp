@@ -160,7 +160,6 @@ int main (int argc, const char* argv[])
     bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
  
    
-
     if (sup_model_name == "W2DSR") 
     
     if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
@@ -336,6 +335,7 @@ int main (int argc, const char* argv[])
 
     WormFR* const w = nullptr; //dynamic_cast<WormFR*>(w2);
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
+    WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
 
     int zeroGainsType;
     w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
@@ -365,7 +365,8 @@ int main (int argc, const char* argv[])
         
         json efconds;
         if (doforward) efconds["condval"] = 0; else efconds["condval"] = 1;
-        ew->callEfcond(efconds);
+        if (w2dsre)  w2dsre->applyFuncablesExt(efconds);
+        else ew->callEfcond(efconds);
 
   
         }

@@ -33,5 +33,5 @@ run(
     # MutVar = 0.5
     doOrigMuscInput=False,
     doOrigSRInput=False,
-    doLegacy = False
+    doLegacy=False,
 )

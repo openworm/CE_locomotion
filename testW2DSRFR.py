@@ -18,7 +18,7 @@ args = dict(
     transient=10,
     maxGens=25,
     popSize=10,
-    RandSeed= 987,
+    RandSeed=987,
     modelName="W2DSR",
     modelFolder="Worm2D",
     inputFolderName="testruns/exW2DCEFR",
@@ -39,12 +39,12 @@ args = dict(
     # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
-    randInitState= True,
+    randInitState=True,
     # MutVar = 0.5
     doOrigMuscInput=False,
     doOrigSRInput=False,
-    doLegacy = False
-    #doLegacy = True
+    doLegacy=False,
+    # doLegacy = True
 )
 
 if doOrig:

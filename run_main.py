@@ -669,7 +669,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doReverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
     evol_extra_parameters["SRType"] = "None"
-    #evol_extra_parameters["ABLevel"] = 1
+    # evol_extra_parameters["ABLevel"] = 1
     evol_extra_parameters["AB_output_level"] = 1
     # evol_extra_parameters["randInitState"] = False
     evol_extra_parameters["randomInitialState"] = False
@@ -689,7 +689,6 @@ def run(a=None, **kwargs):
     evol_extra_parameters["doOrigSRInput"] = True
     evol_extra_parameters["doAngleDiff"] = False
     evol_extra_parameters["StepSize"] = 0.005
-    
 
     evol_extra_parameters["resetAgentBody"] = False
     evol_extra_parameters["useSupCPT"] = False
@@ -744,8 +743,9 @@ def run(a=None, **kwargs):
         defaults_base["evoType"],
     ]
 
-    a_replacements = {"randInitState": "randomInitialState",
-    "ABLevel" : "AB_output_level"
+    a_replacements = {
+        "randInitState": "randomInitialState",
+        "ABLevel": "AB_output_level",
     }
     for key, val in a_replacements.items():
         if hasattr(a, key):
@@ -764,7 +764,6 @@ def run(a=None, **kwargs):
         if hasattr(a, key):
             newval = getattr(a, key)
             run_extra_parameters[key] = newval
-           
 
     evol_data = {}
     evol_par_file_base = a.outputFolderName + "/evolution_pars.json"

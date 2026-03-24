@@ -693,6 +693,8 @@ void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef)
 void applyFuncable1(json::iterator it2, Efunctor & ef)
 {
 
+         cout << it2->at("funcable") << endl;
+
         if (it2->at("funcable").is_object())
         {
           const json & jevol = it2->at("funcable");
@@ -701,8 +703,16 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
           //if (jevol.contains("mfunc"))
           //it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
           //else it2->at("value") = pheno[phenind];
+           cout << "applying func1" << endl;
+      
+
         }
-        else if (it2->at("funcable").is_number()){}
+        else if (it2->at("funcable").is_number()){
+
+              cout << "applying func2" << endl;
+       
+
+        }
           //it2->at("value") = pheno[it2->at("funcable").get<int>()];
         else
         {
@@ -716,6 +726,11 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
           if (itjevol->at("from").get<int>() == values[j].w.from 
           && itjevol->at("to").get<int>()  == values[j].to)
           {
+                    cout << "applying func3" << endl;
+   
+
+
+
             //int phenind = itjevol->at("val").get<int>();
             values[j].w.weight = ef.eFunc(values[j].w.weight, itjevol->at("mfunc"));
             //if (itjevol->contains("mfunc"))
@@ -730,12 +745,15 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
         {
           if (it2->at("value")[0].is_number())
         {
+
+             cout << "applying func4" << endl;
         //vector<double> values = it2->at("value").template get< vector<double> >();
         //vector<intPair> evols =  it2->at("funcable").template get< vector<intPair> >();
         //for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
         //it2->at("value") = values;
         }
         else{
+    cout << "applying func5" << endl;
 
         /* vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
         vector<intPair> evols =  it2->at("funcable").template get<vector<intPair> >();
@@ -776,11 +794,58 @@ void recursive_applyFuncable(json& j, Efunctor & ef)
     }
 }
 
+void WormCO2DSR::applyFuncablesExt(const json & j1_)
+{
+
+json itsJson2 = BPitsJson;
+
+for (auto& el : j1_.items())
+{
+itsEf.itsJson[el.key()] = el.value();
+}
+
+Worm2DSRE::applyFuncables(itsJson2);
+const json & js1 = itsJson2;
+resetFromJson(js1);
+Sensor::setParsFromJson(js1);
+
+}
 
 void Worm2DSRE::applyFuncables()
 {
 
-recursive_applyFuncable(BPitsJson, itsEf);
+applyFuncables(BPitsJson);
+}
+
+void Worm2DSRE::applyFuncables(json & j1_)
+{
+
+recursive_applyFuncable(j1_, itsEf);
+}
+
+
+void Worm2DSRE::resetFromJson(const json & js1)
+{
+
+  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
+  assert(n);
+  bool doLegacy;
+  getValCJWorm<bool>("doLegacy",doLegacy);
+
+  //copy in current states, external inputs here??
+
+  setNSFromJsonNZ(js1,*n,doLegacy);
+   
+    Worm2DSRb::setParsFromJson(js1);
+
+
+    setMuscBodExt(js1);
+
+}
+
+void Worm2DSRE::resetFromBPJson()
+{
+resetFromJson(BPitsJson);
 
 }
 
@@ -793,31 +858,8 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   recursive_iterate2(pheno,BPitsJson,itsEf);
   
   applyFuncables();
-
-  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
-  assert(n);
-  bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
-
-  //copy in current states, external inputs here??
-
-  const json & js1 = BPitsJson;
-  setNSFromJsonNZ(js1,*n,doLegacy);
-
-    //if (js1["Nervous system"].contains("section sizes"))
-    //  jsects = js1["Nervous system"]["section sizes"];
-
-    //W2Dbaseparameters1b->setParsFromJson(js1["Worm"]);
-   
-
-    //if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);
-    
-    Worm2DSRb::setParsFromJson(js1);
-
-
-    //setWormPars(itsCmdArgs);
-    setMuscBodExt(js1);
-    
+  resetFromBPJson();
+  
 }
 
 void WormCO2DSR::setParsFromPheno(const TVector<double> &pheno)

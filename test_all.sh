@@ -91,15 +91,11 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/COW2DSRE_test_out
    
 
-    rm -rf testruns/exW2DCEFR
-    rm -rf testruns/exW2DCEFRv2
-    rm -rf testruns/exW2DSRFR
+    rm -rf testruns/exW2DCEFR testruns/exW2DCEFRv2 testruns/exW2DSRFR
     
     
     
-    rm -rf testruns/exW2DCEs
-    rm -rf testruns/exW2DCEE
-    rm -rf testruns/exW2DSRE
+    rm -rf testruns/exW2DCEs testruns/exW2DCEE testruns/exW2DSRE
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."

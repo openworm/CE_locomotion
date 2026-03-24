@@ -51,6 +51,28 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
 
   // char pyClass[] = "SiberneticNEURONWrapper";
   // char pyClass[] = "C302Simulation";
+                                  
+    if (false){
+    char* conda_path = getenv("CONDA_PREFIX");
+    if (conda_path){
+
+      std::cout << "conda path " << conda_path << std::endl;
+     
+
+    // 1. Determine the size needed for the wide string
+    size_t size = mbstowcs(NULL, conda_path, 0) + 1;
+    
+    // 2. Allocate memory and convert
+    w_conda_path = (wchar_t*)malloc(size * sizeof(wchar_t));
+    mbstowcs(w_conda_path, conda_path, size);
+
+    // 3. Set the Python Home
+    Py_SetPythonHome(w_conda_path);
+    }
+  }
+
+  
+  //Py_SetPythonHome(python_home); 
 
   // Initialize the Python interpreter
   Py_Initialize();
@@ -68,7 +90,8 @@ SignalSimulator::SignalSimulator(const std::string &simFileName,
   Py_DECREF(temp_bytes);
 
   printf("[debug] pName = \"%s\"\n", s);
-
+  
+  
 
   #if PY_MAJOR_VERSION == 3
     setlocale(LC_ALL, "en_US.utf8");
@@ -177,5 +200,6 @@ SignalSimulator::~SignalSimulator() {
   PyObject_CallMethod(pInstance, const_cast<char *>("save_results"), nullptr);
   if (PyErr_Occurred())
     PyErr_Print();
+    if (w_conda_path) free(w_conda_path); 
   // TODO Auto-generated destructor stub
 }

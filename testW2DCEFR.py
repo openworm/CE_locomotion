@@ -29,9 +29,9 @@ run(
     # SRType = "SR_TRANS_STRETCH",
     # SRType = "SR_TRANS_ABS",
     # SRType = "SR_TRANS_NEG"
-    randInitState = True,
-    doOrigMuscInput = False,
-    doOrigSRInput = False,
-    doLegacy = False,
+    randInitState=True,
+    doOrigMuscInput=False,
+    doOrigSRInput=False,
+    doLegacy=False,
     # MutVar = 0.5
 )

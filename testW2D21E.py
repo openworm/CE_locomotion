@@ -12,7 +12,7 @@ doMuscles = False
 inputFolderName = "experiments/izq_runs_nets_W2D21/103"
 outputFolderName = "testruns/exW2D21E"
 
-#sre - states minus bias before and after init.
+# sre - states minus bias before and after init.
 # sre - states become minus bias on first gen, on later gens they stay the same although bias changes
 # me + legacy - before init states are zero, after init minus bias
 # me - legacy - before init states are zero, after init still zero
@@ -36,10 +36,10 @@ args = dict(
     doEvol=True,
     checkPointInterval=5,
     evoType="Evo21",
-    SimStepSize = 0.01,
-    SimSkipSteps = 4,
-    randomInitialState = False,
-    doLegacy = False
+    SimStepSize=0.01,
+    SimSkipSteps=4,
+    randomInitialState=False,
+    doLegacy=False,
 )
 
 if doOrig:

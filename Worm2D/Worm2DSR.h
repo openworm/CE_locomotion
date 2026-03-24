@@ -104,6 +104,7 @@ Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
 Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 void applyFuncables();
+void applyFuncables(json & j1_);
 
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 void setParsFromPheno(const TVector<double> &pheno);
@@ -132,6 +133,8 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 //void addParsToJson(json & j){j = itsJson;}
 vector<double> getInitGeno_old();
 void setParsFromPheno_old(const TVector<double> &pheno);
+void resetFromBPJson();
+void resetFromJson(const json & js1);
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
@@ -230,18 +233,11 @@ WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 
 
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this)
-  {
+  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
 
-    //bool do_nml =  cmd->getArgValInt("--donml",0);
-    //if (do_nml) assert(0);
-  }
-
-  //Sensor(j, dynamic_pointer_cast<gradParameters>(W2Dbaseparameters1b), *this)
-  //{}
 
 void addParsToJson(json & j);
-
+void applyFuncablesExt(const json & j1_);
 
 
 void setParsFromPheno(const TVector<double> &pheno);

@@ -15,7 +15,7 @@ args = dict(
     simduration=20,
     simtransient=0,
     maxGens=10,
-    popSize =10,
+    popSize=10,
     modelName="W2DSR",
     modelFolder="Worm2D",
     inputFolderName="testruns/exW2DCEs",
@@ -29,8 +29,8 @@ args = dict(
     checkPointInterval=5,
     evoType="EvoCE",
     doEvol=True,
-    doLegacy = False,
-    randomInitialState = True,
+    doLegacy=False,
+    randomInitialState=True,
 )
 
 if doOrig:
