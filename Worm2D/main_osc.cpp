@@ -319,10 +319,10 @@ int main (int argc, const char* argv[])
     {
     
     int inputInd;
-    w2->getValCJWorm("inputInd", inputInd);
+    w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
     
-    
+
     //if (w!=nullptr) w->setForward();
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");
