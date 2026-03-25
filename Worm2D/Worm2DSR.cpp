@@ -604,7 +604,7 @@ vector<doubDoub> Worm2DSRE::makeVals()
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef)
 {
 
-        const bool domfuncs = false;
+        const bool domfuncs = true;
 
         if (it2->at("evolvable").is_object())
         {
@@ -857,7 +857,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf);
   
-  applyFuncables();
+  //applyFuncables();
   resetFromBPJson();
   
 }
@@ -1175,8 +1175,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           double phenval;
           if (do_mfunc && jevol.contains("mfunc")){
             json j2 = jevol.at("mfunc");
-            ef.itsJson["doInverse"] = true;
-            //j2["doInverse"] = true;
+            j2["doInverse"] = true;
             phenval = ef.eFunc(it2->at("value"), j2);
           }
           else phenval = it2->at("value");
@@ -1212,8 +1211,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             double phenval;
             if (do_mfunc && itjevol->contains("mfunc")) {
               json j2 = itjevol->at("mfunc");
-              //j2["doInverse"] = true;
-              ef.itsJson["doInverse"] = true;
+              j2["doInverse"] = true;
               //phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
               phenval = ef.eFunc(values[j].w.weight, j2);
               //phenval = ef.eFunc(pheno[phenind], j2);
