@@ -317,7 +317,12 @@ int main (int argc, const char* argv[])
 
     if (dotest)
     {
-
+    
+    int inputInd;
+    w2->getValCJWorm("inputInd", inputInd);
+    if (inputInd>=0) w2->setInputOnce(inputInd);
+    
+    
     //if (w!=nullptr) w->setForward();
 
     //double simduration = getParameterDouble(argc,argv,"-sd","10");

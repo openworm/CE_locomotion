@@ -1175,7 +1175,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           double phenval;
           if (do_mfunc && jevol.contains("mfunc")){
             json j2 = jevol.at("mfunc");
-            j2["doInverse"] = true;
+            ef.itsJson["doInverse"] = true;
+            //j2["doInverse"] = true;
             phenval = ef.eFunc(it2->at("value"), j2);
           }
           else phenval = it2->at("value");
@@ -1211,7 +1212,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             double phenval;
             if (do_mfunc && itjevol->contains("mfunc")) {
               json j2 = itjevol->at("mfunc");
-              j2["doInverse"] = true;
+              //j2["doInverse"] = true;
+              ef.itsJson["doInverse"] = true;
               //phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
               phenval = ef.eFunc(values[j].w.weight, j2);
               //phenval = ef.eFunc(pheno[phenind], j2);

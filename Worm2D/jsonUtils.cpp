@@ -33,7 +33,7 @@ double Efunctor::eFunc(const double & val, const json & j)
 
   if (j.at("f_ind").get<int>() == 1) 
   {
-    if (j.contains("doInverse") && j.at("doInverse") == true) 
+    if (itsJson.contains("doInverse") && itsJson.at("doInverse") == true) 
     return val / j.at("fact").get<double>();
     return val * j.at("fact").get<double>();
   }
@@ -42,7 +42,7 @@ double Efunctor::eFunc(const double & val, const json & j)
    
     const int cond = j.at("cond").get<int>();
     
-    if (j.contains("doInverse") && j.at("doInverse") == true) return val;
+    if (itsJson.contains("doInverse") && itsJson.at("doInverse") == true) return val;
     if (itsJson.contains("condval") && cond == itsJson.at("condval").get<int>()) return 0;
       //return val;
     

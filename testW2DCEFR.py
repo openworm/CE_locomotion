@@ -33,5 +33,6 @@ run(
     doOrigMuscInput=False,
     doOrigSRInput=False,
     doLegacy=False,
+    SRZeroGainsType=1,
     # MutVar = 0.5
 )

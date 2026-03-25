@@ -68,9 +68,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSRE21
 
 
-    rm -rf exampleRunCEW2D
-    
-    rm -rf exampleRunCEW2D_nml
+    rm -rf exampleRunCEW2D exampleRunCEW2D_nml
     
     rm -rf exampleRunCOW2D
     rm -rf exampleRunCO

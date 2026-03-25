@@ -187,7 +187,7 @@ class baseParameters
         defaultVals_["SRType"] = "None";
         defaultVals_["SRForm"] = 0;
         defaultVals_["SRSegPerSR"] = 6;
-        defaultVals_["SRZeroGainsType"] = 1;
+        defaultVals_["SRZeroGainsType"] = 0;
         defaultVals_["SROffset"] = 0;
         defaultVals_["NMJWeight"] = 1;
         defaultVals_["doReverse"] = 0;
@@ -203,6 +203,7 @@ class baseParameters
         defaultVals_["doAngleDiff"] = 0;
         defaultVals_["doLegacy"] = true;
         defaultVals_["initNSFromJson"] = true;
+        defaultVals_["inputInd"] = -1;
 
        return defaultVals_;
     }
