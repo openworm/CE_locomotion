@@ -58,6 +58,8 @@ public:
   //std::vector<float> run();
   void run();
   virtual ~SignalSimulator();
+
+   wchar_t* w_conda_path = nullptr;
 };
 
 #endif

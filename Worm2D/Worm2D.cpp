@@ -811,7 +811,7 @@ void Worm2D::addParsToJson(json & j)
 
         json & j2 = j["VNC NMJ"];
     
-
+        j2["setFromThis"]["value"] = true;
         j2["V inds"]["value"] = ventinds;
         j2["D inds"]["value"] = dorsinds;
         j2["V conns"]["value"] = unitToMuscV;
@@ -827,7 +827,7 @@ void Worm2D::addParsToJson(json & j)
         if (!j.contains("VNC 18")) j["VNC 18"] = {};
         json & j2 = j["VNC 18"];
     
-
+        j2["setFromThis"]["value"] = true;
         j2["V inds"]["value"] = ventinds;
         j2["D inds"]["value"] = dorsinds;
         j2["NMJ gain map V"]["value"] = namedVars["NMJ gain map V"];
@@ -1345,9 +1345,11 @@ void Worm2D::setUpMuscleConn(const json & j)
     if (j.contains("VNC NMJ"))
     {
 
-    hasVNCNMJ = true;
-
     const json & j2 = j["VNC NMJ"];
+    if (!(j2.contains("setFromThis") && j2.at("setFromThis").at("value").get<bool>() == false)){
+    hasVNCNMJ = true;
+    
+    
     namedVars["NMJ gain map V"] = 0.5;
     namedVars["NMJ gain map D"] = 0.5;
     namedVars["NMJ gain fact"] = 0.7;
@@ -1380,15 +1382,18 @@ void Worm2D::setUpMuscleConn(const json & j)
      
 
     return;
+    }
 
     }
 
     if (j.contains("VNC 18"))
     {
-
+    
+    const json & j2 = j["VNC 18"];
+    if (!(j2.contains("setFromThis") && j2.at("setFromThis").at("value").get<bool>() == false)){
     hasVNC18 = true;
 
-    const json & j2 = j["VNC 18"];
+   
     namedVars["NMJ gain map V"] = 0.5;
     namedVars["NMJ gain map D"] = 0.5;
     namedVars["NMJ gain fact"] = 0.7;
@@ -1416,6 +1421,7 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     return;
 
+    }
     }
 
 

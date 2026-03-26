@@ -1,5 +1,6 @@
 #include "Evolvable.h"
 
+
 void EvolvableS::setParsFromPhenoNZ(const TVector<double> &pheno)
 {
 
@@ -12,16 +13,17 @@ void EvolvableS::callEfcond(const json & j1_)
 {
 //vector<double> pheno = getCurrentPheno();
 
-const vector<double> & phen1 = getCurrentPheno();
 
 for (auto& el : j1_.items())
 {
 itsEf.itsJson[el.key()] = el.value();
 }
 
+//Worm2DSRE* w2 = dynamic_cast<Worm2DSRE*>(this);
+
 //cout << itsEf.itsJson << endl;
 
-
+const vector<double> & phen1 = getCurrentPheno();
 //setCurrentPheno(pheno);
 //current_pheno.swap(pheno);
 

@@ -6605,6 +6605,9 @@
                     "weight": 0.41458707070859624
                 }
             ]
+        },
+        "setFromThis": {
+            "value": true
         }
     },
     "Ventral NMJ": {

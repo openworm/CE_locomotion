@@ -548,7 +548,7 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
 
   }
 
-else{
+  else{
   sr_ptr->SR_A_gain = pheno(1);
   sr_ptr->SR_B_gain = pheno(2);
  

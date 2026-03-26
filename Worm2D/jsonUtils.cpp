@@ -47,7 +47,7 @@ double Efunctor::eFunc(const double & val, const json & j)
       //return val;
     
     return val;
-    assert(0);
+ 
     
   }
 
