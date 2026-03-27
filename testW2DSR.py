@@ -23,6 +23,7 @@ args = dict(
     doTestRun=True,
     doOrigMuscInput=False,
     doOrigSRInput=False,
+    #SRZeroGainsType=1,
 )
 
 if doOrig:

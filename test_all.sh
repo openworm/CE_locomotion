@@ -75,8 +75,8 @@ if [ "$quick_test" == 0 ]; then
     rm -rf exampleRunW2DCE
 
 
-    
-    
+    rm -rf testruns/exW2DCEFR testruns/exW2DCEFRv2 testruns/exW2DSRFR
+    rm -rf testruns/exW2DCEs testruns/exW2DCEE testruns/exW2DSRE
     rm -rf testruns/exW2DSR testruns/exW2DSR_nml testruns/exW2DSR_nml_musc
     
     rm -rf testruns/exW2DCO
@@ -89,11 +89,11 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/COW2DSRE_test_out
    
 
-    rm -rf testruns/exW2DCEFR testruns/exW2DCEFRv2 testruns/exW2DSRFR
     
     
     
-    rm -rf testruns/exW2DCEs testruns/exW2DCEE testruns/exW2DSRE
+    
+    
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."

@@ -318,10 +318,11 @@ int main (int argc, const char* argv[])
     if (dotest)
     {
     
+    if (false){
     int inputInd;
     w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
-    
+    }
 
     //if (w!=nullptr) w->setForward();
 
@@ -368,9 +369,11 @@ int main (int argc, const char* argv[])
         if (ew!=nullptr && zeroGainsType == 1)
         {
         
-        json efconds;
-        if (doforward) efconds["condval"] = 0; else efconds["condval"] = 1;
-        if (w2dsre)  w2dsre->applyFuncablesExt(efconds);
+        json efconds = json::object();
+        efconds["f_ind"] = 2;
+        if (doforward) efconds["condval"] = 0;
+        else efconds["condval"] = 1;
+        if (w2dsre) w2dsre->applyFuncablesExt(efconds);
         else ew->callEfcond(efconds);
 
   
