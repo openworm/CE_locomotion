@@ -318,7 +318,7 @@ int main (int argc, const char* argv[])
     if (dotest)
     {
     
-    if (false){
+    if (true){
     int inputInd;
     w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
@@ -373,8 +373,9 @@ int main (int argc, const char* argv[])
         efconds["f_ind"] = 2;
         if (doforward) efconds["condval"] = 0;
         else efconds["condval"] = 1;
-        if (w2dsre) w2dsre->applyFuncablesExt(efconds);
-        else ew->callEfcond(efconds);
+        w2->itsEf.itsJson = efconds;
+        if (w2dsre) w2dsre->applyFuncablesExt();
+        else ew->callEfcond();
 
   
         }

@@ -482,7 +482,7 @@ template<class T> friend class Evolvable_ptrB;
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 
 
-//Efunctor itsEfbase;
+Efunctor itsEf;
 
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -551,7 +551,7 @@ static wormIzqParams getIzqPars(const json & j);
 
 
 
-//Efunctor itsEf;
+
 };
 
 

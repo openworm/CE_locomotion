@@ -22,7 +22,8 @@ class Efunctor
 {
 public:
 
-double eFunc(const double & val, const json & j);
+double eFunc(const double & val, const json & j, bool setItsJson = false);
+//double eFunc(const double & val, const json & j);
 //double eFunc1(const double & val, const json & j);
 
 json itsJson;

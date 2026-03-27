@@ -237,7 +237,7 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
 
 
 void addParsToJson(json & j);
-void applyFuncablesExt(const json & j1_);
+void applyFuncablesExt();
 
 
 void setParsFromPheno(const TVector<double> &pheno);

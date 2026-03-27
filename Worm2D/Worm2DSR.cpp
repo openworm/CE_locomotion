@@ -611,7 +611,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
           const json & jevol = it2->at("evolvable");
           int phenind = jevol.at("val").get<int>();
           if (domfuncs && jevol.contains("mfunc"))
-          it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"));
+          it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"), true);
           else it2->at("value") = pheno[phenind];
         }
         else if (it2->at("evolvable").is_number())
@@ -630,7 +630,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
           {
             int phenind = itjevol->at("val").get<int>();
             if (domfuncs && itjevol->contains("mfunc"))
-            values[j].w.weight = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
+            values[j].w.weight = ef.eFunc(pheno[phenind], itjevol->at("mfunc"), true);
             else values[j].w.weight = pheno[phenind];
             break;
           } 
@@ -816,7 +816,7 @@ void recursive_applyFuncable(json& j, Efunctor & ef)
     }
 }
 
-void WormCO2DSR::applyFuncablesExt(const json & j1_)
+void WormCO2DSR::applyFuncablesExt()
 {
 
 json itsJson2 = BPitsJson;
@@ -827,7 +827,7 @@ itsEf.itsJson[el.key()] = el.value();
 }
  */
 
-itsEf.itsJson = j1_;
+//itsEf.itsJson = j1_;
 
 Worm2DSRE::applyFuncables(itsJson2);
 const json & js1 = itsJson2;
@@ -1204,7 +1204,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           if (do_mfunc && jevol.contains("mfunc")){
             json j2 = jevol.at("mfunc");
             j2["doInverse"] = true;
-            phenval = ef.eFunc(it2->at("value"), j2);
+            phenval = ef.eFunc(it2->at("value"), j2, true);
           }
           else phenval = it2->at("value");
           //if (hasfuncable) applyFuncable1(it2,ef);
@@ -1242,7 +1242,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
               json j2 = itjevol->at("mfunc");
               j2["doInverse"] = true;
               //phenval = ef.eFunc(pheno[phenind], itjevol->at("mfunc"));
-              phenval = ef.eFunc(values[j].w.weight, j2);
+              phenval = ef.eFunc(values[j].w.weight, j2, true);
               //phenval = ef.eFunc(pheno[phenind], j2);
             }
             else phenval = values[j].w.weight;
