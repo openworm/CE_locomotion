@@ -1189,9 +1189,11 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef)
 {
 
+//  if (it->contains("funcable")) applyFuncable1(it,ef);
+
         //const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
         const bool do_mfunc = true;
-        const bool hasfuncable = it2->contains("funcable");
+        //const bool hasfuncable = it2->contains("funcable");
 
         if (it2->at("evolvable").is_object())
         {
@@ -1205,6 +1207,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             phenval = ef.eFunc(it2->at("value"), j2);
           }
           else phenval = it2->at("value");
+          //if (hasfuncable) applyFuncable1(it2,ef);
           //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;
           if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
           //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;
