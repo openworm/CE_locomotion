@@ -2,9 +2,9 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "main", "development", "experimental", "test*" ]
+    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
   pull_request:
-    branches: [ "main", "development", "experimental", "test*" ]
+    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
 
 jobs:
   build:
@@ -13,14 +13,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:        
-        runs-on: [ubuntu-latest, ubuntu-22.04, macos-latest, macos-14 ]
-        python-version: [ "3.10", "3.12" ]
+        runs-on: [ubuntu-22.04] #, ubuntu-latest, macos-latest, macos-14 ]
+        python-version: [ "3.10", "3.12" ] # Note: 3.14 causes issues with Neuron 8.2.7
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     
     - name: Set up Python  ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version:  ${{ matrix.python-version }}
 
