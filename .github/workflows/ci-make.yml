@@ -2,9 +2,9 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "main", "development", "experimental", "test*" ]
+    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
   pull_request:
-    branches: [ "main", "development", "experimental", "test*" ]
+    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
 
 jobs:
   build:
@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:        
-        runs-on: [ubuntu-latest, ubuntu-22.04, macos-latest, macos-14 ]
-        python-version: [ "3.10", "3.12" ]
+        runs-on: [ubuntu-22.04] #, ubuntu-latest, macos-latest, macos-14 ]
+        python-version: [ "3.10", "3.12", "3.14" ]
 
     steps:
     - uses: actions/checkout@v4
