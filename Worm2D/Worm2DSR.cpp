@@ -604,7 +604,7 @@ vector<doubDoub> Worm2DSRE::makeVals()
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef)
 {
 
-        const bool domfuncs = false;
+        const bool domfuncs = true;
 
         if (it2->at("evolvable").is_object())
         {
@@ -882,7 +882,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf);
   
-  applyFuncables();
+  //applyFuncables();
   resetFromBPJson();
   
 }
