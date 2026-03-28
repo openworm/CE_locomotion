@@ -249,8 +249,8 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         {json jfunc;
         jfunc["f_ind"] = 1;
         jfunc["fact"] = 0.5;
-        n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc));
-        n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc));        
+        n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc, true));
+        n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc, true));        
         }
 
 

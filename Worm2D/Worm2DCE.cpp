@@ -554,13 +554,13 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   {json jevol;
   jevol["f_ind"] = 2;
   jevol["cond"] = 0;
-  sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol); 
+  sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol, true); 
   //sr_ptr->SR_B_gain = pheno(2);
   }
   {json jevol;
   jevol["f_ind"] = 2;
   jevol["cond"] = 1;
-  sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol); 
+  sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol, true); 
   //sr_ptr->SR_A_gain = pheno(1);
   }
   
