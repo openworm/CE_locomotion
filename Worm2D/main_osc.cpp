@@ -318,10 +318,12 @@ int main (int argc, const char* argv[])
     if (dotest)
     {
     
-    if (true){
+    if (false){
     int inputInd;
     w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
+    //cout << "inputInd " << inputInd << endl;
+    //assert(0);
     }
 
     //if (w!=nullptr) w->setForward();

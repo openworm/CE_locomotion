@@ -37,41 +37,7 @@ bool parseValue(const std::string& s, bool& v) {
 } */
 
 
-double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
-{
 
-  //cout << "eFunc " << " " << val << endl;
-  //cout << j << endl;
-
-  if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
-
-  if (j.at("f_ind").get<int>() == 1) 
-  {
-    if (!(itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1)) return val;
-    if (j.contains("doInverse") && j.at("doInverse") == true) 
-    return val / j.at("fact").get<double>();
-    return val * j.at("fact").get<double>();
-  }
-
-  if (j.at("f_ind").get<int>() == 2) {
-   
-
-    const int cond = j.at("cond").get<int>();
-    
-    if (j.contains("doInverse") && j.at("doInverse") == true) return val;
-    if (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2)
-    if (itsJson.contains("condval") && cond == itsJson.at("condval").get<int>()) return 0;
-
-      //return val;
-    
-    return val;
- 
-    
-  }
-
-  assert(0);
-
-}
 
 json getJsonFromFile(const string & jsonfile_)
 {

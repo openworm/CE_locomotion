@@ -401,6 +401,19 @@ class Worm2Dbody : virtual public DataWriter
 
 };
 
+class Efunctor
+{
+public:
+
+Efunctor(baseParameters & bp_):bp(bp_){}
+
+double eFunc(const double & val, const json & j, bool setItsJson = false);
+//double eFunc(const double & val, const json & j);
+//double eFunc1(const double & val, const json & j);
+
+baseParameters & bp;
+json itsJson;
+};
 
 
 

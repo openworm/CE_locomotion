@@ -18,16 +18,6 @@ using std::vector;
 
 
 
-class Efunctor
-{
-public:
-
-double eFunc(const double & val, const json & j, bool setItsJson = false);
-//double eFunc(const double & val, const json & j);
-//double eFunc1(const double & val, const json & j);
-
-json itsJson;
-};
 
 json getJsonFromFile(const string & jsonfile_);
 
@@ -60,8 +50,9 @@ bool getJsonValTF(const json & j, const string & key, T & val, bool doValue = fa
 {
 
 if (j.contains(key)){
-        if (doValue) if (j[key].contains("value")) val = j[key]["value"];
-        return true;
+        if (doValue) {if (j[key].contains("value")) val = j[key]["value"];
+        return true;}
+        else {val = j[key]; return true;}
  }
  
 return false;

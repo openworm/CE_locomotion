@@ -90,17 +90,53 @@ void DataWriter::dataReset(){closeAll();
 }
 
 
+double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
+{
+
+  //cout << "eFunc " << " " << val << endl;
+  //cout << j << endl;
+
+  if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
+
+  if (j.at("f_ind").get<int>() == 1) 
+  {
+    if (!(itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1)) return val;
+    if (j.contains("doInverse") && j.at("doInverse") == true) 
+    return val / j.at("fact").get<double>();
+    return val * j.at("fact").get<double>();
+  }
+
+  if (j.at("f_ind").get<int>() == 2) {
+   
+
+    const int cond = j.at("cond").get<int>();
+    
+    if (j.contains("doInverse") && j.at("doInverse") == true) return val;
+    if (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2)
+    if (itsJson.contains("condval") && cond == itsJson.at("condval").get<int>()) return 0;
+
+      //return val;
+    
+    return val;
+ 
+    
+  }
+
+  assert(0);
+
+}
+
 ////////////////////////////
 /////////////////////////////
 
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_),itsEf(*this){}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),itsEf(*this){}
 
 
 //////////////////////
@@ -1642,7 +1678,8 @@ void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double>
 void InputSwitcher::addParsToJson(json & j) const
 {
     if (inds.size()<=0) return;
-    j["input_switcher"]["inputInd"] = -1;
+    j["input_switcher"]["inputInd"] = {};
+    j["input_switcher"]["inputInd"]["value"] = -1;
     j["input_switcher"]["size"]["value"] = inds.size();
     if (timeperiods.size()>0){
     j["input_switcher"]["time_offset"]["value"] = time_offset;
