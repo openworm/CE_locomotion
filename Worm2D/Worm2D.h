@@ -231,6 +231,7 @@ class baseParameters
 
     const json & itsNewSetVals(){return newSetVals;}
 
+    friend class Efunctor;
     protected:
     json BPitsJson;
     //shared_ptr<const json> itsJson = nullptr;
@@ -242,6 +243,20 @@ class baseParameters
     
 };
 
+class Efunctor
+{
+public:
+
+Efunctor(baseParameters & bp_):bp(bp_),condf(bp_.BPitsJson.contains("Funcable")){}
+
+double eFunc(const double & val, const json & j, bool setItsJson = false);
+//double eFunc(const double & val, const json & j);
+//double eFunc1(const double & val, const json & j);
+
+baseParameters & bp;
+const bool condf;
+json itsJson;
+};
 
 
 
@@ -335,6 +350,9 @@ class DataWriter{
     
 };
 
+
+
+
 class InputSwitcher
 {
 
@@ -401,19 +419,6 @@ class Worm2Dbody : virtual public DataWriter
 
 };
 
-class Efunctor
-{
-public:
-
-Efunctor(baseParameters & bp_):bp(bp_){}
-
-double eFunc(const double & val, const json & j, bool setItsJson = false);
-//double eFunc(const double & val, const json & j);
-//double eFunc1(const double & val, const json & j);
-
-baseParameters & bp;
-json itsJson;
-};
 
 
 
