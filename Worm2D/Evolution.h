@@ -987,7 +987,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //return EvaluationCEp1(genotype, rs, 1); 
 
    
-    //w_ptr->itsEf.itsJson["f_ind"] = 2;
+    w_ptr->itsEf.itsJson["f_ind"] = 2;
        
 
     double fitness = 0;
