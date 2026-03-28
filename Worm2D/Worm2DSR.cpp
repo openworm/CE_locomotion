@@ -852,15 +852,17 @@ recursive_applyFuncable(j1_, itsEf);
 void Worm2DSRE::resetFromJson(const json & js1)
 {
 
+
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
-  assert(n);
+  if(n){
   bool doLegacy;
   getValCJWorm<bool>("doLegacy",doLegacy);
 
   //copy in current states, external inputs here??
 
   setNSFromJsonNZ(js1,*n,doLegacy);
-   
+  }
+  
     Worm2DSRb::setParsFromJson(js1);
 
 
