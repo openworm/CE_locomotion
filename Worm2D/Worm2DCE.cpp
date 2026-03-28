@@ -349,9 +349,30 @@ void Worm2DCE::setInputSwitcher(const json & j)
 
 void WormCE::addFuncableToJson(json & j)
 {
+  if (!j.contains("Funcable")) j["Funcable"] = json::object();
+  j["Funcable"]["2"] = {{"doInverse", false}, {"condval", 0}};
+  //j["Funcable"].push_back({{"f_ind", 2}, {"doInverse", false}, {"condval", 0}});
+  //j["Stretch receptor"]["SR_A_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  //j["Stretch receptor"]["SR_B_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  //if (!j["Stretch receptor"]["SR_A_gain"].contains("funcable")) 
+  //j["Stretch receptor"]["SR_A_gain"]["mfunc"] = json::array();
+  //if (!j["Stretch receptor"]["SR_B_gain"].contains("mfunc")) 
+  //j["Stretch receptor"]["SR_B_gain"]["mfunc"] = json::array();
 
-  j["Stretch receptor"]["SR_A_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
-  j["Stretch receptor"]["SR_B_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  {
+    json j2;
+    j2["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
+    j["Stretch receptor"]["SR_A_gain"]["funcable"] = j2;
+  }
+  {
+    json j2;
+    j2["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
+    j["Stretch receptor"]["SR_B_gain"]["funcable"] = j2;
+  }
+
+
+  //j["Stretch receptor"]["SR_A_gain"]["mfunc"].push_back({{"f_ind", 2}, {"cond", 0}});
+  //j["Stretch receptor"]["SR_B_gain"]["mfunc"].push_back({{"f_ind", 2}, {"cond", 1}});
 
 }
 
@@ -527,7 +548,7 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   // Stretch receptor
 //  sr_ptr->SetStretchReceptorParams(N_segments, N_stretchrec, pheno(1), pheno(2));
  
-
+  //if (itsEf.itsJson.contains("f_ind") && itsEf.itsJson.at("f_ind") == 2){
   if (itsEf.itsJson.contains("condval")){
    
   {json jevol;

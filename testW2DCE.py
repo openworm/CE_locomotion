@@ -23,4 +23,5 @@ run(
     # SRType = "SR_TRANS_STRETCH"
     doTestRun=True,
     doOrigMuscInput=True,
+    SRZeroGainsType=1,
 )

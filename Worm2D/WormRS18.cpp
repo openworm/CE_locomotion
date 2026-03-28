@@ -983,15 +983,18 @@ void Worm18::DumpParams(ofstream &ofs)
 
 void Worm18::addFuncableToJson(json & j)
 {
-
-json chemvecj = json::array();
+ 
+    if (!j.contains("Funcable")) j["Funcable"] = json::object();
+    //j["Funcable"].push_back({{"f_ind", 1}, {"doInverse", false}, {"fact", 1}});
+    j["Funcable"]["1"] = {{"doInverse", false}, {"fact", 1}};
+    json chemvecj = json::array();
 
   for (int u = 1; u <= par1.N_units; u++){
 
     int db, dd, vba, vda, vbp, vdp;
     int ddNext, dbNext, vdaNext, vbaNext;
   
-          db = nn(DB,u);
+        db = nn(DB,u);
         dd = nn(DD,u);
         vba = nn(VBA,u);
         vbp = nn(VBP,u);

@@ -604,7 +604,7 @@ vector<doubDoub> Worm2DSRE::makeVals()
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef)
 {
 
-        const bool domfuncs = false;
+        const bool domfuncs = true;
 
         if (it2->at("evolvable").is_object())
         {
@@ -780,16 +780,38 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
 
 }
 
+
+/* void applyFuncable12(json::iterator it2, Efunctor & ef)
+{
+
+  if (it2->at("mfunc").is_object()) {
+    applyFuncable12(it2,it2->at("mfunc"),ef);
+    return;
+  }
+  if (it2->at("mfunc").is_array()) {
+    json & j1 = it2->at("mfunc");
+
+    for(auto it = j1.begin(); it != j1.end(); ++it)
+    {cout << "apfunc " << *it << endl;
+    applyFuncable12(it2,*it,ef);
+    }
+    return;
+  }
+
+
+assert(0);
+
+} */
+
+
+
 void recursive_applyFuncable(json& j, Efunctor & ef)
 {
 
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("funcable")) applyFuncable1(it,ef);
-      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
       else if (it->is_object()) recursive_applyFuncable(*it,ef);
-        
-        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
     }
 }
@@ -799,10 +821,13 @@ void WormCO2DSR::applyFuncablesExt(const json & j1_)
 
 json itsJson2 = BPitsJson;
 
-for (auto& el : j1_.items())
+/* for (auto& el : j1_.items())
 {
 itsEf.itsJson[el.key()] = el.value();
 }
+ */
+
+itsEf.itsJson = j1_;
 
 Worm2DSRE::applyFuncables(itsJson2);
 const json & js1 = itsJson2;
@@ -857,7 +882,7 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf);
   
-  applyFuncables();
+  //applyFuncables();
   resetFromBPJson();
   
 }
@@ -1164,8 +1189,11 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef)
 {
 
+//  if (it->contains("funcable")) applyFuncable1(it,ef);
+
         //const bool do_mfunc = false; //should be false because funcs are called in setparsfrompheno
         const bool do_mfunc = true;
+        //const bool hasfuncable = it2->contains("funcable");
 
         if (it2->at("evolvable").is_object())
         {
@@ -1179,6 +1207,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             phenval = ef.eFunc(it2->at("value"), j2);
           }
           else phenval = it2->at("value");
+          //if (hasfuncable) applyFuncable1(it2,ef);
           //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;
           if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
           //if (check123456(phenval, it2->at("value"))) pheno[phenind] = phenval;

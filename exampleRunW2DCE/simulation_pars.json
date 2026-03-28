@@ -5,5 +5,6 @@
     "doRandInit": 0,
     "Transient": 0,
     "doMuscSim": 0,
-    "doTestRun": true
+    "doTestRun": true,
+    "SRZeroGainsType": 1
 }
