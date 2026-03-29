@@ -97,11 +97,11 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
   //cout << j << endl;
 
 
-  if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
+  //if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
 
   if (j.at("f_ind").get<int>() == 1) 
   {
-    const bool cond1 = itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1;
+    const bool cond1 = (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1) || setItsJson;
     const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(1));
 
     if (!(cond1 || cond2)) return val;
@@ -109,7 +109,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
     return val / j.at("fact").get<double>();
 
     //cout << "hsh " << cond1 << " " << cond2 << " " << j.at("fact").get<double>() << endl;
-    //assert(0);
+    //if (!setItsJson) assert(0);
     return val * j.at("fact").get<double>();
   }
 
@@ -119,7 +119,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 
     const int cond = j.at("cond").get<int>();
 
-    const bool cond1 = itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2;
+    const bool cond1 = (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2) || setItsJson;
     if (cond1 && itsJson.contains("condval") && cond == itsJson.at("condval").get<int>()) return 0;
  
     const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(2));
