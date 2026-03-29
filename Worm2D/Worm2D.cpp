@@ -107,6 +107,9 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
     if (!(cond1 || cond2)) return val;
     if (j.contains("doInverse") && j.at("doInverse") == true) 
     return val / j.at("fact").get<double>();
+
+    //cout << "hsh " << cond1 << " " << cond2 << " " << j.at("fact").get<double>() << endl;
+    //assert(0);
     return val * j.at("fact").get<double>();
   }
 

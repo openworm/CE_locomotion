@@ -253,6 +253,8 @@ double eFunc(const double & val, const json & j, bool setItsJson = false);
 //double eFunc(const double & val, const json & j);
 //double eFunc1(const double & val, const json & j);
 
+void reset(){itsJson = {};}
+
 baseParameters & bp;
 const bool condf;
 json itsJson;
