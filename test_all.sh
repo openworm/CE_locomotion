@@ -89,12 +89,6 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/COW2DSRE_test_out
    
 
-    
-    
-    
-    
-    
-
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
     

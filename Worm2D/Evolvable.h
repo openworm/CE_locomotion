@@ -65,10 +65,11 @@ class EvolvableS
   void setParsFromFile(const string & genofilename_);
   void setParsFromGeno(const TVector<double> &geno);
   void setParsFromPhenGen(const TVector<double> &phengen, const bool & isPheno);
-  void callEfcond(const json & j1_);
-  Efunctor itsEf;
+  //void callEfcond(const json & j1_);
+  //Efunctor itsEf;
   vector<double> current_pheno;
-  
+  void callEfcond();
+
   void setCurrentPheno(const vector<double> & pheno1){
      
     current_pheno.clear();

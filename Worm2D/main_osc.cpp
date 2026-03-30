@@ -314,14 +314,17 @@ int main (int argc, const char* argv[])
     
     //WormFR* const w = dynamic_cast<WormFR*>(w2);
 
-
+    WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
     if (dotest)
     {
     
-    if (false){
+    if (true){
     int inputInd;
     w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
+    if (w2dsre) w2dsre->applyFuncablesExt();
+    //cout << "inputInd " << inputInd << endl;
+    //assert(0);
     }
 
     //if (w!=nullptr) w->setForward();
@@ -341,7 +344,7 @@ int main (int argc, const char* argv[])
 
     WormFR* const w = nullptr; //dynamic_cast<WormFR*>(w2);
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
-    WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
+   
 
     int zeroGainsType;
     w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
@@ -373,8 +376,9 @@ int main (int argc, const char* argv[])
         efconds["f_ind"] = 2;
         if (doforward) efconds["condval"] = 0;
         else efconds["condval"] = 1;
-        if (w2dsre) w2dsre->applyFuncablesExt(efconds);
-        else ew->callEfcond(efconds);
+        w2->itsEf.itsJson = efconds;
+        if (w2dsre) w2dsre->applyFuncablesExt();
+        else ew->callEfcond();
 
   
         }

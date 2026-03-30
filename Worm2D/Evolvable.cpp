@@ -8,17 +8,19 @@ void EvolvableS::setParsFromPhenoNZ(const TVector<double> &pheno)
     setParsFromPheno(pheno);
 }
 
-
-void EvolvableS::callEfcond(const json & j1_)
+void EvolvableS::callEfcond()
+//void EvolvableS::callEfcond(const json & j1_)
 {
 //vector<double> pheno = getCurrentPheno();
 
 
-for (auto& el : j1_.items())
+/* for (auto& el : j1_.items())
 {
 itsEf.itsJson[el.key()] = el.value();
 }
+ */
 
+ 
 //Worm2DSRE* w2 = dynamic_cast<Worm2DSRE*>(this);
 
 //cout << itsEf.itsJson << endl;

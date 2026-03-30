@@ -1078,6 +1078,12 @@
             }
         ]
     },
+    "Funcable": {
+        "1": {
+            "doInverse": false,
+            "fact": 1
+        }
+    },
     "InputNS": {
         "weights": {
             "message": "Weights of driving inputs to NS from another NS",
@@ -4291,6 +4297,9 @@
                     "weight": 0.7328105034773889
                 }
             ]
+        },
+        "setFromThis": {
+            "value": true
         }
     },
     "Ventral NMJ": {
