@@ -1716,7 +1716,8 @@ void InputSwitcher::addParsToJson(json & j) const
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
     arr2.push_back({{"ind", indvec[j]}, {"val", valvec[j]}});
-    arr1.push_back({{"value", arr2},{"ind", i+1}});
+    //arr1.push_back({{"value", arr2},{"ind", i+1}});
+    arr1.push_back({{"value", arr2},{"ind", i}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
