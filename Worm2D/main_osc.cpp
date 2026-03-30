@@ -241,8 +241,6 @@ int main (int argc, const char* argv[])
     j_evo = getJsonFromFile(json_filename);
 
 
-  
-
     if (!j_evo.empty()){
     string jloc;
     if (j_evo.contains("Simulation")) jloc = "Simulation";
@@ -302,7 +300,7 @@ int main (int argc, const char* argv[])
 
    
 
-    w2->addParsToJson(j);
+    //w2->addParsToJson(j);
     
 
 
@@ -393,6 +391,9 @@ int main (int argc, const char* argv[])
 
     }
     }
+
+
+    w2->addParsToJson(j);
 
     j["Simulation"]["StepSize"]["value"] = StepSize;
     j["Simulation"]["skip_steps"]["value"] = skip_steps;

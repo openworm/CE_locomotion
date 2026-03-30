@@ -1692,15 +1692,16 @@ void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double>
 void InputSwitcher::addParsToJson(json & j) const
 {
     if (inds.size()<=0) return;
-    j["input_switcher"]["inputInd"] = {};
-    j["input_switcher"]["inputInd"]["value"] = -1;
-    j["input_switcher"]["size"]["value"] = inds.size();
+    if (!j.contains("input_switcher")) j["input_switcher"] = {};
+    json & j2 = j["input_switcher"];
+    if (!j2.contains("inputInd")) j2["inputInd"]["value"] = -1;
+    j2["size"]["value"] = inds.size();
     if (timeperiods.size()>0){
-    j["input_switcher"]["time_offset"]["value"] = time_offset;
+    j2["time_offset"]["value"] = time_offset;
         json timeperiods_j = json::array();
         for (int i=0;i<timeperiods.size();i++)
             timeperiods_j.push_back({{"ind", i}, {"val", timeperiods[i]}});
-    j["input_switcher"]["time_periods"]["value"] = timeperiods_j;
+    j2["time_periods"]["value"] = timeperiods_j;
     }
 
   
