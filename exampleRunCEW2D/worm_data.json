@@ -1586,6 +1586,12 @@
             }
         ]
     },
+    "Funcable": {
+        "2": {
+            "condval": 0,
+            "doInverse": false
+        }
+    },
     "InputNS": {
         "weights": {
             "message": "Weights of driving inputs to NS from another NS",
@@ -6197,12 +6203,12 @@
                 },
                 "val": 1
             },
-            "funcable": {
-                "mfunc": {
+            "mfunc": [
+                {
                     "cond": 0,
                     "f_ind": 2
                 }
-            },
+            ],
             "value": 182.1006113418175
         },
         "SR_B_gain": {
@@ -6213,12 +6219,12 @@
                 },
                 "val": 2
             },
-            "funcable": {
-                "mfunc": {
+            "mfunc": [
+                {
                     "cond": 1,
                     "f_ind": 2
                 }
-            },
+            ],
             "value": 165.7002176192561
         },
         "Type": {
@@ -6617,6 +6623,9 @@
                     "weight": 0.41458707070859624
                 }
             ]
+        },
+        "setFromThis": {
+            "value": true
         }
     },
     "Ventral NMJ": {
@@ -7799,6 +7808,7 @@
         }
     },
     "input_switcher": {
+        "inputInd": -1,
         "inputs": {
             "value": [
                 {

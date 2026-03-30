@@ -187,7 +187,7 @@ class baseParameters
         defaultVals_["SRType"] = "None";
         defaultVals_["SRForm"] = 0;
         defaultVals_["SRSegPerSR"] = 6;
-        defaultVals_["SRZeroGainsType"] = 1;
+        defaultVals_["SRZeroGainsType"] = 0;
         defaultVals_["SROffset"] = 0;
         defaultVals_["NMJWeight"] = 1;
         defaultVals_["doReverse"] = 0;
@@ -203,6 +203,7 @@ class baseParameters
         defaultVals_["doAngleDiff"] = 0;
         defaultVals_["doLegacy"] = true;
         defaultVals_["initNSFromJson"] = true;
+        defaultVals_["inputInd"] = -1;
 
        return defaultVals_;
     }
@@ -230,6 +231,7 @@ class baseParameters
 
     const json & itsNewSetVals(){return newSetVals;}
 
+    friend class Efunctor;
     protected:
     json BPitsJson;
     //shared_ptr<const json> itsJson = nullptr;
@@ -241,6 +243,22 @@ class baseParameters
     
 };
 
+class Efunctor
+{
+public:
+
+Efunctor(baseParameters & bp_):bp(bp_),condf(bp_.BPitsJson.contains("Funcable")){}
+
+double eFunc(const double & val, const json & j, bool setItsJson = false);
+//double eFunc(const double & val, const json & j);
+//double eFunc1(const double & val, const json & j);
+
+void reset(){itsJson = {};}
+
+baseParameters & bp;
+const bool condf;
+json itsJson;
+};
 
 
 
@@ -333,6 +351,9 @@ class DataWriter{
     string prefix;
     
 };
+
+
+
 
 class InputSwitcher
 {
@@ -481,7 +502,7 @@ template<class T> friend class Evolvable_ptrB;
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 
 
-//Efunctor itsEfbase;
+Efunctor itsEf;
 
 protected:
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
@@ -550,7 +571,7 @@ static wormIzqParams getIzqPars(const json & j);
 
 
 
-//Efunctor itsEf;
+
 };
 
 

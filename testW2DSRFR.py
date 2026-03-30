@@ -44,6 +44,7 @@ args = dict(
     doOrigMuscInput=False,
     doOrigSRInput=False,
     doLegacy=False,
+    SRZeroGainsType=1,
     # doLegacy = True
 )
 

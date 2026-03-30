@@ -986,6 +986,9 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //genotype(SR_B)= srb;
     //return EvaluationCEp1(genotype, rs, 1); 
 
+   
+   // w_ptr->itsEf.itsJson["f_ind"] = 2;
+       
 
     double fitness = 0;
     int count = 0;
@@ -1001,7 +1004,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
 
     if (doReverse==1 || doalt2f)
     {
-    if (zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
+    if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
     w_ptr->setInputOnce(1);
     fitness += EvaluationCEp1(rs, -1, w_ptr);

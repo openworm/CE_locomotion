@@ -31,6 +31,7 @@ args = dict(
     doEvol=True,
     doLegacy=False,
     randomInitialState=True,
+    SRZeroGainsType=1,
 )
 
 if doOrig:

@@ -141,7 +141,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
     double AVA_output = 0, AVB_output = 0;
-    double AVA_act, AVA_inact, AVB_act, AVB_inact;
+    double AVA_act = 0, AVA_inact = 0, AVB_act = 0, AVB_inact = 0;
 
     
     const int N_stretchrec = 10;            // N_units // Number of stretch receptors
@@ -156,7 +156,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     const int VA = 5;
     const int VB = 6;
 
-    double pheno_A_gain, pheno_B_gain; 
+    double pheno_A_gain = 0, pheno_B_gain = 0; 
     //W2DCEpars W2DCEpars1;
     //shared_ptr<W2DCEpars> W2DCEpars1;
 

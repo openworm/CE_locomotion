@@ -249,8 +249,8 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         {json jfunc;
         jfunc["f_ind"] = 1;
         jfunc["fact"] = 0.5;
-        n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc));
-        n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc));        
+        n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc, true));
+        n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc, true));        
         }
 
 
@@ -983,15 +983,20 @@ void Worm18::DumpParams(ofstream &ofs)
 
 void Worm18::addFuncableToJson(json & j)
 {
+ 
+    if (true){
+    if (!j.contains("Funcable")) j["Funcable"] = json::object();
+    //j["Funcable"]["1"] = {{"doInverse", false}, {"fact", 1}};
+    }
 
-json chemvecj = json::array();
+    json chemvecj = json::array();
 
   for (int u = 1; u <= par1.N_units; u++){
 
     int db, dd, vba, vda, vbp, vdp;
     int ddNext, dbNext, vdaNext, vbaNext;
   
-          db = nn(DB,u);
+        db = nn(DB,u);
         dd = nn(DD,u);
         vba = nn(VBA,u);
         vbp = nn(VBP,u);
