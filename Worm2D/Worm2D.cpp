@@ -1747,7 +1747,8 @@ void InputSwitcher::construct(const json & j)
   {
     double period = it->at("val").get<double>();
     total_period += period;
-    periods1[it->at("ind").get<int>()-1] = period;
+    //periods1[it->at("ind").get<int>()-1] = period;
+    periods1[it->at("ind").get<int>()] = period;
   }
 
   for (int i=0;i<periods1.size();i++) assert(check123456(periods1[i]));
@@ -1764,8 +1765,12 @@ void InputSwitcher::construct(const json & j)
     const json & j2 = j["input_switcher"]["inputs"]["value"];
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
-      vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
-      vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+     // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
+     // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+
+    vector<int> & indvec = inds1[it->at("ind").get<int>()];
+    vector<double> & valvec = vals1[it->at("ind").get<int>()];
+
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
       {
