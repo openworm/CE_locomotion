@@ -331,6 +331,10 @@ int main (int argc, const char* argv[])
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
+
+
+
+    w2->addParsToJson(j);
     s1.runSimulation(*w2);
 
     //if (do_nml) assert(0);
@@ -370,6 +374,8 @@ int main (int argc, const char* argv[])
         }
     
     if (doReverse == 0) w2->setInputOnce(0); else w2->setInputOnce(1);
+        
+    w2->addParsToJson(j);
 
     s1.runSimulation(*w2);
     }
@@ -385,6 +391,8 @@ int main (int argc, const char* argv[])
 
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
+    
+    w2->addParsToJson(j);
 
     bool doforward = forwardfirst;
     for (int mode=0;mode<2;mode++){
@@ -424,7 +432,7 @@ int main (int argc, const char* argv[])
     }
 
 
-    w2->addParsToJson(j);
+    //w2->addParsToJson(j);
 
     j["Simulation"]["StepSize"]["value"] = StepSize;
     j["Simulation"]["skip_steps"]["value"] = skip_steps;
