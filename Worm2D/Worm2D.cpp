@@ -1657,6 +1657,7 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
 {
      
 if (ind<0) return;
+   // inputInd = ind;
   assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];

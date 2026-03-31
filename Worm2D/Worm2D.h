@@ -365,6 +365,7 @@ class InputSwitcher
   double time_offset = 0, total_period = 0;
   vector<vector<int> > inds;
   vector<vector<double> > vals;
+  //int inputInd = -1;
 };
 
 class Worm2Dbody : virtual public DataWriter
