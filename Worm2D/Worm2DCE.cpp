@@ -316,7 +316,7 @@ void Worm2DCE::initConst()
 void Worm2DCE::setInputSwitcher()
 {
 
-vector<vector<int> > input_indvec;
+      vector<vector<int> > input_indvec;
       vector<vector<double> > input_valvec;
       input_indvec.push_back(vector<int>({0,1}));
       input_valvec.push_back(vector<double>({0,1}));
@@ -325,10 +325,10 @@ vector<vector<int> > input_indvec;
       input_indvec.push_back(vector<int>({0,1}));
       input_valvec.push_back(vector<double>({0,0}));
 
-      inds.swap(input_indvec);
-      vals.swap(input_valvec);
+      swapVecsIS(input_indvec, input_valvec);
+      //inds.swap(input_indvec);
+      //vals.swap(input_valvec);
 
-  
 
 }
 

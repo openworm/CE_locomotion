@@ -1656,7 +1656,7 @@ dBodyConnvec.swap(dBodyConnvec1);
 void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInputs)
 {
      
-
+if (ind<0) return;
   assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
@@ -1692,15 +1692,16 @@ void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double>
 void InputSwitcher::addParsToJson(json & j) const
 {
     if (inds.size()<=0) return;
-    j["input_switcher"]["inputInd"] = {};
-    j["input_switcher"]["inputInd"]["value"] = -1;
-    j["input_switcher"]["size"]["value"] = inds.size();
+    if (!j.contains("input_switcher")) j["input_switcher"] = {};
+    json & j2 = j["input_switcher"];
+    if (!j2.contains("inputInd")) j2["inputInd"]["value"] = -1;
+    j2["size"]["value"] = inds.size();
     if (timeperiods.size()>0){
-    j["input_switcher"]["time_offset"]["value"] = time_offset;
+    j2["time_offset"]["value"] = time_offset;
         json timeperiods_j = json::array();
         for (int i=0;i<timeperiods.size();i++)
             timeperiods_j.push_back({{"ind", i}, {"val", timeperiods[i]}});
-    j["input_switcher"]["time_periods"]["value"] = timeperiods_j;
+    j2["time_periods"]["value"] = timeperiods_j;
     }
 
   
@@ -1715,7 +1716,8 @@ void InputSwitcher::addParsToJson(json & j) const
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
     arr2.push_back({{"ind", indvec[j]}, {"val", valvec[j]}});
-    arr1.push_back({{"value", arr2},{"ind", i+1}});
+    //arr1.push_back({{"value", arr2},{"ind", i+1}});
+    arr1.push_back({{"value", arr2},{"ind", i}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
@@ -1745,7 +1747,8 @@ void InputSwitcher::construct(const json & j)
   {
     double period = it->at("val").get<double>();
     total_period += period;
-    periods1[it->at("ind").get<int>()-1] = period;
+    //periods1[it->at("ind").get<int>()-1] = period;
+    periods1[it->at("ind").get<int>()] = period;
   }
 
   for (int i=0;i<periods1.size();i++) assert(check123456(periods1[i]));
@@ -1762,8 +1765,12 @@ void InputSwitcher::construct(const json & j)
     const json & j2 = j["input_switcher"]["inputs"]["value"];
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
-      vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
-      vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+     // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
+     // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
+
+    vector<int> & indvec = inds1[it->at("ind").get<int>()];
+    vector<double> & valvec = vals1[it->at("ind").get<int>()];
+
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
       {

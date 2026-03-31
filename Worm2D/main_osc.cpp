@@ -241,8 +241,6 @@ int main (int argc, const char* argv[])
     j_evo = getJsonFromFile(json_filename);
 
 
-  
-
     if (!j_evo.empty()){
     string jloc;
     if (j_evo.contains("Simulation")) jloc = "Simulation";
@@ -302,7 +300,7 @@ int main (int argc, const char* argv[])
 
    
 
-    w2->addParsToJson(j);
+    //w2->addParsToJson(j);
     
 
 
@@ -333,6 +331,10 @@ int main (int argc, const char* argv[])
     //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
+
+
+
+    w2->addParsToJson(j);
     s1.runSimulation(*w2);
 
     //if (do_nml) assert(0);
@@ -345,10 +347,41 @@ int main (int argc, const char* argv[])
     WormFR* const w = nullptr; //dynamic_cast<WormFR*>(w2);
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
    
-
     int zeroGainsType;
     w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    int doReverse;
+    w2->getValCJWorm("doReverse", doReverse);
+
+    if (doReverse == 0 || doReverse == 1)
+    {
+
+    j["Simulation"]["transient"]["value"] = simtransient;
+    j["Simulation"]["duration"]["value"] = simduration;
+    simPars sp1 = {directoryName, simduration, simtransient, StepSize};
+    Simulation s1(sp1);
+
+    if (ew!=nullptr && zeroGainsType == 1)
+        {
+        
+        json efconds = json::object();
+        efconds["f_ind"] = 2;
+        if (doReverse == 0) efconds["condval"] = 0;
+        else efconds["condval"] = 1;
+        w2->itsEf.itsJson = efconds;
+        if (w2dsre) w2dsre->applyFuncablesExt();
+        else ew->callEfcond();
+
+        }
     
+    if (doReverse == 0) w2->setInputOnce(0); else w2->setInputOnce(1);
+        
+    w2->addParsToJson(j);
+
+    s1.runSimulation(*w2);
+    }
+
+    
+    else if (doReverse == 2 || doReverse == 3){
 
     j["Simulation"]["transient"]["value"] = simtransient;
     j["Simulation"]["duration"]["value"] = simduration*2;
@@ -358,6 +391,8 @@ int main (int argc, const char* argv[])
 
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
+    
+    w2->addParsToJson(j);
 
     bool doforward = forwardfirst;
     for (int mode=0;mode<2;mode++){
@@ -393,6 +428,11 @@ int main (int argc, const char* argv[])
 
     }
     }
+
+    }
+
+
+    //w2->addParsToJson(j);
 
     j["Simulation"]["StepSize"]["value"] = StepSize;
     j["Simulation"]["skip_steps"]["value"] = skip_steps;

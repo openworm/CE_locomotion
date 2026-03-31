@@ -1576,7 +1576,7 @@
     },
     "Funcable": {
         "2": {
-            "condval": 0,
+            "condval": -1,
             "doInverse": false
         }
     },
@@ -7799,37 +7799,39 @@
         }
     },
     "input_switcher": {
-        "inputInd": -1,
+        "inputInd": {
+            "value": -1
+        },
         "inputs": {
             "value": [
+                {
+                    "ind": 0,
+                    "value": [
+                        {
+                            "ind": 0,
+                            "val": 0.0
+                        },
+                        {
+                            "ind": 1,
+                            "val": 1.0
+                        }
+                    ]
+                },
                 {
                     "ind": 1,
                     "value": [
                         {
                             "ind": 0,
-                            "val": 0.0
+                            "val": 1.0
                         },
                         {
                             "ind": 1,
-                            "val": 1.0
+                            "val": 0.0
                         }
                     ]
                 },
                 {
                     "ind": 2,
-                    "value": [
-                        {
-                            "ind": 0,
-                            "val": 1.0
-                        },
-                        {
-                            "ind": 1,
-                            "val": 0.0
-                        }
-                    ]
-                },
-                {
-                    "ind": 3,
                     "value": [
                         {
                             "ind": 0,
