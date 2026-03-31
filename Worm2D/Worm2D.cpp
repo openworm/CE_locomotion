@@ -1050,7 +1050,7 @@ void Worm2D::Step1()
     
   //cout << "sds " << doOrigMuscInput << endl;
   //assert(0);
-  
+
   if (doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
@@ -1225,7 +1225,7 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
 void Worm2D::setMuscleInput()
 {
 
-    assert(0);    
+   
     setMuscleInputVec();
     //setMuscleInputVent();
     //setMuscleInputDors();

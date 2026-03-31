@@ -69,6 +69,7 @@ for input_folder, output_folder, output_folder_nml in zip(
             doTestRun=True,
             simduration=simduration,
             simtransient=simtransient,
+            doOrigMuscInput=False,
         )
 
     if True:
@@ -98,6 +99,7 @@ for input_folder, output_folder, output_folder_nml in zip(
             doTestRun=True,
             simduration=simduration,
             simtransient=simtransient,
+            doOrigMuscInput=False,
         )
 
 if True:
@@ -131,4 +133,5 @@ if True:
             doTestRun=True,
             simduration=simduration,
             simtransient=simtransient,
+            doOrigMuscInput=False,
         )
