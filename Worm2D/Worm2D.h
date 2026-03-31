@@ -69,16 +69,18 @@ class baseParameters
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
- 
+             //cout << "hdjs ns " << name_str << " " << val << endl;
             val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
 
     
         if (BPitsCmdArgs!=nullptr) {
+            //cout << "hdjs cmd " << name_str << " " << val << endl;
+
          if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
-
+              //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
             return true;
         }
@@ -91,9 +93,10 @@ class baseParameters
        
         if (defaultVals.contains(name_str)) {
 
-            
+         
             val = defaultVals.at(name_str).get<T>();
             addValToJson(name_str,val,bstr);
+               //cout << "hdjs ds " << name_str << " " << val << endl;
             return true;
          }
 
@@ -126,12 +129,15 @@ class baseParameters
         return getValCJ<T>(name_str,val,"Worm");
 
     }
-
+ 
     template<class T>
     T getValCJWorm(const string & name_str)
     {
+       
         T val;
         getValCJ<T>(name_str,val,"Worm");
+        cout <<  name_str << " " << val << endl;
+
         return val;
     }
      

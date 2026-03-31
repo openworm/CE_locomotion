@@ -93,7 +93,7 @@ int main (int argc, const char* argv[])
 
         if (model_name == "CE") w = new WormCE(cmd,phenotype);
         if (model_name == "RS18") w = new Worm18(phenotype,0);
-        if (model_name == "Net21") w = new Worm21(phenotype);
+        if (model_name == "Net21") w = new Worm21(phenotype,cmd);
         if (model_name == "CO") {
 
         w = new WormAgent(phenotype, 10);

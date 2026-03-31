@@ -906,11 +906,14 @@ vector<toFromWeight> Worm2DCE::makeMuscleConn(const vector<int> & neurons, const
 void Worm2DCE::setMuscleInputOrig()
 {
 
+  
+
+  
   int mi;
   int mt = 0;
 
 TVector<double> dorsalInput(1, par1.N_units);
-  TVector<double> ventralInput(1, par1.N_units);
+TVector<double> ventralInput(1, par1.N_units);
 
 for (int i=1; i<=par1.N_units; i++){
     dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));

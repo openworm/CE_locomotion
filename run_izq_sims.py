@@ -64,6 +64,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doOrigMuscInput=False,
     )
 
     print(output_folder_nml)

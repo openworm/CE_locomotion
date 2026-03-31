@@ -193,6 +193,7 @@ doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput")),
 doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
+
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
     //cout << "dom " << doOrigMuscInput << " " << doOrigSRInput << endl;
@@ -1037,6 +1038,7 @@ void Worm2Dm::Step1()
 void Worm2D::Step1()
 {
   
+   
   b.StepBody(settedStepSize);
 
   zeroAllInputs();
@@ -1046,6 +1048,9 @@ void Worm2D::Step1()
   n_ptr->EulerStep(settedStepSize);
 
     
+  //cout << "sds " << doOrigMuscInput << endl;
+  //assert(0);
+  
   if (doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
@@ -1220,7 +1225,7 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
 void Worm2D::setMuscleInput()
 {
 
-    
+    assert(0);    
     setMuscleInputVec();
     //setMuscleInputVent();
     //setMuscleInputDors();

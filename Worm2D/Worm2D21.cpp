@@ -328,7 +328,9 @@ void Worm2D21::setMuscleInputOrig()
 void Worm2D21m::Step1()
 {
     
-    //assert(0 && "this not used");
+    return Worm2Dm::Step1();
+    
+    assert(0 && "this not used");
     
     // Update Body
     b.StepBody(settedStepSize);
@@ -344,7 +346,10 @@ void Worm2D21m::Step1()
         n_ptr->SetNeuronExternalInput(nn(DA, i), wAVA_DA * AVA_output);
         n_ptr->SetNeuronExternalInput(nn(VA, i), wAVA_VA * AVA_output);
     }
-    
+      
+    //if (doOrigMuscInput) setMuscleInputOrig();
+    //else setMuscleInput();
+
     setMuscleInput();
     //setMuscleInputOrig(StepSize);   
 
