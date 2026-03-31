@@ -1656,7 +1656,7 @@ dBodyConnvec.swap(dBodyConnvec1);
 void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInputs)
 {
      
-
+if (ind<0) return;
   assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];

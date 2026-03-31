@@ -583,7 +583,7 @@ def reload_single_run(a=None, **kwargs):
         axs[plot_num, 1].imshow(
             data_list,
             aspect="auto",
-            #interpolation="nearest",
+            interpolation="nearest",
             extent=[
                 0,
                 data_list.shape[1] * dx,
@@ -641,6 +641,7 @@ def reload_single_run(a=None, **kwargs):
         axs[count_num, 1].imshow(
             curv_data_less_time,
             aspect="auto",
+            interpolation="nearest",
             extent=[
                 0,
                 curv_data_less_time.shape[1] * dx,

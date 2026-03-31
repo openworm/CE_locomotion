@@ -65,34 +65,19 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
-        
-        //cout << "nssd " << name_str << " " << bstr << endl;
-
-        //assert(BPitsCmdArgs!=nullptr);
-
-     
+       
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
-            //cout << "nesws" << endl;
-            //cout << newSetVals << endl;
  
-            //cout << "oosl  " << name_str << " " << bstr << endl;
- 
-        
             val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
 
     
         if (BPitsCmdArgs!=nullptr) {
-            // cout << "wet  " << name_str << " " << bstr << endl;
          if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
-
-          //cout << "utit  " << name_str << " " << bstr << " isi " << val << endl;
- 
-     
 
             addValToJson(name_str,val,bstr);
             return true;
@@ -106,8 +91,6 @@ class baseParameters
        
         if (defaultVals.contains(name_str)) {
 
-            //cout << "djql  " << name_str << " " << bstr << endl;
- 
             
             val = defaultVals.at(name_str).get<T>();
             addValToJson(name_str,val,bstr);
@@ -211,7 +194,8 @@ class baseParameters
     template<class T>
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
-        if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
+        if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
+        //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
         if (!BPitsJson.at(bstr).contains(name_str)) BPitsJson[bstr][name_str] = json::object();
         BPitsJson[bstr][name_str]["value"] = val;
     }
@@ -372,6 +356,11 @@ class InputSwitcher
   void setParsFromJson(const json & j){construct(j);}
   void addParsToJson(json & j) const;
 
+  void swapVecsIS(vector<vector<int> > & inds_,
+  vector<vector<double> > & vals_){inds.swap(inds_);
+      vals.swap(vals_);}
+
+  private:
   vector<double> timeperiods;
   double time_offset = 0, total_period = 0;
   vector<vector<int> > inds;
