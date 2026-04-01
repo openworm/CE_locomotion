@@ -667,7 +667,6 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_file = hf.rename_file("bodypos.dat")
         else:
