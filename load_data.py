@@ -550,7 +550,9 @@ def reload_single_run(a=None, **kwargs):
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
-    act_data = np.loadtxt(hf.rename_file("act.dat")).T
+    act_file = hf.rename_file("act.dat")
+    print("Loading activity data from: %s" % act_file)
+    act_data = np.loadtxt(act_file).T
     t_data = act_data[0]
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
@@ -579,7 +581,7 @@ def reload_single_run(a=None, **kwargs):
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
         dy = 1
         dx = t_data[1] - t_data[0]
-        #axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
+        # axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[plot_num, 1].imshow(
             data_list,
             aspect="auto",
@@ -592,8 +594,7 @@ def reload_single_run(a=None, **kwargs):
             ],
         )
 
-
-        #axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
+        # axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
         # axs[plot_num, 1].xaxis.set_ticklabels([])
         axs[plot_num, 1].yaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -629,7 +630,13 @@ def reload_single_run(a=None, **kwargs):
 
     ###  Worm body curvature
     if plot_format["do_curv_plot"]:
-        curv_data = np.loadtxt(hf.rename_file("curv.dat")).T
+        if os.path.isfile(hf.rename_file("curv_t.dat")):
+            curv_file = hf.rename_file("curv_t.dat")
+        else:
+            curv_file = hf.rename_file("curv.dat")
+
+        print("Loading curvature data from: %s" % curv_file)
+        curv_data = np.loadtxt(curv_file).T
         t_data = curv_data[0]
         data_seg = (t_data >= t_start) & (t_data < t_end)
         curv_data_less_time = curv_data[1:, data_seg]
@@ -660,10 +667,17 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
+
         if a.modelName == "CO" or a.modelName == "W2DCO":
-            body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
+            body_file = hf.rename_file("bodypos.dat")
         else:
-            body_data = np.loadtxt(hf.rename_file("body.dat")).T
+            if os.path.isfile(hf.rename_file("body_mm.dat")):
+                body_file = hf.rename_file("body_mm.dat")
+            else:
+                body_file = hf.rename_file("body.dat")
+
+        print("Loading body position data from: %s" % body_file)
+        body_data = np.loadtxt(body_file).T
 
         # tmax = 1520
         tmax = body_data.shape[1]
@@ -721,10 +735,10 @@ def reload_single_run(a=None, **kwargs):
             ys = []
 
             for i in range(point_start, point_end):
-                x = body_data[i * 3 + 1][t]*10
+                x = body_data[i * 3 + 1][t] * 10
                 # xs.append(x * 1000)
                 xs.append(x)
-                y = body_data[i * 3 + 2][t]*10
+                y = body_data[i * 3 + 2][t] * 10
                 # ys.append(y * 1000)
                 ys.append(y)
                 # y1 = body_data[i * 3 + 2][t]

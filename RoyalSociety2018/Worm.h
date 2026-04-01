@@ -60,9 +60,11 @@ public:
     void Step(double StepSize, double output); 
     
     void DumpBodyState(ofstream &ofs, int skips);
+    void DumpBodyStateMM(ofstream &ofs, int skips);
     void DumpActState(ofstream &ofs, int skips);
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
+    void DumpCurvature(ofstream &ofs, int skips);
     
     double CoMx();
     double CoMy();
