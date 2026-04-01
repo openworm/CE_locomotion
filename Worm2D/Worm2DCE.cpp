@@ -516,6 +516,8 @@ j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 
 void WormCE::setParsFromPheno(const TVector<double> &pheno)
 {
+  
+  hasVNCNMJ = false;
 
  setCurrentPheno(pheno);
 
@@ -907,7 +909,6 @@ void Worm2DCE::setMuscleInputOrig()
 {
 
   
-
   
   int mi;
   int mt = 0;

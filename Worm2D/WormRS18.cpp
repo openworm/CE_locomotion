@@ -182,6 +182,7 @@ void Worm18::SetParameters(const TVector<double> & v)
 
 void Worm18::setParsFromPheno(const TVector<double> &v)
 {
+    hasVNC18 = false;
 
 //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
 
