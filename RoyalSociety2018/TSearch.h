@@ -116,6 +116,8 @@ class TSearch {
 			{SearchTerminationFunction = TerminationFn;};
 		void SetSearchResultsDisplayFunction(void (*DisplayFn)(TSearch &s))
 			{SearchResultsDisplayFunction = DisplayFn;};
+		void SetAllIndividualsDisplayFunction(void (*DisplayFn)(TSearch &s))
+			{AllIndividualsDisplayFunction = DisplayFn;};
 		// Status Accessors
 		int Generation(void) {return Gen;};
 		TVector<double> &Individual(int i) {return Population(i);};
@@ -198,6 +200,7 @@ class TSearch {
 		void (*PopulationStatisticsDisplayFunction)(int Generation,double BestPerf,double AvgPerf,double PerfVar);
 		int (*SearchTerminationFunction)(int Generation,double BestPerf,double AvgPerf,double PerfVar);
 		void (*SearchResultsDisplayFunction)(TSearch &s);
+		void (*AllIndividualsDisplayFunction)(TSearch &s);
 };
 
 

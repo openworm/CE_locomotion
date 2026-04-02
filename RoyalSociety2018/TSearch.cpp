@@ -61,6 +61,7 @@ TSearch::TSearch(int VSize, double (*EvalFn)(TVector<double> &, RandomState &))
 	SearchTerminationFunction = NULL;
 	PopulationStatisticsDisplayFunction = NULL;
 	SearchResultsDisplayFunction = NULL;
+	AllIndividualsDisplayFunction = NULL;
 	// Initialize the vector size
 	SetVectorSize(VSize);
 	// Set up search mode defaults
@@ -326,6 +327,8 @@ void TSearch::DoSearch(int ResumeFlag)
 	// Update and display statistics of the initial population
 	UpdatePopulationStatistics();
 	DisplayPopulationStatistics();
+	if (AllIndividualsDisplayFunction != NULL)
+		(*AllIndividualsDisplayFunction)(*this);
 	// If the best changed and there is a BestActionFunction, invoke it
 	if (UpdateBestFlag && BestActionFunction != NULL)
 		(*BestActionFunction)(Gen,bestVector);
@@ -337,6 +340,8 @@ void TSearch::DoSearch(int ResumeFlag)
 		ReproducePopulation();
 		UpdatePopulationStatistics();
 		DisplayPopulationStatistics();
+		if (AllIndividualsDisplayFunction != NULL)
+			(*AllIndividualsDisplayFunction)(*this);
 		// If the best changed and there is a BestActionFunction, invoke it
 		if (UpdateBestFlag && BestActionFunction != NULL)
 			(*BestActionFunction)(Gen,bestVector);

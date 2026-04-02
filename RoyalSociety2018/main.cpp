@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <iomanip>  // cout precision
+#include <algorithm>
+#include <vector>
 #include <math.h>
 #include "TSearch.h"
 #include "VectorMatrix.h"
@@ -272,9 +274,39 @@ if (supArgs1.speedoutput){
 // ------------------------------------
 // Display functions
 // ------------------------------------
+ofstream genomesfile;
+
 void EvolutionaryRunDisplay(int Generation, double BestPerf, double AvgPerf, double PerfVar)
 {
     cout << Generation << " " << BestPerf << " " << AvgPerf << " " << PerfVar << endl;
+}
+
+void AllIndividualsDisplay(TSearch &s)
+{
+    int psize = s.PopulationSize();
+
+    // Build index sorted by performance descending
+    vector<int> idx(psize);
+    for (int i = 0; i < psize; i++) idx[i] = i + 1;
+    sort(idx.begin(), idx.end(), [&s](int a, int b){
+        return s.Performance(a) > s.Performance(b);
+    });
+
+    genomesfile << "Generation " << s.Generation() << "/" << s.MaxGenerations() << "\n";
+    for (int rank = 0; rank < psize; rank++)
+    {
+        int i = idx[rank];
+        genomesfile << (rank + 1) << ") Fitness " << s.Performance(i) << "; ";
+        TVector<double> &ind = s.Individual(i);
+        for (int j = 1; j <= ind.Size(); j++)
+        {
+            if (j > 1) genomesfile << " ";
+            genomesfile << ind[j];
+        }
+        genomesfile << "\n";
+    }
+    genomesfile << "\n";
+    genomesfile.flush();
 }
 
 void ResultsDisplay(TSearch &s)
@@ -345,8 +377,10 @@ int main (int argc, const char* argv[])
 
     // configure the search
     s.SetRandomSeed(supArgs1.randomseed);
+    genomesfile.open(supArgs1.rename_file("genomes.dat"));
     s.SetPopulationStatisticsDisplayFunction(EvolutionaryRunDisplay);
     s.SetSearchResultsDisplayFunction(ResultsDisplay);
+    s.SetAllIndividualsDisplayFunction(AllIndividualsDisplay);
     s.SetSelectionMode(RANK_BASED);             //{FITNESS_PROPORTIONATE,RANK_BASED}
     s.SetReproductionMode(GENETIC_ALGORITHM);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
     s.SetPopulationSize(supArgs1.pop_size); //96
@@ -404,8 +438,7 @@ if (supArgs1.evo_seed)
     }
 //#endif
 
-
-   
+    genomesfile.close();
 
 }
     
