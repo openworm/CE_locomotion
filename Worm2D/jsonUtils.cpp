@@ -407,7 +407,7 @@ void appendBodyToJson(json & j, WormBody& b)
 void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight)
 {
 
-  for (int i=0;i<w.size();i++){ind.push_back(w[i].from);  weight.push_back(w[i].weight);}
+  for (int i=0;i<w.size();i++){ind.push_back(w[i].from); weight.push_back(w[i].weight);}
   
 }
 
@@ -519,7 +519,7 @@ void appendNSToJson(json & j, NervousSystem& c)
   appendElecNSToJson(j,c);   
 }
 
-void appendAllNSJson( json & j, CTRNN & n)
+/* void appendAllNSJson( json & j, CTRNN & n)
 {
 
 {Params<vector<double> > parvec = getNervousSysParamsDoubleNH(dynamic_cast<NervousSystem&>(n));
@@ -534,7 +534,7 @@ appendToJson<vector<int> >(j,parvec);}
 appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 
 }
-
+ */
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 {
 
