@@ -895,11 +895,15 @@ def run(a=None, **kwargs):
 
     print(cmd)
     # sys.exit(1)
+    # env = os.environ.copy()
+    # env["XKB_CONFIG_ROOT"] = "/usr/share/X11/xkb"
 
+    # subprocess.run(["./main_osc"], env=env)
     # Run the C++
     if True:
         # result = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         # result = subprocess.run(cmd, capture_output=True, text=True, cwd = home_dir)
+        # result = subprocess.run(cmd, capture_output=True, text=True, env=env)
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.stdout:
             print(result.stdout)

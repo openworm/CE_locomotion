@@ -579,7 +579,7 @@ def reload_single_run(a=None, **kwargs):
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
         dy = 1
         dx = t_data[1] - t_data[0]
-        #axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
+        # axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[plot_num, 1].imshow(
             data_list,
             aspect="auto",
@@ -592,8 +592,7 @@ def reload_single_run(a=None, **kwargs):
             ],
         )
 
-
-        #axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
+        # axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
         # axs[plot_num, 1].xaxis.set_ticklabels([])
         axs[plot_num, 1].yaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -721,10 +720,10 @@ def reload_single_run(a=None, **kwargs):
             ys = []
 
             for i in range(point_start, point_end):
-                x = body_data[i * 3 + 1][t]*10
+                x = body_data[i * 3 + 1][t] * 10
                 # xs.append(x * 1000)
                 xs.append(x)
-                y = body_data[i * 3 + 2][t]*10
+                y = body_data[i * 3 + 2][t] * 10
                 # ys.append(y * 1000)
                 ys.append(y)
                 # y1 = body_data[i * 3 + 2][t]
