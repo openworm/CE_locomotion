@@ -10,10 +10,10 @@ experiments:
       spike times:
         file: 
           path: testruns/exW2DSRE/act.dat
-          columns: [0,3]
+          columns: [0, 2]
           scaling: [1, 1]
         spike detection: 
           method: threshold
-          threshold: 2
+          threshold: 0
         tolerance: 0
   

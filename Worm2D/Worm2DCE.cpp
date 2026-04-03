@@ -821,7 +821,7 @@ vector<intPair>  Worm2DCE::makeUnitToMusc()
 
     vector<intPair> unitToMusc;
     int unit = 1;
-    for (int to_musc = 1; to_musc < 3; to_musc++) 
+    for (int to_musc = 1; to_musc <= 3; to_musc++) 
     unitToMusc.push_back({unit,to_musc});
     int to_musc = 4;
     unit = 1;
@@ -909,7 +909,7 @@ void Worm2DCE::setMuscleInputOrig()
 {
 
   
-  
+
   int mi;
   int mt = 0;
 

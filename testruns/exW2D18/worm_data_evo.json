@@ -1078,12 +1078,7 @@
             }
         ]
     },
-    "Funcable": {
-        "1": {
-            "doInverse": false,
-            "fact": 1
-        }
-    },
+    "Funcable": {},
     "InputNS": {
         "weights": {
             "message": "Weights of driving inputs to NS from another NS",

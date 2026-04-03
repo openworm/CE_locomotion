@@ -1367,8 +1367,11 @@ const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
     
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
-for (int i=1; i<=par1.N_muscles; i++)
+for (int i=1; i<=par1.N_muscles; i++){
 NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_V)/par1.N_muscles));
+//cout << "NMJgain " << NMJ_Gain(i) << endl;
+}
+//assert(0);
 vector<int> units;
 vector<double> weights;
 splitWeightEntry(ventinds,units,weights);
@@ -1379,8 +1382,8 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscV);
 vector<toFromWeight> Worm2D::makeMuscleConnVNCD()
 {
 
-  const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>(); //doubVars.getVal("NMJ gain map D");
-    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
+const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>(); //doubVars.getVal("NMJ gain map D");
+const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)

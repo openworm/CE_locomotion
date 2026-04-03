@@ -102,7 +102,7 @@ if [ "$quick_test" == 0 ]; then
         python testW2D18.py
     fi;
 
-    omv test -V .test.W2D18gen.omt
+    omv test -V .test.W2D18gen.omt 
     omv test -V .test.W2DSR18.omt #should be same as W2D18gen
     omv test -V .test.W2DSR18E.omt
     omv test -V .test.W2D18genE.omt
