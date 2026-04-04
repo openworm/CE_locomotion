@@ -66,7 +66,8 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2D21
     rm -rf testruns/exW2D21E
     rm -rf testruns/exW2DSRE21
-    rm -r testruns/exW2DCEa
+    rm -rf testruns/exW2DCEa
+    rm -rf testruns/exW2DCEanm
 
     rm -rf exampleRunCEW2D exampleRunCEW2D_nml
     
@@ -110,6 +111,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.example.omt
     omv test -V .test.CEW2D.omt
     omv test -V .test.W2DCEa.omt
+    omv test -V .test.W2DCEanm.omt
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DCEs.omt
     omv test -V .test.W2DSR.omt
