@@ -311,14 +311,13 @@ int main (int argc, const char* argv[])
     double simtransient = cmd->getArgValDoub("-st",10);   
     
     //WormFR* const w = dynamic_cast<WormFR*>(w2);
-
+    int inputInd;
+    w2->getValCJ("inputInd", inputInd, "input_switcher");
     WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
     if (dotest)
     {
     
     if (true){
-    int inputInd;
-    w2->getValCJ("inputInd", inputInd, "input_switcher");
     if (inputInd>=0) w2->setInputOnce(inputInd);
     if (w2dsre) w2dsre->applyFuncablesExt();
     //cout << "inputInd " << inputInd << endl;
@@ -372,9 +371,11 @@ int main (int argc, const char* argv[])
         else ew->callEfcond();
 
         }
-    
+    if (inputInd<0){
     if (doReverse == 0) w2->setInputOnce(0); else w2->setInputOnce(1);
-        
+    }
+    else w2->setInputOnce(inputInd);
+    
     w2->addParsToJson(j);
 
     s1.runSimulation(*w2);
