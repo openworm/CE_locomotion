@@ -144,13 +144,35 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 /////////////////////////////
 
 
+
+baseConsts Worm2Dbase::makeBaseConsts()
+{
+
+    baseConsts b1;
+    getValCJWorm<bool>("debug",b1.debug);
+
+    return b1;
+
+}
+
+
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_),itsEf(*this){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_),
+itsEf(*this),baseconsts(makeBaseConsts())
+{
+
+    
+}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),itsEf(*this){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),
+itsEf(*this),baseconsts(makeBaseConsts())
+{
+
+   
+}
 
 
 //////////////////////

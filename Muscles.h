@@ -37,6 +37,14 @@ public:
     cout << endl;
     
     }
+
+    void dorsalMuscInputOut(){
+        cout << "dmusc"; 
+    for (int i=1;i<=Nmuscles;i++) cout << " " << V_input[i][1];
+    cout << endl;
+    
+    }
+
     TMatrix<double> V_muscle;
     TMatrix<double> V_input;
 

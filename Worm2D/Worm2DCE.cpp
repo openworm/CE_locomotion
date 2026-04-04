@@ -766,7 +766,7 @@ vector<int> dorsalNeurons({DA,DB,DD});
 vector<double> dorsalNMJ({NMJ_DA,NMJ_DB,NMJ_DD});
 
 
-return makeMuscleConn(dorsalNeurons, dorsalNMJ);
+//return makeMuscleConn(dorsalNeurons, dorsalNMJ);
 
 hasVNCNMJ = true;
 //doubVars.setVal("NMJ gain map D", 0);
@@ -794,7 +794,7 @@ vector<int> ventralNeurons({VD,VA,VB});
 vector<double> ventralNMJ({NMJ_VD,NMJ_VA,NMJ_VB});
 
 
-return makeMuscleConn(ventralNeurons, ventralNMJ);
+//return makeMuscleConn(ventralNeurons, ventralNMJ);
 
 hasVNCNMJ = true;
 namedVars["NMJ gain map V"] = 0;
@@ -936,39 +936,15 @@ vector<weightentry> Worm2DCE::v12(int i)
 
 }
 
-void Worm2DCE::setMuscleInputOrig2()
+void Worm2DCE::setMuscleInputOrigB()
 {
 
-  //vector<weightentry> dors, vent;
-  //toFromWeight x;
-
-  //weightentry w;
-  //w.from = 0;
-  //w.weight = 0.1;
+  
 
   int mi;
   int mt = 0;
 vector<toFromWeight> vent1, dors1;
 
-/* TVector<double> dorsalInput(1, par1.N_units);
-TVector<double> ventralInput(1, par1.N_units);
-
-
-for (int i=1; i<=par1.N_units; i++){
-    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) 
-    + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
-    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) 
-    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
-  } */
-  // Muscles 1-3
-
-  
- /*  vector<weightentry> vent = v12(1);
-  double vtot = 0;
-  for (int i=0;i<vent.size();i++) {weightentry & tfw = vent[i]; vtot+= tfw.weight*n_ptr->NeuronOutput(tfw.from);}
-  vector<weightentry> vent2 = v12(2);
-  double vtot2 = 0;
-  for (int i=0;i<vent2.size();i++) {weightentry & tfw = vent2[i]; vtot2+= tfw.weight*n_ptr->NeuronOutput(tfw.from);} */
 
   for (int mi=1; mi<=3; mi++){
     
@@ -1049,12 +1025,10 @@ for (int i=1; i<=par1.N_units; i++){
     
     for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
     
-
-    
   }
 
     
-    {vector<double> vtot(par1.N_muscles, 0.0);
+  {vector<double> vtot(par1.N_muscles, 0.0);
     //for (int i=0;i<vtot.size();i++) vtot[i]=0;
 
 
@@ -1065,26 +1039,29 @@ for (int i=1; i<=par1.N_units; i++){
     }
     for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);}
 
+    if (false){
+    std::cout << std::fixed << std::showpoint;
+    std::cout << std::setprecision(15);
 
- m.ventralMuscInputOut();
-assert(0);
+    m.ventralMuscInputOut();
+    m.dorsalMuscInputOut();
+    assert(0);
+
+    }
+
 
   // Update Muscle activation
+  
   m.EulerStep(settedStepSize);
 
 
 }
 
 
-void Worm2DCE::setMuscleInputOrig()
+void Worm2DCE::setMuscleInputOrigA()
 {
 
-  //vector<weightentry> dors, vent;
-  //toFromWeight x;
-
-  //weightentry w;
-  //w.from = 0;
-  //w.weight = 0.1;
+  
 
   int mi;
   int mt = 0;
@@ -1102,16 +1079,9 @@ for (int i=1; i<=par1.N_units; i++){
   // Muscles 1-3
 
   
- /*  vector<weightentry> vent = v12(1);
-  double vtot = 0;
-  for (int i=0;i<vent.size();i++) {weightentry & tfw = vent[i]; vtot+= tfw.weight*n_ptr->NeuronOutput(tfw.from);}
-  vector<weightentry> vent2 = v12(2);
-  double vtot2 = 0;
-  for (int i=0;i<vent2.size();i++) {weightentry & tfw = vent2[i]; vtot2+= tfw.weight*n_ptr->NeuronOutput(tfw.from);} */
 
   for (int mi=1; mi<=3; mi++){
-    
-    //m.SetVentralMuscleInput(mi, vtot);
+   
     m.SetVentralMuscleInput(mi, ventralInput(1));
     m.SetDorsalMuscleInput(mi, dorsalInput(1));
   }
@@ -1145,9 +1115,15 @@ for (int i=1; i<=par1.N_units; i++){
     m.SetVentralMuscleInput(mi, ventralInput(10));
     m.SetDorsalMuscleInput(mi, dorsalInput(10));
   }
-  
-  //m.ventralMuscInputOut();
-  //assert(0);
+    
+  if (false){
+  std::cout << std::fixed << std::showpoint;
+  std::cout << std::setprecision(15);
+
+  m.ventralMuscInputOut();
+  m.dorsalMuscInputOut();
+  assert(0);
+  }
 
   // Update Muscle activation
   m.EulerStep(settedStepSize);

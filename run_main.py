@@ -707,6 +707,7 @@ def run(a=None, **kwargs):
     sim_extra_parameters["prioritizeCmd"] = 0
     sim_extra_parameters["initNSFromJson"] = True
     sim_extra_parameters["inputInd"] = -1
+    sim_extra_parameters["debug"] = False;
 
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False

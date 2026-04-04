@@ -193,6 +193,7 @@ class baseParameters
         defaultVals_["doLegacy"] = true;
         defaultVals_["initNSFromJson"] = true;
         defaultVals_["inputInd"] = -1;
+        defaultVals_["debug"] = false;
 
        return defaultVals_;
     }
@@ -419,7 +420,11 @@ class Worm2Dbody : virtual public DataWriter
 
 
 
+struct baseConsts
+{
+bool debug;
 
+};
 
 class Worm2Dbase : public baseParameters, virtual public DataWriter, public InputSwitcher
 {
@@ -564,8 +569,8 @@ virtual void makeNSOutputConn(){return;}
 json namedVars;
 static wormIzqParams getIzqPars(const json & j);
 
-
-
+baseConsts makeBaseConsts();
+const baseConsts baseconsts;
 
 
 };
