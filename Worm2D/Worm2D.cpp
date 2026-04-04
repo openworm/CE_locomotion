@@ -263,7 +263,7 @@ void Worm2Dm::InitializeState(RandomState &rs)
 void Worm2D::setUp()
 {
     m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
-    
+    m.InitializeMuscleState();
   
     //InitializeState(rs);
 }

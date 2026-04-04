@@ -139,7 +139,7 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     vector<intPair> makeUnitToMusc();
     
 
-    double NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD; //EEE
+    double NMJ_DA= 0, NMJ_DB= 0, NMJ_VD= 0, NMJ_VB= 0, NMJ_VA= 0, NMJ_DD= 0; //EEE
     double AVA_output = 0, AVB_output = 0;
     double AVA_act = 0, AVA_inact = 0, AVB_act = 0, AVB_inact = 0;
 
@@ -168,6 +168,11 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     void setExternalInputOrig();
     void setMuscleInputOrig();
     void setBodyInputOrig();
+    void setMuscleInputOrig2();
+    void d11(vector<toFromWeight> & vent, int to_musc, int i);
+    //vector<toFromWeight> v11(int to_musc, int i);
+    vector<weightentry> v12(int i);
+    void v11(vector<toFromWeight> & vent, int to_musc, int i);
 
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";

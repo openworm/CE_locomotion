@@ -136,7 +136,7 @@ class baseParameters
        
         T val;
         getValCJ<T>(name_str,val,"Worm");
-        cout <<  name_str << " " << val << endl;
+        //cout <<  name_str << " " << val << endl;
 
         return val;
     }
