@@ -93,9 +93,9 @@ if [ "$quick_test" == 0 ]; then
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
     
-        omv test -V .test.2018.omt
-        omv test -V .test.2018W2D.omt
-        omv test -V .test.W2D18.omt
+        omv test -V .test.2018.omt  #Izq original .test.2018.mep
+        omv test -V .test.2018W2D.omt #main.cpp .test.2018.mep
+        omv test -V .test.W2D18.omt #main_osc.cpp.test.2018.mep
 
     else
         python test2018.py
@@ -103,15 +103,15 @@ if [ "$quick_test" == 0 ]; then
         python testW2D18.py
     fi;
 
-    omv test -V .test.W2D18gen.omt 
-    omv test -V .test.W2DSR18.omt #should be same as W2D18gen
-    omv test -V .test.W2DSR18E.omt
+    omv test -V .test.W2D18gen.omt #origMusc=False .test.2018gen.mep
+    omv test -V .test.W2DSR18.omt #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
+    omv test -V .test.W2DSR18E.omt #inputFolderName="testruns/exW2D18gen",
     omv test -V .test.W2D18genE.omt
 
-    omv test -V .test.example.omt
-    omv test -V .test.CEW2D.omt
-    omv test -V .test.W2DCEa.omt
-    omv test -V .test.W2DCEanm.omt
+    omv test -V .test.example.omt #Izq original test.example.mep
+    omv test -V .test.CEW2D.omt #main.cpp test.example.mep
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+    omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
     omv test -V .test.W2DCE.omt
     omv test -V .test.W2DCEs.omt
     omv test -V .test.W2DSR.omt
