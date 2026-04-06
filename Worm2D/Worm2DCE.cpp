@@ -1127,7 +1127,7 @@ for (int i=1; i<=par1.N_units; i++){
 }
 
 
-void Worm2DCE::setMuscleInputOrigC()
+/* void Worm2DCE::setMuscleInputOrigC()
 {
 
   
@@ -1270,7 +1270,7 @@ for (int i=1; i<=par1.N_units; i++){
 
 
 }
-
+ */
 
 void Worm2DCE::setBodyInputOrig(){
 

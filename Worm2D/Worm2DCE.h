@@ -167,21 +167,19 @@ class Worm2DCE: public Worm2DSR, public WormFR{
         
     void setMuscleInputOrigA();
     void setMuscleInputOrigB();
-    void setMuscleInputOrigC();
-    void setMuscleInputOrigD();
+    //void setMuscleInputOrigC();
+    //void setMuscleInputOrigD();
 
     void setExternalInputOrig();
-    void setMuscleInputOrig() {if (baseconsts.debug) setMuscleInputOrigB(); else setMuscleInputOrigD();
+    void setMuscleInputOrig() {if (baseconsts.debug) setMuscleInputOrigB(); else setMuscleInputOrigA();
     
-        if (false){
+   /*  if (false){
     std::cout << std::fixed << std::showpoint;
     std::cout << std::setprecision(15);
 
     m.ventralMuscInputOut();
-    //m.dorsalMuscInputOut();
-    //assert(0);
-
-    }
+   
+    } */
     
     }
     void setBodyInputOrig();
