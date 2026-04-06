@@ -906,27 +906,36 @@ vector<toFromWeight> Worm2DCE::makeMuscleConn(const vector<int> & neurons, const
 }
 
 
-void Worm2DCE::v11(vector<toFromWeight> & vent, int to_musc, int i)
+void Worm2DCE::v11(vector<toFromWeightLD> & vent, int to_musc, int i)
 {
     //vector<toFromWeight> vent;
-    vent.push_back({{nn(VD,i),NMJ_VD}, to_musc});
-    vent.push_back({{nn(VA,i),NMJ_VA}, to_musc});
-    vent.push_back({{nn(VB,i),NMJ_VB}, to_musc});
+
+    {toFromWeightLD w(to_musc, nn(VA,i), NMJ_VA); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(VB,i), NMJ_VB); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(VD,i), NMJ_VD); vent.push_back(w);}
+
+    //vent.push_back({{nn(VD,i),NMJ_VD}, to_musc});
+    //vent.push_back({{nn(VA,i),NMJ_VA}, to_musc});
+    //vent.push_back({{nn(VB,i),NMJ_VB}, to_musc});
     //return vent;
 
 }
 
-void Worm2DCE::d11(vector<toFromWeight> & vent, int to_musc, int i)
+void Worm2DCE::d11(vector<toFromWeightLD> & vent, int to_musc, int i)
 {
     //vector<toFromWeight> vent;
-    vent.push_back({{nn(DA,i),NMJ_DA}, to_musc});
-    vent.push_back({{nn(DB,i),NMJ_DB}, to_musc});
-    vent.push_back({{nn(DD,i),NMJ_DD}, to_musc});
+
+    {toFromWeightLD w(to_musc, nn(DA,i), NMJ_DA); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(DB,i), NMJ_DB); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(DD,i), NMJ_DD); vent.push_back(w);}
+
+    //vent.push_back({{nn(DB,i),NMJ_DB}, to_musc});
+    //vent.push_back({{nn(DD,i),NMJ_DD}, to_musc});
     //return vent;
 
 }
 
-vector<weightentry> Worm2DCE::v12(int i)
+/* vector<weightentry> Worm2DCE::v12(int i)
 {
     vector<weightentry> vent;
     vent.push_back({nn(VD,i),NMJ_VD});
@@ -934,7 +943,7 @@ vector<weightentry> Worm2DCE::v12(int i)
     vent.push_back({nn(VB,i),NMJ_VB});
     return vent;
 
-}
+} */
 
 void Worm2DCE::setMuscleInputOrigB()
 {
@@ -943,7 +952,7 @@ void Worm2DCE::setMuscleInputOrigB()
 
   int mi;
   int mt = 0;
-vector<toFromWeight> vent1, dors1;
+vector<toFromWeightLD> vent1, dors1;
 
 
   for (int mi=1; mi<=3; mi++){
@@ -1012,15 +1021,16 @@ vector<toFromWeight> vent1, dors1;
     //m.SetDorsalMuscleInput(mi, dorsalInput(10));
   }
 
+  assert(par1.N_muscles==24);
 
-  {vector<double> vtot(par1.N_muscles, 0.0);
+  {vector<long double> vtot(par1.N_muscles, 0);
 
     //for (int i=0;i<vtot.size();i++) vtot[i]=0;
 
     for (int i=0;i<vent1.size();i++)
     {
-        const toFromWeight & tfw = vent1[i];
-        vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
+        const toFromWeightLD & tfw = vent1[i];
+        vtot[tfw.to-1] += tfw.weight*n_ptr->NeuronOutput(tfw.from);
     }
     
     for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
@@ -1028,27 +1038,20 @@ vector<toFromWeight> vent1, dors1;
   }
 
     
-  {vector<double> vtot(par1.N_muscles, 0.0);
+  {vector<long double> vtot(par1.N_muscles, 0);
     //for (int i=0;i<vtot.size();i++) vtot[i]=0;
 
 
     for (int i=0;i<dors1.size();i++)
     {
-        const toFromWeight & tfw = dors1[i];
-        vtot[tfw.to-1] += tfw.w.weight*n_ptr->NeuronOutput(tfw.w.from);
+        const toFromWeightLD & tfw = dors1[i];
+        vtot[tfw.to-1] += tfw.weight*n_ptr->NeuronOutput(tfw.from);
     }
-    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);}
+    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);
+  
+  }
 
-    if (false){
-    std::cout << std::fixed << std::showpoint;
-    std::cout << std::setprecision(15);
-
-    m.ventralMuscInputOut();
-    m.dorsalMuscInputOut();
-    assert(0);
-
-    }
-
+    
 
   // Update Muscle activation
   
@@ -1115,15 +1118,152 @@ for (int i=1; i<=par1.N_units; i++){
     m.SetVentralMuscleInput(mi, ventralInput(10));
     m.SetDorsalMuscleInput(mi, dorsalInput(10));
   }
-    
-  if (false){
-  std::cout << std::fixed << std::showpoint;
-  std::cout << std::setprecision(15);
+  
 
-  m.ventralMuscInputOut();
-  m.dorsalMuscInputOut();
-  assert(0);
+  // Update Muscle activation
+  m.EulerStep(settedStepSize);
+
+
+}
+
+
+void Worm2DCE::setMuscleInputOrigC()
+{
+
+  
+
+  int mi;
+  int mt = 0;
+
+vector<double> dorsalInput(par1.N_units, 0);
+vector<double> ventralInput(par1.N_units, 0);
+
+
+for (int i=1; i<=par1.N_units; i++){
+    dorsalInput[i-1]  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) 
+    + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
+    ventralInput[i-1] = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
   }
+  // Muscles 1-3
+
+  
+
+  for (int mi=1; mi<=3; mi++){
+  
+    m.SetVentralMuscleInput(mi, ventralInput[0]);
+    m.SetDorsalMuscleInput(mi, dorsalInput[0]);
+  }
+
+  mi = 4; // 4th muscle
+
+  m.SetVentralMuscleInput(mi, (ventralInput[0]+ventralInput[1]));
+  m.SetDorsalMuscleInput(mi, (dorsalInput[0]+dorsalInput[1]));
+
+  mi = 5; // 5th muscle
+  m.SetVentralMuscleInput(mi, ventralInput[1]);
+  m.SetDorsalMuscleInput(mi, dorsalInput[1]);
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    m.SetVentralMuscleInput(mi, (ventralInput[mt-1]+ventralInput[mt]));
+    m.SetDorsalMuscleInput(mi, (dorsalInput[mt-1]+dorsalInput[mt]));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+  m.SetVentralMuscleInput(mi, ventralInput[8]);
+  m.SetDorsalMuscleInput(mi, dorsalInput[8]);
+
+  mi = 21; // 21st muscle
+  m.SetVentralMuscleInput(mi, (ventralInput[8]+ventralInput[9]));
+  m.SetDorsalMuscleInput(mi, (dorsalInput[8]+dorsalInput[9]));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput[9]);
+    m.SetDorsalMuscleInput(mi, dorsalInput[9]);
+  }
+  
+
+  // Update Muscle activation
+  m.EulerStep(settedStepSize);
+
+
+}
+
+void Worm2DCE::setMuscleInputOrigD()
+{
+
+  
+
+  int mi;
+  int mt = 0;
+
+vector<double> dorsalInput(par1.N_units, 0);
+vector<double> ventralInput(par1.N_units, 0);
+
+
+for (int i=1; i<=par1.N_units; i++){
+    dorsalInput[i-1]  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) 
+    + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
+    ventralInput[i-1] = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+  }
+  // Muscles 1-3
+
+  
+  double v11 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,1)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,1)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,1));
+
+  double v12 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,2)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,2)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,2));
+
+  double v1 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,1)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,1)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,1)) + 
+      NMJ_VD*n_ptr->NeuronOutput(nn(VD,2)) 
+    + NMJ_VA*n_ptr->NeuronOutput(nn(VA,2)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,2));
+
+  
+
+  for (int mi=1; mi<=3; mi++){
+    
+    m.SetVentralMuscleInput(mi, ventralInput[0]);
+    m.SetDorsalMuscleInput(mi, dorsalInput[0]);
+  }
+
+  mi = 4; // 4th muscle
+
+  //m.SetVentralMuscleInput(mi, (ventralInput[0]+ventralInput[1]));
+  m.SetVentralMuscleInput(mi, v11 + v12);
+  //m.SetVentralMuscleInput(mi, v1);
+  m.SetDorsalMuscleInput(mi, (dorsalInput[0]+dorsalInput[1]));
+
+  mi = 5; // 5th muscle
+  m.SetVentralMuscleInput(mi, ventralInput[1]);
+  m.SetDorsalMuscleInput(mi, dorsalInput[1]);
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    m.SetVentralMuscleInput(mi, (ventralInput[mt-1]+ventralInput[mt]));
+    m.SetDorsalMuscleInput(mi, (dorsalInput[mt-1]+dorsalInput[mt]));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+  m.SetVentralMuscleInput(mi, ventralInput[8]);
+  m.SetDorsalMuscleInput(mi, dorsalInput[8]);
+
+  mi = 21; // 21st muscle
+  m.SetVentralMuscleInput(mi, (ventralInput[8]+ventralInput[9]));
+  m.SetDorsalMuscleInput(mi, (dorsalInput[8]+dorsalInput[9]));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput[9]);
+    m.SetDorsalMuscleInput(mi, dorsalInput[9]);
+  }
+  
 
   // Update Muscle activation
   m.EulerStep(settedStepSize);

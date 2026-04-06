@@ -167,16 +167,18 @@ class Worm2DCE: public Worm2DSR, public WormFR{
         
     void setMuscleInputOrigA();
     void setMuscleInputOrigB();
+    void setMuscleInputOrigC();
+    void setMuscleInputOrigD();
 
     void setExternalInputOrig();
-    void setMuscleInputOrig() {if (baseconsts.debug) setMuscleInputOrigB(); else setMuscleInputOrigA();
+    void setMuscleInputOrig() {if (baseconsts.debug) setMuscleInputOrigB(); else setMuscleInputOrigD();
     
         if (false){
     std::cout << std::fixed << std::showpoint;
     std::cout << std::setprecision(15);
 
     m.ventralMuscInputOut();
-    m.dorsalMuscInputOut();
+    //m.dorsalMuscInputOut();
     //assert(0);
 
     }
@@ -184,10 +186,10 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     }
     void setBodyInputOrig();
     //void setMuscleInputOrig2();
-    void d11(vector<toFromWeight> & vent, int to_musc, int i);
+    void d11(vector<toFromWeightLD> & vent, int to_musc, int i);
     //vector<toFromWeight> v11(int to_musc, int i);
-    vector<weightentry> v12(int i);
-    void v11(vector<toFromWeight> & vent, int to_musc, int i);
+    //vector<weightentry> v12(int i);
+    void v11(vector<toFromWeightLD> & vent, int to_musc, int i);
 
     //W2DCEpars & W2DCEpars1;
     //string sr_type = "None";

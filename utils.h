@@ -183,24 +183,30 @@ bool namedValVec<T>::setVal(const string & name, const T & val)
 
 
 struct toFromWeight{
-    
+
+    toFromWeight(int to_val, int from_val, double weight){w.weight=weight;w.from=from_val;to=to_val;}
     toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(const toFromWeight & tfw){w.weight=tfw.w.weight;w.from=tfw.w.from;to=tfw.to;}
     toFromWeight(){}
     weightentry w;
     int to;
 };
 
+struct toFromWeightLD{
+
+    toFromWeightLD(int to_val, int from_val, long double weight_){weight=weight_;from=from_val;to=to_val;}
+    toFromWeightLD(const toFromWeightLD & tfw){weight=tfw.weight;from=tfw.from;to=tfw.to;}
+    
+    //toFromWeight(){}
+
+    long double weight;
+    int to, from;
+};
+
+
 double angle_diff(double a, double b);
 
-/* bool checkVal(const double & val, const double & checkval)
-{
 
-    return (val<(checkval + 0.00001) && val>(checkval - 0.00001));
-
-}
-
-
- */
 
 
  bool check123456(const double & val, const double & val2);

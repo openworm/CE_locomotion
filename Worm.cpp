@@ -158,14 +158,278 @@ void Worm::InitializeState(RandomState &rs)
   m.InitializeMuscleState();
 }
 
-
-void Worm::Step(double StepSize, double output)
+void Worm::updateMuscOrig(double StepSize)
 {
   int mi;
   int mt = 0;
-  double ds, vs;
   TVector<double> dorsalInput(1, N_units);
   TVector<double> ventralInput(1, N_units);
+
+  for (int i=1; i<=N_units; i++){
+    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
+    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+  }
+
+  // Muscles 1-3
+  for (int mi=1; mi<=3; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(1));
+    m.SetDorsalMuscleInput(mi, dorsalInput(1));
+  }
+
+  mi = 4; // 4th muscle
+  m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
+  m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
+
+  mi = 5; // 5th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(2));
+  m.SetDorsalMuscleInput(mi, dorsalInput(2));
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
+    m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(9));
+  m.SetDorsalMuscleInput(mi, dorsalInput(9));
+
+  mi = 21; // 21st muscle
+  m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
+  m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(10));
+    m.SetDorsalMuscleInput(mi, dorsalInput(10));
+  }
+
+  // Update Muscle activation
+  m.EulerStep(StepSize);
+
+}
+
+void Worm::v11(vector<toFromWeightLD> & vent, int to_musc, int i)
+{
+   
+
+    {toFromWeightLD w(to_musc, nn(VA,i), NMJ_VA); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(VB,i), NMJ_VB); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(VD,i), NMJ_VD); vent.push_back(w);}
+
+   
+}
+
+void Worm::d11(vector<toFromWeightLD> & vent, int to_musc, int i)
+{
+   
+
+    {toFromWeightLD w(to_musc, nn(DA,i), NMJ_DA); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(DB,i), NMJ_DB); vent.push_back(w);}
+    {toFromWeightLD w(to_musc, nn(DD,i), NMJ_DD); vent.push_back(w);}
+
+  
+}
+
+
+void Worm::updateMuscB(double StepSize)
+{
+
+  
+
+  int mi;
+  int mt = 0;
+  vector<toFromWeightLD> vent1, dors1;
+
+  for (int mi=1; mi<=3; mi++){
+    
+   
+    //m.SetVentralMuscleInput(mi, ventralInput(1));
+    v11(vent1, mi, 1);
+    //m.SetDorsalMuscleInput(mi, dorsalInput(1));
+    d11(dors1, mi, 1);
+  }
+
+  mi = 4; // 4th muscle
+
+  v11(vent1, mi, 1);
+  d11(dors1, mi, 1);
+  v11(vent1, mi, 2);
+  d11(dors1, mi, 2);
+
+  //m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
+  //m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
+
+  mi = 5; // 5th muscle
+
+  v11(vent1, mi, 2);
+  d11(dors1, mi, 2);
+
+  //m.SetVentralMuscleInput(mi, ventralInput(2));
+  //m.SetDorsalMuscleInput(mi, dorsalInput(2));
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    v11(vent1, mi, mt);
+    d11(dors1, mi, mt);
+    v11(vent1, mi, mt+1);
+    d11(dors1, mi, mt+1);
+
+    //m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
+    //m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+
+  v11(vent1, mi, 9);
+  d11(dors1, mi, 9);
+
+  //m.SetVentralMuscleInput(mi, ventralInput(9));
+  //m.SetDorsalMuscleInput(mi, dorsalInput(9));
+
+  mi = 21; // 21st muscle
+  v11(vent1, mi, 9);
+  d11(dors1, mi, 9);
+  v11(vent1, mi, 10);
+  d11(dors1, mi, 10);
+
+  //m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
+  //m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+
+    v11(vent1, mi, 10);
+    d11(dors1, mi, 10);
+
+    //m.SetVentralMuscleInput(mi, ventralInput(10));
+    //m.SetDorsalMuscleInput(mi, dorsalInput(10));
+  }
+
+
+
+  {vector<long double> vtot(24, 0);
+
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
+    for (int i=0;i<vent1.size();i++)
+    {
+        const toFromWeightLD & tfw = vent1[i];
+        vtot[tfw.to-1] += tfw.weight*n_ptr->NeuronOutput(tfw.from);
+    }
+    
+    for (int i=0;i<vtot.size();i++) m.SetVentralMuscleInput(i+1, vtot[i]);
+    
+  }
+
+    
+  {vector<long double> vtot(24, 0);
+    //for (int i=0;i<vtot.size();i++) vtot[i]=0;
+
+
+    for (int i=0;i<dors1.size();i++)
+    {
+        const toFromWeightLD & tfw = dors1[i];
+        vtot[tfw.to-1] += tfw.weight*n_ptr->NeuronOutput(tfw.from);
+    }
+    for (int i=0;i<vtot.size();i++) m.SetDorsalMuscleInput(i+1, vtot[i]);
+  
+  }
+
+    
+
+  // Update Muscle activation
+  
+  m.EulerStep(StepSize);
+
+
+}
+
+
+void Worm::updateMuscA(double StepSize)
+{
+ // Set input to Muscles
+  //  Each motor neuron innervates four muscles, overlap in muscles 4, 6-19 and 21)
+  // Load motorneuron activity
+  int mi;
+  int mt = 0;
+  TVector<double> dorsalInput(1, N_units);
+  TVector<double> ventralInput(1, N_units);
+
+  for (int i=1; i<=N_units; i++){
+    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
+    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+  }
+
+  int i=1;
+  double v1 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+  i=2;
+  double v2 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
+
+  double v12 = NMJ_VD*n_ptr->NeuronOutput(nn(VD,1)) 
+  + NMJ_VA*n_ptr->NeuronOutput(nn(VA,1)) 
+  + NMJ_VB*n_ptr->NeuronOutput(nn(VB,1))
+  + NMJ_VD*n_ptr->NeuronOutput(nn(VD,2)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,2)) 
+  + NMJ_VB*n_ptr->NeuronOutput(nn(VB,2));
+
+  double d12 = NMJ_DA*n_ptr->NeuronOutput(nn(DA,1)) 
+  + NMJ_DB*n_ptr->NeuronOutput(nn(DB,1)) 
+  + NMJ_DD*n_ptr->NeuronOutput(nn(DD,1))
+  + NMJ_DA*n_ptr->NeuronOutput(nn(DA,2)) 
+  + NMJ_DB*n_ptr->NeuronOutput(nn(DB,2)) 
+  + NMJ_DD*n_ptr->NeuronOutput(nn(DD,2));
+
+  // Muscles 1-3
+  for (int mi=1; mi<=3; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(1));
+    m.SetDorsalMuscleInput(mi, dorsalInput(1));
+  }
+
+  mi = 4; // 4th muscle
+  m.SetVentralMuscleInput(mi, v12);
+  //m.SetVentralMuscleInput(mi, (v1+v2));
+  //m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
+  //m.SetDorsalMuscleInput(mi, d12);
+  m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
+
+  mi = 5; // 5th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(2));
+  m.SetDorsalMuscleInput(mi, dorsalInput(2));
+
+  mt = 2; // Muscles 6-19
+  for (int mi=6; mi<=19; mi++){
+    m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
+    m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
+    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
+  }
+
+  mi = 20; // 20th muscle
+  m.SetVentralMuscleInput(mi, ventralInput(9));
+  m.SetDorsalMuscleInput(mi, dorsalInput(9));
+
+  mi = 21; // 21st muscle
+  m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
+  m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
+
+  // Muscles 22-24
+  for (int mi=22; mi<=24; mi++){
+    m.SetVentralMuscleInput(mi, ventralInput(10));
+    m.SetDorsalMuscleInput(mi, dorsalInput(10));
+  }
+
+  // Update Muscle activation
+  m.EulerStep(StepSize);
+
+
+}
+
+void Worm::Step(double StepSize, double output)
+{
+  
+  double ds, vs;
+  
 
   // Update Body
   b.StepBody(StepSize);
@@ -214,50 +478,7 @@ void Worm::Step(double StepSize, double output)
   // Update Nervous System
   n_ptr->EulerStep(StepSize);
 
-  // Set input to Muscles
-  //  Each motor neuron innervates four muscles, overlap in muscles 4, 6-19 and 21)
-  // Load motorneuron activity
-  for (int i=1; i<=N_units; i++){
-    dorsalInput(i)  = NMJ_DA*n_ptr->NeuronOutput(nn(DA,i)) + NMJ_DB*n_ptr->NeuronOutput(nn(DB,i)) + NMJ_DD*n_ptr->NeuronOutput(nn(DD,i));
-    ventralInput(i) = NMJ_VD*n_ptr->NeuronOutput(nn(VD,i)) + NMJ_VA*n_ptr->NeuronOutput(nn(VA,i)) + NMJ_VB*n_ptr->NeuronOutput(nn(VB,i));
-  }
-  // Muscles 1-3
-  for (int mi=1; mi<=3; mi++){
-    m.SetVentralMuscleInput(mi, ventralInput(1));
-    m.SetDorsalMuscleInput(mi, dorsalInput(1));
-  }
-
-  mi = 4; // 4th muscle
-  m.SetVentralMuscleInput(mi, (ventralInput(1)+ventralInput(2)));
-  m.SetDorsalMuscleInput(mi, (dorsalInput(1)+dorsalInput(2)));
-
-  mi = 5; // 5th muscle
-  m.SetVentralMuscleInput(mi, ventralInput(2));
-  m.SetDorsalMuscleInput(mi, dorsalInput(2));
-
-  mt = 2; // Muscles 6-19
-  for (int mi=6; mi<=19; mi++){
-    m.SetVentralMuscleInput(mi, (ventralInput(mt)+ventralInput(mt+1)));
-    m.SetDorsalMuscleInput(mi, (dorsalInput(mt)+dorsalInput(mt+1)));
-    mt += mi%2; // increment the index for the innervating unit each two muscles, starting from mi = 7
-  }
-
-  mi = 20; // 20th muscle
-  m.SetVentralMuscleInput(mi, ventralInput(9));
-  m.SetDorsalMuscleInput(mi, dorsalInput(9));
-
-  mi = 21; // 21st muscle
-  m.SetVentralMuscleInput(mi, (ventralInput(9)+ventralInput(10)));
-  m.SetDorsalMuscleInput(mi, (dorsalInput(9)+dorsalInput(10)));
-
-  // Muscles 22-24
-  for (int mi=22; mi<=24; mi++){
-    m.SetVentralMuscleInput(mi, ventralInput(10));
-    m.SetDorsalMuscleInput(mi, dorsalInput(10));
-  }
-
-  // Update Muscle activation
-  m.EulerStep(StepSize);
+  updateMusc(StepSize);
 
   // Set input to Mechanical Body
   //  First two segments receive special treatment because they are only affected by a single muscle
@@ -269,7 +490,7 @@ void Worm::Step(double StepSize, double output)
   //  All other segments receive force from two muscles
   for (int i = 3; i <= N_segments-2; i++)
   {
-    mi = (int) ((i-1)/2);
+    int mi = (int) ((i-1)/2);
     b.SetDorsalSegmentActivation(i, (m.DorsalMuscleOutput(mi) + m.DorsalMuscleOutput(mi+1))/2);
     b.SetVentralSegmentActivation(i, (m.VentralMuscleOutput(mi) + m.VentralMuscleOutput(mi+1))/2);
   }
