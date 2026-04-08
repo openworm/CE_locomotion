@@ -59,26 +59,7 @@ int main (int argc, const char* argv[])
 
     if (!j_orig.is_null()) j_orig.erase("Simulation");
 
-    /* else{
-    cout << "Model name is not in json file or the argument list. Exiting." << endl;
-    return 0; */
-    //}
     
-
-
-   /*  if (directoryExists(json_filename)){
-        json j = getJsonFromFile(json_filename);
-        StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"];
-        skip_steps = j["Evolutionary Optimization Parameters"]["skip_steps"]["value"];
-    }
-    else{
-    StepSize = 0.005;
-    skip_steps = 10;
-
-    } */
-
-
-
     if (model_name == "CE") model_name = "W2DCE";
 
     json j;

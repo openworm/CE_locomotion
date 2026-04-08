@@ -17,7 +17,7 @@ run(
     SRZeroGainsType=1,
     doReverse=0,
     fitType=0,
-    AvgSpeed = 0.0001,
-    inputInd = 2,
-    debug = False
+    AvgSpeed=0.0001,
+    inputInd=2,
+    debug=False,
 )

@@ -11,13 +11,13 @@ run(
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,
-    doOrigMuscInput= False,
+    doOrigMuscInput=False,
     evoType="EvoCE",
     doTestRun=False,
     SRZeroGainsType=1,
     doReverse=0,
     fitType=0,
-    AvgSpeed = 0.0001,
-    inputInd = 2,
-    debug = False
+    AvgSpeed=0.0001,
+    inputInd=2,
+    debug=False,
 )
