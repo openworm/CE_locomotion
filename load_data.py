@@ -550,7 +550,9 @@ def reload_single_run(a=None, **kwargs):
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
-    act_data = np.loadtxt(hf.rename_file("act.dat")).T
+    act_file = hf.rename_file("act.dat")
+    print("Loading activity data from: %s" % act_file)
+    act_data = np.loadtxt(act_file).T
     t_data = act_data[0]
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
@@ -628,7 +630,13 @@ def reload_single_run(a=None, **kwargs):
 
     ###  Worm body curvature
     if plot_format["do_curv_plot"]:
-        curv_data = np.loadtxt(hf.rename_file("curv.dat")).T
+        if os.path.isfile(hf.rename_file("curv_t.dat")):
+            curv_file = hf.rename_file("curv_t.dat")
+        else:
+            curv_file = hf.rename_file("curv.dat")
+
+        print("Loading curvature data from: %s" % curv_file)
+        curv_data = np.loadtxt(curv_file).T
         t_data = curv_data[0]
         data_seg = (t_data >= t_start) & (t_data < t_end)
         curv_data_less_time = curv_data[1:, data_seg]
@@ -659,10 +667,17 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
+
         if a.modelName == "CO" or a.modelName == "W2DCO":
-            body_data = np.loadtxt(hf.rename_file("bodypos.dat")).T
+            body_file = hf.rename_file("bodypos.dat")
         else:
-            body_data = np.loadtxt(hf.rename_file("body.dat")).T
+            if os.path.isfile(hf.rename_file("body_mm.dat")):
+                body_file = hf.rename_file("body_mm.dat")
+            else:
+                body_file = hf.rename_file("body.dat")
+
+        print("Loading body position data from: %s" % body_file)
+        body_data = np.loadtxt(body_file).T
 
         # tmax = 1520
         tmax = body_data.shape[1]

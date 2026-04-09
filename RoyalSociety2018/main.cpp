@@ -157,11 +157,13 @@ double EvaluationFunctionB(TVector<double> &v, RandomState &rs)
 
 //#ifdef OUTPUT
 
-ofstream bodyfile, actfile, curvfile, voltagefile, paramsfile;
+ofstream bodyfile, bodyfile_mm, actfile, curvfile, curvfile_t, voltagefile, paramsfile;
 if (supArgs1.output){
     bodyfile.open(supArgs1.rename_file("body.dat"));
+    bodyfile_mm.open(supArgs1.rename_file("body_mm.dat"));
     actfile.open(supArgs1.rename_file("act.dat"));
     curvfile.open(supArgs1.rename_file("curv.dat"));
+    curvfile_t.open(supArgs1.rename_file("curv_t.dat"));
     paramsfile.open(supArgs1.rename_file("params.dat"));
 }
 
@@ -200,7 +202,9 @@ if (supArgs1.output)
     {
         w.Curvature(curvature);
         curvfile << curvature << endl;
+        w.DumpCurvature(curvfile_t, skip);
         w.DumpBodyState(bodyfile, skip);
+        w.DumpBodyStateMM(bodyfile_mm, skip);
         w.DumpActState(actfile, skip);
     }
 //#endif
@@ -235,7 +239,9 @@ if (supArgs1.output)
 if (supArgs1.output){
         w.Curvature(curvature);
         curvfile << curvature << endl;
+        w.DumpCurvature(curvfile_t, skip);
         w.DumpBodyState(bodyfile, skip);
+        w.DumpBodyStateMM(bodyfile_mm, skip);
         w.DumpActState(actfile, skip);
 }
 //#endif
@@ -246,8 +252,10 @@ if (supArgs1.output){
 if (supArgs1.output){
     cout << fitness << " " << BBCfit << " " << distancetravelled << " " << distancetravelled/Duration << endl;
     bodyfile.close();
+    bodyfile_mm.close();
     actfile.close();
     curvfile.close();
+    curvfile_t.close();
 }
 //#endif
 
