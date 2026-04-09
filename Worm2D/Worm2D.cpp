@@ -686,7 +686,7 @@ void Worm2Dbody::writeBody()
         // Body
         for (int i = 1; i <= N_rods; i++)
         {
-            ofs <<  " " << b.X(i)*100.0 << " " << b.Y(i)*100.0 << " " << b.Phi(i);
+            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
         }
         ofs << endl;
     }

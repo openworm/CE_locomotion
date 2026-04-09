@@ -671,10 +671,11 @@ def reload_single_run(a=None, **kwargs):
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_file = hf.rename_file("bodypos.dat")
         else:
-            if os.path.isfile(hf.rename_file("body_mm.dat")):
+            body_file = hf.rename_file("body.dat")
+            """ if os.path.isfile(hf.rename_file("body_mm.dat")):
                 body_file = hf.rename_file("body_mm.dat")
             else:
-                body_file = hf.rename_file("body.dat")
+                body_file = hf.rename_file("body.dat") """
 
         print("Loading body position data from: %s" % body_file)
         body_data = np.loadtxt(body_file).T
@@ -735,10 +736,10 @@ def reload_single_run(a=None, **kwargs):
             ys = []
 
             for i in range(point_start, point_end):
-                x = body_data[i * 3 + 1][t] * 10
+                x = body_data[i * 3 + 1][t] * 1000
                 # xs.append(x * 1000)
                 xs.append(x)
-                y = body_data[i * 3 + 2][t] * 10
+                y = body_data[i * 3 + 2][t] * 1000
                 # ys.append(y * 1000)
                 ys.append(y)
                 # y1 = body_data[i * 3 + 2][t]
