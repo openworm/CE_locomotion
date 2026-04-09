@@ -590,6 +590,13 @@ vector<doubDoub> Worm2DSRE::makeVals()
 
   }
 
+  for(auto it = j2.begin(); it != j2.end(); ++it)
+  {
+    if (!it->contains("active")) (*it)["active"] = true;
+
+  }
+
+
   //itsJson["evoNames"] = evoKeys;
 
 

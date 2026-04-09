@@ -112,9 +112,103 @@ void EvoBase::checkPars()
 
 }
 
-void EvoBase::setFromCPT2()
+
+/* void EvoBase::constructAll(int vsize_, int offset_)
 {
- 
+    bool foundCPTfile = false, foundBGfile = false, foundWRBGfile = false;
+
+    
+    struct stat buffer;  
+    string bgfilename = rename_file("best.gen.dat");
+    if (stat (bgfilename.c_str(), &buffer) == 0) foundBGfile = true;
+    string wrbgfilename = rename_file("EvoWJbest.gen.dat");
+    if (stat (wrbgfilename.c_str(), &buffer) == 0) foundWRBGfile = true;
+    string cptfilename = rename_file("search.cpt");
+    if (stat (cptfilename.c_str(), &buffer) == 0) foundCPTfile = true;
+
+    if (foundCPTfile){
+    TSearch * s = new TSearch(1);
+    s->cptfilename = cptfilename:
+    s->ReadCheckpointFile();
+        
+    }
+}
+ */
+
+
+void EvoBase::construct(int vsize_, int offset_)
+{
+
+
+    if (!setFromCPTflag) setFromCPT2(vsize_);
+    if (doResume) return;
+
+    string filename;
+    bool foundFile = false;
+    filename = rename_file("best.gen.dat");
+    struct stat buffer;   
+    if (stat (filename.c_str(), &buffer) == 0) 
+    {
+     vector<double> bestgenvec;
+     getVecFromFile<double>(filename, bestgenvec);
+     if (bestgenvec.size()==vsize_) foundFile = true;
+    }
+
+    if (foundFile == false){
+    filename = rename_file("EvoWJbest.gen.dat");
+    if (stat (filename.c_str(), &buffer) == 0) 
+    {
+        vector<double> bestgenvec;
+        getVecFromFile<double>(filename, bestgenvec);
+        assert(bestgenvec.size()==vsize_);
+        foundFile = true;
+    }
+    }
+
+    if (foundFile) {
+
+    cout << "const from best gen " << filename << endl;
+    //assert(0 && "setting from best gen");
+    vector<double> bestgenvec;
+    getVecFromFile<double>(filename, bestgenvec);
+
+    if (vsize_>0)
+    {
+        assert(vsize_>=bestgenvec.size() && "bestgenvec too large");
+        s = new TSearch(vsize_);
+    }
+
+    else s = new TSearch(bestgenvec.size());
+
+    
+    assert((bestgenvec.size() + offset_) <= s->IndividualT(1).Size());
+
+    configure_p11();
+    s->InitializeSearch();
+    for (int i = 1; i <= s->PopulationSize(); i++) 
+    for (int j = 1; j <= bestgenvec.size(); j++)
+    s->IndividualT(i)(j + offset_) = bestgenvec[j-1];
+    doResume = false;
+    return;
+    }
+
+    assert(vsize_>0);
+    s = new TSearch(vsize_);
+    //configure_p1();
+    //s->InitializeSearch();
+    doResume = false;
+    cout << "const from default with size " << vsize_ << endl;
+    //cout << " construct filename " << filename << endl;
+    //assert(0);
+    return;
+
+}
+
+
+
+void EvoBase::setFromCPT2(int vsize_)
+{
+    doResume = false;
     setFromCPTflag = true;
     popsize = evoPars1.PopulationSize;
     
@@ -129,6 +223,13 @@ void EvoBase::setFromCPT2()
     if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
 
       //  cout << "set from cpt " << filename_ << endl; 
+        {TSearch * stest = new TSearch(1);
+        stest->cptfilename = filename_;
+        stest->ReadCheckpointFile();
+        const int testVsize = stest->VectorSize();
+        delete stest;
+        if (testVsize!=vsize_) return;
+        }
 
         s = new TSearch(1);
         s->cptfilename = filename_;
@@ -147,7 +248,7 @@ void EvoBase::setFromCPT2()
 
     }
     
-    doResume = false;
+    
     return;
    
 }
@@ -199,65 +300,6 @@ void EvoBase::setUp()
 }
 
 
-
-void EvoBase::construct(int vsize_, int offset_)
-{
-
-
-    if (!setFromCPTflag) setFromCPT2();
-    if (doResume) return;
-
-    string filename;
-    bool foundFile = false;
-    filename = rename_file("best.gen.dat");
-    struct stat buffer;   
-    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
-
-    //if (false){ //this removed - either from provided best-gen or CPT or from scratch
-    if (foundFile == false){
-    filename = rename_file("EvoWJbest.gen.dat");
-    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
-    }
-    //}
-
-    if (foundFile) {
-
-    cout << "const from best gen " << filename << endl;
-    //assert(0 && "setting from best gen");
-    vector<double> bestgenvec;
-    getVecFromFile<double>(filename, bestgenvec);
-
-    if (vsize_>0)
-    {
-        assert(vsize_>=bestgenvec.size() && "bestgenvec too large");
-        s = new TSearch(vsize_);
-    }
-
-    else s = new TSearch(bestgenvec.size());
-
-    
-    assert((bestgenvec.size() + offset_) <= s->IndividualT(1).Size());
-
-    configure_p11();
-    s->InitializeSearch();
-    for (int i = 1; i <= s->PopulationSize(); i++) 
-    for (int j = 1; j <= bestgenvec.size(); j++)
-    s->IndividualT(i)(j + offset_) = bestgenvec[j-1];
-    doResume = false;
-    return;
-    }
-
-    assert(vsize_>0);
-    s = new TSearch(vsize_);
-    //configure_p1();
-    //s->InitializeSearch();
-    doResume = false;
-    cout << "const from default with size " << vsize_ << endl;
-    //cout << " construct filename " << filename << endl;
-    //assert(0);
-    return;
-
-}
 
 
 
@@ -316,12 +358,12 @@ void EvoBase::setPopFromBestGenoFile(int offset)
 
 
 
-void EvoBase::setFromEvol(const EvoBase & er, int offset)
+void EvoBase::setFromEvol(const EvoBase & er, int offset, int vsize_)
 {
 
     
 
-    if (!setFromCPTflag) setFromCPT2();
+    if (!setFromCPTflag) setFromCPT2(vsize_);
     if (doResume) return;
 
     
