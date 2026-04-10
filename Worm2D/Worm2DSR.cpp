@@ -1281,7 +1281,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           itjevol->at("to").get<int>() == values[j].to)
           {
             //int phenind = itjevol->at("val").get<int>() - 1;
-            int phenind = getPhenind(vdd,itjevol->at("evolvable").get<int>());
+            int phenind = getPhenind(vdd,itjevol->at("val").get<int>());
 
             if (phenind>=0){
             double phenval;
