@@ -545,7 +545,9 @@ def run(a=None, **kwargs):
         for file1 in input_filenames:
             filename1 = pathlib.Path(file1).name
             # np.loadtxt(file1)
-            data = np.genfromtxt(file1, dtype=float)
+            arrs1 = hf.load_nonragged_arrays(file1)
+            data = arrs1[len(arrs1)-1] #use only last array
+            #data = np.genfromtxt(file1, dtype=float)
             data = np.nan_to_num(data, nan=0.0)
             np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
 

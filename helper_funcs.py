@@ -455,3 +455,34 @@ def plotHist(ax, x, y):
     # ax.xlabel('x')
     # ax.ylabel('Average y')
     # plt.show()
+
+def load_nonragged_arrays(filename, dtype=float, delimiter=None, skip_empty=True):
+    arrays = []
+    current_rows = []
+    current_len = None
+
+    with open(filename, "r") as f:
+        for line_num, line in enumerate(f, start=1):
+            line = line.strip()
+
+            if skip_empty and not line:
+                continue
+
+            parts = line.split(delimiter) if delimiter is not None else line.split()
+            row = [dtype(x) for x in parts]
+            row_len = len(row)
+
+            if current_len is None:
+                current_len = row_len
+                current_rows.append(row)
+            elif row_len == current_len:
+                current_rows.append(row)
+            else:
+                arrays.append(np.array(current_rows, dtype=dtype))
+                current_rows = [row]
+                current_len = row_len
+
+    if current_rows:
+        arrays.append(np.array(current_rows, dtype=dtype))
+
+    return arrays

@@ -276,7 +276,7 @@ void EvoBase::setFromCPT()
 
 void EvoBase::setUp()
 {   
-    s->cptfilename = rename_file("search.cpt");
+    //s->cptfilename = rename_file("search.cpt");
     //setFromCPT();
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);

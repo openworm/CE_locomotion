@@ -55,6 +55,16 @@ short_phen_names = {
     "NMJ gain map V": "GMapV",
 }
 
+import numpy as np
+
+
+
+
+
+
+    
+
+
 
 def plot_phenonames(
     plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
@@ -63,7 +73,10 @@ def plot_phenonames(
 ):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
-    evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+    evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
+    evol_data_1 = evol_data_all[len(evol_data_all)-1] #use only the last array
+
+    #evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
 
     worm_file = hf.get_worm_file()
 
@@ -84,11 +97,12 @@ def plot_phenonames(
         phen_names = []
         phen_nums = []
         for val in evolvables:
-            name = val["name"]
-            for key, val2 in short_phen_names.items():
-                name = name.replace(key, val2)
-            phen_names.append(name)
-            phen_nums.append(val["ind"])
+            if not (('active' in val) & (val['active']==False)):
+                name = val["name"]
+                for key, val2 in short_phen_names.items():
+                    name = name.replace(key, val2)
+                phen_names.append(name)
+                phen_nums.append(val["ind"])
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
@@ -96,6 +110,7 @@ def plot_phenonames(
     else:
         print("PhenoNames needed for pheno plot")
         return
+
 
     print("checkDict")
     print(phen_names)
@@ -173,8 +188,11 @@ def plot_phenonames(
 
     for phen_name in phen_names_set:
         phen_name_list.append(phen_name)
+        #indices = [
+        #    phen_nums[ind] - 1 for ind, val in enumerate(phen_names) if val == phen_name
+        #]
         indices = [
-            phen_nums[ind] - 1 for ind, val in enumerate(phen_names) if val == phen_name
+            ind for ind, val in enumerate(phen_names) if val == phen_name
         ]
         for val in evol_data_dict.values():
             if "pheno_avs" not in val:
@@ -258,7 +276,10 @@ def plot_evols(a=None, **kwargs):
 
     plot_phenonames(folderName=a.folderName, modelName=a.modelName)
 
-    evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+    #evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+
+    evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
+    evol_data_1 = evol_data_all[len(evol_data_all)-1] #use only the last array
 
     worm_file = hf.get_worm_file()
     if False:
@@ -274,10 +295,32 @@ def plot_evols(a=None, **kwargs):
     ]
 
     doPhenNames = False
-    if "PhenoNames" in network_json_data:
+    if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
+        evolvables = network_json_data["Evolvable"]["value"]
+        phen_names = []
+        phen_nums = []
+        for val in evolvables:
+            if not (('active' in val) & (val['active']==False)):
+                name = val["name"]
+                for key, val2 in short_phen_names.items():
+                    name = name.replace(key, val2)
+                phen_names.append(name)
+                phen_nums.append(val["ind"])
+        doPhenNames = True
+    elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
         phen_nums = network_json_data["PhenoNamesNums"]["value"]
         doPhenNames = True
+    else:
+        print("PhenoNames needed for pheno plot")
+        return
+
+
+    """  doPhenNames = False
+    if "PhenoNames" in network_json_data:
+        phen_names = network_json_data["PhenoNames"]["value"]
+        phen_nums = network_json_data["PhenoNamesNums"]["value"]
+        doPhenNames = True """
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
@@ -370,11 +413,17 @@ def plot_evols(a=None, **kwargs):
         evol_data_avs = [[] for x in range(len(evol_data_list))]
         for phen_name in phen_names_set:
             phen_name_list.append(phen_name)
-            indices = [
+            """ indices = [
                 phen_nums[ind] - 1
                 for ind, val in enumerate(phen_names)
                 if val == phen_name
+            ] """
+            indices = [
+                ind
+                for ind, val in enumerate(phen_names)
+                if val == phen_name
             ]
+
             for ind, val in enumerate(evol_data_list):
                 # for av_val, val in zip(evol_data_avs, evol_data_list):
                 evol_data_avs[ind].append(np.mean(val[indices]))
