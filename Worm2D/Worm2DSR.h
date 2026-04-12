@@ -131,7 +131,7 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 //vector<intPair> biases_evo, taus_evo, gains_evo;
 //vector<double> getInitGeno_old();
 //void addParsToJson(json & j){j = itsJson;}
-vector<double> getInitGeno_old();
+//vector<double> getInitGeno_old();
 void setParsFromPheno_old(const TVector<double> &pheno);
 void resetFromBPJson();
 void resetFromJson(const json & js1);

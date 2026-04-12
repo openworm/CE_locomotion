@@ -277,12 +277,12 @@ void from_json(const json& j, toFromWeight & w)
 
 void to_json(json & j, const intDoubDoub & w)
 {
-  j = json{{"ind", w.ind}, {"val1", w.val1}, {"val2", w.val2}};
+  j = json{{"evotag", w.ind}, {"val1", w.val1}, {"val2", w.val2}};
 }
 
 void from_json(const json& j, intDoubDoub & w) 
 {
-        j.at("ind").get_to(w.ind);
+        j.at("evotag").get_to(w.ind);
         j.at("val1").get_to(w.val1);
         j.at("val2").get_to(w.val2);
 }
@@ -299,6 +299,13 @@ void from_json(const json& j, doubDoub & w)
 }
 
 
+json to_evo_json(const vector<intPair> & w)
+{
+json j = json::array();
+for (int i=0;i<w.size();i++) j.push_back({{"ind", w[i].ind}, {"evotag", w[i].val}});
+return j;
+}
+
 void to_json(json & j, const intPair & w)
 {
   j = json{{"ind", w.ind}, {"val", w.val}};
@@ -310,17 +317,58 @@ void from_json(const json& j, intPair & w)
         j.at("val").get_to(w.val);
 }
 
+
 void to_json(json & j, const fromToInt & w)
 {
-  j = json{{"to", w.to},  {"from", w.from},  {"val", w.val}};
+  j = json{{"to", w.to},  {"from", w.from},  {"evotag", w.val}};
 }
 
 void from_json(const json& j, fromToInt & w) 
 {
         j.at("to").get_to(w.to);
         j.at("from").get_to(w.from);
-        j.at("val").get_to(w.val);
+        j.at("evotag").get_to(w.val);
 }
+
+
+
+void to_json(json & j, const fromToStr & w){
+ j = json{{"from", w.from}, {"to", w.to}, {"evotag", w.evotag}};
+}
+void from_json(const json & j, fromToStr & w)
+{
+        j.at("from").get_to(w.from);
+        j.at("to").get_to(w.to);
+        j.at("evotag").get_to(w.evotag);
+}
+
+void to_json(json & j, const intStr & w)
+{
+j = json{{"val", w.val}, {"evotag", w.evotag}};
+
+}
+
+void from_json(const json & j, intStr & w)
+{
+j.at("val").get_to(w.val);
+        j.at("evotag").get_to(w.evotag);
+
+}
+
+void from_json(const json & j, strDoubDoub & w)
+{
+   j.at("val1").get_to(w.val1);
+        j.at("val2").get_to(w.val2);
+        j.at("evotag").get_to(w.evotag);
+}
+
+
+void to_json(json & j, const strDoubDoub & w)
+{
+j = json{{"val1", w.val1}, {"val2", w.val2}, {"evotag", w.evotag}};
+
+}
+
 
 void set_nested_json(json & j, const vector<string> & keys, const json & value)
 {

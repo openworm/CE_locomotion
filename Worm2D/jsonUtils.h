@@ -144,6 +144,17 @@ void from_json(const json& j, intDoubDoub & w);
 void to_json(json & j, const doubDoub & w);
 void from_json(const json& j, doubDoub & w);
 void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight);
+void to_json(json & j, const fromToStr & w);
+void from_json(const json & j, fromToStr & w);
+void to_json(json & j, const intStr & w);
+void from_json(const json & j, strDoubDoub & w);
+void to_json(json & j, const strDoubDoub & w);
+void from_json(const json & j, intStr & w);
+json to_evo_json(const vector<intPair> & w);
+
+
+
+
 
 /* template<class T>
 bool checkType(const json & j, const string & name)

@@ -111,13 +111,21 @@ ParamsHead<long> parInt;
 
 // An entry in a sparse weight matrix
 
+//struct jsonNamed {string nametag = "evotag";};
 struct weightentry {int from; double weight;};
+/* struct intPair : public jsonNamed {
+    intPair(int ind_, int val_){ind=ind_;val=val_;}
+    int ind; int val;}; */
 struct intPair {int ind; int val;};
 struct fromToInt {int from; int to; int val;};
 struct intDoubDoub {int ind; double val1; double val2;};
 struct stringPair {string s1; string s2;};
 struct doubDoub {double val1; double val2;};
 template<class T> struct namedVal {string name; T val;};
+struct fromToStr {int from; int to; string evotag;};
+struct strDoubDoub {string evotag; double val1; double val2;};
+struct intStr {string evotag; int val;};
+//struct intPairStr {int ind; int val;};
 
 void push_back_double(const fromToInt & val, vector<fromToInt> & vec);
 

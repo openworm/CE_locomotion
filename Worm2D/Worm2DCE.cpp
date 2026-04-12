@@ -417,8 +417,8 @@ void WormCE::addEvolvableToJson(json & j)
     j["Evolvable"]["value"] = toIntDoubDoub(vec);
   }
  
-  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"val",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
-  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"val",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
 
   //j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
   //j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
@@ -486,11 +486,12 @@ void WormCE::addEvolvableToJson(json & j)
 
         }
         }
-
-  
   }
 
-  j["Nervous system"]["biases"]["evolvable"] = biasvec;
+  //j["Nervous system"]["biases"]["evolvable"] = biasvec;
+
+  j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
+
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
@@ -505,9 +506,12 @@ nmjvecv.push_back({VA,15});
 nmjvecv.push_back({VB,16});
 nmjvecv.push_back({VD,17});
 
+//j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
+//j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 
-j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
-j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
+
+j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
+j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
 
 
 }
