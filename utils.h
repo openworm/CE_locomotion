@@ -56,12 +56,37 @@ void getVecFromFile(const string & filename_, vector<T> & vec)
 }
 
 template<class T>
+vector<T> fileGetCol(string name, int cols, int col_num = 0)
+{
+    ifstream file(name);
+
+    vector<T> values;
+    T x;
+
+    while (file >> x) {
+        values.push_back(x);
+    }
+    
+    file.close();
+
+    vector<T> colvalues;
+    int colind = col_num;
+    while(colind<values.size()){
+    colvalues.push_back(values[colind]);
+    colind += cols;
+    }
+
+return colvalues;
+
+}
+
+template<class T>
 void fileDropLines(string name, int rows, int cols)
 {
     vector<vector<T> > filevec;
-
+  
     {ifstream file(name);
-
+    
     for (int i = 0; i < rows; i++) 
     {
         vector<T> v;

@@ -278,20 +278,48 @@ void EvoBase::setUp()
 {   
     s->cptfilename = rename_file("search.cpt");
     //setFromCPT();
+    
+    if (false){
+    string filename_ = rename_file("fitness.dat");
+    struct stat buffer; 
+    if (stat (filename_.c_str(), &buffer) == 0)
+    fileDropLines<double>(filename_, s->Generation(), 4);
+    filename_ = rename_file("genhistory.dat");
+    if (stat (filename_.c_str(), &buffer) == 0)
+    fileDropLines<double>(filename_ , s->Generation(), s->VectorSize()*3 + 1);
+    }
+
     if  (doResume) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
         //fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
     }
 
-    auto ioflag = std::ios_base::out;
-    if (doCPT) ioflag = std::ios_base::app;
+    //auto ioflag = std::ios_base::out;
+    //if (doCPT) ioflag = std::ios_base::app;
+    //auto ioflag = std::ios_base::app;
 
+    string filename_ = rename_file("fitness.dat");
+    struct stat buffer; 
+    if (stat (filename_.c_str(), &buffer) == 0) 
+    {
 
-    evolfile.open(rename_file("fitness.dat"), ioflag);
-    
+    vector<double> col1 = fileGetCol<double>(filename_,4,0);
+    evolfile.open(filename_, std::ios_base::app);
+    initGenNum = col1[col1.size()-1] - s->Generation() + 1;
+
+    }
+    else 
+    {
+        initGenNum = 0;
+        evolfile.open(filename_, std::ios_base::out);
+    }
+
     //setFromCPT();
-    genhistfile.open(rename_file("genhistory.dat"), ioflag);
+
+    filename_ = rename_file("genhistory.dat");
+    if (stat (filename_.c_str(), &buffer) == 0) genhistfile.open(filename_, std::ios_base::app);
+    else genhistfile.open(filename_, std::ios_base::out);
     //genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
     //doneFirst = false;
     evolfile << setprecision(10);
@@ -557,7 +585,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
     //cout << "EvolutionaryRunDisplay" << endl;
     
-    evolfile << Generation;
+    evolfile << Generation  + initGenNum;
     vector<double> evovals{BestPerf,AvgPerf,PerfVar};
     for (int i=0;i<evovals.size();i++) 
         if (isnan(evovals[i])) evolfile << " " << 0.0;

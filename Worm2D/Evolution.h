@@ -109,7 +109,7 @@ class EvoBase
     const bool writeBestFlag;
     bool doResume;
     int popsize;
-    
+    int initGenNum = 0;
 };
 
 
