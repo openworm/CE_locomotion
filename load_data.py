@@ -102,7 +102,7 @@ def plot_phenonames(
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
                 phen_names.append(name)
-                phen_nums.append(val["ind"])
+                phen_nums.append(val["evotag"])
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
@@ -305,7 +305,7 @@ def plot_evols(a=None, **kwargs):
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
                 phen_names.append(name)
-                phen_nums.append(val["ind"])
+                phen_nums.append(val["evotag"])
         doPhenNames = True
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
