@@ -6,8 +6,17 @@
 
 string main_directoryname, main_modelname;
 
+
+
+
+
+
+
+
 void Worm2Dbase::addPhenoName(string name, int k)
 {phenoNamesNums.push_back(k);phenoNames.push_back(name);}
+
+
 
 
 vector<double> Worm2Dbase::readPhenotype()

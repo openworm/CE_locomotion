@@ -21,6 +21,13 @@
 
 //class SRCE;
 
+void setEvoStr(vector<string> & vecval, const vector<string> & evoName);
+void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames, 
+  vector<string> & path);
+void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path);
+void addEvoNames(json & j);
+
+
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 

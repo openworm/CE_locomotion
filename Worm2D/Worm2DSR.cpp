@@ -407,36 +407,12 @@ void Worm2DSRE::addEvolvableToJson(json & j)
   
 
   j["Evolvable"]["value"] = BPitsJson["Evolvable"]["value"];
+  addEvoNames(j);
 
   return;
 
 
-/*   j["Evolvable"]["value"] =  genPhenPars.genPhenLims;
-  for (int i = 0; i<genPhenPars.TFnames.size();i++)
-  {
-    json j2;
-    j2 = genPhenPars.TFIvec[i];
-    vector<string> TFi = genPhenPars.TFnames[i];
-    TFi.push_back("evolvable");
-    set_nested_json(j, TFi, j2);
-  }
-  for (int i = 0; i<genPhenPars.IPnames.size();i++)
-  {
-    json j2;
-    j2 = genPhenPars.IPvec[i];
-    vector<string> TFi = genPhenPars.IPnames[i];
-    TFi.push_back("evolvable");
-    set_nested_json(j, TFi, j2);
-  }
-   for (int i = 0; i<genPhenPars.singValnames.size();i++)
-  {
-    json j2;
-    j2 = genPhenPars.singVals[i];
-    vector<string> TFi = genPhenPars.singValnames[i];
-    TFi.push_back("evolvable");
-    set_nested_json(j, TFi, j2);
-  }
- */
+
 }
 
 
@@ -456,23 +432,9 @@ void setEvoStr(vector<string> & vecval, const vector<string> & evoName)
     if (!hasVal) vecval.push_back(sval1);
   }
 
-  /* vector<string> evoName2 = evoName;
-  v.erase(v.begin() + 2);
-  vector<string> vecval1 = vecval;
-  for (int i=0;i<vecval1.size();i++)
-    if (vecval1[i]==evoName[i]) continue;
-  
-  {
-    for (int j = i;j<evoName.size();j++) vecval.push_back(evoName[j]);
-    break;
-  }
- */
+ 
   return;
 
-  //if (vecval=="not_set") {vecval = evoName;return;}
-  //else if (vecval==evoName) return;
-  //cout << "evoName " << evoName << " " << vecval << endl;
-  //assert(0);
 
 }
 
@@ -544,34 +506,56 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 }
 
 
+void addEvoNames(json & j)
+{
+
+  if (!j.contains("Evolvable"))  return;
+  vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+
+  vector<vector<string> > evoNames(vdd.size());
+  
+  vector<string> path;
+  getEvoNames(j, evoNames, path);
+
+  
+  vector<string> evoKeys(vdd.size());
+  for (int i=0;i<evoNames.size();i++)
+  { evoKeys[i] = "";
+    for (int j=0;j<evoNames[i].size()-1;j++) 
+    {evoKeys[i].append(evoNames[i][j]);evoKeys[i].append("_");}
+    evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
+  }
+
+  json & j2 = j["Evolvable"]["value"];
+
+  for(auto it = j2.begin(); it != j2.end(); ++it)
+  {
+    if (!it->contains("name"))
+    (*it)["name"] = evoKeys[it->at("evotag").get<int>()-1];
+    if (!it->contains("active")) (*it)["active"] = true;
+
+  }
+
+
+}
+
+
 vector<intDoubDoub> Worm2DSRE::makeVals()
 {
 
   
-  const json & j = BPitsJson;
+  json & j = BPitsJson;
   //itsJson = j;
 
   if (!j.contains("Evolvable")) return vector<intDoubDoub>(0);
 
-  
-  
   vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
 
-  
+  //addEvoNames(j);
 
-  /* try {
 
-    auto v1 = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
-    vdd = todoubDoub(v1);
-   
-  }
-  catch (const json::type_error&) {
-   
-    auto v1 = j.at("name").template get<vector<doubDoub>>();
-    vdd = v1;
-    assert(0);
-  } */
 
+  if(false){
   vector<vector<string> > evoNames(vdd.size());
   
   vector<string> path;
@@ -595,6 +579,10 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
 
   }
 
+  }
+
+
+  json & j2 = BPitsJson["Evolvable"]["value"];
   vector<intDoubDoub> vddactive;
   //vector<bool> actives(vdd.size());
   //vector<int> inds(vdd.size());
@@ -608,9 +596,6 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
     i++;
 
   }
-
-
-  //itsJson["evoNames"] = evoKeys;
 
 
   return vddactive;

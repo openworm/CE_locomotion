@@ -1107,12 +1107,12 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         //biasvecj += json::object_t::value_type({{"ind", db}, {"val", 1}});
         //biasvecj += json::object_t::value_type({{"ind", vba}, {"val", 1}});
 
-        biasvecj.push_back({{"ind", db}, {"val", 1}});
-        biasvecj.push_back({{"ind", vba}, {"val", 1}});
-        biasvecj.push_back({{"ind", vbp}, {"val", 1}});
-        biasvecj.push_back({{"ind", dd}, {"val", 2}});
-        biasvecj.push_back({{"ind", vda}, {"val", 2}});
-        biasvecj.push_back({{"ind", vdp}, {"val", 2}});
+        biasvecj.push_back({{"ind", db}, {"evotag", 1}});
+        biasvecj.push_back({{"ind", vba}, {"evotag", 1}});
+        biasvecj.push_back({{"ind", vbp}, {"evotag", 1}});
+        biasvecj.push_back({{"ind", dd}, {"evotag", 2}});
+        biasvecj.push_back({{"ind", vda}, {"evotag", 2}});
+        biasvecj.push_back({{"ind", vdp}, {"evotag", 2}});
 
 
          /*    biasvecj.push_back({db,1});
@@ -1144,20 +1144,20 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
 
 
-        chemvecj.push_back({{"from", db}, {"to", db}, {"val", 5}});
-        chemvecj.push_back({{"from", vba}, {"to", vba}, {"val", 5}});
-        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"val", 5}});
-        chemvecj.push_back({{"from", dd}, {"to", dd}, {"val", 6}});
-        chemvecj.push_back({{"from", vda}, {"to", vda}, {"val", 6}});
-        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"val", 6}});
-        chemvecj.push_back({{"from", db}, {"to", dd}, {"val", 7}});
-        chemvecj.push_back({{"from", vba}, {"to", vda}, {"val", 7}});
-        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"val", 7}});
-        chemvecj.push_back({{"from", db}, {"to", vda}, {"val", 8}});
-        chemvecj.push_back({{"from", db}, {"to", vdp}, {"val", 8}});
-        chemvecj.push_back({{"from", vba}, {"to", dd}, {"val", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"val", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", dd}, {"to", vda}, {"val", 9}});
+        chemvecj.push_back({{"from", db}, {"to", db}, {"evotag", 5}});
+        chemvecj.push_back({{"from", vba}, {"to", vba}, {"evotag", 5}});
+        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"evotag", 5}});
+        chemvecj.push_back({{"from", dd}, {"to", dd}, {"evotag", 6}});
+        chemvecj.push_back({{"from", vda}, {"to", vda}, {"evotag", 6}});
+        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"evotag", 6}});
+        chemvecj.push_back({{"from", db}, {"to", dd}, {"evotag", 7}});
+        chemvecj.push_back({{"from", vba}, {"to", vda}, {"evotag", 7}});
+        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", 7}});
+        chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", 8}});
+        chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", 8}});
+        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", 9}});
 
 
 if (false)
@@ -1246,8 +1246,8 @@ nmjvecv.push_back({RMDV,30});
 
 
 
-j["VNC 18"]["V inds"]["evolvable"] = nmjvecv;
-j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
+j["VNC 18"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
+j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
 
  
 
@@ -1261,10 +1261,10 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
     biasvecj.push_back({SMDV,17});
     biasvecj.push_back({RMDD,18});
     biasvecj.push_back({RMDV,18}); */
-    biasvecj.push_back({{"ind", SMDD}, {"val", 17}});
-    biasvecj.push_back({{"ind", SMDV}, {"val", 17}});
-    biasvecj.push_back({{"ind", RMDD}, {"val", 18}});
-    biasvecj.push_back({{"ind", RMDV}, {"val", 18}});
+    biasvecj.push_back({{"ind", SMDD}, {"evotag", 17}});
+    biasvecj.push_back({{"ind", SMDV}, {"evotag", 17}});
+    biasvecj.push_back({{"ind", RMDD}, {"evotag", 18}});
+    biasvecj.push_back({{"ind", RMDV}, {"evotag", 18}});
 
     if (false)
     {vector<intPair> & vec = biasvec;
@@ -1282,16 +1282,16 @@ j["VNC 18"]["D inds"]["evolvable"] = nmjvecd;
     }
 
 
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"val", 21}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"val", 21}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"val", 22}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"val", 22}});
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"val", 23}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"val", 23}});
-    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"val", 24}});
-    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"val", 24}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"val", 25}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"val", 25}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"evotag", 21}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"evotag", 21}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"evotag", 22}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"evotag", 22}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"evotag", 23}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"evotag", 23}});
+    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"evotag", 24}});
+    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"evotag", 24}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", 25}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", 25}});
 
 if (false)
   {
@@ -1316,7 +1316,7 @@ if (false)
 
 
 
- j["Nervous system"]["taus"]["evolvable"] = tauvec;
+ j["Nervous system"]["taus"]["evolvable"] = to_evo_json(tauvec);
     j["Nervous system"]["biases"]["evolvable"] = biasvecj;
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvecj;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
@@ -1330,6 +1330,8 @@ if (false)
 
         }   
  */
+
+    addEvoNames(j);
 
     }
 

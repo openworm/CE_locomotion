@@ -513,6 +513,7 @@ nmjvecv.push_back({VD,17});
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
 j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
 
+addEvoNames(j);
 
 }
 

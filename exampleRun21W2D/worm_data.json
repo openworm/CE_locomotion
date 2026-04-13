@@ -1217,222 +1217,310 @@
     "Evolvable": {
         "value": [
             {
-                "ind": 1,
+                "active": true,
+                "evotag": 1,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 2,
+                "active": true,
+                "evotag": 2,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 3,
+                "active": true,
+                "evotag": 3,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 4,
+                "active": true,
+                "evotag": 4,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 5,
+                "active": true,
+                "evotag": 5,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 6,
+                "active": true,
+                "evotag": 6,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 7,
+                "active": true,
+                "evotag": 7,
+                "name": "Nervous system_biases",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 8,
+                "active": true,
+                "evotag": 8,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 9,
+                "active": true,
+                "evotag": 9,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 10,
+                "active": true,
+                "evotag": 10,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 11,
+                "active": true,
+                "evotag": 11,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 12,
+                "active": true,
+                "evotag": 12,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 13,
+                "active": true,
+                "evotag": 13,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 14,
+                "active": true,
+                "evotag": 14,
+                "name": "Nervous system_taus",
                 "val1": 0.1,
                 "val2": 2.5
             },
             {
-                "ind": 15,
+                "active": true,
+                "evotag": 15,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 16,
+                "active": true,
+                "evotag": 16,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 17,
+                "active": true,
+                "evotag": 17,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 18,
+                "active": true,
+                "evotag": 18,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 19,
+                "active": true,
+                "evotag": 19,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 20,
+                "active": true,
+                "evotag": 20,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 21,
+                "active": true,
+                "evotag": 21,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 22,
+                "active": true,
+                "evotag": 22,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 23,
+                "active": true,
+                "evotag": 23,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 24,
+                "active": true,
+                "evotag": 24,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 25,
+                "active": true,
+                "evotag": 25,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 26,
+                "active": true,
+                "evotag": 26,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 27,
+                "active": true,
+                "evotag": 27,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 28,
+                "active": true,
+                "evotag": 28,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 29,
+                "active": true,
+                "evotag": 29,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 30,
+                "active": true,
+                "evotag": 30,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 31,
+                "active": true,
+                "evotag": 31,
+                "name": "Nervous system_Electrical weights",
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 32,
+                "active": true,
+                "evotag": 32,
+                "name": "VNC NMJ_D inds",
                 "val1": 0.0,
                 "val2": 1.2
             },
             {
-                "ind": 33,
+                "active": true,
+                "evotag": 33,
+                "name": "VNC NMJ_D inds",
                 "val1": 0.0,
                 "val2": 1.2
             },
             {
-                "ind": 34,
+                "active": true,
+                "evotag": 34,
+                "name": "VNC NMJ_D inds",
                 "val1": 1.2,
                 "val2": 1.2
             },
             {
-                "ind": 35,
+                "active": true,
+                "evotag": 35,
+                "name": "VNC NMJ_D inds",
                 "val1": -1.2,
                 "val2": 0.0
             },
             {
-                "ind": 36,
+                "active": true,
+                "evotag": 36,
+                "name": "VNC NMJ_V inds",
                 "val1": -1.2,
                 "val2": 0.0
             },
             {
-                "ind": 37,
+                "active": true,
+                "evotag": 37,
+                "name": "VNC NMJ_V inds",
                 "val1": 1.2,
                 "val2": 1.2
             },
             {
-                "ind": 38,
+                "active": true,
+                "evotag": 38,
+                "name": "VNC NMJ_V inds",
                 "val1": 0.0,
                 "val2": 1.2
             },
             {
-                "ind": 39,
+                "active": true,
+                "evotag": 39,
+                "name": "VNC NMJ_NMJ gain map D_NMJ gain map V",
                 "val1": 0.2,
                 "val2": 1.0
             },
             {
-                "ind": 40,
+                "active": true,
+                "evotag": 40,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 41,
+                "active": true,
+                "evotag": 41,
+                "name": "Nervous system_Chemical weights",
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 42,
+                "active": true,
+                "evotag": 42,
+                "name": "Nervous system_Electrical weights",
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 43,
+                "active": true,
+                "evotag": 43,
+                "name": "Nervous system_Electrical weights",
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 44,
+                "active": true,
+                "evotag": 44,
+                "name": "Nervous system_Electrical weights",
                 "val1": 0.0,
                 "val2": 2.0
             }
@@ -1509,624 +1597,624 @@
         "Chemical weights": {
             "evolvable": [
                 {
+                    "evotag": 15,
                     "from": 1,
-                    "to": 1,
-                    "val": 15
+                    "to": 1
                 },
                 {
+                    "evotag": 16,
                     "from": 2,
-                    "to": 2,
-                    "val": 16
+                    "to": 2
                 },
                 {
+                    "evotag": 17,
                     "from": 3,
-                    "to": 3,
-                    "val": 17
+                    "to": 3
                 },
                 {
+                    "evotag": 18,
                     "from": 4,
-                    "to": 4,
-                    "val": 18
+                    "to": 4
                 },
                 {
+                    "evotag": 19,
                     "from": 5,
-                    "to": 5,
-                    "val": 19
+                    "to": 5
                 },
                 {
+                    "evotag": 20,
                     "from": 6,
-                    "to": 6,
-                    "val": 20
+                    "to": 6
                 },
                 {
+                    "evotag": 21,
                     "from": 7,
-                    "to": 7,
-                    "val": 21
+                    "to": 7
                 },
                 {
+                    "evotag": 22,
                     "from": 1,
-                    "to": 2,
-                    "val": 22
+                    "to": 2
                 },
                 {
+                    "evotag": 23,
                     "from": 1,
-                    "to": 5,
-                    "val": 23
+                    "to": 5
                 },
                 {
+                    "evotag": 24,
                     "from": 2,
-                    "to": 3,
-                    "val": 24
+                    "to": 3
                 },
                 {
+                    "evotag": 25,
                     "from": 3,
-                    "to": 1,
-                    "val": 25
+                    "to": 1
                 },
                 {
+                    "evotag": 26,
                     "from": 5,
-                    "to": 7,
-                    "val": 26
+                    "to": 7
                 },
                 {
+                    "evotag": 27,
                     "from": 5,
-                    "to": 6,
-                    "val": 27
+                    "to": 6
                 },
                 {
+                    "evotag": 28,
                     "from": 2,
-                    "to": 4,
-                    "val": 28
+                    "to": 4
                 },
                 {
+                    "evotag": 29,
                     "from": 6,
-                    "to": 4,
-                    "val": 29
+                    "to": 4
                 },
                 {
+                    "evotag": 30,
                     "from": 7,
-                    "to": 4,
-                    "val": 30
+                    "to": 4
                 },
                 {
+                    "evotag": 40,
                     "from": 3,
-                    "to": 11,
-                    "val": 40
+                    "to": 11
                 },
                 {
+                    "evotag": 41,
                     "from": 14,
-                    "to": 4,
-                    "val": 41
+                    "to": 4
                 },
                 {
+                    "evotag": 15,
                     "from": 8,
-                    "to": 8,
-                    "val": 15
+                    "to": 8
                 },
                 {
+                    "evotag": 16,
                     "from": 9,
-                    "to": 9,
-                    "val": 16
+                    "to": 9
                 },
                 {
+                    "evotag": 17,
                     "from": 10,
-                    "to": 10,
-                    "val": 17
+                    "to": 10
                 },
                 {
+                    "evotag": 18,
                     "from": 11,
-                    "to": 11,
-                    "val": 18
+                    "to": 11
                 },
                 {
+                    "evotag": 19,
                     "from": 12,
-                    "to": 12,
-                    "val": 19
+                    "to": 12
                 },
                 {
+                    "evotag": 20,
                     "from": 13,
-                    "to": 13,
-                    "val": 20
+                    "to": 13
                 },
                 {
+                    "evotag": 21,
                     "from": 14,
-                    "to": 14,
-                    "val": 21
+                    "to": 14
                 },
                 {
+                    "evotag": 22,
                     "from": 8,
-                    "to": 9,
-                    "val": 22
+                    "to": 9
                 },
                 {
+                    "evotag": 23,
                     "from": 8,
-                    "to": 12,
-                    "val": 23
+                    "to": 12
                 },
                 {
+                    "evotag": 24,
                     "from": 9,
-                    "to": 10,
-                    "val": 24
+                    "to": 10
                 },
                 {
+                    "evotag": 25,
                     "from": 10,
-                    "to": 8,
-                    "val": 25
+                    "to": 8
                 },
                 {
+                    "evotag": 26,
                     "from": 12,
-                    "to": 14,
-                    "val": 26
+                    "to": 14
                 },
                 {
+                    "evotag": 27,
                     "from": 12,
-                    "to": 13,
-                    "val": 27
+                    "to": 13
                 },
                 {
+                    "evotag": 28,
                     "from": 9,
-                    "to": 11,
-                    "val": 28
+                    "to": 11
                 },
                 {
+                    "evotag": 29,
                     "from": 13,
-                    "to": 11,
-                    "val": 29
+                    "to": 11
                 },
                 {
+                    "evotag": 30,
                     "from": 14,
-                    "to": 11,
-                    "val": 30
+                    "to": 11
                 },
                 {
+                    "evotag": 40,
                     "from": 10,
-                    "to": 18,
-                    "val": 40
+                    "to": 18
                 },
                 {
+                    "evotag": 41,
                     "from": 21,
-                    "to": 11,
-                    "val": 41
+                    "to": 11
                 },
                 {
+                    "evotag": 15,
                     "from": 15,
-                    "to": 15,
-                    "val": 15
+                    "to": 15
                 },
                 {
+                    "evotag": 16,
                     "from": 16,
-                    "to": 16,
-                    "val": 16
+                    "to": 16
                 },
                 {
+                    "evotag": 17,
                     "from": 17,
-                    "to": 17,
-                    "val": 17
+                    "to": 17
                 },
                 {
+                    "evotag": 18,
                     "from": 18,
-                    "to": 18,
-                    "val": 18
+                    "to": 18
                 },
                 {
+                    "evotag": 19,
                     "from": 19,
-                    "to": 19,
-                    "val": 19
+                    "to": 19
                 },
                 {
+                    "evotag": 20,
                     "from": 20,
-                    "to": 20,
-                    "val": 20
+                    "to": 20
                 },
                 {
+                    "evotag": 21,
                     "from": 21,
-                    "to": 21,
-                    "val": 21
+                    "to": 21
                 },
                 {
+                    "evotag": 22,
                     "from": 15,
-                    "to": 16,
-                    "val": 22
+                    "to": 16
                 },
                 {
+                    "evotag": 23,
                     "from": 15,
-                    "to": 19,
-                    "val": 23
+                    "to": 19
                 },
                 {
+                    "evotag": 24,
                     "from": 16,
-                    "to": 17,
-                    "val": 24
+                    "to": 17
                 },
                 {
+                    "evotag": 25,
                     "from": 17,
-                    "to": 15,
-                    "val": 25
+                    "to": 15
                 },
                 {
+                    "evotag": 26,
                     "from": 19,
-                    "to": 21,
-                    "val": 26
+                    "to": 21
                 },
                 {
+                    "evotag": 27,
                     "from": 19,
-                    "to": 20,
-                    "val": 27
+                    "to": 20
                 },
                 {
+                    "evotag": 28,
                     "from": 16,
-                    "to": 18,
-                    "val": 28
+                    "to": 18
                 },
                 {
+                    "evotag": 29,
                     "from": 20,
-                    "to": 18,
-                    "val": 29
+                    "to": 18
                 },
                 {
+                    "evotag": 30,
                     "from": 21,
-                    "to": 18,
-                    "val": 30
+                    "to": 18
                 },
                 {
+                    "evotag": 40,
                     "from": 17,
-                    "to": 25,
-                    "val": 40
+                    "to": 25
                 },
                 {
+                    "evotag": 41,
                     "from": 28,
-                    "to": 18,
-                    "val": 41
+                    "to": 18
                 },
                 {
+                    "evotag": 15,
                     "from": 22,
-                    "to": 22,
-                    "val": 15
+                    "to": 22
                 },
                 {
+                    "evotag": 16,
                     "from": 23,
-                    "to": 23,
-                    "val": 16
+                    "to": 23
                 },
                 {
+                    "evotag": 17,
                     "from": 24,
-                    "to": 24,
-                    "val": 17
+                    "to": 24
                 },
                 {
+                    "evotag": 18,
                     "from": 25,
-                    "to": 25,
-                    "val": 18
+                    "to": 25
                 },
                 {
+                    "evotag": 19,
                     "from": 26,
-                    "to": 26,
-                    "val": 19
+                    "to": 26
                 },
                 {
+                    "evotag": 20,
                     "from": 27,
-                    "to": 27,
-                    "val": 20
+                    "to": 27
                 },
                 {
+                    "evotag": 21,
                     "from": 28,
-                    "to": 28,
-                    "val": 21
+                    "to": 28
                 },
                 {
+                    "evotag": 22,
                     "from": 22,
-                    "to": 23,
-                    "val": 22
+                    "to": 23
                 },
                 {
+                    "evotag": 23,
                     "from": 22,
-                    "to": 26,
-                    "val": 23
+                    "to": 26
                 },
                 {
+                    "evotag": 24,
                     "from": 23,
-                    "to": 24,
-                    "val": 24
+                    "to": 24
                 },
                 {
+                    "evotag": 25,
                     "from": 24,
-                    "to": 22,
-                    "val": 25
+                    "to": 22
                 },
                 {
+                    "evotag": 26,
                     "from": 26,
-                    "to": 28,
-                    "val": 26
+                    "to": 28
                 },
                 {
+                    "evotag": 27,
                     "from": 26,
-                    "to": 27,
-                    "val": 27
+                    "to": 27
                 },
                 {
+                    "evotag": 28,
                     "from": 23,
-                    "to": 25,
-                    "val": 28
+                    "to": 25
                 },
                 {
+                    "evotag": 29,
                     "from": 27,
-                    "to": 25,
-                    "val": 29
+                    "to": 25
                 },
                 {
+                    "evotag": 30,
                     "from": 28,
-                    "to": 25,
-                    "val": 30
+                    "to": 25
                 },
                 {
+                    "evotag": 40,
                     "from": 24,
-                    "to": 32,
-                    "val": 40
+                    "to": 32
                 },
                 {
+                    "evotag": 41,
                     "from": 35,
-                    "to": 25,
-                    "val": 41
+                    "to": 25
                 },
                 {
+                    "evotag": 15,
                     "from": 29,
-                    "to": 29,
-                    "val": 15
+                    "to": 29
                 },
                 {
+                    "evotag": 16,
                     "from": 30,
-                    "to": 30,
-                    "val": 16
+                    "to": 30
                 },
                 {
+                    "evotag": 17,
                     "from": 31,
-                    "to": 31,
-                    "val": 17
+                    "to": 31
                 },
                 {
+                    "evotag": 18,
                     "from": 32,
-                    "to": 32,
-                    "val": 18
+                    "to": 32
                 },
                 {
+                    "evotag": 19,
                     "from": 33,
-                    "to": 33,
-                    "val": 19
+                    "to": 33
                 },
                 {
+                    "evotag": 20,
                     "from": 34,
-                    "to": 34,
-                    "val": 20
+                    "to": 34
                 },
                 {
+                    "evotag": 21,
                     "from": 35,
-                    "to": 35,
-                    "val": 21
+                    "to": 35
                 },
                 {
+                    "evotag": 22,
                     "from": 29,
-                    "to": 30,
-                    "val": 22
+                    "to": 30
                 },
                 {
+                    "evotag": 23,
                     "from": 29,
-                    "to": 33,
-                    "val": 23
+                    "to": 33
                 },
                 {
+                    "evotag": 24,
                     "from": 30,
-                    "to": 31,
-                    "val": 24
+                    "to": 31
                 },
                 {
+                    "evotag": 25,
                     "from": 31,
-                    "to": 29,
-                    "val": 25
+                    "to": 29
                 },
                 {
+                    "evotag": 26,
                     "from": 33,
-                    "to": 35,
-                    "val": 26
+                    "to": 35
                 },
                 {
+                    "evotag": 27,
                     "from": 33,
-                    "to": 34,
-                    "val": 27
+                    "to": 34
                 },
                 {
+                    "evotag": 28,
                     "from": 30,
-                    "to": 32,
-                    "val": 28
+                    "to": 32
                 },
                 {
+                    "evotag": 29,
                     "from": 34,
-                    "to": 32,
-                    "val": 29
+                    "to": 32
                 },
                 {
+                    "evotag": 30,
                     "from": 35,
-                    "to": 32,
-                    "val": 30
+                    "to": 32
                 },
                 {
+                    "evotag": 40,
                     "from": 31,
-                    "to": 39,
-                    "val": 40
+                    "to": 39
                 },
                 {
+                    "evotag": 41,
                     "from": 42,
-                    "to": 32,
-                    "val": 41
+                    "to": 32
                 },
                 {
+                    "evotag": 15,
                     "from": 36,
-                    "to": 36,
-                    "val": 15
+                    "to": 36
                 },
                 {
+                    "evotag": 16,
                     "from": 37,
-                    "to": 37,
-                    "val": 16
+                    "to": 37
                 },
                 {
+                    "evotag": 17,
                     "from": 38,
-                    "to": 38,
-                    "val": 17
+                    "to": 38
                 },
                 {
+                    "evotag": 18,
                     "from": 39,
-                    "to": 39,
-                    "val": 18
+                    "to": 39
                 },
                 {
+                    "evotag": 19,
                     "from": 40,
-                    "to": 40,
-                    "val": 19
+                    "to": 40
                 },
                 {
+                    "evotag": 20,
                     "from": 41,
-                    "to": 41,
-                    "val": 20
+                    "to": 41
                 },
                 {
+                    "evotag": 21,
                     "from": 42,
-                    "to": 42,
-                    "val": 21
+                    "to": 42
                 },
                 {
+                    "evotag": 22,
                     "from": 36,
-                    "to": 37,
-                    "val": 22
+                    "to": 37
                 },
                 {
+                    "evotag": 23,
                     "from": 36,
-                    "to": 40,
-                    "val": 23
+                    "to": 40
                 },
                 {
+                    "evotag": 24,
                     "from": 37,
-                    "to": 38,
-                    "val": 24
+                    "to": 38
                 },
                 {
+                    "evotag": 25,
                     "from": 38,
-                    "to": 36,
-                    "val": 25
+                    "to": 36
                 },
                 {
+                    "evotag": 26,
                     "from": 40,
-                    "to": 42,
-                    "val": 26
+                    "to": 42
                 },
                 {
+                    "evotag": 27,
                     "from": 40,
-                    "to": 41,
-                    "val": 27
+                    "to": 41
                 },
                 {
+                    "evotag": 28,
                     "from": 37,
-                    "to": 39,
-                    "val": 28
+                    "to": 39
                 },
                 {
+                    "evotag": 29,
                     "from": 41,
-                    "to": 39,
-                    "val": 29
+                    "to": 39
                 },
                 {
+                    "evotag": 30,
                     "from": 42,
-                    "to": 39,
-                    "val": 30
+                    "to": 39
                 },
                 {
+                    "evotag": 40,
                     "from": 38,
-                    "to": 46,
-                    "val": 40
+                    "to": 46
                 },
                 {
+                    "evotag": 41,
                     "from": 49,
-                    "to": 39,
-                    "val": 41
+                    "to": 39
                 },
                 {
+                    "evotag": 15,
                     "from": 43,
-                    "to": 43,
-                    "val": 15
+                    "to": 43
                 },
                 {
+                    "evotag": 16,
                     "from": 44,
-                    "to": 44,
-                    "val": 16
+                    "to": 44
                 },
                 {
+                    "evotag": 17,
                     "from": 45,
-                    "to": 45,
-                    "val": 17
+                    "to": 45
                 },
                 {
+                    "evotag": 18,
                     "from": 46,
-                    "to": 46,
-                    "val": 18
+                    "to": 46
                 },
                 {
+                    "evotag": 19,
                     "from": 47,
-                    "to": 47,
-                    "val": 19
+                    "to": 47
                 },
                 {
+                    "evotag": 20,
                     "from": 48,
-                    "to": 48,
-                    "val": 20
+                    "to": 48
                 },
                 {
+                    "evotag": 21,
                     "from": 49,
-                    "to": 49,
-                    "val": 21
+                    "to": 49
                 },
                 {
+                    "evotag": 22,
                     "from": 43,
-                    "to": 44,
-                    "val": 22
+                    "to": 44
                 },
                 {
+                    "evotag": 23,
                     "from": 43,
-                    "to": 47,
-                    "val": 23
+                    "to": 47
                 },
                 {
+                    "evotag": 24,
                     "from": 44,
-                    "to": 45,
-                    "val": 24
+                    "to": 45
                 },
                 {
+                    "evotag": 25,
                     "from": 45,
-                    "to": 43,
-                    "val": 25
+                    "to": 43
                 },
                 {
+                    "evotag": 26,
                     "from": 47,
-                    "to": 49,
-                    "val": 26
+                    "to": 49
                 },
                 {
+                    "evotag": 27,
                     "from": 47,
-                    "to": 48,
-                    "val": 27
+                    "to": 48
                 },
                 {
+                    "evotag": 28,
                     "from": 44,
-                    "to": 46,
-                    "val": 28
+                    "to": 46
                 },
                 {
+                    "evotag": 29,
                     "from": 48,
-                    "to": 46,
-                    "val": 29
+                    "to": 46
                 },
                 {
+                    "evotag": 30,
                     "from": 49,
-                    "to": 46,
-                    "val": 30
+                    "to": 46
                 }
             ],
             "message": "chemical weights in sparse format",
@@ -2756,504 +2844,504 @@
         "Electrical weights": {
             "evolvable": [
                 {
+                    "evotag": 31,
                     "from": 5,
-                    "to": 4,
-                    "val": 31
+                    "to": 4
                 },
                 {
+                    "evotag": 31,
                     "from": 4,
-                    "to": 5,
-                    "val": 31
+                    "to": 5
                 },
                 {
+                    "evotag": 31,
                     "from": 4,
-                    "to": 5,
-                    "val": 31
+                    "to": 5
                 },
                 {
+                    "evotag": 31,
                     "from": 5,
-                    "to": 4,
-                    "val": 31
+                    "to": 4
                 },
                 {
+                    "evotag": 42,
                     "from": 1,
-                    "to": 14,
-                    "val": 42
+                    "to": 14
                 },
                 {
+                    "evotag": 42,
                     "from": 14,
-                    "to": 1,
-                    "val": 42
+                    "to": 1
                 },
                 {
+                    "evotag": 42,
                     "from": 14,
-                    "to": 1,
-                    "val": 42
+                    "to": 1
                 },
                 {
+                    "evotag": 42,
                     "from": 1,
-                    "to": 14,
-                    "val": 42
+                    "to": 14
                 },
                 {
+                    "evotag": 43,
                     "from": 2,
-                    "to": 8,
-                    "val": 43
+                    "to": 8
                 },
                 {
+                    "evotag": 43,
                     "from": 8,
-                    "to": 2,
-                    "val": 43
+                    "to": 2
                 },
                 {
+                    "evotag": 43,
                     "from": 8,
-                    "to": 2,
-                    "val": 43
+                    "to": 2
                 },
                 {
+                    "evotag": 43,
                     "from": 2,
-                    "to": 8,
-                    "val": 43
+                    "to": 8
                 },
                 {
+                    "evotag": 44,
                     "from": 6,
-                    "to": 10,
-                    "val": 44
+                    "to": 10
                 },
                 {
+                    "evotag": 44,
                     "from": 10,
-                    "to": 6,
-                    "val": 44
+                    "to": 6
                 },
                 {
+                    "evotag": 44,
                     "from": 10,
-                    "to": 6,
-                    "val": 44
+                    "to": 6
                 },
                 {
+                    "evotag": 44,
                     "from": 6,
-                    "to": 10,
-                    "val": 44
+                    "to": 10
                 },
                 {
+                    "evotag": 31,
                     "from": 12,
-                    "to": 11,
-                    "val": 31
+                    "to": 11
                 },
                 {
+                    "evotag": 31,
                     "from": 11,
-                    "to": 12,
-                    "val": 31
+                    "to": 12
                 },
                 {
+                    "evotag": 31,
                     "from": 11,
-                    "to": 12,
-                    "val": 31
+                    "to": 12
                 },
                 {
+                    "evotag": 31,
                     "from": 12,
-                    "to": 11,
-                    "val": 31
+                    "to": 11
                 },
                 {
+                    "evotag": 42,
                     "from": 8,
-                    "to": 21,
-                    "val": 42
+                    "to": 21
                 },
                 {
+                    "evotag": 42,
                     "from": 21,
-                    "to": 8,
-                    "val": 42
+                    "to": 8
                 },
                 {
+                    "evotag": 42,
                     "from": 21,
-                    "to": 8,
-                    "val": 42
+                    "to": 8
                 },
                 {
+                    "evotag": 42,
                     "from": 8,
-                    "to": 21,
-                    "val": 42
+                    "to": 21
                 },
                 {
+                    "evotag": 43,
                     "from": 9,
-                    "to": 15,
-                    "val": 43
+                    "to": 15
                 },
                 {
+                    "evotag": 43,
                     "from": 15,
-                    "to": 9,
-                    "val": 43
+                    "to": 9
                 },
                 {
+                    "evotag": 43,
                     "from": 15,
-                    "to": 9,
-                    "val": 43
+                    "to": 9
                 },
                 {
+                    "evotag": 43,
                     "from": 9,
-                    "to": 15,
-                    "val": 43
+                    "to": 15
                 },
                 {
+                    "evotag": 44,
                     "from": 13,
-                    "to": 17,
-                    "val": 44
+                    "to": 17
                 },
                 {
+                    "evotag": 44,
                     "from": 17,
-                    "to": 13,
-                    "val": 44
+                    "to": 13
                 },
                 {
+                    "evotag": 44,
                     "from": 17,
-                    "to": 13,
-                    "val": 44
+                    "to": 13
                 },
                 {
+                    "evotag": 44,
                     "from": 13,
-                    "to": 17,
-                    "val": 44
+                    "to": 17
                 },
                 {
+                    "evotag": 31,
                     "from": 19,
-                    "to": 18,
-                    "val": 31
+                    "to": 18
                 },
                 {
+                    "evotag": 31,
                     "from": 18,
-                    "to": 19,
-                    "val": 31
+                    "to": 19
                 },
                 {
+                    "evotag": 31,
                     "from": 18,
-                    "to": 19,
-                    "val": 31
+                    "to": 19
                 },
                 {
+                    "evotag": 31,
                     "from": 19,
-                    "to": 18,
-                    "val": 31
+                    "to": 18
                 },
                 {
+                    "evotag": 42,
                     "from": 15,
-                    "to": 28,
-                    "val": 42
+                    "to": 28
                 },
                 {
+                    "evotag": 42,
                     "from": 28,
-                    "to": 15,
-                    "val": 42
+                    "to": 15
                 },
                 {
+                    "evotag": 42,
                     "from": 28,
-                    "to": 15,
-                    "val": 42
+                    "to": 15
                 },
                 {
+                    "evotag": 42,
                     "from": 15,
-                    "to": 28,
-                    "val": 42
+                    "to": 28
                 },
                 {
+                    "evotag": 43,
                     "from": 16,
-                    "to": 22,
-                    "val": 43
+                    "to": 22
                 },
                 {
+                    "evotag": 43,
                     "from": 22,
-                    "to": 16,
-                    "val": 43
+                    "to": 16
                 },
                 {
+                    "evotag": 43,
                     "from": 22,
-                    "to": 16,
-                    "val": 43
+                    "to": 16
                 },
                 {
+                    "evotag": 43,
                     "from": 16,
-                    "to": 22,
-                    "val": 43
+                    "to": 22
                 },
                 {
+                    "evotag": 44,
                     "from": 20,
-                    "to": 24,
-                    "val": 44
+                    "to": 24
                 },
                 {
+                    "evotag": 44,
                     "from": 24,
-                    "to": 20,
-                    "val": 44
+                    "to": 20
                 },
                 {
+                    "evotag": 44,
                     "from": 24,
-                    "to": 20,
-                    "val": 44
+                    "to": 20
                 },
                 {
+                    "evotag": 44,
                     "from": 20,
-                    "to": 24,
-                    "val": 44
+                    "to": 24
                 },
                 {
+                    "evotag": 31,
                     "from": 26,
-                    "to": 25,
-                    "val": 31
+                    "to": 25
                 },
                 {
+                    "evotag": 31,
                     "from": 25,
-                    "to": 26,
-                    "val": 31
+                    "to": 26
                 },
                 {
+                    "evotag": 31,
                     "from": 25,
-                    "to": 26,
-                    "val": 31
+                    "to": 26
                 },
                 {
+                    "evotag": 31,
                     "from": 26,
-                    "to": 25,
-                    "val": 31
+                    "to": 25
                 },
                 {
+                    "evotag": 42,
                     "from": 22,
-                    "to": 35,
-                    "val": 42
+                    "to": 35
                 },
                 {
+                    "evotag": 42,
                     "from": 35,
-                    "to": 22,
-                    "val": 42
+                    "to": 22
                 },
                 {
+                    "evotag": 42,
                     "from": 35,
-                    "to": 22,
-                    "val": 42
+                    "to": 22
                 },
                 {
+                    "evotag": 42,
                     "from": 22,
-                    "to": 35,
-                    "val": 42
+                    "to": 35
                 },
                 {
+                    "evotag": 43,
                     "from": 23,
-                    "to": 29,
-                    "val": 43
+                    "to": 29
                 },
                 {
+                    "evotag": 43,
                     "from": 29,
-                    "to": 23,
-                    "val": 43
+                    "to": 23
                 },
                 {
+                    "evotag": 43,
                     "from": 29,
-                    "to": 23,
-                    "val": 43
+                    "to": 23
                 },
                 {
+                    "evotag": 43,
                     "from": 23,
-                    "to": 29,
-                    "val": 43
+                    "to": 29
                 },
                 {
+                    "evotag": 44,
                     "from": 27,
-                    "to": 31,
-                    "val": 44
+                    "to": 31
                 },
                 {
+                    "evotag": 44,
                     "from": 31,
-                    "to": 27,
-                    "val": 44
+                    "to": 27
                 },
                 {
+                    "evotag": 44,
                     "from": 31,
-                    "to": 27,
-                    "val": 44
+                    "to": 27
                 },
                 {
+                    "evotag": 44,
                     "from": 27,
-                    "to": 31,
-                    "val": 44
+                    "to": 31
                 },
                 {
+                    "evotag": 31,
                     "from": 33,
-                    "to": 32,
-                    "val": 31
+                    "to": 32
                 },
                 {
+                    "evotag": 31,
                     "from": 32,
-                    "to": 33,
-                    "val": 31
+                    "to": 33
                 },
                 {
+                    "evotag": 31,
                     "from": 32,
-                    "to": 33,
-                    "val": 31
+                    "to": 33
                 },
                 {
+                    "evotag": 31,
                     "from": 33,
-                    "to": 32,
-                    "val": 31
+                    "to": 32
                 },
                 {
+                    "evotag": 42,
                     "from": 29,
-                    "to": 42,
-                    "val": 42
+                    "to": 42
                 },
                 {
+                    "evotag": 42,
                     "from": 42,
-                    "to": 29,
-                    "val": 42
+                    "to": 29
                 },
                 {
+                    "evotag": 42,
                     "from": 42,
-                    "to": 29,
-                    "val": 42
+                    "to": 29
                 },
                 {
+                    "evotag": 42,
                     "from": 29,
-                    "to": 42,
-                    "val": 42
+                    "to": 42
                 },
                 {
+                    "evotag": 43,
                     "from": 30,
-                    "to": 36,
-                    "val": 43
+                    "to": 36
                 },
                 {
+                    "evotag": 43,
                     "from": 36,
-                    "to": 30,
-                    "val": 43
+                    "to": 30
                 },
                 {
+                    "evotag": 43,
                     "from": 36,
-                    "to": 30,
-                    "val": 43
+                    "to": 30
                 },
                 {
+                    "evotag": 43,
                     "from": 30,
-                    "to": 36,
-                    "val": 43
+                    "to": 36
                 },
                 {
+                    "evotag": 44,
                     "from": 34,
-                    "to": 38,
-                    "val": 44
+                    "to": 38
                 },
                 {
+                    "evotag": 44,
                     "from": 38,
-                    "to": 34,
-                    "val": 44
+                    "to": 34
                 },
                 {
+                    "evotag": 44,
                     "from": 38,
-                    "to": 34,
-                    "val": 44
+                    "to": 34
                 },
                 {
+                    "evotag": 44,
                     "from": 34,
-                    "to": 38,
-                    "val": 44
+                    "to": 38
                 },
                 {
+                    "evotag": 31,
                     "from": 40,
-                    "to": 39,
-                    "val": 31
+                    "to": 39
                 },
                 {
+                    "evotag": 31,
                     "from": 39,
-                    "to": 40,
-                    "val": 31
+                    "to": 40
                 },
                 {
+                    "evotag": 31,
                     "from": 39,
-                    "to": 40,
-                    "val": 31
+                    "to": 40
                 },
                 {
+                    "evotag": 31,
                     "from": 40,
-                    "to": 39,
-                    "val": 31
+                    "to": 39
                 },
                 {
+                    "evotag": 42,
                     "from": 36,
-                    "to": 49,
-                    "val": 42
+                    "to": 49
                 },
                 {
+                    "evotag": 42,
                     "from": 49,
-                    "to": 36,
-                    "val": 42
+                    "to": 36
                 },
                 {
+                    "evotag": 42,
                     "from": 49,
-                    "to": 36,
-                    "val": 42
+                    "to": 36
                 },
                 {
+                    "evotag": 42,
                     "from": 36,
-                    "to": 49,
-                    "val": 42
+                    "to": 49
                 },
                 {
+                    "evotag": 43,
                     "from": 37,
-                    "to": 43,
-                    "val": 43
+                    "to": 43
                 },
                 {
+                    "evotag": 43,
                     "from": 43,
-                    "to": 37,
-                    "val": 43
+                    "to": 37
                 },
                 {
+                    "evotag": 43,
                     "from": 43,
-                    "to": 37,
-                    "val": 43
+                    "to": 37
                 },
                 {
+                    "evotag": 43,
                     "from": 37,
-                    "to": 43,
-                    "val": 43
+                    "to": 43
                 },
                 {
+                    "evotag": 44,
                     "from": 41,
-                    "to": 45,
-                    "val": 44
+                    "to": 45
                 },
                 {
+                    "evotag": 44,
                     "from": 45,
-                    "to": 41,
-                    "val": 44
+                    "to": 41
                 },
                 {
+                    "evotag": 44,
                     "from": 45,
-                    "to": 41,
-                    "val": 44
+                    "to": 41
                 },
                 {
+                    "evotag": 44,
                     "from": 41,
-                    "to": 45,
-                    "val": 44
+                    "to": 45
                 },
                 {
+                    "evotag": 31,
                     "from": 47,
-                    "to": 46,
-                    "val": 31
+                    "to": 46
                 },
                 {
+                    "evotag": 31,
                     "from": 46,
-                    "to": 47,
-                    "val": 31
+                    "to": 47
                 },
                 {
+                    "evotag": 31,
                     "from": 46,
-                    "to": 47,
-                    "val": 31
+                    "to": 47
                 },
                 {
+                    "evotag": 31,
                     "from": 47,
-                    "to": 46,
-                    "val": 31
+                    "to": 46
                 }
             ],
             "message": "electrical weights in sparse format",
@@ -3675,200 +3763,200 @@
         "biases": {
             "evolvable": [
                 {
-                    "ind": 1,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 1
                 },
                 {
-                    "ind": 2,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 2
                 },
                 {
-                    "ind": 3,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 3
                 },
                 {
-                    "ind": 4,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 4
                 },
                 {
-                    "ind": 5,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 5
                 },
                 {
-                    "ind": 6,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 6
                 },
                 {
-                    "ind": 7,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 7
                 },
                 {
-                    "ind": 8,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 8
                 },
                 {
-                    "ind": 9,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 9
                 },
                 {
-                    "ind": 10,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 10
                 },
                 {
-                    "ind": 11,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 11
                 },
                 {
-                    "ind": 12,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 12
                 },
                 {
-                    "ind": 13,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 13
                 },
                 {
-                    "ind": 14,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 14
                 },
                 {
-                    "ind": 15,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 15
                 },
                 {
-                    "ind": 16,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 16
                 },
                 {
-                    "ind": 17,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 17
                 },
                 {
-                    "ind": 18,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 18
                 },
                 {
-                    "ind": 19,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 19
                 },
                 {
-                    "ind": 20,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 20
                 },
                 {
-                    "ind": 21,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 21
                 },
                 {
-                    "ind": 22,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 22
                 },
                 {
-                    "ind": 23,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 23
                 },
                 {
-                    "ind": 24,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 24
                 },
                 {
-                    "ind": 25,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 25
                 },
                 {
-                    "ind": 26,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 26
                 },
                 {
-                    "ind": 27,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 27
                 },
                 {
-                    "ind": 28,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 28
                 },
                 {
-                    "ind": 29,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 29
                 },
                 {
-                    "ind": 30,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 30
                 },
                 {
-                    "ind": 31,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 31
                 },
                 {
-                    "ind": 32,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 32
                 },
                 {
-                    "ind": 33,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 33
                 },
                 {
-                    "ind": 34,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 34
                 },
                 {
-                    "ind": 35,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 35
                 },
                 {
-                    "ind": 36,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 36
                 },
                 {
-                    "ind": 37,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 37
                 },
                 {
-                    "ind": 38,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 38
                 },
                 {
-                    "ind": 39,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 39
                 },
                 {
-                    "ind": 40,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 40
                 },
                 {
-                    "ind": 41,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 41
                 },
                 {
-                    "ind": 42,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 42
                 },
                 {
-                    "ind": 43,
-                    "val": 1
+                    "evotag": 1,
+                    "ind": 43
                 },
                 {
-                    "ind": 44,
-                    "val": 2
+                    "evotag": 2,
+                    "ind": 44
                 },
                 {
-                    "ind": 45,
-                    "val": 3
+                    "evotag": 3,
+                    "ind": 45
                 },
                 {
-                    "ind": 46,
-                    "val": 4
+                    "evotag": 4,
+                    "ind": 46
                 },
                 {
-                    "ind": 47,
-                    "val": 5
+                    "evotag": 5,
+                    "ind": 47
                 },
                 {
-                    "ind": 48,
-                    "val": 6
+                    "evotag": 6,
+                    "ind": 48
                 },
                 {
-                    "ind": 49,
-                    "val": 7
+                    "evotag": 7,
+                    "ind": 49
                 }
             ],
             "value": [
@@ -4200,200 +4288,200 @@
         "taus": {
             "evolvable": [
                 {
-                    "ind": 1,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 1
                 },
                 {
-                    "ind": 2,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 2
                 },
                 {
-                    "ind": 3,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 3
                 },
                 {
-                    "ind": 4,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 4
                 },
                 {
-                    "ind": 5,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 5
                 },
                 {
-                    "ind": 6,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 6
                 },
                 {
-                    "ind": 7,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 7
                 },
                 {
-                    "ind": 8,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 8
                 },
                 {
-                    "ind": 9,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 9
                 },
                 {
-                    "ind": 10,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 10
                 },
                 {
-                    "ind": 11,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 11
                 },
                 {
-                    "ind": 12,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 12
                 },
                 {
-                    "ind": 13,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 13
                 },
                 {
-                    "ind": 14,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 14
                 },
                 {
-                    "ind": 15,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 15
                 },
                 {
-                    "ind": 16,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 16
                 },
                 {
-                    "ind": 17,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 17
                 },
                 {
-                    "ind": 18,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 18
                 },
                 {
-                    "ind": 19,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 19
                 },
                 {
-                    "ind": 20,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 20
                 },
                 {
-                    "ind": 21,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 21
                 },
                 {
-                    "ind": 22,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 22
                 },
                 {
-                    "ind": 23,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 23
                 },
                 {
-                    "ind": 24,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 24
                 },
                 {
-                    "ind": 25,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 25
                 },
                 {
-                    "ind": 26,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 26
                 },
                 {
-                    "ind": 27,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 27
                 },
                 {
-                    "ind": 28,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 28
                 },
                 {
-                    "ind": 29,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 29
                 },
                 {
-                    "ind": 30,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 30
                 },
                 {
-                    "ind": 31,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 31
                 },
                 {
-                    "ind": 32,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 32
                 },
                 {
-                    "ind": 33,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 33
                 },
                 {
-                    "ind": 34,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 34
                 },
                 {
-                    "ind": 35,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 35
                 },
                 {
-                    "ind": 36,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 36
                 },
                 {
-                    "ind": 37,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 37
                 },
                 {
-                    "ind": 38,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 38
                 },
                 {
-                    "ind": 39,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 39
                 },
                 {
-                    "ind": 40,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 40
                 },
                 {
-                    "ind": 41,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 41
                 },
                 {
-                    "ind": 42,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 42
                 },
                 {
-                    "ind": 43,
-                    "val": 8
+                    "evotag": 8,
+                    "ind": 43
                 },
                 {
-                    "ind": 44,
-                    "val": 9
+                    "evotag": 9,
+                    "ind": 44
                 },
                 {
-                    "ind": 45,
-                    "val": 10
+                    "evotag": 10,
+                    "ind": 45
                 },
                 {
-                    "ind": 46,
-                    "val": 11
+                    "evotag": 11,
+                    "ind": 46
                 },
                 {
-                    "ind": 47,
-                    "val": 12
+                    "evotag": 12,
+                    "ind": 47
                 },
                 {
-                    "ind": 48,
-                    "val": 13
+                    "evotag": 13,
+                    "ind": 48
                 },
                 {
-                    "ind": 49,
-                    "val": 14
+                    "evotag": 14,
+                    "ind": 49
                 }
             ],
             "value": [
@@ -4743,20 +4831,20 @@
         "D inds": {
             "evolvable": [
                 {
-                    "ind": 1,
-                    "val": 32
+                    "evotag": 32,
+                    "ind": 1
                 },
                 {
-                    "ind": 2,
-                    "val": 33
+                    "evotag": 33,
+                    "ind": 2
                 },
                 {
-                    "ind": 3,
-                    "val": 34
+                    "evotag": 34,
+                    "ind": 3
                 },
                 {
-                    "ind": 4,
-                    "val": 35
+                    "evotag": 35,
+                    "ind": 4
                 }
             ],
             "value": [
@@ -4892,16 +4980,16 @@
         "V inds": {
             "evolvable": [
                 {
-                    "ind": 5,
-                    "val": 36
+                    "evotag": 36,
+                    "ind": 5
                 },
                 {
-                    "ind": 6,
-                    "val": 37
+                    "evotag": 37,
+                    "ind": 6
                 },
                 {
-                    "ind": 7,
-                    "val": 38
+                    "evotag": 38,
+                    "ind": 7
                 }
             ],
             "value": [
