@@ -299,6 +299,16 @@ void from_json(const json& j, doubDoub & w)
 }
 
 
+vector<intPair> from_evo_json(const json& j)
+{
+vector<intPair> w;
+for(auto it = j.begin(); it != j.end(); ++it)
+  w.push_back({it->at("ind").get<int>(),it->at("evotag").get<int>()});
+
+return w;
+
+}
+
 json to_evo_json(const vector<intPair> & w)
 {
 json j = json::array();

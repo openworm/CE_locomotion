@@ -511,8 +511,8 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
         }
   else
         {
-      
-          vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
+          vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+          //vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
           for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
                             
@@ -554,7 +554,10 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   if (!j.contains("Evolvable")) return vector<intDoubDoub>(0);
 
   
+  
   vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+
+  
 
   /* try {
 
@@ -675,7 +678,8 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
           if (it2->at("value")[0].is_number())
         {
         vector<double> values = it2->at("value").template get< vector<double> >();
-        vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
         for (int i = 0; i<evols.size();i++) {
           int phenind = getPhenind(vdd, evols[i].val) + 1;
           //values[evols[i].ind-1] = pheno[evols[i].val];
@@ -687,7 +691,8 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
         else{
 
         vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++)
          for (int j = 0; j<values.size();j++)
           if (evols[i].ind == values[j].from)
@@ -948,14 +953,16 @@ void Worm2DSRE::setParsFromPheno_old(const TVector<double> &pheno)
           if (it2->at("value")[0].is_number())
         {
         vector<double> values = it2->at("value").template get< vector<double> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++) values[evols[i].ind-1] = pheno[evols[i].val];
         it2->at("value") = values;
         }
         else{
 
         vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++)
          for (int j = 0; j<values.size();j++)
           if (evols[i].ind == values[j].from)
@@ -1049,6 +1056,7 @@ void Worm2DSRE::writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double>
 void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
 {
 
+ 
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
@@ -1085,13 +1093,15 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
         if (it2->at("value")[0].is_number())
         {
         vector<double> values = it2->at("value").template get< vector<double> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++) pheno[evols[i].val-1] = values[evols[i].ind-1];
         
         }
         else{          
         vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++)
          for (int j = 0; j<values.size();j++)
           if (evols[i].ind == values[j].from)
@@ -1112,7 +1122,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
   const vector<intDoubDoub> & vdd)
 {
 
-  assert(0);
+ 
   
 //  if (it->contains("funcable")) applyFuncable1(it,ef);
 
@@ -1201,7 +1211,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         if (it2->at("value")[0].is_number())
         {
         vector<double> values = it2->at("value").template get< vector<double> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++) 
         {
           int phenind = getPhenind(vdd,evols[i].val);
@@ -1223,7 +1234,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         }
         else{          
         vector<weightentry> values = it2->at("value").template get< vector<weightentry> >();
-        vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
+        vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
+        //vector<intPair> evols =  it2->at("evolvable").template get<vector<intPair> >();
         for (int i = 0; i<evols.size();i++)
          for (int j = 0; j<values.size();j++)
           if (evols[i].ind == values[j].from)

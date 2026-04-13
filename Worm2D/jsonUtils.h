@@ -151,7 +151,7 @@ void from_json(const json & j, strDoubDoub & w);
 void to_json(json & j, const strDoubDoub & w);
 void from_json(const json & j, intStr & w);
 json to_evo_json(const vector<intPair> & w);
-
+vector<intPair> from_evo_json(const json& j);
 
 
 
