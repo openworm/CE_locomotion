@@ -56,6 +56,7 @@ class EvoBase
     virtual ~EvoBase()
     {
       evolfile.close();
+      genhistfile.close();
       if (s) delete s;
     }
 

@@ -58,14 +58,6 @@ short_phen_names = {
 import numpy as np
 
 
-
-
-
-
-    
-
-
-
 def plot_phenonames(
     plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
     a=None,

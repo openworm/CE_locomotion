@@ -544,12 +544,14 @@ def run(a=None, **kwargs):
         input_filenames = glob.glob(a.outputFolderName + "/*" + file)
         for file1 in input_filenames:
             filename1 = pathlib.Path(file1).name
+            hf.clean_ragged_numeric_file(file1, a.outputFolderName + "/" + filename1)
+
             # np.loadtxt(file1)
-            arrs1 = hf.load_nonragged_arrays(file1)
-            data = arrs1[len(arrs1)-1] #use only last array
+            #arrs1 = hf.load_nonragged_arrays(file1)
+            #data = arrs1[len(arrs1)-1] #use only last array
             #data = np.genfromtxt(file1, dtype=float)
-            data = np.nan_to_num(data, nan=0.0)
-            np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
+            #data = np.nan_to_num(data, nan=0.0)
+            #np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):

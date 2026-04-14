@@ -279,17 +279,8 @@ void EvoBase::setUp()
     s->cptfilename = rename_file("search.cpt");
     //setFromCPT();
     
-    if (false){
-    string filename_ = rename_file("fitness.dat");
-    struct stat buffer; 
-    if (stat (filename_.c_str(), &buffer) == 0)
-    fileDropLines<double>(filename_, s->Generation(), 4);
-    filename_ = rename_file("genhistory.dat");
-    if (stat (filename_.c_str(), &buffer) == 0)
-    fileDropLines<double>(filename_ , s->Generation(), s->VectorSize()*3 + 1);
-    }
-
-    if  (doResume) {
+   
+    if  (false) {
         fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
         fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
         //fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
@@ -604,24 +595,9 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     phencur.FillContents(0.0);
     GenPhenMapping(gencur, phencur);
 
-    genhistfile << Generation << " " << gencur << " " << phencur;
+    genhistfile << (Generation + initGenNum) << " " << gencur << " " << phencur;
 
-    /* if (doneFirst){
-    genhistfile2 << Generation;
-
-    {vector<double> val = TVectorRatio<double>(gencur, genprev);
-    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
-    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
-    {vector<double> val = TVectorRatio<double>(phencur, phenprev);
-    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
-    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
-
-    genhistfile2 << endl;
-    } */
-
-    //doneFirst = true;
-    //phenprev = phencur;
-    //genprev = gencur;
+   
 
     TVector<double> avphen(1, itsVectSize());
     avphen.FillContents(0.0);
