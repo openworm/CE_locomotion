@@ -324,7 +324,7 @@ def plot_evols(a=None, **kwargs):
     # evol_data_1 = evol_data_orig #[:,1+phen_offset:]
     #
 
-    avlentop = 5
+    avlentop = 1
     if evol_data_1.ndim == 1:
         evol_data_1 = evol_data_1[np.newaxis, :]
     avlen = evol_data_1.shape[0] - 1
