@@ -4,9 +4,7 @@ import os
 import sys
 import neuromlLocal.utils as utils
 import helper_funcs as hf
-import numpy as np
 
-# import helper_funcs as hf
 # from importlib import import_module
 import shutil
 import glob
@@ -547,11 +545,11 @@ def run(a=None, **kwargs):
             hf.clean_ragged_numeric_file(file1, a.outputFolderName + "/" + filename1)
 
             # np.loadtxt(file1)
-            #arrs1 = hf.load_nonragged_arrays(file1)
-            #data = arrs1[len(arrs1)-1] #use only last array
-            #data = np.genfromtxt(file1, dtype=float)
-            #data = np.nan_to_num(data, nan=0.0)
-            #np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
+            # arrs1 = hf.load_nonragged_arrays(file1)
+            # data = arrs1[len(arrs1)-1] #use only last array
+            # data = np.genfromtxt(file1, dtype=float)
+            # data = np.nan_to_num(data, nan=0.0)
+            # np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):

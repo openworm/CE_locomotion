@@ -55,8 +55,6 @@ short_phen_names = {
     "NMJ gain map V": "GMapV",
 }
 
-import numpy as np
-
 
 def plot_phenonames(
     plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
@@ -66,9 +64,9 @@ def plot_phenonames(
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
-    evol_data_1 = evol_data_all[len(evol_data_all)-1] #use only the last array
+    evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
 
-    #evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+    # evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
 
     worm_file = hf.get_worm_file()
 
@@ -89,7 +87,7 @@ def plot_phenonames(
         phen_names = []
         phen_nums = []
         for val in evolvables:
-            if not (('active' in val) & (val['active']==False)):
+            if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
@@ -102,7 +100,6 @@ def plot_phenonames(
     else:
         print("PhenoNames needed for pheno plot")
         return
-
 
     print("checkDict")
     print(phen_names)
@@ -180,12 +177,10 @@ def plot_phenonames(
 
     for phen_name in phen_names_set:
         phen_name_list.append(phen_name)
-        #indices = [
+        # indices = [
         #    phen_nums[ind] - 1 for ind, val in enumerate(phen_names) if val == phen_name
-        #]
-        indices = [
-            ind for ind, val in enumerate(phen_names) if val == phen_name
-        ]
+        # ]
+        indices = [ind for ind, val in enumerate(phen_names) if val == phen_name]
         for val in evol_data_dict.values():
             if "pheno_avs" not in val:
                 val["pheno_avs"] = []
@@ -268,10 +263,10 @@ def plot_evols(a=None, **kwargs):
 
     plot_phenonames(folderName=a.folderName, modelName=a.modelName)
 
-    #evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
+    # evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
 
     evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
-    evol_data_1 = evol_data_all[len(evol_data_all)-1] #use only the last array
+    evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
 
     worm_file = hf.get_worm_file()
     if False:
@@ -292,7 +287,7 @@ def plot_evols(a=None, **kwargs):
         phen_names = []
         phen_nums = []
         for val in evolvables:
-            if not (('active' in val) & (val['active']==False)):
+            if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
@@ -306,7 +301,6 @@ def plot_evols(a=None, **kwargs):
     else:
         print("PhenoNames needed for pheno plot")
         return
-
 
     """  doPhenNames = False
     if "PhenoNames" in network_json_data:
@@ -410,11 +404,7 @@ def plot_evols(a=None, **kwargs):
                 for ind, val in enumerate(phen_names)
                 if val == phen_name
             ] """
-            indices = [
-                ind
-                for ind, val in enumerate(phen_names)
-                if val == phen_name
-            ]
+            indices = [ind for ind, val in enumerate(phen_names) if val == phen_name]
 
             for ind, val in enumerate(evol_data_list):
                 # for av_val, val in zip(evol_data_avs, evol_data_list):
@@ -708,7 +698,6 @@ def reload_single_run(a=None, **kwargs):
         ###  Body position
 
     if plot_format["do_body_plot"]:
-
         if a.modelName == "CO" or a.modelName == "W2DCO":
             body_file = hf.rename_file("bodypos.dat")
         else:

@@ -456,6 +456,7 @@ def plotHist(ax, x, y):
     # ax.ylabel('Average y')
     # plt.show()
 
+
 def load_nonragged_arrays(filename, dtype=float, delimiter=None, skip_empty=True):
     arrays = []
     current_rows = []
@@ -487,8 +488,6 @@ def load_nonragged_arrays(filename, dtype=float, delimiter=None, skip_empty=True
 
     return arrays
 
-
-import math
 
 def clean_ragged_numeric_file(input_path, output_path=None):
     """
