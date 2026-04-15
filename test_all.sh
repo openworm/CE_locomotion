@@ -86,7 +86,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf experiments/osc_sim_21 experiments/osc_sim_21_nml experiments/osc_sim_21_nml_musc
     rm -rf experiments/osc_sim_21all experiments/osc_sim_21all_nml experiments/osc_sim_21all_nml_musc
     
-    #rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
+    rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
     rm -rf testruns/COW2DSRE_test_out
    
 
