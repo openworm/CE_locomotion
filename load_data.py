@@ -70,8 +70,6 @@ def plot_phenonames(
 
     worm_file = hf.get_worm_file()
 
-   
-
     network_json_data = utils.getJsonFile(worm_file)
     vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
         "value"
@@ -239,44 +237,33 @@ def plot_phenonames(
 
 
 def getEvolTrans(evol_data):
-    evol_data_diff_1 = evol_data/evol_data[0]
-    evol_data_diff_11 = sign(evol_data_diff_1)*np.log(np.abs(evol_data_diff_1))
+    evol_data_diff_1 = evol_data / evol_data[0]
+    evol_data_diff_11 = sign(evol_data_diff_1) * np.log(np.abs(evol_data_diff_1))
     evol_data_diff_13 = evol_data - evol_data[0]
-    evol_data_diff_131 = sign(evol_data_diff_13[1:])*np.log(np.abs(evol_data_diff_13[1:]))
+    evol_data_diff_131 = sign(evol_data_diff_13[1:]) * np.log(
+        np.abs(evol_data_diff_13[1:])
+    )
 
     return [evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
 
 
-def plot_hist_1(evol_data, phen_size, phen_offset, filename1):
+def plot_cols_fig(plot_data, titles, gen_indices, phen_names, plot_cols, filename1):
+    # fig, axs = plt.subplots(plot_rows, 2, figsize=(10, plot_rows * 2))
 
-    gen_index_orig = evol_data[:, 0]  
-    gen_index_diff = gen_index_orig[1:]
-
-    # generation number, phenotype number (first is gen index)
-
-    evol_data = evol_data[:, 1 + phen_offset :] #here is the average values across the population
-
-    
-    plot_data = [evol_data] + getEvolTrans(evol_data)
-
-    #plot_data = [evol_data, evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
-    gen_indices = [gen_index_orig, gen_index_orig, gen_index_diff, gen_index_orig, gen_index_orig]
-    titles = ["Gen History", "Gen Hist change", "Gen Hist chan log", "Gen Hist perc change", 
-              "Gen Hist perc change log"]
-
-    plot_cols = 2
     plot_rows = math.ceil((len(plot_data)) / plot_cols)
     if plot_rows > 1:
         fig, axs = plt.subplots(
-            plot_rows, plot_cols, figsize=(plot_rows * 4, 10), squeeze=False
+            plot_rows,
+            plot_cols,
+            figsize=(plot_cols * 9 + 2, plot_rows * 3 + 6),
+            squeeze=False,
         )
     else:
         fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
 
-    phen_range = range(0, phen_size)
-    phen_label = range(1, phen_size + 1)
+    # phen_range = range(0, phen_size)
+    # phen_label = range(1, phen_size + 1)
 
-    
     initial_gen = 0
     final_gen = 1000
 
@@ -285,26 +272,70 @@ def plot_hist_1(evol_data, phen_size, phen_offset, filename1):
         row_num = int(plot_num / plot_cols)
         col_num = plot_num % plot_cols
         axs[row_num, col_num].set_title(title, fontsize=title_font_size)
-        for phen in phen_range:
+        for phen, phen_name in enumerate(phen_names):
             gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
             axs[row_num, col_num].plot(
                 gen_index[gen_seg],
                 plot_data_1[gen_seg, phen],
-                label="%i" % (phen),
-                linewidth=0.5,
+                label=phen_name + " %i" % (phen),
+                # linewidth=0.5,
             )
 
         axs[row_num, col_num].set_xlabel("Generation", fontsize=label_font_size)
         plot_num += 1
-    
+
+    fig.subplots_adjust(bottom=0.25)
+    handles, labels = axs.flat[0].get_legend_handles_labels()
+
+    fig.legend(
+        handles,
+        labels,
+        loc="lower center",
+        ncol=4,  # 4 columns -> 16 items becomes about 4x4
+        bbox_to_anchor=(0.5, 0.02),
+        frameon=True,
+    )
+
     filename = hf.rename_file(filename1)
     plt.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close()
 
 
-def plot_fit(a=None, **kwargs):
+def plot_hist_1(evol_data, phen_size, phen_offset, phen_names, filename1):
+    gen_index_orig = evol_data[:, 0]
+    gen_index_diff = gen_index_orig[1:]
 
+    # generation number, phenotype number (first is gen index)
+
+    evol_data = evol_data[
+        :, 1 + phen_offset :
+    ]  # here is the average values across the population
+
+    plot_data = [evol_data] + getEvolTrans(evol_data)
+
+    # plot_data = [evol_data, evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
+    gen_indices = [
+        gen_index_orig,
+        gen_index_orig,
+        gen_index_diff,
+        gen_index_orig,
+        gen_index_orig,
+    ]
+    titles = [
+        "Gen History",
+        "Gen Hist change",
+        "Gen Hist chan log",
+        "Gen Hist perc change",
+        "Gen Hist perc change log",
+    ]
+
+    plot_cols = 2
+
+    plot_cols_fig(plot_data, titles, gen_indices, phen_names, plot_cols, filename1)
+
+
+def plot_fit(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     hf.setFolder(a)
@@ -317,18 +348,14 @@ def plot_fit(a=None, **kwargs):
         hf.file_prefix = None
     file = hf.rename_file("fitness.dat")
     if not os.path.isfile(file):
-        print(
-            "doPlotEvol is True, fitness.dat file is necessary for evolution plots."
-        )
+        print("doPlotEvol is True, fitness.dat file is necessary for evolution plots.")
         return
-                
+
     evol_data_all = hf.load_nonragged_arrays(hf.rename_file("fitness.dat"))
     evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
     worm_file = hf.get_worm_file()
     network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
+    # vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"]["value"]
 
     if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
         evolvables = network_json_data["Evolvable"]["value"]
@@ -342,11 +369,9 @@ def plot_fit(a=None, **kwargs):
                 phen_names.append(name)
                 phen_nums.append(val["evotag"])
     else:
-        print(
-            "Evolvable names not found for plot_hist"
-        )
+        print("Evolvable names not found for plot_hist")
         return
-            
+
     avlentop = 1
     if evol_data_1.ndim == 1:
         evol_data_1 = evol_data_1[np.newaxis, :]
@@ -364,15 +389,15 @@ def plot_fit(a=None, **kwargs):
         )
     fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
-    #gen_index_orig = evol_data[:, 0]
-    ax_body.plot(evol_data[:,0], np.log(evol_data[:,(1,2)]), linewidth=0.5)
+    # gen_index_orig = evol_data[:, 0]
+    ax_body.plot(evol_data[:, 0], np.log(evol_data[:, (1, 2)]), linewidth=0.5)
     filename = hf.rename_file("FitnessHist.png")
     fig_body.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close()
-    
-def plot_hist(a=None, **kwargs):
 
+
+def plot_hist(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
 
     hf.setFolder(a)
@@ -398,7 +423,6 @@ def plot_hist(a=None, **kwargs):
         "value"
     ]
 
-
     if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
         evolvables = network_json_data["Evolvable"]["value"]
         phen_names = []
@@ -411,16 +435,13 @@ def plot_hist(a=None, **kwargs):
                 phen_names.append(name)
                 phen_nums.append(val["evotag"])
     else:
-        print(
-            "Evolvable names not found for plot_hist"
-        )
+        print("Evolvable names not found for plot_hist")
         return
-    #phen_nums[:] , phen_names[:] = map(list, zip(*sorted(zip(phen_nums, phen_names))))
-    #phen names should already be ordered correctly for gene
+    # phen_nums[:] , phen_names[:] = map(list, zip(*sorted(zip(phen_nums, phen_names))))
+    # phen names should already be ordered correctly for gene
 
     phen_offset = vectsize * 2
     phen_size = vectsize
-
 
     avlentop = 1
     if evol_data_1.ndim == 1:
@@ -438,29 +459,39 @@ def plot_hist(a=None, **kwargs):
             evol_data_1[:, phen], np.ones(avlen) / avlen, mode="valid"
         )
 
-
-    gen_index_orig = evol_data[:, 0]  
-    gen_index_diff = gen_index_orig[1:]
+    gen_index_orig = evol_data[:, 0]
+    # gen_index_diff = gen_index_orig[1:]
 
     # generation number, phenotype number (first is gen index)
 
-    evol_data_1 = evol_data[:, 1 + phen_offset :] #here is the average values across the population
+    evol_data_1 = evol_data[
+        :, 1 + phen_offset :
+    ]  # here is the average values across the population
     plot_data_1 = [evol_data_1] + getEvolTrans(evol_data_1)
 
-    evol_data_1 = evol_data[:, 1 + phen_size :] #here is the average values across the population
+    evol_data_1 = evol_data[
+        :, 1 + phen_size :
+    ]  # here is the average values across the population
     plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
 
-    
+    plot_data_3 = [plot_data_1[0], plot_data_1[1], plot_data_1[4], plot_data_2[4]]
 
+    gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
+    titles = [
+        "Gen History",
+        "Gen Hist change",
+        "Gen Hist perc change log",
+        "Best Gen Hist perc change log",
+    ]
 
+    print("phen names ", phen_names)
 
+    plot_hist_1(evol_data, phen_size, phen_offset, phen_names, "EvolutionHistory.png")
+    plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
 
-
-    plot_hist_1(evol_data, phen_size, phen_offset, "EvolutionHistory.png")
-    plot_hist_1(evol_data, phen_size, phen_size, "EvolutionHistoryMax.png")
-
-    
-
+    plot_cols_fig(
+        plot_data_3, titles, gen_indices, phen_names, 1, "EvolutionHistoryMult.png"
+    )
 
 
 def plot_evols(a=None, **kwargs):
@@ -486,289 +517,6 @@ def plot_evols(a=None, **kwargs):
     plot_fit(folderName=a.folderName, modelName=a.modelName)
 
     return
-
-
-    # evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
-
-    evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
-    evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
-
-    worm_file = hf.get_worm_file()
-    if False:
-        worm_file = hf.rename_file("worm_data_evo.json")
-        if not os.path.isfile(worm_file):
-            worm_file = hf.rename_file("worm_data_worm.json")
-        if not os.path.isfile(worm_file):
-            worm_file = hf.rename_file("worm_data.json")
-
-    network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
-
-    doPhenNames = False
-    if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
-        evolvables = network_json_data["Evolvable"]["value"]
-        phen_names = []
-        phen_nums = []
-        for val in evolvables:
-            if not (("active" in val) & (not val["active"])):
-                name = val["name"]
-                for key, val2 in short_phen_names.items():
-                    name = name.replace(key, val2)
-                phen_names.append(name)
-                phen_nums.append(val["evotag"])
-        doPhenNames = True
-    elif "PhenoNames" in network_json_data:
-        phen_names = network_json_data["PhenoNames"]["value"]
-        phen_nums = network_json_data["PhenoNamesNums"]["value"]
-        doPhenNames = True
-    else:
-        print("PhenoNames needed for pheno plot")
-        return
-
-    """  doPhenNames = False
-    if "PhenoNames" in network_json_data:
-        phen_names = network_json_data["PhenoNames"]["value"]
-        phen_nums = network_json_data["PhenoNamesNums"]["value"]
-        doPhenNames = True """
-
-    if a.modelName == "CO18" or a.modelName == "CO18Full":
-        network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
-        phen_names += network_json_data_RS18["PhenoNames"]["value"]
-        phen_nums += network_json_data_RS18["PhenoNamesNums"]["value"]
-
-    # print(phen_names)
-    # print(phen_nums)
-
-    print(vectsize)
-
-    phen_offset = vectsize * 2
-    phen_size = vectsize
-
-    # evol_data_1 = evol_data_orig #[:,1+phen_offset:]
-    #
-
-    avlentop = 1
-    if evol_data_1.ndim == 1:
-        evol_data_1 = evol_data_1[np.newaxis, :]
-    avlen = evol_data_1.shape[0] - 1
-    if avlen > avlentop:
-        avlen = avlentop
-    if avlen == 0:
-        avlen = 1
-
-    print(evol_data_1.shape)
-    evol_data = np.zeros((evol_data_1.shape[0] - avlen + 1, evol_data_1.shape[1]))
-    for phen in range(evol_data_1.shape[1]):
-        evol_data[:, phen] = np.convolve(
-            evol_data_1[:, phen], np.ones(avlen) / avlen, mode="valid"
-        )
-
-    # evol_data = hf.movingaverage(evol_data_1, avlen)
-
-    gen_index_orig = evol_data[
-        :, 0
-    ]  # generation number, phenotype number (first is gen index)
-
-    evol_data = evol_data[:, 1 + phen_offset :] #here is the average values across the population
-
-    plot_cols = 2
-
-    evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0] #percent change between initial and final
-
-    evol_data_full_diff = sign(evol_data_full_diff) * np.log(
-        np.abs(evol_data_full_diff)
-    )
-
-    evol_data_full_diff2 = evol_data[-1] - evol_data[0] #change between initial and final
-
-    evol_data_full_diff2 = sign(evol_data_full_diff2) * np.log(
-        np.abs(evol_data_full_diff2)
-    ) 
-
-    # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
-
-    evol_data_fin = sign(evol_data[-1]) * np.log(np.abs(evol_data[-1]))
-
-    evol_data_fin_actual = evol_data[-1]
-    evol_data_init = sign(evol_data[0]) * np.log(np.abs(evol_data[0]))
-    evol_data_init_actual = evol_data[0]
-
-    evol_data_list = [
-        evol_data_full_diff,
-        evol_data_full_diff2,
-        evol_data_init,
-        evol_data_fin,
-        evol_data_init_actual,
-        evol_data_fin_actual,
-    ]
-
-    evol_data_list_inds = [0, 1, 2, 2, 3, 3]
-
-    for data_val in evol_data_list:
-        data_val[np.isnan(data_val)] = 0
-        data_val[np.isinf(data_val)] = 0
-
-    evol_data_avs_titles = [
-        "Relative variation",
-        "Variation",
-        "Inital and Final value",
-        # "Initial value",
-        "Actual Final value",
-    ]
-
-    if doPhenNames:
-        phen_names_set = sorted(set(phen_names))
-        phen_name_list = []
-        evol_data_avs = [[] for x in range(len(evol_data_list))]
-        for phen_name in phen_names_set:
-            phen_name_list.append(phen_name)
-            """ indices = [
-                phen_nums[ind] - 1
-                for ind, val in enumerate(phen_names)
-                if val == phen_name
-            ] """
-            indices = [ind for ind, val in enumerate(phen_names) if val == phen_name]
-
-            for ind, val in enumerate(evol_data_list):
-                # for av_val, val in zip(evol_data_avs, evol_data_list):
-                evol_data_avs[ind].append(np.mean(val[indices]))
-
-        # phen_name_list = sorted(phen_name_list_1)
-        # evol_data_av = [evol_data_av_1[phen_name_list_1.index(phen_name)] for phen_name in phen_name_list]
-        # evol_data_av = evol_data_av_1[sorted_indices]
-
-        print(phen_name_list)
-        # print(evol_data_avs[0])
-
-    evol_data_diff_1 = evol_data/evol_data[0]
-    evol_data_diff_11 = sign(evol_data_diff_1)*np.log(np.abs(evol_data_diff_1))
-    evol_data_diff_13 = evol_data - evol_data[0]
-    evol_data_diff_131 = sign(evol_data_diff_13[1:])*np.log(np.abs(evol_data_diff_13[1:]))
-
-    evol_data_diff = evol_data[1:] - evol_data[0:-1]
-    
-    
-    #generation by generation difference in average pheno value
-
-    evol_data_diff_p = evol_data_diff/evol_data[0:-1]
-
-    evol_data_diff_sign = sign(evol_data_diff)
-
-    evol_data_diff_2 = (evol_data_diff_sign * np.log(np.abs(evol_data_diff))) - np.log(
-        np.abs(evol_data[0:-1])
-    ) 
-    #signed log percent variation?
-    
-    evol_data_diff_abs = evol_data_diff
-    gen_index_diff = gen_index_orig[1:]
-
-    plot_data = [evol_data, evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
-    # evol_data = evol_data[..., np.newaxis]
-    gen_indices = [gen_index_orig, gen_index_orig, gen_index_diff, gen_index_orig, gen_index_orig]
-    titles = ["Gen History", "Gen Hist change", "Gen Hist chan log", "Gen Hist perc change", 
-              "Gen Hist perc change log"]
-
-
-    plot_rows = math.ceil((len(plot_data)) / plot_cols)
-    if plot_rows > 1:
-        fig, axs = plt.subplots(
-            plot_rows, plot_cols, figsize=(plot_rows * 4, 10), squeeze=False
-        )
-    else:
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
-
-    phen_range = range(0, phen_size)
-    phen_label = range(1, phen_size + 1)
-
-    
-    initial_gen = 0
-    final_gen = 1000
-
-    plot_num = 0
-    for plot_data_1, title, gen_index in zip(plot_data, titles, gen_indices):
-        row_num = int(plot_num / plot_cols)
-        col_num = plot_num % plot_cols
-        axs[row_num, col_num].set_title(title, fontsize=title_font_size)
-        for phen in phen_range:
-            gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
-            axs[row_num, col_num].plot(
-                gen_index[gen_seg],
-                plot_data_1[gen_seg, phen],
-                label="%i" % (phen),
-                linewidth=0.5,
-            )
-
-        axs[row_num, col_num].set_xlabel("Generation", fontsize=label_font_size)
-        plot_num += 1
-
-    if (False):
-        row_num = int(plot_num / plot_cols)
-        col_num = plot_num % plot_cols
-        axs[row_num, col_num].set_title("Total variation", fontsize=title_font_size)
-        # axs[row_num, col_num].plot(phen_label, evol_data_full_diff)
-        axs[row_num, col_num].plot(phen_label, evol_data_fin, label="final")
-        axs[row_num, col_num].plot(phen_label, evol_data_init, label="initial")
-        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-        axs[row_num, col_num].legend()
-        fig.tight_layout()
-
-    # fig.subplots_adjust(hspace=0.5)
-
-    filename = hf.rename_file("Evolution.png")
-    plt.savefig(filename, bbox_inches="tight", dpi=300)
-    print("Saved plot image to: %s" % filename)
-    plt.close()
-
-    if doPhenNames:
-        plot_cols = 1
-        plot_rows = len(evol_data_avs_titles)
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(20, 20), squeeze=False)
-        # for ind, (val, title) in enumerate(zip(evol_data_avs, evol_data_avs_titles)):
-        for ind, val in zip(evol_data_list_inds, evol_data_avs):
-            row_num, col_num = getRowsCols(ind, plot_cols)
-            axs[row_num, col_num].plot(range(len(val)), val)
-            if axs[row_num, col_num].get_title() == "":
-                axs[row_num, col_num].set_title(
-                    evol_data_avs_titles[ind], fontsize=title_font_size
-                )
-                # axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-                # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-                axs[row_num, col_num].set_xticks(range(len(val)))
-                # axs[row_num, col_num].set_xticklabels(phen_name_list, rotation='vertical')
-                axs[row_num, col_num].grid(axis="x")
-                axs[row_num, col_num].grid(axis="y")
-
-        axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-        # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-        axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
-
-        fig.tight_layout()
-        # fig.subplots_adjust(hspace=0.5)
-
-        filename = hf.rename_file("Evolution_averages.png")
-        plt.savefig(filename, bbox_inches="tight", dpi=300)
-        print("Saved plot image to: %s" % filename)
-        plt.close()
-
-        if False:
-            fig, axs = plt.subplots(1, 1, figsize=(20, 10), squeeze=False)
-            axs[0, 0].set_title("Actual final value", fontsize=title_font_size)
-            val = evol_data_fin_actual
-            axs[0, 0].plot(range(len(val)), val)
-            axs[0, 0].set_xticks(range(len(val)))
-            axs[0, 0].grid(axis="x")
-            axs[0, 0].grid(axis="y")
-            axs[0, 0].set_xlabel("Phenotype #", fontsize=label_font_size)
-            # axs[row_num, col_num].xticks(range(len(evol_data_av), phen_name_list))
-            axs[0, 0].set_xticklabels(phen_name_list, rotation="vertical")
-            fig.tight_layout()
-            # fig.subplots_adjust(hspace=0.5)
-
-            filename = hf.rename_file("Actual_values.png")
-            plt.savefig(filename, bbox_inches="tight", dpi=300)
-            print("Saved plot image to: %s" % filename)
 
 
 # def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):
