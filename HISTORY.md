@@ -1,6 +1,8 @@
-# Neuromechanical model of forward and backward locomotion in _C. elegans_
+# Neuromechanical models of forward and backward locomotion in _C. elegans_
 
-A listing of the various publications and code releases related to this model of C. elegans forward and backward locomotion by Dr. Eduardo J. Izquiredo, Dr. Erick Olivares and Prof. Randall Beer.
+A listing of the various publications and code releases related to this model of C. elegans forward and backward locomotion.
+
+**Note: currently this is focussed on publications related to the models of Dr. Eduardo J. Izquiredo, Dr. Erick Olivares and Prof. Randall Beer.**
 
 ## 2007
 
@@ -9,6 +11,8 @@ A listing of the various publications and code releases related to this model of
 **Boyle, J. H., Bryden, J., & Cohen, N.** 
 
 Technical description of a neuro-mechanical model integrating known neural connectivity, muscle dynamics, and body mechanics to generate forward undulatory locomotion; groundwork for later expanded models of gait modulation.
+
+https://link.springer.com/chapter/10.1007/978-3-540-69158-7_5
 
 <details><summary>Abstract</summary>
 One of the most tractable organisms for the study of nervous systems is the nematode Caenorhabditis elegans, whose locomotion in particular has been the subject of a number of models. In this paper we present a first integrated neuro-mechanical model of forward locomotion. We find that a previous neural model is robust to the addition of a body with mechanical properties, and that the integrated model produces oscillations with a more realistic frequency and waveform than the neural model alone. We conclude that the body and environment are likely to be important components of the worm’s locomotion subsystem.
