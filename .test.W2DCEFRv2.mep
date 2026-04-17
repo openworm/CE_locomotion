@@ -3,7 +3,7 @@ system: Testing activity of some neurons
 experiments:
     Test:
         expected:
-            spike times: [11.155, 13.805, 16.305, 18.805]
+            spike times: [10.605, 13.155, 15.705, 18.255]
     Test2:
         expected:
-            spike times: [21.505, 23.505, 25.655, 27.705, 29.655]
+            spike times: [22.055, 26.805, 29.255]

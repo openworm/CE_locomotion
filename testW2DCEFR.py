@@ -7,7 +7,7 @@ run(
     transient=10,
     maxGens=5,
     popSize=26,
-    RandSeed=81235,
+    RandSeed=81230,
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2DCE_reverse",
