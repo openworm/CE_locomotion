@@ -516,6 +516,8 @@ def getAvData(filename1, avlentop=1):
 
 def plot_fit():
     file = getFileName("fitness.dat")
+    if file is None: return
+
     evol_data = getAvData(file)
 
     fig_body, ax_body = plt.subplots(figsize=(5, 5))
@@ -550,8 +552,10 @@ def plot_fig_g(
     gen_index = gen_index_orig
     gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
 
-    ax1.plot(gen_index[gen_seg], fit_data)
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg,0], label = 'Best phenotype')
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg,1], label = 'Population fitness')
     ax1.set_title("Fitness", fontsize=title_font_size)
+    ax1.legend()
     plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
     ax3.set_xlabel("Generation", fontsize=label_font_size)
     ax5.set_xlabel("Generation", fontsize=label_font_size)
@@ -568,6 +572,7 @@ def plot_fig_g(
 
 def plot_hist():
     file = getFileName("genhistory.dat")
+    if file is None: return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
     fit_data = np.log(fit_data[:, (1, 2)])
@@ -631,10 +636,10 @@ def plot_hist():
     gen_indices = [gen_index_orig_av, gen_index_orig_av, gen_index_orig, gen_index_orig]
 
     titles = [
-        "Gen Hist perc change",
-        "Gen Hist perc change log",
-        "Gen History",
-        "Best Gen Hist perc change",
+        "Pop percent variation",
+        "Pop signed log perc var",
+        "Pop phenotype value",
+        "Best fit percent variation",
     ]
 
     print("phen names ", phen_names)
