@@ -131,7 +131,9 @@ def plot_phenonames(
     plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
     a=None,
 ):
-    evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
+    file = hf.rename_file("genhistory.dat")
+    if not os.path.isfile(file): return
+    evol_data_all = hf.load_nonragged_arrays(file)
     evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
 
     # evol_data_1 = np.loadtxt(hf.rename_file("genhistory.dat"))
@@ -195,11 +197,11 @@ def plot_phenonames(
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
     evol_data_full_diff = evol_data_full_diff[-1] - evol_data_full_diff[0]
 
-    #evol_data_full_diff20 = evol_data - evol_data[0]
+    # evol_data_full_diff20 = evol_data - evol_data[0]
 
-    #evol_data_full_diff2 = sign(evol_data_full_diff20) * np.log(
+    # evol_data_full_diff2 = sign(evol_data_full_diff20) * np.log(
     #    np.abs(evol_data_full_diff20)
-    #)
+    # )
 
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
 
@@ -516,7 +518,8 @@ def getAvData(filename1, avlentop=1):
 
 def plot_fit():
     file = getFileName("fitness.dat")
-    if file is None: return
+    if file is None:
+        return
 
     evol_data = getAvData(file)
 
@@ -552,8 +555,8 @@ def plot_fig_g(
     gen_index = gen_index_orig
     gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
 
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg,0], label = 'Best phenotype')
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg,1], label = 'Population fitness')
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 0], label="Best phenotype")
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 1], label="Population fitness")
     ax1.set_title("Fitness", fontsize=title_font_size)
     ax1.legend()
     plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
@@ -572,7 +575,8 @@ def plot_fig_g(
 
 def plot_hist():
     file = getFileName("genhistory.dat")
-    if file is None: return
+    if file is None:
+        return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
     fit_data = np.log(fit_data[:, (1, 2)])
