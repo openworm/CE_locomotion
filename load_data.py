@@ -175,8 +175,9 @@ def plot_phenonames(
     phen_offset = vectsize * 2
     # phen_size = vectsize
 
-    avlentop = 1
-    evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
+    #avlentop = 1
+    #evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
+    evol_data = evol_data_1
 
     # gen_index_orig = evol_data[:, 0]
 
@@ -191,7 +192,10 @@ def plot_phenonames(
         np.abs(evol_data_full_diff0)
     )
 
-    avlentop = 10
+    avlentop = 5
+    if hasattr(a, 'evoAvLen'):
+        avlentop = a.evoAvLen
+    
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
     evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
@@ -557,7 +561,7 @@ def plot_fig_g(
 
     ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 0], label="Best phenotype")
     ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 1], label="Population fitness")
-    ax1.set_title("Fitness", fontsize=title_font_size)
+    ax1.set_title("Log Fitness", fontsize=title_font_size)
     ax1.legend()
     plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
     ax3.set_xlabel("Generation", fontsize=label_font_size)
@@ -573,7 +577,7 @@ def plot_fig_g(
     plt.close()
 
 
-def plot_hist():
+def plot_hist(a=None):
     file = getFileName("genhistory.dat")
     if file is None:
         return
@@ -610,7 +614,9 @@ def plot_hist():
     phen_offset = vectsize * 2
     phen_size = vectsize
 
-    avlentop = 10
+    avlentop = 5
+    if hasattr(a, 'evoAvLen'):
+        avlentop = a.evoAvLen
     gen_index_orig = evol_data[:, 0]
     # gen_index_diff = gen_index_orig[1:]
     # gen_index_orig_av = getAvData_1(gen_index_orig, avlentop = avlentop)
@@ -727,7 +733,7 @@ def plot_evols(a=None, **kwargs):
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
-    plot_hist()
+    plot_hist(a=a)
     plot_fit()
     plot_phenonames(a=a)
 

@@ -934,7 +934,7 @@ def run(a=None, **kwargs):
         if doW2D and doPlotEvol:
             from load_data import plot_evols
 
-            plot_evols(folderName=a.outputFolderName, modelName=model_name)
+            plot_evols(a, folderName=a.outputFolderName, modelName=model_name)
 
     if model_name == "CO18" or model_name == "CO18Full":
         reload_single_run(
