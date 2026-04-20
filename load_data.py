@@ -192,7 +192,7 @@ def plot_phenonames(
         np.abs(evol_data_full_diff0)
     )
 
-    avlentop = 5
+    avlentop = 1
     if hasattr(a, 'evoAvLen'):
         avlentop = a.evoAvLen
     
@@ -614,7 +614,7 @@ def plot_hist(a=None):
     phen_offset = vectsize * 2
     phen_size = vectsize
 
-    avlentop = 5
+    avlentop = 1
     if hasattr(a, 'evoAvLen'):
         avlentop = a.evoAvLen
     gen_index_orig = evol_data[:, 0]

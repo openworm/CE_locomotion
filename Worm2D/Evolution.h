@@ -1712,7 +1712,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     double xt = w.CoMx(), xtp;
     double yt = w.CoMy(), ytp;
 
-    cout << "xxs " << xt << " " << yt << endl;
+    //cout << "xxs " << xt << " " << yt << endl;
 
     
 
@@ -1744,7 +1744,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     //assert(0);
 
-    cout << "fitness " << fitness << endl;
+    //cout << "fitness " << fitness << endl;
 
     return fitness;
 }
