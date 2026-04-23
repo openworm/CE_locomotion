@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import copy
+import helper_funcs as hf
 
 from neuroml import (
     ElectricalProjection,
@@ -249,7 +250,7 @@ def process_args():
     return parser.parse_args()
 
 
-jsonToStringMap = {"head": "Head neuron", "interneuron": "Interneuron"}
+jsonToStringMap = {"head": "Head Neurons", "interneuron": "Interneurons", "VNC": "VNC Neurons"}
 
 
 def getPlotFormat(network_json_data):
@@ -276,7 +277,7 @@ def getPlotFormat(network_json_data):
         ind = 1
         for val in section_names[1:]:
             if oldval != val:
-                if oldval != "VNC":
+                if oldval != "dummy":
                     oldval1 = oldval
                     if oldval in jsonToStringMap:
                         oldval1 = jsonToStringMap[oldval]
@@ -286,13 +287,17 @@ def getPlotFormat(network_json_data):
                 ind = 0
                 oldval = val
             ind = ind + 1
-        if oldval != "VNC":
+        if oldval != "dummy":
             oldval1 = oldval
             if oldval in jsonToStringMap:
                 oldval1 = jsonToStringMap[oldval]
             plot_format["fig_titles"].append(oldval1)
             plot_format["fig_labels"].append("Neu")
             plot_format["data_sizes"].append(ind)
+            
+        hf.move_value(plot_format["fig_titles"], 'VNC Neurons', 
+                               plot_format["fig_labels"], plot_format["data_sizes"], to="back")
+        
 
         """ vncind = plot_format["fig_titles"].index("VNC")
         plot_format["fig_titles"].append(plot_format["fig_titles"].pop(vncind))
@@ -337,7 +342,7 @@ def getPlotFormat(network_json_data):
     plot_format["do_curv_plot"] = True
 
     print(plot_format)
-    exit
+    #exit
     return plot_format
 
 

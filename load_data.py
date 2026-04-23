@@ -6,6 +6,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import sys
+import random
 
 # import argparse
 import os
@@ -72,13 +73,56 @@ def distinct_30_colors():
 
     return list(c4) + [colors[i] for i in order]
 
+import matplotlib.colors as mcolors
 
+def distinct_colors_100(n):
+    hues = np.linspace(0, 1, n, endpoint=False)
+    vals = [0.85, 0.65]   # alternate brightness
+    sats = [0.9, 0.75]    # alternate saturation
+
+    colors = []
+    for i, h in enumerate(hues):
+        colors.append(mcolors.hsv_to_rgb((h, sats[i % 2], vals[i % 2])))
+    return colors
+
+def distinct_ordered_hsv_colors(n, step=37, saturation=0.85, value=0.9):
+    """
+    Generate n colours with hues evenly spaced around the colour wheel,
+    then reorder them so neighbouring colours are well separated.
+
+    step must be coprime to n.
+    """
+    if np.gcd(step, n) != 1:
+        raise ValueError("step must be coprime to n")
+
+    # Evenly spaced hues
+    hues = np.linspace(0, 1, n, endpoint=False)
+
+    # Reorder indices so neighbours are far apart in hue
+    order = [(i * step) % n for i in range(n)]
+
+    return [mcolors.hsv_to_rgb((hues[i], saturation, value)) for i in order]
+
+
+
+
+colors30 = distinct_colors_100(100)
+colors30 = distinct_ordered_hsv_colors(100, step=37)
 colors30 = distinct_30_colors()
+
 linestyles = ["-", "--", "-.", ":"]
 style_cycle = cycler(color=colors30) + cycler(
     linestyle=list(itertools.islice(itertools.cycle(linestyles), len(colors30)))
 )
+random.seed(1234)
 
+N = 120
+colors = colors30*3
+#colors = [colors30[i % len(colors30)] for i in range(N)]
+linestyles = [random.choice(linestyles) for _ in range(N)]
+
+#ax.set_prop_cycle(cycler(color=colors) + cycler(linestyle=linestyles))
+style_cycle = cycler(color=colors) + cycler(linestyle=linestyles)
 
 plt.rcParams["axes.prop_cycle"] = style_cycle
 
@@ -226,31 +270,37 @@ def plot_phenonames(
             "value": evol_data_full_diff0,
             "title": "Perc variation",
             "color": "black",
+            "linestyle" : "-"
         },
         "var": {
             "value": evol_data_full_diff,
             "title": "Signed log perc var",
             "color": "black",
+            "linestyle" : "-"
         },
         "final_log": {
             "value": evol_data_fin,
             "title": "Signed log final value",
             "color": "red",
+            "linestyle" : "--"
         },
         "initial_log": {
             "value": evol_data_init,
             "title": "Signed log initial value",
             "color": "black",
+            "linestyle" : "-"
         },
         "final": {
             "value": evol_data_fin_actual,
             "title": "Final value",
             "color": "red",
+            "linestyle" : "--"
         },
         "initial": {
             "value": evol_data_init_actual,
             "title": "Initial value",
             "color": "black",
+            "linestyle" : "-"
         },
     }
 
@@ -274,12 +324,13 @@ def plot_phenonames(
 
     print(phen_name_list)
 
-    fsize = 10
+    fsize_cols, fsize_rows = 10, 10
+    fsize_cols_2 = 10 * len(phen_names)/30 
     plot_cols = 1
     plot_rows = len(plot_list)
-    fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(fsize, fsize), squeeze=False)
+    fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(fsize_cols, fsize_rows), squeeze=False)
     fig2, axs2 = plt.subplots(
-        plot_rows, plot_cols, figsize=(fsize, fsize), squeeze=False
+        plot_rows, plot_cols, figsize=(fsize_cols_2, fsize_rows), squeeze=False
     )
 
     for ind, val in enumerate(plot_list):
@@ -292,6 +343,7 @@ def plot_phenonames(
                     val3,
                     label=evol_data_dict[val2]["title"],
                     color=evol_data_dict[val2]["color"],
+                    linestyle = evol_data_dict[val2]["linestyle"],
                 )
                 val3 = evol_data_dict[val2]["value"]
                 axs2[row_num, col_num].plot(
@@ -299,6 +351,7 @@ def plot_phenonames(
                     val3,
                     label=evol_data_dict[val2]["title"],
                     color=evol_data_dict[val2]["color"],
+                    linestyle = evol_data_dict[val2]["linestyle"],
                 )
         else:
             val3 = evol_data_dict[val]["pheno_avs"]
@@ -307,6 +360,7 @@ def plot_phenonames(
                 val3,
                 label=evol_data_dict[val]["title"],
                 color=evol_data_dict[val]["color"],
+                linestyle = evol_data_dict[val]["linestyle"],
             )
             val3 = evol_data_dict[val]["value"]
             axs2[row_num, col_num].plot(
@@ -314,6 +368,7 @@ def plot_phenonames(
                 val3,
                 label=evol_data_dict[val]["title"],
                 color=evol_data_dict[val]["color"],
+                linestyle = evol_data_dict[val]["linestyle"],
             )
 
         axs2[row_num, col_num].set_xticks(range(len(val3)))
@@ -345,9 +400,9 @@ def plot_phenonames(
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
     axs2[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs2[row_num, col_num].set_xticklabels(phen_names, rotation="vertical")
-    for tick, color in zip(axs[row_num, col_num].get_xticklabels(), colors30):
+    for tick, color in zip(axs[row_num, col_num].get_xticklabels(), cycle(colors30)):
         tick.set_color(color)
-    for tick, color in zip(axs2[row_num, col_num].get_xticklabels(), colors30):
+    for tick, color in zip(axs2[row_num, col_num].get_xticklabels(), cycle(colors30)):
         tick.set_color(color)
 
     fig.tight_layout()
@@ -559,8 +614,8 @@ def plot_fig_g(
     gen_index = gen_index_orig
     gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
 
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 0], label="Best phenotype")
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 1], label="Population fitness")
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 0], label="Best phenotype", color='black', linestyle = '-')
+    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 1], label="Population fitness", color='red', linestyle = '-')
     ax1.set_title("Log Fitness", fontsize=title_font_size)
     ax1.legend()
     plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
@@ -773,6 +828,7 @@ def reload_single_run(a=None, **kwargs):
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
+    
     if (main_model_name is not None) and (main_model_name == "COW2DSR"):
         plot_format = utils.getPlotFormat(network_json_data)
     else:
@@ -812,7 +868,7 @@ def reload_single_run(a=None, **kwargs):
             axs[plot_num, 0].plot(
                 t_data[data_seg],
                 act_data[i][data_seg],
-                label=label + " %i" % (i - offset),
+                label=label + " %i" % (i - data_offset),
                 linewidth=0.5,
             )
             # axs[plot_num, 0].xaxis.set_ticklabels([])

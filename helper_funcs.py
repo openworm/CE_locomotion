@@ -16,6 +16,42 @@ label_font_size = 14
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
+def move_value_to_front(reference_list, value, *other_lists):
+    # find where the value is in the first list
+    idx = reference_list.index(value)   # raises ValueError if not found
+
+    def move_index_to_front(lst, i):
+        item = lst.pop(i)
+        lst.insert(0, item)
+
+    # move in the reference list
+    move_index_to_front(reference_list, idx)
+
+    # move in all the other lists
+    for lst in other_lists:
+        if len(lst) <= idx:
+            raise IndexError("One of the other lists is too short.")
+        move_index_to_front(lst, idx)
+
+def move_value(reference_list, value, *other_lists, to="front"):
+    idx = reference_list.index(value)   # raises ValueError if not found
+
+    def move_index(lst, i):
+        item = lst.pop(i)
+        if to == "front":
+            lst.insert(0, item)
+        elif to == "back":
+            lst.append(item)
+        else:
+            raise ValueError("to must be 'front' or 'back'")
+
+    move_index(reference_list, idx)
+
+    for lst in other_lists:
+        if len(lst) <= idx:
+            raise IndexError("One of the other lists is too short.")
+        move_index(lst, idx)
+
 
 def get_worm_file():
     worm_file = rename_file("worm_data_worm.json")
