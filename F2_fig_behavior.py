@@ -149,7 +149,7 @@ def make_fig(model_name):
     )  # body radius, from BBC model
     worm_plot_period = worm_plot_time / (step_size * skip_steps)
     for k, t in enumerate(np.linspace(0, worm_plot_period, 6)):
-        print(t)
+        #print(t)
         plot_worm(ax0[k], int(t))
 
     ################################################
@@ -219,7 +219,7 @@ def make_fig(model_name):
             print(plot_cell_unit)
             print("Index error")
             exit()
-        print("cell ind is ", ind1)
+        #print("cell ind is ", ind1)
         # ind1 = cell_names.index(cell)
         ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax3.set_xlim(plot_transient, plot_transient + plot_time)
@@ -251,7 +251,7 @@ def make_fig(model_name):
         if ind1 is None:
             print("Index error")
             exit()
-        print("cell ind is ", ind1)
+        #print("cell ind is ", ind1)
         # ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
         ax4.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax4.set_xlim(plot_transient, plot_transient + plot_time)
@@ -282,3 +282,4 @@ def make_fig(model_name):
     fig.subplots_adjust(left=0.08, bottom=0.02, right=1.0, top=0.98)
     plt.savefig(hf.rename_file("behavior.png"), dpi=100)
     plt.savefig(hf.rename_file("behavior.pdf"))
+    plt.close()

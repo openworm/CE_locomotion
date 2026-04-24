@@ -208,8 +208,8 @@ def plot_phenonames(
         print("PhenoNames needed for pheno plot")
         return
 
-    print("checkDict")
-    print(phen_names)
+    #print("checkDict")
+    #print(phen_names)
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
@@ -322,7 +322,7 @@ def plot_phenonames(
                 val["pheno_avs"] = []
             val["pheno_avs"].append(np.mean(val["value"][indices]))
 
-    print(phen_name_list)
+    #print(phen_name_list)
 
     fsize_cols, fsize_rows = 10, 10
     fsize_cols_2 = 10 * len(phen_names)/30 
@@ -408,7 +408,7 @@ def plot_phenonames(
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages_redo.png")
+    filename = hf.rename_file("Evolution_averages.png")
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig)
@@ -416,7 +416,7 @@ def plot_phenonames(
     fig2.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages_redo_2.png")
+    filename = hf.rename_file("Evolution_averages_2.png")
     fig2.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig2)
@@ -558,7 +558,7 @@ def getAvData_1(evol_data_1, avlentop=1):
     if avlen == 0:
         avlen = 1
 
-    print(evol_data_1.shape)
+    #print(evol_data_1.shape)
     evol_data = np.zeros((evol_data_1.shape[0] - avlen + 1, evol_data_1.shape[1]))
     for phen in range(evol_data_1.shape[1]):
         evol_data[:, phen] = np.convolve(
@@ -628,7 +628,7 @@ def plot_fig_g(
     ax_leg.legend(handles, labels, loc="best", ncol=3, frameon=True)
 
     fig_g.savefig(filename1, bbox_inches="tight", dpi=300)
-    # print("Saved plot image to: %s" % filename)
+    print("Saved plot image to: %s" % filename1)
     plt.close()
 
 
@@ -707,10 +707,10 @@ def plot_hist(a=None):
         "Best fit percent variation",
     ]
 
-    print("phen names ", phen_names)
+    #print("phen names ", phen_names)
 
-    plot_hist_1(evol_data, phen_size, phen_offset, phen_names, "EvolutionHistory.png")
-    plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
+    #plot_hist_1(evol_data, phen_size, phen_offset, phen_names, "EvolutionHistory.png")
+    #plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
 
     plot_fig_g(
         fit_data,
@@ -719,7 +719,7 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_names,
-        hf.rename_file("Gridfig.png"),
+        hf.rename_file("EvoHist.png"),
     )
 
     phen_names_set = sorted(set(phen_names))
@@ -743,41 +743,42 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_names_set,
-        hf.rename_file("Gridfig_av.png"),
+        hf.rename_file("EvoHist_av.png"),
     )
 
-    plot_cols = 2
-    plot_rows = math.ceil((len(plot_data_3) + 1) / plot_cols)
-    if plot_rows > 1:
-        fig, axs = plt.subplots(
-            plot_rows,
-            plot_cols,
-            figsize=(plot_cols * 9 + 2, plot_rows * 3 + 16),
-            squeeze=False,
+    if False:
+        plot_cols = 2
+        plot_rows = math.ceil((len(plot_data_3) + 1) / plot_cols)
+        if plot_rows > 1:
+            fig, axs = plt.subplots(
+                plot_rows,
+                plot_cols,
+                figsize=(plot_cols * 9 + 2, plot_rows * 3 + 16),
+                squeeze=False,
+            )
+        else:
+            fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
+
+        # phen_range = range(0, phen_size)
+        # phen_label = range(1, phen_size + 1)
+
+        initial_gen = 0
+        final_gen = 1000
+
+        gen_index = gen_index_orig
+        gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
+
+        axs[0, 0].plot(gen_index[gen_seg], fit_data)
+        axs[0, 0].set_title("Fitness", fontsize=title_font_size)
+
+        plot_cols_fig_1(
+            fig, axs, plot_data_3, titles, gen_indices, phen_names, plot_cols, 1
         )
-    else:
-        fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
 
-    # phen_range = range(0, phen_size)
-    # phen_label = range(1, phen_size + 1)
-
-    initial_gen = 0
-    final_gen = 1000
-
-    gen_index = gen_index_orig
-    gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
-
-    axs[0, 0].plot(gen_index[gen_seg], fit_data)
-    axs[0, 0].set_title("Fitness", fontsize=title_font_size)
-
-    plot_cols_fig_1(
-        fig, axs, plot_data_3, titles, gen_indices, phen_names, plot_cols, 1
-    )
-
-    filename = hf.rename_file("EvolutionHistoryMult.png")
-    plt.savefig(filename, bbox_inches="tight", dpi=300)
-    print("Saved plot image to: %s" % filename)
-    plt.close()
+        filename = hf.rename_file("EvolutionHistoryMult.png")
+        plt.savefig(filename, bbox_inches="tight", dpi=300)
+        print("Saved plot image to: %s" % filename)
+        plt.close()
 
 
 def plot_evols(a=None, **kwargs):

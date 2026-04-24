@@ -6,6 +6,10 @@ import math
 from scipy.stats import binned_statistic
 import sys
 from functools import partial
+import ipywidgets as widgets
+import json
+import html
+
 
 dir_name = None
 file_prefix = None
@@ -16,41 +20,145 @@ label_font_size = 14
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
-def move_value_to_front(reference_list, value, *other_lists):
-    # find where the value is in the first list
-    idx = reference_list.index(value)   # raises ValueError if not found
 
-    def move_index_to_front(lst, i):
-        item = lst.pop(i)
-        lst.insert(0, item)
+def short_repr(x, max_len=80):
+    text = json.dumps(x, ensure_ascii=False)
+    if len(text) > max_len:
+        text = text[:max_len] + "..."
+    return html.escape(text)
 
-    # move in the reference list
-    move_index_to_front(reference_list, idx)
 
-    # move in all the other lists
-    for lst in other_lists:
-        if len(lst) <= idx:
-            raise IndexError("One of the other lists is too short.")
-        move_index_to_front(lst, idx)
+def make_json_tree(obj, title="root"):
+    if isinstance(obj, dict):
+        children = []
+        titles = []
 
-def move_value(reference_list, value, *other_lists, to="front"):
-    idx = reference_list.index(value)   # raises ValueError if not found
+        for key, value in obj.items():
+            children.append(make_json_tree(value, key))
 
-    def move_index(lst, i):
-        item = lst.pop(i)
-        if to == "front":
-            lst.insert(0, item)
-        elif to == "back":
-            lst.append(item)
+            if isinstance(value, dict):
+                titles.append(f"{key}  {{...}}")
+            elif isinstance(value, list):
+                titles.append(f"{key}  [...]")
+            else:
+                titles.append(f"{key}: {short_repr(value)}")
+
+        acc = widgets.Accordion(children=children)
+        for i, t in enumerate(titles):
+            acc.set_title(i, t)
+
+        return acc
+
+    elif isinstance(obj, list):
+        if all(is_simple(x) for x in obj):
+            text = json.dumps(obj, indent=2, ensure_ascii=False)
+            return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+        children = []
+        titles = []
+
+        for value in obj:
+            children.append(make_json_tree(value))
+
+            if isinstance(value, dict):
+                titles.append("{...}")
+            elif isinstance(value, list):
+                titles.append("[...]")
+            else:
+                titles.append(short_repr(value))
+
+        acc = widgets.Accordion(children=children)
+        for i, t in enumerate(titles):
+            acc.set_title(i, t)
+
+        return acc
+
+    else:
+        text = json.dumps(obj, indent=2, ensure_ascii=False)
+        return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+
+def is_simple(value):
+    return isinstance(value, (str, int, float, bool)) or value is None
+
+
+def json_widget(obj):
+    if isinstance(obj, dict):
+        children = []
+        titles = []
+
+        for key, value in obj.items():
+            children.append(json_widget(value))
+            titles.append(str(key))
+
+        acc = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            acc.set_title(i, title)
+
+        return acc
+
+    elif isinstance(obj, list):
+        if all(is_simple(x) for x in obj):
+            text = json.dumps(obj, indent=2)
+            return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
         else:
-            raise ValueError("to must be 'front' or 'back'")
+            children = [json_widget(value) for value in obj]
 
-    move_index(reference_list, idx)
+            acc = widgets.Accordion(children=children)
 
-    for lst in other_lists:
-        if len(lst) <= idx:
-            raise IndexError("One of the other lists is too short.")
-        move_index(lst, idx)
+            # Hide the numeric index by using a generic or blank title
+            for i in range(len(children)):
+                acc.set_title(i, "")
+
+            return acc
+
+    else:
+        text = json.dumps(obj, indent=2)
+        return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+    
+
+def json_widget_2(obj, name="root"):
+    """
+    Recursively display JSON-like Python objects using ipywidgets.
+    Supports dicts, lists, strings, numbers, booleans, and None.
+    """
+
+    if isinstance(obj, dict):
+        children = []
+        titles = []
+
+        for key, value in obj.items():
+            children.append(json_widget(value, str(key)))
+            titles.append(str(key))
+
+        accordion = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            accordion.set_title(i, title)
+
+        return accordion
+
+    elif isinstance(obj, list):
+        children = []
+        titles = []
+
+        for i, value in enumerate(obj):
+            children.append(json_widget(value, f"[{i}]"))
+            titles.append(f"[{i}]")
+
+        accordion = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            accordion.set_title(i, title)
+
+        return accordion
+
+    else:
+        return widgets.HTML(
+            value=f"<pre>{repr(obj)}</pre>"
+        )
+
+
+
 
 
 def get_worm_file():
@@ -66,7 +174,7 @@ def get_worm_file():
 def checkDictName(dictval, namelist):
     dictval1 = dictval
     for val in namelist:
-        print(val)
+        #print(val)
         # if isinstance(val, int):
         if not isinstance(val, int) and val not in dictval1:
             return False

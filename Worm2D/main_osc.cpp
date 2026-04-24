@@ -256,7 +256,7 @@ int main (int argc, const char* argv[])
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
-    cout << "simrandseed " << simrandseed << endl;
+    //cout << "simrandseed " << simrandseed << endl;
 
     w2->InitializeState(rs);
 

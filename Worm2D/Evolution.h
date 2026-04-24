@@ -337,7 +337,7 @@ template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<T> evol1) 
 {
 
-    cout << "evotype " << evotype_ << endl;
+    //cout << "evotype " << evotype_ << endl;
     
 
 

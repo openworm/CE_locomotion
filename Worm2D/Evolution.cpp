@@ -167,10 +167,12 @@ void EvoBase::construct(int vsize_, int offset_)
 
     if (foundFile) {
 
-    cout << "const from best gen " << filename << endl;
+    
     //assert(0 && "setting from best gen");
     vector<double> bestgenvec;
     getVecFromFile<double>(filename, bestgenvec);
+
+    cout << "construct from best gene " << filename << " with gene size " << bestgenvec.size() << endl;
 
     if (vsize_>0)
     {
@@ -197,7 +199,7 @@ void EvoBase::construct(int vsize_, int offset_)
     //configure_p1();
     //s->InitializeSearch();
     doResume = false;
-    cout << "const from default with size " << vsize_ << endl;
+    cout << "construct from default with gene size " << vsize_ << endl;
     //cout << " construct filename " << filename << endl;
     //assert(0);
     return;
@@ -217,7 +219,7 @@ void EvoBase::setFromCPT2(int vsize_)
     //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
    
 
-    cout << "docpt " << doCPT << endl;
+    //cout << "docpt " << doCPT << endl;
 
     struct stat buffer;   
     if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
@@ -234,11 +236,13 @@ void EvoBase::setFromCPT2(int vsize_)
         s = new TSearch(1);
         s->cptfilename = filename_;
         s->ReadCheckpointFile();
-        cout << "setFromCPT2 " << s->cptfilename << endl;
+        
         doResume = true;
         //ResultsDisplay(*s);
         //checkPars();
         //configure_p1();
+
+        cout << "construct from CPT " << s->cptfilename << " with size " << s->VectorSize() << endl;
         if (s->PopulationSize()!= evoPars1.PopulationSize) 
         {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
         popsize = s->PopulationSize();}

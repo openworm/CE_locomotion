@@ -1324,7 +1324,7 @@ void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
     
   assert(genPhenLims[i].val1<=genPhenLims[i].val2);
   gen[i] = InverseMapSearchParameterGPT(phen[i], genPhenLims[i].val1, genPhenLims[i].val2);
-  cout << "phengen " << phen[i] << " " << genPhenLims[i].val1 << " " << genPhenLims[i].val2 << endl;
+  //cout << "phengen " << phen[i] << " " << genPhenLims[i].val1 << " " << genPhenLims[i].val2 << endl;
   assert(!isnan(gen[i]));
   }
 
