@@ -32,6 +32,7 @@ args = dict(
     doLegacy=False,
     randomInitialState=True,
     SRZeroGainsType=1,
+    debug = True
 )
 
 if doOrig:

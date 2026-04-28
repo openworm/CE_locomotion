@@ -46,6 +46,8 @@ args = dict(
     doLegacy=False,
     SRZeroGainsType=1,
     # doLegacy = True
+    debug = True,
+    doTestRun=False,
 )
 
 if doOrig:

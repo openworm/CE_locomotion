@@ -1104,7 +1104,7 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
 }
 
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef, 
-  const vector<intDoubDoub> & vdd)
+  const vector<intDoubDoub> & vdd, bool debug)
 {
 
  
@@ -1128,8 +1128,9 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           }
           else phenval = it2->at("value");
         
-          if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
-         
+          (debug && check123456(pheno[phenind], phenval));
+          pheno[phenind] = phenval;
+
         }
         }
         else if (it2->at("evolvable").is_number()){
@@ -1137,7 +1138,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         if (phenind>=0){
         //if (check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")))
         //pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
-        if (check123456(pheno[phenind], it2->at("value")))
+        (debug && check123456(pheno[phenind], it2->at("value")));
         pheno[phenind] = it2->at("value");
           }
         }
@@ -1182,7 +1183,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             }
 
             //assert(check123456(phenval, values[j].w.weight));
-            if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
+            (debug && check123456(pheno[phenind], phenval));
+            pheno[phenind] = phenval;
             //if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
           }
             break;
@@ -1208,7 +1210,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           //pheno[evols[i].val-1] = values[evols[i].ind-1];
 
           if (phenind>=0){
-          if (check123456(pheno[phenind], values[evols[i].ind-1]))
+          (debug && check123456(pheno[phenind], values[evols[i].ind-1]));
           pheno[phenind] = values[evols[i].ind-1];
           }
 
@@ -1232,7 +1234,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             if (phenind>=0){
             //if (check123456(pheno[evols[i].val-1], values[j].weight))
             //pheno[evols[i].val-1] = values[j].weight;
-            if (check123456(pheno[phenind], values[j].weight))
+            (debug && check123456(pheno[phenind], values[j].weight));
             pheno[phenind] = values[j].weight;
             }
             break;}
@@ -1247,14 +1249,14 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
 }
 
 void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef, 
-  const vector<intDoubDoub> & vdd)
+  const vector<intDoubDoub> & vdd, bool debug)
 {
 
     for(auto it = j.begin(); it != j.end(); ++it)
     {
-      if (it->contains("evolvable")) getInitGeno1(pheno,it,ef,vdd);
+      if (it->contains("evolvable")) getInitGeno1(pheno,it,ef,vdd,debug);
       //else if (it->is_structured()) recursive_iterate(pheno,*it);
-      else if (it->is_object()) recursive_iterate(pheno,*it,ef,vdd);
+      else if (it->is_object()) recursive_iterate(pheno,*it,ef,vdd, debug);
 
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
         
@@ -1280,11 +1282,14 @@ void recursive_iterate_pheno(vector<double> & pheno, const json& j)
 
 void Worm2DSRE::setInitPheno()
 {
+  
+ 
+  
   const double checkval = 123456;
   vector<double> pheno(getVectSize(), checkval); 
 
   const json & js1 = BPitsJson;
-  recursive_iterate(pheno,js1,itsEf,genPhenLims); //this tries to recreate pheno from actual values
+  recursive_iterate(pheno,js1,itsEf,genPhenLims, baseconsts.debug); //this tries to recreate pheno from actual values
   //recursive_iterate_pheno(pheno,js1); //this sets pheno as current parameter values not pheno
 
   for (int i = 0; i< pheno.size(); i++){

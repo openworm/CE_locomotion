@@ -188,6 +188,8 @@ class baseParameters
         defaultVals_["NMJWeight"] = 1;
         defaultVals_["doReverse"] = 0;
 
+        defaultVals_["doTestRun"] = true;
+
         defaultVals_["OSCTbase"] = 0.25; // Cap for oscillation evaluation
         defaultVals_["agarfreq"] = 0.44;
         defaultVals_["AvgSpeed"] = 0.00022; 

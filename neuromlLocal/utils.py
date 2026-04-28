@@ -2,10 +2,6 @@ import argparse
 import json
 import os
 import copy
-
-#import sys
-#sys.path.append("..")
-
 #import helper_funcs as hf
 
 from neuroml import (

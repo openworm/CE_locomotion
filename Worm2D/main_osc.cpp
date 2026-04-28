@@ -115,13 +115,16 @@ int main (int argc, const char* argv[])
 
     }
 
-    
+    if (do_evol)
     json_filename = rename_file("worm_data_evo.json", directoryName);
-     if (!directoryExists(json_filename))
+    
+    if (false){
+    if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
-   
+    }
+
    //delete w1;
     
     //cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
@@ -209,13 +212,15 @@ int main (int argc, const char* argv[])
    
     }
 
-}
+}   
 
+    if (false){ 
     json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
+    }
 
     json j_evo;
     if (directoryExists(json_filename))
@@ -283,9 +288,9 @@ int main (int argc, const char* argv[])
 
     //w2->addParsToJson(j);
     
-
-
-    const bool dotest = cmd->getArgValInt("--doTestRun",0);
+    bool dotest;
+    w2->getValCJWorm("doTestRun", dotest);
+    //const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
     double simduration = cmd->getArgValDoub("-sd",10);
