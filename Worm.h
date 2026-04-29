@@ -76,7 +76,14 @@ public:
     void DumpVoltage(ofstream &ofs, int skips);
     void DumpParams(ofstream &ofs);
     void DumpCurvature(ofstream &ofs, int skips);
-    
+    //void updateMusc(double StepSize){updateMuscOrig(StepSize);}
+    void updateMusc(double StepSize){updateMuscOrig(StepSize);}
+    void updateMuscOrig(double StepSize);
+    void updateMuscA(double StepSize);
+    void updateMuscB(double StepSize);
+    void v11(vector<toFromWeightLD> & vent, int to_musc, int i);
+    void d11(vector<toFromWeightLD> & vent, int to_musc, int i);
+
     ~Worm(){if (n_ptr!=nullptr) delete n_ptr;}
     
     double CoMx();

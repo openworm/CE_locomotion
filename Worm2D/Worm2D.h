@@ -21,6 +21,13 @@
 
 //class SRCE;
 
+void setEvoStr(vector<string> & vecval, const vector<string> & evoName);
+void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames, 
+  vector<string> & path);
+void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path);
+void addEvoNames(json & j);
+
+
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
@@ -69,16 +76,18 @@ class baseParameters
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
- 
+             //cout << "hdjs ns " << name_str << " " << val << endl;
             val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
 
     
         if (BPitsCmdArgs!=nullptr) {
+            //cout << "hdjs cmd " << name_str << " " << val << endl;
+
          if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
-
+              //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
             return true;
         }
@@ -91,9 +100,10 @@ class baseParameters
        
         if (defaultVals.contains(name_str)) {
 
-            
+         
             val = defaultVals.at(name_str).get<T>();
             addValToJson(name_str,val,bstr);
+               //cout << "hdjs ds " << name_str << " " << val << endl;
             return true;
          }
 
@@ -126,12 +136,15 @@ class baseParameters
         return getValCJ<T>(name_str,val,"Worm");
 
     }
-
+ 
     template<class T>
     T getValCJWorm(const string & name_str)
     {
+       
         T val;
         getValCJ<T>(name_str,val,"Worm");
+        //cout <<  name_str << " " << val << endl;
+
         return val;
     }
      
@@ -187,6 +200,7 @@ class baseParameters
         defaultVals_["doLegacy"] = true;
         defaultVals_["initNSFromJson"] = true;
         defaultVals_["inputInd"] = -1;
+        defaultVals_["debug"] = false;
 
        return defaultVals_;
     }
@@ -365,6 +379,7 @@ class InputSwitcher
   double time_offset = 0, total_period = 0;
   vector<vector<int> > inds;
   vector<vector<double> > vals;
+  //int inputInd = -1;
 };
 
 class Worm2Dbody : virtual public DataWriter
@@ -412,7 +427,11 @@ class Worm2Dbody : virtual public DataWriter
 
 
 
+struct baseConsts
+{
+bool debug;
 
+};
 
 class Worm2Dbase : public baseParameters, virtual public DataWriter, public InputSwitcher
 {
@@ -557,8 +576,8 @@ virtual void makeNSOutputConn(){return;}
 json namedVars;
 static wormIzqParams getIzqPars(const json & j);
 
-
-
+baseConsts makeBaseConsts();
+const baseConsts baseconsts;
 
 
 };

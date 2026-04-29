@@ -1,95 +1,97 @@
-CC = g++ -Wall
-PYTHON_CONFIG ?= python3-config
+# ===============================
+# Conda-safe, cross-platform Makefile
+# ===============================
+CC = g++
 
-LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
-#LDFLAGS += -L$(brew --prefix nlohmann-json)/lib
-#CXXFLAGS="-I/opt/homebrew/include"
-#CXXFLAGS += -I$(brew --prefix nlohmann-json)/include
-LDFLAGS += "-L/opt/homebrew/lib"
-#LDFLAGS += "-L$(brew --prefix nlohmann-json)/lib"
-CXXFLAGS += "-I/opt/homebrew/include"
-#SANFLAG = -fsanitize=address,undefined -g
+# ---------------------------
+# Detect Python interpreter
+# ---------------------------
+ifeq ($(CONDA_PREFIX),)
+    PYTHON ?= python3
+else
+    PYTHON ?= $(CONDA_PREFIX)/bin/python
+endif
+
+# ---------------------------
+# Get include/lib dirs via sysconfig
+# ---------------------------
+PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+PYTHON_LIB := $(shell $(PYTHON) -c "import sysconfig, os; libname = os.path.splitext(sysconfig.get_config_var('LDLIBRARY'))[0]; print(libname[3:] if libname.startswith('lib') else libname)")
+
+# ---------------------------
+# Check that Python headers exist
+# ---------------------------
+ifeq ($(wildcard $(PYTHON_INCLUDE_DIR)/Python.h),)
+$(error Python.h not found in $(PYTHON_INCLUDE_DIR). Make sure Python dev headers are installed in this environment)
+endif
+
+# ---------------------------
+# OS-specific rpath
+# ---------------------------
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
+else ifeq ($(UNAME_S),Darwin)
+    RPATH_FLAG = -Wl,-rpath,@loader_path
+else
+    $(error Unsupported OS)
+endif
+
+# ---------------------------
+# Compiler / linker flags
+# ---------------------------
+CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR)
+LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
+LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
+
+EXTRA_FLAGS := -fPIE -O3 -Iinc
 SANFLAG :=
 
-EXTRA_FLAGS :=   -fPIE -O3  -Iinc
-main: main.o WormAgent.o CTRNN.o EvolutionCO.o utils.o Evolvable.o TSearchCO.o c302ForW2D.o owSignalSimulator.o Worm2DSR.o Simulation.o owSignalSimulatorForWorm2D.o Worm2D21.o Worm2DCE.o WormRS18.o Worm21.o Segment21.o Worm2D.o WormBody.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o main main.o WormAgent.o utils.o Evolvable.o Worm2DSR.o EvolutionCO.o CTRNN.o TSearchCO.o Simulation.o Worm2D21.o Worm2DCE.o c302ForW2D.o owSignalSimulator.o owSignalSimulatorForWorm2D.o WormRS18.o Worm21.o Segment21.o Evolution21.o Evolution.o EvolutionCE.o EvolutionRS18.o Worm2D.o WormBody.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o NSToMuscles.o Muscles.o jsonUtils.o TSearch.o random.o $(LIBS)
-c302ForW2D.o: ../neuromlLocal/c302ForW2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.h  #../NervousSystemBase.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/c302ForW2D.cpp 
-	@echo ' '
-owSignalSimulator.o: ../neuromlLocal/owSignalSimulator.cpp ../neuromlLocal/owSignalSimulator.h ../neuromlLocal/owINeuronSimulator.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/owSignalSimulator.cpp
-	@echo ' '
-owSignalSimulatorForWorm2D.o: ../neuromlLocal/owSignalSimulatorForWorm2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.h ../neuromlLocal/owSignalSimulator.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) ../neuromlLocal/owSignalSimulatorForWorm2D.cpp
-	@echo ' '
-random.o: ../random.cpp ../random.h #VectorMatrix.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../random.cpp
-jsonUtils.o: jsonUtils.cpp jsonUtils.h
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto jsonUtils.cpp	
-utils.o: ../utils.cpp ../utils.h
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../utils.cpp
-TSearch.o: ../TSearch.cpp ../TSearch.h
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../TSearch.cpp
-Worm2D.o: Worm2D.cpp Worm2D.h jsonUtils.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm2D.cpp
-EvolutionRS18.o: EvolutionRS18.cpp EvolutionRS18.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionRS18.cpp
-Simulation.o: Simulation.cpp Simulation.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Simulation.cpp
-EvolutionCE.o: EvolutionCE.cpp EvolutionCE.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionCE.cpp
-EvolutionCO.o: EvolutionCO.cpp EvolutionCO.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto EvolutionCO.cpp	
-Evolution21.o: Evolution21.cpp Evolution21.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution21.cpp
-Evolution.o: Evolution.cpp Evolution.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolution.cpp
-Evolvable.o: Evolvable.cpp Evolvable.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Evolvable.cpp
-NSToMuscles.o: NSToMuscles.cpp NSToMuscles.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto NSToMuscles.cpp
-WormRS18.o: WormRS18.cpp WormRS18.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormRS18.cpp
-Worm2DCE.o: Worm2DCE.cpp Worm2DCE.h 
-	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -std=c++11  -flto Worm2DCE.cpp 
-#WormCE.o: WormCE.cpp WormCE.h 
-#	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormCE.cpp
-Worm2D21.o: Worm2D21.cpp Worm2D21.h 
-	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -std=c++11  -flto Worm2D21.cpp 
-Worm21.o: Worm21.cpp Worm21.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm21.cpp
-Worm2DSR.o: Worm2DSR.cpp Worm2DSR.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm2DSR.cpp
-Worm2Dmods.o: Worm2Dmods.cpp Worm2Dmods.h 
-	$(CC) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Worm2Dmods.cpp	
-Segment21.o: Segment21.cpp Segment21.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto Segment21.cpp	
-WormBody.o: ../WormBody.cpp ../WormBody.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../WormBody.cpp
-NervousSystem.o: ../NervousSystem.cpp ../NervousSystem.h #VectorMatrix.h random.h ../neuromlLocal/NervousSystemBase.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../NervousSystem.cpp
-StretchReceptor.o: StretchReceptor.cpp StretchReceptor.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptor.cpp
-StretchReceptor18.o: StretchReceptor18.cpp StretchReceptor18.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptor18.cpp
-StretchReceptorCE.o: StretchReceptorCE.cpp StretchReceptorCE.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto StretchReceptorCE.cpp	
-Muscles.o: ../Muscles.cpp ../Muscles.h #VectorMatrix.h random.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto ../Muscles.cpp
-CTRNN.o: CTRNN.cpp CTRNN.h #random.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto CTRNN.cpp
-TSearchCO.o: TSearchCO.cpp TSearchCO.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto TSearchCO.cpp
-WormAgent.o: WormAgent.cpp WormAgent.h #TSearchCO.h CTRNN.h #VectorMatrixCO.h
-	$(CC) -c -O3 -std=c++11 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto WormAgent.cpp	
-main.o: main.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
-	$(CC) $(SANFLAG) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main.cpp
-main_osc.o: main_osc.cpp  #WormRS18.h Worm2D.h WormBody.h StretchReceptor18.h Muscles.h TSearch.h
-	$(CC) $(SANFLAG) -c -O3 -std=c++11  $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) -flto main_osc.cpp
-main_osc: main_osc.o c302ForW2D.o utils.o Evolvable.o Worm2DSR.o WormAgent.o Worm21.o Worm2D21.o Worm2DCE.o WormRS18.o owSignalSimulator.o owSignalSimulatorForWorm2D.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o main_osc c302ForW2D.o utils.o Evolvable.o WormAgent.o Worm2DCE.o Worm21.o Worm2DSR.o Worm2D21.o WormRS18.o owSignalSimulator.o owSignalSimulatorForWorm2D.o main_osc.o Simulation.o Worm2Dmods.o Worm2D.o WormBody.o Evolution.o NervousSystem.o StretchReceptor18.o StretchReceptorCE.o StretchReceptor.o Muscles.o TSearch.o random.o jsonUtils.o NSToMuscles.o $(LIBS)		
+# ---------------------------
+# Source files
+# ---------------------------
+SRC_COMMON :=  ../neuromlLocal/c302ForW2D.cpp ../neuromlLocal/owSignalSimulatorForWorm2D.cpp \
+        ../neuromlLocal/owSignalSimulator.cpp ../utils.cpp Evolvable.cpp \
+        WormAgent.cpp Worm2DSR.cpp Simulation.cpp \
+        Worm2D21.cpp Worm2DCE.cpp WormRS18.cpp Worm21.cpp \
+        Segment21.cpp Worm2D.cpp ../WormBody.cpp Evolution21.cpp \
+        Evolution.cpp EvolutionCE.cpp EvolutionRS18.cpp ../NervousSystem.cpp \
+        StretchReceptor18.cpp StretchReceptorCE.cpp StretchReceptor.cpp \
+        ../Muscles.cpp ../TSearch.cpp TSearchCO.cpp ../random.cpp \
+        jsonUtils.cpp NSToMuscles.cpp EvolutionCO.cpp Worm2Dmods.cpp
+
+# Main binaries sources
+SRC_MAIN := main.cpp $(SRC_COMMON)
+SRC_MAIN_OSC := main_osc.cpp $(SRC_COMMON)
+
+# Object files
+OBJS_MAIN := $(notdir $(SRC_MAIN:.cpp=.o))
+OBJS_MAIN_OSC := $(notdir $(SRC_MAIN_OSC:.cpp=.o))
+
+# ---------------------------
+# Search paths for sources
+# ---------------------------
+vpath %.cpp ../neuromlLocal
+vpath %.cpp ../
+
+# ---------------------------
+# Rules
+# ---------------------------
+all: main main_osc
+
+# Generic compilation rule
+%.o: %.cpp
+	$(CC) -c $(CXXFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -std=c++11 $< -o $@
+
+# Main binary
+main: $(OBJS_MAIN)
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o $@ $^ $(LIBS)
+
+# Main_osc binary
+main_osc: $(OBJS_MAIN_OSC)
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -pthread -o $@ $^ $(LIBS)
+
+# Clean
 clean:
 	rm -f *.o main main_osc

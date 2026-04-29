@@ -5,7 +5,7 @@
 #include "../Muscles.h"
 #include "../WormBody.h"
 #include "../NervousSystem.h"
-#include "CTRNN.h"
+//#include "CTRNN.h"
 #include "../utils.h"
 #include "NSToMuscles.h"
 #include "../TSearch.h"
@@ -144,6 +144,17 @@ void from_json(const json& j, intDoubDoub & w);
 void to_json(json & j, const doubDoub & w);
 void from_json(const json& j, doubDoub & w);
 void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight);
+void to_json(json & j, const fromToStr & w);
+void from_json(const json & j, fromToStr & w);
+void to_json(json & j, const intStr & w);
+void from_json(const json & j, strDoubDoub & w);
+void to_json(json & j, const strDoubDoub & w);
+void from_json(const json & j, intStr & w);
+json to_evo_json(const vector<intPair> & w);
+vector<intPair> from_evo_json(const json& j);
+
+
+
 
 /* template<class T>
 bool checkType(const json & j, const string & name)
@@ -229,7 +240,7 @@ vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units);
 void appendBodyToJson(json & j, WormBody& b);
 void appendMuscleToJson(json & j, Muscles & m);
 void appendAllNSJson(json & j, NervousSystem & n);
-void appendAllNSJson(json & j, CTRNN & n);
+//void appendAllNSJson(json & j, CTRNN & n);
 void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
 //Params< vector<string> > getNervousSysCellNames(vector<string> & cell_names, int n_units);
 //template<class T> void appendToJson(json & j, const Params<T> & par);

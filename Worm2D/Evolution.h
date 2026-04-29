@@ -56,13 +56,14 @@ class EvoBase
     virtual ~EvoBase()
     {
       evolfile.close();
+      genhistfile.close();
       if (s) delete s;
     }
 
     string rename_file(string filename);
     //evoParsNonConst evoParsNC;
     void setFromCPT();
-    void setFromCPT2();
+    void setFromCPT2(int vsize_);
     const int itsVectSize() const {if (s) return s->VectorSize(); assert(0 && "s not set");}
 
     protected:
@@ -79,13 +80,13 @@ class EvoBase
 
     void setUp();
     
-    void setFromEvol(const EvoBase & er, int offset);
+    void setFromEvol(const EvoBase & er, int offset, int vsize_);
     //void setPopFromBestGenoFile(int vecincsize, int offset);
     void setPopFromBestGenoFile(int offset = 0);
     //void setPopFromBestGenoFile2();
     void construct(int vsize_, int offset_);
     void configure_p11();
-    
+    //void constructAll(int vsize_, int offset_);
     
     
     
@@ -109,7 +110,7 @@ class EvoBase
     const bool writeBestFlag;
     bool doResume;
     int popsize;
-    
+    int initGenNum = 0;
 };
 
 
@@ -220,21 +221,16 @@ public:
 protected:
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_):
     Evolvable_ptr<T>(evol1_,cmd_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize())
-    {//this->evolvable1->setWormPars(cmd_);
-    }
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize()){}
 
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, shared_ptr<const json> json_ptr_):
     Evolvable_ptr<T>(evol1_,cmd_,json_ptr_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize())
-    {//this->evolvable1->setWormPars(cmd_);
-    }
-
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize()){}
+    
     Evolvable_ptrB(shared_ptr<T> evol1_, shared_ptr<const CmdArgs> cmd_, const string & prefix_):
     Evolvable_ptr<T>(evol1_,cmd_), 
-    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize(), prefix_)
-    {//this->evolvable1->setWormPars(cmd_);
-    }
+    Evolution(cmd_,this->getDefaultEvoPars(cmd_,evol1_),evol1_->getVectSize(), prefix_){}
+   
 
     virtual shared_ptr<T> getTw() = 0;
 
@@ -259,11 +255,9 @@ protected:
         string model_name = this->cmd->getArgVal("--modelname","");
         bool usj = this->cmd->getArgValInt("--useSupCPT",false);
 
-        //if (false){
-        //if (model_name == "CO18Full"){
         if (usj){
         EvoBase er18(this->cmd, this->getDefaultEvoPars("Evo18", this->evolvable1), "RS18_");
-        setFromEvol(er18, 0); 
+        setFromEvol(er18, 0, this->evolvable1->getVectSize()); 
        
        }
 
@@ -1718,7 +1712,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
     double xt = w.CoMx(), xtp;
     double yt = w.CoMy(), ytp;
 
-    cout << "xxs " << xt << " " << yt << endl;
+    //cout << "xxs " << xt << " " << yt << endl;
 
     
 
@@ -1750,7 +1744,7 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     //assert(0);
 
-    cout << "fitness " << fitness << endl;
+    //cout << "fitness " << fitness << endl;
 
     return fitness;
 }

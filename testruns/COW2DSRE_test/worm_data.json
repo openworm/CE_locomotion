@@ -893,45 +893,44 @@
                 {
                     "from": 1,
                     "to": 41,
-                    "val": 32
+                    "evotag": 32
                 },
                 {
                     "from": 2,
                     "to": 41,
-                    "val": 33
+                    "evotag": 33
                 },
                 {
                     "from": 1,
                     "to": 42,
-                    "val": 34
+                    "evotag": 34
                 },
                 {
                     "from": 2,
                     "to": 42,
-                    "val": 35
+                    "evotag": 35
                 },
                 {
                     "from": 1,
                     "to": 43,
-                    "val": 36
+                    "evotag": 36
                 },
                 {
                     "from": 2,
                     "to": 43,
-                    "val": 37
+                    "evotag": 37
                 },
                 {
                     "from": 1,
                     "to": 44,
-                    "val": 38
+                    "evotag": 38
                 },
                 {
                     "from": 2,
                     "to": 44,
-                    "val": 39
+                    "evotag": 39
                 }
             ]
-
         }
     },
     "Evolutionary Optimization Parameters": {
@@ -1008,337 +1007,337 @@
     "Evolvable": {
         "value": [
             {
-                "ind": 1,
+                "evotag": 1,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 2,
+                "evotag": 2,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 3,
+                "evotag": 3,
                 "val1": 0.5,
                 "val2": 2.0
             },
             {
-                "ind": 4,
+                "evotag": 4,
                 "val1": 0.5,
                 "val2": 2.0
             },
             {
-                "ind": 5,
+                "evotag": 5,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 6,
+                "evotag": 6,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 7,
+                "evotag": 7,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 8,
+                "evotag": 8,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 9,
+                "evotag": 9,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 10,
+                "evotag": 10,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 11,
+                "evotag": 11,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 12,
+                "evotag": 12,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 13,
+                "evotag": 13,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 14,
+                "evotag": 14,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 15,
+                "evotag": 15,
                 "val1": -200.0,
                 "val2": 0.0
             },
             {
-                "ind": 16,
+                "evotag": 16,
                 "val1": 0.0,
                 "val2": 1.0
             },
             {
-                "ind": 17,
+                "evotag": 17,
                 "val1": -1.0,
                 "val2": 0.0
             },
             {
-                "ind": 18,
+                "evotag": 18,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 19,
+                "evotag": 19,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 20,
+                "evotag": 20,
                 "val1": 0.5,
                 "val2": 2.0
             },
             {
-                "ind": 21,
+                "evotag": 21,
                 "val1": 0.5,
                 "val2": 2.0
             },
             {
-                "ind": 22,
+                "evotag": 22,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 23,
+                "evotag": 23,
                 "val1": 4.0,
                 "val2": 15.0
             },
             {
-                "ind": 24,
+                "evotag": 24,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 25,
+                "evotag": 25,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 26,
+                "evotag": 26,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 27,
+                "evotag": 27,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 28,
+                "evotag": 28,
                 "val1": 0.0,
                 "val2": 2.0
             },
             {
-                "ind": 29,
+                "evotag": 29,
                 "val1": -200.0,
                 "val2": 0.0
             },
             {
-                "ind": 30,
+                "evotag": 30,
                 "val1": 0.0,
                 "val2": 1.0
             },
             {
-                "ind": 31,
+                "evotag": 31,
                 "val1": 0.0,
                 "val2": 1.0
             },
             {
-                "ind": 32,
+                "evotag": 32,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-     {
-                "ind": 33,
+            {
+                "evotag": 33,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-      {
-                "ind": 34,
+            {
+                "evotag": 34,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-     {
-                "ind": 35,
+            {
+                "evotag": 35,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-          {
-                "ind": 36,
+            {
+                "evotag": 36,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-     {
-                "ind": 37,
+            {
+                "evotag": 37,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-      {
-                "ind": 38,
+            {
+                "evotag": 38,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-     {
-                "ind": 39,
+            {
+                "evotag": 39,
                 "val1": -1500.0,
                 "val2": 1500.0
             },
-{
-                "ind": 40,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 41,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 42,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 43,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 44,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 45,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 46,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 47,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 48,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 49,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 50,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 51,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 52,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 53,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 54,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-{
-                "ind": 55,
+            {
+                "evotag": 40,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 56,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-     {
-                "ind": 57,
+                "evotag": 41,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 58,
-                "val1": -15.0,
-                "val2": 15.0
-            },
-     {
-                "ind": 59,
+                "evotag": 42,
                 "val1": -15.0,
                 "val2": 15.0
             },
             {
-                "ind": 60,
+                "evotag": 43,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 44,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 45,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 46,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 47,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 48,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 49,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 50,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 51,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 52,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 53,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 54,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 55,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 56,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 57,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 58,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 59,
+                "val1": -15.0,
+                "val2": 15.0
+            },
+            {
+                "evotag": 60,
                 "val1": 0.1,
                 "val2": 4.2
             },
             {
-                "ind": 61,
+                "evotag": 61,
                 "val1": 0.1,
                 "val2": 4.2
             },
             {
-                "ind": 62,
-                "val1": 0.1,
-                "val2": 4.2
-            },
-             {
-                "ind": 63,
+                "evotag": 62,
                 "val1": 0.1,
                 "val2": 4.2
             },
             {
-                "ind": 64,
+                "evotag": 63,
+                "val1": 0.1,
+                "val2": 4.2
+            },
+            {
+                "evotag": 64,
                 "val1": 0,
                 "val2": 15
             },
             {
-                "ind": 65,
+                "evotag": 65,
                 "val1": 0,
                 "val2": 15
             },
             {
-                "ind": 66,
+                "evotag": 66,
                 "val1": 0.1,
                 "val2": 4.2
             },
-             {
-                "ind": 67,
+            {
+                "evotag": 67,
                 "val1": 0.1,
                 "val2": 4.2
             }
@@ -1409,567 +1408,566 @@
         },
         "Chemical weights": {
             "evolvable": [
-                        {
+                {
                     "from": 1,
                     "to": 1,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 3,
                     "to": 3,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 5,
                     "to": 5,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 2,
                     "to": 2,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 4,
                     "to": 4,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 6,
                     "to": 6,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 1,
                     "to": 2,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 3,
                     "to": 4,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 5,
                     "to": 6,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 1,
                     "to": 4,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 1,
                     "to": 6,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 3,
                     "to": 2,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 5,
                     "to": 2,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 2,
                     "to": 4,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 7,
                     "to": 7,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 9,
                     "to": 9,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 11,
                     "to": 11,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 8,
                     "to": 8,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 10,
                     "to": 10,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 12,
                     "to": 12,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 7,
                     "to": 8,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 9,
                     "to": 10,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 11,
                     "to": 12,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 7,
                     "to": 10,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 7,
                     "to": 12,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 9,
                     "to": 8,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 11,
                     "to": 8,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 8,
                     "to": 10,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 13,
                     "to": 13,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 15,
                     "to": 15,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 17,
                     "to": 17,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 14,
                     "to": 14,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 16,
                     "to": 16,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 18,
                     "to": 18,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 13,
                     "to": 14,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 15,
                     "to": 16,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 17,
                     "to": 18,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 13,
                     "to": 16,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 13,
                     "to": 18,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 15,
                     "to": 14,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 17,
                     "to": 14,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 14,
                     "to": 16,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 19,
                     "to": 19,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 21,
                     "to": 21,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 23,
                     "to": 23,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 20,
                     "to": 20,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 22,
                     "to": 22,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 24,
                     "to": 24,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 19,
                     "to": 20,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 21,
                     "to": 22,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 23,
                     "to": 24,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 19,
                     "to": 22,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 19,
                     "to": 24,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 21,
                     "to": 20,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 23,
                     "to": 20,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 20,
                     "to": 22,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 25,
                     "to": 25,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 27,
                     "to": 27,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 29,
                     "to": 29,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 26,
                     "to": 26,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 28,
                     "to": 28,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 30,
                     "to": 30,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 25,
                     "to": 26,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 27,
                     "to": 28,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 29,
                     "to": 30,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 25,
                     "to": 28,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 25,
                     "to": 30,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 27,
                     "to": 26,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 29,
                     "to": 26,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 26,
                     "to": 28,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 31,
                     "to": 31,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 33,
                     "to": 33,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 35,
                     "to": 35,
-                    "val": 5
+                    "evotag": 5
                 },
                 {
                     "from": 32,
                     "to": 32,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 34,
                     "to": 34,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 36,
                     "to": 36,
-                    "val": 6
+                    "evotag": 6
                 },
                 {
                     "from": 31,
                     "to": 32,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 33,
                     "to": 34,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 35,
                     "to": 36,
-                    "val": 7
+                    "evotag": 7
                 },
                 {
                     "from": 31,
                     "to": 34,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 31,
                     "to": 36,
-                    "val": 8
+                    "evotag": 8
                 },
                 {
                     "from": 33,
                     "to": 32,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 35,
                     "to": 32,
-                    "val": 9
+                    "evotag": 9
                 },
                 {
                     "from": 32,
                     "to": 34,
-                    "val": 10
+                    "evotag": 10
                 },
                 {
                     "from": 37,
                     "to": 37,
-                    "val": 22
+                    "evotag": 22
                 },
                 {
                     "from": 39,
                     "to": 39,
-                    "val": 22
+                    "evotag": 22
                 },
                 {
                     "from": 38,
                     "to": 38,
-                    "val": 23
+                    "evotag": 23
                 },
                 {
                     "from": 40,
                     "to": 40,
-                    "val": 23
+                    "evotag": 23
                 },
                 {
                     "from": 37,
                     "to": 39,
-                    "val": 24
+                    "evotag": 24
                 },
                 {
                     "from": 39,
                     "to": 37,
-                    "val": 24
+                    "evotag": 24
                 },
                 {
                     "from": 37,
                     "to": 40,
-                    "val": 25
+                    "evotag": 25
                 },
                 {
                     "from": 39,
                     "to": 38,
-                    "val": 25
+                    "evotag": 25
                 },
                 {
                     "from": 38,
                     "to": 40,
-                    "val": 26
+                    "evotag": 26
                 },
                 {
                     "from": 40,
                     "to": 38,
-                    "val": 26
+                    "evotag": 26
                 },
                 {
                     "from": 41,
                     "to": 41,
-                    "val": 40
+                    "evotag": 40
                 },
                 {
                     "from": 42,
                     "to": 41,
-                    "val": 41
+                    "evotag": 41
                 },
-                  {
+                {
                     "from": 43,
                     "to": 41,
-                    "val": 42
+                    "evotag": 42
                 },
                 {
                     "from": 44,
                     "to": 41,
-                    "val": 43
+                    "evotag": 43
                 },
                 {
                     "from": 41,
                     "to": 42,
-                    "val": 44
+                    "evotag": 44
                 },
                 {
                     "from": 42,
                     "to": 42,
-                    "val": 45
+                    "evotag": 45
                 },
-                  {
+                {
                     "from": 43,
                     "to": 42,
-                    "val": 46
+                    "evotag": 46
                 },
                 {
                     "from": 44,
                     "to": 42,
-                    "val": 47
-                },
-            {
-                    "from": 41,
-                    "to": 43,
-                    "val": 48
-                },
-                {
-                    "from": 42,
-                    "to": 43,
-                    "val": 49
-                },
-                  {
-                    "from": 43,
-                    "to": 43,
-                    "val": 50
-                },
-                {
-                    "from": 44,
-                    "to": 43,
-                    "val": 51
+                    "evotag": 47
                 },
                 {
                     "from": 41,
+                    "to": 43,
+                    "evotag": 48
+                },
+                {
+                    "from": 42,
+                    "to": 43,
+                    "evotag": 49
+                },
+                {
+                    "from": 43,
+                    "to": 43,
+                    "evotag": 50
+                },
+                {
+                    "from": 44,
+                    "to": 43,
+                    "evotag": 51
+                },
+                {
+                    "from": 41,
                     "to": 44,
-                    "val": 52
+                    "evotag": 52
                 },
                 {
                     "from": 42,
                     "to": 44,
-                    "val": 53
+                    "evotag": 53
                 },
-                  {
+                {
                     "from": 43,
                     "to": 44,
-                    "val": 54
+                    "evotag": 54
                 },
                 {
                     "from": 44,
                     "to": 44,
-                    "val": 55
+                    "evotag": 55
                 },
                 {
                     "from": 41,
                     "to": 37,
-                    "val": 64
+                    "evotag": 64
                 },
                 {
                     "from": 42,
                     "to": 39,
-                    "val": 65
+                    "evotag": 65
                 }
-
             ],
             "message": "chemical weights in sparse format",
             "value": [
@@ -2540,262 +2538,262 @@
                 {
                     "from": 2,
                     "to": 4,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 2,
                     "to": 6,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 4,
                     "to": 6,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 3,
                     "to": 5,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 2,
                     "to": 8,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 6,
                     "to": 10,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 1,
                     "to": 7,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 5,
                     "to": 9,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 5,
                     "to": 7,
-                    "val": 14
+                    "evotag": 14
                 },
                 {
                     "from": 8,
                     "to": 10,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 8,
                     "to": 12,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 10,
                     "to": 12,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 9,
                     "to": 11,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 8,
                     "to": 14,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 12,
                     "to": 16,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 7,
                     "to": 13,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 11,
                     "to": 15,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 11,
                     "to": 13,
-                    "val": 14
+                    "evotag": 14
                 },
                 {
                     "from": 14,
                     "to": 16,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 14,
                     "to": 18,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 16,
                     "to": 18,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 15,
                     "to": 17,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 14,
                     "to": 20,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 18,
                     "to": 22,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 13,
                     "to": 19,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 17,
                     "to": 21,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 17,
                     "to": 19,
-                    "val": 14
+                    "evotag": 14
                 },
                 {
                     "from": 20,
                     "to": 22,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 20,
                     "to": 24,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 22,
                     "to": 24,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 21,
                     "to": 23,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 20,
                     "to": 26,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 24,
                     "to": 28,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 19,
                     "to": 25,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 23,
                     "to": 27,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 23,
                     "to": 25,
-                    "val": 14
+                    "evotag": 14
                 },
                 {
                     "from": 26,
                     "to": 28,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 26,
                     "to": 30,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 28,
                     "to": 30,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 27,
                     "to": 29,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 26,
                     "to": 32,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 30,
                     "to": 34,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 25,
                     "to": 31,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 29,
                     "to": 33,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 29,
                     "to": 31,
-                    "val": 14
+                    "evotag": 14
                 },
                 {
                     "from": 32,
                     "to": 34,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 32,
                     "to": 36,
-                    "val": 11
+                    "evotag": 11
                 },
                 {
                     "from": 34,
                     "to": 36,
-                    "val": 12
+                    "evotag": 12
                 },
                 {
                     "from": 33,
                     "to": 35,
-                    "val": 13
+                    "evotag": 13
                 },
                 {
                     "from": 37,
                     "to": 38,
-                    "val": 27
+                    "evotag": 27
                 },
                 {
                     "from": 39,
                     "to": 40,
-                    "val": 27
+                    "evotag": 27
                 },
                 {
                     "from": 40,
                     "to": 38,
-                    "val": 28
+                    "evotag": 28
                 }
             ],
             "message": "electrical weights in sparse format",
@@ -3509,183 +3507,180 @@
             "evolvable": [
                 {
                     "ind": 1,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 3,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 5,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 2,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 4,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 6,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 7,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 9,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 11,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 8,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 10,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 12,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 13,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 15,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 17,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 14,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 16,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 18,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 19,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 21,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 23,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 20,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 22,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 24,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 25,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 27,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 29,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 26,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 28,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 30,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 31,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 33,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 35,
-                    "val": 1
+                    "evotag": 1
                 },
                 {
                     "ind": 32,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 34,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 36,
-                    "val": 2
+                    "evotag": 2
                 },
                 {
                     "ind": 37,
-                    "val": 18
+                    "evotag": 18
                 },
                 {
                     "ind": 39,
-                    "val": 18
+                    "evotag": 18
                 },
                 {
                     "ind": 38,
-                    "val": 19
+                    "evotag": 19
                 },
                 {
                     "ind": 40,
-                    "val": 19
+                    "evotag": 19
                 },
- {
+                {
                     "ind": 41,
-                    "val": 56
+                    "evotag": 56
                 },
                 {
                     "ind": 42,
-                    "val": 57
+                    "evotag": 57
                 },
                 {
                     "ind": 43,
-                    "val": 58
+                    "evotag": 58
                 },
                 {
                     "ind": 44,
-                    "val": 59
+                    "evotag": 59
                 }
-
-
-
             ],
             "value": [
                 5.996133834217073,
@@ -3989,181 +3984,180 @@
             "evolvable": [
                 {
                     "ind": 1,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 3,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 5,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 2,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 4,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 6,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 7,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 9,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 11,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 8,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 10,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 12,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 13,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 15,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 17,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 14,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 16,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 18,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 19,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 21,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 23,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 20,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 22,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 24,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 25,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 27,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 29,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 26,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 28,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 30,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 31,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 33,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 35,
-                    "val": 3
+                    "evotag": 3
                 },
                 {
                     "ind": 32,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 34,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 36,
-                    "val": 4
+                    "evotag": 4
                 },
                 {
                     "ind": 37,
-                    "val": 20
+                    "evotag": 20
                 },
                 {
                     "ind": 39,
-                    "val": 20
+                    "evotag": 20
                 },
                 {
                     "ind": 38,
-                    "val": 21
+                    "evotag": 21
                 },
                 {
                     "ind": 40,
-                    "val": 21
+                    "evotag": 21
                 },
-  {
+                {
                     "ind": 41,
-                    "val": 60
+                    "evotag": 60
                 },
- {
+                {
                     "ind": 42,
-                    "val": 61
+                    "evotag": 61
                 },
-                 {
+                {
                     "ind": 43,
-                    "val": 62
+                    "evotag": 62
                 },
-                 {
+                {
                     "ind": 44,
-                    "val": 63
+                    "evotag": 63
                 }
-
             ],
             "value": [
                 0.5285374062679862,
@@ -4303,11 +4297,11 @@
             },
             "sensorM": {
                 "value": 2.110899084607434,
-                "evolvable" : 66
+                "evolvable": 66
             },
             "sensorN": {
                 "value": 2.2396018905092925,
-                "evolvable" : 67
+                "evolvable": 67
             },
             "x_center": {
                 "value": 0.0
@@ -5158,19 +5152,19 @@
             "evolvable": [
                 {
                     "ind": 1,
-                    "val": 16
+                    "evotag": 16
                 },
                 {
                     "ind": 2,
-                    "val": 17
+                    "evotag": 17
                 },
                 {
                     "ind": 37,
-                    "val": 30
+                    "evotag": 30
                 },
                 {
                     "ind": 38,
-                    "val": 31
+                    "evotag": 31
                 }
             ],
             "value": [
@@ -5205,27 +5199,27 @@
             "evolvable": [
                 {
                     "ind": 3,
-                    "val": 16
+                    "evotag": 16
                 },
                 {
                     "ind": 5,
-                    "val": 16
+                    "evotag": 16
                 },
                 {
                     "ind": 4,
-                    "val": 17
+                    "evotag": 17
                 },
                 {
                     "ind": 6,
-                    "val": 17
+                    "evotag": 17
                 },
                 {
                     "ind": 39,
-                    "val": 30
+                    "evotag": 30
                 },
                 {
                     "ind": 40,
-                    "val": 31
+                    "evotag": 31
                 }
             ],
             "value": [

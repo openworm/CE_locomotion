@@ -382,8 +382,8 @@ int as, da, db, dd, vd, vb, va;
 
 }
 
-j["Nervous system"]["biases"]["evolvable"] = biasvec;
-j["Nervous system"]["taus"]["evolvable"] = tauvec;
+j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
+j["Nervous system"]["taus"]["evolvable"] = to_evo_json(tauvec);
 j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
 j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
@@ -402,14 +402,14 @@ nmjvecv.push_back({VB,37});
 nmjvecv.push_back({VA,38});
 
  
-j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
-j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
+j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
+j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
 
 j["VNC NMJ"]["NMJ gain map D"]["evolvable"] = 39;
 j["VNC NMJ"]["NMJ gain map V"]["evolvable"] = 39;
 
 
-
+addEvoNames(j);
 }
 
 void Worm21::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)

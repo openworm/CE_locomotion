@@ -4,9 +4,7 @@ import os
 import sys
 import neuromlLocal.utils as utils
 import helper_funcs as hf
-import numpy as np
 
-# import helper_funcs as hf
 # from importlib import import_module
 import shutil
 import glob
@@ -544,10 +542,14 @@ def run(a=None, **kwargs):
         input_filenames = glob.glob(a.outputFolderName + "/*" + file)
         for file1 in input_filenames:
             filename1 = pathlib.Path(file1).name
+            hf.clean_ragged_numeric_file(file1, a.outputFolderName + "/" + filename1)
+
             # np.loadtxt(file1)
-            data = np.genfromtxt(file1, dtype=float)
-            data = np.nan_to_num(data, nan=0.0)
-            np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
+            # arrs1 = hf.load_nonragged_arrays(file1)
+            # data = arrs1[len(arrs1)-1] #use only last array
+            # data = np.genfromtxt(file1, dtype=float)
+            # data = np.nan_to_num(data, nan=0.0)
+            # np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):
@@ -707,7 +709,7 @@ def run(a=None, **kwargs):
     sim_extra_parameters["prioritizeCmd"] = 0
     sim_extra_parameters["initNSFromJson"] = True
     sim_extra_parameters["inputInd"] = -1
-
+    sim_extra_parameters["debug"] = False
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False
 
@@ -895,11 +897,15 @@ def run(a=None, **kwargs):
 
     print(cmd)
     # sys.exit(1)
+    # env = os.environ.copy()
+    # env["XKB_CONFIG_ROOT"] = "/usr/share/X11/xkb"
 
+    # subprocess.run(["./main_osc"], env=env)
     # Run the C++
     if True:
         # result = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         # result = subprocess.run(cmd, capture_output=True, text=True, cwd = home_dir)
+        # result = subprocess.run(cmd, capture_output=True, text=True, env=env)
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.stdout:
             print(result.stdout)
@@ -928,7 +934,7 @@ def run(a=None, **kwargs):
         if doW2D and doPlotEvol:
             from load_data import plot_evols
 
-            plot_evols(folderName=a.outputFolderName, modelName=model_name)
+            plot_evols(a, folderName=a.outputFolderName, modelName=model_name)
 
     if model_name == "CO18" or model_name == "CO18Full":
         reload_single_run(

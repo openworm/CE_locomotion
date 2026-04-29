@@ -97,7 +97,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
     public:
 
 //json itsJson;
-const vector<doubDoub> genPhenLims;
+const vector<intDoubDoub> genPhenLims;
 
 Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
 //Worm2DSR(json & j);
@@ -116,7 +116,7 @@ void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
 //void makeVals(const json & j);
 //Worm2DSREpars makeVals(const json & j);
 //vector<doubDoub> makeVals(const json & j);
-vector<doubDoub> makeVals();
+vector<intDoubDoub> makeVals();
 void testJson(json & j);
 //void setInitGeno();
 void setInitPheno();
@@ -131,7 +131,7 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 //vector<intPair> biases_evo, taus_evo, gains_evo;
 //vector<double> getInitGeno_old();
 //void addParsToJson(json & j){j = itsJson;}
-vector<double> getInitGeno_old();
+//vector<double> getInitGeno_old();
 void setParsFromPheno_old(const TVector<double> &pheno);
 void resetFromBPJson();
 void resetFromJson(const json & js1);

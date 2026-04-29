@@ -2,7 +2,7 @@
 //#include "VectorMatrix.h"
 #include "Evolution.h"
 #include "WormAgent.h"
-#include "EvolutionRS18.h"
+//#include "EvolutionRS18.h"
 
 //const int	CircuitSize = 10;
 //const double TransientDuration = 50.0;

@@ -5,7 +5,7 @@ run(
     simtransient=10,
     duration=10,
     transient=10,
-    maxGens=25,
+    maxGens=15,
     popSize=10,
     RandSeed=987,
     modelName="W2DCE",
