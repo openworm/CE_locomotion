@@ -1700,6 +1700,10 @@ if (ind<0) return;
   assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
+
+  //for (int i=0;i<indvec.size();i++) cout << indvec[i] << " " << valvec[i] << endl;
+  //assert(0);
+
   for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
   //cout << " exx ";
   //for (int i=0;i<externalInputs.size();i++) cout << " " << externalInputs[i];

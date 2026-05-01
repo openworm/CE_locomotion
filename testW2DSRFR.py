@@ -46,7 +46,7 @@ args = dict(
     doLegacy=False,
     SRZeroGainsType=1,
     # doLegacy = True
-    debug = True,
+    debug=True,
     doTestRun=False,
 )
 

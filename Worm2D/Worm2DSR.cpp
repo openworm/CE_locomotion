@@ -1689,6 +1689,8 @@ void Sensor::UpdateChemCon()
 void Sensor::assignExternalInput(vector<double> & externalInputs)
 {
   
+
+
   for (int i = 0; i<spvec.size(); i++){
     
    

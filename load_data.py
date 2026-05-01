@@ -20,7 +20,7 @@ import matplotlib as mpl
 from cycler import cycler
 import itertools
 from itertools import cycle
-
+import matplotlib.colors as mcolors
 
 sys.path.append("..")
 
@@ -73,17 +73,17 @@ def distinct_30_colors():
 
     return list(c4) + [colors[i] for i in order]
 
-import matplotlib.colors as mcolors
 
 def distinct_colors_100(n):
     hues = np.linspace(0, 1, n, endpoint=False)
-    vals = [0.85, 0.65]   # alternate brightness
-    sats = [0.9, 0.75]    # alternate saturation
+    vals = [0.85, 0.65]  # alternate brightness
+    sats = [0.9, 0.75]  # alternate saturation
 
     colors = []
     for i, h in enumerate(hues):
         colors.append(mcolors.hsv_to_rgb((h, sats[i % 2], vals[i % 2])))
     return colors
+
 
 def distinct_ordered_hsv_colors(n, step=37, saturation=0.85, value=0.9):
     """
@@ -104,8 +104,6 @@ def distinct_ordered_hsv_colors(n, step=37, saturation=0.85, value=0.9):
     return [mcolors.hsv_to_rgb((hues[i], saturation, value)) for i in order]
 
 
-
-
 colors30 = distinct_colors_100(100)
 colors30 = distinct_ordered_hsv_colors(100, step=37)
 colors30 = distinct_30_colors()
@@ -117,11 +115,11 @@ style_cycle = cycler(color=colors30) + cycler(
 random.seed(1234)
 
 N = 120
-colors = colors30*3
-#colors = [colors30[i % len(colors30)] for i in range(N)]
+colors = colors30 * 3
+# colors = [colors30[i % len(colors30)] for i in range(N)]
 linestyles = [random.choice(linestyles) for _ in range(N)]
 
-#ax.set_prop_cycle(cycler(color=colors) + cycler(linestyle=linestyles))
+# ax.set_prop_cycle(cycler(color=colors) + cycler(linestyle=linestyles))
 style_cycle = cycler(color=colors) + cycler(linestyle=linestyles)
 
 plt.rcParams["axes.prop_cycle"] = style_cycle
@@ -176,7 +174,8 @@ def plot_phenonames(
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
-    if not os.path.isfile(file): return
+    if not os.path.isfile(file):
+        return
     evol_data_all = hf.load_nonragged_arrays(file)
     evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
 
@@ -208,8 +207,8 @@ def plot_phenonames(
         print("PhenoNames needed for pheno plot")
         return
 
-    #print("checkDict")
-    #print(phen_names)
+    # print("checkDict")
+    # print(phen_names)
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
@@ -219,8 +218,8 @@ def plot_phenonames(
     phen_offset = vectsize * 2
     # phen_size = vectsize
 
-    #avlentop = 1
-    #evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
+    # avlentop = 1
+    # evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
     evol_data = evol_data_1
 
     # gen_index_orig = evol_data[:, 0]
@@ -237,9 +236,9 @@ def plot_phenonames(
     )
 
     avlentop = 1
-    if hasattr(a, 'evoAvLen'):
+    if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
-    
+
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
     evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
@@ -270,37 +269,37 @@ def plot_phenonames(
             "value": evol_data_full_diff0,
             "title": "Perc variation",
             "color": "black",
-            "linestyle" : "-"
+            "linestyle": "-",
         },
         "var": {
             "value": evol_data_full_diff,
             "title": "Signed log perc var",
             "color": "black",
-            "linestyle" : "-"
+            "linestyle": "-",
         },
         "final_log": {
             "value": evol_data_fin,
             "title": "Signed log final value",
             "color": "red",
-            "linestyle" : "--"
+            "linestyle": "--",
         },
         "initial_log": {
             "value": evol_data_init,
             "title": "Signed log initial value",
             "color": "black",
-            "linestyle" : "-"
+            "linestyle": "-",
         },
         "final": {
             "value": evol_data_fin_actual,
             "title": "Final value",
             "color": "red",
-            "linestyle" : "--"
+            "linestyle": "--",
         },
         "initial": {
             "value": evol_data_init_actual,
             "title": "Initial value",
             "color": "black",
-            "linestyle" : "-"
+            "linestyle": "-",
         },
     }
 
@@ -322,13 +321,15 @@ def plot_phenonames(
                 val["pheno_avs"] = []
             val["pheno_avs"].append(np.mean(val["value"][indices]))
 
-    #print(phen_name_list)
+    # print(phen_name_list)
 
     fsize_cols, fsize_rows = 10, 10
-    fsize_cols_2 = 10 * len(phen_names)/30 
+    fsize_cols_2 = 10 * len(phen_names) / 30
     plot_cols = 1
     plot_rows = len(plot_list)
-    fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(fsize_cols, fsize_rows), squeeze=False)
+    fig, axs = plt.subplots(
+        plot_rows, plot_cols, figsize=(fsize_cols, fsize_rows), squeeze=False
+    )
     fig2, axs2 = plt.subplots(
         plot_rows, plot_cols, figsize=(fsize_cols_2, fsize_rows), squeeze=False
     )
@@ -343,7 +344,7 @@ def plot_phenonames(
                     val3,
                     label=evol_data_dict[val2]["title"],
                     color=evol_data_dict[val2]["color"],
-                    linestyle = evol_data_dict[val2]["linestyle"],
+                    linestyle=evol_data_dict[val2]["linestyle"],
                 )
                 val3 = evol_data_dict[val2]["value"]
                 axs2[row_num, col_num].plot(
@@ -351,7 +352,7 @@ def plot_phenonames(
                     val3,
                     label=evol_data_dict[val2]["title"],
                     color=evol_data_dict[val2]["color"],
-                    linestyle = evol_data_dict[val2]["linestyle"],
+                    linestyle=evol_data_dict[val2]["linestyle"],
                 )
         else:
             val3 = evol_data_dict[val]["pheno_avs"]
@@ -360,7 +361,7 @@ def plot_phenonames(
                 val3,
                 label=evol_data_dict[val]["title"],
                 color=evol_data_dict[val]["color"],
-                linestyle = evol_data_dict[val]["linestyle"],
+                linestyle=evol_data_dict[val]["linestyle"],
             )
             val3 = evol_data_dict[val]["value"]
             axs2[row_num, col_num].plot(
@@ -368,7 +369,7 @@ def plot_phenonames(
                 val3,
                 label=evol_data_dict[val]["title"],
                 color=evol_data_dict[val]["color"],
-                linestyle = evol_data_dict[val]["linestyle"],
+                linestyle=evol_data_dict[val]["linestyle"],
             )
 
         axs2[row_num, col_num].set_xticks(range(len(val3)))
@@ -558,7 +559,7 @@ def getAvData_1(evol_data_1, avlentop=1):
     if avlen == 0:
         avlen = 1
 
-    #print(evol_data_1.shape)
+    # print(evol_data_1.shape)
     evol_data = np.zeros((evol_data_1.shape[0] - avlen + 1, evol_data_1.shape[1]))
     for phen in range(evol_data_1.shape[1]):
         evol_data[:, phen] = np.convolve(
@@ -614,8 +615,20 @@ def plot_fig_g(
     gen_index = gen_index_orig
     gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
 
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 0], label="Best phenotype", color='black', linestyle = '-')
-    ax1.plot(gen_index[gen_seg], fit_data[gen_seg, 1], label="Population fitness", color='red', linestyle = '-')
+    ax1.plot(
+        gen_index[gen_seg],
+        fit_data[gen_seg, 0],
+        label="Best phenotype",
+        color="black",
+        linestyle="-",
+    )
+    ax1.plot(
+        gen_index[gen_seg],
+        fit_data[gen_seg, 1],
+        label="Population fitness",
+        color="red",
+        linestyle="-",
+    )
     ax1.set_title("Log Fitness", fontsize=title_font_size)
     ax1.legend()
     plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
@@ -670,7 +683,7 @@ def plot_hist(a=None):
     phen_size = vectsize
 
     avlentop = 1
-    if hasattr(a, 'evoAvLen'):
+    if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
     gen_index_orig = evol_data[:, 0]
     # gen_index_diff = gen_index_orig[1:]
@@ -707,10 +720,10 @@ def plot_hist(a=None):
         "Best fit percent variation",
     ]
 
-    #print("phen names ", phen_names)
+    # print("phen names ", phen_names)
 
-    #plot_hist_1(evol_data, phen_size, phen_offset, phen_names, "EvolutionHistory.png")
-    #plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
+    # plot_hist_1(evol_data, phen_size, phen_offset, phen_names, "EvolutionHistory.png")
+    # plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
 
     plot_fig_g(
         fit_data,
@@ -757,7 +770,9 @@ def plot_hist(a=None):
                 squeeze=False,
             )
         else:
-            fig, axs = plt.subplots(plot_rows, plot_cols, figsize=(10, 5), squeeze=False)
+            fig, axs = plt.subplots(
+                plot_rows, plot_cols, figsize=(10, 5), squeeze=False
+            )
 
         # phen_range = range(0, phen_size)
         # phen_label = range(1, phen_size + 1)
@@ -829,7 +844,6 @@ def reload_single_run(a=None, **kwargs):
         json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
         a.modelName = json_model_name
 
-    
     if (main_model_name is not None) and (main_model_name == "COW2DSR"):
         plot_format = utils.getPlotFormat(network_json_data)
     else:

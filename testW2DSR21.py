@@ -23,7 +23,7 @@ args = dict(
     doTestRun=True,
     doOrigMuscInput=False,
     modifyJson=False,
-    debug = True
+    debug=True,
 )
 
 if doOrig:

@@ -116,7 +116,7 @@ def json_widget(obj):
     else:
         text = json.dumps(obj, indent=2)
         return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
-    
+
 
 def json_widget_2(obj, name="root"):
     """
@@ -153,12 +153,7 @@ def json_widget_2(obj, name="root"):
         return accordion
 
     else:
-        return widgets.HTML(
-            value=f"<pre>{repr(obj)}</pre>"
-        )
-
-
-
+        return widgets.HTML(value=f"<pre>{repr(obj)}</pre>")
 
 
 def get_worm_file():
@@ -174,7 +169,7 @@ def get_worm_file():
 def checkDictName(dictval, namelist):
     dictval1 = dictval
     for val in namelist:
-        #print(val)
+        # print(val)
         # if isinstance(val, int):
         if not isinstance(val, int) and val not in dictval1:
             return False

@@ -510,7 +510,7 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
-
+const vector<double> & itsExternalInputs() const {return externalInputs;}
 
 Efunctor itsEf;
 
@@ -565,7 +565,8 @@ vector<double> externalInputs;
 //vector<double> sjdkdsdjddssdsloe;
 //double sjdkdsdjddssdsloe;
 void setExternalInput();
-virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+//virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+virtual void assignExternalInput(){return;}
 
 void assignExternalInputOnce(const int & ind, const double & val){externalInputs[ind]=val;}
 
