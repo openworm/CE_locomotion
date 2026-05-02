@@ -1712,6 +1712,7 @@ void WormCE::addParsToJson(json & j)
 
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], n);
+  appendNSToJsonByCell(j, n, getCellNames());
   Worm2DCE::addParsToJson(j);
 }
 

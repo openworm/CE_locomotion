@@ -77,7 +77,7 @@ return retvec;
 }
 
 template<class T> 
-vector<T> getVector(TVector<T> & vec, int size)
+vector<T> getVector(const TVector<T> & vec, int size)
 { 
 vector<T> retvec;    
 for (int i = 1; i <= size; i++)
@@ -231,8 +231,8 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
   return true;
 }
 
-
-
+vector<toFromWeight> getNSToFromVec(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names);
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates = true);
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates = true);

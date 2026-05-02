@@ -197,7 +197,8 @@ void Worm2DSR::addParsToJson(json & j)
   if (n){
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], *n);
-  
+  //appendNSToJsonByCell(j, *n, getCellNamesAll());
+    
   //j[nsHead]["section sizes"] = jsects;
   }
   
@@ -704,19 +705,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
 
 
 
-void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
-{
 
-    for(auto it = j.begin(); it != j.end(); ++it)
-    {
-      if (it->contains("evolvable")) setParsFromPheno1(pheno,it,ef, vdd);
-      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
-      else if (it->is_object()) recursive_iterate2(pheno,*it,ef,vdd);
-        
-        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
-        
-    }
-}
 
 
 
@@ -811,7 +800,19 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
 }
 
 
+void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
+{
 
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) setParsFromPheno1(pheno,it,ef, vdd);
+      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
+      else if (it->is_object()) recursive_iterate2(pheno,*it,ef,vdd);
+        
+        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
 
 
 

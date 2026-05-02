@@ -504,6 +504,61 @@ appendToJson<int>(j["Muscle"],par);}
 }
 
 
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names)
+{
+
+vector<double> taus = getVector<double>(n.taus, n.size);
+vector<double> bias = getVector<double>(n.biases, n.size);
+vector<double> gains = getVector<double>(n.gains, n.size);
+vector<double> states = getVector<double>(n.states, n.size);
+
+if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
+json & j2 = j["nervous_system"];
+if (!j2.contains("cells")) j2["cells"] = json::object();
+json & j3 = j2["cells"];
+for (int i=0;i<cell_names.size();i++) 
+  {
+    const string & name = cell_names[i] + "_" + to_string(i);
+    if (!j3.contains(name)) j3[name] = json::object();
+    json & j4 = j3[name];
+    j4["tau"]["value"] = taus[i];
+    j4["bias"]["value"] = bias[i];
+    j4["gain"]["value"] = gains[i];
+    j4["state"]["value"] = states[i];
+  }
+
+  vector<toFromWeight> chem_wei = getNSToFromVec(j, n.chemicalweights, n.NumChemicalConns, n.size);
+  //if (!j2.contains("chemical_conns")) 
+  j2["chemical_conns"] = json::array();
+  for (int i=0;i<chem_wei.size();i++)
+  {
+  const toFromWeight & val = chem_wei[i];
+  json j = json::object();
+  j["to"] = val.to;
+  j["from"] = val.w.from;
+  j["weight"] =  json::object();
+  j["weight"]["value"] = val.w.weight;
+  j2["chemical_conns"].push_back(j);
+  }
+
+
+
+  vector<toFromWeight> elec_wei = getNSToFromVec(j, n.electricalweights, n.NumElectricalConns, n.size);
+  j2["electrical_conns"] = json::array();
+  for (int i=0;i<elec_wei.size();i++)
+  {
+  const toFromWeight & val = elec_wei[i];
+  json j = json::object();
+  j["to"] = val.to;
+  j["from"] = val.w.from;
+  j["weight"] =  json::object();
+  j["weight"]["value"] = val.w.weight;
+  j2["electrical_conns"].push_back(j);
+  }
+
+
+
+}
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
 {
@@ -541,9 +596,7 @@ getVector<int>(c.NumElectricalConns, c.size),
 return par;
 }
 
-
-
-void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+vector<toFromWeight> getNSToFromVec(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
 {    
     vector<toFromWeight> newvec;
     for (int i=1; i<=tot_size; i++){    
@@ -551,7 +604,14 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
             toFromWeight tv(vec[i][j], i);
             newvec.push_back(tv);}        
     }
-    j["value"] = newvec;
+    return newvec;
+}
+
+
+void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+{    
+   
+    j["value"] = getNSToFromVec(j,vec,sizes,tot_size);
 
 }
 

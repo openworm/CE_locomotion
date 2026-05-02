@@ -587,7 +587,7 @@ const baseConsts baseconsts;
 
 
 
-class Worm2Dm : public Worm2Dbody, public Worm2Dbase
+class Worm2Dm : public Worm2Dbody, public Worm2Dbase //Worm2Dm has body
 {
     public:
 
@@ -648,7 +648,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
 
 
-class Worm2D : virtual public Worm2Dm
+class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
 {
     
     public:
