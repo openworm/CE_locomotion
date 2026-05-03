@@ -494,7 +494,12 @@ void WormCE::addEvolvableToJson(json & j)
 
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
-
+  addEvolvableTFI(j["nervous_system"]["chemical_conns"], chemvec, 
+    getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  addEvolvableTFI(j["nervous_system"]["electrical_conns"], elecvec, 
+    getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
+  getCellNamesUnits(getCellNamesUnit(), par1.N_units));
 
 vector<intPair> nmjvecd;
 nmjvecd.push_back({DA,15});
@@ -1712,7 +1717,9 @@ void WormCE::addParsToJson(json & j)
 
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], n);
-  appendNSToJsonByCell(j, n, getCellNames());
+  
+  
+  appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
   Worm2DCE::addParsToJson(j);
 }
 

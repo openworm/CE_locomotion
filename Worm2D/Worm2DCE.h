@@ -77,9 +77,9 @@ class Worm2DCE: public Worm2DSR, public WormFR{
 
     void addParsToJson(json & j);
     void writeAct();
-
+    const vector<string> getCellNamesUnit() {return {"DA", "DB", "DD", "VD", "VA", "VB"};}
     const vector<string> getCellNames() {return 
-        getCellNamesAll( {"DA", "DB", "DD", "VD", "VA", "VB"}, par1.N_units);}
+        getCellNamesAll(getCellNamesUnit(), par1.N_units);}
     
     const string getModelName() {return {"W2DCE"};}
 

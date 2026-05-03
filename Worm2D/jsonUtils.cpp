@@ -503,8 +503,48 @@ appendToJson<double>(j["Muscle"],par);}
 appendToJson<int>(j["Muscle"],par);}
 }
 
+void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
+  const vector<string> & cell_names_full)
+{
 
-void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names)
+  for (int i=0;i<vec.size();i++) 
+    {
+    const intPair & val = vec[i];
+    const string & name = cell_names_full[val.ind-1];
+    bool found = false;
+    j[name][parameter]["evotag"] = val.val;
+    }
+    
+}
+
+
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full)
+{
+
+  //if (!j.contains("nervous_system")) return;
+  //json & j2 = j["nervous_system"];
+
+  for (int i=0;i<vec.size();i++) 
+  {
+  const fromToInt & val = vec[i];
+  bool found = false;
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  {
+   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = val.val; 
+   else (*it)["weight"]["evotag"] = val.val;
+   found = true;
+   break; 
+  }
+  }
+  assert(found);
+  }
+
+}
+
+
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names_full)
 {
 
 vector<double> taus = getVector<double>(n.taus, n.size);
@@ -512,13 +552,20 @@ vector<double> bias = getVector<double>(n.biases, n.size);
 vector<double> gains = getVector<double>(n.gains, n.size);
 vector<double> states = getVector<double>(n.states, n.size);
 
+/* vector<string> cell_names_full;
+for (int i=0;i<cell_names.size();i++) {
+const string & name = cell_names[i] + "_" + to_string(i);
+cell_names_full.push_back(name);
+} */
+
+
 if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 json & j2 = j["nervous_system"];
 if (!j2.contains("cells")) j2["cells"] = json::object();
 json & j3 = j2["cells"];
-for (int i=0;i<cell_names.size();i++) 
+for (int i=0;i<cell_names_full.size();i++) 
   {
-    const string & name = cell_names[i] + "_" + to_string(i);
+    const string & name = cell_names_full[i];
     if (!j3.contains(name)) j3[name] = json::object();
     json & j4 = j3[name];
     j4["tau"]["value"] = taus[i];
@@ -534,8 +581,8 @@ for (int i=0;i<cell_names.size();i++)
   {
   const toFromWeight & val = chem_wei[i];
   json j = json::object();
-  j["to"] = val.to;
-  j["from"] = val.w.from;
+  j["to"] = cell_names_full[val.to-1];
+  j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
   j2["chemical_conns"].push_back(j);
@@ -549,8 +596,8 @@ for (int i=0;i<cell_names.size();i++)
   {
   const toFromWeight & val = elec_wei[i];
   json j = json::object();
-  j["to"] = val.to;
-  j["from"] = val.w.from;
+  j["to"] = cell_names_full[val.to-1];
+  j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
   j2["electrical_conns"].push_back(j);
@@ -727,6 +774,18 @@ appendToJson<vector<int> >(j,parvec);}
 
 appendNSToJson(j, n);
 
+}
+
+vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units)
+{
+    vector<string> cell_names_all;
+    for (int i=0;i<n_units;i++) 
+    {
+      vector<string> cell_names_unit;
+      for (int j=0;j<cell_names.size();j++) cell_names_unit.push_back(cell_names[j] + "_" + to_string(i));
+      cell_names_all.insert(cell_names_all.end(),cell_names_unit.begin(),cell_names_unit.end());
+    }
+    return cell_names_all;
 }
 
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units)

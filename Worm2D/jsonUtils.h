@@ -231,6 +231,10 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
   return true;
 }
 
+void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
+  const vector<string> & cell_names_full);
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full);
+vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units);
 vector<toFromWeight> getNSToFromVec(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
 void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names);
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
