@@ -419,6 +419,12 @@ void WormCE::addEvolvableToJson(json & j)
  
   j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  
+  j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
+  j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
+  j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
+  j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
+
 
   //j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
   //j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
@@ -510,6 +516,9 @@ vector<intPair> nmjvecv;
 nmjvecv.push_back({VA,15});
 nmjvecv.push_back({VB,16});
 nmjvecv.push_back({VD,17});
+
+addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNamesUnit());
+addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNamesUnit());
 
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
 //j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;

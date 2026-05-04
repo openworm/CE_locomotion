@@ -259,7 +259,7 @@ public:
 
     WormCE(shared_ptr<const CmdArgs> cmd, TVector<double> &phengen, bool isPheno);
     
-    WormCE(TVector<double> &phengen, bool isPheno);
+    //WormCE(TVector<double> &phengen, bool isPheno);
     
     WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_ = nullptr);
 
@@ -271,7 +271,7 @@ public:
     //WormCE(shared_ptr<const CmdArgs> cmd);
     //WormCE(shared_ptr<SRCE> sr_ptr_, shared_ptr<const CmdArgs> cmd = nullptr);
 
-    void setParsFromJson(json & j);
+    //void setParsFromJson(json & j);
     void setParsFromPheno(const TVector<double> &pheno);
     void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);
     int getVectSize(){return 17;}

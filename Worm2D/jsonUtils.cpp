@@ -503,6 +503,38 @@ appendToJson<double>(j["Muscle"],par);}
 appendToJson<int>(j["Muscle"],par);}
 }
 
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar)
+{
+
+for (const toFromWeight & val : vec)
+{
+      json j2 = json::object();
+      j2[frompar] = val.w.from;
+      j2[topar] = val.to;
+      j2[weightpar]["value"] = val.w.weight;
+      j.push_back(j2);
+
+}
+
+}
+
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const vector<string> & names)
+{
+
+for (const toFromWeight & val : vec)
+{
+      json j2 = json::object();
+      j2[frompar] = val.w.from;
+      j2[topar] = names[val.to-1];
+      j2[weightpar]["value"] = val.w.weight;
+      j.push_back(j2);
+
+}
+
+}
+
 
 
 void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar)
@@ -530,11 +562,13 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
   const vector<string> & cell_names_full)
 {
 
-  for (int i=0;i<vec.size();i++) 
+  for (const intPair & val : vec)
+  //for (int i=0;i<vec.size();i++) 
     {
-    const intPair & val = vec[i];
+    //const intPair & val = vec[i];
     const string & name = cell_names_full[val.ind-1];
-    bool found = false;
+    //bool found = false;
+    assert(j.at(name).contains(parameter));
     j[name][parameter]["evotag"] = val.val;
     }
     
@@ -584,6 +618,7 @@ cell_names_full.push_back(name);
 
 if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 json & j2 = j["nervous_system"];
+j2["cell_names"]["value"] = cell_names_full;
 if (!j2.contains("cells")) j2["cells"] = json::object();
 json & j3 = j2["cells"];
 for (int i=0;i<cell_names_full.size();i++) 
@@ -635,7 +670,9 @@ for (int i=0;i<cell_names_full.size();i++)
   j2["electrical_conns"]["value"].push_back(j);
   }
 
-
+  j2["size"]["value"] = n.size;
+  j2["maxchemcons"]["value"] = n.maxchemconns;
+  j2["maxelecconns"]["value"] = n.maxelecconns;
 
 }
 

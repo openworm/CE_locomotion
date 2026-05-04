@@ -231,6 +231,10 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
   return true;
 }
 
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const vector<string> & names);
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar);
 void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar);
 void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
   const vector<string> & cell_names_full);

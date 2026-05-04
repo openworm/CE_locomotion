@@ -108,7 +108,7 @@ void SRCE::updateSegs()
 
 void SR::addParsToJson(json & j) const
 {
-
+    j["stretch_receptor"]["type"]["value"] = SRType;
     j["Stretch receptor"]["Type"]["value"] = SRType;
 }
 
@@ -143,9 +143,47 @@ void SR18::addParsToJson(json & j) const
 
 
 
-
 void SRCE::addParsToJson(json & j) const
 {
+    vector<string> names;
+    if (j["nervous_system"].contains("cell_names"))
+    names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();;
+
+
+    addToFromWeight(j["stretch_receptor"]["a_d_weights"]["value"], srweights.segToA_D, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["a_d_weights"]["message"] = "Weights from body segments to dorsal A SR";
+    addToFromWeight(j["stretch_receptor"]["a_v_weights"]["value"], srweights.segToA_V, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["a_v_weights"]["message"] = "Weights from body segments to ventral A SR";
+    addToFromWeight(j["stretch_receptor"]["b_d_weights"]["value"], srweights.segToB_D, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["b_d_weights"]["message"] = "Weights from body segments to dorsal B SR";
+    addToFromWeight(j["stretch_receptor"]["b_v_weights"]["value"], srweights.segToB_V, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["b_v_weights"]["message"] = "Weights from body segments to ventral B SR";
+
+    addToFromWeight(j["stretch_receptor"]["ns_a_d_weights"]["value"], nssrweights.segToA_D, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_a_d_weights"]["message"] = "Weights from dorsal A SR to Nervous System";
+    addToFromWeight(j["stretch_receptor"]["ns_a_v_weights"]["value"], nssrweights.segToA_V, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_a_v_weights"]["message"] = "Weights from ventral A SR to Nervous System";
+    addToFromWeight(j["stretch_receptor"]["ns_b_d_weights"]["value"], nssrweights.segToB_D, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_b_d_weights"]["message"] = "Weights from dorsal B SR to Nervous System";
+    addToFromWeight(j["stretch_receptor"]["ns_b_v_weights"]["value"], nssrweights.segToB_V, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_b_v_weights"]["message"] = "Weights from ventral B SR to Nervous System";
+
+
+    j["stretch_receptor"]["n_segs"]["value"] = nsegs;
+    j["stretch_receptor"]["n_stretch"]["value"] = srvars_ptr->nstretch;
+
+    //if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
+
+    j["stretch_receptor"]["sr_a_gain"]["value"] = SR_A_gain;
+    j["stretch_receptor"]["sr_b_gain"]["value"] = SR_B_gain;
+
+    j["stretch_receptor"]["plot_size"]["value"] = srvars_ptr->nstretch*4;
+
+
 
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A D weights"], srweights.segToA_D);
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A V weights"], srweights.segToA_V);
