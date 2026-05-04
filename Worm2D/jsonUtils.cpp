@@ -503,6 +503,29 @@ appendToJson<double>(j["Muscle"],par);}
 appendToJson<int>(j["Muscle"],par);}
 }
 
+
+
+void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar)
+{
+
+for (int i=0;i<vec.size();i++)
+{
+const weightentry & w = vec[i];
+j.push_back({{frompar, w.from}, {weightpar, w.weight}});
+} 
+
+}
+
+
+void addWeightentry(json & j, const weightentry & w, const string & frompar, const string & weightpar)
+{
+
+  j[frompar] = w.from;
+  j[weightpar]=w.weight;
+
+}
+
+
 void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
   const vector<string> & cell_names_full)
 {
@@ -574,33 +597,42 @@ for (int i=0;i<cell_names_full.size();i++)
     j4["state"]["value"] = states[i];
   }
 
-  vector<toFromWeight> chem_wei = getNSToFromVec(j, n.chemicalweights, n.NumChemicalConns, n.size);
-  //if (!j2.contains("chemical_conns")) 
-  j2["chemical_conns"] = json::array();
-  for (int i=0;i<chem_wei.size();i++)
+
+
+  vector<toFromWeight> chem_wei = getNSToFromVec(n.chemicalweights, n.NumChemicalConns, n.size);
+  if (!j2.contains("chemical_conns")) j2["chemical_conns"] = json::object();
+  if (!j2["chemical_conns"].contains("value")) j2["chemical_conns"]["value"] = json::array();
+  for (const toFromWeight& val : chem_wei)
+  //for (int i=0;i<chem_wei.size();i++)
   {
-  const toFromWeight & val = chem_wei[i];
+  //const toFromWeight & val = chem_wei[i];
   json j = json::object();
   j["to"] = cell_names_full[val.to-1];
   j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
-  j2["chemical_conns"].push_back(j);
+  j2["chemical_conns"]["value"].push_back(j);
   }
 
 
 
-  vector<toFromWeight> elec_wei = getNSToFromVec(j, n.electricalweights, n.NumElectricalConns, n.size);
-  j2["electrical_conns"] = json::array();
-  for (int i=0;i<elec_wei.size();i++)
+  vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
+  if (!j2.contains("electrical_conns")) j2["electrical_conns"] = json::object();
+  if (!j2["electrical_conns"].contains("value")) j2["electrical_conns"]["value"] = json::array();
+
+  //j2["electrical_conns"] = json::object();
+  //j2["electrical_conns"]["value"] = json::array();
+  //j2["electrical_conns"] = json::array();
+  for (const toFromWeight& val : elec_wei)
+  //for (int i=0;i<elec_wei.size();i++)
   {
-  const toFromWeight & val = elec_wei[i];
+  //const toFromWeight & val = elec_wei[i];
   json j = json::object();
   j["to"] = cell_names_full[val.to-1];
   j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
-  j2["electrical_conns"].push_back(j);
+  j2["electrical_conns"]["value"].push_back(j);
   }
 
 
@@ -643,7 +675,7 @@ getVector<int>(c.NumElectricalConns, c.size),
 return par;
 }
 
-vector<toFromWeight> getNSToFromVec(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+vector<toFromWeight> getNSToFromVec(TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
 {    
     vector<toFromWeight> newvec;
     for (int i=1; i<=tot_size; i++){    
@@ -658,7 +690,7 @@ vector<toFromWeight> getNSToFromVec(json & j, TMatrix<weightentry> & vec, TVecto
 void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
 {    
    
-    j["value"] = getNSToFromVec(j,vec,sizes,tot_size);
+    j["value"] = getNSToFromVec(vec,sizes,tot_size);
 
 }
 

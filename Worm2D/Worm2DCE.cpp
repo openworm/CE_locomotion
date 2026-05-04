@@ -494,9 +494,9 @@ void WormCE::addEvolvableToJson(json & j)
 
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
-  addEvolvableTFI(j["nervous_system"]["chemical_conns"], chemvec, 
+  addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getCellNamesUnits(getCellNamesUnit(), par1.N_units));
-  addEvolvableTFI(j["nervous_system"]["electrical_conns"], elecvec, 
+  addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
     getCellNamesUnits(getCellNamesUnit(), par1.N_units));
   addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
   getCellNamesUnits(getCellNamesUnit(), par1.N_units));
