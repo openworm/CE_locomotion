@@ -32,7 +32,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   
     const json & js1 = BPitsJson;
 
-    if (false){
+   /*  if (false){
 
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
@@ -53,7 +53,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     }
     }
 
-    }
+    } */
 
    
 
@@ -136,7 +136,7 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     if (callInit) writeOrigGen(cmd);
 
 
-    if (false){
+  /*   if (false){
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
 
@@ -153,7 +153,7 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     appendAllNSJson(j2,n);
       }
     } 
-  }
+  } */
   
  
 
@@ -198,7 +198,8 @@ void Worm2DSR::addParsToJson(json & j)
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], *n);
   //appendNSToJsonByCell(j, *n, getCellNamesAll());
-    
+  appendNSToJsonByCell(j,*n);
+
   //j[nsHead]["section sizes"] = jsects;
   }
   

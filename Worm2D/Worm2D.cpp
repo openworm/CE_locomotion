@@ -887,13 +887,14 @@ void Worm2D::addParsToJson(json & j)
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
 
-
-    j["ventral_nmj"]["weights"]["message"] = "Ventral NMJ weights in sparse format";
-    j["dorsal_nmj"]["weights"]["message"] = "Dorsal NMJ weights in sparse format";
-    j["ventral_nmj"]["weights"]["value"] = json::array();
+    vector<string> names;
+    if (j.contains("nervous_system"))
+    names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+    else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+  
+    
     j["dorsal_nmj"]["weights"]["value"] = json::array();
-
-    const vector<string> names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+    j["ventral_nmj"]["weights"]["value"] = json::array();
     for (const toFromWeight & val : dMuscConnvec)
     {
         json j2 = json::object();
@@ -902,6 +903,7 @@ void Worm2D::addParsToJson(json & j)
         j2["weight"]["value"] = val.w.weight;
         j["dorsal_nmj"]["weights"]["value"].push_back(j2);
     }
+    
     for (const toFromWeight & val : vMuscConnvec)
     {
         json j2 = json::object();
@@ -911,6 +913,11 @@ void Worm2D::addParsToJson(json & j)
         j["ventral_nmj"]["weights"]["value"].push_back(j2);
     }
 
+    
+
+
+    j["ventral_nmj"]["weights"]["message"] = "Ventral NMJ weights in sparse format";
+    j["dorsal_nmj"]["weights"]["message"] = "Dorsal NMJ weights in sparse format";
 
 
     if (hasVNCNMJ){
@@ -929,23 +936,41 @@ void Worm2D::addParsToJson(json & j)
         j2["NMJ gain fact"]["value"] = namedVars["NMJ gain fact"];
         }
 
-        {if (!j.contains("vnc_nmj")) j["vnc_nmj"] = {};
-
-        vector<string> names = getCellNamesUnit();
-
-        json & j2 = j["vnc_nmj"];
-        j2["set_from_this"]["value"] = true;
-        j2["ventral_conns"] = json::object();
-        j2["dorsal_conns"]  = json::object();
-        for (const weightentry & val : ventinds)
-            j2["ventral_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
-
+        {
+            
+            if (!j.contains("vnc_nmj")) 
+            {
+                j["vnc_nmj"] = json::object();
+                vector<string> names = getCellNamesUnit();
+                json & j2 = j["vnc_nmj"];
+                j2["ventral_conns"] = json::object();
+                j2["dorsal_conns"]  = json::object();
+                for (const weightentry & val : ventinds){
+                    j2["ventral_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["ventral_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                 }
         
-        for (const weightentry & val : dorsinds)
-            j2["dorsal_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
+                for (const weightentry & val : dorsinds){
+                    j2["dorsal_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["dorsal_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                }
+            }
+            else{
 
-           
+              json & j2 = j["vnc_nmj"];
+        
 
+            for (const weightentry & val : ventinds)
+               for (auto it = j2["ventral_conns"].begin(); it != j2["ventral_conns"].end(); ++it)
+                 if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+              for (const weightentry & val : dorsinds)
+                  for (auto it = j2["dorsal_conns"].begin(); it != j2["dorsal_conns"].end(); ++it)
+                     if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+
+            }
+          json & j2 = j["vnc_nmj"];
+            j2["set_from_this"]["value"] = true;
+          
 
         j2["ventral_units"]["value"] = json::array();
         j2["dorsal_units"]["value"] = json::array();
@@ -955,15 +980,12 @@ void Worm2D::addParsToJson(json & j)
         for (const intPair & val : unitToMuscD)
             j2["dorsal_units"]["value"].push_back({{"from_unit", val.ind},{"to_musc" , val.val}});
           
-
         j2["gain_map_v"]["value"] = namedVars["NMJ gain map V"];
         j2["gain_map_d"]["value"] = namedVars["NMJ gain map D"]; //NMJ_gain_map_D;
         j2["gain_fact"]["value"] = namedVars["NMJ gain fact"];
     
 
         }
-
-
 
     }
 

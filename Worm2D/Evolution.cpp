@@ -739,6 +739,8 @@ void Evolution::configure_p2()
     callback_t func = static_cast<callback_t>(Callback<double(TVector<double> &, RandomState &)>::callback);
     s->SetEvaluationFunction(func);}
     
+
+   
     if (doResume) {cout << "Resuming search" << endl; s->DoSearch(1);}
     else s->ExecuteSearch();
   
@@ -747,12 +749,17 @@ void Evolution::configure_p2()
 
 void Evolution::configure()
 {
+    
     setUp();
+     
     configure_p1();
     configure_p12();
+
     configure_p2();
+ 
     evolfile.close();
     genhistfile.close();
+   
    // genhistfile2.close();
 }
 

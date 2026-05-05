@@ -470,6 +470,7 @@ public:
 template<class T>
 void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
 {
+    
         //T w(pheno, true);
         shared_ptr<T> w_ptr = this->getTw();
         //T & w = *w_ptr; 
@@ -490,11 +491,12 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         w_ptr->InitializeState(rs); 
         w_ptr->initForSimulation(rs);
 
-        //assert(0);
+        
 
         json j;
       
         w_ptr->addParsToJson(j);
+        
         addParsToJson(j);
 
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
@@ -934,7 +936,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
    
     shared_ptr<T> w_ptr = this->getTw();
-
+ 
 
     int zeroGainsType;
     w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
@@ -1101,7 +1103,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
 {
 
    
-
+   
 
   const double & Duration = evoPars1.Duration;
   //const int & VectSize = evoPars1.VectSize;

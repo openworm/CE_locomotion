@@ -145,9 +145,9 @@ void SR18::addParsToJson(json & j) const
 
 void SRCE::addParsToJson(json & j) const
 {
-    vector<string> names;
-    if (j["nervous_system"].contains("cell_names"))
-    names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();;
+    
+    assert(j["nervous_system"].contains("cell_names"));
+    vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
 
 
     addToFromWeight(j["stretch_receptor"]["a_d_weights"]["value"], srweights.segToA_D, "to_sr", "from_seg", "weight");

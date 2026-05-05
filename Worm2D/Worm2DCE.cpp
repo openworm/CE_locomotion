@@ -185,8 +185,15 @@ WormCE((json) getJsonFromFile(jsonfilename_), cmd){}
 
 WormCE::WormCE(const json & j, shared_ptr<const CmdArgs> cmd):WormCE(cmd)
 {
+
+  if (j.contains("nervous_system")){
+  setCircuitSize(j["nervous_system"],n);
+  assert(0);
+  }
+  else{
   const json & j2 = j["Nervous system"];
   n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+  }
 
   //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
   setNSFromJsonNZ(j,n);

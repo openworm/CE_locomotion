@@ -3,6 +3,8 @@
 #include <iomanip>
 //#include "../argUtils.h"
 
+#include <unordered_map>
+
 
 
 using json = nlohmann::json;
@@ -36,6 +38,26 @@ bool parseValue(const std::string& s, bool& v) {
 
 } */
 
+int getMaxCounts(const json & j, const vector<string> & names, const string & topar)
+{
+  unordered_map<string, int> counts;
+
+  for (const string& s : names) counts[s] = 0;
+  for(auto it = j.begin(); it != j.end(); ++it) //counts[it->at(topar)]++;
+    {
+  auto it2 = counts.find(it->at(topar));
+  if (it2 != counts.end()) it2->second++;   
+    }
+
+int max_count = 0;
+
+for (const string& s : names)
+    if (counts[s] > max_count) max_count = counts[s];
+    
+
+
+return max_count;
+}
 
 
 
@@ -601,6 +623,27 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
 }
 
 
+void setCircuitSize(const json & j, NervousSystem& n)
+{
+  
+  assert(j.contains("cell_names"));
+  vector<string>  names = j["cell_names"]["value"].template get< vector<string> >();
+  int maxchem = getMaxCounts(j["chemical_conns"]["value"], names, "to");
+  int maxelec = getMaxCounts(j["electrical_conns"]["value"], names, "to");
+
+  n.SetCircuitSize(names.size(), maxchem, maxelec);
+
+}
+
+void appendNSToJsonByCell(json & j, NervousSystem& n)
+{
+
+  assert(j.contains("nervous_system"));
+  vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+  appendNSToJsonByCell(j,n,names);
+
+}
+
 void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names_full)
 {
 
@@ -670,9 +713,9 @@ for (int i=0;i<cell_names_full.size();i++)
   j2["electrical_conns"]["value"].push_back(j);
   }
 
-  j2["size"]["value"] = n.size;
-  j2["maxchemcons"]["value"] = n.maxchemconns;
-  j2["maxelecconns"]["value"] = n.maxelecconns;
+  //j2["size"]["value"] = n.size;
+  //j2["maxchemcons"]["value"] = n.maxchemconns;
+  //j2["maxelecconns"]["value"] = n.maxelecconns;
 
 }
 
@@ -771,6 +814,23 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
  */
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 {
+
+  if (j.contains("nervous_system"))
+  {
+    vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+    unordered_map<std::string, int> name_index;
+
+    for (int i = 0; i < names.size(); ++i) name_index[names[i]] = i;
+  
+
+    //int index = index_of["dog"];
+
+    
+
+
+
+  }
+
 
   const json & j2 = j["Nervous system"];
 
