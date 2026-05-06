@@ -815,20 +815,52 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 {
 
+  //if (false)
   if (j.contains("nervous_system"))
   {
-    vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
-    unordered_map<std::string, int> name_index;
 
-    for (int i = 0; i < names.size(); ++i) name_index[names[i]] = i;
-  
+  const json& j2 = j["nervous_system"];
 
-    //int index = index_of["dog"];
+  vector<string> names = j2["cell_names"]["value"].get<vector<string> >();
 
-    
+  std::unordered_map<std::string, int> name_index;
 
+  for (std::size_t i = 0; i < names.size(); ++i)
+  {
+    name_index[names[i]] = static_cast<int>(i) + 1;
+  }
 
+  for (const auto& [key, value] : j2["cells"].items())
+  {
+    int cell_index = name_index.at(key);
 
+    n.SetNeuronBias(cell_index, value["bias"]["value"].get<double>());
+    n.SetNeuronTimeConstant(cell_index, value["tau"]["value"].get<double>());
+    n.SetNeuronGain(cell_index, value["gain"]["value"].get<double>());
+
+    if (setStates)
+        n.SetNeuronState(cell_index, value["state"]["value"].get<double>());
+  }
+
+  for (const auto& conn : j2["chemical_conns"]["value"])
+  {
+    n.SetChemicalSynapseWeight(
+        name_index.at(conn["from"].get<std::string>()),
+        name_index.at(conn["to"].get<std::string>()),
+        conn["weight"]["value"].get<double>()
+    );
+  }
+
+  for (const auto& conn : j2["electrical_conns"]["value"])
+  {
+    n.SetElectricalSynapseWeight(
+        name_index.at(conn["from"].get<std::string>()),
+        name_index.at(conn["to"].get<std::string>()),
+        conn["weight"]["value"].get<double>()
+    );
+  }
+
+  return;
   }
 
 
