@@ -186,9 +186,10 @@ WormCE((json) getJsonFromFile(jsonfilename_), cmd){}
 WormCE::WormCE(const json & j, shared_ptr<const CmdArgs> cmd):WormCE(cmd)
 {
 
+  assert(0);
   if (j.contains("nervous_system")){
   setCircuitSize(j["nervous_system"],n);
-  assert(0);
+  
   }
   else{
   const json & j2 = j["Nervous system"];
@@ -507,12 +508,21 @@ void WormCE::addEvolvableToJson(json & j)
 
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
   addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
+    getDistinctCellNames());
+  addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
+    getDistinctCellNames());
+  addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
+    getDistinctCellNames());
+
+/* addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getCellNamesUnits(getCellNamesUnit(), par1.N_units));
   addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
     getCellNamesUnits(getCellNamesUnit(), par1.N_units));
   addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
-  getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  getCellNamesUnits(getCellNamesUnit(), par1.N_units)); */
+
 
 vector<intPair> nmjvecd;
 nmjvecd.push_back({DA,15});
@@ -524,8 +534,11 @@ nmjvecv.push_back({VA,15});
 nmjvecv.push_back({VB,16});
 nmjvecv.push_back({VD,17});
 
-addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNamesUnit());
-addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNamesUnit());
+//addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNamesUnit());
+//addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNamesUnit());
+addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getDistinctCellNames());
+addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getDistinctCellNames());
+
 
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
 //j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;

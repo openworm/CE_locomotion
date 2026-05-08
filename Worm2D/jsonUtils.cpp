@@ -665,6 +665,27 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
     
 }
 
+void addMfuncTFI(json & j, const fromToInt & val, const vector<string> & cell_names_full, const json & j2)
+{
+
+  //if (!j.contains("nervous_system")) return;
+  //json & j2 = j["nervous_system"];
+
+  bool found = false;
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  {
+   it->at("weight")["mfunc"] = j2; 
+   found = true;
+   break; 
+  }
+  }
+  assert(found);
+  
+
+}
+
 
 void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full)
 {

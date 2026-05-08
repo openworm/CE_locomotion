@@ -1083,11 +1083,14 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
     json biasvecj = json::array();
     //json biasvecj = json::object();
 
-    for (int u = 1; u <= par1.N_units; u++){
-
     int db, dd, vba, vda, vbp, vdp;
     int ddNext, dbNext, vdaNext, vbaNext;
 
+    const vector<string>  cell_names_full = getDistinctCellNames();
+
+    for (int u = 1; u <= par1.N_units; u++){
+
+    
 
         db = nn(DB,u);
         dd = nn(DD,u);
@@ -1122,7 +1125,7 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             biasvecj.push_back({vda,2});
             biasvecj.push_back({vdp,2}); */
 
-            if (false)
+            //if (false)
             {vector<intPair> & vec = biasvec;
             vec.push_back({db,1});
             vec.push_back({vba,1});
@@ -1159,8 +1162,12 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
         chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", 9}});
 
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vba, dd,8}, cell_names_full, {{"f_ind", 1}, {"fact", 0.5}});
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vbp, dd,8}, cell_names_full , {{"f_ind", 1}, {"fact", 0.5}});
 
-if (false)
+//if (false)
         {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({db,db,5});
@@ -1243,7 +1250,8 @@ nmjvecv.push_back({VDP,16});
 nmjvecv.push_back({SMDV,29});
 nmjvecv.push_back({RMDV,30});
 
-
+addEvolvableIP(j["vnc_18"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_18"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
 
 j["VNC 18"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
@@ -1266,7 +1274,7 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     biasvecj.push_back({{"ind", RMDD}, {"evotag", 18}});
     biasvecj.push_back({{"ind", RMDV}, {"evotag", 18}});
 
-    if (false)
+    //if (false)
     {vector<intPair> & vec = biasvec;
     vec.push_back({SMDD,17});
     vec.push_back({SMDV,17});
@@ -1293,7 +1301,8 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", 25}});
     chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", 25}});
 
-if (false)
+
+//if (false)
   {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({SMDD, SMDD,21});
@@ -1313,6 +1322,16 @@ if (false)
         push_back_double({SMDV, RMDV,26}, vec);
         push_back_double({RMDV, RMDD,27}, vec);    
         }
+
+   
+   
+
+    addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
+
+  
 
 
 
