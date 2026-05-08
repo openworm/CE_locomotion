@@ -117,6 +117,36 @@ void SR::addParsToJson(json & j) const
 void SR18::addParsToJson(json & j) const
 {
 
+    assert(j.contains("nervous_system"));
+    //cout << j["nervous_system"] << endl;
+
+    assert(j["nervous_system"].contains("cell_names"));
+    vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+
+    addToFromWeight(j["stretch_receptor"]["d_weights"]["value"], srweights.segToD, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["d_weights"]["message"] = "Weights from body segments to dorsal SR";
+    addToFromWeight(j["stretch_receptor"]["v_weights"]["value"], srweights.segToV, "to_sr", "from_seg", "weight");
+    j["stretch_receptor"]["d_weights"]["message"] = "Weights from body segments to ventral SR";
+
+    addToFromWeight(j["stretch_receptor"]["ns_d_weights"]["value"], nssrweights.segToD, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_d_weights"]["message"] = "Weights from dorsal SR to Nervous System";
+    addToFromWeight(j["stretch_receptor"]["ns_v_weights"]["value"], nssrweights.segToV, 
+        "to_ns", "from_sr", "weight", names);
+    j["stretch_receptor"]["ns_v_weights"]["message"] = "Weights from ventral SR to Nervous System";
+
+
+    j["stretch_receptor"]["n_segs"]["value"] = nsegs;
+    j["stretch_receptor"]["n_stretch"]["value"] = srvars_ptr->nstretch;
+
+    //if (srpars!=nullptr) srpars->addParsToJson(j["Stretch receptor"]);
+
+    j["stretch_receptor"]["sr_vnc_gain"]["value"] = SRvncgain;
+    j["stretch_receptor"]["sr_head_gain"]["value"] = SRheadgain;
+    j["stretch_receptor"]["sr_vnc_sr"]["value"] = vncsr;
+    j["stretch_receptor"]["sr_head_sr"]["value"] = headsr; 
+    j["stretch_receptor"]["plot_size"]["value"] = 2 + srvars_ptr->nstretch*3;
+
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR D weights"], srweights.segToD);
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR V weights"], srweights.segToV);
 

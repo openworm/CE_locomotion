@@ -795,6 +795,10 @@ const vector<string>  Worm18::getCellNames()
 
 void Worm18::addParsToJson(json & j)
 {
+
+
+    Worm2D::addParsToJson(j);
+
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
@@ -807,7 +811,7 @@ void Worm18::addParsToJson(json & j)
     appendAllNSJson(j[nsHead], n);
     }
 
-    Worm2D::addParsToJson(j);
+   
 
    
     j[nsHead]["section sizes"]["head"]["value"] = 4;
