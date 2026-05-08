@@ -842,6 +842,18 @@ void Worm2D::addParsToJson(json & j)
 {  
      // addwormIzqParams
     
+    
+    NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
+    if (n_ptr1){
+    string nsHead = "Nervous system";
+    appendAllNSJson(j[nsHead], *n_ptr1);
+  
+    vector<string> names = getDistinctCellNames();
+    if (names[0]=="not implemented") appendNSToJsonByCell(j, *n_ptr1);
+    else appendNSToJsonByCell(j, *n_ptr1, names);
+    }
+
+    //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
 
     appendMuscleToJson(j,m);
 
@@ -892,7 +904,8 @@ void Worm2D::addParsToJson(json & j)
     vector<string> names;
     if (j.contains("nervous_system"))
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
-    else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+    //else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+    else names = getDistinctCellNames();
     
     j["dorsal_nmj"]["weights"]["value"] = json::array();
     j["ventral_nmj"]["weights"]["value"] = json::array();
@@ -915,8 +928,6 @@ void Worm2D::addParsToJson(json & j)
     }
 
     
-
-
     j["ventral_nmj"]["weights"]["message"] = "Ventral NMJ weights in sparse format";
     j["dorsal_nmj"]["weights"]["message"] = "Dorsal NMJ weights in sparse format";
 
@@ -969,8 +980,10 @@ void Worm2D::addParsToJson(json & j)
                      if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
 
             }
-          json & j2 = j["vnc_nmj"];
-            j2["set_from_this"]["value"] = true;
+
+
+        json & j2 = j["vnc_nmj"];
+        j2["set_from_this"]["value"] = true;
           
 
         j2["ventral_units"]["value"] = json::array();
@@ -1001,6 +1014,11 @@ void Worm2D::addParsToJson(json & j)
         j2["NMJ gain map V"]["value"] = namedVars["NMJ gain map V"];
         j2["NMJ gain map D"]["value"] = namedVars["NMJ gain map D"];
         j2["NMJ gain fact"]["value"] = namedVars["NMJ gain fact"];
+
+
+
+
+
     }
     
 

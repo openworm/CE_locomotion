@@ -134,6 +134,10 @@ void Worm2DSR::addParsToJson(json & j)
   
 
   if (true){
+
+  if (false){  
+
+    
   NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
   if (n){
   string nsHead = "Nervous system";
@@ -143,7 +147,9 @@ void Worm2DSR::addParsToJson(json & j)
 
   //j[nsHead]["section sizes"] = jsects;
   }
-  
+  }
+
+
   Worm2D::addParsToJson(j);
   Worm2DSRb::addParsToJson(j);
   }

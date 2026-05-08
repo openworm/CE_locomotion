@@ -1628,8 +1628,9 @@ void Worm2DCE::addParsToJson(json & j)
     //Params<double> par = sr_ptr->getStretchReceptorParams();
     //appendToJson<double>(j["Stretch receptor"], par);
 
-    sr_ptr->addParsToJson(j);
     Worm2D::addParsToJson(j);
+    sr_ptr->addParsToJson(j);
+    
     //W2DCEpars1->addParsToJson(j);
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
@@ -1731,11 +1732,15 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
 void WormCE::addParsToJson(json & j)
 {
 
+  if (false){
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], n);
   
-  
-  appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  appendNSToJsonByCell(j, n, getDistinctCellNames());
+  //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+
+  }
+
   Worm2DCE::addParsToJson(j);
 }
 
@@ -1805,4 +1810,12 @@ void WormCE::DumpParams(ofstream &ofs) {
 
   Worm2DCE::DumpParams(ofs);
  
+}
+
+
+const vector<string> Worm2DCE::getDistinctCellNames()
+{
+vector<string> v1 = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+return v1;
+
 }

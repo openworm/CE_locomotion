@@ -80,7 +80,8 @@ class Worm2DCE: public Worm2DSR, public WormFR{
     const vector<string> getCellNamesUnit() {return {"DA", "DB", "DD", "VD", "VA", "VB"};}
     const vector<string> getCellNames() {return 
         getCellNamesAll(getCellNamesUnit(), par1.N_units);}
-    
+    const vector<string> getDistinctCellNames();
+
     const string getModelName() {return {"W2DCE"};}
 
     vector<doubIntParamsHead> getWormParams();

@@ -776,6 +776,15 @@ void Worm18::Step1()
     //t += StepSize;
 }
 
+const vector<string> Worm18::getDistinctCellNames()
+{
+vector<string> v1 = getCellNamesUnits({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
+vector<string> v2 = {"SMDD_0", "RMDD_0", "SMDV_0", "RMDV_0"};
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+}
+
 const vector<string>  Worm18::getCellNames() 
 {
     vector<string> v1 = getCellNamesAll({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
@@ -786,36 +795,27 @@ const vector<string>  Worm18::getCellNames()
 
 void Worm18::addParsToJson(json & j)
 {
-    //string nsHead = "Head Nervous system";
-    //appendAllNSJson(j[nsHead], h);
-    //vector<string> cell_names = {"SMDD", "RMDD", "SMDV", "RMDV"};
-    //appendCellNamesToJson(j[nsHead], cell_names, 1);
-
-    //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    //assert(w1parss!=nullptr);
-
-
-
-   // bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
-
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
     else sr_ptr->addParsToJson(j);
 
-
     string nsHead = "Nervous system";
+
+    if (false){
     appendAllNSJson(j[nsHead], n);
+    }
+
+    Worm2D::addParsToJson(j);
+
+   
     j[nsHead]["section sizes"]["head"]["value"] = 4;
     j[nsHead]["section sizes"]["head"]["plot order"] = 0;
     j[nsHead]["section sizes"]["VNC"]["value"] = 36;
     j[nsHead]["section sizes"]["VNC"]["plot order"] = 1;
 
-    Worm2D::addParsToJson(j);
+   
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getHeadCellNames(), 1);
