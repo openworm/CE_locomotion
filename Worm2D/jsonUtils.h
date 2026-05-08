@@ -231,6 +231,11 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
   return true;
 }
 
+void compareTFWV(const vector<toFromWeight> & vec1, const vector<toFromWeight> & vec2, const string & tag);
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index);
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar);
 void appendNSToJsonByCell(json & j, NervousSystem& n);
 void setCircuitSize(const json & j, NervousSystem& n);
 int getMaxCounts(const json & j, const vector<string> & names, const string & topar);

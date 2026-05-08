@@ -32,31 +32,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   
     const json & js1 = BPitsJson;
 
-   /*  if (false){
-
-    bool do_nml =  cmd->getArgValInt("--donml",0);
-    if (!do_nml){
-
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    bool initNSFromJson;
-    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
-
-    if (initNSFromJson) setNSFromJson(BPitsJson,n);
-    else
-    {
-    json & j2 = BPitsJson["Nervous system"];  
-    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
-
-    appendAllNSJson(j2,n);
-
-    }
-    }
-
-    } */
-
    
-
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
     
@@ -131,34 +107,82 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     
   if (genPhenLims.size()>0) setInitPheno();
     
-  //cout << "after setInitPheno" << endl;
-
-    if (callInit) writeOrigGen(cmd);
-
-
-  /*   if (false){
-    bool do_nml =  cmd->getArgValInt("--donml",0);
-    if (!do_nml){
-
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    bool initNSFromJson;
-    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
-
-    if (initNSFromJson) setNSFromJson(BPitsJson,n);
-    else
-      {
-    json & j2 = BPitsJson["Nervous system"];  
-    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
-    appendAllNSJson(j2,n);
-      }
-    } 
-  } */
-  
- 
+  if (callInit) writeOrigGen(cmd);
 
 
 }
+
+
+void Worm2DSRb::addParsToJson(json & j)
+{
+if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
+
+}
+
+void Worm2DSRm::addParsToJson(json & j)
+{
+  j = BPitsJson;
+  Worm2Dm::addParsToJson(j);
+ Worm2DSRb::addParsToJson(j);
+  
+}
+
+
+void Worm2DSR::addParsToJson(json & j)
+{
+
+  
+
+  if (true){
+  NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
+  if (n){
+  string nsHead = "Nervous system";
+  appendAllNSJson(j[nsHead], *n);
+  //appendNSToJsonByCell(j, *n, getCellNamesAll());
+  appendNSToJsonByCell(j,*n);
+
+  //j[nsHead]["section sizes"] = jsects;
+  }
+  
+  Worm2D::addParsToJson(j);
+  Worm2DSRb::addParsToJson(j);
+  }
+
+}
+
+
+void Worm2DSRE::resetFromJson(const json & js1)
+{
+
+
+  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
+  if(n){
+  bool doLegacy;
+  getValCJWorm<bool>("doLegacy",doLegacy);
+
+  //copy in current states, external inputs here??
+    
+  
+
+  setNSFromJsonNZ(js1,*n,doLegacy);
+  }
+  
+    Worm2DSRb::setParsFromJson(js1);
+
+
+    setMuscBodExt(js1);
+
+    //what about sensor??
+}
+
+void Worm2DSRE::resetFromBPJson()
+{
+resetFromJson(BPitsJson);
+
+}
+
+
+
 
 void WormCO2DSR::addParsToJson(json & j){
 
@@ -178,48 +202,12 @@ void WormCO2DSR::addParsToJson(json & j){
   }
 }
 
-void Worm2DSR::addParsToJson(json & j)
-{
 
-  //j = BPitsJson;
-  
-  //vector<double> states;
-  //for (int i = 1; i <= par1.N_size; i++) states.push_back(n_ptr->NeuronState(i));
-  //j["Nervous system"]["states"]["value"] = states;      
-  //j["Driving input"]["strengths"]["value"] = externalInputs;
 
-  //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
-  
-  //addEvolvableToJson(j);
 
-  if (true){
-  NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
-  if (n){
-  string nsHead = "Nervous system";
-  appendAllNSJson(j[nsHead], *n);
-  //appendNSToJsonByCell(j, *n, getCellNamesAll());
-  appendNSToJsonByCell(j,*n);
 
-  //j[nsHead]["section sizes"] = jsects;
-  }
-  
-  Worm2D::addParsToJson(j);
-  Worm2DSRb::addParsToJson(j);
-  }
 
-}
 
-void Worm2DSRm::addParsToJson(json & j)
-{
- Worm2DSRb::addParsToJson(j);
-  Worm2Dm::addParsToJson(j);
-}
-
-void Worm2DSRb::addParsToJson(json & j)
-{
-if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
-
-}
 
 void  Worm2DSRb::setParsFromJson(const json & j)
 {if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
@@ -227,8 +215,16 @@ void  Worm2DSRb::setParsFromJson(const json & j)
 
 shared_ptr<SR> Worm2DSRb::getSR(const json & j, baseParameters * basePar1_)
 {
+    if (j.contains("stretch_receptor")){
+    
+    if (j["stretch_receptor"]["type"]["value"] == "SR18") return make_shared<SR18>();
 
-    if (j.contains("Stretch receptor")){
+    return make_shared<SRCE>(j["stretch_receptor"]["n_segs"]["value"],
+      j["stretch_receptor"]["n_stretch"]["value"], basePar1_);
+
+    }
+
+    else if (j.contains("Stretch receptor")){
     
     if (j["Stretch receptor"]["Type"]["value"] == "SR18") return make_shared<SR18>();
 
@@ -614,6 +610,22 @@ int getPhenind(const vector<intDoubDoub> & vdd, int indval)
 
 }
 
+void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef,
+  const vector<intDoubDoub> & vdd)
+{
+  
+  assert(it2.contains("value") && it2.at("value").is_number());
+  //cout << it2 << endl;
+  int evotag = it2.at("evotag").get<int>() + 1;
+  int phenind = getPhenind(vdd,evotag);
+  if (phenind>0)
+    if (it2.contains("mfunc")) 
+    it2.at("value") = ef.eFunc(pheno[phenind], it2.at("mfunc"), true);
+    else it2.at("value") = pheno[phenind];
+  
+  return;
+}
+
 
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef,
   const vector<intDoubDoub> & vdd)
@@ -707,7 +719,17 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
 
 
 
+void applyFuncable1v2(json::iterator it2, Efunctor & ef)
+{
 
+  assert(it2->contains("value") && it2->at("value").is_number());
+  //cout << it2 << endl;
+  it2->at("value") = ef.eFunc(it2->at("value"), it2->at("mfunc"));
+   
+  
+  return;
+
+}
 
 
 void applyFuncable1(json::iterator it2, Efunctor & ef)
@@ -815,7 +837,37 @@ void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef, c
     }
 }
 
+void recursive_iterate2v2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
+{
+    for (auto& [j_key, it] : j.items())
+    { 
+      //cout << j_key << endl;
+      if (j_key == "Evolvable") continue;
+      if (it.contains("evolvable")) continue;
+     
+      if (it.contains("evotag")) setParsFromPheno1v2(pheno,it,ef, vdd);
+      //else if (it->is_object()) recursive_iterate2v2(pheno,*it,ef,vdd);
+      else if (it.is_structured()) recursive_iterate2v2(pheno,it,ef,vdd);
+        
+  
+        
+    }
 
+ //assert(0);
+
+}
+
+void recursive_applyFuncablev2(json& j, Efunctor & ef)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("funcable")) continue;
+      if (it->contains("mfunc")) applyFuncable1v2(it,ef);
+      else if (it->is_object()) recursive_applyFuncablev2(*it,ef);
+        
+    }
+}
 
 void recursive_applyFuncable(json& j, Efunctor & ef)
 {
@@ -858,35 +910,10 @@ void Worm2DSRE::applyFuncables(json & j1_)
 {
 
 recursive_applyFuncable(j1_, itsEf);
+recursive_applyFuncablev2(j1_, itsEf);
 }
 
 
-void Worm2DSRE::resetFromJson(const json & js1)
-{
-
-
-  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
-  if(n){
-  bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
-
-  //copy in current states, external inputs here??
-
-  setNSFromJsonNZ(js1,*n,doLegacy);
-  }
-  
-    Worm2DSRb::setParsFromJson(js1);
-
-
-    setMuscBodExt(js1);
-
-}
-
-void Worm2DSRE::resetFromBPJson()
-{
-resetFromJson(BPitsJson);
-
-}
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
@@ -896,6 +923,10 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
   
+  recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
+
+  //assert(0);
+
   //applyFuncables();
   resetFromBPJson();
   

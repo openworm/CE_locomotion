@@ -822,10 +822,11 @@ void Worm2Dm::addParsToJson(json & j)
 
     
     string nsHead = "Nervous system";
+    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 
-   
-    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+    //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+
 
     //W2Dmparscalled = true;
 
@@ -887,11 +888,11 @@ void Worm2D::addParsToJson(json & j)
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
 
+   
     vector<string> names;
     if (j.contains("nervous_system"))
-    names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
-  
     
     j["dorsal_nmj"]["weights"]["value"] = json::array();
     j["ventral_nmj"]["weights"]["value"] = json::array();

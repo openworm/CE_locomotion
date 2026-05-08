@@ -146,6 +146,9 @@ void SR18::addParsToJson(json & j) const
 void SRCE::addParsToJson(json & j) const
 {
     
+    assert(j.contains("nervous_system"));
+    //cout << j["nervous_system"] << endl;
+
     assert(j["nervous_system"].contains("cell_names"));
     vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
 
@@ -225,10 +228,169 @@ void SRCE::addParsToJson(json & j) const
 
 }
 
-void SR::setParsFromJson(const json & j) 
+
+void SRCE::setParsFromJson(const json & j) 
 {
-    //if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
-    SRType = j["Stretch receptor"]["Type"]["value"];
+    
+
+    //double sSR_A_gain, sSR_B_gain;
+    //vector<toFromWeight> segToA_D, segToA_V, segToB_D, segToB_V, nsegToA_D, nsegToA_V, nsegToB_D, nsegToB_V;
+
+    //if (false)
+    if (j.contains("stretch_receptor"))
+    {
+
+        assert(j.contains("nervous_system"));
+        const json& j2 = j["nervous_system"];
+
+        vector<string> names = j2.at("cell_names").at("value").get<vector<string> >();
+
+        cout << j2.at("cell_names").at("value") << endl;
+
+        unordered_map<string, int> name_index;
+        for (std::size_t i = 0; i < names.size(); ++i) name_index[names[i]] = static_cast<int>(i) + 1;
+    
+
+        SR_A_gain = j["stretch_receptor"]["sr_a_gain"]["value"].get<double>();
+        SR_B_gain = j["stretch_receptor"]["sr_b_gain"]["value"].get<double>();
+
+    if (j["stretch_receptor"].contains("a_d_weights")){
+
+        if (true){
+         
+            SRWeights srw, nsrw;
+
+        nsrw.segToA_D = getToFromWeightVec(j.at("stretch_receptor").at("ns_a_d_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsrw.segToA_V = getToFromWeightVec(j.at("stretch_receptor").at("ns_a_v_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsrw.segToB_D = getToFromWeightVec(j.at("stretch_receptor").at("ns_b_d_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsrw.segToB_V = getToFromWeightVec(j.at("stretch_receptor").at("ns_b_v_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+
+        srw.segToA_D = getToFromWeightVec(j.at("stretch_receptor").at("a_d_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        srw.segToA_V = getToFromWeightVec(j.at("stretch_receptor").at("a_v_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        srw.segToB_D = getToFromWeightVec(j.at("stretch_receptor").at("b_d_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        srw.segToB_V = getToFromWeightVec(j.at("stretch_receptor").at("b_v_weights").at("value"),
+        "to_sr", "from_seg", "weight");   
+  
+         nssrweights.swapAll(nsrw);
+         srweights.swapAll(srw);
+
+        }
+        else{
+
+       /*  nsegToA_D = getToFromWeightVec(j.at("stretch_receptor").at("ns_a_d_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsegToA_V = getToFromWeightVec(j.at("stretch_receptor").at("ns_a_v_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsegToB_D = getToFromWeightVec(j.at("stretch_receptor").at("ns_b_d_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        nsegToB_V = getToFromWeightVec(j.at("stretch_receptor").at("ns_b_v_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+
+        segToA_D = getToFromWeightVec(j.at("stretch_receptor").at("a_d_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        segToA_V = getToFromWeightVec(j.at("stretch_receptor").at("a_v_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        segToB_D = getToFromWeightVec(j.at("stretch_receptor").at("b_d_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        segToB_V = getToFromWeightVec(j.at("stretch_receptor").at("b_v_weights").at("value"),
+        "to_sr", "from_seg", "weight"); */
+        
+        }
+
+       
+
+    }
+    else{
+        
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }
+
+    
+
+    }
+
+    else
+    {
+
+    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"].get<double>();
+    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"].get<double>();
+
+
+    if (j["Stretch receptor"].contains("SR A D NS weights")){
+
+        SRWeights srw, nsrw;
+
+
+    nsrw.segToA_D = 
+    j["Stretch receptor"]["SR A D NS weights"]["value"].template get< vector<toFromWeight> >();
+    nsrw.segToA_V = 
+    j["Stretch receptor"]["SR A V NS weights"]["value"].template get< vector<toFromWeight> >();
+    nsrw.segToB_D = 
+    j["Stretch receptor"]["SR B D NS weights"]["value"].template get< vector<toFromWeight> >();
+    nsrw.segToB_V = 
+    j["Stretch receptor"]["SR B V NS weights"]["value"].template get< vector<toFromWeight> >();
+
+    srw.segToA_D = 
+    j["Stretch receptor"]["SR A D weights"]["value"].template get< vector<toFromWeight> >();
+    srw.segToA_V = 
+    j["Stretch receptor"]["SR A V weights"]["value"].template get< vector<toFromWeight> >();
+    srw.segToB_D = 
+    j["Stretch receptor"]["SR B D weights"]["value"].template get< vector<toFromWeight> >();
+    srw.segToB_V = 
+    j["Stretch receptor"]["SR B V weights"]["value"].template get< vector<toFromWeight> >();
+
+    nssrweights.swapAll(nsrw);
+    srweights.swapAll(srw);
+
+    }
+    
+    else{
+        
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }
+
+    }   
+
+    if (true){
+    /* compareTFWV(srweights.segToA_D, segToA_D, "a");
+    compareTFWV(srweights.segToA_V, segToA_V, "b");
+    compareTFWV(srweights.segToB_D, segToB_D, "c");
+    compareTFWV(srweights.segToB_V, segToB_V, "d");
+    compareTFWV(nssrweights.segToA_D, nsegToA_D, "e");
+    compareTFWV(nssrweights.segToA_V, nsegToA_V, "f");
+    compareTFWV(nssrweights.segToB_D, nsegToB_D, "g");
+    compareTFWV(nssrweights.segToB_V, nsegToB_V, "h");
+    cout << sSR_A_gain << " " << SR_A_gain << endl;
+    cout << sSR_B_gain << " " << SR_B_gain << endl;
+    assert(sSR_A_gain==SR_A_gain);
+    assert(sSR_B_gain==SR_B_gain); */
+    }
+
+    SR::setParsFromJson(j); 
+    return;
+    
+}
+
+
+
+
+void SR::setParsFromJson(const json & j) 
+{   
+
+    if (j.contains("stretch_receptor"))
+    SRType = j["stretch_receptor"]["type"]["value"];
+    else SRType = j["Stretch receptor"]["Type"]["value"];
 }
 
 
@@ -281,44 +443,11 @@ void SR18::setParsFromJson(const json & j)
    
 }
 
-void SRCE::setParsFromJson(const json & j) 
-{
-    
-    SR_A_gain = j["Stretch receptor"]["SR_A_gain"]["value"];
-    SR_B_gain = j["Stretch receptor"]["SR_B_gain"]["value"];
-
-    if (j["Stretch receptor"].contains("SR A D NS weights")){
-    nssrweights.segToA_D = 
-    j["Stretch receptor"]["SR A D NS weights"]["value"].template get< vector<toFromWeight> >();
-    nssrweights.segToA_V = 
-    j["Stretch receptor"]["SR A V NS weights"]["value"].template get< vector<toFromWeight> >();
-    nssrweights.segToB_D = 
-    j["Stretch receptor"]["SR B D NS weights"]["value"].template get< vector<toFromWeight> >();
-    nssrweights.segToB_V = 
-    j["Stretch receptor"]["SR B V NS weights"]["value"].template get< vector<toFromWeight> >();
-
-    srweights.segToA_D = 
-    j["Stretch receptor"]["SR A D weights"]["value"].template get< vector<toFromWeight> >();
-    srweights.segToA_V = 
-    j["Stretch receptor"]["SR A V weights"]["value"].template get< vector<toFromWeight> >();
-    srweights.segToB_D = 
-    j["Stretch receptor"]["SR B D weights"]["value"].template get< vector<toFromWeight> >();
-    srweights.segToB_V = 
-    j["Stretch receptor"]["SR B V weights"]["value"].template get< vector<toFromWeight> >();
-    }
-    else{
-        
-    makeSRWeights(); 
-    makeNSSRWeights(); 
-
-    }
 
 
-    //if (srpars!=nullptr) srpars->setParsFromJson(j["Stretch receptor"]);
 
-   
-    SR::setParsFromJson(j); 
-}
+
+
 
 void SRCE::writeAct(ofstream & ofs)
 {

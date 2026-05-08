@@ -525,9 +525,76 @@ appendToJson<double>(j["Muscle"],par);}
 appendToJson<int>(j["Muscle"],par);}
 }
 
+
+void compareTFWV(const vector<toFromWeight> & vec1, const vector<toFromWeight> & vec2, const string & tag)
+{
+
+  if (vec1.size()!=vec2.size())
+  {
+
+    cout << "ss " << tag << " " << vec1.size() << " " << vec2.size() << endl;
+
+  }
+for (int i=0;i<vec1.size();i++)
+{
+
+  assert(vec1[i].to == vec2[i].to);
+  assert(vec1[i].w.from == vec2[i].w.from);
+  assert(vec1[i].w.weight == vec2[i].w.weight);
+
+}
+
+}
+
+
+void appendToFromWeight(const json & j, vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index)
+{
+
+  toFromWeight val;
+  val.to = name_index.at(j.at(topar).get<string>());
+  val.w.from = j.at(frompar).get<int>();
+  val.w.weight = j.at(weightpar).at("value").get<double>();
+  vec.push_back(val);
+}
+
+
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index)
+  {
+    vector<toFromWeight> vec;
+    for (const auto& conn : j) appendToFromWeight(conn,vec,topar,frompar,weightpar,name_index);
+    return vec;
+  }
+
+void appendToFromWeight(const json & j, vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar)
+{
+
+  toFromWeight val;
+  val.to = j.at(topar).get<int>();
+  val.w.from = j.at(frompar).get<int>();
+  val.w.weight = j.at(weightpar).at("value").get<double>();
+  vec.push_back(val);
+}
+
+
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar)
+  {
+    vector<toFromWeight> vec;
+    for (const auto& conn : j) appendToFromWeight(conn,vec,topar,frompar,weightpar);
+    return vec;
+
+  }
+
+
+
 void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
   const string & frompar, const string & weightpar)
 {
+
+  j = json::array();
 
 for (const toFromWeight & val : vec)
 {
@@ -544,6 +611,8 @@ for (const toFromWeight & val : vec)
 void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
   const string & frompar, const string & weightpar, const vector<string> & names)
 {
+
+ j = json::array();
 
 for (const toFromWeight & val : vec)
 {
@@ -823,7 +892,7 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
   vector<string> names = j2["cell_names"]["value"].get<vector<string> >();
 
-  std::unordered_map<std::string, int> name_index;
+  unordered_map<string, int> name_index;
 
   for (std::size_t i = 0; i < names.size(); ++i)
   {
@@ -910,13 +979,17 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
+   if (j.contains("nervous_system")){
+    setCircuitSize(j["nervous_system"],n);
+   }
+  else{
     const json & j2 = j["Nervous system"];
-    
     n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+  }
+
     setNSFromJsonNZ(j,n,setStates);
 
-   
-    
+     
 }
 
 

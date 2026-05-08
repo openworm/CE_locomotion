@@ -68,6 +68,7 @@ int main (int argc, const char* argv[])
     bool do_evol = cmd->getArgValInt("--doevol", 0);
     if (do_evol) 
     {
+        
         Evolution * evo = 0;
     
         if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
@@ -144,13 +145,16 @@ int main (int argc, const char* argv[])
     bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
  
    
-    if (sup_model_name == "W2DSR") 
+    if (sup_model_name == "W2DSR") {
     
-    if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
+    if (do_musclesim){w2 = new Worm2DSRm(json_filename, cmd);}
     //else w2 = new Worm2DSR(json_filename, cmd);
     //else w2 = new Worm2DSRE(json_filename, cmd);
     else w2 = new WormCO2DSR(json_filename, cmd);
 
+   
+
+    }
     else{
 
     if (!do_nml){
@@ -178,7 +182,7 @@ int main (int argc, const char* argv[])
 
     }else{
 
-   
+        
     if (model_name == "W2Dosc") 
     {
         if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename, cmd);
@@ -253,6 +257,7 @@ int main (int argc, const char* argv[])
     simrandseed =  cmd->getArgValLong("-R",-1);
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     w2->setWormPars(cmd);
+    
     }
 
 
@@ -326,10 +331,18 @@ int main (int argc, const char* argv[])
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
 
+    if (false){
+    cout << "gdgs hs s " << w2->itsBPjson().at("nervous_system") << endl;
+    
+    }
 
-
+    //assert(!do_musclesim); 
     w2->addParsToJson(j);
+   
+
     s1.runSimulation(*w2);
+
+    
 
     //if (do_nml) assert(0);
     j["Simulation"]["transient"]["value"] = simtransient;

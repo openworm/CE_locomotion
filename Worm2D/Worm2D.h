@@ -229,8 +229,9 @@ class baseParameters
  */
     //shared_ptr<const json itsJsonPtr()const {return &itsJson;} 
 
-    const json & itsNewSetVals(){return newSetVals;}
-
+    const json & itsNewSetVals() const {return newSetVals;}
+    const json & itsBPjson() const {return BPitsJson;}
+    
     friend class Efunctor;
     protected:
     json BPitsJson;
