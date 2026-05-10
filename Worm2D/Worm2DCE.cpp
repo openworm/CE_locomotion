@@ -172,7 +172,7 @@ WormCE((json) getJsonFromFile(jsonfilename_),filename_,cmd_){}
 
 WormCE::WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_):WormCE(cmd_)
 {
-   
+   assert(0);
     //W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
     setParsFromFile(filename_);
@@ -536,8 +536,8 @@ nmjvecv.push_back({VD,17});
 
 //addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNamesUnit());
 //addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNamesUnit());
-addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getDistinctCellNames());
-addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getDistinctCellNames());
+addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
 
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
@@ -1641,9 +1641,10 @@ void Worm2DCE::addParsToJson(json & j)
     //Params<double> par = sr_ptr->getStretchReceptorParams();
     //appendToJson<double>(j["Stretch receptor"], par);
 
+   
     Worm2D::addParsToJson(j);
     sr_ptr->addParsToJson(j);
-    
+   
     //W2DCEpars1->addParsToJson(j);
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);

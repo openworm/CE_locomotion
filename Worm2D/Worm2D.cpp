@@ -954,6 +954,8 @@ void Worm2D::addParsToJson(json & j)
             
             if (!j.contains("vnc_nmj")) 
             {
+
+                
                 j["vnc_nmj"] = json::object();
                 //vector<string> names = getCellNamesUnit();
                 vector<string> names = getCellNames();
@@ -1002,6 +1004,7 @@ void Worm2D::addParsToJson(json & j)
         j2["gain_fact"]["value"] = namedVars["NMJ gain fact"];
     
 
+      
         }
 
     }
@@ -1067,6 +1070,7 @@ void Worm2D::addParsToJson(json & j)
 
     }
     
+   
 
     Worm2Dm::addParsToJson(j);
 
@@ -1579,6 +1583,75 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 
 void Worm2D::setUpMuscleConn(const json & j)
 {
+    if (j.contains("vnc_nmj"))
+    {
+    const json & j2 = j["vnc_nmj"];
+    if (!(j2.contains("set_from_this") && j2.at("set_from_this").at("value").get<bool>() == false)){
+    hasVNCNMJ = true;
+
+    namedVars["NMJ gain map V"] = 0.5;
+    namedVars["NMJ gain map D"] = 0.5;
+    namedVars["NMJ gain fact"] = 0.7;
+
+    
+    {vector<weightentry> ventinds1;
+    for (const auto& conn : j2["ventral_conns"])
+    {
+        weightentry val;
+        val.weight = conn.at("weight").at("value").get<double>();
+        val.from = conn.at("cell_ind").get<int>();
+        ventinds1.push_back(val);
+
+    }
+    ventinds.swap(ventinds1);}
+
+    {vector<weightentry> dorsinds1;
+    for (const auto& conn : j2["dorsal_conns"])
+    {
+        weightentry val;
+        val.weight = conn.at("weight").at("value").get<double>();
+        val.from = conn.at("cell_ind").get<int>();
+        dorsinds1.push_back(val);
+
+    }
+    dorsinds.swap(dorsinds1);}
+
+
+    {vector<intPair> unitToMuscD1;
+    for (const auto& conn : j2["dorsal_units"]["value"])
+    {
+        intPair val;
+        val.val = conn.at("to_musc").get<int>();
+        val.ind = conn.at("from_unit").get<int>();
+        unitToMuscD1.push_back(val);
+    }
+    unitToMuscD.swap(unitToMuscD1);
+    }
+    {vector<intPair> unitToMuscV1;
+    for (const auto& conn : j2["ventral_units"]["value"])
+    {
+        intPair val;
+        val.val = conn.at("to_musc").get<int>();
+        val.ind = conn.at("from_unit").get<int>();
+        unitToMuscV1.push_back(val);
+    }
+    unitToMuscV.swap(unitToMuscV1);
+    }
+
+    if (j2.contains("gain_map_v")) namedVars["NMJ gain map V"] = j2["gain_map_v"]["value"];
+    if (j2.contains("gain_map_d")) namedVars["NMJ gain map D"] = j2["gain_map_d"]["value"];
+    if (j2.contains("gain_fact")) namedVars["NMJ gain fact"] = j2["gain_fact"]["value"];
+    
+
+    vector<toFromWeight> vMuscConnvec1 = makeMuscleConnVNCV();
+    vMuscConnvec.swap(vMuscConnvec1);
+       
+    vector<toFromWeight> dMuscConnvec1 = makeMuscleConnVNCD();
+    dMuscConnvec.swap(dMuscConnvec1);
+
+    return;
+    }
+    }
 
     
     if (j.contains("VNC NMJ"))
@@ -1625,6 +1698,57 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     }
 
+    if (j.contains("vnc_18"))
+    {
+    
+    const json & j2 = j["vnc_18"];
+    if (!(j2.contains("set_from_this") && j2.at("set_from_this").at("value").get<bool>() == false)){
+    hasVNC18 = true;
+
+    namedVars["NMJ gain map V"] = 0.5;
+    namedVars["NMJ gain map D"] = 0.5;
+    namedVars["NMJ gain fact"] = 0.7;
+
+    {vector<weightentry> ventinds1;
+    for (const auto& conn : j2["ventral_conns"])
+    {
+        weightentry val;
+        val.weight = conn.at("weight").at("value").get<double>();
+        val.from = conn.at("cell_ind").get<int>();
+        ventinds1.push_back(val);
+
+    }
+    ventinds.swap(ventinds1);}
+
+    {vector<weightentry> dorsinds1;
+    for (const auto& conn : j2["dorsal_conns"])
+    {
+        weightentry val;
+        val.weight = conn.at("weight").at("value").get<double>();
+        val.from = conn.at("cell_ind").get<int>();
+        dorsinds1.push_back(val);
+
+    }
+    dorsinds.swap(dorsinds1);}
+
+    if (j2.contains("gain_map_v")) namedVars["NMJ gain map V"] = j2["gain_map_v"]["value"];
+    if (j2.contains("gain_map_d")) namedVars["NMJ gain map D"] = j2["gain_map_d"]["value"];
+    if (j2.contains("gain_fact")) namedVars["NMJ gain fact"] = j2["gain_fact"]["value"];
+    
+
+    vector<toFromWeight> vMuscConnvec1 = makeMuscleConnVNCV();
+    vMuscConnvec.swap(vMuscConnvec1);
+       
+    vector<toFromWeight> dMuscConnvec1 = makeMuscleConnVNCD();
+    dMuscConnvec.swap(dMuscConnvec1);
+
+    return;
+
+
+
+    }
+    }   
+
     if (j.contains("VNC 18"))
     {
     
@@ -1664,7 +1788,46 @@ void Worm2D::setUpMuscleConn(const json & j)
     }
 
 
+    if (j.contains("dorsal_nmj")){
+    vector<string> names;
+    if (j.contains("nervous_system"))
+    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
+    else names = getDistinctCellNames();
+    
+    unordered_map<string, int> name_index;
 
+    for (std::size_t i = 0; i < names.size(); ++i)
+       name_index[names[i]] = static_cast<int>(i) + 1;
+      
+
+
+    {vector<toFromWeight> dMuscConnvec1; 
+    for (const auto& conn : j["dorsal_nmj"]["weights"]["value"])
+    {
+    toFromWeight val;
+    val.w.from = name_index[conn.at("from_cell").get<string>()];
+    val.to = conn.at("to_musc").get<int>();
+    val.w.weight = conn.at("weight").at("value").get<double>();
+    dMuscConnvec1.push_back(val);
+    }
+    dMuscConnvec.swap(dMuscConnvec1);
+    }
+    {vector<toFromWeight> vMuscConnvec1; 
+    for (const auto& conn : j["ventral_nmj"]["weights"]["value"])
+    {
+    toFromWeight val;
+    val.w.from = name_index[conn.at("from_cell").get<string>()];
+    val.to = conn.at("to_musc").get<int>();
+    val.w.weight = conn.at("weight").at("value").get<double>();
+    vMuscConnvec1.push_back(val);
+    }
+    vMuscConnvec.swap(vMuscConnvec1);
+    }
+
+
+    return;
+
+    }
 
     vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
     vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();

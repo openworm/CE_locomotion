@@ -495,6 +495,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
 
         json j;
       
+       
         w_ptr->addParsToJson(j);
         
         addParsToJson(j);

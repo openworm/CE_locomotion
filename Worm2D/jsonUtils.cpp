@@ -752,6 +752,10 @@ cell_names_full.push_back(name);
 if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 json & j2 = j["nervous_system"];
 j2["cell_names"]["value"] = cell_names_full;
+
+cout << j2["cell_names"]["value"] << endl;
+
+
 if (!j2.contains("cells")) j2["cells"] = json::object();
 json & j3 = j2["cells"];
 for (int i=0;i<cell_names_full.size();i++) 

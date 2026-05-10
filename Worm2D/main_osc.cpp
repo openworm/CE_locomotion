@@ -97,8 +97,9 @@ int main (int argc, const char* argv[])
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
 
+    
         evo->configure();
-     
+      
         //evo->addParsToJson(j);
 
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
