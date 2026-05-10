@@ -61,7 +61,9 @@ protected:
     
     const vector<string> getCellNames() {return 
     getCellNamesAll( {"AS", "DA", "DB", "DD", "VD", "VB", "VA" }, par1.N_units);}
-
+    const vector<string> getDistinctCellNames() {
+    return getCellNamesUnits({"AS", "DA", "DB", "DD", "VD", "VB", "VA" }, par1.N_units);
+    }
     const string getModelName() {return {"Net21"};}
     vector<doubIntParamsHead> getWormParams();
     double wAVA_DA, wAVA_VA;

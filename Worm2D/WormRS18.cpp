@@ -1232,7 +1232,11 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
     // Stretch receptor
     //sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
 
+   j["stretch_receptor"]["sr_vnc_gain"]["evotag"] = 14;
+   j["stretch_receptor"]["sr_head_gain"]["evotag"] = 28;
+
    
+
 
     j["Stretch receptor"]["SRvncgain"]["evolvable"] = 14;
     j["Stretch receptor"]["SRheadgain"]["evolvable"] = 28;

@@ -429,6 +429,65 @@ void SR18::setParsFromJson(const json & j)
 {
 
 
+    if (j.contains("stretch_receptor"))
+    {
+
+        assert(j.contains("nervous_system"));
+        const json& j3 = j["nervous_system"];
+
+        vector<string> names = j3.at("cell_names").at("value").get<vector<string> >();
+
+        //cout << j3.at("cell_names").at("value") << endl;
+
+        unordered_map<string, int> name_index;
+        for (std::size_t i = 0; i < names.size(); ++i) name_index[names[i]] = static_cast<int>(i) + 1;
+    
+
+        const json & j2 =  j["stretch_receptor"]; //change to at
+        SRvncgain   = j2["sr_vnc_gain"]["value"].get<double>();
+        SRheadgain = j2["sr_head_gain"]["value"].get<double>();
+        vncsr = j2["sr_vnc_sr"]["value"].get<bool>();
+        headsr = j2["sr_head_sr"]["value"].get<bool>();
+
+        SR::setParsFromJson(j); 
+    
+
+    if (j2["sr_vnc_gain"].contains("evotag") || j2["sr_head_gain"].contains("evotag"))
+    {
+
+    //cout << "SR18 set from json " << SRvncgain << " " << SRheadgain << " " << vncsr << " " << headsr << endl;
+    makeSRWeights(); 
+    makeNSSRWeights(); 
+
+    }else{
+
+    if (j2.contains("ns_d_weights")){
+        SRWeightsSimp srw, nsrw;
+
+        nsrw.segToD = getToFromWeightVec(j.at("ns_d_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        srw.segToD = getToFromWeightVec(j.at("d_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+        nsrw.segToV = getToFromWeightVec(j.at("ns_v_weights").at("value"),
+        "to_ns", "from_sr", "weight", name_index);
+        srw.segToV = getToFromWeightVec(j.at("v_weights").at("value"),
+        "to_sr", "from_seg", "weight");
+
+        nssrweights.swapAll(nsrw);
+        srweights.swapAll(srw);
+
+    }else{
+
+    makeSRWeights(); 
+    makeNSSRWeights();
+
+    }
+
+    }
+
+    }
+    else
+    {
     const json & j2 =  j["Stretch receptor"];
 
     SRvncgain = j2["SRvncgain"]["value"];
@@ -471,6 +530,7 @@ void SR18::setParsFromJson(const json & j)
 
     }
    
+}
 }
 
 

@@ -842,7 +842,7 @@ void Worm2D::addParsToJson(json & j)
 {  
      // addwormIzqParams
     
-    
+   
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
     string nsHead = "Nervous system";
@@ -852,6 +852,8 @@ void Worm2D::addParsToJson(json & j)
     if (names[0]=="not implemented") appendNSToJsonByCell(j, *n_ptr1);
     else appendNSToJsonByCell(j, *n_ptr1, names);
     }
+ 
+    
 
     //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
 

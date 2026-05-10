@@ -239,13 +239,20 @@ void Worm21::DumpParams(ofstream &ofs)
 
 void Worm21::addParsToJson(json & j)
 {
-        string nsHead = "Nervous system";
-        appendAllNSJson(j[nsHead], n);
-        Worm2D21::addParsToJson(j);    
+    
+
+        //string nsHead = "Nervous system";
+        //appendAllNSJson(j[nsHead], n);
+    Worm2D21::addParsToJson(j);   
+ 
+        
 }
 
 void Worm21::addEvolvableToJson(json & j)
 {
+
+
+    const vector<string>  cell_names_full = getDistinctCellNames();
 
   {vector<doubDoub> vec;
 
@@ -382,12 +389,17 @@ int as, da, db, dd, vd, vb, va;
 
 }
 
+
+
 j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
 j["Nervous system"]["taus"]["evolvable"] = to_evo_json(tauvec);
 j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
 j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
-
+addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
 
 
 vector<intPair> nmjvecd;
@@ -401,12 +413,20 @@ nmjvecv.push_back({VD,36});
 nmjvecv.push_back({VB,37});
 nmjvecv.push_back({VA,38});
 
+
+addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames());
+
+j["vnc_nmj"]["gain_map_d"]["evotag"] = 39;
+j["vnc_nmj"]["gain_map_v"]["evotag"] = 39;
  
+
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
 j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
 
 j["VNC NMJ"]["NMJ gain map D"]["evolvable"] = 39;
 j["VNC NMJ"]["NMJ gain map V"]["evolvable"] = 39;
+
 
 
 addEvoNames(j);
