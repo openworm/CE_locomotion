@@ -133,6 +133,9 @@ void Worm2DSR::addParsToJson(json & j)
 
   
 
+
+
+
   if (true){
 
   if (false){  
@@ -619,6 +622,8 @@ int getPhenind(const vector<intDoubDoub> & vdd, int indval)
 void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef,
   const vector<intDoubDoub> & vdd)
 {
+ 
+
   
   assert(it2.contains("value") && it2.at("value").is_number());
   //cout << it2 << endl;
@@ -636,6 +641,9 @@ void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef,
   const vector<intDoubDoub> & vdd)
 {
+
+      //cout << "evolvable " << it2->at("evolvable") << endl;
+
 
         const bool domfuncs = true;
 
@@ -915,7 +923,7 @@ applyFuncables(BPitsJson);
 void Worm2DSRE::applyFuncables(json & j1_)
 {
 
-recursive_applyFuncable(j1_, itsEf);
+//recursive_applyFuncable(j1_, itsEf);
 recursive_applyFuncablev2(j1_, itsEf);
 }
 
@@ -929,9 +937,9 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
   
   recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
   
-  recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
+  //recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
 
-  //assert(0);
+   
 
   //applyFuncables();
   resetFromBPJson();

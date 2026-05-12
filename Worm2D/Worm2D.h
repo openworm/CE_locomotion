@@ -686,7 +686,7 @@ class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
     virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
 
 
-
+    //void addMuscleParsToJson(json & j);
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(const json & j);
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 

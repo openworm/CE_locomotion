@@ -165,182 +165,182 @@
                     "weight": 0.5411934821333451
                 },
                 {
-                    "from": 1,
+                    "from": 2,
                     "to": 7,
                     "weight": -0.17873191960164314
                 },
                 {
-                    "from": 2,
+                    "from": 1,
                     "to": 7,
                     "weight": 0.4488464333799006
                 },
                 {
-                    "from": 1,
+                    "from": 2,
                     "to": 8,
                     "weight": -0.17447639770636594
                 },
                 {
-                    "from": 2,
+                    "from": 1,
                     "to": 8,
                     "weight": 0.4381596135375221
                 },
                 {
-                    "from": 1,
+                    "from": 2,
                     "to": 9,
                     "weight": -0.17022087581108872
                 },
                 {
-                    "from": 2,
+                    "from": 1,
                     "to": 9,
                     "weight": 0.4274727936951435
                 },
                 {
-                    "from": 7,
+                    "from": 8,
                     "to": 10,
                     "weight": -0.1659653539158115
                 },
                 {
-                    "from": 8,
+                    "from": 7,
                     "to": 10,
                     "weight": 0.4167859738527649
                 },
                 {
-                    "from": 7,
+                    "from": 8,
                     "to": 11,
                     "weight": -0.16170983202053427
                 },
                 {
-                    "from": 8,
+                    "from": 7,
                     "to": 11,
                     "weight": 0.40609915401038627
                 },
                 {
-                    "from": 7,
+                    "from": 8,
                     "to": 12,
                     "weight": -0.15745431012525707
                 },
                 {
-                    "from": 8,
+                    "from": 7,
                     "to": 12,
                     "weight": 0.3954123341680077
                 },
                 {
-                    "from": 13,
+                    "from": 14,
                     "to": 13,
                     "weight": -0.15319878822997982
                 },
                 {
-                    "from": 14,
+                    "from": 13,
                     "to": 13,
                     "weight": 0.38472551432562907
                 },
                 {
-                    "from": 13,
+                    "from": 14,
                     "to": 14,
                     "weight": -0.14894326633470265
                 },
                 {
-                    "from": 14,
+                    "from": 13,
                     "to": 14,
                     "weight": 0.3740386944832506
                 },
                 {
-                    "from": 13,
+                    "from": 14,
                     "to": 15,
                     "weight": -0.1446877444394254
                 },
                 {
-                    "from": 14,
+                    "from": 13,
                     "to": 15,
                     "weight": 0.3633518746408719
                 },
                 {
-                    "from": 19,
+                    "from": 20,
                     "to": 16,
                     "weight": -0.14043222254414817
                 },
                 {
-                    "from": 20,
+                    "from": 19,
                     "to": 16,
                     "weight": 0.35266505479849336
                 },
                 {
-                    "from": 19,
+                    "from": 20,
                     "to": 17,
                     "weight": -0.13617670064887097
                 },
                 {
-                    "from": 20,
+                    "from": 19,
                     "to": 17,
                     "weight": 0.3419782349561148
                 },
                 {
-                    "from": 19,
+                    "from": 20,
                     "to": 18,
                     "weight": -0.13192117875359372
                 },
                 {
-                    "from": 20,
+                    "from": 19,
                     "to": 18,
                     "weight": 0.3312914151137361
                 },
                 {
-                    "from": 25,
+                    "from": 26,
                     "to": 19,
                     "weight": -0.12766565685831655
                 },
                 {
-                    "from": 26,
+                    "from": 25,
                     "to": 19,
                     "weight": 0.32060459527135765
                 },
                 {
-                    "from": 25,
+                    "from": 26,
                     "to": 20,
                     "weight": -0.12341013496303933
                 },
                 {
-                    "from": 26,
+                    "from": 25,
                     "to": 20,
                     "weight": 0.3099177754289791
                 },
                 {
-                    "from": 25,
+                    "from": 26,
                     "to": 21,
                     "weight": -0.11915461306776208
                 },
                 {
-                    "from": 26,
+                    "from": 25,
                     "to": 21,
                     "weight": 0.2992309555866004
                 },
                 {
-                    "from": 31,
+                    "from": 32,
                     "to": 22,
                     "weight": -0.11489909117248488
                 },
                 {
-                    "from": 32,
+                    "from": 31,
                     "to": 22,
                     "weight": 0.28854413574422183
                 },
                 {
-                    "from": 31,
+                    "from": 32,
                     "to": 23,
                     "weight": -0.11064356927720768
                 },
                 {
-                    "from": 32,
+                    "from": 31,
                     "to": 23,
                     "weight": 0.2778573159018433
                 },
                 {
-                    "from": 31,
+                    "from": 32,
                     "to": 24,
                     "weight": -0.10638804738193043
                 },
                 {
-                    "from": 32,
+                    "from": 31,
                     "to": 24,
                     "weight": 0.26717049605946463
                 }
@@ -5240,6 +5240,3200 @@
         "VNCMuscleStart": {
             "message": "VNC motorneurons innervate starting from 7th muscle",
             "value": 7
+        }
+    },
+    "dorsal_nmj": {
+        "weights": {
+            "message": "Dorsal NMJ weights in sparse format",
+            "value": [
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 1,
+                    "weight": {
+                        "value": 0.3113361431885208
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 1,
+                    "weight": {
+                        "value": 0.604122956800013
+                    }
+                },
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 2,
+                    "weight": {
+                        "value": 0.30484997353876
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 2,
+                    "weight": {
+                        "value": 0.5915370618666794
+                    }
+                },
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 3,
+                    "weight": {
+                        "value": 0.29836380388899914
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 3,
+                    "weight": {
+                        "value": 0.5789511669333458
+                    }
+                },
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 4,
+                    "weight": {
+                        "value": 0.2918776342392383
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 4,
+                    "weight": {
+                        "value": 0.5663652720000123
+                    }
+                },
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 5,
+                    "weight": {
+                        "value": 0.2853914645894774
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 5,
+                    "weight": {
+                        "value": 0.5537793770666786
+                    }
+                },
+                {
+                    "from_cell": "SMDD_0",
+                    "to_musc": 6,
+                    "weight": {
+                        "value": 0.2789052949397166
+                    }
+                },
+                {
+                    "from_cell": "RMDD_0",
+                    "to_musc": 6,
+                    "weight": {
+                        "value": 0.5411934821333451
+                    }
+                },
+                {
+                    "from_cell": "DD_0",
+                    "to_musc": 7,
+                    "weight": {
+                        "value": -0.17873191960164314
+                    }
+                },
+                {
+                    "from_cell": "DB_0",
+                    "to_musc": 7,
+                    "weight": {
+                        "value": 0.4488464333799006
+                    }
+                },
+                {
+                    "from_cell": "DD_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": -0.17447639770636594
+                    }
+                },
+                {
+                    "from_cell": "DB_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": 0.4381596135375221
+                    }
+                },
+                {
+                    "from_cell": "DD_0",
+                    "to_musc": 9,
+                    "weight": {
+                        "value": -0.17022087581108872
+                    }
+                },
+                {
+                    "from_cell": "DB_0",
+                    "to_musc": 9,
+                    "weight": {
+                        "value": 0.4274727936951435
+                    }
+                },
+                {
+                    "from_cell": "DD_1",
+                    "to_musc": 10,
+                    "weight": {
+                        "value": -0.1659653539158115
+                    }
+                },
+                {
+                    "from_cell": "DB_1",
+                    "to_musc": 10,
+                    "weight": {
+                        "value": 0.4167859738527649
+                    }
+                },
+                {
+                    "from_cell": "DD_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": -0.16170983202053427
+                    }
+                },
+                {
+                    "from_cell": "DB_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": 0.40609915401038627
+                    }
+                },
+                {
+                    "from_cell": "DD_1",
+                    "to_musc": 12,
+                    "weight": {
+                        "value": -0.15745431012525707
+                    }
+                },
+                {
+                    "from_cell": "DB_1",
+                    "to_musc": 12,
+                    "weight": {
+                        "value": 0.3954123341680077
+                    }
+                },
+                {
+                    "from_cell": "DD_2",
+                    "to_musc": 13,
+                    "weight": {
+                        "value": -0.15319878822997982
+                    }
+                },
+                {
+                    "from_cell": "DB_2",
+                    "to_musc": 13,
+                    "weight": {
+                        "value": 0.38472551432562907
+                    }
+                },
+                {
+                    "from_cell": "DD_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": -0.14894326633470265
+                    }
+                },
+                {
+                    "from_cell": "DB_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": 0.3740386944832506
+                    }
+                },
+                {
+                    "from_cell": "DD_2",
+                    "to_musc": 15,
+                    "weight": {
+                        "value": -0.1446877444394254
+                    }
+                },
+                {
+                    "from_cell": "DB_2",
+                    "to_musc": 15,
+                    "weight": {
+                        "value": 0.3633518746408719
+                    }
+                },
+                {
+                    "from_cell": "DD_3",
+                    "to_musc": 16,
+                    "weight": {
+                        "value": -0.14043222254414817
+                    }
+                },
+                {
+                    "from_cell": "DB_3",
+                    "to_musc": 16,
+                    "weight": {
+                        "value": 0.35266505479849336
+                    }
+                },
+                {
+                    "from_cell": "DD_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": -0.13617670064887097
+                    }
+                },
+                {
+                    "from_cell": "DB_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": 0.3419782349561148
+                    }
+                },
+                {
+                    "from_cell": "DD_3",
+                    "to_musc": 18,
+                    "weight": {
+                        "value": -0.13192117875359372
+                    }
+                },
+                {
+                    "from_cell": "DB_3",
+                    "to_musc": 18,
+                    "weight": {
+                        "value": 0.3312914151137361
+                    }
+                },
+                {
+                    "from_cell": "DD_4",
+                    "to_musc": 19,
+                    "weight": {
+                        "value": -0.12766565685831655
+                    }
+                },
+                {
+                    "from_cell": "DB_4",
+                    "to_musc": 19,
+                    "weight": {
+                        "value": 0.32060459527135765
+                    }
+                },
+                {
+                    "from_cell": "DD_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": -0.12341013496303933
+                    }
+                },
+                {
+                    "from_cell": "DB_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": 0.3099177754289791
+                    }
+                },
+                {
+                    "from_cell": "DD_4",
+                    "to_musc": 21,
+                    "weight": {
+                        "value": -0.11915461306776208
+                    }
+                },
+                {
+                    "from_cell": "DB_4",
+                    "to_musc": 21,
+                    "weight": {
+                        "value": 0.2992309555866004
+                    }
+                },
+                {
+                    "from_cell": "DD_5",
+                    "to_musc": 22,
+                    "weight": {
+                        "value": -0.11489909117248488
+                    }
+                },
+                {
+                    "from_cell": "DB_5",
+                    "to_musc": 22,
+                    "weight": {
+                        "value": 0.28854413574422183
+                    }
+                },
+                {
+                    "from_cell": "DD_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": -0.11064356927720768
+                    }
+                },
+                {
+                    "from_cell": "DB_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": 0.2778573159018433
+                    }
+                },
+                {
+                    "from_cell": "DD_5",
+                    "to_musc": 24,
+                    "weight": {
+                        "value": -0.10638804738193043
+                    }
+                },
+                {
+                    "from_cell": "DB_5",
+                    "to_musc": 24,
+                    "weight": {
+                        "value": 0.26717049605946463
+                    }
+                }
+            ]
+        }
+    },
+    "nervous_system": {
+        "cell_names": {
+            "value": [
+                "DB_0",
+                "DD_0",
+                "VBA_0",
+                "VDA_0",
+                "VBP_0",
+                "VDP_0",
+                "DB_1",
+                "DD_1",
+                "VBA_1",
+                "VDA_1",
+                "VBP_1",
+                "VDP_1",
+                "DB_2",
+                "DD_2",
+                "VBA_2",
+                "VDA_2",
+                "VBP_2",
+                "VDP_2",
+                "DB_3",
+                "DD_3",
+                "VBA_3",
+                "VDA_3",
+                "VBP_3",
+                "VDP_3",
+                "DB_4",
+                "DD_4",
+                "VBA_4",
+                "VDA_4",
+                "VBP_4",
+                "VDP_4",
+                "DB_5",
+                "DD_5",
+                "VBA_5",
+                "VDA_5",
+                "VBP_5",
+                "VDP_5",
+                "SMDD_0",
+                "RMDD_0",
+                "SMDV_0",
+                "RMDV_0"
+            ]
+        },
+        "cells": {
+            "DB_0": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.013888888888888888
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DB_1": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.18055555555555555
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DB_2": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.3472222222222222
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DB_3": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.5138888888888888
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DB_4": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.6805555555555556
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DB_5": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.8472222222222222
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "DD_0": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.041666666666666664
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "DD_1": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.20833333333333334
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "DD_2": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.375
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "DD_3": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.5416666666666666
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "DD_4": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.7083333333333334
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "DD_5": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.875
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "RMDD_0": {
+                "bias": {
+                    "evotag": 18,
+                    "value": -8.956848156121332
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.375
+                },
+                "tau": {
+                    "evotag": 20,
+                    "value": 1.3569435877410378
+                }
+            },
+            "RMDV_0": {
+                "bias": {
+                    "evotag": 18,
+                    "value": -8.956848156121332
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.875
+                },
+                "tau": {
+                    "evotag": 20,
+                    "value": 1.3569435877410378
+                }
+            },
+            "SMDD_0": {
+                "bias": {
+                    "evotag": 17,
+                    "value": 14.320326459473849
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.125
+                },
+                "tau": {
+                    "evotag": 19,
+                    "value": 1.094330262433681
+                }
+            },
+            "SMDV_0": {
+                "bias": {
+                    "evotag": 17,
+                    "value": 14.320326459473849
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.625
+                },
+                "tau": {
+                    "evotag": 19,
+                    "value": 1.094330262433681
+                }
+            },
+            "VBA_0": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.06944444444444445
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBA_1": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.2361111111111111
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBA_2": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.4027777777777778
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBA_3": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.5694444444444444
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBA_4": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.7361111111111112
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBA_5": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.9027777777777778
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_0": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.125
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_1": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.2916666666666667
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_2": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.4583333333333333
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_3": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.625
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_4": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.7916666666666666
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VBP_5": {
+                "bias": {
+                    "evotag": 1,
+                    "value": 6.639679044548757
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.9583333333333334
+                },
+                "tau": {
+                    "evotag": 3,
+                    "value": 1.3074563809822102
+                }
+            },
+            "VDA_0": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.09722222222222222
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDA_1": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.2638888888888889
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDA_2": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.4305555555555556
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDA_3": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.5972222222222222
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDA_4": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.7638888888888888
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDA_5": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.9305555555555556
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_0": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.1527777777777778
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_1": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.3194444444444444
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_2": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.4861111111111111
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_3": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.6527777777777778
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_4": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.8194444444444444
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            },
+            "VDP_5": {
+                "bias": {
+                    "evotag": 2,
+                    "value": -4.2773387911698535
+                },
+                "gain": {
+                    "value": 1.0
+                },
+                "state": {
+                    "value": 0.9861111111111112
+                },
+                "tau": {
+                    "evotag": 4,
+                    "value": 0.5934118347527259
+                }
+            }
+        },
+        "chemical_conns": {
+            "value": [
+                {
+                    "from": "DB_0",
+                    "to": "DB_0",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_0",
+                    "to": "VBA_0",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "VBP_0",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "DB_1",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_1",
+                    "to": "VBA_1",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "VBP_1",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "DB_2",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_2",
+                    "to": "VBA_2",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "VBP_2",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "DB_3",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_3",
+                    "to": "VBA_3",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "VBP_3",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "DB_4",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_4",
+                    "to": "VBA_4",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "VBP_4",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "DB_5",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "DD_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "VBA_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBP_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 8,
+                        "mfunc": {
+                            "f_ind": 1,
+                            "fact": 0.5
+                        },
+                        "value": 5.607163879809375
+                    }
+                },
+                {
+                    "from": "VBA_5",
+                    "to": "VBA_5",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDA_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBA_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "DD_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 9,
+                        "value": 0.6596015379449341
+                    }
+                },
+                {
+                    "from": "VBP_5",
+                    "to": "VBP_5",
+                    "weight": {
+                        "evotag": 5,
+                        "value": -5.550118755452354
+                    }
+                },
+                {
+                    "from": "VDP_5",
+                    "to": "VDP_5",
+                    "weight": {
+                        "evotag": 6,
+                        "value": 0.3513728194013169
+                    }
+                },
+                {
+                    "from": "VBP_5",
+                    "to": "VDP_5",
+                    "weight": {
+                        "evotag": 7,
+                        "value": -2.9326612186508574
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "VDP_5",
+                    "weight": {
+                        "evotag": 8,
+                        "value": 11.21432775961875
+                    }
+                },
+                {
+                    "from": "SMDD_0",
+                    "to": "SMDD_0",
+                    "weight": {
+                        "evotag": 21,
+                        "value": -10.960944334234014
+                    }
+                },
+                {
+                    "from": "SMDV_0",
+                    "to": "SMDD_0",
+                    "weight": {
+                        "evotag": 23,
+                        "value": -14.616899217975464
+                    }
+                },
+                {
+                    "from": "RMDD_0",
+                    "to": "RMDD_0",
+                    "weight": {
+                        "evotag": 22,
+                        "value": 5.008961604382065
+                    }
+                },
+                {
+                    "from": "SMDV_0",
+                    "to": "RMDD_0",
+                    "weight": {
+                        "evotag": 24,
+                        "value": 12.564995889688687
+                    }
+                },
+                {
+                    "from": "RMDV_0",
+                    "to": "RMDD_0",
+                    "weight": {
+                        "evotag": 25,
+                        "value": -3.7862083156650312
+                    }
+                },
+                {
+                    "from": "SMDV_0",
+                    "to": "SMDV_0",
+                    "weight": {
+                        "evotag": 21,
+                        "value": -10.960944334234014
+                    }
+                },
+                {
+                    "from": "SMDD_0",
+                    "to": "SMDV_0",
+                    "weight": {
+                        "evotag": 23,
+                        "value": -14.616899217975464
+                    }
+                },
+                {
+                    "from": "RMDV_0",
+                    "to": "RMDV_0",
+                    "weight": {
+                        "evotag": 22,
+                        "value": 5.008961604382065
+                    }
+                },
+                {
+                    "from": "SMDD_0",
+                    "to": "RMDV_0",
+                    "weight": {
+                        "evotag": 24,
+                        "value": 12.564995889688687
+                    }
+                },
+                {
+                    "from": "RMDD_0",
+                    "to": "RMDV_0",
+                    "weight": {
+                        "evotag": 25,
+                        "value": -3.7862083156650312
+                    }
+                }
+            ]
+        },
+        "electrical_conns": {
+            "value": [
+                {
+                    "from": "DB_1",
+                    "to": "DB_0",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDA_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_0",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "DD_0",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "VBA_0",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_0",
+                    "to": "VDA_0",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_0",
+                    "to": "VBP_0",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBA_1",
+                    "to": "VBP_0",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "VBP_0",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_1",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DB_0",
+                    "to": "DB_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "DB_1",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "DB_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_1",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "DD_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBP_0",
+                    "to": "VBA_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "VBA_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDP_0",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_1",
+                    "to": "VDA_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_1",
+                    "to": "VBP_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBA_2",
+                    "to": "VBP_1",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "VBP_1",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_2",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DB_1",
+                    "to": "DB_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "DB_2",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "DB_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_2",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "DD_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBP_1",
+                    "to": "VBA_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "VBA_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDP_1",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_2",
+                    "to": "VDA_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_2",
+                    "to": "VBP_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBA_3",
+                    "to": "VBP_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "VBP_2",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_3",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DB_2",
+                    "to": "DB_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "DB_3",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "DB_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_3",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "DD_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBP_2",
+                    "to": "VBA_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "VBA_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDP_2",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_3",
+                    "to": "VDA_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_3",
+                    "to": "VBP_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBA_4",
+                    "to": "VBP_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "VBP_3",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_4",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DB_3",
+                    "to": "DB_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "DB_4",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "DB_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_4",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_5",
+                    "to": "DD_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBP_3",
+                    "to": "VBA_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "VBA_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDP_3",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_4",
+                    "to": "VDA_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_4",
+                    "to": "VBP_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBA_5",
+                    "to": "VBP_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DB_5",
+                    "to": "VBP_4",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_5",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DB_4",
+                    "to": "DB_5",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "DB_5",
+                    "weight": {
+                        "evotag": 13,
+                        "value": 0.9111736171642986
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VDA_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_5",
+                    "to": "DD_5",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VBP_4",
+                    "to": "VBA_5",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VBP_5",
+                    "to": "VBA_5",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "VDP_4",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "DD_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDP_5",
+                    "to": "VDA_5",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "VBA_5",
+                    "to": "VBP_5",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
+                    "from": "DD_5",
+                    "to": "VDP_5",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "VDA_5",
+                    "to": "VDP_5",
+                    "weight": {
+                        "evotag": 11,
+                        "value": 0.8181178060731188
+                    }
+                },
+                {
+                    "from": "RMDD_0",
+                    "to": "SMDD_0",
+                    "weight": {
+                        "evotag": 26,
+                        "value": 0.053770158804043455
+                    }
+                },
+                {
+                    "from": "SMDD_0",
+                    "to": "RMDD_0",
+                    "weight": {
+                        "evotag": 26,
+                        "value": 0.053770158804043455
+                    }
+                },
+                {
+                    "from": "RMDV_0",
+                    "to": "RMDD_0",
+                    "weight": {
+                        "evotag": 27,
+                        "value": 0.48888505069487664
+                    }
+                },
+                {
+                    "from": "RMDV_0",
+                    "to": "SMDV_0",
+                    "weight": {
+                        "evotag": 26,
+                        "value": 0.053770158804043455
+                    }
+                },
+                {
+                    "from": "SMDV_0",
+                    "to": "RMDV_0",
+                    "weight": {
+                        "evotag": 26,
+                        "value": 0.053770158804043455
+                    }
+                },
+                {
+                    "from": "RMDD_0",
+                    "to": "RMDV_0",
+                    "weight": {
+                        "evotag": 27,
+                        "value": 0.48888505069487664
+                    }
+                }
+            ]
+        }
+    },
+    "stretch_receptor": {
+        "sr_head_gain": {
+            "evotag": 28
+        },
+        "sr_vnc_gain": {
+            "evotag": 14
+        }
+    },
+    "ventral_nmj": {
+        "weights": {
+            "message": "Ventral NMJ weights in sparse format",
+            "value": [
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 1,
+                    "weight": {
+                        "value": 0.3113361431885208
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 1,
+                    "weight": {
+                        "value": 0.604122956800013
+                    }
+                },
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 2,
+                    "weight": {
+                        "value": 0.30484997353876
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 2,
+                    "weight": {
+                        "value": 0.5915370618666794
+                    }
+                },
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 3,
+                    "weight": {
+                        "value": 0.29836380388899914
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 3,
+                    "weight": {
+                        "value": 0.5789511669333458
+                    }
+                },
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 4,
+                    "weight": {
+                        "value": 0.2918776342392383
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 4,
+                    "weight": {
+                        "value": 0.5663652720000123
+                    }
+                },
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 5,
+                    "weight": {
+                        "value": 0.2853914645894774
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 5,
+                    "weight": {
+                        "value": 0.5537793770666786
+                    }
+                },
+                {
+                    "from_cell": "SMDV_0",
+                    "to_musc": 6,
+                    "weight": {
+                        "value": 0.2789052949397166
+                    }
+                },
+                {
+                    "from_cell": "RMDV_0",
+                    "to_musc": 6,
+                    "weight": {
+                        "value": 0.5411934821333451
+                    }
+                },
+                {
+                    "from_cell": "VDA_0",
+                    "to_musc": 7,
+                    "weight": {
+                        "value": -0.17873191960164314
+                    }
+                },
+                {
+                    "from_cell": "VBA_0",
+                    "to_musc": 7,
+                    "weight": {
+                        "value": 0.4488464333799006
+                    }
+                },
+                {
+                    "from_cell": "VDA_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": -0.08723819885318297
+                    }
+                },
+                {
+                    "from_cell": "VBA_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": 0.21907980676876104
+                    }
+                },
+                {
+                    "from_cell": "VDP_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": -0.08723819885318297
+                    }
+                },
+                {
+                    "from_cell": "VBP_0",
+                    "to_musc": 8,
+                    "weight": {
+                        "value": 0.21907980676876104
+                    }
+                },
+                {
+                    "from_cell": "VDP_0",
+                    "to_musc": 9,
+                    "weight": {
+                        "value": -0.17022087581108872
+                    }
+                },
+                {
+                    "from_cell": "VBP_0",
+                    "to_musc": 9,
+                    "weight": {
+                        "value": 0.4274727936951435
+                    }
+                },
+                {
+                    "from_cell": "VDA_1",
+                    "to_musc": 10,
+                    "weight": {
+                        "value": -0.1659653539158115
+                    }
+                },
+                {
+                    "from_cell": "VBA_1",
+                    "to_musc": 10,
+                    "weight": {
+                        "value": 0.4167859738527649
+                    }
+                },
+                {
+                    "from_cell": "VDA_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": -0.08085491601026713
+                    }
+                },
+                {
+                    "from_cell": "VBA_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": 0.20304957700519313
+                    }
+                },
+                {
+                    "from_cell": "VDP_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": -0.08085491601026713
+                    }
+                },
+                {
+                    "from_cell": "VBP_1",
+                    "to_musc": 11,
+                    "weight": {
+                        "value": 0.20304957700519313
+                    }
+                },
+                {
+                    "from_cell": "VDP_1",
+                    "to_musc": 12,
+                    "weight": {
+                        "value": -0.15745431012525707
+                    }
+                },
+                {
+                    "from_cell": "VBP_1",
+                    "to_musc": 12,
+                    "weight": {
+                        "value": 0.3954123341680077
+                    }
+                },
+                {
+                    "from_cell": "VDA_2",
+                    "to_musc": 13,
+                    "weight": {
+                        "value": -0.15319878822997982
+                    }
+                },
+                {
+                    "from_cell": "VBA_2",
+                    "to_musc": 13,
+                    "weight": {
+                        "value": 0.38472551432562907
+                    }
+                },
+                {
+                    "from_cell": "VDA_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": -0.07447163316735132
+                    }
+                },
+                {
+                    "from_cell": "VBA_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": 0.1870193472416253
+                    }
+                },
+                {
+                    "from_cell": "VDP_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": -0.07447163316735132
+                    }
+                },
+                {
+                    "from_cell": "VBP_2",
+                    "to_musc": 14,
+                    "weight": {
+                        "value": 0.1870193472416253
+                    }
+                },
+                {
+                    "from_cell": "VDP_2",
+                    "to_musc": 15,
+                    "weight": {
+                        "value": -0.1446877444394254
+                    }
+                },
+                {
+                    "from_cell": "VBP_2",
+                    "to_musc": 15,
+                    "weight": {
+                        "value": 0.3633518746408719
+                    }
+                },
+                {
+                    "from_cell": "VDA_3",
+                    "to_musc": 16,
+                    "weight": {
+                        "value": -0.14043222254414817
+                    }
+                },
+                {
+                    "from_cell": "VBA_3",
+                    "to_musc": 16,
+                    "weight": {
+                        "value": 0.35266505479849336
+                    }
+                },
+                {
+                    "from_cell": "VDA_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": -0.06808835032443548
+                    }
+                },
+                {
+                    "from_cell": "VBA_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": 0.1709891174780574
+                    }
+                },
+                {
+                    "from_cell": "VDP_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": -0.06808835032443548
+                    }
+                },
+                {
+                    "from_cell": "VBP_3",
+                    "to_musc": 17,
+                    "weight": {
+                        "value": 0.1709891174780574
+                    }
+                },
+                {
+                    "from_cell": "VDP_3",
+                    "to_musc": 18,
+                    "weight": {
+                        "value": -0.13192117875359372
+                    }
+                },
+                {
+                    "from_cell": "VBP_3",
+                    "to_musc": 18,
+                    "weight": {
+                        "value": 0.3312914151137361
+                    }
+                },
+                {
+                    "from_cell": "VDA_4",
+                    "to_musc": 19,
+                    "weight": {
+                        "value": -0.12766565685831655
+                    }
+                },
+                {
+                    "from_cell": "VBA_4",
+                    "to_musc": 19,
+                    "weight": {
+                        "value": 0.32060459527135765
+                    }
+                },
+                {
+                    "from_cell": "VDA_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": -0.06170506748151967
+                    }
+                },
+                {
+                    "from_cell": "VBA_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": 0.15495888771448954
+                    }
+                },
+                {
+                    "from_cell": "VDP_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": -0.06170506748151967
+                    }
+                },
+                {
+                    "from_cell": "VBP_4",
+                    "to_musc": 20,
+                    "weight": {
+                        "value": 0.15495888771448954
+                    }
+                },
+                {
+                    "from_cell": "VDP_4",
+                    "to_musc": 21,
+                    "weight": {
+                        "value": -0.11915461306776208
+                    }
+                },
+                {
+                    "from_cell": "VBP_4",
+                    "to_musc": 21,
+                    "weight": {
+                        "value": 0.2992309555866004
+                    }
+                },
+                {
+                    "from_cell": "VDA_5",
+                    "to_musc": 22,
+                    "weight": {
+                        "value": -0.11489909117248488
+                    }
+                },
+                {
+                    "from_cell": "VBA_5",
+                    "to_musc": 22,
+                    "weight": {
+                        "value": 0.28854413574422183
+                    }
+                },
+                {
+                    "from_cell": "VDA_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": -0.05532178463860384
+                    }
+                },
+                {
+                    "from_cell": "VBA_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": 0.13892865795092166
+                    }
+                },
+                {
+                    "from_cell": "VDP_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": -0.05532178463860384
+                    }
+                },
+                {
+                    "from_cell": "VBP_5",
+                    "to_musc": 23,
+                    "weight": {
+                        "value": 0.13892865795092166
+                    }
+                },
+                {
+                    "from_cell": "VDP_5",
+                    "to_musc": 24,
+                    "weight": {
+                        "value": -0.10638804738193043
+                    }
+                },
+                {
+                    "from_cell": "VBP_5",
+                    "to_musc": 24,
+                    "weight": {
+                        "value": 0.26717049605946463
+                    }
+                }
+            ]
+        }
+    },
+    "vnc_18": {
+        "dorsal_conns": {
+            "DB": {
+                "cell_ind": 1,
+                "weight": {
+                    "evotag": 15,
+                    "value": 0.7328105034773889
+                }
+            },
+            "DD": {
+                "cell_ind": 2,
+                "weight": {
+                    "evotag": 16,
+                    "value": -0.2918072156761521
+                }
+            },
+            "RMDD": {
+                "cell_ind": 38,
+                "weight": {
+                    "evotag": 30,
+                    "value": 0.8630327954285901
+                }
+            },
+            "SMDD": {
+                "cell_ind": 37,
+                "weight": {
+                    "evotag": 29,
+                    "value": 0.44476591884074407
+                }
+            }
+        },
+        "gain_fact": {
+            "value": 0.7
+        },
+        "gain_map_d": {
+            "value": 0.5
+        },
+        "gain_map_v": {
+            "value": 0.5
+        },
+        "set_from_this": {
+            "value": true
+        },
+        "ventral_conns": {
+            "RMDV": {
+                "cell_ind": 40,
+                "weight": {
+                    "evotag": 30,
+                    "value": 0.8630327954285901
+                }
+            },
+            "SMDV": {
+                "cell_ind": 39,
+                "weight": {
+                    "evotag": 29,
+                    "value": 0.44476591884074407
+                }
+            },
+            "VBA": {
+                "cell_ind": 3,
+                "weight": {
+                    "evotag": 15,
+                    "value": 0.7328105034773889
+                }
+            },
+            "VBP": {
+                "cell_ind": 5,
+                "weight": {
+                    "evotag": 15,
+                    "value": 0.7328105034773889
+                }
+            },
+            "VDA": {
+                "cell_ind": 4,
+                "weight": {
+                    "evotag": 16,
+                    "value": -0.2918072156761521
+                }
+            },
+            "VDP": {
+                "cell_ind": 6,
+                "weight": {
+                    "evotag": 16,
+                    "value": -0.2918072156761521
+                }
+            }
         }
     }
 }

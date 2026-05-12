@@ -748,12 +748,14 @@ const string & name = cell_names[i] + "_" + to_string(i);
 cell_names_full.push_back(name);
 } */
 
+//j["nervous_system"] = json::object();
 
 if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
+
 json & j2 = j["nervous_system"];
 j2["cell_names"]["value"] = cell_names_full;
 
-cout << j2["cell_names"]["value"] << endl;
+//cout << j2["cell_names"]["value"] << endl;
 
 
 if (!j2.contains("cells")) j2["cells"] = json::object();
@@ -771,41 +773,50 @@ for (int i=0;i<cell_names_full.size();i++)
 
 
 
-  vector<toFromWeight> chem_wei = getNSToFromVec(n.chemicalweights, n.NumChemicalConns, n.size);
+  {vector<toFromWeight> chem_wei = getNSToFromVec(n.chemicalweights, n.NumChemicalConns, n.size);
   if (!j2.contains("chemical_conns")) j2["chemical_conns"] = json::object();
   if (!j2["chemical_conns"].contains("value")) j2["chemical_conns"]["value"] = json::array();
+
+  json & j22 = j2.at("chemical_conns").at("value");
   for (const toFromWeight& val : chem_wei)
-  //for (int i=0;i<chem_wei.size();i++)
   {
-  //const toFromWeight & val = chem_wei[i];
+    bool found = false;
+    for (auto it = j22.begin(); it != j22.end(); ++it)
+        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
+      {it->at("weight").at("value")=val.w.weight;found = true;break;}
+      if (found) continue;
   json j = json::object();
   j["to"] = cell_names_full[val.to-1];
   j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
-  j2["chemical_conns"]["value"].push_back(j);
+  j22.push_back(j);
+  }
   }
 
 
-
-  vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
+  {vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
   if (!j2.contains("electrical_conns")) j2["electrical_conns"] = json::object();
   if (!j2["electrical_conns"].contains("value")) j2["electrical_conns"]["value"] = json::array();
 
-  //j2["electrical_conns"] = json::object();
-  //j2["electrical_conns"]["value"] = json::array();
-  //j2["electrical_conns"] = json::array();
+  json & j22 = j2.at("electrical_conns").at("value");
   for (const toFromWeight& val : elec_wei)
-  //for (int i=0;i<elec_wei.size();i++)
   {
-  //const toFromWeight & val = elec_wei[i];
+    bool found = false;
+    for (auto it = j22.begin(); it != j22.end(); ++it)
+        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
+      {it->at("weight").at("value")=val.w.weight;found = true;break;}
+      if (found) continue;
   json j = json::object();
   j["to"] = cell_names_full[val.to-1];
   j["from"] = cell_names_full[val.w.from-1];
   j["weight"] =  json::object();
   j["weight"]["value"] = val.w.weight;
-  j2["electrical_conns"]["value"].push_back(j);
+  j22.push_back(j);
   }
+  }
+
+  
 
   //j2["size"]["value"] = n.size;
   //j2["maxchemcons"]["value"] = n.maxchemconns;
@@ -1004,6 +1015,7 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
+    //if (false){
    if (j.contains("nervous_system")){
     setCircuitSize(j["nervous_system"],n);
    }

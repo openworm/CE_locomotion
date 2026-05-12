@@ -176,7 +176,7 @@ void SR18::addParsToJson(json & j) const
 void SRCE::addParsToJson(json & j) const
 {
     
-    assert(j.contains("nervous_system"));
+    if (j.contains("nervous_system")){
     //cout << j["nervous_system"] << endl;
 
     assert(j["nervous_system"].contains("cell_names"));
@@ -216,7 +216,7 @@ void SRCE::addParsToJson(json & j) const
 
     j["stretch_receptor"]["plot_size"]["value"] = srvars_ptr->nstretch*4;
 
-
+    }
 
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A D weights"], srweights.segToA_D);
     appendVectorToJson<toFromWeight>(j["Stretch receptor"]["SR A V weights"], srweights.segToA_V);
@@ -275,7 +275,7 @@ void SRCE::setParsFromJson(const json & j)
 
         vector<string> names = j2.at("cell_names").at("value").get<vector<string> >();
 
-        cout << j2.at("cell_names").at("value") << endl;
+        //cout << j2.at("cell_names").at("value") << endl;
 
         unordered_map<string, int> name_index;
         for (std::size_t i = 0; i < names.size(); ++i) name_index[names[i]] = static_cast<int>(i) + 1;

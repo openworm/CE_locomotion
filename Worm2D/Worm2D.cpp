@@ -853,8 +853,6 @@ void Worm2D::addParsToJson(json & j)
     else appendNSToJsonByCell(j, *n_ptr1, names);
     }
  
-    
-
     //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
 
     appendMuscleToJson(j,m);
@@ -895,6 +893,7 @@ void Worm2D::addParsToJson(json & j)
         if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
+    
 
     appendVectorToJson<toFromWeight>(j["Dorsal NMJ"]["weights"], dMuscConnvec);
     appendVectorToJson<toFromWeight>(j["Ventral NMJ"]["weights"], vMuscConnvec);
@@ -902,26 +901,52 @@ void Worm2D::addParsToJson(json & j)
     appendCellNamesToJson(j["Dorsal NMJ"], getDMuscNames(), 1);
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
 
-   
+  
     vector<string> names;
     if (j.contains("nervous_system"))
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     //else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
     else names = getDistinctCellNames();
-    
+
+  
+    if (!j.contains("dorsal_nmj")) {
     j["dorsal_nmj"]["weights"]["value"] = json::array();
     j["ventral_nmj"]["weights"]["value"] = json::array();
+    }
+
+    {json & j22 =  j["dorsal_nmj"]["weights"]["value"];
+
     for (const toFromWeight & val : dMuscConnvec)
     {
+        assert(val.w.from-1<names.size() && val.w.from-1>=0);
+        bool found = false;
+        for (auto it = j22.begin(); it != j22.end(); ++it)
+            if (it->at("to_musc")==val.to && it->at("from_cell")==names[val.w.from-1])
+        {it->at("weight").at("value")=val.w.weight;found = true;break;}
+        if (found) continue;
+
         json j2 = json::object();
         j2["from_cell"] = names[val.w.from-1];
         j2["to_musc"] = val.to;
         j2["weight"]["value"] = val.w.weight;
         j["dorsal_nmj"]["weights"]["value"].push_back(j2);
+    }  
     }
-    
+
+    //assert(0); 
+
+    {json & j22 =  j["ventral_nmj"]["weights"]["value"];
+
     for (const toFromWeight & val : vMuscConnvec)
     {
+
+        assert(val.w.from-1<names.size() && val.w.from-1>=0);
+        bool found = false;
+        for (auto it = j22.begin(); it != j22.end(); ++it)
+            if (it->at("to_musc")==val.to && it->at("from_cell")==names[val.w.from-1])
+        {it->at("weight").at("value")=val.w.weight;found = true;break;}
+        if (found) continue;
+
         json j2 = json::object();
         j2["from_cell"] = names[val.w.from-1];
         j2["to_musc"] = val.to;
@@ -929,7 +954,8 @@ void Worm2D::addParsToJson(json & j)
         j["ventral_nmj"]["weights"]["value"].push_back(j2);
     }
 
-    
+    }
+   
     j["ventral_nmj"]["weights"]["message"] = "Ventral NMJ weights in sparse format";
     j["dorsal_nmj"]["weights"]["message"] = "Dorsal NMJ weights in sparse format";
 
@@ -1071,6 +1097,7 @@ void Worm2D::addParsToJson(json & j)
     }
     
    
+
 
     Worm2Dm::addParsToJson(j);
 
@@ -1439,10 +1466,49 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
     splitWeightEntry(ventinds,units,weights);
 
 
+    //if (false){
+    const int DB = 1;
+    const int DD = 2;
+    const int VBA = 3;
+    const int VDA = 4;
+    const int VBP = 5;
+    const int VDP = 6;
+    
 
-    const int SMDV = units[0], RMDV = units[1], VDA = units[2], VBA = units[3], VDP = units[4], VBP = units[5];
-    const double NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
-    NMJ_VDa = weights[2], NMJ_VBa = weights[3], NMJ_VDp = weights[4], NMJ_VBp = weights[5]; 
+    // Neuron name conventions
+    const int SMDD = 37;
+    const int RMDD = 38;
+    const int SMDV = 39;
+    const int RMDV = 40;
+
+    //std::vector<int> v = {DB, DD, VBA, VDA, VBP, VDP, SMDD, RMDD, SMDV, RMDV};
+    //std::vector<int> v = units;
+
+    std::unordered_map<int, int> index_of;
+
+    for (int i = 0; i < units.size(); ++i) index_of[units[i]] = i;
+      //cout << " ds d " << i << " " << units[i] << " " <<  index_of[units[i]] << endl;
+    //}
+    
+//assert(0);
+
+    //int index = index_of[42]; 
+
+    //RMDV and RMDV swapped in original!
+
+    const double NMJ_SMDV = weights[index_of[SMDV]], NMJ_RMDD = weights[index_of[RMDV]], 
+    NMJ_VDa = weights[index_of[VDA]], NMJ_VBa = weights[index_of[VBA]], 
+    NMJ_VDp = weights[index_of[VDP]], NMJ_VBp = weights[index_of[VBP]]; 
+
+    
+
+    //}
+
+    //const int SMDV = units[0], RMDV = units[1], VDA = units[2], VBA = units[3], VDP = units[4], VBP = units[5];
+    //const double NMJ_SMDV = weights[0], NMJ_RMDD = weights[1], 
+    //NMJ_VDa = weights[2], NMJ_VBa = weights[3], NMJ_VDp = weights[4], NMJ_VBp = weights[5]; 
+
+
 
    /*  vector<int> ventralNeurons({SMDV, RMDV, VDA, VBA, VDP, VBP});
     vector<double> ventralNMJ({NMJ_SMDV, NMJ_RMDD, NMJ_VDa, NMJ_VBa, NMJ_VDp, NMJ_VBp});
@@ -1515,9 +1581,40 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
     splitWeightEntry(dorsinds,units,weights);
 
 
-    const int SMDD = units[0], RMDD = units[1], DB = units[2], DD = units[3];
-    const double NMJ_SMDD = weights[0], NMJ_RMDV = weights[1], 
-    NMJ_DD = weights[2], NMJ_DB = weights[3];
+    //if (false){
+    const int DB = 1;
+    const int DD = 2;
+    const int VBA = 3;
+    const int VDA = 4;
+    const int VBP = 5;
+    const int VDP = 6;
+    
+
+    // Neuron name conventions
+    const int SMDD = 37;
+    const int RMDD = 38;
+    const int SMDV = 39;
+    const int RMDV = 40;
+
+    //std::vector<int> v = {DB, DD, VBA, VDA, VBP, VDP, SMDD, RMDD, SMDV, RMDV};
+    //std::vector<int> v = units;
+
+    // RMDD and RMDV are swapped in original code!
+
+
+    std::unordered_map<int, int> index_of;
+
+    for (int i = 0; i < units.size(); ++i) index_of[units[i]] = i;
+
+    const double NMJ_SMDD = weights[index_of[SMDD]], NMJ_RMDV = weights[index_of[RMDD]], 
+    NMJ_DD = weights[index_of[DD]], NMJ_DB = weights[index_of[DB]];
+
+
+    //}
+
+    //const int SMDD = units[0], RMDD = units[1], DB = units[2], DD = units[3];
+    //const double NMJ_SMDD = weights[0], NMJ_RMDV = weights[1], 
+    //NMJ_DD = weights[2], NMJ_DB = weights[3];
 
 
     {vector<int> neurons({SMDD, RMDD});
@@ -1583,8 +1680,8 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 
 void Worm2D::setUpMuscleConn(const json & j)
 {
-    if (false)
-    //if (j.contains("vnc_nmj"))
+    //if (false)
+    if (j.contains("vnc_nmj"))
     {
     const json & j2 = j["vnc_nmj"];
     if (!(j2.contains("set_from_this") && j2.at("set_from_this").at("value").get<bool>() == false)){
@@ -1650,6 +1747,7 @@ void Worm2D::setUpMuscleConn(const json & j)
     vector<toFromWeight> dMuscConnvec1 = makeMuscleConnVNCD();
     dMuscConnvec.swap(dMuscConnvec1);
 
+    
     return;
     }
     }
@@ -1699,8 +1797,8 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     }
 
-    if (false)
-    //if (j.contains("vnc_18"))
+    //if (false)
+    if (j.contains("vnc_18"))
     {
     
     const json & j2 = j["vnc_18"];
@@ -1738,10 +1836,10 @@ void Worm2D::setUpMuscleConn(const json & j)
     if (j2.contains("gain_fact")) namedVars["NMJ gain fact"] = j2["gain_fact"]["value"];
     
 
-    vector<toFromWeight> vMuscConnvec1 = makeMuscleConnVNCV();
+    vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn18();//is this correct? ok
     vMuscConnvec.swap(vMuscConnvec1);
        
-    vector<toFromWeight> dMuscConnvec1 = makeMuscleConnVNCD();
+    vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn18();
     dMuscConnvec.swap(dMuscConnvec1);
 
     return;
@@ -1753,7 +1851,7 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     if (j.contains("VNC 18"))
     {
-    
+    //assert(0);
     const json & j2 = j["VNC 18"];
     if (!(j2.contains("setFromThis") && j2.at("setFromThis").at("value").get<bool>() == false)){
     hasVNC18 = true;
@@ -1777,7 +1875,7 @@ void Worm2D::setUpMuscleConn(const json & j)
    
     
 
-    vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn18();
+    vector<toFromWeight> vMuscConnvec1 = makeVentralMuscleConn18(); //is this correct? ok
     vMuscConnvec.swap(vMuscConnvec1);
        
     vector<toFromWeight> dMuscConnvec1 = makeDorsalMuscleConn18();
@@ -1790,8 +1888,8 @@ void Worm2D::setUpMuscleConn(const json & j)
     }
 
 
-    if (false){
-    //if (j.contains("dorsal_nmj")){
+    //if (false){
+    if (j.contains("dorsal_nmj")){
     vector<string> names;
     if (j.contains("nervous_system"))
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
@@ -1815,6 +1913,7 @@ void Worm2D::setUpMuscleConn(const json & j)
     }
     dMuscConnvec.swap(dMuscConnvec1);
     }
+
     {vector<toFromWeight> vMuscConnvec1; 
     for (const auto& conn : j["ventral_nmj"]["weights"]["value"])
     {
@@ -1832,10 +1931,17 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     }
 
+    if (j.contains("Dorsal NMJ")){
+
     vector<toFromWeight> vMuscConnvec1 = j["Ventral NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
     vector<toFromWeight> dMuscConnvec1 = j["Dorsal NMJ"]["weights"]["value"].template get< vector<toFromWeight> >();
     vMuscConnvec.swap(vMuscConnvec1);
     dMuscConnvec.swap(dMuscConnvec1);
+
+    return;
+
+    }
+    assert(0);
 
 }
 
