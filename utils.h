@@ -56,12 +56,37 @@ void getVecFromFile(const string & filename_, vector<T> & vec)
 }
 
 template<class T>
+vector<T> fileGetCol(string name, int cols, int col_num = 0)
+{
+    ifstream file(name);
+
+    vector<T> values;
+    T x;
+
+    while (file >> x) {
+        values.push_back(x);
+    }
+    
+    file.close();
+
+    vector<T> colvalues;
+    int colind = col_num;
+    while(colind<values.size()){
+    colvalues.push_back(values[colind]);
+    colind += cols;
+    }
+
+return colvalues;
+
+}
+
+template<class T>
 void fileDropLines(string name, int rows, int cols)
 {
     vector<vector<T> > filevec;
-
+  
     {ifstream file(name);
-
+    
     for (int i = 0; i < rows; i++) 
     {
         vector<T> v;
@@ -111,13 +136,21 @@ ParamsHead<long> parInt;
 
 // An entry in a sparse weight matrix
 
+//struct jsonNamed {string nametag = "evotag";};
 struct weightentry {int from; double weight;};
+/* struct intPair : public jsonNamed {
+    intPair(int ind_, int val_){ind=ind_;val=val_;}
+    int ind; int val;}; */
 struct intPair {int ind; int val;};
 struct fromToInt {int from; int to; int val;};
 struct intDoubDoub {int ind; double val1; double val2;};
 struct stringPair {string s1; string s2;};
 struct doubDoub {double val1; double val2;};
 template<class T> struct namedVal {string name; T val;};
+struct fromToStr {int from; int to; string evotag;};
+struct strDoubDoub {string evotag; double val1; double val2;};
+struct intStr {string evotag; int val;};
+//struct intPairStr {int ind; int val;};
 
 void push_back_double(const fromToInt & val, vector<fromToInt> & vec);
 
@@ -183,24 +216,30 @@ bool namedValVec<T>::setVal(const string & name, const T & val)
 
 
 struct toFromWeight{
-    
+
+    toFromWeight(int to_val, int from_val, double weight){w.weight=weight;w.from=from_val;to=to_val;}
     toFromWeight(weightentry w_val, int to_val){w=w_val;to=to_val;}
+    toFromWeight(const toFromWeight & tfw){w.weight=tfw.w.weight;w.from=tfw.w.from;to=tfw.to;}
     toFromWeight(){}
     weightentry w;
     int to;
 };
 
+struct toFromWeightLD{
+
+    toFromWeightLD(int to_val, int from_val, long double weight_){weight=weight_;from=from_val;to=to_val;}
+    toFromWeightLD(const toFromWeightLD & tfw){weight=tfw.weight;from=tfw.from;to=tfw.to;}
+    
+    //toFromWeight(){}
+
+    long double weight;
+    int to, from;
+};
+
+
 double angle_diff(double a, double b);
 
-/* bool checkVal(const double & val, const double & checkval)
-{
 
-    return (val<(checkval + 0.00001) && val>(checkval - 0.00001));
-
-}
-
-
- */
 
 
  bool check123456(const double & val, const double & val2);

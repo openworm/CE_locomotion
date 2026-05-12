@@ -112,113 +112,58 @@ void EvoBase::checkPars()
 
 }
 
-void EvoBase::setFromCPT2()
+
+/* void EvoBase::constructAll(int vsize_, int offset_)
 {
- 
-    setFromCPTflag = true;
-    popsize = evoPars1.PopulationSize;
+    bool foundCPTfile = false, foundBGfile = false, foundWRBGfile = false;
+
     
-    const string filename_ = rename_file("search.cpt");
-    
-    //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
-   
+    struct stat buffer;  
+    string bgfilename = rename_file("best.gen.dat");
+    if (stat (bgfilename.c_str(), &buffer) == 0) foundBGfile = true;
+    string wrbgfilename = rename_file("EvoWJbest.gen.dat");
+    if (stat (wrbgfilename.c_str(), &buffer) == 0) foundWRBGfile = true;
+    string cptfilename = rename_file("search.cpt");
+    if (stat (cptfilename.c_str(), &buffer) == 0) foundCPTfile = true;
 
-    cout << "docpt " << doCPT << endl;
-
-    struct stat buffer;   
-    if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
-
-      //  cout << "set from cpt " << filename_ << endl; 
-
-        s = new TSearch(1);
-        s->cptfilename = filename_;
-        s->ReadCheckpointFile();
-        cout << "setFromCPT2 " << s->cptfilename << endl;
-        doResume = true;
-        //ResultsDisplay(*s);
-        //checkPars();
-        //configure_p1();
-        if (s->PopulationSize()!= evoPars1.PopulationSize) 
-        {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
-        popsize = s->PopulationSize();}
-
-        return;
-        //assert(0);
-
+    if (foundCPTfile){
+    TSearch * s = new TSearch(1);
+    s->cptfilename = cptfilename:
+    s->ReadCheckpointFile();
+        
     }
-    
-    doResume = false;
-    return;
-   
 }
-
-
-
-void EvoBase::setFromCPT()
-{
-    setFromCPTflag = true;
-    popsize = evoPars1.PopulationSize;
-    s->cptfilename = rename_file("search.cpt");
-   
-    struct stat buffer;   
-    if (doCPT && evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
-    
-        s->ReadCheckpointFile();
-        cout << "setFromCPT " << s->cptfilename << endl;
-        doResume = true;
-        //ResultsDisplay(*s);
-        checkPars();
-    }
-    else doResume = false;
-   
-} 
-
-void EvoBase::setUp()
-{   
-    s->cptfilename = rename_file("search.cpt");
-    //setFromCPT();
-    if  (doResume) {
-        fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
-        fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
-        //fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
-    }
-
-    auto ioflag = std::ios_base::out;
-    if (doCPT) ioflag = std::ios_base::app;
-
-
-    evolfile.open(rename_file("fitness.dat"), ioflag);
-    
-    //setFromCPT();
-    genhistfile.open(rename_file("genhistory.dat"), ioflag);
-    //genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
-    //doneFirst = false;
-    evolfile << setprecision(10);
-
-    
-}
-
+ */
 
 
 void EvoBase::construct(int vsize_, int offset_)
 {
 
 
-    if (!setFromCPTflag) setFromCPT2();
+    if (!setFromCPTflag) setFromCPT2(vsize_);
     if (doResume) return;
 
     string filename;
     bool foundFile = false;
     filename = rename_file("best.gen.dat");
     struct stat buffer;   
-    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
+    if (stat (filename.c_str(), &buffer) == 0) 
+    {
+     vector<double> bestgenvec;
+     getVecFromFile<double>(filename, bestgenvec);
+     if (bestgenvec.size()==vsize_) foundFile = true;
+    }
 
-    //if (false){ //this removed - either from provided best-gen or CPT or from scratch
     if (foundFile == false){
     filename = rename_file("EvoWJbest.gen.dat");
-    if (stat (filename.c_str(), &buffer) == 0) foundFile = true;
+    if (stat (filename.c_str(), &buffer) == 0) 
+    {
+        vector<double> bestgenvec;
+        getVecFromFile<double>(filename, bestgenvec);
+        assert(bestgenvec.size()==vsize_);
+        foundFile = true;
     }
-    //}
+    }
 
     if (foundFile) {
 
@@ -258,6 +203,122 @@ void EvoBase::construct(int vsize_, int offset_)
     return;
 
 }
+
+
+
+void EvoBase::setFromCPT2(int vsize_)
+{
+    doResume = false;
+    setFromCPTflag = true;
+    popsize = evoPars1.PopulationSize;
+    
+    const string filename_ = rename_file("search.cpt");
+    
+    //if (filename_ != "testruns/testCO18Full/CO18Full_search.cpt") assert(0);
+   
+
+    cout << "docpt " << doCPT << endl;
+
+    struct stat buffer;   
+    if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
+
+      //  cout << "set from cpt " << filename_ << endl; 
+        {TSearch * stest = new TSearch(1);
+        stest->cptfilename = filename_;
+        stest->ReadCheckpointFile();
+        const int testVsize = stest->VectorSize();
+        delete stest;
+        if (testVsize!=vsize_) return;
+        }
+
+        s = new TSearch(1);
+        s->cptfilename = filename_;
+        s->ReadCheckpointFile();
+        cout << "setFromCPT2 " << s->cptfilename << endl;
+        doResume = true;
+        //ResultsDisplay(*s);
+        //checkPars();
+        //configure_p1();
+        if (s->PopulationSize()!= evoPars1.PopulationSize) 
+        {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
+        popsize = s->PopulationSize();}
+
+        return;
+        //assert(0);
+
+    }
+    
+    
+    return;
+   
+}
+
+
+
+void EvoBase::setFromCPT()
+{
+    setFromCPTflag = true;
+    popsize = evoPars1.PopulationSize;
+    s->cptfilename = rename_file("search.cpt");
+   
+    struct stat buffer;   
+    if (doCPT && evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
+    
+        s->ReadCheckpointFile();
+        cout << "setFromCPT " << s->cptfilename << endl;
+        doResume = true;
+        //ResultsDisplay(*s);
+        checkPars();
+    }
+    else doResume = false;
+   
+} 
+
+void EvoBase::setUp()
+{   
+    s->cptfilename = rename_file("search.cpt");
+    //setFromCPT();
+    
+   
+    if  (false) {
+        fileDropLines<double>(rename_file("fitness.dat"), s->Generation(), 4);
+        fileDropLines<double>(rename_file("genhistory.dat"), s->Generation(), s->VectorSize()*3 + 1);
+        //fileDropLines<double>(rename_file("gendiffhistory.dat"), s->Generation(), s->VectorSize()*2 + 1);
+    }
+
+    //auto ioflag = std::ios_base::out;
+    //if (doCPT) ioflag = std::ios_base::app;
+    //auto ioflag = std::ios_base::app;
+
+    string filename_ = rename_file("fitness.dat");
+    struct stat buffer; 
+    if (stat (filename_.c_str(), &buffer) == 0) 
+    {
+
+    vector<double> col1 = fileGetCol<double>(filename_,4,0);
+    evolfile.open(filename_, std::ios_base::app);
+    initGenNum = col1[col1.size()-1] - s->Generation() + 1;
+
+    }
+    else 
+    {
+        initGenNum = 0;
+        evolfile.open(filename_, std::ios_base::out);
+    }
+
+    //setFromCPT();
+
+    filename_ = rename_file("genhistory.dat");
+    if (stat (filename_.c_str(), &buffer) == 0) genhistfile.open(filename_, std::ios_base::app);
+    else genhistfile.open(filename_, std::ios_base::out);
+    //genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
+    //doneFirst = false;
+    evolfile << setprecision(10);
+
+    
+}
+
+
 
 
 
@@ -316,12 +377,12 @@ void EvoBase::setPopFromBestGenoFile(int offset)
 
 
 
-void EvoBase::setFromEvol(const EvoBase & er, int offset)
+void EvoBase::setFromEvol(const EvoBase & er, int offset, int vsize_)
 {
 
     
 
-    if (!setFromCPTflag) setFromCPT2();
+    if (!setFromCPTflag) setFromCPT2(vsize_);
     if (doResume) return;
 
     
@@ -515,7 +576,7 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
 
     //cout << "EvolutionaryRunDisplay" << endl;
     
-    evolfile << Generation;
+    evolfile << Generation  + initGenNum;
     vector<double> evovals{BestPerf,AvgPerf,PerfVar};
     for (int i=0;i<evovals.size();i++) 
         if (isnan(evovals[i])) evolfile << " " << 0.0;
@@ -534,24 +595,9 @@ void Evolution::EvolutionaryRunDisplay(int Generation, double BestPerf, double A
     phencur.FillContents(0.0);
     GenPhenMapping(gencur, phencur);
 
-    genhistfile << Generation << " " << gencur << " " << phencur;
+    genhistfile << (Generation + initGenNum) << " " << gencur << " " << phencur;
 
-    /* if (doneFirst){
-    genhistfile2 << Generation;
-
-    {vector<double> val = TVectorRatio<double>(gencur, genprev);
-    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
-    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
-    {vector<double> val = TVectorRatio<double>(phencur, phenprev);
-    //const TVector<double> genrat = TVectorRatio<double>(gencur, genprev);
-    for (int i=0;i<val.size();i++) genhistfile2 << " " << val[i];}
-
-    genhistfile2 << endl;
-    } */
-
-    //doneFirst = true;
-    //phenprev = phencur;
-    //genprev = gencur;
+   
 
     TVector<double> avphen(1, itsVectSize());
     avphen.FillContents(0.0);

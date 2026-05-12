@@ -64,6 +64,8 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doOrigMuscInput=False,
+        doPlotEvol=False,
     )
 
     print(output_folder_nml)
@@ -89,6 +91,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doPlotEvol=False,
     )
 
 doMuscles = True
@@ -116,4 +119,5 @@ for output_folder, output_folder_nml_musc in zip(out_path_list, out_path_list_nm
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doPlotEvol=False,
     )

@@ -30,6 +30,21 @@ public:
     double DorsalMuscleOutput(int muscle){return V_muscle[muscle][1];};
     double VentralMuscleOutput(int muscle){return V_muscle[muscle][2];};
 
+
+    void ventralMuscInputOut(){
+        cout << "vmusc"; 
+    for (int i=1;i<=Nmuscles;i++) cout << " " << V_input[i][2];
+    cout << endl;
+    
+    }
+
+    void dorsalMuscInputOut(){
+        cout << "dmusc"; 
+    for (int i=1;i<=Nmuscles;i++) cout << " " << V_input[i][1];
+    cout << endl;
+    
+    }
+
     TMatrix<double> V_muscle;
     TMatrix<double> V_input;
 

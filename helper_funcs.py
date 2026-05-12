@@ -455,3 +455,77 @@ def plotHist(ax, x, y):
     # ax.xlabel('x')
     # ax.ylabel('Average y')
     # plt.show()
+
+
+def load_nonragged_arrays(filename, dtype=float, delimiter=None, skip_empty=True):
+    arrays = []
+    current_rows = []
+    current_len = None
+
+    with open(filename, "r") as f:
+        for line_num, line in enumerate(f, start=1):
+            line = line.strip()
+
+            if skip_empty and not line:
+                continue
+
+            parts = line.split(delimiter) if delimiter is not None else line.split()
+            row = [dtype(x) for x in parts]
+            row_len = len(row)
+
+            if current_len is None:
+                current_len = row_len
+                current_rows.append(row)
+            elif row_len == current_len:
+                current_rows.append(row)
+            else:
+                arrays.append(np.array(current_rows, dtype=dtype))
+                current_rows = [row]
+                current_len = row_len
+
+    if current_rows:
+        arrays.append(np.array(current_rows, dtype=dtype))
+
+    return arrays
+
+
+def clean_ragged_numeric_file(input_path, output_path=None):
+    """
+    Read a ragged numeric text file, replace NaN/Inf/-Inf with 0,
+    and save it preserving the original row structure.
+
+    Assumes each row contains whitespace-separated numeric values.
+    Blank lines are preserved.
+    """
+    if output_path is None:
+        output_path = input_path
+
+    cleaned_lines = []
+
+    with open(input_path, "r") as f:
+        for line_num, line in enumerate(f, start=1):
+            stripped = line.strip()
+
+            # Preserve blank lines
+            if not stripped:
+                cleaned_lines.append("\n")
+                continue
+
+            parts = stripped.split()
+            cleaned_parts = []
+
+            for col_num, part in enumerate(parts, start=1):
+                try:
+                    x = float(part)
+                    if math.isnan(x) or math.isinf(x):
+                        x = 0.0
+                    cleaned_parts.append(str(x))
+                except ValueError:
+                    raise ValueError(
+                        f"Non-numeric value {part!r} at line {line_num}, column {col_num}"
+                    )
+
+            cleaned_lines.append(" ".join(cleaned_parts) + "\n")
+
+    with open(output_path, "w") as f:
+        f.writelines(cleaned_lines)

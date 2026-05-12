@@ -6,8 +6,17 @@
 
 string main_directoryname, main_modelname;
 
+
+
+
+
+
+
+
 void Worm2Dbase::addPhenoName(string name, int k)
 {phenoNamesNums.push_back(k);phenoNames.push_back(name);}
+
+
 
 
 vector<double> Worm2Dbase::readPhenotype()
@@ -144,13 +153,35 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 /////////////////////////////
 
 
+
+baseConsts Worm2Dbase::makeBaseConsts()
+{
+
+    baseConsts b1;
+    getValCJWorm<bool>("debug",b1.debug);
+
+    return b1;
+
+}
+
+
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_),itsEf(*this){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(cmd_),
+itsEf(*this),baseconsts(makeBaseConsts())
+{
+
+    
+}
 
 Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, 
     muscForW2D * m_ptr_, shared_ptr<const CmdArgs> cmd_, const json & j):
-par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),itsEf(*this){}
+par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),
+itsEf(*this),baseconsts(makeBaseConsts())
+{
+
+   
+}
 
 
 //////////////////////
@@ -193,6 +224,7 @@ doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput")),
 doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
+
     //assert(0 && "what is calling this?");
     //cout << "Worm2D const" << endl;
     //cout << "dom " << doOrigMuscInput << " " << doOrigSRInput << endl;
@@ -262,7 +294,7 @@ void Worm2Dm::InitializeState(RandomState &rs)
 void Worm2D::setUp()
 {
     m.SetMuscleParams(par1.N_muscles, par1.T_muscle);
-    
+    m.InitializeMuscleState();
   
     //InitializeState(rs);
 }
@@ -663,7 +695,7 @@ void Worm2Dbody::writeBody()
         // Body
         for (int i = 1; i <= N_rods; i++)
         {
-            ofs <<  " " << b.X(i)*100.0 << " " << b.Y(i)*100.0 << " " << b.Phi(i);
+            ofs <<  " " << b.X(i) << " " << b.Y(i) << " " << b.Phi(i);
         }
         ofs << endl;
     }
@@ -1037,6 +1069,7 @@ void Worm2Dm::Step1()
 void Worm2D::Step1()
 {
   
+   
   b.StepBody(settedStepSize);
 
   zeroAllInputs();
@@ -1046,6 +1079,9 @@ void Worm2D::Step1()
   n_ptr->EulerStep(settedStepSize);
 
     
+  //cout << "sds " << doOrigMuscInput << endl;
+  //assert(0);
+
   if (doOrigMuscInput) setMuscleInputOrig();
   else setMuscleInput();
 
@@ -1220,7 +1256,7 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
 void Worm2D::setMuscleInput()
 {
 
-    
+   
     setMuscleInputVec();
     //setMuscleInputVent();
     //setMuscleInputDors();
@@ -1362,8 +1398,11 @@ const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
     
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
-for (int i=1; i<=par1.N_muscles; i++)
+for (int i=1; i<=par1.N_muscles; i++){
 NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_V)/par1.N_muscles));
+//cout << "NMJgain " << NMJ_Gain(i) << endl;
+}
+//assert(0);
 vector<int> units;
 vector<double> weights;
 splitWeightEntry(ventinds,units,weights);
@@ -1374,8 +1413,8 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscV);
 vector<toFromWeight> Worm2D::makeMuscleConnVNCD()
 {
 
-  const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>(); //doubVars.getVal("NMJ gain map D");
-    const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
+const double NMJ_gain_map_D = namedVars["NMJ gain map D"].get<double>(); //doubVars.getVal("NMJ gain map D");
+const double NMJ_gain_fact = namedVars["NMJ gain fact"].get<double>();
 
 TVector<double> NMJ_Gain(1, par1.N_muscles);
 for (int i=1; i<=par1.N_muscles; i++)
@@ -1657,6 +1696,7 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
 {
      
 if (ind<0) return;
+   // inputInd = ind;
   assert(ind<inds.size());
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
