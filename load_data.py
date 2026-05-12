@@ -132,7 +132,8 @@ def plot_phenonames(
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
-    if not os.path.isfile(file): return
+    if not os.path.isfile(file):
+        return
     evol_data_all = hf.load_nonragged_arrays(file)
     evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
 
@@ -175,8 +176,8 @@ def plot_phenonames(
     phen_offset = vectsize * 2
     # phen_size = vectsize
 
-    #avlentop = 1
-    #evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
+    # avlentop = 1
+    # evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
     evol_data = evol_data_1
 
     # gen_index_orig = evol_data[:, 0]
@@ -193,9 +194,9 @@ def plot_phenonames(
     )
 
     avlentop = 1
-    if hasattr(a, 'evoAvLen'):
+    if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
-    
+
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
     evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
@@ -615,7 +616,7 @@ def plot_hist(a=None):
     phen_size = vectsize
 
     avlentop = 1
-    if hasattr(a, 'evoAvLen'):
+    if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
     gen_index_orig = evol_data[:, 0]
     # gen_index_diff = gen_index_orig[1:]
