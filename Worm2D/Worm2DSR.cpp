@@ -171,7 +171,6 @@ void Worm2DSRE::resetFromJson(const json & js1)
 
   //copy in current states, external inputs here??
     
-  
 
   setNSFromJsonNZ(js1,*n,doLegacy);
   }
@@ -210,11 +209,6 @@ void WormCO2DSR::addParsToJson(json & j){
   Sensor::addParsToJson(j);
   }
 }
-
-
-
-
-
 
 
 
@@ -627,8 +621,8 @@ void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef
   
   assert(it2.contains("value") && it2.at("value").is_number());
   //cout << it2 << endl;
-  int evotag = it2.at("evotag").get<int>() + 1;
-  int phenind = getPhenind(vdd,evotag);
+  int evotag = it2.at("evotag").get<int>() ;//+ 1;
+  int phenind = getPhenind(vdd,evotag) + 1;
   if (phenind>0)
     if (it2.contains("mfunc")) 
     it2.at("value") = ef.eFunc(pheno[phenind], it2.at("mfunc"), true);
