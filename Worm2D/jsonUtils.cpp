@@ -920,8 +920,8 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 {
 
-  if (false)
-  //if (j.contains("nervous_system"))
+  //if (false)
+  if (j.contains("nervous_system"))
   {
 
   const json& j2 = j["nervous_system"];
@@ -1015,8 +1015,8 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
-    if (false){
-   //if (j.contains("nervous_system")){
+    //if (false){
+    if (j.contains("nervous_system")){
     setCircuitSize(j["nervous_system"],n);
    }
   else{

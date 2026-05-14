@@ -1680,8 +1680,8 @@ return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 
 void Worm2D::setUpMuscleConn(const json & j)
 {
-    if (false)
-    //if (j.contains("vnc_nmj"))
+    //if (false)
+    if (j.contains("vnc_nmj"))
     {
     const json & j2 = j["vnc_nmj"];
     if (!(j2.contains("set_from_this") && j2.at("set_from_this").at("value").get<bool>() == false)){
@@ -1797,8 +1797,8 @@ void Worm2D::setUpMuscleConn(const json & j)
 
     }
 
-    if (false)
-    //if (j.contains("vnc_18"))
+    //if (false)
+    if (j.contains("vnc_18"))
     {
     
     const json & j2 = j["vnc_18"];
@@ -1888,8 +1888,8 @@ void Worm2D::setUpMuscleConn(const json & j)
     }
 
 
-    if (false){
-    //if (j.contains("dorsal_nmj")){
+    //if (false){
+    if (j.contains("dorsal_nmj")){
     vector<string> names;
     if (j.contains("nervous_system"))
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();

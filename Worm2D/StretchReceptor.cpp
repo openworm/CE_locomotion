@@ -267,8 +267,8 @@ void SRCE::setParsFromJson(const json & j)
     //double sSR_A_gain, sSR_B_gain;
     //vector<toFromWeight> segToA_D, segToA_V, segToB_D, segToB_V, nsegToA_D, nsegToA_V, nsegToB_D, nsegToB_V;
 
-    if (false)
-    //if (j.contains("stretch_receptor"))
+    //if (false)
+    if (j.contains("stretch_receptor"))
     {
 
         assert(j.contains("nervous_system"));
@@ -418,8 +418,8 @@ void SRCE::setParsFromJson(const json & j)
 
 void SR::setParsFromJson(const json & j) 
 {   
-    if (false)
-   // if (j.contains("stretch_receptor"))
+    //if (false)
+    if (j.contains("stretch_receptor"))
     SRType = j["stretch_receptor"]["type"]["value"];
     else SRType = j["Stretch receptor"]["Type"]["value"];
 }
