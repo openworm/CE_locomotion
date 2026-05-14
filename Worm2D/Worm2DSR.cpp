@@ -917,8 +917,8 @@ applyFuncables(BPitsJson);
 void Worm2DSRE::applyFuncables(json & j1_)
 {
 
-//recursive_applyFuncable(j1_, itsEf);
-recursive_applyFuncablev2(j1_, itsEf);
+recursive_applyFuncable(j1_, itsEf);
+//recursive_applyFuncablev2(j1_, itsEf);
 }
 
 
