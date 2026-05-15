@@ -5,12 +5,213 @@
 
 #include <unordered_map>
 
+#include <algorithm>
 
+using json = nlohmann::json;
+#include <nlohmann/json.hpp>
+
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using json = nlohmann::json;
 
 
 
+
+
+
+void sortAsc(vector<weightentry> & entries)
+{
+// Sort ascending by index
+std::sort(entries.begin(), entries.end(),
+          [](const weightentry& a, const weightentry& b)
+          {
+              return a.from < b.from;
+          });
+
+}
+
+bool same_values_unordered(
+    std::vector<double> a,
+    std::vector<double> b,
+    double tol 
+)
+{
+    if (a.size() != b.size())
+        return false;
+
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+
+    for (std::size_t i = 0; i < a.size(); ++i)
+    {
+        if (std::abs(a[i] - b[i]) > tol)
+            return false;
+    }
+
+    return true;
+}
+
+
+void collect_numeric_differences(
+    const json& j1,
+    const json& j2,
+    std::vector<double>& diffs,
+    const std::string& path,
+    double tol
+)
+{
+    if (j1.is_object() && j2.is_object())
+    {
+        for (const auto& [key, value1] : j1.items())
+        {
+            if (!j2.contains(key))
+            {
+                std::cerr << "Missing key in second JSON: "
+                          << path + "/" + key << "\n";
+                continue;
+            }
+
+            collect_numeric_differences(
+                value1,
+                j2.at(key),
+                diffs,
+                path + "/" + key,
+                tol
+            );
+        }
+
+        return;
+    }
+
+    if (j1.is_array() && j2.is_array())
+    {
+        if (j1.size() != j2.size())
+        {
+            std::cerr << "Array size differs at " << path << "\n";
+            return;
+        }
+
+        for (std::size_t i = 0; i < j1.size(); ++i)
+        {
+            collect_numeric_differences(
+                j1[i],
+                j2[i],
+                diffs,
+                path + "[" + std::to_string(i) + "]",
+                tol
+            );
+        }
+
+        return;
+    }
+
+    if (j1.is_number() && j2.is_number())
+    {
+        double v1 = j1.get<double>();
+        double v2 = j2.get<double>();
+
+        double diff = v2 - v1;
+
+        if (std::abs(diff) > tol)
+        {
+            diffs.push_back(diff);
+        }
+
+        return;
+    }
+
+    if (j1.type() != j2.type())
+    {
+        std::cerr << "Type mismatch at " << path << ": "
+                  << j1.type_name() << " vs "
+                  << j2.type_name() << "\n";
+    }
+}
+
+
+void compare_numeric_values(
+    const json& j1,
+    const json& j2,
+    const std::string& path,
+    double tol
+)
+{
+    // If both are objects, recurse over keys
+    if (j1.is_object() && j2.is_object())
+    {
+        for (const auto& [key, value1] : j1.items())
+        {
+            if (!j2.contains(key))
+            {
+                std::cout << "Missing key in second JSON: "
+                          << path + "/" + key << "\n";
+                continue;
+            }
+
+            compare_numeric_values(
+                value1,
+                j2.at(key),
+                path + "/" + key,
+                tol
+            );
+        }
+
+        return;
+    }
+
+    // If both are arrays, recurse over elements
+    if (j1.is_array() && j2.is_array())
+    {
+        const std::size_t n = std::min(j1.size(), j2.size());
+
+        for (std::size_t i = 0; i < n; ++i)
+        {
+            compare_numeric_values(
+                j1[i],
+                j2[i],
+                path + "[" + std::to_string(i) + "]",
+                tol
+            );
+        }
+
+        if (j1.size() != j2.size())
+        {
+            std::cout << "Array size differs at " << path
+                      << ": " << j1.size()
+                      << " vs " << j2.size() << "\n";
+        }
+
+        return;
+    }
+
+    // If both are numeric, compare values
+    if (j1.is_number() && j2.is_number())
+    {
+        double v1 = j1.get<double>();
+        double v2 = j2.get<double>();
+
+        if (std::abs(v1 - v2) > tol)
+        {
+            std::cout << "Difference at " << path << ": "
+                      << v1 << " vs " << v2
+                      << "  diff = " << (v1 - v2) << "\n";
+        }
+
+        return;
+    }
+
+    // Optional: report type mismatches
+    if (j1.type() != j2.type())
+    {
+        std::cout << "Type differs at " << path << ": "
+                  << j1.type_name() << " vs "
+                  << j2.type_name() << "\n";
+    }
+}
 
 bool parseValue(const std::string& s, double& v) { v = std::stod(s); return true; }
 bool parseValue(const std::string& s, int&    v) { v = std::stoi(s); return true; }
@@ -22,6 +223,10 @@ bool parseValue(const std::string& s, bool& v) {
     if (s == "0" || s == "false"|| s == "FALSE") { v = false; return true; }
     return false;
 }
+
+
+
+
 
 
 /* double Efunctor::eFunc(const double & val, const json & j)
@@ -1015,8 +1220,8 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
-    //if (false){
-    if (j.contains("nervous_system")){
+    if (false){
+    //if (j.contains("nervous_system")){
     setCircuitSize(j["nervous_system"],n);
    }
   else{
@@ -1286,3 +1491,6 @@ void evoPars::setFromArgs(int argc, const char* argv[])
    
 
 }
+
+
+

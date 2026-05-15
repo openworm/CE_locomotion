@@ -928,12 +928,63 @@ void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 
   setCurrentPheno(pheno);
   
+  bool test = false;
+  if (test){
+
+
+  json j1 = BPitsJson;
+  json j2 = BPitsJson;
   
-  //recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
+  recursive_iterate2(pheno,j1,itsEf,genPhenLims);
+  
+  recursive_iterate2v2(pheno,j2,itsEf,genPhenLims);
+
+  //const string s1 = "Stretch receptor";
+  //const string s2 = "stretch_receptor";
+
+  if (false){
+  const string s1 = "VNC NMJ";
+  const string s2 = "vnc_nmj";
+
+  compare_numeric_values(j1[s1], BPitsJson[s1]);
+
+  cout << "call1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxx " << endl;
+
+  compare_numeric_values(j2[s2], BPitsJson[s2]);
+
+  cout << "call2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxx " << endl;
+  }
+   
+  std::vector<double> diffs1;
+  std::vector<double> diffs2;
+
+  collect_numeric_differences(j1, BPitsJson, diffs1);
+  collect_numeric_differences(j2, BPitsJson, diffs2);
+
+if (same_values_unordered(diffs1, diffs2))
+{
+    //std::cout << "The two JSON pairs have the same numerical differences\n";
+}
+else
+{
+    std::cout << "The two JSON pairs have different numerical differences\n";
+    assert(0);
+}
+
+  BPitsJson = j1;
+
+}
+else
+{
+  recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
   
   recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
 
-   
+
+}
+
+
+
 
   //applyFuncables();
   resetFromBPJson();

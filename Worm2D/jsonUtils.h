@@ -130,7 +130,27 @@ void appendToJson(json & j, const Params<T> & par)
         }
                
 }
+void sortAsc(vector<weightentry> & entries);
 
+bool same_values_unordered(
+    std::vector<double> a,
+    std::vector<double> b,
+    double tol = 1e-12
+);
+
+void compare_numeric_values(
+    const json& j1,
+    const json& j2,
+    const std::string& path = "",
+    double tol = 1e-12
+);
+void collect_numeric_differences(
+    const json& j1,
+    const json& j2,
+    std::vector<double>& diffs,
+    const std::string& path = "",
+    double tol = 1e-12
+);
 void from_json(const json & j, weightentry & w);
 void to_json(json & j, const weightentry & w);
 void to_json(json & j, const toFromWeight & w);

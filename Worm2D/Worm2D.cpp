@@ -1463,6 +1463,7 @@ vector<toFromWeight> Worm2D::makeVentralMuscleConn18()
     NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_V)/par1.N_muscles));
     vector<int> units;
     vector<double> weights;
+    sortAsc(ventinds);
     splitWeightEntry(ventinds,units,weights);
 
 
@@ -1578,6 +1579,7 @@ vector<toFromWeight> Worm2D::makeDorsalMuscleConn18()
     NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_D)/par1.N_muscles));
     vector<int> units;
     vector<double> weights;
+    sortAsc(dorsinds);
     splitWeightEntry(dorsinds,units,weights);
 
 
@@ -1656,6 +1658,7 @@ NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_V)/par1.N_muscles));
 //assert(0);
 vector<int> units;
 vector<double> weights;
+sortAsc(ventinds);
 splitWeightEntry(ventinds,units,weights);
 return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscV);
 
@@ -1672,6 +1675,7 @@ for (int i=1; i<=par1.N_muscles; i++)
 NMJ_Gain(i) = NMJ_gain_fact*(1.0 - (((i-1)*NMJ_gain_map_D)/par1.N_muscles));
 vector<int> units;
 vector<double> weights;
+sortAsc(dorsinds);
 splitWeightEntry(dorsinds,units,weights);
 return makeMuscleConnW2D(units,weights,NMJ_Gain,unitToMuscD);
 
@@ -1701,7 +1705,12 @@ void Worm2D::setUpMuscleConn(const json & j)
         ventinds1.push_back(val);
 
     }
-    ventinds.swap(ventinds1);}
+    //sortAsc(ventinds1);
+    //for (const weightentry & val : ventinds1)
+    //cout << "hh 1 " << val.from << " " << val.weight << endl;
+    //ventinds = ventinds1;
+    ventinds.swap(ventinds1);
+    }
 
     {vector<weightentry> dorsinds1;
     for (const auto& conn : j2["dorsal_conns"])
@@ -1774,11 +1783,16 @@ void Worm2D::setUpMuscleConn(const json & j)
     //NMJ_gain_map_D = 0.5;
     //NMJ_gain_fact = 0.7;
  
-    ventinds = j2["V inds"]["value"].template get< vector<weightentry> >();
-    dorsinds = j2["D inds"]["value"].template get< vector<weightentry> >();
+    vector<weightentry> vent1 = j2["V inds"]["value"].template get< vector<weightentry> >();
+    //sortAsc(vent1);
+    //for (const weightentry & val : vent1)
+    //cout << "hh 2 " << val.from << " " << val.weight << endl;
+    ventinds.swap(vent1);
+    vector<weightentry> dors1 = j2["D inds"]["value"].template get< vector<weightentry> >();
+    dorsinds.swap(dors1);
 
-    unitToMuscV = j2["V conns"]["value"].template get< vector<intPair> >();
-    unitToMuscD = j2["D conns"]["value"].template get< vector<intPair> >();
+    //unitToMuscV = j2["V conns"]["value"].template get< vector<intPair> >();
+    //unitToMuscD = j2["D conns"]["value"].template get< vector<intPair> >();
     
     if (j2.contains("NMJ gain map V"))  namedVars["NMJ gain map V"] = j2["NMJ gain map V"]["value"];
     if (j2.contains("NMJ gain map D")) namedVars["NMJ gain map D"] = j2["NMJ gain map D"]["value"];
@@ -1990,8 +2004,8 @@ dMuscConnvec1.swap(dMuscConnvec);
 
 }
 
-vector<toFromWeight> Worm2D::makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
-TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc)
+vector<toFromWeight> Worm2D::makeMuscleConnW2D(const vector<int> & neurons, const vector<double> & NMJ,
+const TVector<double> & NMJ_Gain, const vector<intPair> & unitToMusc)
 {
     vector<toFromWeight> vec1;
     for (int i=0; i<unitToMusc.size();i++)
@@ -2005,19 +2019,20 @@ TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc)
 
 
 void Worm2D::makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, TVector<double> & NMJ_Gain)
+    const vector<int> & neurons, const vector<double> & NMJs, 
+    const int & unit, const int & to_muscle, const TVector<double> & NMJ_Gain)
 {
 
     return makeMuscleConnHelp1(vec1, neurons, NMJs, unit, to_muscle, NMJ_Gain, par1.N_neuronsperunit);
 }
 
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int unit, int to_muscle, 
-    TVector<double> & NMJ_Gain, int N_neuronsperunit)
+    const vector<int> & neurons, const vector<double> & NMJs, const int & unit, const int & to_muscle, 
+    const TVector<double> & NMJ_Gain, const int & N_neuronsperunit)
 {
-
+    const double nmjgain = NMJ_Gain(to_muscle);
     for (int j = 0; j<neurons.size();j++){
-        double weight = NMJs[j]*NMJ_Gain(to_muscle); 
+        double weight = NMJs[j]*nmjgain; 
         int from_neuron = nn1(neurons[j],unit,N_neuronsperunit);
         toFromWeight tv({from_neuron,weight},to_muscle);
         vec1.push_back(tv);
@@ -2026,8 +2041,8 @@ void makeMuscleConnHelp1(vector<toFromWeight> & vec1,
 }
 
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
-    const vector<double> & NMJ_Gain, int N_neuronsperunit)
+    const vector<int> & neurons, const vector<double> & NMJs, const int & unit, const int & to_muscle, 
+    const vector<double> & NMJ_Gain, const int & N_neuronsperunit)
 {
 
     for (int j = 0; j<neurons.size();j++){
