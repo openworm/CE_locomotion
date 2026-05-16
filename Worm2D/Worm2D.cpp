@@ -840,21 +840,39 @@ void Worm2Dm::addParsToJson(json & j)
 
 void Worm2D::addParsToJson(json & j)
 {  
-     // addwormIzqParams
     
-   
+    
+    vector<string> names;
+    if (j.contains("nervous_system"))
+    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
+    else names = getDistinctCellNames();
+
+    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    && j.at("Nervous system").contains("Cell name") 
+    && j.at("Nervous system").at("Cell name").contains("value") 
+    && j.at("Nervous system").at("Cell name").at("value").is_array())
+    {
+    names = makeUnique(j.at("Nervous system").
+    at("Cell name").at("value").template get< vector<string> >());
+    }
+    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    {
+        int size = j.at("Nervous system").at("size").at("value").get<int>();
+        names.clear();
+        for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
+    }
+    assert(names[0]!="not implemented");
+
+    vector<string> names_no_suffix = removeSuffixIndices(names);
+
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], *n_ptr1);
-  
-    vector<string> names = getDistinctCellNames();
-    if (names[0]=="not implemented") appendNSToJsonByCell(j, *n_ptr1);
-    else appendNSToJsonByCell(j, *n_ptr1, names);
+    appendNSToJsonByCell(j, *n_ptr1, names);
     }
- 
-    //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
 
+   
     appendMuscleToJson(j,m);
 
     NSToMuscles vMuscConn(par1.N_muscles);
@@ -902,13 +920,9 @@ void Worm2D::addParsToJson(json & j)
     appendCellNamesToJson(j["Ventral NMJ"], getVMuscNames(), 1);
 
   
-    vector<string> names;
-    if (j.contains("nervous_system"))
-    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
-    //else names = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
-    else names = getDistinctCellNames();
+    
 
-  
+   
     if (!j.contains("dorsal_nmj")) {
     j["dorsal_nmj"]["weights"]["value"] = json::array();
     j["ventral_nmj"]["weights"]["value"] = json::array();
@@ -959,6 +973,7 @@ void Worm2D::addParsToJson(json & j)
     j["ventral_nmj"]["weights"]["message"] = "Ventral NMJ weights in sparse format";
     j["dorsal_nmj"]["weights"]["message"] = "Dorsal NMJ weights in sparse format";
 
+    
 
     if (hasVNCNMJ){
 
@@ -976,6 +991,7 @@ void Worm2D::addParsToJson(json & j)
         j2["NMJ gain fact"]["value"] = namedVars["NMJ gain fact"];
         }
 
+        
         {
             
             if (!j.contains("vnc_nmj")) 
@@ -984,18 +1000,18 @@ void Worm2D::addParsToJson(json & j)
                 
                 j["vnc_nmj"] = json::object();
                 //vector<string> names = getCellNamesUnit();
-                vector<string> names = getCellNames();
+                const vector<string> & names = names_no_suffix;
                 json & j2 = j["vnc_nmj"];
                 j2["ventral_conns"] = json::object();
                 j2["dorsal_conns"]  = json::object();
                 for (const weightentry & val : ventinds){
-                    j2["ventral_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
-                    j2["ventral_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                    j2["ventral_conns"][names_no_suffix[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["ventral_conns"][names_no_suffix[val.from-1]]["cell_ind"]=val.from;
                  }
         
                 for (const weightentry & val : dorsinds){
-                    j2["dorsal_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
-                    j2["dorsal_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                    j2["dorsal_conns"][names_no_suffix[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["dorsal_conns"][names_no_suffix[val.from-1]]["cell_ind"]=val.from;
                 }
             }
             else{
@@ -1054,18 +1070,18 @@ void Worm2D::addParsToJson(json & j)
          if (!j.contains("vnc_18")) 
             {
                 j["vnc_18"] = json::object();
-                vector<string> names = getCellNames();
+                const vector<string> & names = names_no_suffix;
                 json & j2 = j["vnc_18"];
                 j2["ventral_conns"] = json::object();
                 j2["dorsal_conns"]  = json::object();
                 for (const weightentry & val : ventinds){
-                    j2["ventral_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
-                    j2["ventral_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                    j2["ventral_conns"][names_no_suffix[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["ventral_conns"][names_no_suffix[val.from-1]]["cell_ind"]=val.from;
                  }
         
                 for (const weightentry & val : dorsinds){
-                    j2["dorsal_conns"][names[val.from-1]]["weight"]["value"]=val.weight;
-                    j2["dorsal_conns"][names[val.from-1]]["cell_ind"]=val.from;
+                    j2["dorsal_conns"][names_no_suffix[val.from-1]]["weight"]["value"]=val.weight;
+                    j2["dorsal_conns"][names_no_suffix[val.from-1]]["cell_ind"]=val.from;
                 }
             }
             else{

@@ -11,6 +11,7 @@ using json = nlohmann::json;
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -53,6 +54,34 @@ bool same_values_unordered(
     }
 
     return true;
+}
+
+
+std::vector<std::string> makeUnique(std::vector<std::string> v) {
+    std::unordered_map<std::string,int> counts;
+    for (auto &s : v) {
+        int n = counts[s]++;
+        s = s + "_" + std::to_string(n);
+    }
+    return v;
+}
+
+std::vector<std::string> removeSuffixIndices(std::vector<std::string> v) {
+    for (auto &s : v) {
+        const size_t pos = s.find_last_of('_');
+        if (pos == std::string::npos || pos + 1 == s.size()) continue;
+
+        bool suffix_is_index = true;
+        for (size_t i = pos + 1; i < s.size(); ++i) {
+            if (!std::isdigit(static_cast<unsigned char>(s[i]))) {
+                suffix_is_index = false;
+                break;
+            }
+        }
+
+        if (suffix_is_index) s.erase(pos);
+    }
+    return v;
 }
 
 
@@ -959,6 +988,7 @@ if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 
 json & j2 = j["nervous_system"];
 j2["cell_names"]["value"] = cell_names_full;
+//j2["cell_names_no_suffix"]["value"] = removeSuffixIndices(cell_names_full);
 
 //cout << j2["cell_names"]["value"] << endl;
 
@@ -1220,8 +1250,8 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
-    if (false){
-    //if (j.contains("nervous_system")){
+    //if (false){
+    if (j.contains("nervous_system")){
     setCircuitSize(j["nervous_system"],n);
    }
   else{
@@ -1491,6 +1521,4 @@ void evoPars::setFromArgs(int argc, const char* argv[])
    
 
 }
-
-
 

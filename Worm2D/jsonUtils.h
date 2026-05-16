@@ -131,6 +131,8 @@ void appendToJson(json & j, const Params<T> & par)
                
 }
 void sortAsc(vector<weightentry> & entries);
+std::vector<std::string> makeUnique(std::vector<std::string> v);
+std::vector<std::string> removeSuffixIndices(std::vector<std::string> v);
 
 bool same_values_unordered(
     std::vector<double> a,

@@ -1,9 +1,0 @@
-{
-    "doNML": 1,
-    "seed": 4077,
-    "Duration": 10,
-    "doRandInit": 0,
-    "Transient": 10,
-    "doMuscSim": 0,
-    "doTestRun": true
-}
