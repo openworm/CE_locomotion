@@ -429,7 +429,7 @@ void SR::setParsFromJson(const json & j)
 void SR18::setParsFromJson(const json & j) 
 {
 
-
+    //if (j.contains("stretch_receptor"))
     if (j.contains("stretch_receptor"))
     {
 
@@ -486,8 +486,9 @@ void SR18::setParsFromJson(const json & j)
 
     }
 
+    return;
     }
-    else
+    
     {
     const json & j2 =  j["Stretch receptor"];
 
