@@ -429,8 +429,8 @@ void SR::setParsFromJson(const json & j)
 void SR18::setParsFromJson(const json & j) 
 {
 
-    //if (j.contains("stretch_receptor"))
     if (j.contains("stretch_receptor"))
+    //if (false)
     {
 
         assert(j.contains("nervous_system"));

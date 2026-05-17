@@ -102,12 +102,14 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
 {
 
   
-  bool do_evol = cmd->getArgValInt("--doevol", 0);
-  if (!do_evol) return;
+  //bool do_evol = cmd->getArgValInt("--doevol", 0);
+  //if (!do_evol) return;
     
+  if (!callInit) return;
+
   if (genPhenLims.size()>0) setInitPheno();
     
-  if (callInit) writeOrigGen(cmd);
+  writeOrigGen(cmd);
 
 
 }
