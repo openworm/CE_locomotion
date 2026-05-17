@@ -230,7 +230,8 @@ public:
 //Worm2DSR(jsonfilename_,cmd){}
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
-
+WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
+  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
 
 
 
@@ -258,8 +259,7 @@ void Step1();
 void assignExternalInput();
 
 protected:
-WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
+
 
 
 
