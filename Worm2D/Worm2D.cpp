@@ -820,7 +820,49 @@ void Worm2Dm::addParsToJson(json & j)
     j["Ventral body"]["weights"]["message"] = "Ventral muscle to body weights weights in sparse format";
     j["Dorsal body"]["weights"]["message"] = "Dorsal muscle to body weights weights in sparse format";
 
-    
+    {json & j22 =  j["dorsal_body"]["weights"]["value"];
+   
+    j["dorsal_body"]["weights"]["message"] = "Dorsal muscle to body weights in sparse format";
+    for (const toFromWeight & val : dBodyConnvec)
+    {
+       // assert(val.w.from-1<names.size() && val.w.from-1>=0);
+        bool found = false;
+        for (auto it = j22.begin(); it != j22.end(); ++it)
+            if (it->at("to_seg")==val.to && it->at("from_musc")==val.w.from)
+        {it->at("weight").at("value")=val.w.weight;found = true;break;}
+        if (found) continue;
+
+        json j2 = json::object();
+        j2["from_musc"] = val.w.from;
+        j2["to_seg"] = val.to;
+        j2["weight"]["value"] = val.w.weight;
+        j["dorsal_body"]["weights"]["value"].push_back(j2);
+    }  
+    }
+
+    {json & j22 =  j["ventral_body"]["weights"]["value"];
+   
+    j["ventral_body"]["weights"]["message"] = "Ventral muscle to body weights in sparse format";
+    for (const toFromWeight & val : vBodyConnvec)
+    {
+       // assert(val.w.from-1<names.size() && val.w.from-1>=0);
+        bool found = false;
+        for (auto it = j22.begin(); it != j22.end(); ++it)
+            if (it->at("to_seg")==val.to && it->at("from_musc")==val.w.from)
+        {it->at("weight").at("value")=val.w.weight;found = true;break;}
+        if (found) continue;
+
+        json j2 = json::object();
+        j2["from_musc"] = val.w.from;
+        j2["to_seg"] = val.to;
+        j2["weight"]["value"] = val.w.weight;
+        j["ventral_body"]["weights"]["value"].push_back(j2);
+    }  
+    }
+
+
+
+
     string nsHead = "Nervous system";
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
@@ -2134,11 +2176,39 @@ dBodyConnvec1.swap(dBodyConnvec);
 void Worm2Dm::setUpBodyConn(const json & j)
 {
     
+if (j.contains("dorsal_body") && j.contains("ventral_body")){
+    {vector<toFromWeight> dBodyConnvec1; 
+    for (const auto& conn : j["dorsal_body"]["weights"]["value"])
+    {
+    toFromWeight val;
+    val.w.from = conn.at("from_musc").get<int>();
+    val.to = conn.at("to_seg").get<int>();
+    val.w.weight = conn.at("weight").at("value").get<double>();
+    dBodyConnvec1.push_back(val);
+    }
+    dBodyConnvec.swap(dBodyConnvec1);
+    }
+
+    {vector<toFromWeight> vBodyConnvec1; 
+    for (const auto& conn : j["ventral_body"]["weights"]["value"])
+    {
+    toFromWeight val;
+    val.w.from = conn.at("from_musc").get<int>();
+    val.to = conn.at("to_seg").get<int>();
+    val.w.weight = conn.at("weight").at("value").get<double>();
+    vBodyConnvec1.push_back(val);
+    }
+    vBodyConnvec.swap(vBodyConnvec1);
+    }
+}
+
+else{
 vector<toFromWeight> vBodyConnvec1 = j["Ventral body"]["weights"]["value"].template get< vector<toFromWeight> >();
 vector<toFromWeight> dBodyConnvec1 = j["Dorsal body"]["weights"]["value"].template get< vector<toFromWeight> >();
 vBodyConnvec.swap(vBodyConnvec1);
 dBodyConnvec.swap(dBodyConnvec1);
 
+}
 }
 
 //const string Worm2Dbase::getModelName() {return "Unspecified";}
