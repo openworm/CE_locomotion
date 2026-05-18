@@ -62,7 +62,7 @@ jobs:
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib ruff  scipy
         pip install ipywidgets
-        pip install html
+        
 
         pip list
 
