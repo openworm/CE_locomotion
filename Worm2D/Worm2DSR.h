@@ -169,9 +169,10 @@ double presentAvgCon, pastAvgCon;
 int extInp1, extInp2;
 double gradSteep, HSStepSize, x_center, y_center;
 
+void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
 void writeParsToJson(json & j) const;
-
+void writeParsToJson2(json & j) const;
 };
 
 class Sensor  : public WormGrad

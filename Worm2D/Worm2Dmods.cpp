@@ -13,13 +13,45 @@ amp.swap(pfa_.amp);
 
 void pfa::addParsToJson(json & j)
 {
-j["size"]["value"] = size;
-j["freq"]["value"] = freq;
+ 
+json & j2 = j["Nervous system"];
+    
+j2["size"]["value"] = size;
+j2["freq"]["value"] = freq;
 //j["freq"]["cell_val"] = 1;
-j["phase"]["value"] = phase;
+j2["phase"]["value"] = phase;
 //j["phase"]["cell_val"] = 1;
-j["amp"]["value"] = amp;
+j2["amp"]["value"] = amp;
 //j["amp"]["cell_val"] = 1;
+vector<string> cell_names(size, "cell");
+j2["Cell name"]["value"] = cell_names;
+
+ 
+
+
+
+{
+
+json & j2 = j["nervous_system"];
+vector<string> cell_names_full = makeUnique(cell_names);
+j2["cell_names"]["value"] = cell_names_full;
+
+
+//if (!j2.contains("cells")) j2["cells"] = json::object();
+json & j3 = j2["cells"];
+for (int i=0;i<cell_names_full.size();i++) 
+  {
+    const string & name = cell_names_full[i];
+    if (!j3.contains(name)) j3[name] = json::object();
+    json & j4 = j3[name];
+    j4["freg"]["value"] = freq[i];
+    j4["phase"]["value"] = phase[i];
+    j4["amp"]["value"] = amp[i];
+  
+  }
+
+}
+
 }
 
 
@@ -44,31 +76,37 @@ Worm2Dm(par1_,n_ptr_,w2par_ptr)//,pars1_ptr(w2par_ptr)
 ,Worm2D(par1_,0){} */
 
 
-Worm2DoscNML::Worm2DoscNML(int size_, shared_ptr<const CmdArgs> cmd_):
-Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(), cmd_),
-Worm2D({size_,24,0.1,1,size_}, nullptr){basePar1 = this;}
-
-
+Worm2DoscNML::Worm2DoscNML(int size_, shared_ptr<const CmdArgs> cmd_, const json & j):
+Worm2Dm({size_,24,0.1,1,size_}, new c302ForW2D(), cmd_, j),
+Worm2D({size_,24,0.1,1,size_}, nullptr)
+{
+    basePar1 = this;
+    const json & j2 = BPitsJson;
+    setMuscBodExt(j2);
+}
 
 
 Worm2DoscNML::Worm2DoscNML(const string & jsonfile_, 
-    shared_ptr<const CmdArgs> cmd_):Worm2DoscNML(48, cmd_)
+    shared_ptr<const CmdArgs> cmd_):
+    Worm2DoscNML(48, cmd_, getJsonFromFile(jsonfile_))
 {
-    json j = getJsonFromFile(jsonfile_);
+    //json j = getJsonFromFile(jsonfile_);
     //pars1->setParsFromJson(j["Worm"]);
-    setMuscBodExt(j); 
+    //setMuscBodExt(j); 
 
 }
 
-Worm2DoscNMLm::Worm2DoscNMLm(int size_, shared_ptr<const CmdArgs> cmd_):
-Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),0, cmd_){}
+Worm2DoscNMLm::Worm2DoscNMLm(int size_, shared_ptr<const CmdArgs> cmd_, const json & j):
+Worm2Dm({size_,24,0.1,1,size_},new c302ForW2D(),0, cmd_, j)
+{
+
+    const json & j2 = BPitsJson;
+    setBodExt(j2);
+}
 
 Worm2DoscNMLm::Worm2DoscNMLm(const string & jsonfile_, 
-    shared_ptr<const CmdArgs> cmd_):Worm2DoscNMLm(48,cmd_)
+    shared_ptr<const CmdArgs> cmd_):Worm2DoscNMLm(48,cmd_,getJsonFromFile(jsonfile_))
 {
-    json j = getJsonFromFile(jsonfile_);
-    //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
-    setBodExt(j); 
 }
 
 
@@ -665,9 +703,12 @@ return makeMuscleConn(ventralNeurons, ventralNMJ);
 
 void Worm2DoscBase::addParsToJson(json & j)
 {
+    //n.addParsToJson(j["Nervous system"]);
+    n.addParsToJson(j);
+
     Worm2D::addParsToJson(j);
     //n.pfa1.addParsToJson(j["Nervous system"]);
-    n.addParsToJson(j["Nervous system"]);
+    
 }
 
 void Worm2Dosc::addParsToJson(json & j)

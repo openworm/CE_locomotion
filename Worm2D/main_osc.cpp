@@ -188,6 +188,7 @@ int main (int argc, const char* argv[])
     {
         if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename, cmd);
         else w2 = new Worm2DoscNML(json_filename, cmd);
+        
     }
 
     if (model_name == "W2Dosc21") 

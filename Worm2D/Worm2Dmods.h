@@ -293,7 +293,7 @@ class Worm2DoscNMLm : public Worm2Dm
 {
 
     public:
-    Worm2DoscNMLm(int size, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2DoscNMLm(int size_, shared_ptr<const CmdArgs> cmd_, const json & j);
     Worm2DoscNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2DoscNMLm";}
@@ -304,12 +304,14 @@ class Worm2DoscNML : public Worm2D, public Worm2Dosc1
 {
 
     public:
-    Worm2DoscNML(int size, shared_ptr<const CmdArgs> cmd_ = nullptr);
+   
     Worm2DoscNML(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2DoscNML(int size_, shared_ptr<const CmdArgs> cmd_, const json & j);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc1::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc1::makeDorsalMuscleConn();}
     const string getModelName() {return "Worm2DoscNML";}
+    void addParsToJson(json & j){j=BPitsJson;Worm2D::addParsToJson(j);}
 };
 
 

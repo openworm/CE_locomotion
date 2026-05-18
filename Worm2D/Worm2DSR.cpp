@@ -1598,6 +1598,15 @@ void WormCO2DSR::Step1()
    
 }
 
+void SensorPars::writeParsToJson2(json & j) const
+{
+
+addParsToJson1<double>(j,{"sensor_n","sensor_m","grad_steep", 
+  "HS_stepsize", "x_center", "y_center"},
+    {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
+addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
+
+}
 
 void SensorPars::writeParsToJson(json & j) const
 {
@@ -1606,6 +1615,28 @@ addParsToJson1<double>(j,{"sensorN","sensorM","gradSteep",
   "HSStepSize", "x_center", "y_center"},
     {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
 addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
+
+}
+
+void SensorPars::setParsFromJson2(const json & j)
+{
+
+  sensorN = j["sensor_n"]["value"];
+  sensorM = j["sensor_m"]["value"];
+  gradSteep = j["grad_steep"]["value"];
+  HSStepSize = j["HS_stepSize"]["value"];
+  x_center  = j["x_center"]["value"];
+  y_center = j["y_center"]["value"];
+  extInp1 = j["ext_inp_1"]["value"];
+  extInp2 = j["ext_inp_2"]["value"];
+
+//double sensorN, sensorM;
+//double dSensorN, dSensorM;
+//int iSensorN, iSensorM;
+//double chemCon, presentAvgCon, pastAvgCon;
+//double presentAvgCon, pastAvgCon;
+//int extInp1, extInp2;
+//double gradSteep, HSStepSize, x_center, y_center;
 
 }
 
@@ -1634,8 +1665,17 @@ void SensorPars::setParsFromJson(const json & j)
 void Sensor::setParsFromJson(const json & j)
 {
 
-if (j.contains("Sensors")){
-json j2 = j["Sensors"];
+  if (j.contains("sensors")){
+const json & j2 = j["sensors"];
+for (int i=0; i<spvec.size(); i++)
+{
+SensorPars & sp1 = spvec[i];
+sp1.setParsFromJson2(j2["sensor_" + to_string(i+1)]);
+}
+
+  }
+else if (j.contains("Sensors")){
+const json & j2 = j["Sensors"];
 for (int i=0; i<spvec.size(); i++)
 {
 SensorPars & sp1 = spvec[i];
@@ -1672,11 +1712,21 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 
 void Sensor::construct(const json & j)
 {
-
-
-  if (j.contains("Sensors"))
+  if (j.contains("sensors"))
  {
-  json j2 = j["Sensors"];
+  const json & j2 = j["sensors"];
+  int ind = 1;
+  while(j2.contains("sensor_" + to_string(ind))){
+
+  SensorPars sp1;
+  sp1.setParsFromJson(j2["sensor_" + to_string(ind)]);
+  spvec.push_back(sp1);
+  ind++;
+  }
+ }
+  else if (j.contains("Sensors"))
+ {
+  const json & j2 = j["Sensors"];
   int ind = 1;
   while(j2.contains("Sensor_" + to_string(ind))){
 
@@ -1722,7 +1772,19 @@ void  Sensor::addParsToJson(json & j) const
  
 if (spvec.size()<1) return;
 
-json & j2 = j["Sensors"];
+{json & j2 = j["sensors"];
+
+for (int i =0; i<spvec.size(); i++)
+{
+
+const SensorPars & sp1 = spvec[i];
+sp1.writeParsToJson(j2["sensor_" + to_string(i+1)]);
+
+}
+}
+
+
+{json & j2 = j["Sensors"];
 
 for (int i =0; i<spvec.size(); i++)
 {
@@ -1737,6 +1799,10 @@ const SensorPars & sp1 = spvec[0];
 sp1.writeParsToJson(j["Worm"]);
 
 }
+}
+
+
+
 
 
 }
