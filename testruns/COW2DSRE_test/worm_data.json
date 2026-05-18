@@ -4311,6 +4311,36 @@
             }
         }
     },
+    "sensors": {
+        "sensor_1": {
+            "hs_stepsize": {
+                "value": 0.01
+            },
+            "ext_inp_1": {
+                "value": 0
+            },
+            "ext_inp_2": {
+                "value": 1
+            },
+            "grad_steep": {
+                "value": 0.5
+            },
+            "sensor_m": {
+                "value": 2.110899084607434,
+                "evotag": 66
+            },
+            "sensor_n": {
+                "value": 2.2396018905092925,
+                "evotag": 67
+            },
+            "x_center": {
+                "value": 0.0
+            },
+            "y_center": {
+                "value": 0.0
+            }
+        }
+    },
     "Simulation": {
         "duration": {
             "value": 300.0

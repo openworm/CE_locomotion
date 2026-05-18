@@ -1624,7 +1624,7 @@ void SensorPars::setParsFromJson2(const json & j)
   sensorN = j["sensor_n"]["value"];
   sensorM = j["sensor_m"]["value"];
   gradSteep = j["grad_steep"]["value"];
-  HSStepSize = j["HS_stepSize"]["value"];
+  HSStepSize = j["hs_stepsize"]["value"];
   x_center  = j["x_center"]["value"];
   y_center = j["y_center"]["value"];
   extInp1 = j["ext_inp_1"]["value"];
@@ -1719,7 +1719,7 @@ void Sensor::construct(const json & j)
   while(j2.contains("sensor_" + to_string(ind))){
 
   SensorPars sp1;
-  sp1.setParsFromJson(j2["sensor_" + to_string(ind)]);
+  sp1.setParsFromJson2(j2["sensor_" + to_string(ind)]);
   spvec.push_back(sp1);
   ind++;
   }
@@ -1778,7 +1778,7 @@ for (int i =0; i<spvec.size(); i++)
 {
 
 const SensorPars & sp1 = spvec[i];
-sp1.writeParsToJson(j2["sensor_" + to_string(i+1)]);
+sp1.writeParsToJson2(j2["sensor_" + to_string(i+1)]);
 
 }
 }
