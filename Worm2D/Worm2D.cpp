@@ -1589,8 +1589,11 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
     if (j.contains("Simulation")){
     StepSize = j["Simulation"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
-    else if (j.contains("Evolutionary Optimization Parameters")){
-    StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"]; 
+    else if (j.contains(evolutionaryOptimizationParametersKey())){
+    StepSize = j[evolutionaryOptimizationParametersKey()]["step_size"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    else if (j.contains(legacyEvolutionaryOptimizationParametersKey())){
+    StepSize = j[legacyEvolutionaryOptimizationParametersKey()]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
     StepSize = cmd->getArgValDoub("--StepSize",StepSize);
     if (StepSize == 0) return new c302ForW2D();
@@ -2477,4 +2480,3 @@ void InputSwitcher::construct(const json & j)
  
 
 }
-

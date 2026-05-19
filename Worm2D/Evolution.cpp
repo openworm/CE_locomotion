@@ -462,6 +462,7 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     ofstream json_out(rename_file("worm_data_evo.json"));
     w.addParsToJson(j);   
     addParsToJson(j);
+    normaliseEvolutionaryOptimizationParameters(j);
    
     json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;
@@ -475,10 +476,11 @@ void EvoBase::addParsToJson(json & j)
     //doubIntParamsHead par1pars = evoPars1.getParams();
     //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
-    evoPars1.addParsToJson(j["Evolutionary Optimization Parameters"]);
+    const string evoJsonKey = evolutionaryOptimizationParametersKey();
+    evoPars1.addParsToJson(j[evoJsonKey]);
     
  
-    j["Evolutionary Optimization Parameters"]["VectSize"]["value"] = itsVectSize();
+    j[evoJsonKey]["vect_size"]["value"] = itsVectSize();
 
     addExtraParsToJson(j);
 }
@@ -823,5 +825,3 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
        // velfile.close();
 
 }
-
-

@@ -18,6 +18,7 @@ template<class T>
 T getParFromJson1(const json & j, const string & name)
 {
 
+  if (j.contains(snakeCaseJsonFieldName(name))) return j[snakeCaseJsonFieldName(name)]["value"];
   return j[name]["value"];
 
 }
@@ -26,6 +27,11 @@ template<class T>
 bool getParFromJson1(const json & j, const string & name, T & val)
 {
 
+  if (j.contains(snakeCaseJsonFieldName(name)))
+  {
+  val = j.at(snakeCaseJsonFieldName(name)).at("value").get<T>();
+  return true;
+  }
   if (!j.contains(name)) return false;
   val = j.at(name).at("value").get<T>();
   return true;
@@ -508,7 +514,6 @@ void addParsToJson(json & j) const {
 
 
 };
-
 
 
 

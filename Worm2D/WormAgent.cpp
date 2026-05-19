@@ -522,9 +522,43 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 void WormAgent::addParsToJson(json & j)
 {
-    Worm2Dbase::addParsToJson(j);
-	string nsHead = "Nervous system";
-    appendAllNSJson(j[nsHead], dynamic_cast<NervousSystem&>(*n_ptr));
+	
+  	 string nsHead = "Nervous system";
+	NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
+    if (n_ptr1){
+    string nsHead = "Nervous system";
+    appendAllNSJson(j[nsHead], *n_ptr1);
+   
+    }
+
+ 	vector<string> names;
+    if (j.contains("nervous_system"))
+    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
+    else names = getDistinctCellNames();
+
+    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    && j.at("Nervous system").contains("Cell name") 
+    && j.at("Nervous system").at("Cell name").contains("value") 
+    && j.at("Nervous system").at("Cell name").at("value").is_array())
+    {
+    names = makeUnique(j.at("Nervous system").
+    at("Cell name").at("value").template get< vector<string> >());
+    }
+    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    {
+        int size = j.at("Nervous system").at("size").at("value").get<int>();
+        names.clear();
+        for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
+    }
+    assert(names[0]!="not implemented");
+
+	 appendNSToJsonByCell(j, *n_ptr1, names);
+
+
+	
+
+    //appendAllNSJson(j[nsHead], dynamic_cast<NervousSystem&>(*n_ptr));
+	//appendNSToJsonByCell(j, *n_ptr1, names);
 	j[nsHead]["section sizes"]["interneurons"]["value"] = size;
 	j[nsHead]["section sizes"]["interneurons"]["plot order"] = 0;
 
@@ -532,6 +566,8 @@ void WormAgent::addParsToJson(json & j)
 	par.names =  {"w_ASER", "w_ASEL"};
 	par.vals = {getVector<double>(w_ASER), getVector<double>(w_ASEL)};
 	appendToJson<vector<double> >(j["Sensory"],par);
+
+	 Worm2Dbase::addParsToJson(j);
 
 }
 

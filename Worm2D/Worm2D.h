@@ -101,6 +101,13 @@ class baseParameters
         if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
         if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
 
+        if (!BPitsJson.empty() && bstr == legacyEvolutionaryOptimizationParametersKey()
+            && BPitsJson.contains(evolutionaryOptimizationParametersKey())) {
+            const json & evoJson = BPitsJson.at(evolutionaryOptimizationParametersKey());
+            if (getJsonValTF<T>(evoJson, snakeCaseJsonFieldName(name_str), val, true)) return true;
+            if (getJsonValTF<T>(evoJson, name_str, val, true)) return true;
+        }
+
        
        
         if (defaultVals.contains(name_str)) {
@@ -158,7 +165,7 @@ class baseParameters
     bool getValCJEvo(const string & name_str, T & val)
     {
 
-        return getValCJ<T>(name_str,val,"Evolutionary Optimization Parameters");
+        return getValCJ<T>(name_str,val,legacyEvolutionaryOptimizationParametersKey());
 
     }
 
@@ -215,6 +222,14 @@ class baseParameters
     template<class T>
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
+        if (bstr == legacyEvolutionaryOptimizationParametersKey()
+            && BPitsJson.contains(evolutionaryOptimizationParametersKey())) {
+            const string jsonName = snakeCaseJsonFieldName(name_str);
+            if (!BPitsJson.at(evolutionaryOptimizationParametersKey()).contains(jsonName))
+                BPitsJson[evolutionaryOptimizationParametersKey()][jsonName] = json::object();
+            BPitsJson[evolutionaryOptimizationParametersKey()][jsonName]["value"] = val;
+            return;
+        }
         if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
         //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
         if (!BPitsJson.at(bstr).contains(name_str)) BPitsJson[bstr][name_str] = json::object();
@@ -768,5 +783,4 @@ virtual double distanceToCenter() const = 0;
 virtual void InitializeSensors(RandomState& rs) = 0;
 
 };
-
 

@@ -15,7 +15,7 @@ def incNSvals(j1):
 
 
 NSname = "Nervous system"
-EOP = "Evolutionary Optimization Parameters"
+EOP = "evolutionary_optimization_parameters"
 
 jsonNames = {
     # "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},

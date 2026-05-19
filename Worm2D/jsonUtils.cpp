@@ -19,6 +19,63 @@ using json = nlohmann::json;
 
 using json = nlohmann::json;
 
+string snakeCaseJsonFieldName(const string & name)
+{
+  string snake;
+  for (char c : name) {
+    if (c == ' ') {
+      if (!snake.empty() && snake.back() != '_') snake.push_back('_');
+    }
+    else if (std::isupper(static_cast<unsigned char>(c))) {
+      if (!snake.empty() && snake.back() != '_') snake.push_back('_');
+      snake.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(c))));
+    }
+    else {
+      snake.push_back(c);
+    }
+  }
+  return snake;
+}
+
+string evolutionaryOptimizationParametersKey()
+{
+  return "evolutionary_optimization_parameters";
+}
+
+string legacyEvolutionaryOptimizationParametersKey()
+{
+  return "Evolutionary Optimization Parameters";
+}
+
+json snakeCaseJsonObjectKeys(const json & j)
+{
+  if (!j.is_object()) return j;
+
+  json out = json::object();
+  for (auto it = j.begin(); it != j.end(); ++it) {
+    out[snakeCaseJsonFieldName(it.key())] = it.value();
+  }
+  return out;
+}
+
+void normaliseEvolutionaryOptimizationParameters(json & j)
+{
+  const string newKey = evolutionaryOptimizationParametersKey();
+  const string oldKey = legacyEvolutionaryOptimizationParametersKey();
+  if (!j.contains(newKey) && !j.contains(oldKey)) return;
+
+  json merged = json::object();
+  if (j.contains(newKey)) merged = snakeCaseJsonObjectKeys(j.at(newKey));
+  if (j.contains(oldKey)) {
+    json legacy = snakeCaseJsonObjectKeys(j.at(oldKey));
+    for (auto it = legacy.begin(); it != legacy.end(); ++it) {
+      if (!merged.contains(it.key())) merged[it.key()] = it.value();
+    }
+    j.erase(oldKey);
+  }
+  j[newKey] = merged;
+}
+
 static string normaliseJsonFieldName(string name)
 {
   for (char & c : name) {
@@ -1410,7 +1467,7 @@ void evoPars::addParsToJson(json &j) const
     vector<double> vals = {MutationVariance, CrossoverProbability, 
          MaxExpectedOffspring, ElitistFraction,
          Duration, Transient, StepSize};
-    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+    for (int i=0;i<names.size();i++) j[snakeCaseJsonFieldName(names[i])]["value"]=vals[i];}
 
     {vector<string> names = {"randomseed", "SelectionMode", "ReproductionMode", 
          "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
@@ -1418,23 +1475,24 @@ void evoPars::addParsToJson(json &j) const
     vector<int> vals = {(int) randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
          ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
-    for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+    for (int i=0;i<names.size();i++) j[snakeCaseJsonFieldName(names[i])]["value"]=vals[i];}
 
       {vector<string> names = {"fileprefix", "evoType"};
       vector<string> vals = {fileprefix, evoType};
-       for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
+       for (int i=0;i<names.size();i++) j[snakeCaseJsonFieldName(names[i])]["value"]=vals[i];}
 
 
   }
 const doubIntParamsHead evoPars::getParams() const
    {
        doubIntParamsHead var1;
-       var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
-       var1.parDoub.names = 
+       var1.parDoub.head = evolutionaryOptimizationParametersKey();
+       var1.parInt.head = evolutionaryOptimizationParametersKey();
+       var1.parDoub.names =
        {"MutationVariance", "CrossoverProbability", 
          "MaxExpectedOffspring", "ElitistFraction",
          "Duration", "Transient", "StepSize"};
+       for (string & name : var1.parDoub.names) name = snakeCaseJsonFieldName(name);
        var1.parDoub.vals = {MutationVariance, CrossoverProbability, 
          MaxExpectedOffspring, ElitistFraction,
          Duration, Transient, StepSize};
@@ -1442,6 +1500,7 @@ const doubIntParamsHead evoPars::getParams() const
        var1.parInt.names = {"randomseed", "SelectionMode", "ReproductionMode", 
          "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
          "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
+       for (string & name : var1.parInt.names) name = snakeCaseJsonFieldName(name);
        var1.parInt.vals = {randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
          ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};

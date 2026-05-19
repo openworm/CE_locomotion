@@ -313,7 +313,7 @@ void EvolutionCO::addExtraParsToJson(json & j)
     
 
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = evolutionaryOptimizationParametersKey();
        //var1.parInt.head = "Evolutionary Optimization Parameters";
        var1.parDoub.names = {"TransientDuration", "RunDuration", "EvalDuration", "HST", "BiasRange", "SensorWeightRange", 
 	"InterneuronWeightRange", "StretchReceptorRange", "MinDifSensor", 
@@ -329,6 +329,6 @@ void EvolutionCO::addExtraParsToJson(json & j)
 
      
 
-    appendToJson<double>(j[var1.parDoub.head],var1.parDoub);
+    appendToJson<double>(j[var1.parDoub.head], snakeCaseParamNames(var1.parDoub));
     //appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }

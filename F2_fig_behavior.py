@@ -8,6 +8,36 @@ import os
 import neuromlLocal.utils as utils
 
 
+def snake_case_json_name(name):
+    out = ""
+    for char in name:
+        if char == " ":
+            if out and not out.endswith("_"):
+                out += "_"
+        elif char.isupper():
+            if out and not out.endswith("_"):
+                out += "_"
+            out += char.lower()
+        else:
+            out += char
+    return out
+
+
+def get_evolution_parameters(network_json_data):
+    return network_json_data.get(
+        "evolutionary_optimization_parameters",
+        network_json_data.get("Evolutionary Optimization Parameters"),
+    )
+
+
+def get_evolution_parameter(network_json_data, name):
+    params = get_evolution_parameters(network_json_data)
+    snake_name = snake_case_json_name(name)
+    if snake_name in params:
+        return params[snake_name]["value"]
+    return params[name]["value"]
+
+
 def make_fig(model_name):
     plot_format = utils.plot_formats[model_name]
 
@@ -71,12 +101,8 @@ def make_fig(model_name):
         step_size = network_json_data["Simulation"]["StepSize"]["value"]
         skip_steps = network_json_data["Simulation"]["skip_steps"]["value"]
     else:
-        step_size = network_json_data["Evolutionary Optimization Parameters"][
-            "StepSize"
-        ]["value"]
-        skip_steps = network_json_data["Evolutionary Optimization Parameters"][
-            "skip_steps"
-        ]["value"]
+        step_size = get_evolution_parameter(network_json_data, "StepSize")
+        skip_steps = get_evolution_parameter(network_json_data, "skip_steps")
 
     plot_transient = act_data[0, 0]
     plot_time = plot_format["plot_time"]
@@ -93,13 +119,8 @@ def make_fig(model_name):
     plot_time = plot_time - plot_ex
 
     worm_plot_time = plot_format["worm_plot_time"]
-    if "Evolutionary Optimization Parameters" in network_json_data:
-        AvgSpeed = (
-            network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"][
-                "value"
-            ]
-            * 1000.0
-        )
+    if get_evolution_parameters(network_json_data) is not None:
+        AvgSpeed = get_evolution_parameter(network_json_data, "AvgSpeed") * 1000.0
     elif "AvgSpeed" in plot_format:
         AvgSpeed = plot_format["AvgSpeed"]
 

@@ -236,10 +236,15 @@ int main (int argc, const char* argv[])
     if (!j_evo.empty()){
     string jloc;
     if (j_evo.contains("Simulation")) jloc = "Simulation";
-    else if (j_evo.contains("Evolutionary Optimization Parameters")) 
-    jloc = "Evolutionary Optimization Parameters";
+    else if (j_evo.contains(evolutionaryOptimizationParametersKey())) 
+    jloc = evolutionaryOptimizationParametersKey();
+    else if (j_evo.contains(legacyEvolutionaryOptimizationParametersKey())) 
+    jloc = legacyEvolutionaryOptimizationParametersKey();
 
     simrandseed = j_evo[jloc]["randomseed"]["value"];
+    if (jloc == evolutionaryOptimizationParametersKey())
+    StepSize = j_evo[jloc]["step_size"]["value"];
+    else
     StepSize = j_evo[jloc]["StepSize"]["value"];
     skip_steps = j_evo[jloc]["skip_steps"]["value"];
     } 
@@ -454,9 +459,12 @@ int main (int argc, const char* argv[])
     j["Worm"]["Main model name"]["value"] = model_name;
     j["Nervous system"]["Model name"]["value"] = model_name;
 
-    if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
-    j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
+    if (!j_evo.empty() && j_evo.contains(evolutionaryOptimizationParametersKey()))
+    j[evolutionaryOptimizationParametersKey()] = snakeCaseJsonObjectKeys(j_evo[evolutionaryOptimizationParametersKey()]);
+    else if (!j_evo.empty() && j_evo.contains(legacyEvolutionaryOptimizationParametersKey()))
+    j[evolutionaryOptimizationParametersKey()] = snakeCaseJsonObjectKeys(j_evo[legacyEvolutionaryOptimizationParametersKey()]);
 
+    normaliseEvolutionaryOptimizationParameters(j);
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
@@ -466,4 +474,3 @@ int main (int argc, const char* argv[])
     delete w2;
     return 0;
 }
-

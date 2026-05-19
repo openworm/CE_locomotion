@@ -16,6 +16,38 @@ from datetime import datetime
 import json
 
 
+def snake_case_json_name(name):
+    out = ""
+    for char in name:
+        if char == " ":
+            if out and not out.endswith("_"):
+                out += "_"
+        elif char.isupper():
+            if out and not out.endswith("_"):
+                out += "_"
+            out += char.lower()
+        else:
+            out += char
+    return out
+
+
+def get_evolution_parameters(network_json_data):
+    return network_json_data.get(
+        "evolutionary_optimization_parameters",
+        network_json_data.get("Evolutionary Optimization Parameters"),
+    )
+
+
+def get_evolution_parameter(network_json_data, name):
+    params = get_evolution_parameters(network_json_data)
+    snake_name = snake_case_json_name(name)
+    if params is not None and snake_name in params:
+        return params[snake_name]["value"]
+    if params is not None and name in params:
+        return params[name]["value"]
+    return None
+
+
 defaults_base_CO = {
     "popSize": 26,
     "duration": 50,
@@ -777,10 +809,9 @@ def run(a=None, **kwargs):
         with open(evol_par_file) as f:
             worm_data = json.load(f)
             for key in evol_pars:
-                if key in worm_data["Evolutionary Optimization Parameters"]:
-                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
-                        key
-                    ]["value"]
+                value = get_evolution_parameter(worm_data, key)
+                if value is not None:
+                    evol_data[key] = value
                 else:
                     print("Parameter not found in worm_data.json")
     elif os.path.isfile(evol_par_file_base):

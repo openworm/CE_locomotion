@@ -34,6 +34,32 @@ from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
 import random
 
 
+def snake_case_json_name(name):
+    out = ""
+    for char in name:
+        if char == " ":
+            if out and not out.endswith("_"):
+                out += "_"
+        elif char.isupper():
+            if out and not out.endswith("_"):
+                out += "_"
+            out += char.lower()
+        else:
+            out += char
+    return out
+
+
+def get_evolution_parameter(network_json_data, name):
+    params = network_json_data.get(
+        "evolutionary_optimization_parameters",
+        network_json_data.get("Evolutionary Optimization Parameters"),
+    )
+    snake_name = snake_case_json_name(name)
+    if snake_name in params:
+        return params[snake_name]["value"]
+    return params[name]["value"]
+
+
 def getRandColor():
     col_str = ""
     for _ in range(3):
@@ -277,14 +303,12 @@ def run(a=None, **kwargs):
         if "timestep" in default_dict["default parameters"]:
             if isinstance(default_dict["default parameters"]["timestep"], dict):
                 default_dict["default parameters"]["timestep"]["value"] = (
-                    network_json_data["Evolutionary Optimization Parameters"][
-                        "StepSize"
-                    ]["value"]
+                    get_evolution_parameter(network_json_data, "StepSize")
                 )
             else:
-                default_dict["default parameters"]["timestep"] = network_json_data[
-                    "Evolutionary Optimization Parameters"
-                ]["StepSize"]["value"]
+                default_dict["default parameters"]["timestep"] = get_evolution_parameter(
+                    network_json_data, "StepSize"
+                )
 
         utils.makeCellXmlReq(
             network_json_data,

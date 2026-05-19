@@ -16,6 +16,19 @@
 using json = nlohmann::json;
 using std::vector;
 
+string snakeCaseJsonFieldName(const string & name);
+string evolutionaryOptimizationParametersKey();
+string legacyEvolutionaryOptimizationParametersKey();
+json snakeCaseJsonObjectKeys(const json & j);
+void normaliseEvolutionaryOptimizationParameters(json & j);
+
+template<class T>
+Params<T> snakeCaseParamNames(Params<T> par)
+{
+    for (string & name : par.names) name = snakeCaseJsonFieldName(name);
+    return par;
+}
+
 
 
 

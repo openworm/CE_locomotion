@@ -9,8 +9,8 @@ void EvolutionRS18::addExtraParsToJson(json & j)
 {
   
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = evolutionaryOptimizationParametersKey();
+       var1.parInt.head = evolutionaryOptimizationParametersKey();
        var1.parDoub.names = {"fps", "BiasRange", "SCRange", "CSRange", "TauMin",
         "TauMax", "ESRange", "SRmax", "NMJmax", "HCSRange", "AvgSpeed", "BBCfit", 
     };
@@ -21,8 +21,8 @@ void EvolutionRS18::addExtraParsToJson(json & j)
        var1.parInt.names = {"skip", "speedoutput", "evo_seed"};
        var1.parInt.vals = {skip, speedoutput, evo_seed};
 
-    appendToJson<double>(j[var1.parDoub.head],var1.parDoub);
-    appendToJson<long>(j[var1.parInt.head],var1.parInt);
+    appendToJson<double>(j[var1.parDoub.head], snakeCaseParamNames(var1.parDoub));
+    appendToJson<long>(j[var1.parInt.head], snakeCaseParamNames(var1.parInt));
 }
 
 void EvolutionRS18::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)

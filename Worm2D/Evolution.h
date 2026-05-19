@@ -214,7 +214,7 @@ public:
 
  void addParsToJson(json & j){
     Evolution::addParsToJson(j); 
-    this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+    this->evopar_ptr->addParsToJson(j[evolutionaryOptimizationParametersKey()]);
 }
 
 
@@ -301,8 +301,10 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     assert(w_ptr1!=nullptr);
     
-    if (json_ptr_->contains("Evolutionary Optimization Parameters"))
-    w_ptr1->setParsFromJson((*json_ptr_)["Evolutionary Optimization Parameters"]);
+    if (json_ptr_->contains(evolutionaryOptimizationParametersKey()))
+    w_ptr1->setParsFromJson((*json_ptr_)[evolutionaryOptimizationParametersKey()]);
+    else if (json_ptr_->contains(legacyEvolutionaryOptimizationParametersKey()))
+    w_ptr1->setParsFromJson((*json_ptr_)[legacyEvolutionaryOptimizationParametersKey()]);
     w_ptr1->setPars(cmd_);
     return w_ptr1;
 
@@ -503,6 +505,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
 
+        normaliseEvolutionaryOptimizationParameters(j);
         
         ofstream json_out(rename_file("worm_data_evo.json"));
         json_out << std::setw(4) << j << std::endl;
@@ -1751,4 +1754,3 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     return fitness;
 }
-

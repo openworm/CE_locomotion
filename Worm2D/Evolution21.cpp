@@ -9,7 +9,7 @@ void Evolution21::addExtraParsToJson(json & j)
 {   
     
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = evolutionaryOptimizationParametersKey();
        //var1.parInt.head = "Evolutionary Optimization Parameters";
        var1.parDoub.names = {"OSCT", "agarfreq", "BiasRange", "SCRange", "CSRange",
         "TauMin", "TauMax", "ESRange", "NMJmax", "IIRange", "AvgSpeed", "BBCfit"
@@ -21,7 +21,7 @@ void Evolution21::addExtraParsToJson(json & j)
        //var1.parInt.names = {};
        //var1.parInt.vals = {};
 
-    appendToJson<double>(j[var1.parDoub.head],var1.parDoub);
+    appendToJson<double>(j[var1.parDoub.head], snakeCaseParamNames(var1.parDoub));
     //appendToJson<long>(j[var1.parInt.head],var1.parInt);
 }
 

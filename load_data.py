@@ -28,6 +28,36 @@ def get_evolvable_ranges(network_json_data):
         return network_json_data["evolvable_ranges"]
     return network_json_data.get("Evolvable")
 
+
+def snake_case_json_name(name):
+    out = ""
+    for char in name:
+        if char == " ":
+            if out and not out.endswith("_"):
+                out += "_"
+        elif char.isupper():
+            if out and not out.endswith("_"):
+                out += "_"
+            out += char.lower()
+        else:
+            out += char
+    return out
+
+
+def get_evolution_parameters(network_json_data):
+    return network_json_data.get(
+        "evolutionary_optimization_parameters",
+        network_json_data.get("Evolutionary Optimization Parameters"),
+    )
+
+
+def get_evolution_parameter(network_json_data, name):
+    params = get_evolution_parameters(network_json_data)
+    snake_name = snake_case_json_name(name)
+    if snake_name in params:
+        return params[snake_name]["value"]
+    return params[name]["value"]
+
 sys.path.append("..")
 
 # import random
@@ -190,9 +220,7 @@ def plot_phenonames(
     worm_file = hf.get_worm_file()
 
     network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
+    vectsize = get_evolution_parameter(network_json_data, "VectSize")
 
     evolvable_ranges = get_evolvable_ranges(network_json_data)
     if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
@@ -665,9 +693,7 @@ def plot_hist(a=None):
 
     worm_file = hf.get_worm_file()
     network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
+    vectsize = get_evolution_parameter(network_json_data, "VectSize")
 
     evolvable_ranges = get_evolvable_ranges(network_json_data)
     if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
