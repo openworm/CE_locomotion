@@ -517,6 +517,7 @@ template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 const vector<double> & itsExternalInputs() const {return externalInputs;}
+virtual const vector<string> getDistinctCellNames() {return {"not implemented"};}
 
 Efunctor itsEf;
 
@@ -606,7 +607,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase //Worm2Dm has body
 
     virtual const vector<string> getCellNames() {return {"not implemented"};}
     virtual const vector<string> getCellNamesUnit() {return {"not implemented"};}
-    virtual const vector<string> getDistinctCellNames() {return {"not implemented"};}
+    
 
     virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}

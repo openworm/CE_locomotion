@@ -1602,7 +1602,7 @@ void SensorPars::writeParsToJson2(json & j) const
 {
 
 addParsToJson1<double>(j,{"sensor_n","sensor_m","grad_steep", 
-  "HS_stepsize", "x_center", "y_center"},
+  "hs_stepsize", "x_center", "y_center"},
     {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
 addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
 
