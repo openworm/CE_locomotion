@@ -3,12 +3,29 @@
 #include <vector>
 #include "jsonUtils.h"
 #include <iomanip>
+#include <cctype>
 #include "../argUtils.h"
 
 extern SuppliedArgs2018 supArgs1;
 
 using std::vector;
 using json = nlohmann::json;
+
+static string normaliseJsonFieldName(string name)
+{
+  for (char & c : name) {
+    if (c == ' ') c = '_';
+    else c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+  return name;
+}
+
+template<class T>
+static Params<T> normaliseParamNames(Params<T> par)
+{
+  for (string & name : par.names) name = normaliseJsonFieldName(name);
+  return par;
+}
 
 
 
@@ -338,10 +355,10 @@ void writeParsToJson(Worm & w)
         appendToJson<double>(j["Stretch receptor"],par);}
 
         {Params<double> par = getBodyParams(w.b);
-        appendToJson<double>(j["Body"],par);}
+        appendToJson<double>(j["body"], normaliseParamNames(par));}
 
         {Params<int> par = getBodyParamsInts(w.b);
-            appendToJson<int>(j["Body"],par);}
+            appendToJson<int>(j["body"], normaliseParamNames(par));}
 
             {
             Params<double> par =getMusclesParamsDouble(w.m);

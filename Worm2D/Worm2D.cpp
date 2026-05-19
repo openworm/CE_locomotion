@@ -2375,13 +2375,13 @@ void InputSwitcher::addParsToJson(json & j) const
     if (inds.size()<=0) return;
     if (!j.contains("input_switcher")) j["input_switcher"] = {};
     json & j2 = j["input_switcher"];
-    if (!j2.contains("inputInd")) j2["inputInd"]["value"] = -1;
+    if (!j2.contains("input_index")) j2["input_index"]["value"] = -1;
     j2["size"]["value"] = inds.size();
     if (timeperiods.size()>0){
     j2["time_offset"]["value"] = time_offset;
         json timeperiods_j = json::array();
         for (int i=0;i<timeperiods.size();i++)
-            timeperiods_j.push_back({{"ind", i}, {"val", timeperiods[i]}});
+            timeperiods_j.push_back({{"input_num", i}, {"value", timeperiods[i]}});
     j2["time_periods"]["value"] = timeperiods_j;
     }
 
@@ -2396,9 +2396,9 @@ void InputSwitcher::addParsToJson(json & j) const
     const vector<double> & valvec = vals[i];
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
-    arr2.push_back({{"ind", indvec[j]}, {"val", valvec[j]}});
+    arr2.push_back({{"input_num", indvec[j]}, {"value", valvec[j]}});
     //arr1.push_back({{"value", arr2},{"ind", i+1}});
-    arr1.push_back({{"value", arr2},{"ind", i}});
+    arr1.push_back({{"value", arr2},{"input_index", i}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
@@ -2426,10 +2426,10 @@ void InputSwitcher::construct(const json & j)
   const json & j2 = j["input_switcher"]["time_periods"]["value"];
   for (auto it = j2.begin(); it != j2.end(); ++it)
   {
-    double period = it->at("val").get<double>();
+    double period = it->at("value").get<double>();
     total_period += period;
-    //periods1[it->at("ind").get<int>()-1] = period;
-    periods1[it->at("ind").get<int>()] = period;
+    //periods1[it->at("input_num").get<int>()-1] = period;
+    periods1[it->at("input_num").get<int>()] = period;
   }
 
   for (int i=0;i<periods1.size();i++) assert(check123456(periods1[i]));
@@ -2449,14 +2449,14 @@ void InputSwitcher::construct(const json & j)
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
      // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
 
-    vector<int> & indvec = inds1[it->at("ind").get<int>()];
-    vector<double> & valvec = vals1[it->at("ind").get<int>()];
+    vector<int> & indvec = inds1[it->at("input_index").get<int>()];
+    vector<double> & valvec = vals1[it->at("input_index").get<int>()];
 
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
       {
-        indvec.push_back(it2->at("ind").get<int>());
-        valvec.push_back(it2->at("val").get<double>());
+        indvec.push_back(it2->at("input_num").get<int>());
+        valvec.push_back(it2->at("value").get<double>());
       } 
 
     }
