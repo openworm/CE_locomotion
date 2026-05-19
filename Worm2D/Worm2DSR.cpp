@@ -1363,7 +1363,27 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
 
 }
 
-void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef, 
+void getInitGeno1v2(vector<double> & pheno, const json & it2, Efunctor & ef,
+  const vector<intDoubDoub> & vdd, bool debug)
+{
+  assert(it2.contains("value") && it2.at("value").is_number());
+
+  int phenind = getPhenind(vdd, it2.at("evotag").get<int>());
+  if (phenind >= 0) {
+    double phenval;
+    if (it2.contains("mfunc")) {
+      json j2 = it2.at("mfunc");
+      j2["doInverse"] = true;
+      phenval = ef.eFunc(it2.at("value"), j2, true);
+    }
+    else phenval = it2.at("value");
+
+    (debug && check123456(pheno[phenind], phenval));
+    pheno[phenind] = phenval;
+  }
+}
+
+void recursive_iterate_old(vector<double> & pheno, const json& j, Efunctor & ef,
   const vector<intDoubDoub> & vdd, bool debug)
 {
 
@@ -1371,9 +1391,27 @@ void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef,
     {
       if (it->contains("evolvable")) getInitGeno1(pheno,it,ef,vdd,debug);
       //else if (it->is_structured()) recursive_iterate(pheno,*it);
-      else if (it->is_object()) recursive_iterate(pheno,*it,ef,vdd, debug);
+      else if (it->is_object()) recursive_iterate_old(pheno,*it,ef,vdd, debug);
 
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
+
+void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef,
+  const vector<intDoubDoub> & vdd, bool debug)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (j.is_object()) {
+        const string key = it.key();
+        if (key == legacyEvolvableKey || key == evolvableRangesKey || key == "evolvable") continue;
+      }
+      if (it->contains("evolvable")) continue;
+
+      if (it->contains("evotag") && it->contains("value")) getInitGeno1v2(pheno,*it,ef,vdd,debug);
+      else if (it->is_structured()) recursive_iterate(pheno,*it,ef,vdd, debug);
         
     }
 }
@@ -1398,13 +1436,21 @@ void recursive_iterate_pheno(vector<double> & pheno, const json& j)
 void Worm2DSRE::setInitPheno()
 {
   
- 
-  
   const double checkval = 123456;
   vector<double> pheno(getVectSize(), checkval); 
 
   const json & js1 = BPitsJson;
   recursive_iterate(pheno,js1,itsEf,genPhenLims, baseconsts.debug); //this tries to recreate pheno from actual values
+
+  bool noNewStyleValues = true;
+  for (int i = 0; i< pheno.size(); i++){
+    if (!check123456(pheno[i])) {
+      noNewStyleValues = false;
+      break;
+    }
+  }
+  if (noNewStyleValues) recursive_iterate_old(pheno,js1,itsEf,genPhenLims, baseconsts.debug);
+
   //recursive_iterate_pheno(pheno,js1); //this sets pheno as current parameter values not pheno
 
   for (int i = 0; i< pheno.size(); i++){
