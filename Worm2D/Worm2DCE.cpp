@@ -422,7 +422,7 @@ void WormCE::addEvolvableToJson(json & j)
      for (int i = 1; i <= 2; i++) vec.push_back({NMJmin, NMJmax});
      for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
 
-    j["Evolvable"]["value"] = toIntDoubDoub(vec);
+    j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
   }
  
   j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};

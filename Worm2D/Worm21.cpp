@@ -291,7 +291,7 @@ vec.push_back({0.0, ESRange});
 vec.push_back({0.0, ESRange});
 
 
-  j["Evolvable"]["value"] = toIntDoubDoub(vec);
+  j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
   }
 
 vector<intPair> biasvec, tauvec;

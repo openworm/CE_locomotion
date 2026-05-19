@@ -22,6 +22,12 @@ import itertools
 from itertools import cycle
 import matplotlib.colors as mcolors
 
+
+def get_evolvable_ranges(network_json_data):
+    if "evolvable_ranges" in network_json_data:
+        return network_json_data["evolvable_ranges"]
+    return network_json_data.get("Evolvable")
+
 sys.path.append("..")
 
 # import random
@@ -188,8 +194,9 @@ def plot_phenonames(
         "value"
     ]
 
-    if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
-        evolvables = network_json_data["Evolvable"]["value"]
+    evolvable_ranges = get_evolvable_ranges(network_json_data)
+    if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
+        evolvables = evolvable_ranges["value"]
         phen_names = []
         phen_nums = []
         for val in evolvables:
@@ -662,8 +669,9 @@ def plot_hist(a=None):
         "value"
     ]
 
-    if hf.checkDictName(network_json_data, ["Evolvable", "value", 0, "name"]):
-        evolvables = network_json_data["Evolvable"]["value"]
+    evolvable_ranges = get_evolvable_ranges(network_json_data)
+    if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
+        evolvables = evolvable_ranges["value"]
         phen_names = []
         phen_nums = []
         for val in evolvables:
@@ -674,7 +682,7 @@ def plot_hist(a=None):
                 phen_names.append(name)
                 phen_nums.append(val["evotag"])
     else:
-        print("Evolvable names not found for plot_hist")
+        print("evolvable_ranges names not found for plot_hist")
         return
     # phen_nums[:] , phen_names[:] = map(list, zip(*sorted(zip(phen_nums, phen_names))))
     # phen names should already be ordered correctly for gene

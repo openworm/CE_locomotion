@@ -405,11 +405,30 @@ void Worm2DSR::writeAct()
 
 
 
+const string evolvableRangesKey = "evolvable_ranges";
+const string legacyEvolvableKey = "Evolvable";
+
+json * getEvolvableRanges(json & j)
+{
+  if (j.contains(evolvableRangesKey)) return &j[evolvableRangesKey];
+  if (j.contains(legacyEvolvableKey)) return &j[legacyEvolvableKey];
+  return nullptr;
+}
+
+const json * getEvolvableRanges(const json & j)
+{
+  if (j.contains(evolvableRangesKey)) return &j.at(evolvableRangesKey);
+  if (j.contains(legacyEvolvableKey)) return &j.at(legacyEvolvableKey);
+  return nullptr;
+}
+
 void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
+  const json * ranges = getEvolvableRanges(BPitsJson);
+  if (ranges == nullptr) return;
 
-  j["Evolvable"]["value"] = BPitsJson["Evolvable"]["value"];
+  j[evolvableRangesKey]["value"] = ranges->at("value");
   addEvoNames(j);
 
   return;
@@ -512,8 +531,9 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 void addEvoNames(json & j)
 {
 
-  if (!j.contains("Evolvable"))  return;
-  vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+  json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr)  return;
+  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
 
   vector<vector<string> > evoNames(vdd.size());
   
@@ -529,7 +549,7 @@ void addEvoNames(json & j)
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = j["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -550,9 +570,10 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   json & j = BPitsJson;
   //itsJson = j;
 
-  if (!j.contains("Evolvable")) return vector<intDoubDoub>(0);
+  json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr) return vector<intDoubDoub>(0);
 
-  vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
 
   //addEvoNames(j);
 
@@ -573,7 +594,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = BPitsJson["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -585,7 +606,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   }
 
 
-  json & j2 = BPitsJson["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
   vector<intDoubDoub> vddactive;
   //vector<bool> actives(vdd.size());
   //vector<int> inds(vdd.size());
@@ -852,7 +873,7 @@ void recursive_iterate2v2(const TVector<double> & pheno, json& j, Efunctor & ef,
     for (auto& [j_key, it] : j.items())
     { 
       //cout << j_key << endl;
-      if (j_key == "Evolvable") continue;
+      if (j_key == legacyEvolvableKey || j_key == evolvableRangesKey) continue;
       if (it.contains("evolvable")) continue;
      
       if (it.contains("evotag")) setParsFromPheno1v2(pheno,it,ef, vdd);
@@ -1448,7 +1469,7 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({3.0,4.0});
   vec.push_back({-1.0,2.0});
   vec.push_back({-10.0,5.0});
-  j["Evolvable"]["value"] = vec; 
+  j[evolvableRangesKey]["value"] = vec; 
 
   {vector<fromToInt> vec;
   vec.push_back({1,3,1});

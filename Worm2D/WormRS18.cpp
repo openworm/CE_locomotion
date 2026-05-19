@@ -1077,7 +1077,7 @@ vec.push_back({-SRmax, 0.0});
 vec.push_back({0.0, NMJmax});
 vec.push_back({0.0, NMJmax});
 
-j["Evolvable"]["value"] = toIntDoubDoub(vec);
+j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
 
  }
 
