@@ -372,13 +372,13 @@ const int N_neuronsperunit;
 class Worm2Dosc21NML: public Worm2D, public Worm2Dosc21base
 {
     public:
-    Worm2Dosc21NML(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21NML(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     Worm2Dosc21NML(const string & jsonfile_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
     const string getModelName() {return "Worm2Dosc21NML";}
-
+    void addParsToJson(json & j){j=BPitsJson;Worm2D::addParsToJson(j);}
 };
 
 
@@ -386,7 +386,7 @@ class Worm2Dosc21NMLm : public Worm2Dm
 {
 
     public:
-    Worm2Dosc21NMLm(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21NMLm(const json & j, shared_ptr<const CmdArgs> cmd_);
     Worm2Dosc21NMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2Dosc21NMLm";}

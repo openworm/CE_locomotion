@@ -214,38 +214,45 @@ Worm2Dosc21::Worm2Dosc21(TVector<double> & phengen, const bool & isPheno):Worm2D
 }
 
 
-Worm2Dosc21NML::Worm2Dosc21NML(shared_ptr<const CmdArgs> cmd_):
+Worm2Dosc21NML::Worm2Dosc21NML(const json & j, shared_ptr<const CmdArgs> cmd_):
 Worm2D({2,24,0.1,7,14}, nullptr),
 Worm2Dosc21base(2),
 //dynamic_pointer_cast<Worm2Dosc21pars>(W2Dbaseparameters1b)),
 //Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), shared_ptr<Worm2Dosc21pars>(make_shared<Worm2Dosc21pars>(24)))
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), cmd_)
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(), cmd_,j)
 {
     basePar1 = this;
+
+    const json & j2 = BPitsJson;
+    setMuscBodExt(j2);
     //pars1->NMJ_Gain.SetBounds(1, par1.N_muscles);
 }
 
-
-Worm2Dosc21NMLm::Worm2Dosc21NMLm(shared_ptr<const CmdArgs> cmd_):
-Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(),0, cmd_){}
-
-
 Worm2Dosc21NML::Worm2Dosc21NML(const string & jsonfile_, 
-    shared_ptr<const CmdArgs> cmd_):Worm2Dosc21NML(cmd_)
+    shared_ptr<const CmdArgs> cmd_):Worm2Dosc21NML(getJsonFromFile(jsonfile_), cmd_)
 {
-    json j = getJsonFromFile(jsonfile_);
-    //pars1->setParsFromJson(j["Worm"]);
-    setMuscBodExt(j);
+    
+}
+
+Worm2Dosc21NMLm::Worm2Dosc21NMLm(const json & j, shared_ptr<const CmdArgs> cmd_):
+Worm2Dm({2,24,0.1,7,14}, new c302ForW2D(),0, cmd_,j)
+{
+
+    const json & j2 = BPitsJson;
+    setBodExt(j2);
 }
 
 
+
+
+
 Worm2Dosc21NMLm::Worm2Dosc21NMLm(const string & jsonfile_, 
-    shared_ptr<const CmdArgs> cmd_):Worm2Dosc21NMLm(cmd_)
+    shared_ptr<const CmdArgs> cmd_):Worm2Dosc21NMLm(
+        getJsonFromFile(jsonfile_), cmd_)
 {
-    json j = getJsonFromFile(jsonfile_);
     //W2Dbaseparameters1b->setParsFromJson(j["Worm"]);
     
-    setBodExt(j); 
+    
         
 }
 
