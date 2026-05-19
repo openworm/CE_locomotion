@@ -455,12 +455,13 @@ void setPhenoNames();
 class Worm2Dosc21allNML: public Worm2D, public Worm2Dosc21base
 {
     public:
-    Worm2Dosc21allNML(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21allNML(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     Worm2Dosc21allNML(const string & jsonfile_, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     vector<toFromWeight> makeVentralMuscleConn(){return Worm2Dosc21base::makeVentralMuscleConn();}
     vector<toFromWeight> makeDorsalMuscleConn(){return Worm2Dosc21base::makeDorsalMuscleConn();}
     const string getModelName() {return "Worm2Dosc21allNML";}
+    void addParsToJson(json & j){j=BPitsJson;Worm2D::addParsToJson(j);}
 
 };
 
@@ -468,7 +469,7 @@ class Worm2Dosc21allNMLm : public Worm2Dm
 {
 
     public:
-    Worm2Dosc21allNMLm(shared_ptr<const CmdArgs> cmd_ = nullptr);
+    Worm2Dosc21allNMLm(const json & j, shared_ptr<const CmdArgs> cmd_ = nullptr);
     Worm2Dosc21allNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2Dosc21allNMLm";}
@@ -540,4 +541,3 @@ void setPhenoNames();
 
 
 //Worm2Dosc w;
-
