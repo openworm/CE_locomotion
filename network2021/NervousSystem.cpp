@@ -80,13 +80,13 @@ void NervousSystem::SetCircuitSize(int newsize, int newmaxchemconns, int newmaxe
 // Accessors
 // *********
 
-double NervousSystem::ChemicalSynapseWeight(int from, int to)
+const double & NervousSystem::ChemicalSynapseWeight(int from, int to)
 {
     for (int i = 1; i <= NumChemicalConns(to); i++) {
         if (chemicalweights[to][i].from == from)
             return chemicalweights[to][i].weight;
     }
-    return 0.0;
+    return zero_weight;
 }
 
 
@@ -110,13 +110,13 @@ void NervousSystem::SetChemicalSynapseWeight(int from, int to, double value)
 }
 
 
-double NervousSystem::ElectricalSynapseWeight(int from, int to)
+const double & NervousSystem::ElectricalSynapseWeight(int from, int to)
 {
     for (int i = 1; i <= NumElectricalConns(to); i++) {
         if (electricalweights[to][i].from == from)
             return electricalweights[to][i].weight;
     }
-    return 0.0;
+    return zero_weight;
 }
 
 
