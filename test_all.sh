@@ -88,7 +88,13 @@ if [ "$quick_test" == 0 ]; then
     
     #rm -rf testruns/COW2DSREgen testruns/COW2DSREgen_out
     rm -rf testruns/COW2DSRE_test_out
+
+    
+    omv test -V .test.COW2DSR2.omt
    
+    omv test -V .test.osc_sim.omt
+    omv test -V .test.osc_sim_21.omt
+    omv test -V .test.osc_sim_21all.omt
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -138,11 +144,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSRE21.omt
     omv test -V .test.W2DSR21.omt
 
-    omv test -V .test.COW2DSR2.omt
    
-    omv test -V .test.osc_sim.omt
-    omv test -V .test.osc_sim_21.omt
-    omv test -V .test.osc_sim_21all.omt
     
     cd neuromlLocal
     set -ex
