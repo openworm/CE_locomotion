@@ -6260,6 +6260,94 @@
             "value": 0.0
         }
     },
+    "driving_inputs": {
+        "inputs": {
+            "message": "Driving input strength to Nervous System",
+            "value": [
+                {
+                    "input_num": 1,
+                    "strength": {
+                        "value": 0.0
+                    }
+                },
+                {
+                    "input_num": 2,
+                    "strength": {
+                        "value": 0.0
+                    }
+                }
+            ]
+        },
+        "weights": {
+            "message": "Weights of driving inputs to Nervous System in sparse format",
+            "value": [
+                {
+                    "from_input": 1,
+                    "to_cell": "Cell_41_0",
+                    "weight": {
+                        "evotag": 32,
+                        "value": -27.86231902633403
+                    }
+                },
+                {
+                    "from_input": 2,
+                    "to_cell": "Cell_41_0",
+                    "weight": {
+                        "evotag": 33,
+                        "value": 60.7811798195456
+                    }
+                },
+                {
+                    "from_input": 1,
+                    "to_cell": "Cell_42_0",
+                    "weight": {
+                        "evotag": 34,
+                        "value": -46.39535093088857
+                    }
+                },
+                {
+                    "from_input": 2,
+                    "to_cell": "Cell_42_0",
+                    "weight": {
+                        "evotag": 35,
+                        "value": 76.92179662805273
+                    }
+                },
+                {
+                    "from_input": 1,
+                    "to_cell": "Cell_43_0",
+                    "weight": {
+                        "evotag": 36,
+                        "value": -69.52834549570326
+                    }
+                },
+                {
+                    "from_input": 2,
+                    "to_cell": "Cell_43_0",
+                    "weight": {
+                        "evotag": 37,
+                        "value": -19.243522836730854
+                    }
+                },
+                {
+                    "from_input": 1,
+                    "to_cell": "Cell_44_0",
+                    "weight": {
+                        "evotag": 38,
+                        "value": 49.17124569549386
+                    }
+                },
+                {
+                    "from_input": 2,
+                    "to_cell": "Cell_44_0",
+                    "weight": {
+                        "evotag": 39,
+                        "value": -66.5246532637835
+                    }
+                }
+            ]
+        }
+    },
     "nervous_system": {
         "cell_names": {
             "value": [
