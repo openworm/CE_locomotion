@@ -28,6 +28,19 @@ static string normaliseJsonFieldName(string name)
   return name;
 }
 
+static void getLimitPair(const json & j, double & lowerLimit, double & upperLimit)
+{
+  if (j.find("lower_limit") != j.end())
+    j.at("lower_limit").get_to(lowerLimit);
+  else
+    j.at("val1").get_to(lowerLimit);
+
+  if (j.find("upper_limit") != j.end())
+    j.at("upper_limit").get_to(upperLimit);
+  else
+    j.at("val2").get_to(upperLimit);
+}
+
 template<class T>
 static Params<T> normaliseParamNames(Params<T> par)
 {
@@ -549,25 +562,23 @@ void from_json(const json& j, toFromWeight & w)
 
 void to_json(json & j, const intDoubDoub & w)
 {
-  j = json{{"evotag", w.ind}, {"val1", w.val1}, {"val2", w.val2}};
+  j = json{{"evotag", w.ind}, {"lower_limit", w.val1}, {"upper_limit", w.val2}};
 }
 
 void from_json(const json& j, intDoubDoub & w) 
 {
         j.at("evotag").get_to(w.ind);
-        j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
 }
 
 void to_json(json & j, const doubDoub & w)
 {
-  j = json{{"val1", w.val1}, {"val2", w.val2}};
+  j = json{{"lower_limit", w.val1}, {"upper_limit", w.val2}};
 }
 
 void from_json(const json& j, doubDoub & w) 
 {
-        j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
 }
 
 
@@ -639,15 +650,14 @@ j.at("val").get_to(w.val);
 
 void from_json(const json & j, strDoubDoub & w)
 {
-   j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
         j.at("evotag").get_to(w.evotag);
 }
 
 
 void to_json(json & j, const strDoubDoub & w)
 {
-j = json{{"val1", w.val1}, {"val2", w.val2}, {"evotag", w.evotag}};
+j = json{{"lower_limit", w.val1}, {"upper_limit", w.val2}, {"evotag", w.evotag}};
 
 }
 
