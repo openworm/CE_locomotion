@@ -83,6 +83,32 @@ def getNervousSystemConnections(network_json_data, kind):
     return _value(ns.get(key))
 
 
+def getNMJWeights(network_json_data, side):
+    keys = {
+        "ventral": ("ventral_nmj", "Ventral NMJ"),
+        "dorsal": ("dorsal_nmj", "Dorsal NMJ"),
+    }
+    new_key, old_key = keys[side]
+
+    if new_key in network_json_data:
+        conns = _value(network_json_data[new_key].get("weights"), [])
+        names = getCellNamesFull(network_json_data)
+        indices = {name: i + 1 for i, name in enumerate(names)}
+        return [
+            {
+                "from": indices[conn["from_cell"]],
+                "to": conn["to_musc"],
+                "weight": _value(conn["weight"]),
+            }
+            for conn in conns
+        ]
+
+    if old_key in network_json_data:
+        return _value(network_json_data[old_key].get("weights"))
+
+    return None
+
+
 plot_formats = {}
 plot_formats["RS18"] = {}
 plot_formats["RS18"]["fig_titles"] = [

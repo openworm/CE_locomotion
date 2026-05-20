@@ -189,8 +189,8 @@ def run(a=None, **kwargs):
 
         muscle_ids = sorted(list(set(d_muscle_cell_names + v_muscle_cell_names)))
 
-        vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
-        dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
+        vNMJ_weights = utils.getNMJWeights(network_json_data, "ventral")
+        dNMJ_weights = utils.getNMJWeights(network_json_data, "dorsal")
         vNMJ_cellnames = v_muscle_cell_names  # network_json_data["Ventral NMJ"]["Cell name"]["value"]
         dNMJ_cellnames = (
             d_muscle_cell_names  # network_json_data["Dorsal NMJ"]["Cell name"]["value"]
