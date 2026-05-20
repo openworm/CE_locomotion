@@ -4,87 +4,102 @@ from modelspec.base_types import Base
 from typing import Any
 
 
-# Creating an API for generating/loading/editing Worm2D JSON files using modelspec: https://github.com/ModECI/modelspec
-
-
-def convert2float(x: Any) -> float:
-    print("convert2float {} ({})".format(x, type(x)))
-    """Convert to float if not None"""
-    if x is not None:
-        return float(x)
-    else:
-        return None
-
-
-def convert2int(x: Any) -> int:
-    print("convert2int {} ({})".format(x, type(x)))
-    """Convert to int if not None"""
-    if x is not None:
-        return int(x)
-    else:
-        return None
-
-
 @modelspec.define
-class StandardParameter(Base):
+class FloatParameter(Base):
     """
-    ....
+    A parameter containing a float
 
     Args:
-        ...
+        value: The float value of the parameter
+        message: An optional string message describing the parameter
     """
 
-    message: str = field(default="Undefined", validator=instance_of(str))
+    value: float = field(validator=instance_of(float))
+    message: str = field(default=None, validator=optional(instance_of(str)))
 
-    value: float = field(
-        default=None, validator=instance_of(float), converter=convert2float
-    )
+
+def convert2floatparam(x: Any) -> FloatParameter:
+    """
+    Convert a value (float, int, etc.) to FloatParameter if not None
+    """
+    if isinstance(x, FloatParameter):
+        return x
+    print("convert2floatparam {} (type: {})".format(x, type(x)))
+    try:
+        if x is not None:
+            return FloatParameter(value=float(x), message=None)
+        else:
+            return None
+    except Exception as e:
+        print("Error converting: {} to FloatParameter: {}".format(x, e))
+        raise e
 
 
 @modelspec.define
 class Body_(Base):
     """
-    ....
+    A worm body (TODO)...
 
     Args:
-        ...
+        C_agar_par_total: Total tangential drag coefficient for agar in kg/s
+        C_agar_perp_total: Total rod normal drag coefficient in agar in kg/s
+        C_water_par_total: Total rod tangential drag coefficient for water in kg/s
+
     """
 
-    C_agar_par_total: StandardParameter = field(
-        default=None, validator=optional(instance_of(StandardParameter))
+    C_agar_par_total: FloatParameter = field(
+        validator=instance_of(FloatParameter), converter=convert2floatparam
     )
-    C_agar_perp_total: StandardParameter = field(
-        default=None, validator=optional(instance_of(StandardParameter))
+    C_agar_perp_total: FloatParameter = field(
+        validator=instance_of(FloatParameter), converter=convert2floatparam
     )
+    C_water_par_total: FloatParameter = field(
+        default=FloatParameter(message="Default value", value=3.3e-06),
+        validator=optional(instance_of(FloatParameter)),
+    )
+
+    # default=FloatParameter(message="Default value", value=123)
 
 
 @modelspec.define
 class Worm2D(Base):
     """
-    ....
+    A worm (TODO)...
 
     Args:
-        ...
+        Body: The worm body
     """
 
-    Body: Body_ = field(default=None, validator=optional(instance_of(Body_)))
+    Body: Body_ = field(validator=instance_of(Body_))
 
 
 # main method
+
 if __name__ == "__main__":
-    # create a new model
-    body = Body_()
-    body.C_agar_par_total = StandardParameter(
-        message="Total tangential drag coefficient for agar in kg/s", value=0.0032
-    )
-    body.C_agar_perp_total = StandardParameter(value=0.128)
+    c_agar_par_total = FloatParameter(message="This is just a dummy value", value=0.001)
 
-    worm2d = Worm2D()
-    worm2d.Body = body
+    c_agar_perp_total = 2  # will be converted to FloatParameter via converter
 
-    # print the model
-    print(worm2d)
+    body = Body_(C_agar_par_total=c_agar_par_total, C_agar_perp_total=c_agar_perp_total)
 
-    filename = "worm2d_test.json"
-    worm2d.to_json_file(filename)
-    print("Saved to {}".format(filename))
+    worm = Worm2D(Body=body)
+
+    print(worm)
+
+    print(worm.Body.C_agar_par_total.value)
+    print(worm.Body.C_water_par_total.value)  # this will be the default value
+
+    print("------")
+
+    # serialize to JSON
+    json_str = worm.to_json()
+    print("Serialized to JSON:")
+    print(json_str)
+
+    worm.to_json_file("worm2d_example.json")
+    worm.to_yaml_file("worm2d_example.yaml")
+
+    worm_md = worm.generate_documentation(format="markdown")
+
+    with open("worm2d_spec.md", "w") as d:
+        d.write(worm_md)
