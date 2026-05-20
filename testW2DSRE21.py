@@ -35,6 +35,7 @@ args = dict(
     SimSkipSteps=4,
     randomInitialState=False,
     doLegacy=False,
+    debug=True,
     # initNSFromJson = False
 )
 

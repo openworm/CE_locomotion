@@ -76,7 +76,9 @@ public:
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     //void addParsToJson(json & j);
-    const vector<string> getCellNames() ;
+
+    const vector<string> getDistinctCellNames();
+    const vector<string> getCellNames();
     vector<toFromWeight> makeVentralMuscleConn();
     vector<toFromWeight> makeDorsalMuscleConn();
     const vector<string> getVMuscNames(){ return {"dum1"};}

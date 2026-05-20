@@ -31,6 +31,7 @@ args = dict(
     checkPointInterval=5,
     randomInitialState=False,
     doLegacy=False,
+    debug=True,
 )
 
 if doOrig:

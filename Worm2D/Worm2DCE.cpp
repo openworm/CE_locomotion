@@ -172,7 +172,7 @@ WormCE((json) getJsonFromFile(jsonfilename_),filename_,cmd_){}
 
 WormCE::WormCE(const json & j, const string & filename_, shared_ptr<const CmdArgs> cmd_):WormCE(cmd_)
 {
-   
+   assert(0);
     //W2DCEpars1->setParsFromJson(j["Worm"]);
     sr_ptr->setParsFromJson(j);
     setParsFromFile(filename_);
@@ -185,8 +185,16 @@ WormCE((json) getJsonFromFile(jsonfilename_), cmd){}
 
 WormCE::WormCE(const json & j, shared_ptr<const CmdArgs> cmd):WormCE(cmd)
 {
+
+  assert(0);
+  if (j.contains("nervous_system")){
+  setCircuitSize(j["nervous_system"],n);
+  
+  }
+  else{
   const json & j2 = j["Nervous system"];
   n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+  }
 
   //n.SetCircuitSize(par1.N_units*par1.N_neuronsperunit, 3, 2);
   setNSFromJsonNZ(j,n);
@@ -414,11 +422,17 @@ void WormCE::addEvolvableToJson(json & j)
      for (int i = 1; i <= 2; i++) vec.push_back({NMJmin, NMJmax});
      for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
 
-    j["Evolvable"]["value"] = toIntDoubDoub(vec);
+    j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
   }
  
   j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  
+  j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
+  j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
+  j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
+  j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
+
 
   //j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
   //j["Stretch receptor"]["SR_B_gain"]["evolvable"] = 2;
@@ -495,6 +509,20 @@ void WormCE::addEvolvableToJson(json & j)
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
+  addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
+    getDistinctCellNames());
+  addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
+    getDistinctCellNames());
+  addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
+    getDistinctCellNames());
+
+/* addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
+    getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
+    getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+  addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
+  getCellNamesUnits(getCellNamesUnit(), par1.N_units)); */
+
 
 vector<intPair> nmjvecd;
 nmjvecd.push_back({DA,15});
@@ -505,6 +533,12 @@ vector<intPair> nmjvecv;
 nmjvecv.push_back({VA,15});
 nmjvecv.push_back({VB,16});
 nmjvecv.push_back({VD,17});
+
+//addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNamesUnit());
+//addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNamesUnit());
+addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames());
+
 
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
 //j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
@@ -1607,8 +1641,10 @@ void Worm2DCE::addParsToJson(json & j)
     //Params<double> par = sr_ptr->getStretchReceptorParams();
     //appendToJson<double>(j["Stretch receptor"], par);
 
-    sr_ptr->addParsToJson(j);
+   
     Worm2D::addParsToJson(j);
+    sr_ptr->addParsToJson(j);
+   
     //W2DCEpars1->addParsToJson(j);
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
@@ -1710,8 +1746,15 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
 void WormCE::addParsToJson(json & j)
 {
 
+  if (false){
   string nsHead = "Nervous system";
   appendAllNSJson(j[nsHead], n);
+  
+  appendNSToJsonByCell(j, n, getDistinctCellNames());
+  //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+
+  }
+
   Worm2DCE::addParsToJson(j);
 }
 
@@ -1781,4 +1824,12 @@ void WormCE::DumpParams(ofstream &ofs) {
 
   Worm2DCE::DumpParams(ofs);
  
+}
+
+
+const vector<string> Worm2DCE::getDistinctCellNames()
+{
+vector<string> v1 = getCellNamesUnits(getCellNamesUnit(), par1.N_units);
+return v1;
+
 }

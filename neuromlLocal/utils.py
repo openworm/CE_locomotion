@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import copy
+# import helper_funcs as hf
 
 from neuroml import (
     ElectricalProjection,
@@ -210,6 +211,44 @@ default_cells["W2D21R"] = default_cells["Net21"]
 default_cells["W2DCO"] = default_cells["CO"]
 
 
+def move_value_to_front(reference_list, value, *other_lists):
+    # find where the value is in the first list
+    idx = reference_list.index(value)  # raises ValueError if not found
+
+    def move_index_to_front(lst, i):
+        item = lst.pop(i)
+        lst.insert(0, item)
+
+    # move in the reference list
+    move_index_to_front(reference_list, idx)
+
+    # move in all the other lists
+    for lst in other_lists:
+        if len(lst) <= idx:
+            raise IndexError("One of the other lists is too short.")
+        move_index_to_front(lst, idx)
+
+
+def move_value(reference_list, value, *other_lists, to="front"):
+    idx = reference_list.index(value)  # raises ValueError if not found
+
+    def move_index(lst, i):
+        item = lst.pop(i)
+        if to == "front":
+            lst.insert(0, item)
+        elif to == "back":
+            lst.append(item)
+        else:
+            raise ValueError("to must be 'front' or 'back'")
+
+    move_index(reference_list, idx)
+
+    for lst in other_lists:
+        if len(lst) <= idx:
+            raise IndexError("One of the other lists is too short.")
+        move_index(lst, idx)
+
+
 def process_args():
     parser = argparse.ArgumentParser(
         description=("A script for building a NML network")
@@ -249,7 +288,11 @@ def process_args():
     return parser.parse_args()
 
 
-jsonToStringMap = {"head": "Head neuron", "interneuron": "Interneuron"}
+jsonToStringMap = {
+    "head": "Head Neurons",
+    "interneuron": "Interneurons",
+    "VNC": "VNC Neurons",
+}
 
 
 def getPlotFormat(network_json_data):
@@ -276,7 +319,7 @@ def getPlotFormat(network_json_data):
         ind = 1
         for val in section_names[1:]:
             if oldval != val:
-                if oldval != "VNC":
+                if oldval != "dummy":
                     oldval1 = oldval
                     if oldval in jsonToStringMap:
                         oldval1 = jsonToStringMap[oldval]
@@ -286,13 +329,21 @@ def getPlotFormat(network_json_data):
                 ind = 0
                 oldval = val
             ind = ind + 1
-        if oldval != "VNC":
+        if oldval != "dummy":
             oldval1 = oldval
             if oldval in jsonToStringMap:
                 oldval1 = jsonToStringMap[oldval]
             plot_format["fig_titles"].append(oldval1)
             plot_format["fig_labels"].append("Neu")
             plot_format["data_sizes"].append(ind)
+
+        move_value(
+            plot_format["fig_titles"],
+            "VNC Neurons",
+            plot_format["fig_labels"],
+            plot_format["data_sizes"],
+            to="back",
+        )
 
         """ vncind = plot_format["fig_titles"].index("VNC")
         plot_format["fig_titles"].append(plot_format["fig_titles"].pop(vncind))
@@ -336,8 +387,8 @@ def getPlotFormat(network_json_data):
     plot_format["do_body_plot"] = True
     plot_format["do_curv_plot"] = True
 
-    print(plot_format)
-    exit
+    # print(plot_format)
+    # exit
     return plot_format
 
 

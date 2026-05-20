@@ -32,31 +32,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
   
     const json & js1 = BPitsJson;
 
-    if (false){
-
-    bool do_nml =  cmd->getArgValInt("--donml",0);
-    if (!do_nml){
-
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    bool initNSFromJson;
-    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
-
-    if (initNSFromJson) setNSFromJson(BPitsJson,n);
-    else
-    {
-    json & j2 = BPitsJson["Nervous system"];  
-    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
-
-    appendAllNSJson(j2,n);
-
-    }
-    }
-
-    }
-
    
-
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
     
@@ -126,39 +102,97 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
 {
 
   
-  bool do_evol = cmd->getArgValInt("--doevol", 0);
-  if (!do_evol) return;
+  //bool do_evol = cmd->getArgValInt("--doevol", 0);
+  //if (!do_evol) return;
     
+  if (!callInit) return;
+
   if (genPhenLims.size()>0) setInitPheno();
     
-  //cout << "after setInitPheno" << endl;
-
-    if (callInit) writeOrigGen(cmd);
-
-
-    if (false){
-    bool do_nml =  cmd->getArgValInt("--donml",0);
-    if (!do_nml){
-
-    NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    bool initNSFromJson;
-    getValCJWorm<bool>("initNSFromJson",initNSFromJson);
-
-    if (initNSFromJson) setNSFromJson(BPitsJson,n);
-    else
-      {
-    json & j2 = BPitsJson["Nervous system"];  
-    n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
-    appendAllNSJson(j2,n);
-      }
-    } 
-  }
-  
- 
+  writeOrigGen(cmd);
 
 
 }
+
+
+void Worm2DSRb::addParsToJson(json & j)
+{
+if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
+
+}
+
+void Worm2DSRm::addParsToJson(json & j)
+{
+  j = BPitsJson;
+  Worm2Dm::addParsToJson(j);
+ Worm2DSRb::addParsToJson(j);
+  
+}
+
+
+void Worm2DSR::addParsToJson(json & j)
+{
+
+  
+
+
+
+
+  if (true){
+
+  if (false){  
+
+    
+  NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
+  if (n){
+  string nsHead = "Nervous system";
+  appendAllNSJson(j[nsHead], *n);
+  //appendNSToJsonByCell(j, *n, getCellNamesAll());
+  appendNSToJsonByCell(j,*n);
+
+  //j[nsHead]["section sizes"] = jsects;
+  }
+  }
+
+
+  Worm2D::addParsToJson(j);
+  Worm2DSRb::addParsToJson(j);
+  }
+
+}
+
+
+void Worm2DSRE::resetFromJson(const json & js1)
+{
+
+
+  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
+  if(n){
+  bool doLegacy;
+  getValCJWorm<bool>("doLegacy",doLegacy);
+
+  //copy in current states, external inputs here??
+    
+
+  setNSFromJsonNZ(js1,*n,doLegacy);
+  }
+  
+    Worm2DSRb::setParsFromJson(js1);
+
+
+    setMuscBodExt(js1);
+
+    //what about sensor??
+}
+
+void Worm2DSRE::resetFromBPJson()
+{
+resetFromJson(BPitsJson);
+
+}
+
+
+
 
 void WormCO2DSR::addParsToJson(json & j){
 
@@ -178,46 +212,7 @@ void WormCO2DSR::addParsToJson(json & j){
   }
 }
 
-void Worm2DSR::addParsToJson(json & j)
-{
 
-  //j = BPitsJson;
-  
-  //vector<double> states;
-  //for (int i = 1; i <= par1.N_size; i++) states.push_back(n_ptr->NeuronState(i));
-  //j["Nervous system"]["states"]["value"] = states;      
-  //j["Driving input"]["strengths"]["value"] = externalInputs;
-
-  //W2Dbaseparameters1b->addParsToJson(j["Worm"]);
-  
-  //addEvolvableToJson(j);
-
-  if (true){
-  NervousSystem* const n = dynamic_cast<NervousSystem*>(n_ptr);
-  if (n){
-  string nsHead = "Nervous system";
-  appendAllNSJson(j[nsHead], *n);
-  
-  //j[nsHead]["section sizes"] = jsects;
-  }
-  
-  Worm2D::addParsToJson(j);
-  Worm2DSRb::addParsToJson(j);
-  }
-
-}
-
-void Worm2DSRm::addParsToJson(json & j)
-{
- Worm2DSRb::addParsToJson(j);
-  Worm2Dm::addParsToJson(j);
-}
-
-void Worm2DSRb::addParsToJson(json & j)
-{
-if (w2dsr_ptr!=nullptr) w2dsr_ptr->addParsToJson(j);
-
-}
 
 void  Worm2DSRb::setParsFromJson(const json & j)
 {if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(j);}
@@ -225,8 +220,16 @@ void  Worm2DSRb::setParsFromJson(const json & j)
 
 shared_ptr<SR> Worm2DSRb::getSR(const json & j, baseParameters * basePar1_)
 {
+    if (j.contains("stretch_receptor")){
+    
+    if (j["stretch_receptor"]["type"]["value"] == "SR18") return make_shared<SR18>();
 
-    if (j.contains("Stretch receptor")){
+    return make_shared<SRCE>(j["stretch_receptor"]["n_segs"]["value"],
+      j["stretch_receptor"]["n_stretch"]["value"], basePar1_);
+
+    }
+
+    else if (j.contains("Stretch receptor")){
     
     if (j["Stretch receptor"]["Type"]["value"] == "SR18") return make_shared<SR18>();
 
@@ -402,11 +405,30 @@ void Worm2DSR::writeAct()
 
 
 
+const string evolvableRangesKey = "evolvable_ranges";
+const string legacyEvolvableKey = "Evolvable";
+
+json * getEvolvableRanges(json & j)
+{
+  if (j.contains(evolvableRangesKey)) return &j[evolvableRangesKey];
+  if (j.contains(legacyEvolvableKey)) return &j[legacyEvolvableKey];
+  return nullptr;
+}
+
+const json * getEvolvableRanges(const json & j)
+{
+  if (j.contains(evolvableRangesKey)) return &j.at(evolvableRangesKey);
+  if (j.contains(legacyEvolvableKey)) return &j.at(legacyEvolvableKey);
+  return nullptr;
+}
+
 void Worm2DSRE::addEvolvableToJson(json & j)
 {
   
+  const json * ranges = getEvolvableRanges(BPitsJson);
+  if (ranges == nullptr) return;
 
-  j["Evolvable"]["value"] = BPitsJson["Evolvable"]["value"];
+  j[evolvableRangesKey]["value"] = ranges->at("value");
   addEvoNames(j);
 
   return;
@@ -509,8 +531,9 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
 void addEvoNames(json & j)
 {
 
-  if (!j.contains("Evolvable"))  return;
-  vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+  json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr)  return;
+  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
 
   vector<vector<string> > evoNames(vdd.size());
   
@@ -526,7 +549,7 @@ void addEvoNames(json & j)
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = j["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -547,9 +570,10 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   json & j = BPitsJson;
   //itsJson = j;
 
-  if (!j.contains("Evolvable")) return vector<intDoubDoub>(0);
+  json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr) return vector<intDoubDoub>(0);
 
-  vector<intDoubDoub> vdd = j["Evolvable"]["value"].template get<vector<intDoubDoub>>();
+  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
 
   //addEvoNames(j);
 
@@ -570,7 +594,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
   }
 
-  json & j2 = BPitsJson["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
@@ -582,7 +606,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   }
 
 
-  json & j2 = BPitsJson["Evolvable"]["value"];
+  json & j2 = (*ranges)["value"];
   vector<intDoubDoub> vddactive;
   //vector<bool> actives(vdd.size());
   //vector<int> inds(vdd.size());
@@ -612,10 +636,31 @@ int getPhenind(const vector<intDoubDoub> & vdd, int indval)
 
 }
 
+void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef,
+  const vector<intDoubDoub> & vdd)
+{
+ 
+
+  
+  assert(it2.contains("value") && it2.at("value").is_number());
+  //cout << it2 << endl;
+  int evotag = it2.at("evotag").get<int>() ;//+ 1;
+  int phenind = getPhenind(vdd,evotag) + 1;
+  if (phenind>0)
+    if (it2.contains("mfunc")) 
+    it2.at("value") = ef.eFunc(pheno[phenind], it2.at("mfunc"), true);
+    else it2.at("value") = pheno[phenind];
+  
+  return;
+}
+
 
 void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efunctor & ef,
   const vector<intDoubDoub> & vdd)
 {
+
+      //cout << "evolvable " << it2->at("evolvable") << endl;
+
 
         const bool domfuncs = true;
 
@@ -704,20 +749,18 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
 
 
 
-void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
+
+void applyFuncable1v2(json::iterator it2, Efunctor & ef)
 {
 
-    for(auto it = j.begin(); it != j.end(); ++it)
-    {
-      if (it->contains("evolvable")) setParsFromPheno1(pheno,it,ef, vdd);
-      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
-      else if (it->is_object()) recursive_iterate2(pheno,*it,ef,vdd);
-        
-        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
-        
-    }
-}
+  assert(it2->contains("value") && it2->at("value").is_number());
+  //cout << it2 << endl;
+  it2->at("value") = ef.eFunc(it2->at("value"), it2->at("mfunc"));
+   
+  
+  return;
 
+}
 
 
 void applyFuncable1(json::iterator it2, Efunctor & ef)
@@ -811,9 +854,51 @@ void applyFuncable1(json::iterator it2, Efunctor & ef)
 }
 
 
+void recursive_iterate2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
+{
 
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("evolvable")) setParsFromPheno1(pheno,it,ef, vdd);
+      //else if (it->is_structured()) recursive_iterate2(pheno,*it);
+      else if (it->is_object()) recursive_iterate2(pheno,*it,ef,vdd);
+        
+        //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
 
+void recursive_iterate2v2(const TVector<double> & pheno, json& j, Efunctor & ef, const vector<intDoubDoub> & vdd)
+{
+    for (auto& [j_key, it] : j.items())
+    { 
+      //cout << j_key << endl;
+      if (j_key == legacyEvolvableKey || j_key == evolvableRangesKey) continue;
+      if (it.contains("evolvable")) continue;
+     
+      if (it.contains("evotag")) setParsFromPheno1v2(pheno,it,ef, vdd);
+      //else if (it->is_object()) recursive_iterate2v2(pheno,*it,ef,vdd);
+      else if (it.is_structured()) recursive_iterate2v2(pheno,it,ef,vdd);
+        
+  
+        
+    }
 
+ //assert(0);
+
+}
+
+void recursive_applyFuncablev2(json& j, Efunctor & ef)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->contains("funcable")) continue;
+      if (it->contains("mfunc")) applyFuncable1v2(it,ef);
+      else if (it->is_object()) recursive_applyFuncablev2(*it,ef);
+        
+    }
+}
 
 void recursive_applyFuncable(json& j, Efunctor & ef)
 {
@@ -855,45 +940,75 @@ applyFuncables(BPitsJson);
 void Worm2DSRE::applyFuncables(json & j1_)
 {
 
-recursive_applyFuncable(j1_, itsEf);
+//recursive_applyFuncable(j1_, itsEf);
+recursive_applyFuncablev2(j1_, itsEf);
 }
 
 
-void Worm2DSRE::resetFromJson(const json & js1)
-{
-
-
-  NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
-  if(n){
-  bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
-
-  //copy in current states, external inputs here??
-
-  setNSFromJsonNZ(js1,*n,doLegacy);
-  }
-  
-    Worm2DSRb::setParsFromJson(js1);
-
-
-    setMuscBodExt(js1);
-
-}
-
-void Worm2DSRE::resetFromBPJson()
-{
-resetFromJson(BPitsJson);
-
-}
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
 {
 
   setCurrentPheno(pheno);
   
+  bool test = false;
+  if (test){
+
+
+  json j1 = BPitsJson;
+  json j2 = BPitsJson;
   
+  recursive_iterate2(pheno,j1,itsEf,genPhenLims);
+  
+  recursive_iterate2v2(pheno,j2,itsEf,genPhenLims);
+
+  //const string s1 = "Stretch receptor";
+  //const string s2 = "stretch_receptor";
+
+  if (false){
+  const string s1 = "VNC NMJ";
+  const string s2 = "vnc_nmj";
+
+  compare_numeric_values(j1[s1], BPitsJson[s1]);
+
+  cout << "call1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxx " << endl;
+
+  compare_numeric_values(j2[s2], BPitsJson[s2]);
+
+  cout << "call2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxx " << endl;
+  }
+   
+  std::vector<double> diffs1;
+  std::vector<double> diffs2;
+
+  collect_numeric_differences(j1, BPitsJson, diffs1);
+  collect_numeric_differences(j2, BPitsJson, diffs2);
+
+if (same_values_unordered(diffs1, diffs2))
+{
+    //std::cout << "The two JSON pairs have the same numerical differences\n";
+}
+else
+{
+    std::cout << "The two JSON pairs have different numerical differences\n";
+    assert(0);
+}
+
+  BPitsJson = j1;
+
+}
+else
+{
   recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
   
+  recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
+
+
+}
+
+
+
+
   //applyFuncables();
   resetFromBPJson();
   
@@ -1104,7 +1219,7 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
 }
 
 void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & ef, 
-  const vector<intDoubDoub> & vdd)
+  const vector<intDoubDoub> & vdd, bool debug)
 {
 
  
@@ -1128,8 +1243,9 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           }
           else phenval = it2->at("value");
         
-          if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
-         
+          (debug && check123456(pheno[phenind], phenval));
+          pheno[phenind] = phenval;
+
         }
         }
         else if (it2->at("evolvable").is_number()){
@@ -1137,7 +1253,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         if (phenind>=0){
         //if (check123456(pheno[it2->at("evolvable").get<int>()-1], it2->at("value")))
         //pheno[it2->at("evolvable").get<int>()-1] = it2->at("value");
-        if (check123456(pheno[phenind], it2->at("value")))
+        (debug && check123456(pheno[phenind], it2->at("value")));
         pheno[phenind] = it2->at("value");
           }
         }
@@ -1182,7 +1298,8 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             }
 
             //assert(check123456(phenval, values[j].w.weight));
-            if (check123456(pheno[phenind], phenval)) pheno[phenind] = phenval;
+            (debug && check123456(pheno[phenind], phenval));
+            pheno[phenind] = phenval;
             //if (check123456(phenval, values[j].w.weight)) pheno[phenind] = values[j].w.weight;
           }
             break;
@@ -1208,7 +1325,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           //pheno[evols[i].val-1] = values[evols[i].ind-1];
 
           if (phenind>=0){
-          if (check123456(pheno[phenind], values[evols[i].ind-1]))
+          (debug && check123456(pheno[phenind], values[evols[i].ind-1]));
           pheno[phenind] = values[evols[i].ind-1];
           }
 
@@ -1232,7 +1349,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
             if (phenind>=0){
             //if (check123456(pheno[evols[i].val-1], values[j].weight))
             //pheno[evols[i].val-1] = values[j].weight;
-            if (check123456(pheno[phenind], values[j].weight))
+            (debug && check123456(pheno[phenind], values[j].weight));
             pheno[phenind] = values[j].weight;
             }
             break;}
@@ -1246,17 +1363,55 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
 
 }
 
-void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef, 
-  const vector<intDoubDoub> & vdd)
+void getInitGeno1v2(vector<double> & pheno, const json & it2, Efunctor & ef,
+  const vector<intDoubDoub> & vdd, bool debug)
+{
+  assert(it2.contains("value") && it2.at("value").is_number());
+
+  int phenind = getPhenind(vdd, it2.at("evotag").get<int>());
+  if (phenind >= 0) {
+    double phenval;
+    if (it2.contains("mfunc")) {
+      json j2 = it2.at("mfunc");
+      j2["doInverse"] = true;
+      phenval = ef.eFunc(it2.at("value"), j2, true);
+    }
+    else phenval = it2.at("value");
+
+    (debug && check123456(pheno[phenind], phenval));
+    pheno[phenind] = phenval;
+  }
+}
+
+void recursive_iterate_old(vector<double> & pheno, const json& j, Efunctor & ef,
+  const vector<intDoubDoub> & vdd, bool debug)
 {
 
     for(auto it = j.begin(); it != j.end(); ++it)
     {
-      if (it->contains("evolvable")) getInitGeno1(pheno,it,ef,vdd);
+      if (it->contains("evolvable")) getInitGeno1(pheno,it,ef,vdd,debug);
       //else if (it->is_structured()) recursive_iterate(pheno,*it);
-      else if (it->is_object()) recursive_iterate(pheno,*it,ef,vdd);
+      else if (it->is_object()) recursive_iterate_old(pheno,*it,ef,vdd, debug);
 
         //else if (it->contains("evolvable")) getInitGeno1(pheno,it);
+        
+    }
+}
+
+void recursive_iterate(vector<double> & pheno, const json& j, Efunctor & ef,
+  const vector<intDoubDoub> & vdd, bool debug)
+{
+
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (j.is_object()) {
+        const string key = it.key();
+        if (key == legacyEvolvableKey || key == evolvableRangesKey || key == "evolvable") continue;
+      }
+      if (it->contains("evolvable")) continue;
+
+      if (it->contains("evotag") && it->contains("value")) getInitGeno1v2(pheno,*it,ef,vdd,debug);
+      else if (it->is_structured()) recursive_iterate(pheno,*it,ef,vdd, debug);
         
     }
 }
@@ -1280,11 +1435,22 @@ void recursive_iterate_pheno(vector<double> & pheno, const json& j)
 
 void Worm2DSRE::setInitPheno()
 {
+  
   const double checkval = 123456;
   vector<double> pheno(getVectSize(), checkval); 
 
   const json & js1 = BPitsJson;
-  recursive_iterate(pheno,js1,itsEf,genPhenLims); //this tries to recreate pheno from actual values
+  recursive_iterate(pheno,js1,itsEf,genPhenLims, baseconsts.debug); //this tries to recreate pheno from actual values
+
+  bool noNewStyleValues = true;
+  for (int i = 0; i< pheno.size(); i++){
+    if (!check123456(pheno[i])) {
+      noNewStyleValues = false;
+      break;
+    }
+  }
+  if (noNewStyleValues) recursive_iterate_old(pheno,js1,itsEf,genPhenLims, baseconsts.debug);
+
   //recursive_iterate_pheno(pheno,js1); //this sets pheno as current parameter values not pheno
 
   for (int i = 0; i< pheno.size(); i++){
@@ -1324,7 +1490,7 @@ void Worm2DSRE::PhenGenMapping(vector<double> &gen, const vector<double> &phen)
     
   assert(genPhenLims[i].val1<=genPhenLims[i].val2);
   gen[i] = InverseMapSearchParameterGPT(phen[i], genPhenLims[i].val1, genPhenLims[i].val2);
-  cout << "phengen " << phen[i] << " " << genPhenLims[i].val1 << " " << genPhenLims[i].val2 << endl;
+  //cout << "phengen " << phen[i] << " " << genPhenLims[i].val1 << " " << genPhenLims[i].val2 << endl;
   assert(!isnan(gen[i]));
   }
 
@@ -1349,7 +1515,7 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({3.0,4.0});
   vec.push_back({-1.0,2.0});
   vec.push_back({-10.0,5.0});
-  j["Evolvable"]["value"] = vec; 
+  j[evolvableRangesKey]["value"] = vec; 
 
   {vector<fromToInt> vec;
   vec.push_back({1,3,1});
@@ -1499,6 +1665,15 @@ void WormCO2DSR::Step1()
    
 }
 
+void SensorPars::writeParsToJson2(json & j) const
+{
+
+addParsToJson1<double>(j,{"sensor_n","sensor_m","grad_steep", 
+  "hs_stepsize", "x_center", "y_center"},
+    {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
+addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
+
+}
 
 void SensorPars::writeParsToJson(json & j) const
 {
@@ -1507,6 +1682,28 @@ addParsToJson1<double>(j,{"sensorN","sensorM","gradSteep",
   "HSStepSize", "x_center", "y_center"},
     {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
 addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
+
+}
+
+void SensorPars::setParsFromJson2(const json & j)
+{
+
+  sensorN = j["sensor_n"]["value"];
+  sensorM = j["sensor_m"]["value"];
+  gradSteep = j["grad_steep"]["value"];
+  HSStepSize = j["hs_stepsize"]["value"];
+  x_center  = j["x_center"]["value"];
+  y_center = j["y_center"]["value"];
+  extInp1 = j["ext_inp_1"]["value"];
+  extInp2 = j["ext_inp_2"]["value"];
+
+//double sensorN, sensorM;
+//double dSensorN, dSensorM;
+//int iSensorN, iSensorM;
+//double chemCon, presentAvgCon, pastAvgCon;
+//double presentAvgCon, pastAvgCon;
+//int extInp1, extInp2;
+//double gradSteep, HSStepSize, x_center, y_center;
 
 }
 
@@ -1535,8 +1732,17 @@ void SensorPars::setParsFromJson(const json & j)
 void Sensor::setParsFromJson(const json & j)
 {
 
-if (j.contains("Sensors")){
-json j2 = j["Sensors"];
+  if (j.contains("sensors")){
+const json & j2 = j["sensors"];
+for (int i=0; i<spvec.size(); i++)
+{
+SensorPars & sp1 = spvec[i];
+sp1.setParsFromJson2(j2["sensor_" + to_string(i+1)]);
+}
+
+  }
+else if (j.contains("Sensors")){
+const json & j2 = j["Sensors"];
 for (int i=0; i<spvec.size(); i++)
 {
 SensorPars & sp1 = spvec[i];
@@ -1573,11 +1779,21 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 
 void Sensor::construct(const json & j)
 {
-
-
-  if (j.contains("Sensors"))
+  if (j.contains("sensors"))
  {
-  json j2 = j["Sensors"];
+  const json & j2 = j["sensors"];
+  int ind = 1;
+  while(j2.contains("sensor_" + to_string(ind))){
+
+  SensorPars sp1;
+  sp1.setParsFromJson2(j2["sensor_" + to_string(ind)]);
+  spvec.push_back(sp1);
+  ind++;
+  }
+ }
+  else if (j.contains("Sensors"))
+ {
+  const json & j2 = j["Sensors"];
   int ind = 1;
   while(j2.contains("Sensor_" + to_string(ind))){
 
@@ -1623,7 +1839,19 @@ void  Sensor::addParsToJson(json & j) const
  
 if (spvec.size()<1) return;
 
-json & j2 = j["Sensors"];
+{json & j2 = j["sensors"];
+
+for (int i =0; i<spvec.size(); i++)
+{
+
+const SensorPars & sp1 = spvec[i];
+sp1.writeParsToJson2(j2["sensor_" + to_string(i+1)]);
+
+}
+}
+
+
+{json & j2 = j["Sensors"];
 
 for (int i =0; i<spvec.size(); i++)
 {
@@ -1638,6 +1866,10 @@ const SensorPars & sp1 = spvec[0];
 sp1.writeParsToJson(j["Worm"]);
 
 }
+}
+
+
+
 
 
 }
@@ -1684,6 +1916,8 @@ void Sensor::UpdateChemCon()
 void Sensor::assignExternalInput(vector<double> & externalInputs)
 {
   
+
+
   for (int i = 0; i<spvec.size(); i++){
     
    

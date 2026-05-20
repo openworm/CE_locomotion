@@ -211,11 +211,13 @@ def mergeJsons(file1, file2, outdir):
 
 
 def addEvolvable(network_json_data):
-    if "Evolvable" not in network_json_data:
-        network_json_data["Evolvable"] = {}
-        network_json_data["Evolvable"]["value"] = []
+    if "evolvable_ranges" not in network_json_data:
+        network_json_data["evolvable_ranges"] = network_json_data.get(
+            "Evolvable", {"value": []}
+        )
+    network_json_data.pop("Evolvable", None)
 
-    evolvables = network_json_data["Evolvable"]["value"]
+    evolvables = network_json_data["evolvable_ranges"]["value"]
     print(evolvables)
 
 

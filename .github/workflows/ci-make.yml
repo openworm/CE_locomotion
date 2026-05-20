@@ -56,7 +56,9 @@ jobs:
         pip install NEURON==8.2.7
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib ruff scipy modelspec
+        pip install ipywidgets
         
+
         pip list
 
         which nrnivmodl

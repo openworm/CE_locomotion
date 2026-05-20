@@ -169,9 +169,10 @@ double presentAvgCon, pastAvgCon;
 int extInp1, extInp2;
 double gradSteep, HSStepSize, x_center, y_center;
 
+void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
 void writeParsToJson(json & j) const;
-
+void writeParsToJson2(json & j) const;
 };
 
 class Sensor  : public WormGrad
@@ -230,10 +231,9 @@ public:
 //Worm2DSR(jsonfilename_,cmd){}
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
-
-
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
   getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
+
 
 
 void addParsToJson(json & j);
@@ -258,6 +258,9 @@ void InitializeState(RandomState &rs);
 //void InitialiseAgent();
 void Step1();
 void assignExternalInput();
+
+protected:
+
 
 
 

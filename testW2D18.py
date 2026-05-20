@@ -1,7 +1,7 @@
 from run_main import run
 
 run(
-    simduration=60,
+    simduration=50,
     simtransient=0,
     maxGens=36,
     popSize=36,
@@ -15,5 +15,6 @@ run(
     evoType="Evo18",
     doTestRun=True,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
     randInitState=False,
 )

@@ -776,6 +776,15 @@ void Worm18::Step1()
     //t += StepSize;
 }
 
+const vector<string> Worm18::getDistinctCellNames()
+{
+vector<string> v1 = getCellNamesUnits({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
+vector<string> v2 = {"SMDD_0", "RMDD_0", "SMDV_0", "RMDV_0"};
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+}
+
 const vector<string>  Worm18::getCellNames() 
 {
     vector<string> v1 = getCellNamesAll({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
@@ -786,20 +795,9 @@ const vector<string>  Worm18::getCellNames()
 
 void Worm18::addParsToJson(json & j)
 {
-    //string nsHead = "Head Nervous system";
-    //appendAllNSJson(j[nsHead], h);
-    //vector<string> cell_names = {"SMDD", "RMDD", "SMDV", "RMDV"};
-    //appendCellNamesToJson(j[nsHead], cell_names, 1);
-
-    //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    //assert(w1parss!=nullptr);
 
 
-
-   // bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    Worm2D::addParsToJson(j);
 
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
@@ -807,15 +805,21 @@ void Worm18::addParsToJson(json & j)
      }
     else sr_ptr->addParsToJson(j);
 
-
     string nsHead = "Nervous system";
+
+    if (false){
     appendAllNSJson(j[nsHead], n);
+    }
+
+   
+
+   
     j[nsHead]["section sizes"]["head"]["value"] = 4;
     j[nsHead]["section sizes"]["head"]["plot order"] = 0;
     j[nsHead]["section sizes"]["VNC"]["value"] = 36;
     j[nsHead]["section sizes"]["VNC"]["plot order"] = 1;
 
-    Worm2D::addParsToJson(j);
+   
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getHeadCellNames(), 1);
@@ -1073,7 +1077,7 @@ vec.push_back({-SRmax, 0.0});
 vec.push_back({0.0, NMJmax});
 vec.push_back({0.0, NMJmax});
 
-j["Evolvable"]["value"] = toIntDoubDoub(vec);
+j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
 
  }
 
@@ -1083,11 +1087,14 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
     json biasvecj = json::array();
     //json biasvecj = json::object();
 
-    for (int u = 1; u <= par1.N_units; u++){
-
     int db, dd, vba, vda, vbp, vdp;
     int ddNext, dbNext, vdaNext, vbaNext;
 
+    const vector<string>  cell_names_full = getDistinctCellNames();
+
+    for (int u = 1; u <= par1.N_units; u++){
+
+    
 
         db = nn(DB,u);
         dd = nn(DD,u);
@@ -1122,7 +1129,7 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             biasvecj.push_back({vda,2});
             biasvecj.push_back({vdp,2}); */
 
-            if (false)
+            //if (false)
             {vector<intPair> & vec = biasvec;
             vec.push_back({db,1});
             vec.push_back({vba,1});
@@ -1159,8 +1166,12 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
         chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", 9}});
 
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vba, dd,8}, cell_names_full, {{"f_ind", 1}, {"fact", 0.5}});
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vbp, dd,8}, cell_names_full , {{"f_ind", 1}, {"fact", 0.5}});
 
-if (false)
+//if (false)
         {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({db,db,5});
@@ -1221,7 +1232,11 @@ if (false)
     // Stretch receptor
     //sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
 
+   j["stretch_receptor"]["sr_vnc_gain"]["evotag"] = 14;
+   j["stretch_receptor"]["sr_head_gain"]["evotag"] = 28;
+
    
+
 
     j["Stretch receptor"]["SRvncgain"]["evolvable"] = 14;
     j["Stretch receptor"]["SRheadgain"]["evolvable"] = 28;
@@ -1243,7 +1258,8 @@ nmjvecv.push_back({VDP,16});
 nmjvecv.push_back({SMDV,29});
 nmjvecv.push_back({RMDV,30});
 
-
+addEvolvableIP(j["vnc_18"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_18"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
 
 j["VNC 18"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
@@ -1266,7 +1282,7 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     biasvecj.push_back({{"ind", RMDD}, {"evotag", 18}});
     biasvecj.push_back({{"ind", RMDV}, {"evotag", 18}});
 
-    if (false)
+    //if (false)
     {vector<intPair> & vec = biasvec;
     vec.push_back({SMDD,17});
     vec.push_back({SMDV,17});
@@ -1293,7 +1309,8 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", 25}});
     chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", 25}});
 
-if (false)
+
+//if (false)
   {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({SMDD, SMDD,21});
@@ -1313,6 +1330,16 @@ if (false)
         push_back_double({SMDV, RMDV,26}, vec);
         push_back_double({RMDV, RMDD,27}, vec);    
         }
+
+   
+   
+
+    addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
+
+  
 
 
 

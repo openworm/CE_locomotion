@@ -34,5 +34,6 @@ run(
     doOrigSRInput=False,
     doLegacy=False,
     SRZeroGainsType=1,
+    doTestRun=False,
     # MutVar = 0.5
 )

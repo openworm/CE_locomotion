@@ -68,6 +68,7 @@ int main (int argc, const char* argv[])
     bool do_evol = cmd->getArgValInt("--doevol", 0);
     if (do_evol) 
     {
+        
         Evolution * evo = 0;
     
         if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
@@ -96,8 +97,9 @@ int main (int argc, const char* argv[])
         StepSize = evo->itsEvoPars().StepSize;
         skip_steps = evo->itsEvoPars().skip_steps;
 
+    
         evo->configure();
-     
+      
         //evo->addParsToJson(j);
 
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
@@ -115,13 +117,16 @@ int main (int argc, const char* argv[])
 
     }
 
-    
+    if (do_evol)
     json_filename = rename_file("worm_data_evo.json", directoryName);
-     if (!directoryExists(json_filename))
+    
+    if (false){
+    if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
-   
+    }
+
    //delete w1;
     
     //cout << ep1.rename_file("best.gen.dat") << " " << model_name << endl;
@@ -141,13 +146,16 @@ int main (int argc, const char* argv[])
     bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
  
    
-    if (sup_model_name == "W2DSR") 
+    if (sup_model_name == "W2DSR") {
     
-    if (do_musclesim) w2 = new Worm2DSRm(json_filename, cmd);
+    if (do_musclesim){w2 = new Worm2DSRm(json_filename, cmd);}
     //else w2 = new Worm2DSR(json_filename, cmd);
     //else w2 = new Worm2DSRE(json_filename, cmd);
     else w2 = new WormCO2DSR(json_filename, cmd);
 
+   
+
+    }
     else{
 
     if (!do_nml){
@@ -175,11 +183,12 @@ int main (int argc, const char* argv[])
 
     }else{
 
-   
+        
     if (model_name == "W2Dosc") 
     {
         if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename, cmd);
         else w2 = new Worm2DoscNML(json_filename, cmd);
+        
     }
 
     if (model_name == "W2Dosc21") 
@@ -209,13 +218,15 @@ int main (int argc, const char* argv[])
    
     }
 
-}
+}   
 
+    if (false){ 
     json_filename = rename_file("worm_data_evo.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data_worm.json", directoryName);
     if (!directoryExists(json_filename))
     json_filename = rename_file("worm_data.json", directoryName);
+    }
 
     json j_evo;
     if (directoryExists(json_filename))
@@ -248,6 +259,7 @@ int main (int argc, const char* argv[])
     simrandseed =  cmd->getArgValLong("-R",-1);
     if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
     w2->setWormPars(cmd);
+    
     }
 
 
@@ -256,7 +268,7 @@ int main (int argc, const char* argv[])
 
     RandomState rs;
     rs.SetRandomSeed(simrandseed);
-    cout << "simrandseed " << simrandseed << endl;
+    //cout << "simrandseed " << simrandseed << endl;
 
     w2->InitializeState(rs);
 
@@ -283,9 +295,9 @@ int main (int argc, const char* argv[])
 
     //w2->addParsToJson(j);
     
-
-
-    const bool dotest = cmd->getArgValInt("--doTestRun",0);
+    bool dotest;
+    w2->getValCJWorm("doTestRun", dotest);
+    //const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
     double simduration = cmd->getArgValDoub("-sd",10);
@@ -299,10 +311,19 @@ int main (int argc, const char* argv[])
     {
     
     if (true){
-    if (inputInd>=0) w2->setInputOnce(inputInd);
     if (w2dsre) w2dsre->applyFuncablesExt();
+    if (inputInd>=0) w2->setInputOnce(inputInd);
+    
+
+    //
+    //for (int i=0;i<w2->itsExternalInputs().size(); i++)
+    //cout << i << " " << w2->itsExternalInputs()[i] << endl;
     //cout << "inputInd " << inputInd << endl;
     //assert(0);
+
+    
+
+
     }
 
     //if (w!=nullptr) w->setForward();
@@ -312,10 +333,19 @@ int main (int argc, const char* argv[])
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
 
+    if (false){
+    cout << "gdgs hs s " << w2->itsBPjson().at("nervous_system") << endl;
+    
+    }
 
-
+   
+    //assert(!do_musclesim); 
     w2->addParsToJson(j);
+   
+
     s1.runSimulation(*w2);
+
+    
 
     //if (do_nml) assert(0);
     j["Simulation"]["transient"]["value"] = simtransient;

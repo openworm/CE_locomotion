@@ -7,5 +7,6 @@
     "CheckpointInterval": 5,
     "EvolutionType": "Evo18",
     "randomInitialState": false,
-    "doOrigMuscInput": true
+    "doOrigMuscInput": true,
+    "doOrigSRInput": true
 }

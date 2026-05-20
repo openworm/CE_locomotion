@@ -35,4 +35,5 @@ run(
     doOrigSRInput=False,
     doLegacy=False,
     SRZeroGainsType=1,
+    doTestRun=False,
 )

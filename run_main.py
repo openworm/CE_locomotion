@@ -959,6 +959,8 @@ def run(a=None, **kwargs):
             if os.path.isfile(input_path):
                 shutil.move(input_path, a.outputFolderName + "/" + filename1)
 
+    print("Finished!")
+
 
 if __name__ == "__main__":
     run_main()

@@ -30,14 +30,19 @@ void addEvoNames(json & j);
 
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
+
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain, int);
+    const vector<int> & neurons, const vector<double> & NMJs, const int & mi, const int & to, 
+    const TVector<double> & NMJ_Gain, const int &);
 //string main_directoryname;
 //string main_modelname;
 
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
-    const vector<double> & NMJ_Gain, int N_neuronsperunit);
+    const vector<int> & neurons, const vector<double> & NMJs, const int & unit, const int & to_muscle, 
+    const vector<double> & NMJ_Gain, const int & N_neuronsperunit);
+
+
+    
 
 class baseParameters
 {
@@ -188,6 +193,8 @@ class baseParameters
         defaultVals_["NMJWeight"] = 1;
         defaultVals_["doReverse"] = 0;
 
+        defaultVals_["doTestRun"] = true;
+
         defaultVals_["OSCTbase"] = 0.25; // Cap for oscillation evaluation
         defaultVals_["agarfreq"] = 0.44;
         defaultVals_["AvgSpeed"] = 0.00022; 
@@ -227,8 +234,9 @@ class baseParameters
  */
     //shared_ptr<const json itsJsonPtr()const {return &itsJson;} 
 
-    const json & itsNewSetVals(){return newSetVals;}
-
+    const json & itsNewSetVals() const {return newSetVals;}
+    const json & itsBPjson() const {return BPitsJson;}
+    
     friend class Efunctor;
     protected:
     json BPitsJson;
@@ -508,7 +516,8 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
-
+const vector<double> & itsExternalInputs() const {return externalInputs;}
+virtual const vector<string> getDistinctCellNames() {return {"not implemented"};}
 
 Efunctor itsEf;
 
@@ -563,7 +572,8 @@ vector<double> externalInputs;
 //vector<double> sjdkdsdjddssdsloe;
 //double sjdkdsdjddssdsloe;
 void setExternalInput();
-virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+//virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+virtual void assignExternalInput(){return;}
 
 void assignExternalInputOnce(const int & ind, const double & val){externalInputs[ind]=val;}
 
@@ -584,7 +594,7 @@ const baseConsts baseconsts;
 
 
 
-class Worm2Dm : public Worm2Dbody, public Worm2Dbase
+class Worm2Dm : public Worm2Dbody, public Worm2Dbase //Worm2Dm has body
 {
     public:
 
@@ -596,7 +606,9 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //virtual void initForSimulation() =  0;
 
     virtual const vector<string> getCellNames() {return {"not implemented"};}
+    virtual const vector<string> getCellNamesUnit() {return {"not implemented"};}
     
+
     virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
@@ -645,7 +657,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
 
 
-class Worm2D : virtual public Worm2Dm
+class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
 {
     
     public:
@@ -680,14 +692,25 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
 
 
-
+    //void addMuscleParsToJson(json & j);
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(const json & j);
+
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
+    const vector<int> & neurons, const vector<double> & NMJs, 
+    const int & unit, const int & to_muscle, const TVector<double> & NMJ_Gain);
+
+    //void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    //vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
+
     //vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
-    vector<toFromWeight> makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
-    TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc);
+    //vector<toFromWeight> makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
+    //TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc);
+
+
+    vector<toFromWeight> makeMuscleConnW2D(const vector<int> & neurons, const vector<double> & NMJ,
+    const TVector<double> & NMJ_Gain, const vector<intPair> & unitToMusc);
+
 
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
     void setMuscleInput(); //calls setMuscleInputVec()

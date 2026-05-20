@@ -3,12 +3,273 @@
 #include <iomanip>
 //#include "../argUtils.h"
 
+#include <unordered_map>
 
+#include <algorithm>
+
+using json = nlohmann::json;
+#include <nlohmann/json.hpp>
+
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using json = nlohmann::json;
 
+static string normaliseJsonFieldName(string name)
+{
+  for (char & c : name) {
+    if (c == ' ') c = '_';
+    else c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+  return name;
+}
+
+static void getLimitPair(const json & j, double & lowerLimit, double & upperLimit)
+{
+  if (j.find("lower_limit") != j.end())
+    j.at("lower_limit").get_to(lowerLimit);
+  else
+    j.at("val1").get_to(lowerLimit);
+
+  if (j.find("upper_limit") != j.end())
+    j.at("upper_limit").get_to(upperLimit);
+  else
+    j.at("val2").get_to(upperLimit);
+}
+
+template<class T>
+static Params<T> normaliseParamNames(Params<T> par)
+{
+  for (string & name : par.names) name = normaliseJsonFieldName(name);
+  return par;
+}
 
 
+
+
+
+
+void sortAsc(vector<weightentry> & entries)
+{
+// Sort ascending by index
+std::sort(entries.begin(), entries.end(),
+          [](const weightentry& a, const weightentry& b)
+          {
+              return a.from < b.from;
+          });
+
+}
+
+bool same_values_unordered(
+    std::vector<double> a,
+    std::vector<double> b,
+    double tol 
+)
+{
+    if (a.size() != b.size())
+        return false;
+
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+
+    for (std::size_t i = 0; i < a.size(); ++i)
+    {
+        if (std::abs(a[i] - b[i]) > tol)
+            return false;
+    }
+
+    return true;
+}
+
+
+std::vector<std::string> makeUnique(std::vector<std::string> v) {
+    std::unordered_map<std::string,int> counts;
+    for (auto &s : v) {
+        int n = counts[s]++;
+        s = s + "_" + std::to_string(n);
+    }
+    return v;
+}
+
+std::vector<std::string> removeSuffixIndices(std::vector<std::string> v) {
+    for (auto &s : v) {
+        const size_t pos = s.find_last_of('_');
+        if (pos == std::string::npos || pos + 1 == s.size()) continue;
+
+        bool suffix_is_index = true;
+        for (size_t i = pos + 1; i < s.size(); ++i) {
+            if (!std::isdigit(static_cast<unsigned char>(s[i]))) {
+                suffix_is_index = false;
+                break;
+            }
+        }
+
+        if (suffix_is_index) s.erase(pos);
+    }
+    return v;
+}
+
+
+void collect_numeric_differences(
+    const json& j1,
+    const json& j2,
+    std::vector<double>& diffs,
+    const std::string& path,
+    double tol
+)
+{
+    if (j1.is_object() && j2.is_object())
+    {
+        for (const auto& [key, value1] : j1.items())
+        {
+            if (!j2.contains(key))
+            {
+                std::cerr << "Missing key in second JSON: "
+                          << path + "/" + key << "\n";
+                continue;
+            }
+
+            collect_numeric_differences(
+                value1,
+                j2.at(key),
+                diffs,
+                path + "/" + key,
+                tol
+            );
+        }
+
+        return;
+    }
+
+    if (j1.is_array() && j2.is_array())
+    {
+        if (j1.size() != j2.size())
+        {
+            std::cerr << "Array size differs at " << path << "\n";
+            return;
+        }
+
+        for (std::size_t i = 0; i < j1.size(); ++i)
+        {
+            collect_numeric_differences(
+                j1[i],
+                j2[i],
+                diffs,
+                path + "[" + std::to_string(i) + "]",
+                tol
+            );
+        }
+
+        return;
+    }
+
+    if (j1.is_number() && j2.is_number())
+    {
+        double v1 = j1.get<double>();
+        double v2 = j2.get<double>();
+
+        double diff = v2 - v1;
+
+        if (std::abs(diff) > tol)
+        {
+            diffs.push_back(diff);
+        }
+
+        return;
+    }
+
+    if (j1.type() != j2.type())
+    {
+        std::cerr << "Type mismatch at " << path << ": "
+                  << j1.type_name() << " vs "
+                  << j2.type_name() << "\n";
+    }
+}
+
+
+void compare_numeric_values(
+    const json& j1,
+    const json& j2,
+    const std::string& path,
+    double tol
+)
+{
+    // If both are objects, recurse over keys
+    if (j1.is_object() && j2.is_object())
+    {
+        for (const auto& [key, value1] : j1.items())
+        {
+            if (!j2.contains(key))
+            {
+                std::cout << "Missing key in second JSON: "
+                          << path + "/" + key << "\n";
+                continue;
+            }
+
+            compare_numeric_values(
+                value1,
+                j2.at(key),
+                path + "/" + key,
+                tol
+            );
+        }
+
+        return;
+    }
+
+    // If both are arrays, recurse over elements
+    if (j1.is_array() && j2.is_array())
+    {
+        const std::size_t n = std::min(j1.size(), j2.size());
+
+        for (std::size_t i = 0; i < n; ++i)
+        {
+            compare_numeric_values(
+                j1[i],
+                j2[i],
+                path + "[" + std::to_string(i) + "]",
+                tol
+            );
+        }
+
+        if (j1.size() != j2.size())
+        {
+            std::cout << "Array size differs at " << path
+                      << ": " << j1.size()
+                      << " vs " << j2.size() << "\n";
+        }
+
+        return;
+    }
+
+    // If both are numeric, compare values
+    if (j1.is_number() && j2.is_number())
+    {
+        double v1 = j1.get<double>();
+        double v2 = j2.get<double>();
+
+        if (std::abs(v1 - v2) > tol)
+        {
+            std::cout << "Difference at " << path << ": "
+                      << v1 << " vs " << v2
+                      << "  diff = " << (v1 - v2) << "\n";
+        }
+
+        return;
+    }
+
+    // Optional: report type mismatches
+    if (j1.type() != j2.type())
+    {
+        std::cout << "Type differs at " << path << ": "
+                  << j1.type_name() << " vs "
+                  << j2.type_name() << "\n";
+    }
+}
 
 bool parseValue(const std::string& s, double& v) { v = std::stod(s); return true; }
 bool parseValue(const std::string& s, int&    v) { v = std::stoi(s); return true; }
@@ -20,6 +281,10 @@ bool parseValue(const std::string& s, bool& v) {
     if (s == "0" || s == "false"|| s == "FALSE") { v = false; return true; }
     return false;
 }
+
+
+
+
 
 
 /* double Efunctor::eFunc(const double & val, const json & j)
@@ -36,6 +301,26 @@ bool parseValue(const std::string& s, bool& v) {
 
 } */
 
+int getMaxCounts(const json & j, const vector<string> & names, const string & topar)
+{
+  unordered_map<string, int> counts;
+
+  for (const string& s : names) counts[s] = 0;
+  for(auto it = j.begin(); it != j.end(); ++it) //counts[it->at(topar)]++;
+    {
+  auto it2 = counts.find(it->at(topar));
+  if (it2 != counts.end()) it2->second++;   
+    }
+
+int max_count = 0;
+
+for (const string& s : names)
+    if (counts[s] > max_count) max_count = counts[s];
+    
+
+
+return max_count;
+}
 
 
 
@@ -277,25 +562,23 @@ void from_json(const json& j, toFromWeight & w)
 
 void to_json(json & j, const intDoubDoub & w)
 {
-  j = json{{"evotag", w.ind}, {"val1", w.val1}, {"val2", w.val2}};
+  j = json{{"evotag", w.ind}, {"lower_limit", w.val1}, {"upper_limit", w.val2}};
 }
 
 void from_json(const json& j, intDoubDoub & w) 
 {
         j.at("evotag").get_to(w.ind);
-        j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
 }
 
 void to_json(json & j, const doubDoub & w)
 {
-  j = json{{"val1", w.val1}, {"val2", w.val2}};
+  j = json{{"lower_limit", w.val1}, {"upper_limit", w.val2}};
 }
 
 void from_json(const json& j, doubDoub & w) 
 {
-        j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
 }
 
 
@@ -367,15 +650,14 @@ j.at("val").get_to(w.val);
 
 void from_json(const json & j, strDoubDoub & w)
 {
-   j.at("val1").get_to(w.val1);
-        j.at("val2").get_to(w.val2);
+        getLimitPair(j, w.val1, w.val2);
         j.at("evotag").get_to(w.evotag);
 }
 
 
 void to_json(json & j, const strDoubDoub & w)
 {
-j = json{{"val1", w.val1}, {"val2", w.val2}, {"evotag", w.evotag}};
+j = json{{"lower_limit", w.val1}, {"upper_limit", w.val2}, {"evotag", w.evotag}};
 
 }
 
@@ -457,9 +739,9 @@ return par;
 void appendBodyToJson(json & j, WormBody& b)
 {
 {Params<double> par = getBodyParams(b);
-    appendToJson<double>(j["Body"],par);}
+    appendToJson<double>(j["body"], normaliseParamNames(par));}
 {Params<int> par = getBodyParamsInts(b);
-    appendToJson<int>(j["Body"],par);}
+    appendToJson<int>(j["body"], normaliseParamNames(par));}
 } 
 
 void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight)
@@ -504,6 +786,304 @@ appendToJson<int>(j["Muscle"],par);}
 }
 
 
+void compareTFWV(const vector<toFromWeight> & vec1, const vector<toFromWeight> & vec2, const string & tag)
+{
+
+  if (vec1.size()!=vec2.size())
+  {
+
+    cout << "ss " << tag << " " << vec1.size() << " " << vec2.size() << endl;
+
+  }
+for (int i=0;i<vec1.size();i++)
+{
+
+  assert(vec1[i].to == vec2[i].to);
+  assert(vec1[i].w.from == vec2[i].w.from);
+  assert(vec1[i].w.weight == vec2[i].w.weight);
+
+}
+
+}
+
+
+void appendToFromWeight(const json & j, vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index)
+{
+
+  toFromWeight val;
+  val.to = name_index.at(j.at(topar).get<string>());
+  val.w.from = j.at(frompar).get<int>();
+  val.w.weight = j.at(weightpar).at("value").get<double>();
+  vec.push_back(val);
+}
+
+
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index)
+  {
+    vector<toFromWeight> vec;
+    for (const auto& conn : j) appendToFromWeight(conn,vec,topar,frompar,weightpar,name_index);
+    return vec;
+  }
+
+void appendToFromWeight(const json & j, vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar)
+{
+
+  toFromWeight val;
+  val.to = j.at(topar).get<int>();
+  val.w.from = j.at(frompar).get<int>();
+  val.w.weight = j.at(weightpar).at("value").get<double>();
+  vec.push_back(val);
+}
+
+
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar)
+  {
+    vector<toFromWeight> vec;
+    for (const auto& conn : j) appendToFromWeight(conn,vec,topar,frompar,weightpar);
+    return vec;
+
+  }
+
+
+
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar)
+{
+
+  j = json::array();
+
+for (const toFromWeight & val : vec)
+{
+      json j2 = json::object();
+      j2[frompar] = val.w.from;
+      j2[topar] = val.to;
+      j2[weightpar]["value"] = val.w.weight;
+      j.push_back(j2);
+
+}
+
+}
+
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const vector<string> & names)
+{
+
+ j = json::array();
+
+for (const toFromWeight & val : vec)
+{
+      json j2 = json::object();
+      j2[frompar] = val.w.from;
+      j2[topar] = names[val.to-1];
+      j2[weightpar]["value"] = val.w.weight;
+      j.push_back(j2);
+
+}
+
+}
+
+
+
+void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar)
+{
+
+for (int i=0;i<vec.size();i++)
+{
+const weightentry & w = vec[i];
+j.push_back({{frompar, w.from}, {weightpar, w.weight}});
+} 
+
+}
+
+
+void addWeightentry(json & j, const weightentry & w, const string & frompar, const string & weightpar)
+{
+
+  j[frompar] = w.from;
+  j[weightpar]=w.weight;
+
+}
+
+
+void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
+  const vector<string> & cell_names_full)
+{
+
+  for (const intPair & val : vec)
+  //for (int i=0;i<vec.size();i++) 
+    {
+    //const intPair & val = vec[i];
+    const string & name = cell_names_full[val.ind-1];
+    //bool found = false;
+    assert(j.at(name).contains(parameter));
+    j[name][parameter]["evotag"] = val.val;
+    }
+    
+}
+
+void addMfuncTFI(json & j, const fromToInt & val, const vector<string> & cell_names_full, const json & j2)
+{
+
+  //if (!j.contains("nervous_system")) return;
+  //json & j2 = j["nervous_system"];
+
+  bool found = false;
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  {
+   it->at("weight")["mfunc"] = j2; 
+   found = true;
+   break; 
+  }
+  }
+  assert(found);
+  
+
+}
+
+
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full)
+{
+
+  //if (!j.contains("nervous_system")) return;
+  //json & j2 = j["nervous_system"];
+
+  for (int i=0;i<vec.size();i++) 
+  {
+  const fromToInt & val = vec[i];
+  bool found = false;
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  {
+   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = val.val; 
+   else (*it)["weight"]["evotag"] = val.val;
+   found = true;
+   break; 
+  }
+  }
+  assert(found);
+  }
+
+}
+
+
+void setCircuitSize(const json & j, NervousSystem& n)
+{
+  
+  assert(j.contains("cell_names"));
+  vector<string>  names = j["cell_names"]["value"].template get< vector<string> >();
+  int maxchem = getMaxCounts(j["chemical_conns"]["value"], names, "to");
+  int maxelec = getMaxCounts(j["electrical_conns"]["value"], names, "to");
+
+  n.SetCircuitSize(names.size(), maxchem, maxelec);
+
+}
+
+void appendNSToJsonByCell(json & j, NervousSystem& n)
+{
+
+  assert(j.contains("nervous_system"));
+  vector<string> names = j["nervous_system"]["cell_names"]["value"].template get< vector<string> >();
+  appendNSToJsonByCell(j,n,names);
+
+}
+
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names_full)
+{
+
+vector<double> taus = getVector<double>(n.taus, n.size);
+vector<double> bias = getVector<double>(n.biases, n.size);
+vector<double> gains = getVector<double>(n.gains, n.size);
+vector<double> states = getVector<double>(n.states, n.size);
+
+/* vector<string> cell_names_full;
+for (int i=0;i<cell_names.size();i++) {
+const string & name = cell_names[i] + "_" + to_string(i);
+cell_names_full.push_back(name);
+} */
+
+//j["nervous_system"] = json::object();
+
+if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
+
+json & j2 = j["nervous_system"];
+j2["cell_names"]["value"] = cell_names_full;
+//j2["cell_names_no_suffix"]["value"] = removeSuffixIndices(cell_names_full);
+
+//cout << j2["cell_names"]["value"] << endl;
+
+
+if (!j2.contains("cells")) j2["cells"] = json::object();
+json & j3 = j2["cells"];
+for (int i=0;i<cell_names_full.size();i++) 
+  {
+    const string & name = cell_names_full[i];
+    if (!j3.contains(name)) j3[name] = json::object();
+    json & j4 = j3[name];
+    j4["tau"]["value"] = taus[i];
+    j4["bias"]["value"] = bias[i];
+    j4["gain"]["value"] = gains[i];
+    j4["state"]["value"] = states[i];
+  }
+
+
+
+  {vector<toFromWeight> chem_wei = getNSToFromVec(n.chemicalweights, n.NumChemicalConns, n.size);
+  if (!j2.contains("chemical_conns")) j2["chemical_conns"] = json::object();
+  if (!j2["chemical_conns"].contains("value")) j2["chemical_conns"]["value"] = json::array();
+
+  json & j22 = j2.at("chemical_conns").at("value");
+  for (const toFromWeight& val : chem_wei)
+  {
+    bool found = false;
+    for (auto it = j22.begin(); it != j22.end(); ++it)
+        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
+      {it->at("weight").at("value")=val.w.weight;found = true;break;}
+      if (found) continue;
+  json j = json::object();
+  j["to"] = cell_names_full[val.to-1];
+  j["from"] = cell_names_full[val.w.from-1];
+  j["weight"] =  json::object();
+  j["weight"]["value"] = val.w.weight;
+  j22.push_back(j);
+  }
+  }
+
+
+  {vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
+  if (!j2.contains("electrical_conns")) j2["electrical_conns"] = json::object();
+  if (!j2["electrical_conns"].contains("value")) j2["electrical_conns"]["value"] = json::array();
+
+  json & j22 = j2.at("electrical_conns").at("value");
+  for (const toFromWeight& val : elec_wei)
+  {
+    bool found = false;
+    for (auto it = j22.begin(); it != j22.end(); ++it)
+        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
+      {it->at("weight").at("value")=val.w.weight;found = true;break;}
+      if (found) continue;
+  json j = json::object();
+  j["to"] = cell_names_full[val.to-1];
+  j["from"] = cell_names_full[val.w.from-1];
+  j["weight"] =  json::object();
+  j["weight"]["value"] = val.w.weight;
+  j22.push_back(j);
+  }
+  }
+
+  
+
+  //j2["size"]["value"] = n.size;
+  //j2["maxchemcons"]["value"] = n.maxchemconns;
+  //j2["maxelecconns"]["value"] = n.maxelecconns;
+
+}
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)
 {
@@ -541,9 +1121,7 @@ getVector<int>(c.NumElectricalConns, c.size),
 return par;
 }
 
-
-
-void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+vector<toFromWeight> getNSToFromVec(TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
 {    
     vector<toFromWeight> newvec;
     for (int i=1; i<=tot_size; i++){    
@@ -551,7 +1129,14 @@ void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & siz
             toFromWeight tv(vec[i][j], i);
             newvec.push_back(tv);}        
     }
-    j["value"] = newvec;
+    return newvec;
+}
+
+
+void appendMatrixToJson(json & j, TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size)
+{    
+   
+    j["value"] = getNSToFromVec(vec,sizes,tot_size);
 
 }
 
@@ -595,6 +1180,55 @@ appendNSToJson(j, dynamic_cast<NervousSystem&>(n));
  */
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 {
+
+  //if (false)
+  if (j.contains("nervous_system"))
+  {
+
+  const json& j2 = j["nervous_system"];
+
+  vector<string> names = j2["cell_names"]["value"].get<vector<string> >();
+
+  unordered_map<string, int> name_index;
+
+  for (std::size_t i = 0; i < names.size(); ++i)
+  {
+    name_index[names[i]] = static_cast<int>(i) + 1;
+  }
+
+  for (const auto& [key, value] : j2["cells"].items())
+  {
+    int cell_index = name_index.at(key);
+
+    n.SetNeuronBias(cell_index, value["bias"]["value"].get<double>());
+    n.SetNeuronTimeConstant(cell_index, value["tau"]["value"].get<double>());
+    n.SetNeuronGain(cell_index, value["gain"]["value"].get<double>());
+
+    if (setStates)
+        n.SetNeuronState(cell_index, value["state"]["value"].get<double>());
+  }
+
+  for (const auto& conn : j2["chemical_conns"]["value"])
+  {
+    n.SetChemicalSynapseWeight(
+        name_index.at(conn["from"].get<std::string>()),
+        name_index.at(conn["to"].get<std::string>()),
+        conn["weight"]["value"].get<double>()
+    );
+  }
+
+  for (const auto& conn : j2["electrical_conns"]["value"])
+  {
+    n.SetElectricalSynapseWeight(
+        name_index.at(conn["from"].get<std::string>()),
+        name_index.at(conn["to"].get<std::string>()),
+        conn["weight"]["value"].get<double>()
+    );
+  }
+
+  return;
+  }
+
 
   const json & j2 = j["Nervous system"];
 
@@ -642,13 +1276,18 @@ void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates)
 
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 {
+    //if (false){
+    if (j.contains("nervous_system")){
+    setCircuitSize(j["nervous_system"],n);
+   }
+  else{
     const json & j2 = j["Nervous system"];
-    
     n.SetCircuitSize(j2["size"]["value"], j2["maxchemcons"]["value"], j2["maxelecconns"]["value"]);
+  }
+
     setNSFromJsonNZ(j,n,setStates);
 
-   
-    
+     
 }
 
 
@@ -667,6 +1306,18 @@ appendToJson<vector<int> >(j,parvec);}
 
 appendNSToJson(j, n);
 
+}
+
+vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units)
+{
+    vector<string> cell_names_all;
+    for (int i=0;i<n_units;i++) 
+    {
+      vector<string> cell_names_unit;
+      for (int j=0;j<cell_names.size();j++) cell_names_unit.push_back(cell_names[j] + "_" + to_string(i));
+      cell_names_all.insert(cell_names_all.end(),cell_names_unit.begin(),cell_names_unit.end());
+    }
+    return cell_names_all;
 }
 
 vector<string> getCellNamesAll(const vector<string> & cell_names, int n_units)

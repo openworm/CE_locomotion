@@ -77,7 +77,7 @@ return retvec;
 }
 
 template<class T> 
-vector<T> getVector(TVector<T> & vec, int size)
+vector<T> getVector(const TVector<T> & vec, int size)
 { 
 vector<T> retvec;    
 for (int i = 1; i <= size; i++)
@@ -130,7 +130,29 @@ void appendToJson(json & j, const Params<T> & par)
         }
                
 }
+void sortAsc(vector<weightentry> & entries);
+std::vector<std::string> makeUnique(std::vector<std::string> v);
+std::vector<std::string> removeSuffixIndices(std::vector<std::string> v);
 
+bool same_values_unordered(
+    std::vector<double> a,
+    std::vector<double> b,
+    double tol = 1e-12
+);
+
+void compare_numeric_values(
+    const json& j1,
+    const json& j2,
+    const std::string& path = "",
+    double tol = 1e-12
+);
+void collect_numeric_differences(
+    const json& j1,
+    const json& j2,
+    std::vector<double>& diffs,
+    const std::string& path = "",
+    double tol = 1e-12
+);
 void from_json(const json & j, weightentry & w);
 void to_json(json & j, const weightentry & w);
 void to_json(json & j, const toFromWeight & w);
@@ -232,7 +254,26 @@ bool getEvoValFromJ(const json & j, const vector<string> & namevec_, T & val)
 }
 
 
-
+void addMfuncTFI(json & j, const fromToInt & val, const vector<string> & cell_names_full, const json & j2);
+void compareTFWV(const vector<toFromWeight> & vec1, const vector<toFromWeight> & vec2, const string & tag);
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar, const unordered_map<string, int> & name_index);
+vector<toFromWeight> getToFromWeightVec(const json & j, const string & topar, 
+  const string & frompar, const string & weightpar);
+void appendNSToJsonByCell(json & j, NervousSystem& n);
+void setCircuitSize(const json & j, NervousSystem& n);
+int getMaxCounts(const json & j, const vector<string> & names, const string & topar);
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar, const vector<string> & names);
+void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & topar, 
+  const string & frompar, const string & weightpar);
+void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar);
+void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
+  const vector<string> & cell_names_full);
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full);
+vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units);
+vector<toFromWeight> getNSToFromVec(TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names);
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates = true);
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates = true);

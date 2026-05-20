@@ -20,10 +20,10 @@ class c302ForW2D : virtual public NSForW2D
 
     void IncNeuronExternalInput(int i, double value);
     void SetNeuronExternalInput(int i, double value);
-    double NeuronOutput(int i);
+    const double & NeuronOutput(int i);
     void EulerStep(double );
     
-    double NeuronState(int i);
+    const double & NeuronState(int i);
     virtual ~c302ForW2D(){}
     //virtual ~c302ForW2D(){if (simulation) delete simulation;}
     //std::shared_ptr<SignalSimulatorForWorm2D>  getSimulator(){return simulation;}
