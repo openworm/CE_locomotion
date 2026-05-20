@@ -5,8 +5,8 @@ import pathlib
 
 
 def joinJson(json1, json2):
-    j1_size = json1["Nervous system"]["size"]["value"]
-    j2_size = json2["Nervous system"]["size"]["value"]
+    j1_size = utils.getNervousSystemSize(json1)
+    j2_size = utils.getNervousSystemSize(json2)
     return j1_size + j2_size
 
 
@@ -102,8 +102,8 @@ def mergeJsons(file1, file2, outdir):
     appended_json_data = utils.getJsonFile(file2)
     # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
-    appendedSize = appended_json_data[NSname]["size"]["value"]
-    origSize = network_json_data[NSname]["size"]["value"]
+    appendedSize = utils.getNervousSystemSize(appended_json_data)
+    origSize = utils.getNervousSystemSize(network_json_data)
     # appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
     origDrivingSize = len(network_json_data["Driving input"]["strengths"]["value"])
 
@@ -116,7 +116,7 @@ def mergeJsons(file1, file2, outdir):
 
     section_names = utils.getNSvalue(network_json_data, "Section name")
     if section_names is None:
-        json_model_name = network_json_data[NSname]["Model name"]["value"]
+        json_model_name = utils.getModelName_old(network_json_data)
         section_names = utils.default_cells[json_model_name]["Section name"]
         if "Section name" not in network_json_data[NSname]:
             network_json_data[NSname]["Section name"] = {}
@@ -224,7 +224,7 @@ def addEvolvable(network_json_data):
 def addCells(network_json_data):
     cell_names = utils.getCellNames(network_json_data)
     section_names = utils.getNSvalue(network_json_data, "Section name")
-    json_model_name = network_json_data[NSname]["Model name"]["value"]
+    json_model_name = utils.getModelName_old(network_json_data)
     if cell_names is None:
         cell_names = utils.default_cells[json_model_name]["names"]
         network_json_data[NSname]["Cell name"]["value"] = cell_names

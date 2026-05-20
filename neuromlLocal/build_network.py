@@ -173,17 +173,10 @@ def run(a=None, **kwargs):
     network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
 
-    chemical_weights = None
-    if "Chemical weights" in network_json_data["Nervous system"]:
-        chemical_weights = network_json_data["Nervous system"]["Chemical weights"][
-            "value"
-        ]
-
-    electrical_weights = None
-    if "Electrical weights" in network_json_data["Nervous system"]:
-        electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
-            "value"
-        ]
+    chemical_weights = utils.getNervousSystemConnections(network_json_data, "chemical")
+    electrical_weights = utils.getNervousSystemConnections(
+        network_json_data, "electrical"
+    )
 
     doMuscles = a.doMuscles
     if doMuscles:
@@ -363,7 +356,7 @@ def run(a=None, **kwargs):
         utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
                                         population_structure, pop_cell_names, cell_names) """
 
-        cell_num = network_json_data["Nervous system"]["size"]["value"]
+        cell_num = utils.getNervousSystemSize(network_json_data)
         size0 = cell_num
         cell_comp = "GenericNeuronCellW2D"
         pop0 = Population(

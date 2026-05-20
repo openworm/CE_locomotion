@@ -527,13 +527,20 @@ def run(a=None, **kwargs):
             if getattr(a, "modifyJson"):
                 json_path_mod = a.outputFolderName + "/" + prefix + "worm_data_evo.json"
                 network_json_data_mod = utils.getJsonFile(json_path_mod)
-                rtaus = network_json_data_mod["Nervous system"]["Rtaus"]["value"]
-                taus = network_json_data_mod["Nervous system"]["taus"]["value"]
+                ns_mod = utils.getNervousSystem(network_json_data_mod)
+                taus = utils.getNSvalue(network_json_data_mod, "taus")
+                rtaus = utils.getNSvalue(network_json_data_mod, "Rtaus")
                 for i in range(len(taus)):
                     taus[i] = 1
-                    rtaus[i] = 1
-                network_json_data_mod["Nervous system"]["Rtaus"]["value"] = rtaus
-                network_json_data_mod["Nervous system"]["taus"]["value"] = taus
+                    if rtaus is not None:
+                        rtaus[i] = 1
+                if "nervous_system" in network_json_data_mod:
+                    for cell_name in utils.getCellNamesFull(network_json_data_mod):
+                        ns_mod["cells"][cell_name]["tau"]["value"] = 1
+                else:
+                    if rtaus is not None:
+                        ns_mod["Rtaus"]["value"] = rtaus
+                    ns_mod["taus"]["value"] = taus
                 with open(json_path_mod, "w", encoding="utf-8") as f:
                     json.dump(network_json_data_mod, f, ensure_ascii=False, indent=4)
 

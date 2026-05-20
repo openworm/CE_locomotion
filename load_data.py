@@ -28,6 +28,7 @@ def get_evolvable_ranges(network_json_data):
         return network_json_data["evolvable_ranges"]
     return network_json_data.get("Evolvable")
 
+
 sys.path.append("..")
 
 # import random
@@ -195,7 +196,9 @@ def plot_phenonames(
     ]
 
     evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
+    if evolvable_ranges is not None and hf.checkDictName(
+        evolvable_ranges, ["value", 0, "name"]
+    ):
         evolvables = evolvable_ranges["value"]
         phen_names = []
         phen_nums = []
@@ -670,7 +673,9 @@ def plot_hist(a=None):
     ]
 
     evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(evolvable_ranges, ["value", 0, "name"]):
+    if evolvable_ranges is not None and hf.checkDictName(
+        evolvable_ranges, ["value", 0, "name"]
+    ):
         evolvables = evolvable_ranges["value"]
         phen_names = []
         phen_nums = []
@@ -849,7 +854,7 @@ def reload_single_run(a=None, **kwargs):
         main_model_name = network_json_data["Worm"]["Main model name"]["value"]
 
     if a.modelName == "W2DSR":
-        json_model_name = network_json_data["Nervous system"]["Model name"]["value"]
+        json_model_name = utils.getModelName_old(network_json_data)
         a.modelName = json_model_name
 
     if (main_model_name is not None) and (main_model_name == "COW2DSR"):
@@ -876,7 +881,7 @@ def reload_single_run(a=None, **kwargs):
 
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
-        CO18_size = network_json_data["Nervous system"]["size"]["value"]
+        CO18_size = utils.getNervousSystemSize(network_json_data)
         plot_format["data_sizes"] = [CO18_size, 2]
         plot_format["plot_cell_names"] = ["N" + str(i) for i in range(CO18_size)] + [
             "S" + str(i) for i in range(2)

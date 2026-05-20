@@ -31,6 +31,11 @@ def getCellIndices(cell_names, cell_name):
 
 
 def getCellNames(network_json_data):
+    if "nervous_system" in network_json_data:
+        ns = network_json_data["nervous_system"]
+        if "cell_names_no_suffix" in ns:
+            return ns["cell_names_no_suffix"]["value"]
+        return [name.rsplit("_", 1)[0] for name in ns["cell_names"]["value"]]
     return network_json_data["Nervous system"]["Cell name"]["value"]
 
 
@@ -41,6 +46,20 @@ def getCellNameRep(cell_names, cell_ind):
 
 
 def getNervousSystemVal(network_json_data, val):
+    if "nervous_system" in network_json_data:
+        ns = network_json_data["nervous_system"]
+        field_map = {
+            "biases": "bias",
+            "taus": "tau",
+            "gains": "gain",
+            "states": "state",
+        }
+        if val == "Cell name":
+            return getCellNames(network_json_data)
+        if val == "size":
+            return len(ns["cell_names"]["value"])
+        field = field_map.get(val, val)
+        return [ns["cells"][name][field]["value"] for name in ns["cell_names"]["value"]]
     return network_json_data["Nervous system"][val]["value"]
 
 
