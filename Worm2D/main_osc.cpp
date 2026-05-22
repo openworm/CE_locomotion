@@ -458,6 +458,7 @@ int main (int argc, const char* argv[])
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
+    w2->cleanLegacyParameterKeys(j);
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);

@@ -228,10 +228,13 @@ class baseParameters
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
         const string key_str = snakeCaseKey(name_str);
+        const string legacy_key_str = legacyKeyForSnake(key_str);
         if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
         //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
         if (!BPitsJson.at(bstr).contains(key_str)) BPitsJson[bstr][key_str] = json::object();
         BPitsJson[bstr][key_str]["value"] = val;
+        if (name_str != key_str) BPitsJson[bstr].erase(name_str);
+        if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[bstr].erase(legacy_key_str);
     }
 
    /*  void addParsToJson(json & j)
@@ -249,9 +252,31 @@ class baseParameters
 
     const json & itsNewSetVals() const {return newSetVals;}
     const json & itsBPjson() const {return BPitsJson;}
+    void cleanLegacyParameterKeys(json & j) const {removeLegacyParameterKeys(j);}
     
     friend class Efunctor;
     protected:
+    void removeLegacyParameterKeys(json & j) const
+    {
+        if (!j.is_object()) return;
+        for (auto section = j.begin(); section != j.end(); ++section)
+        {
+            if (!section.value().is_object()) continue;
+            for (auto it = defaultVals.begin(); it != defaultVals.end(); ++it)
+            {
+                const string key_str = it.key();
+                const string legacy_key_str = legacyKeyForSnake(key_str);
+                if (!legacy_key_str.empty() && legacy_key_str != key_str &&
+                    section.value().contains(legacy_key_str))
+                {
+                    if (!section.value().contains(key_str))
+                        section.value()[key_str] = section.value()[legacy_key_str];
+                    section.value().erase(legacy_key_str);
+                }
+            }
+        }
+    }
+
     static string snakeCaseKey(const string & name)
     {
         string key;
@@ -290,6 +315,42 @@ class baseParameters
 
         if (!key.empty() && key.back() == '_') key.pop_back();
         return key;
+    }
+
+    static string legacyKeyForSnake(const string & key)
+    {
+        if (key == "random_initial_state") return "randomInitialState";
+        if (key == "do_orig_musc_input") return "doOrigMuscInput";
+        if (key == "do_orig_sr_input") return "doOrigSRInput";
+        if (key == "reset_agent_body") return "resetAgentBody";
+        if (key == "grad_steep") return "gradSteep";
+        if (key == "run_duration") return "RunDuration";
+        if (key == "hs_step_size") return "HSStepSize";
+        if (key == "max_dist") return "MaxDist";
+        if (key == "sr_evo_bot") return "SREvoBot";
+        if (key == "sr_evo_top") return "SREvoTop";
+        if (key == "sr_evo_bot_a") return "SREvoBotA";
+        if (key == "sr_evo_top_a") return "SREvoTopA";
+        if (key == "ab_output_level") return "AB_output_level";
+        if (key == "sr_type") return "SRType";
+        if (key == "sr_form") return "SRForm";
+        if (key == "sr_seg_per_sr") return "SRSegPerSR";
+        if (key == "sr_zero_gains_type") return "SRZeroGainsType";
+        if (key == "sr_offset") return "SROffset";
+        if (key == "nmj_weight") return "NMJWeight";
+        if (key == "do_reverse") return "doReverse";
+        if (key == "do_test_run") return "doTestRun";
+        if (key == "osc_tbase") return "OSCTbase";
+        if (key == "avg_speed") return "AvgSpeed";
+        if (key == "nmj_vn") return "NMJ_VN";
+        if (key == "nmj_dn") return "NMJ_DN";
+        if (key == "nmj_gain_map") return "NMJ_Gain_Map";
+        if (key == "fit_type") return "fitType";
+        if (key == "do_angle_diff") return "doAngleDiff";
+        if (key == "do_legacy") return "doLegacy";
+        if (key == "init_ns_from_json") return "initNSFromJson";
+        if (key == "input_ind") return "inputInd";
+        return "";
     }
 
     json BPitsJson;

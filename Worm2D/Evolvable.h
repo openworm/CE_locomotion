@@ -102,7 +102,7 @@ void setParsFromJson(const json & j){
 }
 void addParsToJson(json & j) const {
 
-  addParsToJson1<double>(j,{"HSStepSize"},{HSStepSize});
+  addParsToJson1<double>(j,{"hs_step_size"},{HSStepSize});
 
 }
 
@@ -124,7 +124,7 @@ void setParsFromJson(const json & j){
 }
 
 void addParsToJson(json & j) const {
-  j["randomInitialState"]["value"] = randomInitialState;
+  j["random_initial_state"]["value"] = randomInitialState;
 }
 
 void setPars(shared_ptr<const CmdArgs> cmd);
@@ -152,8 +152,8 @@ void addParsToJson(json & j) const {
 
   //cout << "osmout " << doOrigSRInput << " " << doOrigMuscInput << endl;
   //assert(0);
-  j["doOrigMuscInput"]["value"] = doOrigMuscInput;
-  j["doOrigSRInput"]["value"] = doOrigSRInput;
+  j["do_orig_musc_input"]["value"] = doOrigMuscInput;
+  j["do_orig_sr_input"]["value"] = doOrigSRInput;
   W2DbaseparametersNML::addParsToJson(j);
 }
 
@@ -188,9 +188,9 @@ void setParsFromJson(const json & j){
 
 }
 void addParsToJson(json & j) const {
-  j["OSCTbase"]["value"] = OSCTbase;
+  j["osc_tbase"]["value"] = OSCTbase;
   j["agarfreq"]["value"] = agarfreq;
-  j["AvgSpeed"]["value"] = AvgSpeed;
+  j["avg_speed"]["value"] = AvgSpeed;
   
 }
 void show() const {cout << "agar pars " << OSCTbase  << " " << agarfreq << " " << AvgSpeed << endl;}
@@ -246,10 +246,10 @@ void setParsFromJson(const json & j){
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
-  j["doReverse"]["value"] = doReverse;
-  j["fitType"]["value"] = fitType;
+  j["do_reverse"]["value"] = doReverse;
+  j["fit_type"]["value"] = fitType;
   j["zeroGainsType"]["value"] = zeroGainsType;
-   j["doAngleDiff"]["value"] = doAngleDiff;
+   j["do_angle_diff"]["value"] = doAngleDiff;
   AgarPars::addParsToJson(j);
 }
 
@@ -341,13 +341,13 @@ class gradParameters : public W2Dbaseparameters
 
 void addParsToJson(json & j) const {
 
-  addParsToJson1<double>(j,{"orient", "gradSteep", "RunDuration", 
-    "HSStepSize", "MaxDist", "rotation"},
+  addParsToJson1<double>(j,{"orient", "grad_steep", "run_duration", 
+    "hs_step_size", "max_dist", "rotation"},
     {orient_orig,gradSteep,RunDuration, HSStepSize, 
       MaxDist, worm_rotation});
 
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
-  addParsToJson1<bool>(j,{"resetAgentBody"}, {resetAgentBody});
+  addParsToJson1<bool>(j,{"reset_agent_body"}, {resetAgentBody});
 
   W2Dbaseparameters::addParsToJson(j);
 
@@ -383,7 +383,7 @@ void setParsFromJson(const json & j){
 }
 
 void addParsToJson(json & j) const {
-  j["AB_output_level"]["value"] = AB_output_level;
+  j["ab_output_level"]["value"] = AB_output_level;
   j["AVA_output"]["value"] = AVA_output; 
   j["AVB_output"]["value"] = AVB_output;
   W2Dbaseparameters::addParsToJson(j);
@@ -422,10 +422,10 @@ void setParsFromJson(const json & j){
   //SRCEpars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
-  j["SREvoBot"]["value"] = SREvoBot;
-  j["SREvoTop"]["value"] = SREvoTop;
-  j["SREvoBotA"]["value"] = SREvoBotA;
-  j["SREvoTopA"]["value"] = SREvoTopA;
+  j["sr_evo_bot"]["value"] = SREvoBot;
+  j["sr_evo_top"]["value"] = SREvoTop;
+  j["sr_evo_bot_a"]["value"] = SREvoBotA;
+  j["sr_evo_top_a"]["value"] = SREvoTopA;
 
    W2DCEparsA::addParsToJson(j);
    //SRCEpars::addParsToJson(j);
@@ -476,10 +476,10 @@ void setParsFromJson(const json & j){
   //assert(0);
 }
 void addParsToJson(json & j) const {
-  j["SRType"]["value"] = sr_type;
-  j["SRForm"]["value"] = SRForm;
-  j["SRSegPerSR"]["value"] = nsegperstr;
-  j["SRZeroGainsType"]["value"] = zeroGainsType;
+  j["sr_type"]["value"] = sr_type;
+  j["sr_form"]["value"] = SRForm;
+  j["sr_seg_per_sr"]["value"] = nsegperstr;
+  j["sr_zero_gains_type"]["value"] = zeroGainsType;
 
 }
 };
@@ -501,14 +501,13 @@ void setParsFromJson(const json & j){
 void addParsToJson(json & j) const {
 
   SRCEpars::addParsToJson(j);
-  j["SROffset"]["value"] = offset;
+  j["sr_offset"]["value"] = offset;
  
 }
 
 
 
 };
-
 
 
 

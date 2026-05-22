@@ -826,6 +826,8 @@ void Worm2Dbase::addParsToJson(json & j)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
 
+    removeLegacyParameterKeys(j);
+
     //cout << "worm2dbase add pars to json" << endl;
 
     setPhenoNames();
