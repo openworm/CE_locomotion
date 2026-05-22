@@ -1029,7 +1029,8 @@ for (int i=0;i<cell_names_full.size();i++)
     const string & name = cell_names_full[i];
     if (!j3.contains(name)) j3[name] = json::object();
     json & j4 = j3[name];
-    if (!section_names.empty()) j4["cell_class"]["value"] = section_names[i];
+    if (!section_names.empty() && !j4.contains("cell_class"))
+      j4["cell_class"]["value"] = section_names[i];
     j4["tau"]["value"] = taus[i];
     j4["bias"]["value"] = bias[i];
     j4["gain"]["value"] = gains[i];
@@ -1112,7 +1113,11 @@ void appendNSCellClassesToJson(json & j, const vector<string> & section_names)
 
   if (!j2.contains("cells")) j2["cells"] = json::object();
   json & cells = j2["cells"];
-  for (int i=0; i<names.size(); i++) cells[names[i]]["cell_class"]["value"] = classes[i];
+  for (int i=0; i<names.size(); i++)
+  {
+    json & cell = cells[names[i]];
+    if (!cell.contains("cell_class")) cell["cell_class"]["value"] = classes[i];
+  }
 }
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)

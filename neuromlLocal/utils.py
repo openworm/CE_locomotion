@@ -398,6 +398,7 @@ jsonToStringMap = {
     "head": "Head Neurons",
     "interneuron": "Interneurons",
     "VNC": "VNC Neurons",
+    "vnc": "VNC Neurons",
 }
 
 
