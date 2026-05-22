@@ -6,7 +6,7 @@
     "Transient": 10,
     "CheckpointInterval": 5,
     "EvolutionType": "Evo18",
-    "randomInitialState": false,
-    "doOrigMuscInput": true,
-    "doOrigSRInput": true
+    "random_initial_state": false,
+    "do_orig_musc_input": true,
+    "do_orig_sr_input": true
 }

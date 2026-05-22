@@ -502,7 +502,7 @@ vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
     //assert(0);
 
     double NMJweight;
-    basePar1->getValCJWorm<double>("NMJWeight",NMJweight);
+    basePar1->getValCJWorm<double>("nmj_weight",NMJweight);
 
     vector<toFromWeight> vec1;
     for (int to_musc=1;to_musc<=24;to_musc++){
@@ -515,7 +515,7 @@ vector<toFromWeight> Worm2Dosc1::makeDVMuscleConn(int offset)
 vector<toFromWeight> Worm2DoscHalf::makeDVMuscleConn(double weig_amp)
 {
     double NMJweight;
-    basePar1->getValCJWorm<double>("NMJWeight",NMJweight);
+    basePar1->getValCJWorm<double>("nmj_weight",NMJweight);
 
 
     vector<toFromWeight> vec1;
@@ -649,7 +649,7 @@ vector<toFromWeight> Worm2Dosc21base::makeMuscleConn(vector<int> neurons, vector
 
     const int N_musc = 24;
      double NMJ_Gain_Map;
-    basePar1->getValCJWorm<double>("NMJ_Gain_Map",NMJ_Gain_Map);
+    basePar1->getValCJWorm<double>("nmj_gain_map",NMJ_Gain_Map);
 
 
     vector<double> NMJ_Gain(N_musc,0);
@@ -684,7 +684,7 @@ vector<toFromWeight> Worm2Dosc21base::makeDorsalMuscleConn()
    //double NMJ_VN = 1, NMJ_DN = 1, NMJ_Gain_Map = 1;
  
 double NMJ_DN;
-basePar1->getValCJWorm<double>("NMJ_DN",NMJ_DN);
+basePar1->getValCJWorm<double>("nmj_dn",NMJ_DN);
 
 const int DN = 1;
 vector<int> dorsalNeurons({DN});
@@ -696,7 +696,7 @@ vector<toFromWeight> Worm2Dosc21base::makeVentralMuscleConn()
 {
     
 double NMJ_VN;
-basePar1->getValCJWorm<double>("NMJ_VN",NMJ_VN);
+basePar1->getValCJWorm<double>("nmj_vn",NMJ_VN);
 
 //cout << "NMJ_VN " << NMJ_VN << endl;
 

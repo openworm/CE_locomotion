@@ -296,7 +296,7 @@ int main (int argc, const char* argv[])
     //w2->addParsToJson(j);
     
     bool dotest;
-    w2->getValCJWorm("doTestRun", dotest);
+    w2->getValCJWorm("do_test_run", dotest);
     //const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
@@ -305,7 +305,7 @@ int main (int argc, const char* argv[])
     
     //WormFR* const w = dynamic_cast<WormFR*>(w2);
     int inputInd;
-    w2->getValCJ("inputInd", inputInd, "input_switcher");
+    w2->getValCJ("input_ind", inputInd, "input_switcher");
     WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
     if (dotest)
     {
@@ -358,9 +358,9 @@ int main (int argc, const char* argv[])
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
    
     int zeroGainsType;
-    w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    w2->getValCJWorm("sr_zero_gains_type", zeroGainsType);
     int doReverse;
-    w2->getValCJWorm("doReverse", doReverse);
+    w2->getValCJWorm("do_reverse", doReverse);
 
     if (doReverse == 0 || doReverse == 1)
     {

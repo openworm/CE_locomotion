@@ -264,7 +264,7 @@ const string sr_type;
 string getSRtype(){
 
     string sr_type;
-    basePar1->getValCJ<string>("SRType",sr_type,"Stretch receptor");
+    basePar1->getValCJ<string>("sr_type",sr_type,"Stretch receptor");
     return sr_type;
 
 }

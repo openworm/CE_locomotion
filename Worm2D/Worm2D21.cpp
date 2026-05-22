@@ -127,7 +127,7 @@ void Worm2D21m::InitializeState(RandomState &rs)
     Worm2Dm::InitializeState(rs);
 
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     //if (false)
     if (doLegacy)
@@ -149,7 +149,7 @@ void Worm2D21m::setForward()
 {
 
    double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
   AVA_output =  0;
   AVB_output =  AB_output_level;
 }
@@ -157,7 +157,7 @@ void Worm2D21m::setForward()
 void Worm2D21m::setBackward()
 {
   double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
   AVA_output =  AB_output_level;
   AVB_output =  0;

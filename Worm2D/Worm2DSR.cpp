@@ -37,7 +37,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     if (!do_nml){
     
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
@@ -169,7 +169,7 @@ void Worm2DSRE::resetFromJson(const json & js1)
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   if(n){
   bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
+  getValCJWorm<bool>("do_legacy",doLegacy);
 
   //copy in current states, external inputs here??
     
@@ -1594,7 +1594,7 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 	if (n!=nullptr){
 
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
   if (randomInitialState)
 	//if (W2Dbaseparameters1->randomInitialState)
     {
@@ -1619,9 +1619,9 @@ void Sensor::InitialiseAgent()
   if (spvec.size()>0){
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   spvec[0].HSStepSize = HSStepSize;
   spvec[0].gradSteep = gradSteep;
@@ -1754,9 +1754,9 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
   SensorPars & sp1 = spvec[0];
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   sp1.gradSteep = gradSteep;
   sp1.HSStepSize = HSStepSize;
@@ -1810,9 +1810,9 @@ void Sensor::construct(const json & j)
   SensorPars sp1;
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   sp1.gradSteep = gradSteep;
   sp1.HSStepSize = HSStepSize;

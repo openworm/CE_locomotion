@@ -83,7 +83,7 @@ void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
 	//size = cmd_->getArgValInt("--size", size);
 
     double HSStepSize;
-    getValCJWorm<double>("HSStepSize",HSStepSize);
+    getValCJWorm<double>("hs_step_size",HSStepSize);
 
 	setStepSize(HSStepSize);
 }
@@ -215,7 +215,7 @@ void WormAgent::zeroCircuit()
 void WormAgent::setSimParsDefault()
 {
 	double HSStepSize;
-    getValCJWorm<double>("HSStepSize",HSStepSize);
+    getValCJWorm<double>("hs_step_size",HSStepSize);
 	setStepSize(HSStepSize);
 }
 
@@ -282,8 +282,8 @@ void WormAgent::InitializeState(RandomState &rs_)
 void WormAgent::InitialiseAgent()
 {
 	double HSStepSize, RunDuration; 
-    getValCJWorm<double>("HSStepSize",HSStepSize);
-	getValCJWorm<double>("RunDuration",RunDuration);
+    getValCJWorm<double>("hs_step_size",HSStepSize);
+	getValCJWorm<double>("run_duration",RunDuration);
 
 	setStepSize(HSStepSize);
 
@@ -317,7 +317,7 @@ void WormAgent::ResetAgentsBody()
 	getValCJWorm<int>("kinesis",kinesis);
 
 	double MaxDist1;//, orient1;
-    getValCJWorm<double>("MaxDist",MaxDist1);
+    getValCJWorm<double>("max_dist",MaxDist1);
 	getValCJWorm<double>("orient",orient);
 	distanceToCentre = -MaxDist1;
 
@@ -339,7 +339,7 @@ void WormAgent::ResetChemCon()
 {
 
 	//double gradSteep; 
-    getValCJWorm<double>("gradSteep",gradSteep);
+    getValCJWorm<double>("grad_steep",gradSteep);
 	chemCon = -DistanceToCentre() * gradSteep;
 
 	//double dist = distanceToCenter();
@@ -379,7 +379,7 @@ double WormAgent::distanceToCenter() const
 void WormAgent::UpdateChemCon()
 {
 	//double gradSteep; 
-    //getValCJWorm<double>("gradSteep",gradSteep);
+    //getValCJWorm<double>("grad_steep",gradSteep);
 
 	//double dist = distanceToCenter();
 	setDistanceToCentre();
@@ -697,7 +697,7 @@ const double MaxDifSensor = HST;
 const double TauMax = HST;
 
 double HSStepSize;
-getValCJWorm<double>("HSStepSize",HSStepSize);
+getValCJWorm<double>("hs_step_size",HSStepSize);
 
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;

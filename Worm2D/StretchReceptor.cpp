@@ -713,8 +713,8 @@ void SRCE::makeSRWeights()
     SRWeights srw;
 
     int SRForm, nsegperstr;
-    basePar1->getValCJ<int>("SRForm",SRForm,"Stretch Receptor");
-    basePar1->getValCJ<int>("SRSegPerSR",nsegperstr,"Stretch Receptor");
+    basePar1->getValCJ<int>("sr_form",SRForm,"Stretch Receptor");
+    basePar1->getValCJ<int>("sr_seg_per_sr",nsegperstr,"Stretch Receptor");
 
     if (SRForm == 0){
     for (int j = 1; j <= nsegperstr; j++){
@@ -817,10 +817,10 @@ void SRReg::makeSRWeights()
     
     
     int SRForm, nsegperstr;
-    basePar1->getValCJ<int>("SRForm",SRForm,"Stretch Receptor");
-    basePar1->getValCJ<int>("SRSegPerSR",nsegperstr,"Stretch Receptor");
+    basePar1->getValCJ<int>("sr_form",SRForm,"Stretch Receptor");
+    basePar1->getValCJ<int>("sr_seg_per_sr",nsegperstr,"Stretch Receptor");
     int offset;
-    basePar1->getValCJ<int>("SROffset",offset,"Stretch Receptor");
+    basePar1->getValCJ<int>("sr_offset",offset,"Stretch Receptor");
 
     SRWeights srw;
 

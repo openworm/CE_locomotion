@@ -404,10 +404,10 @@ void WormCE::addEvolvableToJson(json & j)
     
 
     double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
-    getValCJWorm<double>("SREvoBotA",SREvoBotA);
-    getValCJWorm<double>("SREvoTopA",SREvoTopA);
-    getValCJWorm<double>("SREvoBot",SREvoBot);
-    getValCJWorm<double>("SREvoTop",SREvoTop);
+    getValCJWorm<double>("sr_evo_bot_a",SREvoBotA);
+    getValCJWorm<double>("sr_evo_top_a",SREvoTopA);
+    getValCJWorm<double>("sr_evo_bot",SREvoBot);
+    getValCJWorm<double>("sr_evo_top",SREvoTop);
 
     //vec.push_back({w1->SREvoBotA, w1->SREvoTopA});
     //vec.push_back({w1->SREvoBot, w1->SREvoTop});
@@ -734,7 +734,7 @@ void Worm2DCE::setForward()
 
 
   int zeroGainsType;
-  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
   
   //AVA_output =  0;
@@ -761,7 +761,7 @@ void Worm2DCE::setBackward()
 
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
-  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
   
   //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
@@ -1354,7 +1354,7 @@ void Worm2DCE::makeExternalInputConn()
 
 
    double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
 
   //cout << "about " << AB_output_level << endl;
@@ -1395,7 +1395,7 @@ void Worm2DCE::setExternalInputOrig()
 {
 
   double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
   for (int i = 1; i <= par1.N_units; i++){
     n_ptr->SetNeuronExternalInput(nn(DA,i), AVA_output*AB_output_level);
@@ -1444,7 +1444,7 @@ void Worm2DCE::setExternalInputOrig()
  //assert(w1parss!=nullptr);
 
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
 
   if (randomInitialState) {
@@ -1466,11 +1466,11 @@ void WormCE::InitializeState(RandomState &rs)
   //assert(0);
  
    bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
+  getValCJWorm<bool>("do_legacy",doLegacy);
 
   if (doLegacy){
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
   //cout << "randomInitialState zxxs" << randomInitialState << endl;
   //assert(0);
@@ -1536,10 +1536,10 @@ void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
     //assert(0);
 
     double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
-    getValCJWorm<double>("SREvoBotA",SREvoBotA);
-    getValCJWorm<double>("SREvoTopA",SREvoTopA);
-    getValCJWorm<double>("SREvoBot",SREvoBot);
-    getValCJWorm<double>("SREvoTop",SREvoTop);
+    getValCJWorm<double>("sr_evo_bot_a",SREvoBotA);
+    getValCJWorm<double>("sr_evo_top_a",SREvoTopA);
+    getValCJWorm<double>("sr_evo_bot",SREvoBot);
+    getValCJWorm<double>("sr_evo_top",SREvoTop);
 
      // Parameters for the Stretch Receptors
   phen(SR_A) = MapSearchParameter(gen(SR_A), SREvoBotA, SREvoTopA);

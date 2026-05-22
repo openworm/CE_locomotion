@@ -220,8 +220,8 @@ W2Dmparscalled(false),W2Dminitcalled(false){
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
-doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput")),
-doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
+doOrigMuscInput(getValCJWorm<bool>("do_orig_musc_input")),
+doOrigSRInput(getValCJWorm<bool>("do_orig_sr_input"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
 
@@ -254,7 +254,7 @@ void Worm2Dbase::InitializeState(RandomState &rs)
     
    
     bool randomInitialState;
-    getValCJWorm<bool>("randomInitialState",randomInitialState);
+    getValCJWorm<bool>("random_initial_state",randomInitialState);
 
     if (randomInitialState)
     {
@@ -363,7 +363,7 @@ void Worm2Dbody::ResetAgentsBody(baseParameters & basePar_)
     
     b.InitializeBodyState();
     bool resetAgentBody;
-    basePar_.getValCJWorm<bool>("resetAgentBody",resetAgentBody);
+    basePar_.getValCJWorm<bool>("reset_agent_body",resetAgentBody);
 
     if (resetAgentBody)
     {
@@ -372,7 +372,7 @@ void Worm2Dbody::ResetAgentsBody(baseParameters & basePar_)
     //w18->shiftX(-4.5);
     double orient, MaxDist, worm_rotation;
     basePar_.getValCJWorm<double>("orient", orient);
-    basePar_.getValCJWorm<double>("MaxDist", MaxDist);
+    basePar_.getValCJWorm<double>("max_dist", MaxDist);
     basePar_.getValCJWorm<double>("rotation", worm_rotation);
 
     shiftX(cos(orient)*MaxDist*-1);
@@ -506,7 +506,7 @@ void Worm2Dbase::randomizeNS(RandomState &rs)
   if (n){
    
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
 
   if (randomInitialState) {
