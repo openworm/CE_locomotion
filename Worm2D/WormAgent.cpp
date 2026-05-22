@@ -555,7 +555,7 @@ void WormAgent::addParsToJson(json & j)
 
 	 
     if (n_ptr1){
-    appendNSToJsonByCell(j, *n_ptr1, names);
+    appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
 

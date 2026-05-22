@@ -136,7 +136,7 @@ public:
 	void addParsToJson(json & j);
 	void initForSimulation(RandomState &rs_);//{InitializeSimulation(rs_);}
 
-
+	virtual const vector<string> getSectionNames() {return vector<string>(par1.N_size, "interneuron");}
 	//const vector<string> getCellNames() {return {"A","B"};}
 	const string getModelName() {return {"CO"};}
 	vector<doubIntParamsHead> getWormParams();

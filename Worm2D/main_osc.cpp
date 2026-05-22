@@ -457,6 +457,7 @@ int main (int argc, const char* argv[])
     if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
+    appendNSCellClassesToJson(j, w2->getSectionNames());
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
@@ -466,4 +467,3 @@ int main (int argc, const char* argv[])
     delete w2;
     return 0;
 }
-

@@ -994,7 +994,8 @@ void appendNSToJsonByCell(json & j, NervousSystem& n)
 
 }
 
-void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names_full)
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names_full,
+  const vector<string> & section_names)
 {
 
 vector<double> taus = getVector<double>(n.taus, n.size);
@@ -1021,11 +1022,14 @@ j2["cell_names"]["value"] = cell_names_full;
 
 if (!j2.contains("cells")) j2["cells"] = json::object();
 json & j3 = j2["cells"];
+assert((section_names.empty() || section_names.size()==cell_names_full.size())
+  && "section_names must correspond to cell_names_full");
 for (int i=0;i<cell_names_full.size();i++) 
   {
     const string & name = cell_names_full[i];
     if (!j3.contains(name)) j3[name] = json::object();
     json & j4 = j3[name];
+    if (!section_names.empty()) j4["cell_class"]["value"] = section_names[i];
     j4["tau"]["value"] = taus[i];
     j4["bias"]["value"] = bias[i];
     j4["gain"]["value"] = gains[i];
@@ -1083,6 +1087,32 @@ for (int i=0;i<cell_names_full.size();i++)
   //j2["maxchemcons"]["value"] = n.maxchemconns;
   //j2["maxelecconns"]["value"] = n.maxelecconns;
 
+}
+
+void appendNSCellClassesToJson(json & j, const vector<string> & section_names)
+{
+  if (!j.contains("nervous_system")) return;
+
+  json & j2 = j["nervous_system"];
+  if (!j2.contains("cell_names")
+      || !j2["cell_names"].contains("value")
+      || !j2["cell_names"]["value"].is_array()) return;
+
+  vector<string> names = j2["cell_names"]["value"].template get< vector<string> >();
+  vector<string> classes = section_names;
+  if (classes.empty()) classes = vector<string>(names.size(), "vnc");
+  else if (classes.size()!=names.size() && names.size() % classes.size()==0)
+  {
+    vector<string> repeated_classes;
+    for (int i=0; i<names.size(); i++) repeated_classes.push_back(classes[i % classes.size()]);
+    classes = repeated_classes;
+  }
+  assert(classes.size()==names.size()
+    && "section_names must correspond to nervous_system.cell_names");
+
+  if (!j2.contains("cells")) j2["cells"] = json::object();
+  json & cells = j2["cells"];
+  for (int i=0; i<names.size(); i++) cells[names[i]]["cell_class"]["value"] = classes[i];
 }
 
 Params< vector<double> > getNervousSysParamsDoubleNH(NervousSystem& c)

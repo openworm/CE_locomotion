@@ -1,66 +1,4 @@
 {
-    "Body": {
-        "C_agar_par_total": {
-            "message": "Total tangential drag coefficient for agar in kg/s",
-            "value": 0.0032
-        },
-        "C_agar_perp_total": {
-            "message": "Total rod normal drag coefficient in agar in kg/s",
-            "value": 0.128
-        },
-        "C_water_par_total": {
-            "message": "Total rod tangential drag coefficient for water in kg/s",
-            "value": 3.3e-06
-        },
-        "C_water_perp_total": {
-            "message": "Total rod normal drag coefficient for water in kg/s",
-            "value": 5.2e-06
-        },
-        "L_worm": {
-            "message": "Length of worm in m",
-            "value": 0.001
-        },
-        "Medium": {
-            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
-            "value": 1.0
-        },
-        "N_segments": {
-            "message": "Number of body segments on each side, dorsal and ventral",
-            "value": 50
-        },
-        "R_min": {
-            "message": "Minor radius of prolate ellipse body in m",
-            "value": 4e-05
-        },
-        "beta_D": {
-            "message": "Diagonal passive damping constant in s",
-            "value": 0.07291666666666666
-        },
-        "beta_L": {
-            "message": "Lateral passive damping constant in s",
-            "value": 0.0005208333333333333
-        },
-        "beta_M0": {
-            "message": "Baseline active damping constant in s",
-            "value": 0.052083333333333336
-        },
-        "delta_M": {
-            "message": "Rest muscle length scaling constant",
-            "value": 0.65
-        },
-        "kappa_D": {
-            "message": "Diagonal spring constant in kg/s",
-            "value": 7.291666666666666
-        },
-        "kappa_L": {
-            "message": "Lateral spring constant in kg/s",
-            "value": 0.020833333333333332
-        },
-        "kappa_M0": {
-            "message": "Baseline active muscle spring constant in kg/s",
-            "value": 0.41666666666666663
-        }
-    },
     "Dorsal NMJ": {
         "Cell name": {
             "value": [
@@ -923,220 +861,6 @@
         "skip_steps": {
             "value": 4
         }
-    },
-    "Evolvable": {
-        "value": [
-            {
-                "active": true,
-                "evotag": 1,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 2,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 3,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 4,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 5,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 6,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 7,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 8,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 9,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 10,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 11,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 12,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 13,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 14,
-                "name": "Stretch receptor_SRvncgain",
-                "val1": -200.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 15,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            },
-            {
-                "active": true,
-                "evotag": 16,
-                "name": "VNC 18_D inds_V inds",
-                "val1": -1.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 17,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 18,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 19,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 20,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 21,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 22,
-                "name": "Nervous system_Chemical weights",
-                "val1": 4.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 23,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 24,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 25,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 26,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 27,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 28,
-                "name": "Stretch receptor_SRheadgain",
-                "val1": -200.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 29,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            },
-            {
-                "active": true,
-                "evotag": 30,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            }
-        ]
     },
     "Funcable": {},
     "InputNS": {
@@ -5259,6 +4983,747 @@
             "value": 7
         }
     },
+    "body": {
+        "beta_d": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_l": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_m0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "c_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "c_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "c_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "c_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "delta_m": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_d": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_l": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_m0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        },
+        "l_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "n_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "r_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        }
+    },
+    "dorsal_body": {
+        "weights": {
+            "message": "Dorsal muscle to body weights in sparse format",
+            "value": [
+                {
+                    "from_musc": 1,
+                    "to_seg": 1,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 2,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 49,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 50,
+                    "weight": {
+                        "value": 0.5
+                    }
+                }
+            ]
+        }
+    },
     "dorsal_nmj": {
         "weights": {
             "message": "Dorsal NMJ weights in sparse format",
@@ -5602,6 +6067,230 @@
             ]
         }
     },
+    "driving_inputs": {
+        "inputs": {
+            "message": "Driving input strength to Nervous System",
+            "value": null
+        },
+        "weights": {
+            "message": "Weights of driving inputs to Nervous System in sparse format",
+            "value": null
+        }
+    },
+    "evolvable_ranges": {
+        "value": [
+            {
+                "active": true,
+                "evotag": 1,
+                "lower_limit": -15.0,
+                "name": "Nervous system_biases",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 2,
+                "lower_limit": -15.0,
+                "name": "Nervous system_biases",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 3,
+                "lower_limit": 0.5,
+                "name": "Nervous system_taus",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 4,
+                "lower_limit": 0.5,
+                "name": "Nervous system_taus",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 5,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 6,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 7,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 8,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 9,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 10,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 11,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 12,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 13,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 14,
+                "lower_limit": -200.0,
+                "name": "Stretch receptor_SRvncgain",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 15,
+                "lower_limit": 0.0,
+                "name": "VNC 18_D inds_V inds",
+                "upper_limit": 1.0
+            },
+            {
+                "active": true,
+                "evotag": 16,
+                "lower_limit": -1.0,
+                "name": "VNC 18_D inds_V inds",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 17,
+                "lower_limit": -15.0,
+                "name": "Nervous system_biases",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 18,
+                "lower_limit": -15.0,
+                "name": "Nervous system_biases",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 19,
+                "lower_limit": 0.5,
+                "name": "Nervous system_taus",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 20,
+                "lower_limit": 0.5,
+                "name": "Nervous system_taus",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 21,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 22,
+                "lower_limit": 4.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 23,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 24,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 25,
+                "lower_limit": -15.0,
+                "name": "Nervous system_Chemical weights",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 26,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 27,
+                "lower_limit": 0.0,
+                "name": "Nervous system_Electrical weights",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 28,
+                "lower_limit": -200.0,
+                "name": "Stretch receptor_SRheadgain",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 29,
+                "lower_limit": 0.0,
+                "name": "VNC 18_D inds_V inds",
+                "upper_limit": 1.0
+            },
+            {
+                "active": true,
+                "evotag": 30,
+                "lower_limit": 0.0,
+                "name": "VNC 18_D inds_V inds",
+                "upper_limit": 1.0
+            }
+        ]
+    },
     "nervous_system": {
         "cell_names": {
             "value": [
@@ -5653,6 +6342,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5668,6 +6360,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5685,6 +6380,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5700,6 +6398,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5717,6 +6418,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5732,6 +6436,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5749,6 +6456,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5764,6 +6474,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5781,6 +6494,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5796,6 +6512,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5813,6 +6532,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5828,6 +6550,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5845,6 +6570,9 @@
                     "evotag": 18,
                     "value": -8.956848156121332
                 },
+                "cell_class": {
+                    "value": "head"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5860,6 +6588,9 @@
                 "bias": {
                     "evotag": 18,
                     "value": -8.956848156121332
+                },
+                "cell_class": {
+                    "value": "head"
                 },
                 "gain": {
                     "value": 1.0
@@ -5877,6 +6608,9 @@
                     "evotag": 17,
                     "value": 14.320326459473849
                 },
+                "cell_class": {
+                    "value": "head"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5892,6 +6626,9 @@
                 "bias": {
                     "evotag": 17,
                     "value": 14.320326459473849
+                },
+                "cell_class": {
+                    "value": "head"
                 },
                 "gain": {
                     "value": 1.0
@@ -5909,6 +6646,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5924,6 +6664,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5941,6 +6684,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5956,6 +6702,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5973,6 +6722,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5988,6 +6740,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6005,6 +6760,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6020,6 +6778,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6037,6 +6798,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6052,6 +6816,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6069,6 +6836,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6084,6 +6854,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6101,6 +6874,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6116,6 +6892,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6133,6 +6912,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6148,6 +6930,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6165,6 +6950,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6180,6 +6968,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6197,6 +6988,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6212,6 +7006,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6229,6 +7026,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6244,6 +7044,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6261,6 +7064,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6276,6 +7082,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -7936,6 +8745,685 @@
         },
         "sr_vnc_gain": {
             "evotag": 14
+        }
+    },
+    "ventral_body": {
+        "weights": {
+            "message": "Ventral muscle to body weights in sparse format",
+            "value": [
+                {
+                    "from_musc": 1,
+                    "to_seg": 1,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 2,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 49,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 50,
+                    "weight": {
+                        "value": 0.5
+                    }
+                }
+            ]
         }
     },
     "ventral_nmj": {

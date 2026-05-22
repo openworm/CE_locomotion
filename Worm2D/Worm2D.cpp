@@ -981,13 +981,11 @@ void Worm2Dm::addParsToJson(json & j)
     appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 
-    //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
-
-
     //W2Dmparscalled = true;
 
     Worm2Dbody::addParsToJson(j);
     Worm2Dbase::addParsToJson(j);
+    appendNSCellClassesToJson(j, getSectionNames());
 
 
 
@@ -1025,7 +1023,7 @@ void Worm2D::addParsToJson(json & j)
     if (n_ptr1){
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], *n_ptr1);
-    appendNSToJsonByCell(j, *n_ptr1, names);
+    appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
    
@@ -2477,4 +2475,3 @@ void InputSwitcher::construct(const json & j)
  
 
 }
-

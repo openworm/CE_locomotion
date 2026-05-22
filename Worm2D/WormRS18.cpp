@@ -776,6 +776,16 @@ void Worm18::Step1()
     //t += StepSize;
 }
 
+const vector<string> Worm18::getSectionNames()
+{
+vector<string> v1(par1.N_units*par1.N_neuronsperunit, "vnc");
+vector<string> v2(4, "head");
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+
+}
+
 const vector<string> Worm18::getDistinctCellNames()
 {
 vector<string> v1 = getCellNamesUnits({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);

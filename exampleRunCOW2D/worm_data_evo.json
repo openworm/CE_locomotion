@@ -746,6 +746,9 @@
                 "bias": {
                     "value": 2.294999864127688
                 },
+                "cell_class": {
+                    "value": "interneuron"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -759,6 +762,9 @@
             "cell_1": {
                 "bias": {
                     "value": -7.044698057006717
+                },
+                "cell_class": {
+                    "value": "interneuron"
                 },
                 "gain": {
                     "value": 1.0
@@ -774,6 +780,9 @@
                 "bias": {
                     "value": 11.327997520596966
                 },
+                "cell_class": {
+                    "value": "interneuron"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -787,6 +796,9 @@
             "cell_3": {
                 "bias": {
                     "value": 0.2852615167020178
+                },
+                "cell_class": {
+                    "value": "interneuron"
                 },
                 "gain": {
                     "value": 1.0
@@ -802,6 +814,9 @@
                 "bias": {
                     "value": -3.0203702870377818
                 },
+                "cell_class": {
+                    "value": "interneuron"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -815,6 +830,9 @@
             "cell_5": {
                 "bias": {
                     "value": 2.4286761839800364
+                },
+                "cell_class": {
+                    "value": "interneuron"
                 },
                 "gain": {
                     "value": 1.0
@@ -830,6 +848,9 @@
                 "bias": {
                     "value": -4.635280915478799
                 },
+                "cell_class": {
+                    "value": "interneuron"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -843,6 +864,9 @@
             "cell_7": {
                 "bias": {
                     "value": -0.04426866742296634
+                },
+                "cell_class": {
+                    "value": "interneuron"
                 },
                 "gain": {
                     "value": 1.0
@@ -858,6 +882,9 @@
                 "bias": {
                     "value": 10.281266997591512
                 },
+                "cell_class": {
+                    "value": "interneuron"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -871,6 +898,9 @@
             "cell_9": {
                 "bias": {
                     "value": 10.281266997591512
+                },
+                "cell_class": {
+                    "value": "interneuron"
                 },
                 "gain": {
                     "value": 1.0

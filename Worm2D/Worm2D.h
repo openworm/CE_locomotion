@@ -476,6 +476,7 @@ virtual double getVelocity() = 0;
 const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber) const;
 
+virtual const vector<string> getSectionNames() {return vector<string>(par1.N_size, "vnc");}
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
