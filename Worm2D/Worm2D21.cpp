@@ -98,7 +98,10 @@ NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
 NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
 
 // NMJ Gain XXX
-NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
+if (j["Worm"].contains("nmj_gain_map"))
+    NMJ_Gain_Map = j["Worm"]["nmj_gain_map"]["value"];
+else
+    NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
 
 
 /* NMJ_Gain.SetBounds(1, par1.N_muscles);

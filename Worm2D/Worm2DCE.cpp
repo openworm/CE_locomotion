@@ -1724,8 +1724,8 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   var1.parDoub.head = "Worm";
   var1.parDoub.names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
   var1.parDoub.vals = {NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
-  append<string>(var1.parDoub.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
-  append<string>(var1.parDoub.names,{"AVA_output", "AVB_output"});
+  append<string>(var1.parDoub.names,{"ava_act", "ava_inact", "avb_act", "avb_inact"});
+  append<string>(var1.parDoub.names,{"ava_output", "avb_output"});
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
   append<double>(var1.parDoub.vals,{AVA_output, AVB_output});
 

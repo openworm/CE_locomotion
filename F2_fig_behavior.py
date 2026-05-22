@@ -94,12 +94,9 @@ def make_fig(model_name):
 
     worm_plot_time = plot_format["worm_plot_time"]
     if "Evolutionary Optimization Parameters" in network_json_data:
-        AvgSpeed = (
-            network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"][
-                "value"
-            ]
-            * 1000.0
-        )
+        evo_pars = network_json_data["Evolutionary Optimization Parameters"]
+        avg_speed_key = "avg_speed" if "avg_speed" in evo_pars else "AvgSpeed"
+        AvgSpeed = evo_pars[avg_speed_key]["value"] * 1000.0
     elif "AvgSpeed" in plot_format:
         AvgSpeed = plot_format["AvgSpeed"]
 

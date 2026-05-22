@@ -94,7 +94,7 @@
 
 
 
-<silentSynapse id="silentSyn"/>
+<outputSynapse id="silentSyn" sign="0"/>
 <outputSynapse id="neuron_to_neuron_syn_w2d" sign="1"/>
 
 <gapJunction id="gapJunction0" conductance="1nS"/>

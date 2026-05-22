@@ -693,7 +693,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["sr_evo_top_a"] = 200
     evol_extra_parameters["sr_offset"] = 0
     evol_extra_parameters["sr_seg_per_sr"] = 6
-    evol_extra_parameters["SRZeroGainsTypeEvo"] = 1
+    evol_extra_parameters["sr_zero_gains_type_evo"] = 1
     evol_extra_parameters["do_orig_musc_input"] = True
     evol_extra_parameters["do_orig_sr_input"] = True
     evol_extra_parameters["do_angle_diff"] = False
@@ -775,6 +775,7 @@ def run(a=None, **kwargs):
         "resetAgentBody": "reset_agent_body",
         "doTestRun": "do_test_run",
         "SRZeroGainsType": "sr_zero_gains_type",
+        "SRZeroGainsTypeEvo": "sr_zero_gains_type_evo",
         "doLegacy": "do_legacy",
         "initNSFromJson": "init_ns_from_json",
         "inputInd": "input_ind",
@@ -905,11 +906,17 @@ def run(a=None, **kwargs):
             same_vals = False
 
     if not do_evol and same_vals:
-        print(
-            "Simulation not needed as simulation parameters are the same as the existing ones.\n"
-            "Please supply new command line arguments."
-        )
-        sys.exit(1)
+        if a.overwrite:
+            print(
+                "Simulation parameters are the same as the existing ones, "
+                "but overwrite is true so the simulation will be rerun."
+            )
+        else:
+            print(
+                "Simulation not needed as simulation parameters are the same as the existing ones.\n"
+                "Please supply new command line arguments."
+            )
+            sys.exit(1)
 
     with open(sim_par_file, "w", encoding="utf-8") as f:
         json.dump(sim_data, f, ensure_ascii=False, indent=4)
@@ -958,14 +965,20 @@ def run(a=None, **kwargs):
     if True:
         # result = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         # result = subprocess.run(cmd, capture_output=True, text=True, cwd = home_dir)
-        # result = subprocess.run(cmd, capture_output=True, text=True, env=env)
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        env = os.environ.copy()
+        env_bin = os.path.dirname(sys.executable)
+        env["PATH"] = env_bin + os.pathsep + env.get("PATH", "")
+        env.setdefault("NEURON_MODULE_OPTIONS", "-nogui")
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
         if result.stdout:
             print(result.stdout)
 
         if result.stderr:
             print("Error:")
             print(result.stderr)
+
+        if result.returncode != 0:
+            sys.exit(result.returncode)
 
     # hf.dir_name = a.outputFolderName
 
