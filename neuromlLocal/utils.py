@@ -55,12 +55,20 @@ def _get_new_cell_values(network_json_data, value):
         "taus": "tau",
         "gains": "gain",
         "states": "state",
+        "Section name": "cell_class",
     }
     field = field_map.get(value, value)
     cells = ns.get("cells", {})
-    if not cells or field not in next(iter(cells.values()), {}):
+    if not cells:
         return None
-    return [_value(cells[name][field]) for name in names]
+
+    vals = []
+    for name in names:
+        cell = cells.get(name)
+        if not cell or field not in cell:
+            return None
+        vals.append(_value(cell[field]))
+    return vals
 
 
 def getNervousSystemConnections(network_json_data, kind):
@@ -639,6 +647,9 @@ def getNSvalue(network_json_data, value):
         new_values = _get_new_cell_values(network_json_data, value)
         if new_values is not None:
             return new_values
+        old_ns = network_json_data.get(NS_OLD, {})
+        if value in old_ns:
+            return _value(old_ns[value])
     if value in ns:
         return _value(ns[value])
     return None
