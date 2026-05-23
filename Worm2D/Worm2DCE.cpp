@@ -425,9 +425,11 @@ void WormCE::addEvolvableToJson(json & j)
     j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
   }
  
+ // if (false){
   j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
-  
+ // }
+
   j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
   j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
   j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
@@ -504,10 +506,13 @@ void WormCE::addEvolvableToJson(json & j)
 
   //j["Nervous system"]["biases"]["evolvable"] = biasvec;
 
+  //if (false){
   j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
 
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+  //}
 
   addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getDistinctCellNames());
@@ -543,9 +548,10 @@ addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames()
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
 //j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 
-
+//if (false){
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
 j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
+//}
 
 addEvoNames(j);
 

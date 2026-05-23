@@ -441,14 +441,29 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
-  
-  
+    int n_size = 0;
+    if (j.contains("nervous_system")
+        && j.at("nervous_system").contains("cell_names")
+        && j.at("nervous_system").at("cell_names").contains("value"))
+    {
+        n_size = j.at("nervous_system").at("cell_names").at("value").size();
+    }
+    else if (j.contains("Nervous system")
+        && j.at("Nervous system").contains("size"))
+    {
+        n_size = j.at("Nervous system").at("size").at("value");
+    }
+    else
+    {
+        n_size = j.at("Worm").at("N_size").at("value");
+    }
+
     return
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
-    j["Nervous system"]["size"]["value"]
+    n_size
   };
 }
 
@@ -810,6 +825,7 @@ void Worm2Dbase::addParsToJson(json & j)
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
+    if (false){
     string nsHead = "Nervous system";
    
     {Params< string > par;
@@ -817,6 +833,10 @@ void Worm2Dbase::addParsToJson(json & j)
     par.vals = {getModelName()};
     appendToJson<string>(j[nsHead],par);
     }
+    }
+
+    j["nervous_system"]["model_name"]["value"] = getModelName();
+    j["nervous_system"]["model_name"]["message"] = "Name of the model used for the nervous system.";
 
     vector<doubIntParamsHead> parvec = getWormParams();
     for (size_t i=0;i<parvec.size(); i++) {
@@ -859,6 +879,8 @@ void Worm2Dbase::addParsToJson(json & j)
     }
     assert(names[0]!="not implemented");
 
+
+    
      {json & j22 =  j["driving_inputs"]["weights"]["value"];
     j["driving_inputs"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
     for (const toFromWeight & val : externalInputConn)
@@ -979,8 +1001,8 @@ void Worm2Dm::addParsToJson(json & j)
 
 
 
-    string nsHead = "Nervous system";
-    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+    //string nsHead = "Nervous system";
+    //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
 
     //W2Dmparscalled = true;

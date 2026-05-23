@@ -416,7 +416,7 @@ def getPlotFormat(network_json_data):
         )
 
     if True:
-        json_model_name = getModelName_old(network_json_data)
+        json_model_name = getModelName(network_json_data)
         section_names = getNSvalue(network_json_data, "Section name")
         if section_names is None:
             section_names = default_cells[json_model_name]["Section name"]
@@ -599,7 +599,7 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
-def getModelName_old(network_json_data):
+def getModelName(network_json_data):
     ns = getNervousSystem(network_json_data)
     if "model_name" in ns:
         return _value(ns["model_name"])
@@ -611,11 +611,15 @@ def getModelName_old(network_json_data):
     return None
 
 
+def getModelName_old(network_json_data):
+    return getModelName(network_json_data)
+
+
 def getMainModelName(network_json_data):
     worm = network_json_data.get("Worm", {})
     if "Main model name" in worm:
         return _value(worm["Main model name"])
-    return getModelName_old(network_json_data)
+    return getModelName(network_json_data)
 
 
 def getIndOfNthVal(val, vals_list, n=0):

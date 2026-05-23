@@ -1330,6 +1330,8 @@ void setNSFromJson(const json & j, NervousSystem & n, const bool setStates)
 void appendAllNSJson( json & j, NervousSystem & n)
 {
 
+return;
+
 {Params<vector<double> > parvec = getNervousSysParamsDoubleNH(n);
 appendToJson<vector<double> >(j,parvec);}
         

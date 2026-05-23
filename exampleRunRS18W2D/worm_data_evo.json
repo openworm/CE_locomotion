@@ -786,9 +786,6 @@
         }
     },
     "Evolutionary Optimization Parameters": {
-        "AvgSpeed": {
-            "value": 0.00022
-        },
         "BBCfit": {
             "value": 0.011000000000000001
         },
@@ -872,6 +869,9 @@
         },
         "VectSize_temo": {
             "value": 30
+        },
+        "avg_speed": {
+            "value": 0.00022
         },
         "evoType": {
             "value": "Evo21"

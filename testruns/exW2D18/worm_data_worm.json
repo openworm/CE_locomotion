@@ -786,9 +786,6 @@
         }
     },
     "Evolutionary Optimization Parameters": {
-        "AvgSpeed": {
-            "value": 0.00022
-        },
         "CheckpointInterval": {
             "value": 5
         },
@@ -815,9 +812,6 @@
         },
         "N_curvs": {
             "value": 23
-        },
-        "OSCTbase": {
-            "value": 0.25
         },
         "PopulationSize": {
             "value": 36
@@ -849,11 +843,17 @@
         "agarfreq": {
             "value": 0.44
         },
+        "avg_speed": {
+            "value": 0.00022
+        },
         "evoType": {
             "value": "Evo18"
         },
         "fileprefix": {
             "value": ""
+        },
+        "osc_tbase": {
+            "value": 0.25
         },
         "randomseed": {
             "value": 292

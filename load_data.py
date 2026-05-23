@@ -854,7 +854,7 @@ def reload_single_run(a=None, **kwargs):
         main_model_name = network_json_data["Worm"]["Main model name"]["value"]
 
     if a.modelName == "W2DSR":
-        json_model_name = utils.getModelName_old(network_json_data)
+        json_model_name = utils.getModelName(network_json_data)
         a.modelName = json_model_name
 
     if (main_model_name is not None) and (main_model_name == "COW2DSR"):
