@@ -6,5 +6,5 @@
     "Transient": 0,
     "CheckpointInterval": 5,
     "EvolutionType": "Evo21",
-    "doOrigMuscInput": false
+    "do_orig_musc_input": false
 }

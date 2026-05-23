@@ -722,6 +722,7 @@ void Worm2Dbase::writeJsonFile(ofstream & json_out)
 
     json j;
     addParsToJson(j);
+    cleanLegacyOutputJson(j);
     //ofstream json_out(supArgs1.rename_file("worm_data.json"));
     //ofstream json_out("worm_data.json");
     json_out << std::setw(4) << j << std::endl;
@@ -859,7 +860,10 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
@@ -876,6 +880,11 @@ void Worm2Dbase::addParsToJson(json & j)
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
+    }
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
     }
     assert(names[0]!="not implemented");
 
@@ -1021,7 +1030,10 @@ void Worm2D::addParsToJson(json & j)
     
     
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
@@ -1039,14 +1051,17 @@ void Worm2D::addParsToJson(json & j)
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
     assert(names[0]!="not implemented");
 
     vector<string> names_no_suffix = removeSuffixIndices(names);
 
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
-    string nsHead = "Nervous system";
-    appendAllNSJson(j[nsHead], *n_ptr1);
     appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
@@ -2099,7 +2114,10 @@ void Worm2D::setUpMuscleConn(const json & j)
     //if (false){
     if (j.contains("dorsal_nmj")){
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
     

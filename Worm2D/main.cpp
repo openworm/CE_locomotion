@@ -25,6 +25,7 @@ void write_json(Evolution* er,  Worm2Dm* w, string filename)
     json j;
     w->addParsToJson(j);
     er->addParsToJson(j);
+    w->cleanLegacyOutputJson(j);
     json_out << std::setw(4) << j << std::endl;
     json_out.close();
 
@@ -119,6 +120,7 @@ int main (int argc, const char* argv[])
         json j;
         w->addParsToJson(j);
         er->addParsToJson(j);
+        w->cleanLegacyOutputJson(j);
         json_out << std::setw(4) << j << std::endl;
         json_out.close();
 

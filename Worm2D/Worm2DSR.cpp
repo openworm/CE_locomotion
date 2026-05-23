@@ -543,7 +543,13 @@ void addEvoNames(json & j)
   
   vector<string> evoKeys(vdd.size());
   for (int i=0;i<evoNames.size();i++)
-  { evoKeys[i] = "";
+  {
+    if (evoNames[i].empty())
+    {
+      evoKeys[i] = "evolvable_" + to_string(i + 1);
+      continue;
+    }
+    evoKeys[i] = "";
     for (int j=0;j<evoNames[i].size()-1;j++) 
     {evoKeys[i].append(evoNames[i][j]);evoKeys[i].append("_");}
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
@@ -1521,13 +1527,6 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({1,3,1});
   vec.push_back({3,4,2});
   j["Dorsal NMJ"]["weights"]["evolvable"] = vec;
-  j["Nervous system"]["Chemical weights"]["evolvable"] = vec;
-}
-
-  {vector<intPair> vec;
-  vec.push_back({1,3});
-  vec.push_back({3,3});
-  j["Nervous system"]["biases"]["evolvable"] = vec;
   }
 
 }

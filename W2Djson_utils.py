@@ -197,13 +197,13 @@ def mergeJsons(file1, file2, outdir):
         + utils.getModelName(appended_json_data)
     )
     if "nervous_system" in network_json_data:
-        network_json_data["nervous_system"].setdefault("model_name", {})[
-            "value"
-        ] = joined_model_name
+        network_json_data["nervous_system"].setdefault("model_name", {})["value"] = (
+            joined_model_name
+        )
     else:
-        network_json_data[NSname].setdefault("Model name", {})[
-            "value"
-        ] = joined_model_name
+        network_json_data[NSname].setdefault("Model name", {})["value"] = (
+            joined_model_name
+        )
 
     # hf.make_directory("test_json_utils", overwrite=True)
     network_json_data["Driving input"]["size"]["value"] += appended_json_data[
