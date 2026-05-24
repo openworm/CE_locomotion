@@ -881,11 +881,6 @@ void Worm2Dbase::addParsToJson(json & j)
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    if (names.empty() || names[0]=="not implemented")
-    {
-        names.clear();
-        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
-    }
     assert(names[0]!="not implemented");
 
 
@@ -1050,11 +1045,6 @@ void Worm2D::addParsToJson(json & j)
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
-    }
-    if (names.empty() || names[0]=="not implemented")
-    {
-        names.clear();
-        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
     }
     assert(names[0]!="not implemented");
 

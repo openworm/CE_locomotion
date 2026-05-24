@@ -300,6 +300,7 @@ class Worm2DoscNMLm : public Worm2Dm
     Worm2DoscNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2DoscNMLm";}
+    void addParsToJson(json & j){j=BPitsJson;Worm2Dm::addParsToJson(j);}
 };
 
 
