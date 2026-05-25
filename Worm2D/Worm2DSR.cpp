@@ -472,10 +472,16 @@ bool isJsonArrayIndexKey(const string & key)
 
 vector<string> shortenEvoNamePath(const vector<string> & path)
 {
-  vector<string> shortened = path;
-  for (int i=0;i<shortened.size();i++)
+  vector<string> shortened;
+  for (int i=0;i<path.size();i++)
   {
-    if (shortened[i] == "nervous_system") shortened[i] = "ns";
+    if (path[i] == "value") continue;
+
+    string component = path[i];
+    if (component == "nervous_system") component = "ns";
+    else if (component == "chemical_conns") component = "chemcons";
+    else if (component == "electrical_conns") component = "eleccons";
+    shortened.push_back(component);
   }
   return shortened;
 }
