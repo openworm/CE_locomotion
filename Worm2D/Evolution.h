@@ -507,6 +507,8 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         j.erase("Nervous system");
         j.erase("Dorsal NMJ");
         j.erase("Ventral NMJ");
+        j.erase("Dorsal body");
+        j.erase("Ventral body");
         
         ofstream json_out(rename_file("worm_data_evo.json"));
         json_out << std::setw(4) << j << std::endl;

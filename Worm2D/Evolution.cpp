@@ -468,6 +468,8 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     j.erase("Nervous system");
     j.erase("Dorsal NMJ");
     j.erase("Ventral NMJ");
+    j.erase("Dorsal body");
+    j.erase("Ventral body");
    
     json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;
