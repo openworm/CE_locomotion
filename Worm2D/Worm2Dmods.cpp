@@ -44,7 +44,7 @@ for (int i=0;i<cell_names_full.size();i++)
     const string & name = cell_names_full[i];
     if (!j3.contains(name)) j3[name] = json::object();
     json & j4 = j3[name];
-    j4["freg"]["value"] = freq[i];
+    j4["freq"]["value"] = freq[i];
     j4["phase"]["value"] = phase[i];
     j4["amp"]["value"] = amp[i];
   
