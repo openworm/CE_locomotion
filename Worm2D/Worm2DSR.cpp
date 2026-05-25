@@ -481,6 +481,8 @@ vector<string> shortenEvoNamePath(const vector<string> & path)
     if (component == "nervous_system") component = "ns";
     else if (component == "chemical_conns") component = "chemcons";
     else if (component == "electrical_conns") component = "eleccons";
+    else if (component == "dorsal_conns") component = "dorscons";
+    else if (component == "ventral_conns") component = "ventcons";
     shortened.push_back(component);
   }
   return shortened;
