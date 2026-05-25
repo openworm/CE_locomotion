@@ -292,7 +292,7 @@ default_cells["Worm2Dosc"]["default parameters"] = {
     "amp": 1,
     "freq": 1,
     "phase": 1,
-    # "timestep": 1,
+    "timestep": 0.005,
     # "state0": 0,
 }
 
@@ -972,6 +972,10 @@ def makeCellXmlReq(
         cell_vals = getNSvalue(network_json_data, key)
         if cell_vals is not None:
             vals[key] = getVals(pop_names, cell_names, cell_vals)
+        elif key == "timestep":
+            sim = network_json_data.get("Simulation", {})
+            step_size = _value(sim.get("StepSize"), par_name_default[key])
+            vals[key] = [step_size] * len(cell_names)
         else:
             if isinstance(par_name_default[key], dict):
                 vals[key] = [par_name_default[key]["value"]] * len(cell_names)

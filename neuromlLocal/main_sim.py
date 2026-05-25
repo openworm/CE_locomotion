@@ -2,6 +2,8 @@ import sys
 import sysconfig
 import os
 import functools
+import math
+import xml.etree.ElementTree as ET
 
 
 def rsetattr(obj, attr, val):
@@ -52,6 +54,9 @@ class Worm2DNRNSimulation:
 
     def __init__(self):
         self.tstop = 1
+        self.dt_seconds = 0.005
+        self.output_time = 0.0
+        self.osc_params = {}
         print("Worm2DNRNSimulation init called")
         return
 
@@ -66,8 +71,27 @@ class Worm2DNRNSimulation:
         import utils
 
         self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
+        self.osc_params = self._load_oscillator_params()
         # print(self.DMIds)
         # sys.exit()
+
+    def _load_oscillator_params(self):
+        current = os.path.dirname(os.path.realpath(__file__))
+        filename = os.path.join(current, "cell_W2Dosc_cells.xml")
+        if not os.path.isfile(filename):
+            return {}
+
+        params = {}
+        root = ET.parse(filename).getroot()
+        for cell in root:
+            if not all(key in cell.attrib for key in ("id", "amp", "freq", "phase")):
+                continue
+            params[cell.attrib["id"]] = {
+                "amp": float(cell.attrib["amp"]),
+                "freq": float(cell.attrib["freq"]),
+                "phase": float(cell.attrib["phase"]),
+            }
+        return params
 
     def get_neuron_number(self, pop, i):
         return self.pop_dict[pop] + i * self.pop_num
@@ -80,6 +104,7 @@ class Worm2DNRNSimulation:
     def set_timestep(self, dt):
         print("Setting timestep to %s..." % dt)
 
+        self.dt_seconds = dt
         dt = float("{:0.1e}".format(dt)) * 1000.0  # memory issue fix
 
         # sys.path.insert(0,sysconfig.get_paths()["purelib"])
@@ -349,7 +374,15 @@ class Worm2DNRNSimulation:
         for id in self.NSIds:
             try:
                 # val = getattr(self.h, var)[0].soma.cai
-                val = getattr(self.h, id["NRN pop name"])[id["Ind"]].output
+                osc_params = self.osc_params.get(id.get("Cell"))
+                if osc_params is not None:
+                    val = osc_params["amp"] * math.sin(
+                        6.2831853 * osc_params["freq"] * self.output_time
+                        + osc_params["phase"]
+                    )
+                else:
+                    cell = getattr(self.h, id["NRN pop name"])[id["Ind"]]
+                    val = cell.output
             except AttributeError as e:
                 print(
                     "Problem passing neuronal output of %s, %s, %s"
@@ -383,6 +416,7 @@ class Worm2DNRNSimulation:
 
     def run(self, skip_to_time=-1):
         self.ns.advance()
+        self.output_time += self.dt_seconds
 
     def save_results(self):
         print_("> Saving results at time: %s" % self.h.t)
