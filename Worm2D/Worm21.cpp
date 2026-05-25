@@ -391,6 +391,11 @@ int as, da, db, dd, vd, vb, va;
 
 
 
+j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
+j["Nervous system"]["taus"]["evolvable"] = to_evo_json(tauvec);
+j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
+j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
 addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
     addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
     addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);

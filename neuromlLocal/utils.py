@@ -616,6 +616,9 @@ def getModelName_old(network_json_data):
 
 
 def getMainModelName(network_json_data):
+    worm_new = network_json_data.get("worm", {})
+    if "main_model_name" in worm_new:
+        return _value(worm_new["main_model_name"])
     worm = network_json_data.get("Worm", {})
     if "Main model name" in worm:
         return _value(worm["Main model name"])

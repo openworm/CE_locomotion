@@ -460,6 +460,22 @@ void setEvoStr(vector<string> & vecval, const vector<string> & evoName)
 
 }
 
+bool isJsonArrayIndexKey(const string & key)
+{
+  if (key.empty()) return false;
+  for (int i=0;i<key.size();i++)
+  {
+    if (key[i] < '0' || key[i] > '9') return false;
+  }
+  return true;
+}
+
+void setEvoNameFromTag(int evotag, vector<vector<string> > & evoNames, const vector<string> & path)
+{
+  if (evotag < 1 || evotag > evoNames.size()) return;
+  setEvoStr(evoNames[evotag-1], path);
+}
+
 
 void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames, 
   vector<string> & path)
@@ -476,13 +492,13 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
   if (it2->at("evolvable").is_object()){
     const json & j1 = it2->at("evolvable");
     int ind1 = j1["evotag"].get<int>();
-    setEvoStr(evoNames[ind1-1],path);
+    setEvoNameFromTag(ind1, evoNames, path);
   }
   else if (it2->at("evolvable").is_number()){
   int ind1 = it2->at("evolvable").get<int>();
   //setEvoStr(evoNames[ind1-1],evoName);
   //setEvoStr(evoNames[ind1-1],it2.key());
-  setEvoStr(evoNames[ind1-1],path);
+  setEvoNameFromTag(ind1, evoNames, path);
   }
   else{
   size_t idx = it2.key().find("weights");
@@ -490,7 +506,7 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
         {
           vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+          for (int i = 0; i<evols.size();i++) setEvoNameFromTag(evols[i].val, evoNames, path);
           
         }
   else
@@ -498,7 +514,7 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
           vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
           //vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+          for (int i = 0; i<evols.size();i++) setEvoNameFromTag(evols[i].val, evoNames, path);
                             
         }
   }
@@ -509,9 +525,45 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
 
 }
 
+void getEvoNamesFromEvotags(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
+{
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      const bool parentIsArray = j.is_array();
+      const string key = parentIsArray ? "" : it.key();
+      if (!parentIsArray
+        && (key == evolvableRangesKey || key == legacyEvolvableKey || key == "evolvable")) continue;
+
+      const bool hasEvotag = it->is_object() && it->contains("evotag");
+      const bool pushKey = !parentIsArray
+        && !isJsonArrayIndexKey(key)
+        && !(path.size() > 0 && path[path.size()-1] == "cells" && !hasEvotag);
+      if (pushKey) path.push_back(key);
+
+      if (hasEvotag)
+      {
+        int evotag = it->at("evotag").get<int>();
+        setEvoNameFromTag(evotag, evoNames, path);
+      }
+      else if (it->is_object() || it->is_array())
+      {
+        getEvoNamesFromEvotags(*it, evoNames, path);
+      }
+
+      if (pushKey) path.pop_back();
+    }
+}
+
 void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
 {
-  
+    getEvoNamesFromEvotags(j, evoNames, path);
+    bool foundEvotagNames = false;
+    for (int i=0;i<evoNames.size();i++)
+    {
+      if (!evoNames[i].empty()) {foundEvotagNames = true; break;}
+    }
+    if (foundEvotagNames) return;
+
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("evolvable")) getEvoNames1(it, evoNames, path);
@@ -559,7 +611,6 @@ void addEvoNames(json & j)
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
-    if (!it->contains("name"))
     (*it)["name"] = evoKeys[it->at("evotag").get<int>()-1];
     if (!it->contains("active")) (*it)["active"] = true;
 
@@ -1527,6 +1578,13 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({1,3,1});
   vec.push_back({3,4,2});
   j["Dorsal NMJ"]["weights"]["evolvable"] = vec;
+  j["Nervous system"]["Chemical weights"]["evolvable"] = vec;
+}
+
+  {vector<intPair> vec;
+  vec.push_back({1,3});
+  vec.push_back({3,3});
+  j["Nervous system"]["biases"]["evolvable"] = vec;
   }
 
 }

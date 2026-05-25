@@ -253,11 +253,6 @@ class baseParameters
     const json & itsNewSetVals() const {return newSetVals;}
     const json & itsBPjson() const {return BPitsJson;}
     void cleanLegacyParameterKeys(json & j) const {removeLegacyParameterKeys(j);}
-    void cleanLegacyOutputJson(json & j) const
-    {
-        removeLegacyParameterKeys(j);
-        j.erase("Nervous system");
-    }
     
     friend class Efunctor;
     protected:

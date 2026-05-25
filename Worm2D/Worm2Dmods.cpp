@@ -13,7 +13,20 @@ amp.swap(pfa_.amp);
 
 void pfa::addParsToJson(json & j)
 {
+ 
+json & j2 = j["Nervous system"];
+    
+j2["size"]["value"] = size;
+j2["freq"]["value"] = freq;
+//j["freq"]["cell_val"] = 1;
+j2["phase"]["value"] = phase;
+//j["phase"]["cell_val"] = 1;
+j2["amp"]["value"] = amp;
+//j["amp"]["cell_val"] = 1;
 vector<string> cell_names(size, "cell");
+j2["Cell name"]["value"] = cell_names;
+
+ 
 
 
 

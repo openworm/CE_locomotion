@@ -49,11 +49,9 @@ int main (int argc, const char* argv[])
     //if (model_name == ""){
     //if (directoryExists(json_filename)){
         //j_orig = getJsonFromFile(json_filename);
-        if (j_orig.contains("Worm") && j_orig["Worm"].contains("Main model name"))
+        if (j_orig["Worm"].contains("Main model name"))
         model_name = j_orig["Worm"]["Main model name"]["value"];
-        else if (j_orig.contains("nervous_system") && j_orig["nervous_system"].contains("model_name"))
-        model_name = j_orig["nervous_system"]["model_name"]["value"];
-        else if (j_orig.contains("Nervous system") && j_orig["Nervous system"].contains("Model name"))
+        else if (j_orig["Nervous system"].contains("Model name"))
         model_name = j_orig["Nervous system"]["Model name"]["value"];
         
     }
@@ -110,8 +108,7 @@ int main (int argc, const char* argv[])
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
-        j_evo["nervous_system"]["model_name"]["value"] = model_name;
-        j_evo.erase("Nervous system");
+        j_evo["Nervous system"]["Model name"]["value"] = model_name;
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -455,13 +452,13 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
     j["Worm"]["Main model name"]["value"] = model_name;
-    j["nervous_system"]["model_name"]["value"] = model_name;
+    j["Nervous system"]["Model name"]["value"] = model_name;
 
     if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
-    w2->cleanLegacyOutputJson(j);
+    w2->cleanLegacyParameterKeys(j);
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);

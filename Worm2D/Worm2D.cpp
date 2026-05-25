@@ -722,7 +722,6 @@ void Worm2Dbase::writeJsonFile(ofstream & json_out)
 
     json j;
     addParsToJson(j);
-    cleanLegacyOutputJson(j);
     //ofstream json_out(supArgs1.rename_file("worm_data.json"));
     //ofstream json_out("worm_data.json");
     json_out << std::setw(4) << j << std::endl;
@@ -867,7 +866,7 @@ void Worm2Dbase::addParsToJson(json & j)
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
-    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system") 
     && j.at("Nervous system").contains("Cell name") 
     && j.at("Nervous system").at("Cell name").contains("value") 
     && j.at("Nervous system").at("Cell name").at("value").is_array())
@@ -875,13 +874,18 @@ void Worm2Dbase::addParsToJson(json & j)
     names = makeUnique(j.at("Nervous system").
     at("Cell name").at("value").template get< vector<string> >());
     }
-    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
     {
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    assert(names[0]!="not implemented");
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
 
 
     
@@ -1032,7 +1036,7 @@ void Worm2D::addParsToJson(json & j)
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
-    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system") 
     && j.at("Nervous system").contains("Cell name") 
     && j.at("Nervous system").at("Cell name").contains("value") 
     && j.at("Nervous system").at("Cell name").at("value").is_array())
@@ -1040,18 +1044,25 @@ void Worm2D::addParsToJson(json & j)
     names = makeUnique(j.at("Nervous system").
     at("Cell name").at("value").template get< vector<string> >());
     }
-    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
     {
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    assert(names[0]!="not implemented");
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
 
     vector<string> names_no_suffix = removeSuffixIndices(names);
 
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
+    string nsHead = "Nervous system";
+    appendAllNSJson(j[nsHead], *n_ptr1);
     appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
@@ -1200,14 +1211,19 @@ void Worm2D::addParsToJson(json & j)
             else{
 
               json & j2 = j["vnc_nmj"];
-        
 
-            for (const weightentry & val : ventinds)
-               for (auto it = j2["ventral_conns"].begin(); it != j2["ventral_conns"].end(); ++it)
-                 if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+              for (const weightentry & val : ventinds)
+              {
+                  const string & name = names_no_suffix[val.from-1];
+                  j2["ventral_conns"][name]["cell_ind"] = val.from;
+                  j2["ventral_conns"][name]["weight"]["value"] = val.weight;
+              }
               for (const weightentry & val : dorsinds)
-                  for (auto it = j2["dorsal_conns"].begin(); it != j2["dorsal_conns"].end(); ++it)
-                     if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+              {
+                  const string & name = names_no_suffix[val.from-1];
+                  j2["dorsal_conns"][name]["cell_ind"] = val.from;
+                  j2["dorsal_conns"][name]["weight"]["value"] = val.weight;
+              }
 
             }
 

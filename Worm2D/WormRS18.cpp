@@ -815,6 +815,21 @@ void Worm18::addParsToJson(json & j)
      }
     else sr_ptr->addParsToJson(j);
 
+    string nsHead = "Nervous system";
+
+    if (false){
+    appendAllNSJson(j[nsHead], n);
+    }
+
+   
+
+   
+    j[nsHead]["section sizes"]["head"]["value"] = 4;
+    j[nsHead]["section sizes"]["head"]["plot order"] = 0;
+    j[nsHead]["section sizes"]["VNC"]["value"] = 36;
+    j[nsHead]["section sizes"]["VNC"]["plot order"] = 1;
+
+   
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getHeadCellNames(), 1);
@@ -1012,6 +1027,8 @@ void Worm18::addFuncableToJson(json & j)
     chemvecj.push_back({{"from", vbp}, {"to", dd}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
 
   }
+
+  j["Nervous system"]["Chemical weights"]["funcable"] = chemvecj;
 
 }
 
@@ -1335,6 +1352,11 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
   
 
 
+
+ j["Nervous system"]["taus"]["evolvable"] = to_evo_json(tauvec);
+    j["Nervous system"]["biases"]["evolvable"] = biasvecj;
+  j["Nervous system"]["Chemical weights"]["evolvable"] = chemvecj;
+  j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
   //json & j2 = j["Nervous system"]["Chemical weights"]["evolvable"];
 

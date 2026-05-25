@@ -919,7 +919,9 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
     //const intPair & val = vec[i];
     const string & name = cell_names_full[val.ind-1];
     //bool found = false;
-    assert(j.at(name).contains(parameter));
+    if (!j.is_object()) j = json::object();
+    if (!j.contains(name)) j[name] = json::object();
+    if (!j.at(name).contains(parameter)) j[name][parameter] = json::object();
     j[name][parameter]["evotag"] = val.val;
     }
     
@@ -967,7 +969,15 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
    break; 
   }
   }
-  assert(found);
+  if (!found)
+  {
+    json jconn = json::object();
+    jconn["to"] = cell_names_full[val.to-1];
+    jconn["from"] = cell_names_full[val.from-1];
+    jconn["weight"]["value"] = 0.0;
+    jconn["weight"]["evotag"] = val.val;
+    j.push_back(jconn);
+  }
   }
 
 }

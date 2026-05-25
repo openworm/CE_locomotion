@@ -522,7 +522,15 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 void WormAgent::addParsToJson(json & j)
 {
+   
+	string nsHead = "Nervous system";
+	
+
 	NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
+    if (n_ptr1){
+    appendAllNSJson(j[nsHead], *n_ptr1);
+    }
+
 
  	vector<string> names;
     if (j.contains("nervous_system")
@@ -532,7 +540,8 @@ void WormAgent::addParsToJson(json & j)
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
-    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system")
+    && j.at("Nervous system").is_object()
     && j.at("Nervous system").contains("Cell name") 
     && j.at("Nervous system").at("Cell name").contains("value") 
     && j.at("Nervous system").at("Cell name").at("value").is_array())
@@ -540,13 +549,21 @@ void WormAgent::addParsToJson(json & j)
     names = makeUnique(j.at("Nervous system").
     at("Cell name").at("value").template get< vector<string> >());
     }
-    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system")
+    && j.at("Nervous system").is_object()
+    && j.at("Nervous system").contains("size")
+    && j.at("Nervous system").at("size").contains("value"))
     {
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    assert(names[0]!="not implemented");
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
 
 	 
     if (n_ptr1){
@@ -554,6 +571,12 @@ void WormAgent::addParsToJson(json & j)
     }
 
 
+
+
+
+
+	j[nsHead]["section sizes"]["interneurons"]["value"] = size;
+	j[nsHead]["section sizes"]["interneurons"]["plot order"] = 0;
 
 	Params< vector<double> > par;
 	par.names =  {"w_ASER", "w_ASEL"};
