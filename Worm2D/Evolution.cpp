@@ -465,6 +465,7 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     addParsToJson(j);
     appendNSCellClassesToJson(j, w.getSectionNames());
     w.cleanLegacyParameterKeys(j);
+    j.erase("Nervous system");
    
     json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;

@@ -108,7 +108,7 @@ int main (int argc, const char* argv[])
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
-        j_evo["Nervous system"]["Model name"]["value"] = model_name;
+        j_evo.erase("Nervous system");
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -452,13 +452,13 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
     j["Worm"]["Main model name"]["value"] = model_name;
-    j["Nervous system"]["Model name"]["value"] = model_name;
 
     if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);
+    j.erase("Nervous system");
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
