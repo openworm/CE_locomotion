@@ -113,6 +113,9 @@ int main (int argc, const char* argv[])
         j_evo.erase("Ventral NMJ");
         j_evo.erase("Dorsal body");
         j_evo.erase("Ventral body");
+        j_evo.erase("Stretch receptor");
+        j_evo.erase("VNC NMJ");
+        j_evo.erase("VNC 18");
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -467,6 +470,9 @@ int main (int argc, const char* argv[])
     j.erase("Ventral NMJ");
     j.erase("Dorsal body");
     j.erase("Ventral body");
+    j.erase("Stretch receptor");
+    j.erase("VNC NMJ");
+    j.erase("VNC 18");
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
