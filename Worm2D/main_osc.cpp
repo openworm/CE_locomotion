@@ -109,6 +109,8 @@ int main (int argc, const char* argv[])
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
         j_evo.erase("Nervous system");
+        j_evo.erase("Dorsal NMJ");
+        j_evo.erase("Ventral NMJ");
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -459,6 +461,8 @@ int main (int argc, const char* argv[])
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);
     j.erase("Nervous system");
+    j.erase("Dorsal NMJ");
+    j.erase("Ventral NMJ");
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
