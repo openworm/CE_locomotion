@@ -470,10 +470,20 @@ bool isJsonArrayIndexKey(const string & key)
   return true;
 }
 
+vector<string> shortenEvoNamePath(const vector<string> & path)
+{
+  vector<string> shortened = path;
+  for (int i=0;i<shortened.size();i++)
+  {
+    if (shortened[i] == "nervous_system") shortened[i] = "ns";
+  }
+  return shortened;
+}
+
 void setEvoNameFromTag(int evotag, vector<vector<string> > & evoNames, const vector<string> & path)
 {
   if (evotag < 1 || evotag > evoNames.size()) return;
-  setEvoStr(evoNames[evotag-1], path);
+  setEvoStr(evoNames[evotag-1], shortenEvoNamePath(path));
 }
 
 
