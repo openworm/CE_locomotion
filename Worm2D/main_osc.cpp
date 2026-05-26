@@ -116,6 +116,7 @@ int main (int argc, const char* argv[])
         j_evo.erase("Stretch receptor");
         j_evo.erase("VNC NMJ");
         j_evo.erase("VNC 18");
+        j_evo.erase("Driving input");
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -473,6 +474,7 @@ int main (int argc, const char* argv[])
     j.erase("Stretch receptor");
     j.erase("VNC NMJ");
     j.erase("VNC 18");
+    j.erase("Driving input");
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);

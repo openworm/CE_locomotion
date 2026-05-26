@@ -511,6 +511,18 @@ def run(a=None, **kwargs):
             "worm_data_evo.json",
             "worm_data_worm.json",
             "genhistory.dat",
+            "cell_Ids.json",
+            "Worm2D.net.nml",
+            "LEMS_Worm2D.xml",
+            "LEMS_Worm2D_nrn.py",
+            "cell_syn_W2D.xml",
+            "cell_syn_W2D_cells.xml",
+            "cell_W2Dosc.xml",
+            "cell_W2Dosc_cells.xml",
+            "syn_W2D.xml",
+            "musc_W2D.xml",
+            "musc_W2D_cells.xml",
+            ".mod",
         ]
 
         for file in files:

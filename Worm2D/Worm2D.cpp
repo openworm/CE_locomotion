@@ -1058,6 +1058,8 @@ void Worm2D::addParsToJson(json & j)
     assert(!names.empty() && names[0]!="not implemented");
 
     vector<string> names_no_suffix = removeSuffixIndices(names);
+    j["nervous_system"]["cell_names"]["value"] = names;
+    j["nervous_system"]["cell_names_no_suffix"]["value"] = names_no_suffix;
 
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){

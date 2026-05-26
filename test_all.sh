@@ -126,7 +126,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCEFR.omt
     omv test -V .test.W2DCEFRv2.omt
     omv test -V .test.W2DSRFR.omt
-
+    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
     
 
     omv test -V .test.CO.omt
@@ -151,7 +151,7 @@ if [ "$quick_test" == 0 ]; then
     ./clean.sh 
     ruff format *py
     cd ..
-    
+
     #python regenerate_folder.py --folder exampleRunCEW2D
     
     cd neuromlLocal

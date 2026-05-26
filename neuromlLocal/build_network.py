@@ -645,12 +645,26 @@ def run(a=None, **kwargs):
     nml_engine = "circo"
     nml_level = 2
     nml_engine = "dot"
-    generate_nmlgraph(
-        nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
-    )
+    cwd_before_graph = os.getcwd()
+    try:
+        os.chdir(this_file_dir)
+        generate_nmlgraph(
+            "Worm2D.net.nml",
+            nml_level,
+            nml_engine,
+            view_on_render=False,
+            include_ext_inputs=False,
+        )
+    finally:
+        os.chdir(cwd_before_graph)
     if not output_folder_name == cur_wkd_dir:
-        shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
-        shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
+        shutil.copyfile(
+            this_file_dir + "/Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv"
+        )
+        shutil.copyfile(
+            this_file_dir + "/Worm2DNet.gv.png",
+            output_folder_name + "/Worm2DNet.gv.png",
+        )
     if not output_folder_name == this_file_dir:
         shutil.copyfile(nml_file, output_folder_name + "/Worm2D.net.nml")
 
@@ -662,7 +676,12 @@ def run(a=None, **kwargs):
             save_figs_to_dir=output_folder_name,
         )
         currParser = NeuroMLXMLParser(handler)
-        currParser.parse(nml_file)
+        cwd_before_matrix = os.getcwd()
+        try:
+            os.chdir(this_file_dir)
+            currParser.parse("Worm2D.net.nml")
+        finally:
+            os.chdir(cwd_before_matrix)
         handler.finalise_document()
 
 
