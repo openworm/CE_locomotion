@@ -226,7 +226,8 @@ void AgarPars::setPars(shared_ptr<const CmdArgs> cmd)
 {
     OSCTbase = cmd->getArgValDoub("--OSCTbase",OSCTbase);
     agarfreq = cmd->getArgValDoub("--agarfreq",agarfreq);
-    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",AvgSpeed);
+    if (!cmd->getArgValT<double>("--avg_speed", AvgSpeed))
+        AvgSpeed = cmd->getArgValDoub("--AvgSpeed",AvgSpeed);
 
 }
 
