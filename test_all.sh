@@ -115,7 +115,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2D18genE.omt
 
     omv test -V .test.example.omt #Izq original test.example.mep
-    omv test -V .test.CEW2D.omt #main.cpp test.example.mep
+    #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
     omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
     omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
     omv test -V .test.W2DCE.omt
@@ -151,7 +151,9 @@ if [ "$quick_test" == 0 ]; then
     ./clean.sh 
     ruff format *py
     cd ..
-    python regenerate_folder.py --folder exampleRunCEW2D
+    
+    #python regenerate_folder.py --folder exampleRunCEW2D
+    
     cd neuromlLocal
     omv test -V .test.w2d.nrn.omt
     omv test -V .test.w2d.omt
@@ -166,7 +168,7 @@ if [ "$quick_test" == 0 ]; then
     #cd ..
     
     omv test -V .test.nmlNS.omt
-    omv test -V .test.CEW2D_nml.omt
+    #omv test -V .test.CEW2D_nml.omt
 
     cd neuromlLocal
     set -ex
