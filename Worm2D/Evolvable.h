@@ -43,6 +43,17 @@ bool getParFromJsonAny(const json & j, const vector<string> & names, T & val)
 
 }
 
+template<class T>
+bool getParFromCmdAny(shared_ptr<const CmdArgs> cmd, const vector<string> & names, T & val)
+{
+
+  for (const auto & name : names) {
+    if (cmd->getArgValT<T>("--" + name, val)) return true;
+  }
+  return false;
+
+}
+
 
 class W2Dparameters
 {
@@ -219,7 +230,8 @@ Evolparameters(shared_ptr<const CmdArgs> cmd, shared_ptr<EvolvableS> & evol1_, s
 int dbunit = 0;
 int vbunit = 0;
 void setParsFromJson(const json & j){
-  dbunit = j["dbunit"]["value"]; vbunit = j["vbunit"]["value"];
+  getParFromJson1<int>(j, "dbunit", dbunit);
+  getParFromJson1<int>(j, "vbunit", vbunit);
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
@@ -228,6 +240,12 @@ void addParsToJson(json & j) const {
 
   
 
+}
+
+void setPars(shared_ptr<const CmdArgs> cmd){
+  getParFromCmdAny<int>(cmd, {"dbunit"}, dbunit);
+  getParFromCmdAny<int>(cmd, {"vbunit"}, vbunit);
+  AgarPars::setPars(cmd);
 }
 };
 
@@ -520,7 +538,6 @@ void addParsToJson(json & j) const {
 
 
 };
-
 
 
 

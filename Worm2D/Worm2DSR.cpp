@@ -476,6 +476,9 @@ vector<string> shortenEvoNamePath(const vector<string> & path)
   for (int i=0;i<path.size();i++)
   {
     if (path[i] == "value") continue;
+    if (path[i] == "stretch_receptor"
+        && i + 1 < path.size()
+        && path[i + 1].find("sr_") == 0) continue;
 
     string component = path[i];
     if (component == "nervous_system") component = "ns";
@@ -486,6 +489,25 @@ vector<string> shortenEvoNamePath(const vector<string> & path)
     shortened.push_back(component);
   }
   return shortened;
+}
+
+void replaceAll(string & text, const string & from, const string & to)
+{
+  if (from.empty()) return;
+  size_t pos = 0;
+  while ((pos = text.find(from, pos)) != string::npos)
+  {
+    text.replace(pos, from.length(), to);
+    pos += to.length();
+  }
+}
+
+void shortenEvoName(string & evoName)
+{
+  replaceAll(evoName, "chemcons_weight", "chemcons");
+  replaceAll(evoName, "eleccons_weight", "eleccons");
+  replaceAll(evoName, "dorscons_", "");
+  replaceAll(evoName, "_weight_ventcons_", "_");
 }
 
 void setEvoNameFromTag(int evotag, vector<vector<string> > & evoNames, const vector<string> & path)
@@ -623,6 +645,7 @@ void addEvoNames(json & j)
     for (int j=0;j<evoNames[i].size()-1;j++) 
     {evoKeys[i].append(evoNames[i][j]);evoKeys[i].append("_");}
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
+    shortenEvoName(evoKeys[i]);
   }
 
   json & j2 = (*ranges)["value"];
