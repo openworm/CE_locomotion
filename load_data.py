@@ -150,6 +150,14 @@ def sign(val):
     return (val > 0) * 2.0 - 1.0
 
 
+def signed_log(val):
+    val = np.asarray(val)
+    out = np.zeros_like(val, dtype=float)
+    mask = np.isfinite(val) & (val != 0)
+    out[mask] = np.sign(val[mask]) * np.log(np.abs(val[mask]))
+    return out
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -167,11 +175,9 @@ short_phen_names = {
 def getEvolTrans(evol_data):
     evol_data_diff_1 = evol_data / evol_data[0]
     # evol_data_diff_1 = (evol_data - evol_data[0]) / evol_data[0]
-    evol_data_diff_11 = sign(evol_data_diff_1) * np.log(np.abs(evol_data_diff_1))
+    evol_data_diff_11 = signed_log(evol_data_diff_1)
     evol_data_diff_13 = evol_data - evol_data[0]
-    evol_data_diff_131 = sign(evol_data_diff_13[1:]) * np.log(
-        np.abs(evol_data_diff_13[1:])
-    )
+    evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
 
     return [evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
 
@@ -241,9 +247,7 @@ def plot_phenonames(
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
     evol_data_full_diff0 = evol_data / evol_data[0]
-    evol_data_full_diff = sign(evol_data_full_diff0) * np.log(
-        np.abs(evol_data_full_diff0)
-    )
+    evol_data_full_diff = signed_log(evol_data_full_diff0)
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
@@ -262,7 +266,7 @@ def plot_phenonames(
 
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
 
-    evol_data_log = sign(evol_data) * np.log(np.abs(evol_data))
+    evol_data_log = signed_log(evol_data)
     evol_data_log = getAvData_1(evol_data_log, avlentop=avlentop)
 
     evol_data_init = evol_data_log[0]
@@ -406,6 +410,9 @@ def plot_phenonames(
                 gridline.set_alpha(0.8)
             axval[row_num, col_num].grid(axis="x")
             axval[row_num, col_num].grid(axis="y")
+            axval[row_num, col_num].axhline(
+                0, color="0.25", linewidth=1.6, zorder=1
+            )
 
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
@@ -648,11 +655,44 @@ def plot_fig_g(
     handles, labels = ax2.get_legend_handles_labels()
 
     ax_leg.axis("off")
-    ax_leg.legend(handles, labels, loc="best", ncol=3, frameon=True)
+    legend_fontsize = 8
+    legend = ax_leg.legend(
+        handles, labels, loc="best", ncol=3, frameon=True, fontsize=legend_fontsize
+    )
+    fig_g.canvas.draw()
+    legend_bbox = legend.get_window_extent(renderer=fig_g.canvas.get_renderer())
+    ax_bbox = ax_leg.get_window_extent(renderer=fig_g.canvas.get_renderer())
+    if legend_bbox.width > ax_bbox.width:
+        legend.remove()
+        ax_leg.legend(
+            handles, labels, loc="best", ncol=2, frameon=True, fontsize=legend_fontsize
+        )
 
     fig_g.savefig(filename1, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename1)
     plt.close()
+
+    if os.path.basename(filename1) == "EvoHist.png":
+        save_evohist_legend_figures(handles, labels, legend_fontsize)
+
+
+def save_evohist_legend_figures(handles, labels, legend_fontsize):
+    for ncols in [3, 4]:
+        fig_leg = plt.figure(figsize=(8, 2.5))
+        ax_leg = fig_leg.add_subplot(111)
+        ax_leg.axis("off")
+        ax_leg.legend(
+            handles,
+            labels,
+            loc="center",
+            ncol=ncols,
+            frameon=True,
+            fontsize=legend_fontsize,
+        )
+        filename = hf.rename_file("EvoHist_legend_%dcol.png" % ncols)
+        fig_leg.savefig(filename, bbox_inches="tight", dpi=300)
+        print("Saved plot image to: %s" % filename)
+        plt.close(fig_leg)
 
 
 def plot_hist(a=None):

@@ -99,9 +99,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
 //json itsJson;
 const vector<intDoubDoub> genPhenLims;
 
-Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
-//Worm2DSR(json & j);
-Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
+
 
 void applyFuncables();
 void applyFuncables(json & j1_);
@@ -135,6 +133,11 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 void setParsFromPheno_old(const TVector<double> &pheno);
 void resetFromBPJson();
 void resetFromJson(const json & js1);
+
+protected:
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
+//Worm2DSR(json & j);
+Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;

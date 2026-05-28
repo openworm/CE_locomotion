@@ -126,7 +126,7 @@ void SR18::addParsToJson(json & j) const
     addToFromWeight(j["stretch_receptor"]["d_weights"]["value"], srweights.segToD, "to_sr", "from_seg", "weight");
     j["stretch_receptor"]["d_weights"]["message"] = "Weights from body segments to dorsal SR";
     addToFromWeight(j["stretch_receptor"]["v_weights"]["value"], srweights.segToV, "to_sr", "from_seg", "weight");
-    j["stretch_receptor"]["d_weights"]["message"] = "Weights from body segments to ventral SR";
+    j["stretch_receptor"]["v_weights"]["message"] = "Weights from body segments to ventral SR";
 
     addToFromWeight(j["stretch_receptor"]["ns_d_weights"]["value"], nssrweights.segToD, 
         "to_ns", "from_sr", "weight", names);
