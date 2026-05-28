@@ -233,6 +233,14 @@ doOrigSRInput(getValCJWorm<bool>("do_orig_sr_input"))
     //setUpBodyConn();
 }
 
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs):
+Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
+doOrigMuscInput(forceNoOrigInputs ? false : getValCJWorm<bool>("do_orig_musc_input")),
+doOrigSRInput(forceNoOrigInputs ? false : getValCJWorm<bool>("do_orig_sr_input"))
+{
+    setUp();
+}
+
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {

@@ -16,6 +16,11 @@ Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j):
 Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
+Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
+  shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j,
+  bool forceNoOrigInputs):
+Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_,forceNoOrigInputs),Worm2DSRb(sr_ptr_){}
+
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, 
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd):
 Worm2Dm(par1_, n_ptr_, cmd),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
@@ -111,6 +116,21 @@ Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),Worm2DSR(j,cmd),genPhenLims(makeVal
     
   writeOrigGen(cmd);
 
+
+}
+
+Worm2DSRE::Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit,
+  bool forceNoOrigInputs):
+Worm2Dm(getIzqPars(j),getNS(cmd, j), cmd, j),
+Worm2DSR(getIzqPars(j), getNS(cmd, j), getSR(j, this), cmd, j, forceNoOrigInputs),
+genPhenLims(makeVals())
+{
+
+  if (!callInit) return;
+
+  if (genPhenLims.size()>0) setInitPheno();
+    
+  writeOrigGen(cmd);
 
 }
 
