@@ -2472,17 +2472,19 @@ void InputSwitcher::construct(const json & j)
 {
    if (!j.contains("input_switcher")) return;
  
+  const json & input_switcher = j["input_switcher"];
+  if (!input_switcher.contains("size") || !input_switcher.contains("inputs")) return;
 
-  int size = j["input_switcher"]["size"]["value"].get<int>();
+  int size = input_switcher["size"]["value"].get<int>();
 
-  if (j["input_switcher"].contains("time_periods"))
+  if (input_switcher.contains("time_periods"))
   {
-  time_offset =  j["input_switcher"]["time_offset"]["value"].get<double>();
+  time_offset =  input_switcher["time_offset"]["value"].get<double>();
   {
   
   vector<double> periods1(size, 123456);
   total_period = 0;
-  const json & j2 = j["input_switcher"]["time_periods"]["value"];
+  const json & j2 = input_switcher["time_periods"]["value"];
   for (auto it = j2.begin(); it != j2.end(); ++it)
   {
     double period = it->at("value").get<double>();
@@ -2502,7 +2504,7 @@ void InputSwitcher::construct(const json & j)
   
     vector<vector<int> > inds1(size);
     vector<vector<double> > vals1(size);
-    const json & j2 = j["input_switcher"]["inputs"]["value"];
+    const json & j2 = input_switcher["inputs"]["value"];
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];

@@ -908,6 +908,11 @@ def reload_single_run(a=None, **kwargs):
     else:
         plot_format = utils.plot_formats[a.modelName]
 
+    def imshow_time_extent(t_values, row_count):
+        if len(t_values) == 0:
+            return [0, 0, 0, row_count]
+        return [t_values[0], t_values[-1], 0, row_count]
+
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
 
     """ step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
@@ -949,19 +954,13 @@ def reload_single_run(a=None, **kwargs):
         # plt.legend()
 
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
-        dy = 1
-        dx = t_data[1] - t_data[0]
+        t_plot = t_data[data_seg]
         # axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[plot_num, 1].imshow(
             data_list,
             aspect="auto",
             interpolation="nearest",
-            extent=[
-                0,
-                data_list.shape[1] * dx,
-                0,
-                data_list.shape[0] * dy,
-            ],
+            extent=imshow_time_extent(t_plot, data_list.shape[0]),
         )
 
         # axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
@@ -1012,19 +1011,12 @@ def reload_single_run(a=None, **kwargs):
         curv_data_less_time = curv_data[1:, data_seg]
         t_data = t_data[data_seg]
 
-        dy = 1
-        dx = t_data[1] - t_data[0]
         axs[count_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[count_num, 1].imshow(
             curv_data_less_time,
             aspect="auto",
             interpolation="nearest",
-            extent=[
-                0,
-                curv_data_less_time.shape[1] * dx,
-                0,
-                curv_data_less_time.shape[0] * dy,
-            ],
+            extent=imshow_time_extent(t_data, curv_data_less_time.shape[0]),
         )
         if False:
             axs[count_num, 1].set_xticks(np.linspace(0, len(data_seg), 8))

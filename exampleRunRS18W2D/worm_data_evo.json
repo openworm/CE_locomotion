@@ -201,72 +201,6 @@
             30
         ]
     },
-    "Worm": {
-        "HeadMotorNeuronMuscles": {
-            "message": "Head motorneurons innervate first 8 muscles (temporarily first 6)",
-            "value": 6
-        },
-        "NMJ Gain": {
-            "value": 0.5
-        },
-        "NMJ_DB": {
-            "value": 0.7328105034773889
-        },
-        "NMJ_DD": {
-            "value": -0.2918072156761521
-        },
-        "NMJ_RMDD": {
-            "value": 0.8630327954285901
-        },
-        "NMJ_RMDV": {
-            "value": 0.8630327954285901
-        },
-        "NMJ_SMDD": {
-            "value": 0.44476591884074407
-        },
-        "NMJ_SMDV": {
-            "value": 0.44476591884074407
-        },
-        "NMJ_VBa": {
-            "value": 0.7328105034773889
-        },
-        "NMJ_VBp": {
-            "value": 0.7328105034773889
-        },
-        "NMJ_VDa": {
-            "value": -0.2918072156761521
-        },
-        "NMJ_VDp": {
-            "value": -0.2918072156761521
-        },
-        "N_muscles": {
-            "value": 24
-        },
-        "N_neuronsperunit": {
-            "value": 6
-        },
-        "N_size": {
-            "value": 40
-        },
-        "N_stretchrec": {
-            "message": "Number of stretch receptors",
-            "value": 6
-        },
-        "N_units": {
-            "value": 6
-        },
-        "NmusclePerNU": {
-            "message": "All the way down to 24, in groups of 3 per unit",
-            "value": 3
-        },
-        "T_muscle": {
-            "value": 0.1
-        },
-        "VNCMuscleStart": {
-            "message": "VNC motorneurons innervate starting from 7th muscle",
-            "value": 7
-        }
-    },
     "body": {
         "beta_d": {
             "message": "Diagonal passive damping constant in s",
@@ -5271,6 +5205,78 @@
                     "value": -0.2918072156761521
                 }
             }
+        }
+    },
+    "worm": {
+        "HeadMotorNeuronMuscles": {
+            "message": "Head motorneurons innervate first 8 muscles (temporarily first 6)",
+            "value": 6
+        },
+        "NMJ Gain": {
+            "value": 0.5
+        },
+        "NMJ_DB": {
+            "value": 0.7328105034773889
+        },
+        "NMJ_DD": {
+            "value": -0.2918072156761521
+        },
+        "NMJ_RMDD": {
+            "value": 0.8630327954285901
+        },
+        "NMJ_RMDV": {
+            "value": 0.8630327954285901
+        },
+        "NMJ_SMDD": {
+            "value": 0.44476591884074407
+        },
+        "NMJ_SMDV": {
+            "value": 0.44476591884074407
+        },
+        "NMJ_VBa": {
+            "value": 0.7328105034773889
+        },
+        "NMJ_VBp": {
+            "value": 0.7328105034773889
+        },
+        "NMJ_VDa": {
+            "value": -0.2918072156761521
+        },
+        "NMJ_VDp": {
+            "value": -0.2918072156761521
+        },
+        "N_muscles": {
+            "value": 24
+        },
+        "N_neuronsperunit": {
+            "value": 6
+        },
+        "N_size": {
+            "value": 40
+        },
+        "N_stretchrec": {
+            "message": "Number of stretch receptors",
+            "value": 6
+        },
+        "N_units": {
+            "value": 6
+        },
+        "NmusclePerNU": {
+            "message": "All the way down to 24, in groups of 3 per unit",
+            "value": 3
+        },
+        "T_muscle": {
+            "value": 0.1
+        },
+        "VNCMuscleStart": {
+            "message": "VNC motorneurons innervate starting from 7th muscle",
+            "value": 7
+        },
+        "do_orig_musc_input": {
+            "value": true
+        },
+        "do_orig_sr_input": {
+            "value": true
         }
     }
 }

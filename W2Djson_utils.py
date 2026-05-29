@@ -100,7 +100,9 @@ def mergeJsons(file1, file2, outdir):
 
     addedNeurons = []
     appended_json_data = utils.getJsonFile(file2)
-    network_worm = network_json_data.setdefault("worm", network_json_data.pop("Worm", {}))
+    network_worm = network_json_data.setdefault(
+        "worm", network_json_data.pop("Worm", {})
+    )
     appended_worm = appended_json_data.get("worm", appended_json_data.get("Worm", {}))
     # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
@@ -109,9 +111,7 @@ def mergeJsons(file1, file2, outdir):
     # appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
     origDrivingSize = len(network_json_data["Driving input"]["strengths"]["value"])
 
-    network_worm["N_size"]["value"] += appended_worm[
-        "N_size"
-    ]["value"]
+    network_worm["N_size"]["value"] += appended_worm["N_size"]["value"]
 
     # network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
     # json_model_name = network_json_data[NSname]["Model name"]["value"]
