@@ -511,19 +511,23 @@ def run(a=None, **kwargs):
             "worm_data_evo.json",
             "worm_data_worm.json",
             "genhistory.dat",
-            "cell_Ids.json",
-            "Worm2D.net.nml",
-            "LEMS_Worm2D.xml",
-            "LEMS_Worm2D_nrn.py",
-            "cell_syn_W2D.xml",
-            "cell_syn_W2D_cells.xml",
-            "cell_W2Dosc.xml",
-            "cell_W2Dosc_cells.xml",
-            "syn_W2D.xml",
-            "musc_W2D.xml",
-            "musc_W2D_cells.xml",
-            ".mod",
         ]
+
+        if a.doNML:
+            files += [
+                "cell_Ids.json",
+                "Worm2D.net.nml",
+                "LEMS_Worm2D.xml",
+                "LEMS_Worm2D_nrn.py",
+                "cell_syn_W2D.xml",
+                "cell_syn_W2D_cells.xml",
+                "cell_W2Dosc.xml",
+                "cell_W2Dosc_cells.xml",
+                "syn_W2D.xml",
+                "musc_W2D.xml",
+                "musc_W2D_cells.xml",
+                ".mod",
+            ]
 
         for file in files:
             input_filenames = glob.glob(a.inputFolderName + "/*" + file)
@@ -1021,7 +1025,7 @@ def run(a=None, **kwargs):
 
     if do_nml:
         if a.inputFolderName is not None and a.inputFolderName != a.outputFolderName:
-            files_sub = [".xml", ".nml"]
+            files_sub = [".xml", ".nml", ".mod"]
             files_pre = ["Worm2DNet", "LEMS", "cell_Ids.json"]
 
         input_filenames = []

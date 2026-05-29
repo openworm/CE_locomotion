@@ -19,7 +19,25 @@ Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){}
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j,
   bool forceNoOrigInputs):
-Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_,forceNoOrigInputs),Worm2DSRb(sr_ptr_){}
+Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_,forceNoOrigInputs),Worm2DSRb(sr_ptr_)
+{
+  const json & js1 = BPitsJson;
+
+  bool do_nml =  cmd->getArgValInt("--donml",0);
+  if (!do_nml){
+    bool doLegacy;
+    getValCJWorm<bool>("do_legacy",doLegacy);
+
+    NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
+    assert(n);
+
+    setNSFromJson(js1,*n, doLegacy);
+  }
+
+  if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(js1);
+
+  setMuscBodExt(js1);
+}
 
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, 
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd):

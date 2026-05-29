@@ -410,9 +410,7 @@ def plot_phenonames(
                 gridline.set_alpha(0.8)
             axval[row_num, col_num].grid(axis="x")
             axval[row_num, col_num].grid(axis="y")
-            axval[row_num, col_num].axhline(
-                0, color="0.25", linewidth=1.6, zorder=1
-            )
+            axval[row_num, col_num].axhline(0, color="0.25", linewidth=1.6, zorder=1)
 
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
@@ -856,6 +854,17 @@ def plot_evols(a=None, **kwargs):
 
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
+
+    gen_file = getFileName("genhistory.dat")
+    fit_file = getFileName("fitness.dat")
+    if gen_file is None or fit_file is None:
+        return
+    if len(hf.load_nonragged_arrays(gen_file)) == 0:
+        print("No evolution history data found; skipping evolution plots.")
+        return
+    if len(hf.load_nonragged_arrays(fit_file)) == 0:
+        print("No fitness history data found; skipping evolution plots.")
+        return
 
     plot_hist(a=a)
     plot_fit()

@@ -4639,84 +4639,84 @@
                 "active": true,
                 "evotag": 5,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 6,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 7,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 8,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 9,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 10,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 11,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 12,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 13,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 14,
                 "lower_limit": -200.0,
-                "name": "stretch_receptor_sr_vnc_gain",
+                "name": "sr_vnc_gain",
                 "upper_limit": 0.0
             },
             {
                 "active": true,
                 "evotag": 15,
                 "lower_limit": 0.0,
-                "name": "vnc_18_dorscons_DB_weight_ventcons_VBA_VBP",
+                "name": "vnc_18_DB_VBA_VBP",
                 "upper_limit": 1.0
             },
             {
                 "active": true,
                 "evotag": 16,
                 "lower_limit": -1.0,
-                "name": "vnc_18_dorscons_DD_weight_ventcons_VDA_VDP",
+                "name": "vnc_18_DD_VDA_VDP",
                 "upper_limit": 0.0
             },
             {
@@ -4751,70 +4751,70 @@
                 "active": true,
                 "evotag": 21,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 22,
                 "lower_limit": 4.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 23,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 24,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 25,
                 "lower_limit": -15.0,
-                "name": "ns_chemcons_weight",
+                "name": "ns_chemcons",
                 "upper_limit": 15.0
             },
             {
                 "active": true,
                 "evotag": 26,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 27,
                 "lower_limit": 0.0,
-                "name": "ns_eleccons_weight",
+                "name": "ns_eleccons",
                 "upper_limit": 2.0
             },
             {
                 "active": true,
                 "evotag": 28,
                 "lower_limit": -200.0,
-                "name": "stretch_receptor_sr_head_gain",
+                "name": "sr_head_gain",
                 "upper_limit": 0.0
             },
             {
                 "active": true,
                 "evotag": 29,
                 "lower_limit": 0.0,
-                "name": "vnc_18_dorscons_SMDD_weight_ventcons_SMDV",
+                "name": "vnc_18_SMDD_SMDV",
                 "upper_limit": 1.0
             },
             {
                 "active": true,
                 "evotag": 30,
                 "lower_limit": 0.0,
-                "name": "vnc_18_dorscons_RMDD_weight_ventcons_RMDV",
+                "name": "vnc_18_RMDD_RMDV",
                 "upper_limit": 1.0
             }
         ]
@@ -4862,6 +4862,50 @@
                 "RMDD_0",
                 "SMDV_0",
                 "RMDV_0"
+            ]
+        },
+        "cell_names_no_suffix": {
+            "value": [
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "DB",
+                "DD",
+                "VBA",
+                "VDA",
+                "VBP",
+                "VDP",
+                "SMDD",
+                "RMDD",
+                "SMDV",
+                "RMDV"
             ]
         },
         "cells": {
