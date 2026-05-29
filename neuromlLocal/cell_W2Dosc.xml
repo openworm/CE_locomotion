@@ -8,7 +8,7 @@
     <Parameter name="amp" dimension="none" description="..."/>
     <Parameter name="freq" dimension="none" description="..."/>
     <Parameter name="phase" dimension="none" description="..."/>
-    <!--<Parameter name="timestep" dimension="none" description="..."/>-->
+    <Parameter name="timestep" dimension="none" description="..."/>
     
 
     <Constant name="TSCALE" dimension="time" value ="1s"/>
@@ -40,7 +40,7 @@
         <StateVariable name="v" dimension="voltage" description="Membrane potential state variable"/>
         <!--<StateVariable name="state" dimension="none" exposure="state"/>-->
         <DerivedVariable name="state" dimension="none" exposure="state" value="v/MVOLT" />   
-        <DerivedVariable name="output" dimension="none" exposure="output" value="amp*sin(6.2831853*freq*state + phase)" />
+        <DerivedVariable name="output" dimension="none" exposure="output" value="amp*sin(6.2831853*freq*(state + timestep) + phase)" />
 
         <!--<TimeDerivative variable="v" value="timestep * PAMP / C" />-->
         <TimeDerivative variable="v" value="PAMP / C" />

@@ -404,10 +404,10 @@ void WormCE::addEvolvableToJson(json & j)
     
 
     double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
-    getValCJWorm<double>("SREvoBotA",SREvoBotA);
-    getValCJWorm<double>("SREvoTopA",SREvoTopA);
-    getValCJWorm<double>("SREvoBot",SREvoBot);
-    getValCJWorm<double>("SREvoTop",SREvoTop);
+    getValCJWorm<double>("sr_evo_bot_a",SREvoBotA);
+    getValCJWorm<double>("sr_evo_top_a",SREvoTopA);
+    getValCJWorm<double>("sr_evo_bot",SREvoBot);
+    getValCJWorm<double>("sr_evo_top",SREvoTop);
 
     //vec.push_back({w1->SREvoBotA, w1->SREvoTopA});
     //vec.push_back({w1->SREvoBot, w1->SREvoTop});
@@ -425,9 +425,11 @@ void WormCE::addEvolvableToJson(json & j)
     j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
   }
  
+ // if (false){
   j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
-  
+ // }
+
   j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
   j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
   j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
@@ -504,10 +506,13 @@ void WormCE::addEvolvableToJson(json & j)
 
   //j["Nervous system"]["biases"]["evolvable"] = biasvec;
 
+  //if (false){
   j["Nervous system"]["biases"]["evolvable"] = to_evo_json(biasvec);
 
   j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
   j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
+
+  //}
 
   addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getDistinctCellNames());
@@ -543,9 +548,10 @@ addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames()
 //j["VNC NMJ"]["V inds"]["evolvable"] = nmjvecv;
 //j["VNC NMJ"]["D inds"]["evolvable"] = nmjvecd;
 
-
+//if (false){
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
 j["VNC NMJ"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
+//}
 
 addEvoNames(j);
 
@@ -734,7 +740,7 @@ void Worm2DCE::setForward()
 
 
   int zeroGainsType;
-  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
   
   //AVA_output =  0;
@@ -761,7 +767,7 @@ void Worm2DCE::setBackward()
 
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
-  getValCJWorm<int>("SRZeroGainsType", zeroGainsType);
+  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
   
   //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
@@ -1354,7 +1360,7 @@ void Worm2DCE::makeExternalInputConn()
 
 
    double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
 
   //cout << "about " << AB_output_level << endl;
@@ -1395,7 +1401,7 @@ void Worm2DCE::setExternalInputOrig()
 {
 
   double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
   for (int i = 1; i <= par1.N_units; i++){
     n_ptr->SetNeuronExternalInput(nn(DA,i), AVA_output*AB_output_level);
@@ -1444,7 +1450,7 @@ void Worm2DCE::setExternalInputOrig()
  //assert(w1parss!=nullptr);
 
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
 
   if (randomInitialState) {
@@ -1466,11 +1472,11 @@ void WormCE::InitializeState(RandomState &rs)
   //assert(0);
  
    bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
+  getValCJWorm<bool>("do_legacy",doLegacy);
 
   if (doLegacy){
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
   //cout << "randomInitialState zxxs" << randomInitialState << endl;
   //assert(0);
@@ -1536,10 +1542,10 @@ void WormCE::GenPhenMapping(const TVector<double> &gen, TVector<double> &phen)
     //assert(0);
 
     double SREvoBotA,  SREvoTopA, SREvoBot, SREvoTop;
-    getValCJWorm<double>("SREvoBotA",SREvoBotA);
-    getValCJWorm<double>("SREvoTopA",SREvoTopA);
-    getValCJWorm<double>("SREvoBot",SREvoBot);
-    getValCJWorm<double>("SREvoTop",SREvoTop);
+    getValCJWorm<double>("sr_evo_bot_a",SREvoBotA);
+    getValCJWorm<double>("sr_evo_top_a",SREvoTopA);
+    getValCJWorm<double>("sr_evo_bot",SREvoBot);
+    getValCJWorm<double>("sr_evo_top",SREvoTop);
 
      // Parameters for the Stretch Receptors
   phen(SR_A) = MapSearchParameter(gen(SR_A), SREvoBotA, SREvoTopA);
@@ -1724,8 +1730,8 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   var1.parDoub.head = "Worm";
   var1.parDoub.names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
   var1.parDoub.vals = {NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
-  append<string>(var1.parDoub.names,{"AVA_act", "AVA_inact", "AVB_act", "AVB_inact"});
-  append<string>(var1.parDoub.names,{"AVA_output", "AVB_output"});
+  append<string>(var1.parDoub.names,{"ava_act", "ava_inact", "avb_act", "avb_inact"});
+  append<string>(var1.parDoub.names,{"ava_output", "avb_output"});
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
   append<double>(var1.parDoub.vals,{AVA_output, AVB_output});
 

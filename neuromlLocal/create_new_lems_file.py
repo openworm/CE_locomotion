@@ -8,6 +8,7 @@ from pyneuroml.lems import LEMSSimulation
 
 # from pyneuroml.lems import generate_lems_file_for_neuroml
 import os
+import glob
 
 # import sys
 import pprint
@@ -71,23 +72,29 @@ def run(a=None, **kwargs):
     #  Create a LEMS file "manually"...
 
     sim_id = "Worm2D"
+    cur_wkd_dir = os.getcwd()
     ls = LEMSSimulation(sim_id, 50000, 1, "Worm2DNet")
     # ls.include_neuroml2_file("NML2_SingleCompHHCell.nml")
 
-    if default_dict is not None and "XML cell file" in default_dict:
-        print(default_dict["XML cell file"])
-        print(default_dict["XML cells file"])
-        for XML_cell_file in default_dict["XML cell file"]:
-            ls.include_lems_file(XML_cell_file)
-        ls.include_lems_file(default_dict["XML cells file"])
-    else:
-        ls.include_lems_file("cell_syn_W2D.xml")
-        ls.include_lems_file("cell_syn_W2D_cells.xml")
-    doMuscles = a.doMuscles
-    if doMuscles:
-        ls.include_lems_file("musc_W2D.xml")
-        ls.include_lems_file("musc_W2D_cells.xml")
-    ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
+    try:
+        os.chdir(output_folder_name)
+
+        if default_dict is not None and "XML cell file" in default_dict:
+            print(default_dict["XML cell file"])
+            print(default_dict["XML cells file"])
+            for XML_cell_file in default_dict["XML cell file"]:
+                ls.include_lems_file(XML_cell_file)
+            ls.include_lems_file(default_dict["XML cells file"])
+        else:
+            ls.include_lems_file("cell_syn_W2D.xml")
+            ls.include_lems_file("cell_syn_W2D_cells.xml")
+        doMuscles = a.doMuscles
+        if doMuscles:
+            ls.include_lems_file("musc_W2D.xml")
+            ls.include_lems_file("musc_W2D_cells.xml")
+        ls.include_neuroml2_file("Worm2D.net.nml", include_included=False)
+    finally:
+        os.chdir(cur_wkd_dir)
 
     disp0 = "display0"
     ls.create_display(disp0, "States", "-15", "10", timeScale="1ms")
@@ -183,8 +190,6 @@ def run(a=None, **kwargs):
     # print(ls.to_xml())
 
     file_name_1 = "LEMS_%s.xml" % sim_id
-    ls.save_to_file(file_name_1)
-    assert os.path.isfile(file_name_1)
     file_name = output_folder_name + "/" + file_name_1
     ls.save_to_file(file_name)
     assert os.path.isfile(file_name)
@@ -194,9 +199,10 @@ def run(a=None, **kwargs):
     exit_on_fail = True
     run_jneuroml(
         pre_args,
-        file_name,
+        file_name_1,
         post_args,
         # max_memory=args.java_max_memory,
+        exec_in_dir=output_folder_name,
         exit_on_fail=exit_on_fail,
     )
     post_args = "-neuron"
@@ -209,15 +215,29 @@ def run(a=None, **kwargs):
         post_args,
         verbose=True,
         report_jnml_output=True,
-        # exec_in_dir = output_folder_name,
+        exec_in_dir=output_folder_name,
         # max_memory=args.java_max_memory,
         exit_on_fail=exit_on_fail,
     )
 
+    this_file_dir = os.path.dirname(os.path.realpath(__file__))
+    generated_files = glob.glob(output_folder_name + "/*.mod")
+    generated_files.append(output_folder_name + "/LEMS_Worm2D_nrn.py")
+    generated_files.append(output_folder_name + "/LEMS_Worm2D.xml")
+    for generated_file in generated_files:
+        if os.path.isfile(generated_file):
+            shutil.copyfile(
+                generated_file,
+                this_file_dir + "/" + os.path.basename(generated_file),
+            )
+
     # run_lems_with_jneuroml_neuron(file_name_1, only_generate_scripts = True)
 
-    cur_wkd_dir = os.getcwd()
-    if not cur_wkd_dir == output_folder_name:
+    if (
+        not cur_wkd_dir == output_folder_name
+        and os.path.isfile("LEMS_Worm2D_nrn.py")
+        and not os.path.isfile(output_folder_name + "/LEMS_Worm2D_nrn.py")
+    ):
         shutil.copyfile(
             "LEMS_Worm2D_nrn.py", output_folder_name + "/LEMS_Worm2D_nrn.py"
         )

@@ -76,6 +76,8 @@ public:
 
     //vector<toFromWeight> makeMuscleConn(vector<int> neurons, vector<double> NMJ);
     //void addParsToJson(json & j);
+    
+    virtual const vector<string> getSectionNames(); //{return vector<string>(par1.N_size, "vnc");}
 
     const vector<string> getDistinctCellNames();
     const vector<string> getCellNames();

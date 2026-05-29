@@ -98,7 +98,10 @@ NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
 NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
 
 // NMJ Gain XXX
-NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
+if (j["Worm"].contains("nmj_gain_map"))
+    NMJ_Gain_Map = j["Worm"]["nmj_gain_map"]["value"];
+else
+    NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
 
 
 /* NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -127,7 +130,7 @@ void Worm2D21m::InitializeState(RandomState &rs)
     Worm2Dm::InitializeState(rs);
 
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     //if (false)
     if (doLegacy)
@@ -149,7 +152,7 @@ void Worm2D21m::setForward()
 {
 
    double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
   AVA_output =  0;
   AVB_output =  AB_output_level;
 }
@@ -157,7 +160,7 @@ void Worm2D21m::setForward()
 void Worm2D21m::setBackward()
 {
   double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
   AVA_output =  AB_output_level;
   AVB_output =  0;
@@ -472,9 +475,9 @@ void Worm2D21m::addParsToJson(json & j){
 
 
 void Worm2D21::addParsToJson(json & j){
-        Worm2D::addParsToJson(j);
+       
         Worm2D21m::addParsToJson(j);
-        
+        Worm2D::addParsToJson(j);
          
     }
 

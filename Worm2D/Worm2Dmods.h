@@ -97,7 +97,7 @@ void setParsFromJson(json & j){
     W2Dbaseparameters::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
-    j["NMJWeight"]["value"] = NMJweight;
+    j["nmj_weight"]["value"] = NMJweight;
     W2Dbaseparameters::addParsToJson(j);
 }
 void setPars(shared_ptr<const CmdArgs> cmd){
@@ -146,9 +146,9 @@ void setParsFromJson(json & j)
 
 void addParsToJson(json & j) const
 {
-    j["NMJ_Gain_Map"]["value"] = NMJ_Gain_Map;
-    j["NMJ_VN"]["value"] = NMJ_VN;
-    j["NMJ_DN"]["value"] = NMJ_DN;
+    j["nmj_gain_map"]["value"] = NMJ_Gain_Map;
+    j["nmj_vn"]["value"] = NMJ_VN;
+    j["nmj_dn"]["value"] = NMJ_DN;
     W2Dbaseparameters::addParsToJson(j);
 }
 
@@ -300,6 +300,7 @@ class Worm2DoscNMLm : public Worm2Dm
     Worm2DoscNMLm(const string & jsonfile, shared_ptr<const CmdArgs> cmd_ = nullptr);
     protected:
     const string getModelName() {return "Worm2DoscNMLm";}
+    void addParsToJson(json & j){j=BPitsJson;Worm2Dm::addParsToJson(j);}
 };
 
 

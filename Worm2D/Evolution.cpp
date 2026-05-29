@@ -301,7 +301,8 @@ void EvoBase::setUp()
 
     vector<double> col1 = fileGetCol<double>(filename_,4,0);
     evolfile.open(filename_, std::ios_base::app);
-    initGenNum = col1[col1.size()-1] - s->Generation() + 1;
+    if (col1.empty()) initGenNum = 0;
+    else initGenNum = col1[col1.size()-1] - s->Generation() + 1;
 
     }
     else 
@@ -462,6 +463,17 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     ofstream json_out(rename_file("worm_data_evo.json"));
     w.addParsToJson(j);   
     addParsToJson(j);
+    appendNSCellClassesToJson(j, w.getSectionNames());
+    w.cleanLegacyParameterKeys(j);
+    j.erase("Nervous system");
+    j.erase("Dorsal NMJ");
+    j.erase("Ventral NMJ");
+    j.erase("Dorsal body");
+    j.erase("Ventral body");
+    j.erase("Stretch receptor");
+    j.erase("VNC NMJ");
+    j.erase("VNC 18");
+    j.erase("Driving input");
    
     json_out << setprecision(32);
     json_out << std::setw(4) << j << std::endl;
@@ -823,5 +835,3 @@ void Evolution::RunStandardSimulation(Worm2Dm & w, RandomState &rs){
        // velfile.close();
 
 }
-
-

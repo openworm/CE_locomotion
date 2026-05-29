@@ -66,9 +66,10 @@ class baseParameters
     template<class T>
     void setValCJ(const string & name_str, const T & val, const string & bstr)
     {
+        const string key_str = snakeCaseKey(name_str);
         if (!newSetVals.contains(bstr)) newSetVals[bstr] = json::object();
-        if (!newSetVals.at(bstr).contains(name_str)) newSetVals[bstr][name_str] =  json::object();
-        newSetVals[bstr][name_str]["value"] = val;
+        if (!newSetVals.at(bstr).contains(key_str)) newSetVals[bstr][key_str] =  json::object();
+        newSetVals[bstr][key_str]["value"] = val;
 
         addValToJson(name_str,val,bstr);
     }
@@ -77,11 +78,18 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
+        const string key_str = snakeCaseKey(name_str);
        
+
+        if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(key_str))
+        {
+             //cout << "hdjs ns " << name_str << " " << val << endl;
+            val = newSetVals[bstr][key_str].at("value").get<T>();
+            return true;
+        }
 
         if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
         {
-             //cout << "hdjs ns " << name_str << " " << val << endl;
             val = newSetVals[bstr][name_str].at("value").get<T>();
             return true;
         }
@@ -90,7 +98,8 @@ class baseParameters
         if (BPitsCmdArgs!=nullptr) {
             //cout << "hdjs cmd " << name_str << " " << val << endl;
 
-         if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+         if( BPitsCmdArgs->getArgValT<T>("--" + key_str, val)
+             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
         {
               //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
@@ -99,14 +108,17 @@ class baseParameters
     }
 
         if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
-        if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
+        {
+            if (getJsonValTF<T>(BPitsJson.at(bstr), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
+        }
 
        
        
-        if (defaultVals.contains(name_str)) {
+        if (defaultVals.contains(key_str)) {
 
          
-            val = defaultVals.at(name_str).get<T>();
+            val = defaultVals.at(key_str).get<T>();
             addValToJson(name_str,val,bstr);
                //cout << "hdjs ds " << name_str << " " << val << endl;
             return true;
@@ -167,46 +179,46 @@ class baseParameters
     json setDefaultVals()
     {
         json defaultVals_;
-        defaultVals_["randomInitialState"] = false;
-        defaultVals_["doOrigMuscInput"] = true;
-        defaultVals_["doOrigSRInput"] = true;
+        defaultVals_["random_initial_state"] = false;
+        defaultVals_["do_orig_musc_input"] = true;
+        defaultVals_["do_orig_sr_input"] = true;
 
-        defaultVals_["resetAgentBody"] = false;
+        defaultVals_["reset_agent_body"] = false;
         defaultVals_["rotation"] = 0.0;
         defaultVals_["orient"] = 0.0;
-        defaultVals_["gradSteep"] = 0.5;
-        defaultVals_["RunDuration"] = 1000;
-        defaultVals_["HSStepSize"] = 0.01;
-        defaultVals_["MaxDist"] = 4.5;
+        defaultVals_["grad_steep"] = 0.5;
+        defaultVals_["run_duration"] = 1000;
+        defaultVals_["hs_step_size"] = 0.01;
+        defaultVals_["max_dist"] = 4.5;
         defaultVals_["taxis"] = 1;
         defaultVals_["kinesis"] = 0;
-        defaultVals_["SREvoBot"]=0;
-        defaultVals_["SREvoTop"]=200;
-        defaultVals_["SREvoBotA"]=0;
-        defaultVals_["SREvoTopA"]=200;
-        defaultVals_["AB_output_level"] = 1.0;
-        defaultVals_["SRType"] = "None";
-        defaultVals_["SRForm"] = 0;
-        defaultVals_["SRSegPerSR"] = 6;
-        defaultVals_["SRZeroGainsType"] = 0;
-        defaultVals_["SROffset"] = 0;
-        defaultVals_["NMJWeight"] = 1;
-        defaultVals_["doReverse"] = 0;
+        defaultVals_["sr_evo_bot"]=0;
+        defaultVals_["sr_evo_top"]=200;
+        defaultVals_["sr_evo_bot_a"]=0;
+        defaultVals_["sr_evo_top_a"]=200;
+        defaultVals_["ab_output_level"] = 1.0;
+        defaultVals_["sr_type"] = "None";
+        defaultVals_["sr_form"] = 0;
+        defaultVals_["sr_seg_per_sr"] = 6;
+        defaultVals_["sr_zero_gains_type"] = 0;
+        defaultVals_["sr_offset"] = 0;
+        defaultVals_["nmj_weight"] = 1;
+        defaultVals_["do_reverse"] = 0;
 
-        defaultVals_["doTestRun"] = true;
+        defaultVals_["do_test_run"] = true;
 
-        defaultVals_["OSCTbase"] = 0.25; // Cap for oscillation evaluation
+        defaultVals_["osc_tbase"] = 0.25; // Cap for oscillation evaluation
         defaultVals_["agarfreq"] = 0.44;
-        defaultVals_["AvgSpeed"] = 0.00022; 
+        defaultVals_["avg_speed"] = 0.00022; 
 
-        defaultVals_["NMJ_VN"] = 1; 
-        defaultVals_["NMJ_DN"] = 1; 
-        defaultVals_["NMJ_Gain_Map"] = 1;
-        defaultVals_["fitType"] = 0;
-        defaultVals_["doAngleDiff"] = 0;
-        defaultVals_["doLegacy"] = true;
-        defaultVals_["initNSFromJson"] = true;
-        defaultVals_["inputInd"] = -1;
+        defaultVals_["nmj_vn"] = 1; 
+        defaultVals_["nmj_dn"] = 1; 
+        defaultVals_["nmj_gain_map"] = 1;
+        defaultVals_["fit_type"] = 0;
+        defaultVals_["do_angle_diff"] = 0;
+        defaultVals_["do_legacy"] = true;
+        defaultVals_["init_ns_from_json"] = true;
+        defaultVals_["input_ind"] = -1;
         defaultVals_["debug"] = false;
 
        return defaultVals_;
@@ -215,10 +227,14 @@ class baseParameters
     template<class T>
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
+        const string key_str = snakeCaseKey(name_str);
+        const string legacy_key_str = legacyKeyForSnake(key_str);
         if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
         //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
-        if (!BPitsJson.at(bstr).contains(name_str)) BPitsJson[bstr][name_str] = json::object();
-        BPitsJson[bstr][name_str]["value"] = val;
+        if (!BPitsJson.at(bstr).contains(key_str)) BPitsJson[bstr][key_str] = json::object();
+        BPitsJson[bstr][key_str]["value"] = val;
+        if (name_str != key_str) BPitsJson[bstr].erase(name_str);
+        if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[bstr].erase(legacy_key_str);
     }
 
    /*  void addParsToJson(json & j)
@@ -236,9 +252,107 @@ class baseParameters
 
     const json & itsNewSetVals() const {return newSetVals;}
     const json & itsBPjson() const {return BPitsJson;}
+    void cleanLegacyParameterKeys(json & j) const {removeLegacyParameterKeys(j);}
     
     friend class Efunctor;
     protected:
+    void removeLegacyParameterKeys(json & j) const
+    {
+        if (!j.is_object()) return;
+        for (auto section = j.begin(); section != j.end(); ++section)
+        {
+            if (!section.value().is_object()) continue;
+            for (auto it = defaultVals.begin(); it != defaultVals.end(); ++it)
+            {
+                const string key_str = it.key();
+                const string legacy_key_str = legacyKeyForSnake(key_str);
+                if (!legacy_key_str.empty() && legacy_key_str != key_str &&
+                    section.value().contains(legacy_key_str))
+                {
+                    if (!section.value().contains(key_str))
+                        section.value()[key_str] = section.value()[legacy_key_str];
+                    section.value().erase(legacy_key_str);
+                }
+            }
+        }
+    }
+
+    static string snakeCaseKey(const string & name)
+    {
+        string key;
+        for (string::size_type i = 0; i < name.size(); i++)
+        {
+            const char c = name[i];
+            const bool is_upper = (c >= 'A' && c <= 'Z');
+            const bool is_lower = (c >= 'a' && c <= 'z');
+            const bool is_digit = (c >= '0' && c <= '9');
+            const bool is_alnum = is_upper || is_lower || is_digit;
+
+            if (!is_alnum)
+            {
+                if (!key.empty() && key.back() != '_') key.push_back('_');
+                continue;
+            }
+
+            if (is_upper && !key.empty() && key.back() != '_')
+            {
+                const char prev = name[i-1];
+                const bool prev_is_upper = (prev >= 'A' && prev <= 'Z');
+                const bool prev_is_lower = (prev >= 'a' && prev <= 'z');
+                const bool prev_is_digit = (prev >= '0' && prev <= '9');
+                bool next_is_lower = false;
+                if (i + 1 < name.size())
+                {
+                    const char next = name[i+1];
+                    next_is_lower = (next >= 'a' && next <= 'z');
+                }
+                if (prev_is_lower || prev_is_digit || (prev_is_upper && next_is_lower))
+                    key.push_back('_');
+            }
+
+            key.push_back(is_upper ? c - 'A' + 'a' : c);
+        }
+
+        if (!key.empty() && key.back() == '_') key.pop_back();
+        return key;
+    }
+
+    static string legacyKeyForSnake(const string & key)
+    {
+        if (key == "random_initial_state") return "randomInitialState";
+        if (key == "do_orig_musc_input") return "doOrigMuscInput";
+        if (key == "do_orig_sr_input") return "doOrigSRInput";
+        if (key == "reset_agent_body") return "resetAgentBody";
+        if (key == "grad_steep") return "gradSteep";
+        if (key == "run_duration") return "RunDuration";
+        if (key == "hs_step_size") return "HSStepSize";
+        if (key == "max_dist") return "MaxDist";
+        if (key == "sr_evo_bot") return "SREvoBot";
+        if (key == "sr_evo_top") return "SREvoTop";
+        if (key == "sr_evo_bot_a") return "SREvoBotA";
+        if (key == "sr_evo_top_a") return "SREvoTopA";
+        if (key == "ab_output_level") return "AB_output_level";
+        if (key == "sr_type") return "SRType";
+        if (key == "sr_form") return "SRForm";
+        if (key == "sr_seg_per_sr") return "SRSegPerSR";
+        if (key == "sr_zero_gains_type") return "SRZeroGainsType";
+        if (key == "sr_offset") return "SROffset";
+        if (key == "nmj_weight") return "NMJWeight";
+        if (key == "do_reverse") return "doReverse";
+        if (key == "do_test_run") return "doTestRun";
+        if (key == "osc_tbase") return "OSCTbase";
+        if (key == "avg_speed") return "AvgSpeed";
+        if (key == "nmj_vn") return "NMJ_VN";
+        if (key == "nmj_dn") return "NMJ_DN";
+        if (key == "nmj_gain_map") return "NMJ_Gain_Map";
+        if (key == "fit_type") return "fitType";
+        if (key == "do_angle_diff") return "doAngleDiff";
+        if (key == "do_legacy") return "doLegacy";
+        if (key == "init_ns_from_json") return "initNSFromJson";
+        if (key == "input_ind") return "inputInd";
+        return "";
+    }
+
     json BPitsJson;
     //shared_ptr<const json> itsJson = nullptr;
     //shared_ptr<json> itsJson = nullptr;
@@ -476,6 +590,7 @@ virtual double getVelocity() = 0;
 const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber) const;
 
+virtual const vector<string> getSectionNames() {return vector<string>(par1.N_size, "vnc");}
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
@@ -768,5 +883,3 @@ virtual double distanceToCenter() const = 0;
 virtual void InitializeSensors(RandomState& rs) = 0;
 
 };
-
-

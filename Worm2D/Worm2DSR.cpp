@@ -37,7 +37,7 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     if (!do_nml){
     
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
@@ -169,7 +169,7 @@ void Worm2DSRE::resetFromJson(const json & js1)
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   if(n){
   bool doLegacy;
-  getValCJWorm<bool>("doLegacy",doLegacy);
+  getValCJWorm<bool>("do_legacy",doLegacy);
 
   //copy in current states, external inputs here??
     
@@ -460,6 +460,40 @@ void setEvoStr(vector<string> & vecval, const vector<string> & evoName)
 
 }
 
+bool isJsonArrayIndexKey(const string & key)
+{
+  if (key.empty()) return false;
+  for (int i=0;i<key.size();i++)
+  {
+    if (key[i] < '0' || key[i] > '9') return false;
+  }
+  return true;
+}
+
+vector<string> shortenEvoNamePath(const vector<string> & path)
+{
+  vector<string> shortened;
+  for (int i=0;i<path.size();i++)
+  {
+    if (path[i] == "value") continue;
+
+    string component = path[i];
+    if (component == "nervous_system") component = "ns";
+    else if (component == "chemical_conns") component = "chemcons";
+    else if (component == "electrical_conns") component = "eleccons";
+    else if (component == "dorsal_conns") component = "dorscons";
+    else if (component == "ventral_conns") component = "ventcons";
+    shortened.push_back(component);
+  }
+  return shortened;
+}
+
+void setEvoNameFromTag(int evotag, vector<vector<string> > & evoNames, const vector<string> & path)
+{
+  if (evotag < 1 || evotag > evoNames.size()) return;
+  setEvoStr(evoNames[evotag-1], shortenEvoNamePath(path));
+}
+
 
 void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames, 
   vector<string> & path)
@@ -476,13 +510,13 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
   if (it2->at("evolvable").is_object()){
     const json & j1 = it2->at("evolvable");
     int ind1 = j1["evotag"].get<int>();
-    setEvoStr(evoNames[ind1-1],path);
+    setEvoNameFromTag(ind1, evoNames, path);
   }
   else if (it2->at("evolvable").is_number()){
   int ind1 = it2->at("evolvable").get<int>();
   //setEvoStr(evoNames[ind1-1],evoName);
   //setEvoStr(evoNames[ind1-1],it2.key());
-  setEvoStr(evoNames[ind1-1],path);
+  setEvoNameFromTag(ind1, evoNames, path);
   }
   else{
   size_t idx = it2.key().find("weights");
@@ -490,7 +524,7 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
         {
           vector<fromToInt> evols = it2->at("evolvable").template get< vector<fromToInt> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+          for (int i = 0; i<evols.size();i++) setEvoNameFromTag(evols[i].val, evoNames, path);
           
         }
   else
@@ -498,7 +532,7 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
           vector<intPair> evols =  from_evo_json(it2->at("evolvable"));
           //vector<intPair> evols =  it2->at("evolvable").template get< vector<intPair> >();
           //for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val],evoName);
-          for (int i = 0; i<evols.size();i++) setEvoStr(evoNames[evols[i].val-1],path);
+          for (int i = 0; i<evols.size();i++) setEvoNameFromTag(evols[i].val, evoNames, path);
                             
         }
   }
@@ -509,9 +543,45 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
 
 }
 
+void getEvoNamesFromEvotags(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
+{
+    for(auto it = j.begin(); it != j.end(); ++it)
+    {
+      const bool parentIsArray = j.is_array();
+      const string key = parentIsArray ? "" : it.key();
+      if (!parentIsArray
+        && (key == evolvableRangesKey || key == legacyEvolvableKey || key == "evolvable")) continue;
+
+      const bool hasEvotag = it->is_object() && it->contains("evotag");
+      const bool pushKey = !parentIsArray
+        && !isJsonArrayIndexKey(key)
+        && !(path.size() > 0 && path[path.size()-1] == "cells" && !hasEvotag);
+      if (pushKey) path.push_back(key);
+
+      if (hasEvotag)
+      {
+        int evotag = it->at("evotag").get<int>();
+        setEvoNameFromTag(evotag, evoNames, path);
+      }
+      else if (it->is_object() || it->is_array())
+      {
+        getEvoNamesFromEvotags(*it, evoNames, path);
+      }
+
+      if (pushKey) path.pop_back();
+    }
+}
+
 void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
 {
-  
+    getEvoNamesFromEvotags(j, evoNames, path);
+    bool foundEvotagNames = false;
+    for (int i=0;i<evoNames.size();i++)
+    {
+      if (!evoNames[i].empty()) {foundEvotagNames = true; break;}
+    }
+    if (foundEvotagNames) return;
+
     for(auto it = j.begin(); it != j.end(); ++it)
     {
       if (it->contains("evolvable")) getEvoNames1(it, evoNames, path);
@@ -543,7 +613,13 @@ void addEvoNames(json & j)
   
   vector<string> evoKeys(vdd.size());
   for (int i=0;i<evoNames.size();i++)
-  { evoKeys[i] = "";
+  {
+    if (evoNames[i].empty())
+    {
+      evoKeys[i] = "evolvable_" + to_string(i + 1);
+      continue;
+    }
+    evoKeys[i] = "";
     for (int j=0;j<evoNames[i].size()-1;j++) 
     {evoKeys[i].append(evoNames[i][j]);evoKeys[i].append("_");}
     evoKeys[i].append(evoNames[i][evoNames[i].size()-1]);
@@ -553,7 +629,6 @@ void addEvoNames(json & j)
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
-    if (!it->contains("name"))
     (*it)["name"] = evoKeys[it->at("evotag").get<int>()-1];
     if (!it->contains("active")) (*it)["active"] = true;
 
@@ -999,7 +1074,7 @@ else
 }
 else
 {
-  recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
+  //recursive_iterate2(pheno,BPitsJson,itsEf,genPhenLims);
   
   recursive_iterate2v2(pheno,BPitsJson,itsEf,genPhenLims);
 
@@ -1594,7 +1669,7 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 	if (n!=nullptr){
 
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
   if (randomInitialState)
 	//if (W2Dbaseparameters1->randomInitialState)
     {
@@ -1619,9 +1694,9 @@ void Sensor::InitialiseAgent()
   if (spvec.size()>0){
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   spvec[0].HSStepSize = HSStepSize;
   spvec[0].gradSteep = gradSteep;
@@ -1754,9 +1829,9 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
   SensorPars & sp1 = spvec[0];
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   sp1.gradSteep = gradSteep;
   sp1.HSStepSize = HSStepSize;
@@ -1810,9 +1885,9 @@ void Sensor::construct(const json & j)
   SensorPars sp1;
 
   double HSStepSize;
-  wb.getValCJWorm<double>("HSStepSize",HSStepSize);
+  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
   double gradSteep;
-  wb.getValCJWorm<double>("gradSteep",gradSteep);
+  wb.getValCJWorm<double>("grad_steep",gradSteep);
 
   sp1.gradSteep = gradSteep;
   sp1.HSStepSize = HSStepSize;

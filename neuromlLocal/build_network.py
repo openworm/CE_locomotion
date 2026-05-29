@@ -173,17 +173,10 @@ def run(a=None, **kwargs):
     network_json_data = utils.getJsonFile(a.json_file)
     output_folder_name = a.output_folder
 
-    chemical_weights = None
-    if "Chemical weights" in network_json_data["Nervous system"]:
-        chemical_weights = network_json_data["Nervous system"]["Chemical weights"][
-            "value"
-        ]
-
-    electrical_weights = None
-    if "Electrical weights" in network_json_data["Nervous system"]:
-        electrical_weights = network_json_data["Nervous system"]["Electrical weights"][
-            "value"
-        ]
+    chemical_weights = utils.getNervousSystemConnections(network_json_data, "chemical")
+    electrical_weights = utils.getNervousSystemConnections(
+        network_json_data, "electrical"
+    )
 
     doMuscles = a.doMuscles
     if doMuscles:
@@ -196,8 +189,8 @@ def run(a=None, **kwargs):
 
         muscle_ids = sorted(list(set(d_muscle_cell_names + v_muscle_cell_names)))
 
-        vNMJ_weights = network_json_data["Ventral NMJ"]["weights"]["value"]
-        dNMJ_weights = network_json_data["Dorsal NMJ"]["weights"]["value"]
+        vNMJ_weights = utils.getNMJWeights(network_json_data, "ventral")
+        dNMJ_weights = utils.getNMJWeights(network_json_data, "dorsal")
         vNMJ_cellnames = v_muscle_cell_names  # network_json_data["Ventral NMJ"]["Cell name"]["value"]
         dNMJ_cellnames = (
             d_muscle_cell_names  # network_json_data["Dorsal NMJ"]["Cell name"]["value"]
@@ -363,7 +356,7 @@ def run(a=None, **kwargs):
         utils.makeProjectionsConnections(net, electrical_weights,'gapJunction0','electrical', 
                                         population_structure, pop_cell_names, cell_names) """
 
-        cell_num = network_json_data["Nervous system"]["size"]["value"]
+        cell_num = utils.getNervousSystemSize(network_json_data)
         size0 = cell_num
         cell_comp = "GenericNeuronCellW2D"
         pop0 = Population(
@@ -652,12 +645,26 @@ def run(a=None, **kwargs):
     nml_engine = "circo"
     nml_level = 2
     nml_engine = "dot"
-    generate_nmlgraph(
-        nml_file, nml_level, nml_engine, view_on_render=False, include_ext_inputs=False
-    )
+    cwd_before_graph = os.getcwd()
+    try:
+        os.chdir(this_file_dir)
+        generate_nmlgraph(
+            "Worm2D.net.nml",
+            nml_level,
+            nml_engine,
+            view_on_render=False,
+            include_ext_inputs=False,
+        )
+    finally:
+        os.chdir(cwd_before_graph)
     if not output_folder_name == cur_wkd_dir:
-        shutil.copyfile("Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv")
-        shutil.copyfile("Worm2DNet.gv.png", output_folder_name + "/Worm2DNet.gv.png")
+        shutil.copyfile(
+            this_file_dir + "/Worm2DNet.gv", output_folder_name + "/Worm2DNet.gv"
+        )
+        shutil.copyfile(
+            this_file_dir + "/Worm2DNet.gv.png",
+            output_folder_name + "/Worm2DNet.gv.png",
+        )
     if not output_folder_name == this_file_dir:
         shutil.copyfile(nml_file, output_folder_name + "/Worm2D.net.nml")
 
@@ -669,7 +676,12 @@ def run(a=None, **kwargs):
             save_figs_to_dir=output_folder_name,
         )
         currParser = NeuroMLXMLParser(handler)
-        currParser.parse(nml_file)
+        cwd_before_matrix = os.getcwd()
+        try:
+            os.chdir(this_file_dir)
+            currParser.parse("Worm2D.net.nml")
+        finally:
+            os.chdir(cwd_before_matrix)
         handler.finalise_document()
 
 

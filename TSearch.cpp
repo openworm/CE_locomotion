@@ -548,9 +548,9 @@ void TSearch::EvaluatePopulation(int start)
     for (int i = (THREAD_COUNT - 1)*NumIndividuals + start; i <= PopulationSize(); i++)
       Perf[i] = EvaluateVector(Population[i], RandomStates[i]);
     // Wait for all other threads to complete
-    int status; 
+    void *status;
     for (int i = 0; i <= THREAD_COUNT-2; i++)
-      pthread_join(threads[i], (void **)&status);
+      pthread_join(threads[i], &status);
   }
   else
     for (int i = start; i <= Population.Size(); i++) 

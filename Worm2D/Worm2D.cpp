@@ -220,8 +220,8 @@ W2Dmparscalled(false),W2Dminitcalled(false){
 
 Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_):
 Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
-doOrigMuscInput(getValCJWorm<bool>("doOrigMuscInput")),
-doOrigSRInput(getValCJWorm<bool>("doOrigSRInput"))
+doOrigMuscInput(getValCJWorm<bool>("do_orig_musc_input")),
+doOrigSRInput(getValCJWorm<bool>("do_orig_sr_input"))
 //,W2Dbaseparameters1(dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b))
 {
 
@@ -254,7 +254,7 @@ void Worm2Dbase::InitializeState(RandomState &rs)
     
    
     bool randomInitialState;
-    getValCJWorm<bool>("randomInitialState",randomInitialState);
+    getValCJWorm<bool>("random_initial_state",randomInitialState);
 
     if (randomInitialState)
     {
@@ -363,7 +363,7 @@ void Worm2Dbody::ResetAgentsBody(baseParameters & basePar_)
     
     b.InitializeBodyState();
     bool resetAgentBody;
-    basePar_.getValCJWorm<bool>("resetAgentBody",resetAgentBody);
+    basePar_.getValCJWorm<bool>("reset_agent_body",resetAgentBody);
 
     if (resetAgentBody)
     {
@@ -372,7 +372,7 @@ void Worm2Dbody::ResetAgentsBody(baseParameters & basePar_)
     //w18->shiftX(-4.5);
     double orient, MaxDist, worm_rotation;
     basePar_.getValCJWorm<double>("orient", orient);
-    basePar_.getValCJWorm<double>("MaxDist", MaxDist);
+    basePar_.getValCJWorm<double>("max_dist", MaxDist);
     basePar_.getValCJWorm<double>("rotation", worm_rotation);
 
     shiftX(cos(orient)*MaxDist*-1);
@@ -441,14 +441,29 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
-  
-  
+    int n_size = 0;
+    if (j.contains("nervous_system")
+        && j.at("nervous_system").contains("cell_names")
+        && j.at("nervous_system").at("cell_names").contains("value"))
+    {
+        n_size = j.at("nervous_system").at("cell_names").at("value").size();
+    }
+    else if (j.contains("Nervous system")
+        && j.at("Nervous system").contains("size"))
+    {
+        n_size = j.at("Nervous system").at("size").at("value");
+    }
+    else
+    {
+        n_size = j.at("Worm").at("N_size").at("value");
+    }
+
     return
   {j["Worm"]["N_neuronsperunit"]["value"], 
     j["Worm"]["N_muscles"]["value"], 
     j["Worm"]["T_muscle"]["value"],
     j["Worm"]["N_units"]["value"],
-    j["Nervous system"]["size"]["value"]
+    n_size
   };
 }
 
@@ -506,7 +521,7 @@ void Worm2Dbase::randomizeNS(RandomState &rs)
   if (n){
    
   bool randomInitialState;
-  getValCJWorm<bool>("randomInitialState",randomInitialState);
+  getValCJWorm<bool>("random_initial_state",randomInitialState);
 
 
   if (randomInitialState) {
@@ -810,6 +825,7 @@ void Worm2Dbase::addParsToJson(json & j)
     appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
 
+    if (false){
     string nsHead = "Nervous system";
    
     {Params< string > par;
@@ -817,6 +833,10 @@ void Worm2Dbase::addParsToJson(json & j)
     par.vals = {getModelName()};
     appendToJson<string>(j[nsHead],par);
     }
+    }
+
+    j["nervous_system"]["model_name"]["value"] = getModelName();
+    j["nervous_system"]["model_name"]["message"] = "Name of the model used for the nervous system.";
 
     vector<doubIntParamsHead> parvec = getWormParams();
     for (size_t i=0;i<parvec.size(); i++) {
@@ -825,6 +845,8 @@ void Worm2Dbase::addParsToJson(json & j)
         if (strcmp(parvec[i].parInt.head.c_str(),"NULL")!=0)
         appendToJson<long>(j[parvec[i].parInt.head],parvec[i].parInt);
         }
+
+    removeLegacyParameterKeys(j);
 
     //cout << "worm2dbase add pars to json" << endl;
 
@@ -837,11 +859,14 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
-    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system") 
     && j.at("Nervous system").contains("Cell name") 
     && j.at("Nervous system").at("Cell name").contains("value") 
     && j.at("Nervous system").at("Cell name").at("value").is_array())
@@ -849,14 +874,21 @@ void Worm2Dbase::addParsToJson(json & j)
     names = makeUnique(j.at("Nervous system").
     at("Cell name").at("value").template get< vector<string> >());
     }
-    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
     {
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    assert(names[0]!="not implemented");
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
 
+
+    
      {json & j22 =  j["driving_inputs"]["weights"]["value"];
     j["driving_inputs"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
     for (const toFromWeight & val : externalInputConn)
@@ -977,17 +1009,15 @@ void Worm2Dm::addParsToJson(json & j)
 
 
 
-    string nsHead = "Nervous system";
-    appendCellNamesToJson(j[nsHead], getCellNames(), 1);
+    //string nsHead = "Nervous system";
+    //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getCellNames(), par1.N_units);
-
-    //appendNSToJsonByCell(j, n, getCellNamesUnits(getCellNamesUnit(), par1.N_units));
-
 
     //W2Dmparscalled = true;
 
     Worm2Dbody::addParsToJson(j);
     Worm2Dbase::addParsToJson(j);
+    appendNSCellClassesToJson(j, getSectionNames());
 
 
 
@@ -999,11 +1029,14 @@ void Worm2D::addParsToJson(json & j)
     
     
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
 
-    if (names[0]=="not implemented" && j.contains("Nervous system") 
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system") 
     && j.at("Nervous system").contains("Cell name") 
     && j.at("Nervous system").at("Cell name").contains("value") 
     && j.at("Nervous system").at("Cell name").at("value").is_array())
@@ -1011,21 +1044,28 @@ void Worm2D::addParsToJson(json & j)
     names = makeUnique(j.at("Nervous system").
     at("Cell name").at("value").template get< vector<string> >());
     }
-    if (names[0]=="not implemented" && j.contains("Nervous system"))
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
     {
         int size = j.at("Nervous system").at("size").at("value").get<int>();
         names.clear();
         for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
     }
-    assert(names[0]!="not implemented");
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
 
     vector<string> names_no_suffix = removeSuffixIndices(names);
+    j["nervous_system"]["cell_names"]["value"] = names;
+    j["nervous_system"]["cell_names_no_suffix"]["value"] = names_no_suffix;
 
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
     string nsHead = "Nervous system";
     appendAllNSJson(j[nsHead], *n_ptr1);
-    appendNSToJsonByCell(j, *n_ptr1, names);
+    appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
    
@@ -1173,14 +1213,19 @@ void Worm2D::addParsToJson(json & j)
             else{
 
               json & j2 = j["vnc_nmj"];
-        
 
-            for (const weightentry & val : ventinds)
-               for (auto it = j2["ventral_conns"].begin(); it != j2["ventral_conns"].end(); ++it)
-                 if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+              for (const weightentry & val : ventinds)
+              {
+                  const string & name = names_no_suffix[val.from-1];
+                  j2["ventral_conns"][name]["cell_ind"] = val.from;
+                  j2["ventral_conns"][name]["weight"]["value"] = val.weight;
+              }
               for (const weightentry & val : dorsinds)
-                  for (auto it = j2["dorsal_conns"].begin(); it != j2["dorsal_conns"].end(); ++it)
-                     if (it->at("cell_ind")==val.from) {it->at("weight").at("value")=val.weight;break;}
+              {
+                  const string & name = names_no_suffix[val.from-1];
+                  j2["dorsal_conns"][name]["cell_ind"] = val.from;
+                  j2["dorsal_conns"][name]["weight"]["value"] = val.weight;
+              }
 
             }
 
@@ -2077,7 +2122,10 @@ void Worm2D::setUpMuscleConn(const json & j)
     //if (false){
     if (j.contains("dorsal_nmj")){
     vector<string> names;
-    if (j.contains("nervous_system"))
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
     names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
     else names = getDistinctCellNames();
     
@@ -2477,4 +2525,3 @@ void InputSwitcher::construct(const json & j)
  
 
 }
-

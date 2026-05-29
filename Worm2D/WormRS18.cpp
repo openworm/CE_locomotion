@@ -42,10 +42,10 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
     n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
 
     //doOrigSRInput18 = true;
-    //getValCJ<bool>("doOrigSRInput", doOrigSRInput18);
+    //getValCJ<bool>("do_orig_sr_input", doOrigSRInput18);
 
     //doOrigMuscInput18 = true;
-    //getValCJ<bool>("doOrigMuscInput", doOrigMuscInput18); 
+    //getValCJ<bool>("do_orig_musc_input", doOrigMuscInput18); 
 
 } //for WormCO18Full
 
@@ -367,15 +367,15 @@ void Worm18::InitializeState(RandomState &rs)
     //assert(w1parss!=nullptr);
 
     //bool rIS = false;
-    //getValCJ<bool>("randomInitialState", rIS);
+    //getValCJ<bool>("random_initial_state", rIS);
     
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     if (doLegacy){
 
     bool randomInitialState;
-    getValCJWorm<bool>("randomInitialState",randomInitialState);
+    getValCJWorm<bool>("random_initial_state",randomInitialState);
 
     if(randomInitialState)n.RandomizeCircuitState(-0.5, 0.5, rs);
     else 
@@ -637,7 +637,7 @@ void Worm18::preNStep()
 
 
     //bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
 
 
@@ -712,7 +712,7 @@ void Worm18::postNStep()
 {
 
     //bool doOrigMuscInput;
-    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+    //getValCJWorm<bool>("do_orig_musc_input",doOrigMuscInput);
 
     if (doOrigMuscInput) setMuscleInputOrig();
     else setMuscleInput();
@@ -774,6 +774,16 @@ void Worm18::Step1()
 
     // Time
     //t += StepSize;
+}
+
+const vector<string> Worm18::getSectionNames()
+{
+vector<string> v1(par1.N_units*par1.N_neuronsperunit, "vnc");
+vector<string> v2(4, "head");
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+
 }
 
 const vector<string> Worm18::getDistinctCellNames()
@@ -869,7 +879,7 @@ void Worm18::writeAct()
    // StretchReceptor18 * sr_ptr2 = &sr;
 
    // bool doOrigSRInput;
-   // getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+   // getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
@@ -966,7 +976,7 @@ void Worm18::DumpParams(ofstream &ofs)
 
 
     //bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
     if (doOrigSRInput)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;

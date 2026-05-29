@@ -503,6 +503,16 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
 
+        w_ptr->cleanLegacyParameterKeys(j);
+        j.erase("Nervous system");
+        j.erase("Dorsal NMJ");
+        j.erase("Ventral NMJ");
+        j.erase("Dorsal body");
+        j.erase("Ventral body");
+        j.erase("Stretch receptor");
+        j.erase("VNC NMJ");
+        j.erase("VNC 18");
+        j.erase("Driving input");
         
         ofstream json_out(rename_file("worm_data_evo.json"));
         json_out << std::setw(4) << j << std::endl;
@@ -940,9 +950,9 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
  
 
     int zeroGainsType;
-    w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    w_ptr->getValCJWorm("sr_zero_gains_type", zeroGainsType);
     int doReverse;
-    w_ptr->getValCJWorm("doReverse", doReverse);
+    w_ptr->getValCJWorm("do_reverse", doReverse);
 
     
 
@@ -1118,12 +1128,12 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
   
     int fitType; //, doAngleDiff;
-    w_ptr->getValCJWorm("fitType", fitType);
-    //w_ptr->getValCJWorm("doAngleDiff", doAngleDiff);
+    w_ptr->getValCJWorm("fit_type", fitType);
+    //w_ptr->getValCJWorm("do_angle_diff", doAngleDiff);
 
  
     double AvgSpeed;
-    w_ptr->getValCJWorm("AvgSpeed", AvgSpeed);
+    w_ptr->getValCJWorm("avg_speed", AvgSpeed);
 
 
     //const double AvgSpeed = EparsR->AvgSpeed;
@@ -1324,7 +1334,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     w.setValCJWorm("HSStepSize",StepSize);
 
     //double t1;
-    //w.getValCJWorm("HSStepSize", t1);
+    //w.getValCJWorm("hs_step_size", t1);
 
     w.InitializeState(rs);
     w.setParsFromGeno(genotype);
@@ -1346,14 +1356,14 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     const double Pi	=	3.1415926;
 
     double MaxDist;
-    w.getValCJWorm("MaxDist", MaxDist);
+    w.getValCJWorm("max_dist", MaxDist);
 
     double rundur = Transient + Duration;
     w.setValCJWorm("RunDuration", rundur);
     
 
     //double rd;
-    //w.getValCJWorm("RunDuration",rd);
+    //w.getValCJWorm("run_duration",rd);
 
 
     //cout << "rd ... " << Transient + Duration << " " << rd << " " << MaxDist << endl;
@@ -1516,7 +1526,7 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     w.setValCJWorm("orient",Pi);
 
     double MaxDist;
-    w.getValCJWorm("MaxDist", MaxDist);
+    w.getValCJWorm("max_dist", MaxDist);
 
     WormGrad & wg = dynamic_cast<WormGrad&>(w);
     
@@ -1751,4 +1761,3 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     return fitness;
 }
-

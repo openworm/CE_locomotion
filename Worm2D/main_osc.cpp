@@ -108,7 +108,15 @@ int main (int argc, const char* argv[])
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["Worm"]["Main model name"]["value"] = model_name;
-        j_evo["Nervous system"]["Model name"]["value"] = model_name;
+        j_evo.erase("Nervous system");
+        j_evo.erase("Dorsal NMJ");
+        j_evo.erase("Ventral NMJ");
+        j_evo.erase("Dorsal body");
+        j_evo.erase("Ventral body");
+        j_evo.erase("Stretch receptor");
+        j_evo.erase("VNC NMJ");
+        j_evo.erase("VNC 18");
+        j_evo.erase("Driving input");
 
         ofstream json_out(json_filename);
         json_out << setprecision(32);
@@ -296,7 +304,7 @@ int main (int argc, const char* argv[])
     //w2->addParsToJson(j);
     
     bool dotest;
-    w2->getValCJWorm("doTestRun", dotest);
+    w2->getValCJWorm("do_test_run", dotest);
     //const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
@@ -305,7 +313,7 @@ int main (int argc, const char* argv[])
     
     //WormFR* const w = dynamic_cast<WormFR*>(w2);
     int inputInd;
-    w2->getValCJ("inputInd", inputInd, "input_switcher");
+    w2->getValCJ("input_ind", inputInd, "input_switcher");
     WormCO2DSR* const w2dsre = dynamic_cast<WormCO2DSR*>(w2);
     if (dotest)
     {
@@ -358,9 +366,9 @@ int main (int argc, const char* argv[])
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
    
     int zeroGainsType;
-    w2->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    w2->getValCJWorm("sr_zero_gains_type", zeroGainsType);
     int doReverse;
-    w2->getValCJWorm("doReverse", doReverse);
+    w2->getValCJWorm("do_reverse", doReverse);
 
     if (doReverse == 0 || doReverse == 1)
     {
@@ -452,11 +460,21 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
     j["Worm"]["Main model name"]["value"] = model_name;
-    j["Nervous system"]["Model name"]["value"] = model_name;
 
     if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
+    appendNSCellClassesToJson(j, w2->getSectionNames());
+    w2->cleanLegacyParameterKeys(j);
+    j.erase("Nervous system");
+    j.erase("Dorsal NMJ");
+    j.erase("Ventral NMJ");
+    j.erase("Dorsal body");
+    j.erase("Ventral body");
+    j.erase("Stretch receptor");
+    j.erase("VNC NMJ");
+    j.erase("VNC 18");
+    j.erase("Driving input");
     
     ofstream json_out(rename_file("worm_data_worm.json", directoryName));
     json_out << setprecision(32);
@@ -466,4 +484,3 @@ int main (int argc, const char* argv[])
     delete w2;
     return 0;
 }
-

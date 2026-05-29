@@ -24,6 +24,7 @@ args = dict(
     modelFolder="Worm2D",
     inputFolderName=inputFolderName,
     outputFolderName=outputFolderName,
+    overwrite=True,
     reRand=False,
     doTestRun=True,
     doOrigMuscInput=False,

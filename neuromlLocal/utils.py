@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import copy
+import re
 # import helper_funcs as hf
 
 from neuroml import (
@@ -10,6 +11,111 @@ from neuroml import (
     ContinuousConnectionInstanceW,
     ElectricalConnectionInstanceW,
 )
+
+
+NS_NEW = "nervous_system"
+NS_OLD = "Nervous system"
+
+
+def getNervousSystem(network_json_data):
+    return network_json_data.get(NS_NEW, network_json_data.get(NS_OLD, {}))
+
+
+def _value(obj, default=None):
+    if isinstance(obj, dict) and "value" in obj:
+        return obj["value"]
+    if obj is None:
+        return default
+    return obj
+
+
+def _strip_cell_suffix(cell_name):
+    return re.sub(r"_\d+$", "", cell_name)
+
+
+def getCellNamesFull(network_json_data):
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        return _value(ns.get("cell_names"), [])
+    return _value(ns.get("Cell name"), [])
+
+
+def getNervousSystemSize(network_json_data):
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        return len(getCellNamesFull(network_json_data))
+    return _value(ns.get("size"), 0)
+
+
+def _get_new_cell_values(network_json_data, value):
+    ns = getNervousSystem(network_json_data)
+    names = getCellNamesFull(network_json_data)
+    field_map = {
+        "biases": "bias",
+        "taus": "tau",
+        "gains": "gain",
+        "states": "state",
+        "Section name": "cell_class",
+    }
+    field = field_map.get(value, value)
+    cells = ns.get("cells", {})
+    if not cells:
+        return None
+
+    vals = []
+    for name in names:
+        cell = cells.get(name)
+        if not cell or field not in cell:
+            return None
+        vals.append(_value(cell[field]))
+    return vals
+
+
+def getNervousSystemConnections(network_json_data, kind):
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        key = "chemical_conns" if kind == "chemical" else "electrical_conns"
+        conns = _value(ns.get(key), [])
+        names = getCellNamesFull(network_json_data)
+        indices = {name: i + 1 for i, name in enumerate(names)}
+        return [
+            {
+                "from": indices[conn["from"]],
+                "to": indices[conn["to"]],
+                "weight": _value(conn["weight"]),
+            }
+            for conn in conns
+        ]
+
+    key = "Chemical weights" if kind == "chemical" else "Electrical weights"
+    return _value(ns.get(key))
+
+
+def getNMJWeights(network_json_data, side):
+    keys = {
+        "ventral": ("ventral_nmj", "Ventral NMJ"),
+        "dorsal": ("dorsal_nmj", "Dorsal NMJ"),
+    }
+    new_key, old_key = keys[side]
+
+    if new_key in network_json_data:
+        conns = _value(network_json_data[new_key].get("weights"), [])
+        names = getCellNamesFull(network_json_data)
+        indices = {name: i + 1 for i, name in enumerate(names)}
+        return [
+            {
+                "from": indices[conn["from_cell"]],
+                "to": conn["to_musc"],
+                "weight": _value(conn["weight"]),
+            }
+            for conn in conns
+        ]
+
+    if old_key in network_json_data:
+        return _value(network_json_data[old_key].get("weights"))
+
+    return None
+
 
 plot_formats = {}
 plot_formats["RS18"] = {}
@@ -186,7 +292,7 @@ default_cells["Worm2Dosc"]["default parameters"] = {
     "amp": 1,
     "freq": 1,
     "phase": 1,
-    # "timestep": 1,
+    "timestep": 0.005,
     # "state0": 0,
 }
 
@@ -292,6 +398,7 @@ jsonToStringMap = {
     "head": "Head Neurons",
     "interneuron": "Interneurons",
     "VNC": "VNC Neurons",
+    "vnc": "VNC Neurons",
 }
 
 
@@ -309,8 +416,7 @@ def getPlotFormat(network_json_data):
         )
 
     if True:
-        NSname = "Nervous system"
-        json_model_name = network_json_data[NSname]["Model name"]["value"]
+        json_model_name = getModelName(network_json_data)
         section_names = getNSvalue(network_json_data, "Section name")
         if section_names is None:
             section_names = default_cells[json_model_name]["Section name"]
@@ -493,16 +599,30 @@ def get_rel_index_list(population_structure, cell_names=None, pop_names=None):
         return list(set(getPopRelativeCellIndices(cell_names, pop_names)))
 
 
-def getModelName_old(network_json_data):
-    if "Model name" in network_json_data["Nervous system"]:
-        return network_json_data["Nervous system"]["Model name"]["value"]
+def getModelName(network_json_data):
+    ns = getNervousSystem(network_json_data)
+    if "model_name" in ns:
+        return _value(ns["model_name"])
+    if "Model name" in ns:
+        return _value(ns["Model name"])
+    worm = network_json_data.get("Worm", {})
+    if "Main model name" in worm:
+        return _value(worm["Main model name"])
     return None
 
 
+def getModelName_old(network_json_data):
+    return getModelName(network_json_data)
+
+
 def getMainModelName(network_json_data):
-    if "Main model name" in network_json_data["Worm"]:
-        return network_json_data["Worm"]["Main model name"]["value"]
-    return getModelName_old(network_json_data)
+    worm_new = network_json_data.get("worm", {})
+    if "main_model_name" in worm_new:
+        return _value(worm_new["main_model_name"])
+    worm = network_json_data.get("Worm", {})
+    if "Main model name" in worm:
+        return _value(worm["Main model name"])
+    return getModelName(network_json_data)
 
 
 def getIndOfNthVal(val, vals_list, n=0):
@@ -513,14 +633,33 @@ def getIndOfNthVal(val, vals_list, n=0):
 
 
 def getCellNames(network_json_data):
-    if "Cell name" in network_json_data["Nervous system"]:
-        return network_json_data["Nervous system"]["Cell name"]["value"]
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        if "cell_names_no_suffix" in ns:
+            return _value(ns["cell_names_no_suffix"])
+        return [
+            _strip_cell_suffix(name) for name in getCellNamesFull(network_json_data)
+        ]
+    if "Cell name" in ns:
+        return _value(ns["Cell name"])
     return None
 
 
 def getNSvalue(network_json_data, value):
-    if value in network_json_data["Nervous system"]:
-        return network_json_data["Nervous system"][value]["value"]
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        if value == "Cell name":
+            return getCellNames(network_json_data)
+        if value == "size":
+            return getNervousSystemSize(network_json_data)
+        new_values = _get_new_cell_values(network_json_data, value)
+        if new_values is not None:
+            return new_values
+        old_ns = network_json_data.get(NS_OLD, {})
+        if value in old_ns:
+            return _value(old_ns[value])
+    if value in ns:
+        return _value(ns[value])
     return None
 
 
@@ -743,11 +882,11 @@ def getVals(
 def makeCellXml(network_json_data, cellW2D_filename):
     print("generating CellXml")
     pop_names = getPopNames(network_json_data)
-    cell_names = network_json_data["Nervous system"]["Cell name"]["value"]
-    cell_biases = network_json_data["Nervous system"]["biases"]["value"]
-    cell_gains = network_json_data["Nervous system"]["gains"]["value"]
-    cell_taus = network_json_data["Nervous system"]["taus"]["value"]
-    cell_states = network_json_data["Nervous system"]["states"]["value"]
+    cell_names = getCellNames(network_json_data)
+    cell_biases = getNSvalue(network_json_data, "biases")
+    cell_gains = getNSvalue(network_json_data, "gains")
+    cell_taus = getNSvalue(network_json_data, "taus")
+    cell_states = getNSvalue(network_json_data, "states")
     # print('biases')
     pop_biases = getVals(pop_names, cell_names, cell_biases)
     # print('gains')
@@ -796,13 +935,17 @@ def makeCellXmlGen(network_json_data, filename, cell_names):
     print("generating CellXml")
     pop_names = getPopNamesCell(cell_names)
     vals = {}
-    for key in network_json_data["Nervous system"]:
-        if (
-            "cell_val" in network_json_data["Nervous system"][key]
-            and network_json_data["Nervous system"][key]["cell_val"] == 1
-        ):
-            cell_vals = network_json_data["Nervous system"][key]["value"]
-            vals[key] = getVals(pop_names, cell_names, cell_vals)
+    ns = getNervousSystem(network_json_data)
+    if NS_NEW in network_json_data:
+        for key in ["biases", "gains", "taus", "states"]:
+            cell_vals = getNSvalue(network_json_data, key)
+            if cell_vals is not None:
+                vals[key] = getVals(pop_names, cell_names, cell_vals)
+    else:
+        for key in ns:
+            if "cell_val" in ns[key] and ns[key]["cell_val"] == 1:
+                cell_vals = _value(ns[key])
+                vals[key] = getVals(pop_names, cell_names, cell_vals)
     cell_strings = []
     for ind, pop_cell_name in enumerate(pop_names):
         output_string = '<cellW2D id="' + str(pop_cell_name)
@@ -826,9 +969,13 @@ def makeCellXmlReq(
     pop_names = getPopNamesCell(cell_names)
     vals = {}
     for key in par_name_default:
-        if key in network_json_data["Nervous system"]:
-            cell_vals = network_json_data["Nervous system"][key]["value"]
+        cell_vals = getNSvalue(network_json_data, key)
+        if cell_vals is not None:
             vals[key] = getVals(pop_names, cell_names, cell_vals)
+        elif key == "timestep":
+            sim = network_json_data.get("Simulation", {})
+            step_size = _value(sim.get("StepSize"), par_name_default[key])
+            vals[key] = [step_size] * len(cell_names)
         else:
             if isinstance(par_name_default[key], dict):
                 vals[key] = [par_name_default[key]["value"]] * len(cell_names)

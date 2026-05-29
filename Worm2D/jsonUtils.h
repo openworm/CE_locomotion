@@ -273,7 +273,9 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
 void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full);
 vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units);
 vector<toFromWeight> getNSToFromVec(TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
-void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names);
+void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names,
+  const vector<string> & section_names = vector<string>());
+void appendNSCellClassesToJson(json & j, const vector<string> & section_names);
 void set_nested_json(json & j, const vector<string> & keys, const json & value);
 void setNSFromJsonNZ(const json & j, NervousSystem & n, const bool setStates = true);
 void setNSFromJson(const json & j, NervousSystem & n, const bool setStates = true);

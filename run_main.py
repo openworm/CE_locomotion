@@ -511,6 +511,18 @@ def run(a=None, **kwargs):
             "worm_data_evo.json",
             "worm_data_worm.json",
             "genhistory.dat",
+            "cell_Ids.json",
+            "Worm2D.net.nml",
+            "LEMS_Worm2D.xml",
+            "LEMS_Worm2D_nrn.py",
+            "cell_syn_W2D.xml",
+            "cell_syn_W2D_cells.xml",
+            "cell_W2Dosc.xml",
+            "cell_W2Dosc_cells.xml",
+            "syn_W2D.xml",
+            "musc_W2D.xml",
+            "musc_W2D_cells.xml",
+            ".mod",
         ]
 
         for file in files:
@@ -527,13 +539,20 @@ def run(a=None, **kwargs):
             if getattr(a, "modifyJson"):
                 json_path_mod = a.outputFolderName + "/" + prefix + "worm_data_evo.json"
                 network_json_data_mod = utils.getJsonFile(json_path_mod)
-                rtaus = network_json_data_mod["Nervous system"]["Rtaus"]["value"]
-                taus = network_json_data_mod["Nervous system"]["taus"]["value"]
+                ns_mod = utils.getNervousSystem(network_json_data_mod)
+                taus = utils.getNSvalue(network_json_data_mod, "taus")
+                rtaus = utils.getNSvalue(network_json_data_mod, "Rtaus")
                 for i in range(len(taus)):
                     taus[i] = 1
-                    rtaus[i] = 1
-                network_json_data_mod["Nervous system"]["Rtaus"]["value"] = rtaus
-                network_json_data_mod["Nervous system"]["taus"]["value"] = taus
+                    if rtaus is not None:
+                        rtaus[i] = 1
+                if "nervous_system" in network_json_data_mod:
+                    for cell_name in utils.getCellNamesFull(network_json_data_mod):
+                        ns_mod["cells"][cell_name]["tau"]["value"] = 1
+                else:
+                    if rtaus is not None:
+                        ns_mod["Rtaus"]["value"] = rtaus
+                    ns_mod["taus"]["value"] = taus
                 with open(json_path_mod, "w", encoding="utf-8") as f:
                     json.dump(network_json_data_mod, f, ensure_ascii=False, indent=4)
 
@@ -668,47 +687,47 @@ def run(a=None, **kwargs):
 
     evol_extra_parameters = {}
     evol_extra_parameters["network_size"] = 6
-    evol_extra_parameters["doReverse"] = 0
+    evol_extra_parameters["do_reverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
-    evol_extra_parameters["SRType"] = "None"
-    # evol_extra_parameters["ABLevel"] = 1
-    evol_extra_parameters["AB_output_level"] = 1
-    # evol_extra_parameters["randInitState"] = False
-    evol_extra_parameters["randomInitialState"] = False
+    evol_extra_parameters["sr_type"] = "None"
+    # evol_extra_parameters["ab_level"] = 1
+    evol_extra_parameters["ab_output_level"] = 1
+    # evol_extra_parameters["random_initial_state"] = False
+    evol_extra_parameters["random_initial_state"] = False
     evol_extra_parameters["MutVar"] = 0.1
     evol_extra_parameters["CrossProb"] = 0.5
-    evol_extra_parameters["AvgSpeed"] = 0.00022
-    evol_extra_parameters["fitType"] = 0
-    evol_extra_parameters["SRForm"] = 0
-    evol_extra_parameters["SREvoBot"] = 0
-    evol_extra_parameters["SREvoTop"] = 200
-    evol_extra_parameters["SREvoBotA"] = 0
-    evol_extra_parameters["SREvoTopA"] = 200
-    evol_extra_parameters["SROffset"] = 0
-    evol_extra_parameters["SRSegPerSR"] = 6
-    evol_extra_parameters["SRZeroGainsTypeEvo"] = 1
-    evol_extra_parameters["doOrigMuscInput"] = True
-    evol_extra_parameters["doOrigSRInput"] = True
-    evol_extra_parameters["doAngleDiff"] = False
+    evol_extra_parameters["avg_speed"] = 0.00022
+    evol_extra_parameters["fit_type"] = 0
+    evol_extra_parameters["sr_form"] = 0
+    evol_extra_parameters["sr_evo_bot"] = 0
+    evol_extra_parameters["sr_evo_top"] = 200
+    evol_extra_parameters["sr_evo_bot_a"] = 0
+    evol_extra_parameters["sr_evo_top_a"] = 200
+    evol_extra_parameters["sr_offset"] = 0
+    evol_extra_parameters["sr_seg_per_sr"] = 6
+    evol_extra_parameters["sr_zero_gains_type_evo"] = 1
+    evol_extra_parameters["do_orig_musc_input"] = True
+    evol_extra_parameters["do_orig_sr_input"] = True
+    evol_extra_parameters["do_angle_diff"] = False
     evol_extra_parameters["StepSize"] = 0.005
 
-    evol_extra_parameters["resetAgentBody"] = False
+    evol_extra_parameters["reset_agent_body"] = False
     evol_extra_parameters["useSupCPT"] = False
     evol_extra_parameters["modPar"] = True
 
     sim_extra_parameters = {}
     sim_extra_parameters["rotation"] = 0
     sim_extra_parameters["orient"] = 0
-    sim_extra_parameters["doTestRun"] = False
+    sim_extra_parameters["do_test_run"] = False
     sim_extra_parameters["doForwardFirst"] = True
-    sim_extra_parameters["SRZeroGainsType"] = 0
+    sim_extra_parameters["sr_zero_gains_type"] = 0
     sim_extra_parameters["useGenJson"] = True
     sim_extra_parameters["SimStepSize"] = 0.005
     sim_extra_parameters["SimSkipSteps"] = 10
-    sim_extra_parameters["doLegacy"] = True
+    sim_extra_parameters["do_legacy"] = True
     sim_extra_parameters["prioritizeCmd"] = 0
-    sim_extra_parameters["initNSFromJson"] = True
-    sim_extra_parameters["inputInd"] = -1
+    sim_extra_parameters["init_ns_from_json"] = True
+    sim_extra_parameters["input_ind"] = -1
     sim_extra_parameters["debug"] = False
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False
@@ -747,13 +766,46 @@ def run(a=None, **kwargs):
     ]
 
     a_replacements = {
-        "randInitState": "randomInitialState",
-        "ABLevel": "AB_output_level",
+        "randInitState": "random_initial_state",
+        "randomInitialState": "random_initial_state",
+        "ABLevel": "ab_output_level",
+        "AB_output_level": "ab_output_level",
+        "doReverse": "do_reverse",
+        "SRType": "sr_type",
+        "AvgSpeed": "avg_speed",
+        "fitType": "fit_type",
+        "SRForm": "sr_form",
+        "SREvoBot": "sr_evo_bot",
+        "SREvoTop": "sr_evo_top",
+        "SREvoBotA": "sr_evo_bot_a",
+        "SREvoTopA": "sr_evo_top_a",
+        "SROffset": "sr_offset",
+        "SRSegPerSR": "sr_seg_per_sr",
+        "doOrigMuscInput": "do_orig_musc_input",
+        "doOrigSRInput": "do_orig_sr_input",
+        "doAngleDiff": "do_angle_diff",
+        "resetAgentBody": "reset_agent_body",
+        "doTestRun": "do_test_run",
+        "SRZeroGainsType": "sr_zero_gains_type",
+        "SRZeroGainsTypeEvo": "sr_zero_gains_type_evo",
+        "doLegacy": "do_legacy",
+        "initNSFromJson": "init_ns_from_json",
+        "inputInd": "input_ind",
+    }
+    legacy_parameter_names = {
+        new_key: old_key for old_key, new_key in a_replacements.items()
     }
     for key, val in a_replacements.items():
         if hasattr(a, key):
-            setattr(a, val, getattr(a, key))
+            if not hasattr(a, val):
+                setattr(a, val, getattr(a, key))
             delattr(a, key)
+
+    for new_key, old_key in legacy_parameter_names.items():
+        if old_key in sim_data:
+            if new_key not in sim_data:
+                sim_data[new_key] = sim_data[old_key]
+            del sim_data[old_key]
 
     for parameter_key in evol_extra_parameters:
         if hasattr(a, parameter_key):
@@ -781,11 +833,25 @@ def run(a=None, **kwargs):
                     evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
                         key
                     ]["value"]
+                elif (
+                    key in legacy_parameter_names
+                    and legacy_parameter_names[key]
+                    in worm_data["Evolutionary Optimization Parameters"]
+                ):
+                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
+                        legacy_parameter_names[key]
+                    ]["value"]
                 else:
                     print("Parameter not found in worm_data.json")
     elif os.path.isfile(evol_par_file_base):
         with open(evol_par_file_base) as f:
             evol_data = json.load(f)
+
+    for new_key, old_key in legacy_parameter_names.items():
+        if old_key in evol_data:
+            if new_key not in evol_data:
+                evol_data[new_key] = evol_data[old_key]
+            del evol_data[old_key]
 
     if a.reRand and do_evol and ("randomseed" in evol_data):
         del evol_data["randomseed"]
@@ -852,11 +918,17 @@ def run(a=None, **kwargs):
             same_vals = False
 
     if not do_evol and same_vals:
-        print(
-            "Simulation not needed as simulation parameters are the same as the existing ones.\n"
-            "Please supply new command line arguments."
-        )
-        sys.exit(1)
+        if a.overwrite:
+            print(
+                "Simulation parameters are the same as the existing ones, "
+                "but overwrite is true so the simulation will be rerun."
+            )
+        else:
+            print(
+                "Simulation not needed as simulation parameters are the same as the existing ones.\n"
+                "Please supply new command line arguments."
+            )
+            sys.exit(1)
 
     with open(sim_par_file, "w", encoding="utf-8") as f:
         json.dump(sim_data, f, ensure_ascii=False, indent=4)
@@ -905,14 +977,20 @@ def run(a=None, **kwargs):
     if True:
         # result = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         # result = subprocess.run(cmd, capture_output=True, text=True, cwd = home_dir)
-        # result = subprocess.run(cmd, capture_output=True, text=True, env=env)
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        env = os.environ.copy()
+        env_bin = os.path.dirname(sys.executable)
+        env["PATH"] = env_bin + os.pathsep + env.get("PATH", "")
+        env.setdefault("NEURON_MODULE_OPTIONS", "-nogui")
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
         if result.stdout:
             print(result.stdout)
 
         if result.stderr:
             print("Error:")
             print(result.stderr)
+
+        if result.returncode != 0:
+            sys.exit(result.returncode)
 
     # hf.dir_name = a.outputFolderName
 

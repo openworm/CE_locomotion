@@ -4,3 +4,6 @@ experiments:
     Test:
         expected:
             spike times: [0.605, 4.955, 10.055, 14.805, 19.605, 24.405, 29.155]
+    Test2:
+        expected:
+            spike times: [0.605, 4.955, 10.055, 14.805, 19.605, 24.405, 29.155]

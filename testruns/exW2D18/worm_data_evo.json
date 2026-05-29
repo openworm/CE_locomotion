@@ -1,352 +1,4 @@
 {
-    "Body": {
-        "C_agar_par_total": {
-            "message": "Total tangential drag coefficient for agar in kg/s",
-            "value": 0.0032
-        },
-        "C_agar_perp_total": {
-            "message": "Total rod normal drag coefficient in agar in kg/s",
-            "value": 0.128
-        },
-        "C_water_par_total": {
-            "message": "Total rod tangential drag coefficient for water in kg/s",
-            "value": 3.3e-06
-        },
-        "C_water_perp_total": {
-            "message": "Total rod normal drag coefficient for water in kg/s",
-            "value": 5.2e-06
-        },
-        "L_worm": {
-            "message": "Length of worm in m",
-            "value": 0.001
-        },
-        "Medium": {
-            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
-            "value": 1.0
-        },
-        "N_segments": {
-            "message": "Number of body segments on each side, dorsal and ventral",
-            "value": 50
-        },
-        "R_min": {
-            "message": "Minor radius of prolate ellipse body in m",
-            "value": 4e-05
-        },
-        "beta_D": {
-            "message": "Diagonal passive damping constant in s",
-            "value": 0.07291666666666666
-        },
-        "beta_L": {
-            "message": "Lateral passive damping constant in s",
-            "value": 0.0005208333333333333
-        },
-        "beta_M0": {
-            "message": "Baseline active damping constant in s",
-            "value": 0.052083333333333336
-        },
-        "delta_M": {
-            "message": "Rest muscle length scaling constant",
-            "value": 0.65
-        },
-        "kappa_D": {
-            "message": "Diagonal spring constant in kg/s",
-            "value": 7.291666666666666
-        },
-        "kappa_L": {
-            "message": "Lateral spring constant in kg/s",
-            "value": 0.020833333333333332
-        },
-        "kappa_M0": {
-            "message": "Baseline active muscle spring constant in kg/s",
-            "value": 0.41666666666666663
-        }
-    },
-    "Dorsal NMJ": {
-        "Cell name": {
-            "value": [
-                "dum1"
-            ]
-        },
-        "NumConns": {
-            "value": [
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2
-            ]
-        },
-        "maxcons": {
-            "value": 100
-        },
-        "size": {
-            "value": 24
-        },
-        "weights": {
-            "message": "Dorsal NMJ weights weights in sparse format",
-            "value": [
-                {
-                    "from": 37,
-                    "to": 1,
-                    "weight": 0.3113361431885208
-                },
-                {
-                    "from": 38,
-                    "to": 1,
-                    "weight": 0.604122956800013
-                },
-                {
-                    "from": 37,
-                    "to": 2,
-                    "weight": 0.30484997353876
-                },
-                {
-                    "from": 38,
-                    "to": 2,
-                    "weight": 0.5915370618666794
-                },
-                {
-                    "from": 37,
-                    "to": 3,
-                    "weight": 0.29836380388899914
-                },
-                {
-                    "from": 38,
-                    "to": 3,
-                    "weight": 0.5789511669333458
-                },
-                {
-                    "from": 37,
-                    "to": 4,
-                    "weight": 0.2918776342392383
-                },
-                {
-                    "from": 38,
-                    "to": 4,
-                    "weight": 0.5663652720000123
-                },
-                {
-                    "from": 37,
-                    "to": 5,
-                    "weight": 0.2853914645894774
-                },
-                {
-                    "from": 38,
-                    "to": 5,
-                    "weight": 0.5537793770666786
-                },
-                {
-                    "from": 37,
-                    "to": 6,
-                    "weight": 0.2789052949397166
-                },
-                {
-                    "from": 38,
-                    "to": 6,
-                    "weight": 0.5411934821333451
-                },
-                {
-                    "from": 2,
-                    "to": 7,
-                    "weight": -0.17873191960164314
-                },
-                {
-                    "from": 1,
-                    "to": 7,
-                    "weight": 0.4488464333799006
-                },
-                {
-                    "from": 2,
-                    "to": 8,
-                    "weight": -0.17447639770636594
-                },
-                {
-                    "from": 1,
-                    "to": 8,
-                    "weight": 0.4381596135375221
-                },
-                {
-                    "from": 2,
-                    "to": 9,
-                    "weight": -0.17022087581108872
-                },
-                {
-                    "from": 1,
-                    "to": 9,
-                    "weight": 0.4274727936951435
-                },
-                {
-                    "from": 8,
-                    "to": 10,
-                    "weight": -0.1659653539158115
-                },
-                {
-                    "from": 7,
-                    "to": 10,
-                    "weight": 0.4167859738527649
-                },
-                {
-                    "from": 8,
-                    "to": 11,
-                    "weight": -0.16170983202053427
-                },
-                {
-                    "from": 7,
-                    "to": 11,
-                    "weight": 0.40609915401038627
-                },
-                {
-                    "from": 8,
-                    "to": 12,
-                    "weight": -0.15745431012525707
-                },
-                {
-                    "from": 7,
-                    "to": 12,
-                    "weight": 0.3954123341680077
-                },
-                {
-                    "from": 14,
-                    "to": 13,
-                    "weight": -0.15319878822997982
-                },
-                {
-                    "from": 13,
-                    "to": 13,
-                    "weight": 0.38472551432562907
-                },
-                {
-                    "from": 14,
-                    "to": 14,
-                    "weight": -0.14894326633470265
-                },
-                {
-                    "from": 13,
-                    "to": 14,
-                    "weight": 0.3740386944832506
-                },
-                {
-                    "from": 14,
-                    "to": 15,
-                    "weight": -0.1446877444394254
-                },
-                {
-                    "from": 13,
-                    "to": 15,
-                    "weight": 0.3633518746408719
-                },
-                {
-                    "from": 20,
-                    "to": 16,
-                    "weight": -0.14043222254414817
-                },
-                {
-                    "from": 19,
-                    "to": 16,
-                    "weight": 0.35266505479849336
-                },
-                {
-                    "from": 20,
-                    "to": 17,
-                    "weight": -0.13617670064887097
-                },
-                {
-                    "from": 19,
-                    "to": 17,
-                    "weight": 0.3419782349561148
-                },
-                {
-                    "from": 20,
-                    "to": 18,
-                    "weight": -0.13192117875359372
-                },
-                {
-                    "from": 19,
-                    "to": 18,
-                    "weight": 0.3312914151137361
-                },
-                {
-                    "from": 26,
-                    "to": 19,
-                    "weight": -0.12766565685831655
-                },
-                {
-                    "from": 25,
-                    "to": 19,
-                    "weight": 0.32060459527135765
-                },
-                {
-                    "from": 26,
-                    "to": 20,
-                    "weight": -0.12341013496303933
-                },
-                {
-                    "from": 25,
-                    "to": 20,
-                    "weight": 0.3099177754289791
-                },
-                {
-                    "from": 26,
-                    "to": 21,
-                    "weight": -0.11915461306776208
-                },
-                {
-                    "from": 25,
-                    "to": 21,
-                    "weight": 0.2992309555866004
-                },
-                {
-                    "from": 32,
-                    "to": 22,
-                    "weight": -0.11489909117248488
-                },
-                {
-                    "from": 31,
-                    "to": 22,
-                    "weight": 0.28854413574422183
-                },
-                {
-                    "from": 32,
-                    "to": 23,
-                    "weight": -0.11064356927720768
-                },
-                {
-                    "from": 31,
-                    "to": 23,
-                    "weight": 0.2778573159018433
-                },
-                {
-                    "from": 32,
-                    "to": 24,
-                    "weight": -0.10638804738193043
-                },
-                {
-                    "from": 31,
-                    "to": 24,
-                    "weight": 0.26717049605946463
-                }
-            ]
-        }
-    },
     "Dorsal body": {
         "weights": {
             "message": "Dorsal muscle to body weights weights in sparse format",
@@ -848,9 +500,6 @@
         }
     },
     "Evolutionary Optimization Parameters": {
-        "AvgSpeed": {
-            "value": 0.00022
-        },
         "CheckpointInterval": {
             "value": 5
         },
@@ -877,9 +526,6 @@
         },
         "N_curvs": {
             "value": 23
-        },
-        "OSCTbase": {
-            "value": 0.25
         },
         "PopulationSize": {
             "value": 36
@@ -911,11 +557,17 @@
         "agarfreq": {
             "value": 0.44
         },
+        "avg_speed": {
+            "value": 0.00022
+        },
         "evoType": {
             "value": "Evo18"
         },
         "fileprefix": {
             "value": ""
+        },
+        "osc_tbase": {
+            "value": 0.25
         },
         "randomseed": {
             "value": 292
@@ -923,220 +575,6 @@
         "skip_steps": {
             "value": 4
         }
-    },
-    "Evolvable": {
-        "value": [
-            {
-                "active": true,
-                "evotag": 1,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 2,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 3,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 4,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 5,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 6,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 7,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 8,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 9,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 10,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 11,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 12,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 13,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 14,
-                "name": "Stretch receptor_SRvncgain",
-                "val1": -200.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 15,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            },
-            {
-                "active": true,
-                "evotag": 16,
-                "name": "VNC 18_D inds_V inds",
-                "val1": -1.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 17,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 18,
-                "name": "Nervous system_biases",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 19,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 20,
-                "name": "Nervous system_taus",
-                "val1": 0.5,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 21,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 22,
-                "name": "Nervous system_Chemical weights",
-                "val1": 4.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 23,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 24,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 25,
-                "name": "Nervous system_Chemical weights",
-                "val1": -15.0,
-                "val2": 15.0
-            },
-            {
-                "active": true,
-                "evotag": 26,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 27,
-                "name": "Nervous system_Electrical weights",
-                "val1": 0.0,
-                "val2": 2.0
-            },
-            {
-                "active": true,
-                "evotag": 28,
-                "name": "Stretch receptor_SRheadgain",
-                "val1": -200.0,
-                "val2": 0.0
-            },
-            {
-                "active": true,
-                "evotag": 29,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            },
-            {
-                "active": true,
-                "evotag": 30,
-                "name": "VNC 18_D inds_V inds",
-                "val1": 0.0,
-                "val2": 1.0
-            }
-        ]
     },
     "Funcable": {},
     "InputNS": {
@@ -1151,2978 +589,6 @@
         },
         "T_muscle": {
             "value": 0.1
-        }
-    },
-    "Nervous system": {
-        "Cell name": {
-            "value": [
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "SMDD",
-                "RMDD",
-                "SMDV",
-                "RMDV"
-            ]
-        },
-        "Chemical weights": {
-            "evolvable": [
-                {
-                    "evotag": 5,
-                    "from": 1,
-                    "to": 1
-                },
-                {
-                    "evotag": 5,
-                    "from": 3,
-                    "to": 3
-                },
-                {
-                    "evotag": 5,
-                    "from": 5,
-                    "to": 5
-                },
-                {
-                    "evotag": 6,
-                    "from": 2,
-                    "to": 2
-                },
-                {
-                    "evotag": 6,
-                    "from": 4,
-                    "to": 4
-                },
-                {
-                    "evotag": 6,
-                    "from": 6,
-                    "to": 6
-                },
-                {
-                    "evotag": 7,
-                    "from": 1,
-                    "to": 2
-                },
-                {
-                    "evotag": 7,
-                    "from": 3,
-                    "to": 4
-                },
-                {
-                    "evotag": 7,
-                    "from": 5,
-                    "to": 6
-                },
-                {
-                    "evotag": 8,
-                    "from": 1,
-                    "to": 4
-                },
-                {
-                    "evotag": 8,
-                    "from": 1,
-                    "to": 6
-                },
-                {
-                    "evotag": 8,
-                    "from": 3,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 2
-                },
-                {
-                    "evotag": 8,
-                    "from": 5,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 2
-                },
-                {
-                    "evotag": 9,
-                    "from": 2,
-                    "to": 4
-                },
-                {
-                    "evotag": 5,
-                    "from": 7,
-                    "to": 7
-                },
-                {
-                    "evotag": 5,
-                    "from": 9,
-                    "to": 9
-                },
-                {
-                    "evotag": 5,
-                    "from": 11,
-                    "to": 11
-                },
-                {
-                    "evotag": 6,
-                    "from": 8,
-                    "to": 8
-                },
-                {
-                    "evotag": 6,
-                    "from": 10,
-                    "to": 10
-                },
-                {
-                    "evotag": 6,
-                    "from": 12,
-                    "to": 12
-                },
-                {
-                    "evotag": 7,
-                    "from": 7,
-                    "to": 8
-                },
-                {
-                    "evotag": 7,
-                    "from": 9,
-                    "to": 10
-                },
-                {
-                    "evotag": 7,
-                    "from": 11,
-                    "to": 12
-                },
-                {
-                    "evotag": 8,
-                    "from": 7,
-                    "to": 10
-                },
-                {
-                    "evotag": 8,
-                    "from": 7,
-                    "to": 12
-                },
-                {
-                    "evotag": 8,
-                    "from": 9,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 8
-                },
-                {
-                    "evotag": 8,
-                    "from": 11,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 8
-                },
-                {
-                    "evotag": 9,
-                    "from": 8,
-                    "to": 10
-                },
-                {
-                    "evotag": 5,
-                    "from": 13,
-                    "to": 13
-                },
-                {
-                    "evotag": 5,
-                    "from": 15,
-                    "to": 15
-                },
-                {
-                    "evotag": 5,
-                    "from": 17,
-                    "to": 17
-                },
-                {
-                    "evotag": 6,
-                    "from": 14,
-                    "to": 14
-                },
-                {
-                    "evotag": 6,
-                    "from": 16,
-                    "to": 16
-                },
-                {
-                    "evotag": 6,
-                    "from": 18,
-                    "to": 18
-                },
-                {
-                    "evotag": 7,
-                    "from": 13,
-                    "to": 14
-                },
-                {
-                    "evotag": 7,
-                    "from": 15,
-                    "to": 16
-                },
-                {
-                    "evotag": 7,
-                    "from": 17,
-                    "to": 18
-                },
-                {
-                    "evotag": 8,
-                    "from": 13,
-                    "to": 16
-                },
-                {
-                    "evotag": 8,
-                    "from": 13,
-                    "to": 18
-                },
-                {
-                    "evotag": 8,
-                    "from": 15,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 14
-                },
-                {
-                    "evotag": 8,
-                    "from": 17,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 14
-                },
-                {
-                    "evotag": 9,
-                    "from": 14,
-                    "to": 16
-                },
-                {
-                    "evotag": 5,
-                    "from": 19,
-                    "to": 19
-                },
-                {
-                    "evotag": 5,
-                    "from": 21,
-                    "to": 21
-                },
-                {
-                    "evotag": 5,
-                    "from": 23,
-                    "to": 23
-                },
-                {
-                    "evotag": 6,
-                    "from": 20,
-                    "to": 20
-                },
-                {
-                    "evotag": 6,
-                    "from": 22,
-                    "to": 22
-                },
-                {
-                    "evotag": 6,
-                    "from": 24,
-                    "to": 24
-                },
-                {
-                    "evotag": 7,
-                    "from": 19,
-                    "to": 20
-                },
-                {
-                    "evotag": 7,
-                    "from": 21,
-                    "to": 22
-                },
-                {
-                    "evotag": 7,
-                    "from": 23,
-                    "to": 24
-                },
-                {
-                    "evotag": 8,
-                    "from": 19,
-                    "to": 22
-                },
-                {
-                    "evotag": 8,
-                    "from": 19,
-                    "to": 24
-                },
-                {
-                    "evotag": 8,
-                    "from": 21,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 20
-                },
-                {
-                    "evotag": 8,
-                    "from": 23,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 20
-                },
-                {
-                    "evotag": 9,
-                    "from": 20,
-                    "to": 22
-                },
-                {
-                    "evotag": 5,
-                    "from": 25,
-                    "to": 25
-                },
-                {
-                    "evotag": 5,
-                    "from": 27,
-                    "to": 27
-                },
-                {
-                    "evotag": 5,
-                    "from": 29,
-                    "to": 29
-                },
-                {
-                    "evotag": 6,
-                    "from": 26,
-                    "to": 26
-                },
-                {
-                    "evotag": 6,
-                    "from": 28,
-                    "to": 28
-                },
-                {
-                    "evotag": 6,
-                    "from": 30,
-                    "to": 30
-                },
-                {
-                    "evotag": 7,
-                    "from": 25,
-                    "to": 26
-                },
-                {
-                    "evotag": 7,
-                    "from": 27,
-                    "to": 28
-                },
-                {
-                    "evotag": 7,
-                    "from": 29,
-                    "to": 30
-                },
-                {
-                    "evotag": 8,
-                    "from": 25,
-                    "to": 28
-                },
-                {
-                    "evotag": 8,
-                    "from": 25,
-                    "to": 30
-                },
-                {
-                    "evotag": 8,
-                    "from": 27,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 26
-                },
-                {
-                    "evotag": 8,
-                    "from": 29,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 26
-                },
-                {
-                    "evotag": 9,
-                    "from": 26,
-                    "to": 28
-                },
-                {
-                    "evotag": 5,
-                    "from": 31,
-                    "to": 31
-                },
-                {
-                    "evotag": 5,
-                    "from": 33,
-                    "to": 33
-                },
-                {
-                    "evotag": 5,
-                    "from": 35,
-                    "to": 35
-                },
-                {
-                    "evotag": 6,
-                    "from": 32,
-                    "to": 32
-                },
-                {
-                    "evotag": 6,
-                    "from": 34,
-                    "to": 34
-                },
-                {
-                    "evotag": 6,
-                    "from": 36,
-                    "to": 36
-                },
-                {
-                    "evotag": 7,
-                    "from": 31,
-                    "to": 32
-                },
-                {
-                    "evotag": 7,
-                    "from": 33,
-                    "to": 34
-                },
-                {
-                    "evotag": 7,
-                    "from": 35,
-                    "to": 36
-                },
-                {
-                    "evotag": 8,
-                    "from": 31,
-                    "to": 34
-                },
-                {
-                    "evotag": 8,
-                    "from": 31,
-                    "to": 36
-                },
-                {
-                    "evotag": 8,
-                    "from": 33,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 32
-                },
-                {
-                    "evotag": 8,
-                    "from": 35,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 32
-                },
-                {
-                    "evotag": 9,
-                    "from": 32,
-                    "to": 34
-                },
-                {
-                    "evotag": 21,
-                    "from": 37,
-                    "to": 37
-                },
-                {
-                    "evotag": 21,
-                    "from": 39,
-                    "to": 39
-                },
-                {
-                    "evotag": 22,
-                    "from": 38,
-                    "to": 38
-                },
-                {
-                    "evotag": 22,
-                    "from": 40,
-                    "to": 40
-                },
-                {
-                    "evotag": 23,
-                    "from": 37,
-                    "to": 39
-                },
-                {
-                    "evotag": 23,
-                    "from": 39,
-                    "to": 37
-                },
-                {
-                    "evotag": 24,
-                    "from": 37,
-                    "to": 40
-                },
-                {
-                    "evotag": 24,
-                    "from": 39,
-                    "to": 38
-                },
-                {
-                    "evotag": 25,
-                    "from": 38,
-                    "to": 40
-                },
-                {
-                    "evotag": 25,
-                    "from": 40,
-                    "to": 38
-                }
-            ],
-            "funcable": [
-                {
-                    "from": 3,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 2
-                },
-                {
-                    "from": 5,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 2
-                },
-                {
-                    "from": 9,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 8
-                },
-                {
-                    "from": 11,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 8
-                },
-                {
-                    "from": 15,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 14
-                },
-                {
-                    "from": 17,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 14
-                },
-                {
-                    "from": 21,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 20
-                },
-                {
-                    "from": 23,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 20
-                },
-                {
-                    "from": 27,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 26
-                },
-                {
-                    "from": 29,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 26
-                },
-                {
-                    "from": 33,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 32
-                },
-                {
-                    "from": 35,
-                    "mfunc": {
-                        "f_ind": 1,
-                        "fact": 0.5
-                    },
-                    "to": 32
-                }
-            ],
-            "message": "chemical weights in sparse format",
-            "value": [
-                {
-                    "from": 1,
-                    "to": 1,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 2,
-                    "to": 2,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 1,
-                    "to": 2,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 3,
-                    "to": 2,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 5,
-                    "to": 2,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 3,
-                    "to": 3,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 4,
-                    "to": 4,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 3,
-                    "to": 4,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 1,
-                    "to": 4,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 2,
-                    "to": 4,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 5,
-                    "to": 5,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 6,
-                    "to": 6,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 5,
-                    "to": 6,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 1,
-                    "to": 6,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 7,
-                    "to": 7,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 8,
-                    "to": 8,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 7,
-                    "to": 8,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 9,
-                    "to": 8,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 11,
-                    "to": 8,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 9,
-                    "to": 9,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 10,
-                    "to": 10,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 9,
-                    "to": 10,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 7,
-                    "to": 10,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 8,
-                    "to": 10,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 11,
-                    "to": 11,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 12,
-                    "to": 12,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 11,
-                    "to": 12,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 7,
-                    "to": 12,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 13,
-                    "to": 13,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 14,
-                    "to": 14,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 13,
-                    "to": 14,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 15,
-                    "to": 14,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 17,
-                    "to": 14,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 15,
-                    "to": 15,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 16,
-                    "to": 16,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 15,
-                    "to": 16,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 13,
-                    "to": 16,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 14,
-                    "to": 16,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 17,
-                    "to": 17,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 18,
-                    "to": 18,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 17,
-                    "to": 18,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 13,
-                    "to": 18,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 19,
-                    "to": 19,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 20,
-                    "to": 20,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 19,
-                    "to": 20,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 21,
-                    "to": 20,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 23,
-                    "to": 20,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 21,
-                    "to": 21,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 22,
-                    "to": 22,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 21,
-                    "to": 22,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 19,
-                    "to": 22,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 20,
-                    "to": 22,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 23,
-                    "to": 23,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 24,
-                    "to": 24,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 23,
-                    "to": 24,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 19,
-                    "to": 24,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 25,
-                    "to": 25,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 26,
-                    "to": 26,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 25,
-                    "to": 26,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 27,
-                    "to": 26,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 29,
-                    "to": 26,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 27,
-                    "to": 27,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 28,
-                    "to": 28,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 27,
-                    "to": 28,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 25,
-                    "to": 28,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 26,
-                    "to": 28,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 29,
-                    "to": 29,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 30,
-                    "to": 30,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 29,
-                    "to": 30,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 25,
-                    "to": 30,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 31,
-                    "to": 31,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 32,
-                    "to": 32,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 31,
-                    "to": 32,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 33,
-                    "to": 32,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 35,
-                    "to": 32,
-                    "weight": 5.607163879809375
-                },
-                {
-                    "from": 33,
-                    "to": 33,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 34,
-                    "to": 34,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 33,
-                    "to": 34,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 31,
-                    "to": 34,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 32,
-                    "to": 34,
-                    "weight": 0.6596015379449341
-                },
-                {
-                    "from": 35,
-                    "to": 35,
-                    "weight": -5.550118755452354
-                },
-                {
-                    "from": 36,
-                    "to": 36,
-                    "weight": 0.3513728194013169
-                },
-                {
-                    "from": 35,
-                    "to": 36,
-                    "weight": -2.9326612186508574
-                },
-                {
-                    "from": 31,
-                    "to": 36,
-                    "weight": 11.21432775961875
-                },
-                {
-                    "from": 37,
-                    "to": 37,
-                    "weight": -10.960944334234014
-                },
-                {
-                    "from": 39,
-                    "to": 37,
-                    "weight": -14.616899217975464
-                },
-                {
-                    "from": 38,
-                    "to": 38,
-                    "weight": 5.008961604382065
-                },
-                {
-                    "from": 39,
-                    "to": 38,
-                    "weight": 12.564995889688687
-                },
-                {
-                    "from": 40,
-                    "to": 38,
-                    "weight": -3.7862083156650312
-                },
-                {
-                    "from": 39,
-                    "to": 39,
-                    "weight": -10.960944334234014
-                },
-                {
-                    "from": 37,
-                    "to": 39,
-                    "weight": -14.616899217975464
-                },
-                {
-                    "from": 40,
-                    "to": 40,
-                    "weight": 5.008961604382065
-                },
-                {
-                    "from": 37,
-                    "to": 40,
-                    "weight": 12.564995889688687
-                },
-                {
-                    "from": 38,
-                    "to": 40,
-                    "weight": -3.7862083156650312
-                }
-            ]
-        },
-        "Electrical weights": {
-            "evolvable": [
-                {
-                    "evotag": 10,
-                    "from": 2,
-                    "to": 4
-                },
-                {
-                    "evotag": 10,
-                    "from": 4,
-                    "to": 2
-                },
-                {
-                    "evotag": 10,
-                    "from": 2,
-                    "to": 6
-                },
-                {
-                    "evotag": 10,
-                    "from": 6,
-                    "to": 2
-                },
-                {
-                    "evotag": 11,
-                    "from": 4,
-                    "to": 6
-                },
-                {
-                    "evotag": 11,
-                    "from": 6,
-                    "to": 4
-                },
-                {
-                    "evotag": 12,
-                    "from": 3,
-                    "to": 5
-                },
-                {
-                    "evotag": 12,
-                    "from": 5,
-                    "to": 3
-                },
-                {
-                    "evotag": 11,
-                    "from": 2,
-                    "to": 8
-                },
-                {
-                    "evotag": 11,
-                    "from": 8,
-                    "to": 2
-                },
-                {
-                    "evotag": 11,
-                    "from": 6,
-                    "to": 10
-                },
-                {
-                    "evotag": 11,
-                    "from": 10,
-                    "to": 6
-                },
-                {
-                    "evotag": 12,
-                    "from": 1,
-                    "to": 7
-                },
-                {
-                    "evotag": 12,
-                    "from": 7,
-                    "to": 1
-                },
-                {
-                    "evotag": 12,
-                    "from": 5,
-                    "to": 9
-                },
-                {
-                    "evotag": 12,
-                    "from": 9,
-                    "to": 5
-                },
-                {
-                    "evotag": 13,
-                    "from": 5,
-                    "to": 7
-                },
-                {
-                    "evotag": 13,
-                    "from": 7,
-                    "to": 5
-                },
-                {
-                    "evotag": 10,
-                    "from": 8,
-                    "to": 10
-                },
-                {
-                    "evotag": 10,
-                    "from": 10,
-                    "to": 8
-                },
-                {
-                    "evotag": 10,
-                    "from": 8,
-                    "to": 12
-                },
-                {
-                    "evotag": 10,
-                    "from": 12,
-                    "to": 8
-                },
-                {
-                    "evotag": 11,
-                    "from": 10,
-                    "to": 12
-                },
-                {
-                    "evotag": 11,
-                    "from": 12,
-                    "to": 10
-                },
-                {
-                    "evotag": 12,
-                    "from": 9,
-                    "to": 11
-                },
-                {
-                    "evotag": 12,
-                    "from": 11,
-                    "to": 9
-                },
-                {
-                    "evotag": 11,
-                    "from": 8,
-                    "to": 14
-                },
-                {
-                    "evotag": 11,
-                    "from": 14,
-                    "to": 8
-                },
-                {
-                    "evotag": 11,
-                    "from": 12,
-                    "to": 16
-                },
-                {
-                    "evotag": 11,
-                    "from": 16,
-                    "to": 12
-                },
-                {
-                    "evotag": 12,
-                    "from": 7,
-                    "to": 13
-                },
-                {
-                    "evotag": 12,
-                    "from": 13,
-                    "to": 7
-                },
-                {
-                    "evotag": 12,
-                    "from": 11,
-                    "to": 15
-                },
-                {
-                    "evotag": 12,
-                    "from": 15,
-                    "to": 11
-                },
-                {
-                    "evotag": 13,
-                    "from": 11,
-                    "to": 13
-                },
-                {
-                    "evotag": 13,
-                    "from": 13,
-                    "to": 11
-                },
-                {
-                    "evotag": 10,
-                    "from": 14,
-                    "to": 16
-                },
-                {
-                    "evotag": 10,
-                    "from": 16,
-                    "to": 14
-                },
-                {
-                    "evotag": 10,
-                    "from": 14,
-                    "to": 18
-                },
-                {
-                    "evotag": 10,
-                    "from": 18,
-                    "to": 14
-                },
-                {
-                    "evotag": 11,
-                    "from": 16,
-                    "to": 18
-                },
-                {
-                    "evotag": 11,
-                    "from": 18,
-                    "to": 16
-                },
-                {
-                    "evotag": 12,
-                    "from": 15,
-                    "to": 17
-                },
-                {
-                    "evotag": 12,
-                    "from": 17,
-                    "to": 15
-                },
-                {
-                    "evotag": 11,
-                    "from": 14,
-                    "to": 20
-                },
-                {
-                    "evotag": 11,
-                    "from": 20,
-                    "to": 14
-                },
-                {
-                    "evotag": 11,
-                    "from": 18,
-                    "to": 22
-                },
-                {
-                    "evotag": 11,
-                    "from": 22,
-                    "to": 18
-                },
-                {
-                    "evotag": 12,
-                    "from": 13,
-                    "to": 19
-                },
-                {
-                    "evotag": 12,
-                    "from": 19,
-                    "to": 13
-                },
-                {
-                    "evotag": 12,
-                    "from": 17,
-                    "to": 21
-                },
-                {
-                    "evotag": 12,
-                    "from": 21,
-                    "to": 17
-                },
-                {
-                    "evotag": 13,
-                    "from": 17,
-                    "to": 19
-                },
-                {
-                    "evotag": 13,
-                    "from": 19,
-                    "to": 17
-                },
-                {
-                    "evotag": 10,
-                    "from": 20,
-                    "to": 22
-                },
-                {
-                    "evotag": 10,
-                    "from": 22,
-                    "to": 20
-                },
-                {
-                    "evotag": 10,
-                    "from": 20,
-                    "to": 24
-                },
-                {
-                    "evotag": 10,
-                    "from": 24,
-                    "to": 20
-                },
-                {
-                    "evotag": 11,
-                    "from": 22,
-                    "to": 24
-                },
-                {
-                    "evotag": 11,
-                    "from": 24,
-                    "to": 22
-                },
-                {
-                    "evotag": 12,
-                    "from": 21,
-                    "to": 23
-                },
-                {
-                    "evotag": 12,
-                    "from": 23,
-                    "to": 21
-                },
-                {
-                    "evotag": 11,
-                    "from": 20,
-                    "to": 26
-                },
-                {
-                    "evotag": 11,
-                    "from": 26,
-                    "to": 20
-                },
-                {
-                    "evotag": 11,
-                    "from": 24,
-                    "to": 28
-                },
-                {
-                    "evotag": 11,
-                    "from": 28,
-                    "to": 24
-                },
-                {
-                    "evotag": 12,
-                    "from": 19,
-                    "to": 25
-                },
-                {
-                    "evotag": 12,
-                    "from": 25,
-                    "to": 19
-                },
-                {
-                    "evotag": 12,
-                    "from": 23,
-                    "to": 27
-                },
-                {
-                    "evotag": 12,
-                    "from": 27,
-                    "to": 23
-                },
-                {
-                    "evotag": 13,
-                    "from": 23,
-                    "to": 25
-                },
-                {
-                    "evotag": 13,
-                    "from": 25,
-                    "to": 23
-                },
-                {
-                    "evotag": 10,
-                    "from": 26,
-                    "to": 28
-                },
-                {
-                    "evotag": 10,
-                    "from": 28,
-                    "to": 26
-                },
-                {
-                    "evotag": 10,
-                    "from": 26,
-                    "to": 30
-                },
-                {
-                    "evotag": 10,
-                    "from": 30,
-                    "to": 26
-                },
-                {
-                    "evotag": 11,
-                    "from": 28,
-                    "to": 30
-                },
-                {
-                    "evotag": 11,
-                    "from": 30,
-                    "to": 28
-                },
-                {
-                    "evotag": 12,
-                    "from": 27,
-                    "to": 29
-                },
-                {
-                    "evotag": 12,
-                    "from": 29,
-                    "to": 27
-                },
-                {
-                    "evotag": 11,
-                    "from": 26,
-                    "to": 32
-                },
-                {
-                    "evotag": 11,
-                    "from": 32,
-                    "to": 26
-                },
-                {
-                    "evotag": 11,
-                    "from": 30,
-                    "to": 34
-                },
-                {
-                    "evotag": 11,
-                    "from": 34,
-                    "to": 30
-                },
-                {
-                    "evotag": 12,
-                    "from": 25,
-                    "to": 31
-                },
-                {
-                    "evotag": 12,
-                    "from": 31,
-                    "to": 25
-                },
-                {
-                    "evotag": 12,
-                    "from": 29,
-                    "to": 33
-                },
-                {
-                    "evotag": 12,
-                    "from": 33,
-                    "to": 29
-                },
-                {
-                    "evotag": 13,
-                    "from": 29,
-                    "to": 31
-                },
-                {
-                    "evotag": 13,
-                    "from": 31,
-                    "to": 29
-                },
-                {
-                    "evotag": 10,
-                    "from": 32,
-                    "to": 34
-                },
-                {
-                    "evotag": 10,
-                    "from": 34,
-                    "to": 32
-                },
-                {
-                    "evotag": 10,
-                    "from": 32,
-                    "to": 36
-                },
-                {
-                    "evotag": 10,
-                    "from": 36,
-                    "to": 32
-                },
-                {
-                    "evotag": 11,
-                    "from": 34,
-                    "to": 36
-                },
-                {
-                    "evotag": 11,
-                    "from": 36,
-                    "to": 34
-                },
-                {
-                    "evotag": 12,
-                    "from": 33,
-                    "to": 35
-                },
-                {
-                    "evotag": 12,
-                    "from": 35,
-                    "to": 33
-                },
-                {
-                    "evotag": 26,
-                    "from": 37,
-                    "to": 38
-                },
-                {
-                    "evotag": 26,
-                    "from": 38,
-                    "to": 37
-                },
-                {
-                    "evotag": 26,
-                    "from": 39,
-                    "to": 40
-                },
-                {
-                    "evotag": 26,
-                    "from": 40,
-                    "to": 39
-                },
-                {
-                    "evotag": 27,
-                    "from": 40,
-                    "to": 38
-                },
-                {
-                    "evotag": 27,
-                    "from": 38,
-                    "to": 40
-                }
-            ],
-            "message": "electrical weights in sparse format",
-            "value": [
-                {
-                    "from": 7,
-                    "to": 1,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 4,
-                    "to": 2,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 6,
-                    "to": 2,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 8,
-                    "to": 2,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 5,
-                    "to": 3,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 2,
-                    "to": 4,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 6,
-                    "to": 4,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 3,
-                    "to": 5,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 9,
-                    "to": 5,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 7,
-                    "to": 5,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 2,
-                    "to": 6,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 4,
-                    "to": 6,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 10,
-                    "to": 6,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 1,
-                    "to": 7,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 5,
-                    "to": 7,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 13,
-                    "to": 7,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 2,
-                    "to": 8,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 10,
-                    "to": 8,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 12,
-                    "to": 8,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 14,
-                    "to": 8,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 5,
-                    "to": 9,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 11,
-                    "to": 9,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 6,
-                    "to": 10,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 8,
-                    "to": 10,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 12,
-                    "to": 10,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 9,
-                    "to": 11,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 15,
-                    "to": 11,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 13,
-                    "to": 11,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 8,
-                    "to": 12,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 10,
-                    "to": 12,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 16,
-                    "to": 12,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 7,
-                    "to": 13,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 11,
-                    "to": 13,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 19,
-                    "to": 13,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 8,
-                    "to": 14,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 16,
-                    "to": 14,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 18,
-                    "to": 14,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 20,
-                    "to": 14,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 11,
-                    "to": 15,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 17,
-                    "to": 15,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 12,
-                    "to": 16,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 14,
-                    "to": 16,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 18,
-                    "to": 16,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 15,
-                    "to": 17,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 21,
-                    "to": 17,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 19,
-                    "to": 17,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 14,
-                    "to": 18,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 16,
-                    "to": 18,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 22,
-                    "to": 18,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 13,
-                    "to": 19,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 17,
-                    "to": 19,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 25,
-                    "to": 19,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 14,
-                    "to": 20,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 22,
-                    "to": 20,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 24,
-                    "to": 20,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 26,
-                    "to": 20,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 17,
-                    "to": 21,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 23,
-                    "to": 21,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 18,
-                    "to": 22,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 20,
-                    "to": 22,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 24,
-                    "to": 22,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 21,
-                    "to": 23,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 27,
-                    "to": 23,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 25,
-                    "to": 23,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 20,
-                    "to": 24,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 22,
-                    "to": 24,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 28,
-                    "to": 24,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 19,
-                    "to": 25,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 23,
-                    "to": 25,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 31,
-                    "to": 25,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 20,
-                    "to": 26,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 28,
-                    "to": 26,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 30,
-                    "to": 26,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 32,
-                    "to": 26,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 23,
-                    "to": 27,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 29,
-                    "to": 27,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 24,
-                    "to": 28,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 26,
-                    "to": 28,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 30,
-                    "to": 28,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 27,
-                    "to": 29,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 33,
-                    "to": 29,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 31,
-                    "to": 29,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 26,
-                    "to": 30,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 28,
-                    "to": 30,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 34,
-                    "to": 30,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 25,
-                    "to": 31,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 29,
-                    "to": 31,
-                    "weight": 0.9111736171642986
-                },
-                {
-                    "from": 26,
-                    "to": 32,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 34,
-                    "to": 32,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 36,
-                    "to": 32,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 29,
-                    "to": 33,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 35,
-                    "to": 33,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 30,
-                    "to": 34,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 32,
-                    "to": 34,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 36,
-                    "to": 34,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 33,
-                    "to": 35,
-                    "weight": 1.88483448539094
-                },
-                {
-                    "from": 32,
-                    "to": 36,
-                    "weight": 1.39879278264883
-                },
-                {
-                    "from": 34,
-                    "to": 36,
-                    "weight": 0.8181178060731188
-                },
-                {
-                    "from": 38,
-                    "to": 37,
-                    "weight": 0.053770158804043455
-                },
-                {
-                    "from": 37,
-                    "to": 38,
-                    "weight": 0.053770158804043455
-                },
-                {
-                    "from": 40,
-                    "to": 38,
-                    "weight": 0.48888505069487664
-                },
-                {
-                    "from": 40,
-                    "to": 39,
-                    "weight": 0.053770158804043455
-                },
-                {
-                    "from": 39,
-                    "to": 40,
-                    "weight": 0.053770158804043455
-                },
-                {
-                    "from": 38,
-                    "to": 40,
-                    "weight": 0.48888505069487664
-                }
-            ]
-        },
-        "Model name": {
-            "value": "W2D18"
-        },
-        "NumChemicalConns": {
-            "value": [
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                1,
-                4,
-                1,
-                4,
-                1,
-                3,
-                2,
-                3,
-                2,
-                3
-            ]
-        },
-        "NumElectricalConns": {
-            "value": [
-                1,
-                3,
-                1,
-                2,
-                3,
-                3,
-                3,
-                4,
-                2,
-                3,
-                3,
-                3,
-                3,
-                4,
-                2,
-                3,
-                3,
-                3,
-                3,
-                4,
-                2,
-                3,
-                3,
-                3,
-                3,
-                4,
-                2,
-                3,
-                3,
-                3,
-                2,
-                3,
-                2,
-                3,
-                1,
-                2,
-                1,
-                2,
-                1,
-                2
-            ]
-        },
-        "Rtaus": {
-            "value": [
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.764843871310462,
-                1.6851703006845138,
-                0.913800919455613,
-                0.7369503117404776,
-                0.913800919455613,
-                0.7369503117404776
-            ]
-        },
-        "biases": {
-            "evolvable": [
-                {
-                    "evotag": 1,
-                    "ind": 1
-                },
-                {
-                    "evotag": 1,
-                    "ind": 3
-                },
-                {
-                    "evotag": 1,
-                    "ind": 5
-                },
-                {
-                    "evotag": 2,
-                    "ind": 2
-                },
-                {
-                    "evotag": 2,
-                    "ind": 4
-                },
-                {
-                    "evotag": 2,
-                    "ind": 6
-                },
-                {
-                    "evotag": 1,
-                    "ind": 7
-                },
-                {
-                    "evotag": 1,
-                    "ind": 9
-                },
-                {
-                    "evotag": 1,
-                    "ind": 11
-                },
-                {
-                    "evotag": 2,
-                    "ind": 8
-                },
-                {
-                    "evotag": 2,
-                    "ind": 10
-                },
-                {
-                    "evotag": 2,
-                    "ind": 12
-                },
-                {
-                    "evotag": 1,
-                    "ind": 13
-                },
-                {
-                    "evotag": 1,
-                    "ind": 15
-                },
-                {
-                    "evotag": 1,
-                    "ind": 17
-                },
-                {
-                    "evotag": 2,
-                    "ind": 14
-                },
-                {
-                    "evotag": 2,
-                    "ind": 16
-                },
-                {
-                    "evotag": 2,
-                    "ind": 18
-                },
-                {
-                    "evotag": 1,
-                    "ind": 19
-                },
-                {
-                    "evotag": 1,
-                    "ind": 21
-                },
-                {
-                    "evotag": 1,
-                    "ind": 23
-                },
-                {
-                    "evotag": 2,
-                    "ind": 20
-                },
-                {
-                    "evotag": 2,
-                    "ind": 22
-                },
-                {
-                    "evotag": 2,
-                    "ind": 24
-                },
-                {
-                    "evotag": 1,
-                    "ind": 25
-                },
-                {
-                    "evotag": 1,
-                    "ind": 27
-                },
-                {
-                    "evotag": 1,
-                    "ind": 29
-                },
-                {
-                    "evotag": 2,
-                    "ind": 26
-                },
-                {
-                    "evotag": 2,
-                    "ind": 28
-                },
-                {
-                    "evotag": 2,
-                    "ind": 30
-                },
-                {
-                    "evotag": 1,
-                    "ind": 31
-                },
-                {
-                    "evotag": 1,
-                    "ind": 33
-                },
-                {
-                    "evotag": 1,
-                    "ind": 35
-                },
-                {
-                    "evotag": 2,
-                    "ind": 32
-                },
-                {
-                    "evotag": 2,
-                    "ind": 34
-                },
-                {
-                    "evotag": 2,
-                    "ind": 36
-                },
-                {
-                    "evotag": 17,
-                    "ind": 37
-                },
-                {
-                    "evotag": 17,
-                    "ind": 39
-                },
-                {
-                    "evotag": 18,
-                    "ind": 38
-                },
-                {
-                    "evotag": 18,
-                    "ind": 40
-                }
-            ],
-            "value": [
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                6.639679044548757,
-                -4.2773387911698535,
-                14.320326459473849,
-                -8.956848156121332,
-                14.320326459473849,
-                -8.956848156121332
-            ]
-        },
-        "externalinputs": {
-            "value": [
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        "gains": {
-            "value": [
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ]
-        },
-        "maxchemcons": {
-            "value": 4
-        },
-        "maxelecconns": {
-            "value": 4
-        },
-        "outputs": {
-            "value": [
-                0.998712247098293,
-                0.014263684558197681,
-                0.9987817531701849,
-                0.015066259914984292,
-                0.9988475120021626,
-                0.01591326479580036,
-                0.9989097251621679,
-                0.016807074599899895,
-                0.9989685834233764,
-                0.017750182025781748,
-                0.999024267337276,
-                0.01874520173704164,
-                0.9990769477768513,
-                0.01979487507769948,
-                0.9991267864513759,
-                0.020902074818085,
-                0.9991739363942486,
-                0.022069809909355628,
-                0.9992185424252383,
-                0.02330123022141234,
-                0.9992607415884399,
-                0.02459963123535641,
-                0.9993006635671831,
-                0.025968458657676215,
-                0.9993384310770739,
-                0.027411312919055384,
-                0.9993741602382907,
-                0.028931953516039225,
-                0.9994079609282093,
-                0.030534303148777996,
-                0.9994399371153655,
-                0.03222245160267777,
-                0.999470187175731,
-                0.034000659316034264,
-                0.9994988041922138,
-                0.03587336056960714,
-                0.9999994673104244,
-                0.00018744302662695056,
-                0.9999996769073725,
-                0.0003090037307225835
-            ]
-        },
-        "paststates": {
-            "value": [
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        "section sizes": {
-            "VNC": {
-                "plot order": 1,
-                "value": 36
-            },
-            "head": {
-                "plot order": 0,
-                "value": 4
-            }
-        },
-        "size": {
-            "value": 40
-        },
-        "states": {
-            "value": [
-                0.013888888888888888,
-                0.041666666666666664,
-                0.06944444444444445,
-                0.09722222222222222,
-                0.125,
-                0.1527777777777778,
-                0.18055555555555555,
-                0.20833333333333334,
-                0.2361111111111111,
-                0.2638888888888889,
-                0.2916666666666667,
-                0.3194444444444444,
-                0.3472222222222222,
-                0.375,
-                0.4027777777777778,
-                0.4305555555555556,
-                0.4583333333333333,
-                0.4861111111111111,
-                0.5138888888888888,
-                0.5416666666666666,
-                0.5694444444444444,
-                0.5972222222222222,
-                0.625,
-                0.6527777777777778,
-                0.6805555555555556,
-                0.7083333333333334,
-                0.7361111111111112,
-                0.7638888888888888,
-                0.7916666666666666,
-                0.8194444444444444,
-                0.8472222222222222,
-                0.875,
-                0.9027777777777778,
-                0.9305555555555556,
-                0.9583333333333334,
-                0.9861111111111112,
-                0.125,
-                0.375,
-                0.625,
-                0.875
-            ]
-        },
-        "taus": {
-            "evolvable": [
-                {
-                    "evotag": 3,
-                    "ind": 1
-                },
-                {
-                    "evotag": 3,
-                    "ind": 3
-                },
-                {
-                    "evotag": 3,
-                    "ind": 5
-                },
-                {
-                    "evotag": 4,
-                    "ind": 2
-                },
-                {
-                    "evotag": 4,
-                    "ind": 4
-                },
-                {
-                    "evotag": 4,
-                    "ind": 6
-                },
-                {
-                    "evotag": 3,
-                    "ind": 7
-                },
-                {
-                    "evotag": 3,
-                    "ind": 9
-                },
-                {
-                    "evotag": 3,
-                    "ind": 11
-                },
-                {
-                    "evotag": 4,
-                    "ind": 8
-                },
-                {
-                    "evotag": 4,
-                    "ind": 10
-                },
-                {
-                    "evotag": 4,
-                    "ind": 12
-                },
-                {
-                    "evotag": 3,
-                    "ind": 13
-                },
-                {
-                    "evotag": 3,
-                    "ind": 15
-                },
-                {
-                    "evotag": 3,
-                    "ind": 17
-                },
-                {
-                    "evotag": 4,
-                    "ind": 14
-                },
-                {
-                    "evotag": 4,
-                    "ind": 16
-                },
-                {
-                    "evotag": 4,
-                    "ind": 18
-                },
-                {
-                    "evotag": 3,
-                    "ind": 19
-                },
-                {
-                    "evotag": 3,
-                    "ind": 21
-                },
-                {
-                    "evotag": 3,
-                    "ind": 23
-                },
-                {
-                    "evotag": 4,
-                    "ind": 20
-                },
-                {
-                    "evotag": 4,
-                    "ind": 22
-                },
-                {
-                    "evotag": 4,
-                    "ind": 24
-                },
-                {
-                    "evotag": 3,
-                    "ind": 25
-                },
-                {
-                    "evotag": 3,
-                    "ind": 27
-                },
-                {
-                    "evotag": 3,
-                    "ind": 29
-                },
-                {
-                    "evotag": 4,
-                    "ind": 26
-                },
-                {
-                    "evotag": 4,
-                    "ind": 28
-                },
-                {
-                    "evotag": 4,
-                    "ind": 30
-                },
-                {
-                    "evotag": 3,
-                    "ind": 31
-                },
-                {
-                    "evotag": 3,
-                    "ind": 33
-                },
-                {
-                    "evotag": 3,
-                    "ind": 35
-                },
-                {
-                    "evotag": 4,
-                    "ind": 32
-                },
-                {
-                    "evotag": 4,
-                    "ind": 34
-                },
-                {
-                    "evotag": 4,
-                    "ind": 36
-                },
-                {
-                    "evotag": 19,
-                    "ind": 37
-                },
-                {
-                    "evotag": 19,
-                    "ind": 39
-                },
-                {
-                    "evotag": 20,
-                    "ind": 38
-                },
-                {
-                    "evotag": 20,
-                    "ind": 40
-                }
-            ],
-            "value": [
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.3074563809822102,
-                0.5934118347527259,
-                1.094330262433681,
-                1.3569435877410378,
-                1.094330262433681,
-                1.3569435877410378
-            ]
         }
     },
     "OutputNS": {
@@ -4338,352 +804,6 @@
         },
         "setFromThis": {
             "value": true
-        }
-    },
-    "Ventral NMJ": {
-        "Cell name": {
-            "value": [
-                "dum1"
-            ]
-        },
-        "NumConns": {
-            "value": [
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                2,
-                4,
-                2,
-                2,
-                4,
-                2,
-                2,
-                4,
-                2,
-                2,
-                4,
-                2,
-                2,
-                4,
-                2,
-                2,
-                4,
-                2
-            ]
-        },
-        "maxcons": {
-            "value": 100
-        },
-        "size": {
-            "value": 24
-        },
-        "weights": {
-            "message": "Ventral NMJ weights weights in sparse format",
-            "value": [
-                {
-                    "from": 39,
-                    "to": 1,
-                    "weight": 0.3113361431885208
-                },
-                {
-                    "from": 40,
-                    "to": 1,
-                    "weight": 0.604122956800013
-                },
-                {
-                    "from": 39,
-                    "to": 2,
-                    "weight": 0.30484997353876
-                },
-                {
-                    "from": 40,
-                    "to": 2,
-                    "weight": 0.5915370618666794
-                },
-                {
-                    "from": 39,
-                    "to": 3,
-                    "weight": 0.29836380388899914
-                },
-                {
-                    "from": 40,
-                    "to": 3,
-                    "weight": 0.5789511669333458
-                },
-                {
-                    "from": 39,
-                    "to": 4,
-                    "weight": 0.2918776342392383
-                },
-                {
-                    "from": 40,
-                    "to": 4,
-                    "weight": 0.5663652720000123
-                },
-                {
-                    "from": 39,
-                    "to": 5,
-                    "weight": 0.2853914645894774
-                },
-                {
-                    "from": 40,
-                    "to": 5,
-                    "weight": 0.5537793770666786
-                },
-                {
-                    "from": 39,
-                    "to": 6,
-                    "weight": 0.2789052949397166
-                },
-                {
-                    "from": 40,
-                    "to": 6,
-                    "weight": 0.5411934821333451
-                },
-                {
-                    "from": 4,
-                    "to": 7,
-                    "weight": -0.17873191960164314
-                },
-                {
-                    "from": 3,
-                    "to": 7,
-                    "weight": 0.4488464333799006
-                },
-                {
-                    "from": 4,
-                    "to": 8,
-                    "weight": -0.08723819885318297
-                },
-                {
-                    "from": 3,
-                    "to": 8,
-                    "weight": 0.21907980676876104
-                },
-                {
-                    "from": 6,
-                    "to": 8,
-                    "weight": -0.08723819885318297
-                },
-                {
-                    "from": 5,
-                    "to": 8,
-                    "weight": 0.21907980676876104
-                },
-                {
-                    "from": 6,
-                    "to": 9,
-                    "weight": -0.17022087581108872
-                },
-                {
-                    "from": 5,
-                    "to": 9,
-                    "weight": 0.4274727936951435
-                },
-                {
-                    "from": 10,
-                    "to": 10,
-                    "weight": -0.1659653539158115
-                },
-                {
-                    "from": 9,
-                    "to": 10,
-                    "weight": 0.4167859738527649
-                },
-                {
-                    "from": 10,
-                    "to": 11,
-                    "weight": -0.08085491601026713
-                },
-                {
-                    "from": 9,
-                    "to": 11,
-                    "weight": 0.20304957700519313
-                },
-                {
-                    "from": 12,
-                    "to": 11,
-                    "weight": -0.08085491601026713
-                },
-                {
-                    "from": 11,
-                    "to": 11,
-                    "weight": 0.20304957700519313
-                },
-                {
-                    "from": 12,
-                    "to": 12,
-                    "weight": -0.15745431012525707
-                },
-                {
-                    "from": 11,
-                    "to": 12,
-                    "weight": 0.3954123341680077
-                },
-                {
-                    "from": 16,
-                    "to": 13,
-                    "weight": -0.15319878822997982
-                },
-                {
-                    "from": 15,
-                    "to": 13,
-                    "weight": 0.38472551432562907
-                },
-                {
-                    "from": 16,
-                    "to": 14,
-                    "weight": -0.07447163316735132
-                },
-                {
-                    "from": 15,
-                    "to": 14,
-                    "weight": 0.1870193472416253
-                },
-                {
-                    "from": 18,
-                    "to": 14,
-                    "weight": -0.07447163316735132
-                },
-                {
-                    "from": 17,
-                    "to": 14,
-                    "weight": 0.1870193472416253
-                },
-                {
-                    "from": 18,
-                    "to": 15,
-                    "weight": -0.1446877444394254
-                },
-                {
-                    "from": 17,
-                    "to": 15,
-                    "weight": 0.3633518746408719
-                },
-                {
-                    "from": 22,
-                    "to": 16,
-                    "weight": -0.14043222254414817
-                },
-                {
-                    "from": 21,
-                    "to": 16,
-                    "weight": 0.35266505479849336
-                },
-                {
-                    "from": 22,
-                    "to": 17,
-                    "weight": -0.06808835032443548
-                },
-                {
-                    "from": 21,
-                    "to": 17,
-                    "weight": 0.1709891174780574
-                },
-                {
-                    "from": 24,
-                    "to": 17,
-                    "weight": -0.06808835032443548
-                },
-                {
-                    "from": 23,
-                    "to": 17,
-                    "weight": 0.1709891174780574
-                },
-                {
-                    "from": 24,
-                    "to": 18,
-                    "weight": -0.13192117875359372
-                },
-                {
-                    "from": 23,
-                    "to": 18,
-                    "weight": 0.3312914151137361
-                },
-                {
-                    "from": 28,
-                    "to": 19,
-                    "weight": -0.12766565685831655
-                },
-                {
-                    "from": 27,
-                    "to": 19,
-                    "weight": 0.32060459527135765
-                },
-                {
-                    "from": 28,
-                    "to": 20,
-                    "weight": -0.06170506748151967
-                },
-                {
-                    "from": 27,
-                    "to": 20,
-                    "weight": 0.15495888771448954
-                },
-                {
-                    "from": 30,
-                    "to": 20,
-                    "weight": -0.06170506748151967
-                },
-                {
-                    "from": 29,
-                    "to": 20,
-                    "weight": 0.15495888771448954
-                },
-                {
-                    "from": 30,
-                    "to": 21,
-                    "weight": -0.11915461306776208
-                },
-                {
-                    "from": 29,
-                    "to": 21,
-                    "weight": 0.2992309555866004
-                },
-                {
-                    "from": 34,
-                    "to": 22,
-                    "weight": -0.11489909117248488
-                },
-                {
-                    "from": 33,
-                    "to": 22,
-                    "weight": 0.28854413574422183
-                },
-                {
-                    "from": 34,
-                    "to": 23,
-                    "weight": -0.05532178463860384
-                },
-                {
-                    "from": 33,
-                    "to": 23,
-                    "weight": 0.13892865795092166
-                },
-                {
-                    "from": 36,
-                    "to": 23,
-                    "weight": -0.05532178463860384
-                },
-                {
-                    "from": 35,
-                    "to": 23,
-                    "weight": 0.13892865795092166
-                },
-                {
-                    "from": 36,
-                    "to": 24,
-                    "weight": -0.10638804738193043
-                },
-                {
-                    "from": 35,
-                    "to": 24,
-                    "weight": 0.26717049605946463
-                }
-            ]
         }
     },
     "Ventral body": {
@@ -5242,6 +1362,747 @@
             "value": 7
         }
     },
+    "body": {
+        "beta_d": {
+            "message": "Diagonal passive damping constant in s",
+            "value": 0.07291666666666666
+        },
+        "beta_l": {
+            "message": "Lateral passive damping constant in s",
+            "value": 0.0005208333333333333
+        },
+        "beta_m0": {
+            "message": "Baseline active damping constant in s",
+            "value": 0.052083333333333336
+        },
+        "c_agar_par_total": {
+            "message": "Total tangential drag coefficient for agar in kg/s",
+            "value": 0.0032
+        },
+        "c_agar_perp_total": {
+            "message": "Total rod normal drag coefficient in agar in kg/s",
+            "value": 0.128
+        },
+        "c_water_par_total": {
+            "message": "Total rod tangential drag coefficient for water in kg/s",
+            "value": 3.3e-06
+        },
+        "c_water_perp_total": {
+            "message": "Total rod normal drag coefficient for water in kg/s",
+            "value": 5.2e-06
+        },
+        "delta_m": {
+            "message": "Rest muscle length scaling constant",
+            "value": 0.65
+        },
+        "kappa_d": {
+            "message": "Diagonal spring constant in kg/s",
+            "value": 7.291666666666666
+        },
+        "kappa_l": {
+            "message": "Lateral spring constant in kg/s",
+            "value": 0.020833333333333332
+        },
+        "kappa_m0": {
+            "message": "Baseline active muscle spring constant in kg/s",
+            "value": 0.41666666666666663
+        },
+        "l_worm": {
+            "message": "Length of worm in m",
+            "value": 0.001
+        },
+        "medium": {
+            "message": "Normalized medium drag coefficient (0 = water, 1 = agar)",
+            "value": 1.0
+        },
+        "n_segments": {
+            "message": "Number of body segments on each side, dorsal and ventral",
+            "value": 50
+        },
+        "r_min": {
+            "message": "Minor radius of prolate ellipse body in m",
+            "value": 4e-05
+        }
+    },
+    "dorsal_body": {
+        "weights": {
+            "message": "Dorsal muscle to body weights in sparse format",
+            "value": [
+                {
+                    "from_musc": 1,
+                    "to_seg": 1,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 2,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 49,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 50,
+                    "weight": {
+                        "value": 0.5
+                    }
+                }
+            ]
+        }
+    },
     "dorsal_nmj": {
         "weights": {
             "message": "Dorsal NMJ weights in sparse format",
@@ -5585,6 +2446,230 @@
             ]
         }
     },
+    "driving_inputs": {
+        "inputs": {
+            "message": "Driving input strength to Nervous System",
+            "value": null
+        },
+        "weights": {
+            "message": "Weights of driving inputs to Nervous System in sparse format",
+            "value": null
+        }
+    },
+    "evolvable_ranges": {
+        "value": [
+            {
+                "active": true,
+                "evotag": 1,
+                "lower_limit": -15.0,
+                "name": "ns_cells_bias",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 2,
+                "lower_limit": -15.0,
+                "name": "ns_cells_bias",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 3,
+                "lower_limit": 0.5,
+                "name": "ns_cells_tau",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 4,
+                "lower_limit": 0.5,
+                "name": "ns_cells_tau",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 5,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 6,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 7,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 8,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 9,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 10,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 11,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 12,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 13,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 14,
+                "lower_limit": -200.0,
+                "name": "stretch_receptor_sr_vnc_gain",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 15,
+                "lower_limit": 0.0,
+                "name": "vnc_18_dorscons_DB_weight_ventcons_VBA_VBP",
+                "upper_limit": 1.0
+            },
+            {
+                "active": true,
+                "evotag": 16,
+                "lower_limit": -1.0,
+                "name": "vnc_18_dorscons_DD_weight_ventcons_VDA_VDP",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 17,
+                "lower_limit": -15.0,
+                "name": "ns_cells_bias",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 18,
+                "lower_limit": -15.0,
+                "name": "ns_cells_bias",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 19,
+                "lower_limit": 0.5,
+                "name": "ns_cells_tau",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 20,
+                "lower_limit": 0.5,
+                "name": "ns_cells_tau",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 21,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 22,
+                "lower_limit": 4.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 23,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 24,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 25,
+                "lower_limit": -15.0,
+                "name": "ns_chemcons_weight",
+                "upper_limit": 15.0
+            },
+            {
+                "active": true,
+                "evotag": 26,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 27,
+                "lower_limit": 0.0,
+                "name": "ns_eleccons_weight",
+                "upper_limit": 2.0
+            },
+            {
+                "active": true,
+                "evotag": 28,
+                "lower_limit": -200.0,
+                "name": "stretch_receptor_sr_head_gain",
+                "upper_limit": 0.0
+            },
+            {
+                "active": true,
+                "evotag": 29,
+                "lower_limit": 0.0,
+                "name": "vnc_18_dorscons_SMDD_weight_ventcons_SMDV",
+                "upper_limit": 1.0
+            },
+            {
+                "active": true,
+                "evotag": 30,
+                "lower_limit": 0.0,
+                "name": "vnc_18_dorscons_RMDD_weight_ventcons_RMDV",
+                "upper_limit": 1.0
+            }
+        ]
+    },
     "nervous_system": {
         "cell_names": {
             "value": [
@@ -5636,6 +2721,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5651,6 +2739,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5668,6 +2759,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5683,6 +2777,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5700,6 +2797,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5715,6 +2815,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5732,6 +2835,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5747,6 +2853,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5764,6 +2873,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5779,6 +2891,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5796,6 +2911,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5811,6 +2929,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5828,6 +2949,9 @@
                     "evotag": 18,
                     "value": -8.956848156121332
                 },
+                "cell_class": {
+                    "value": "head"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5843,6 +2967,9 @@
                 "bias": {
                     "evotag": 18,
                     "value": -8.956848156121332
+                },
+                "cell_class": {
+                    "value": "head"
                 },
                 "gain": {
                     "value": 1.0
@@ -5860,6 +2987,9 @@
                     "evotag": 17,
                     "value": 14.320326459473849
                 },
+                "cell_class": {
+                    "value": "head"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5875,6 +3005,9 @@
                 "bias": {
                     "evotag": 17,
                     "value": 14.320326459473849
+                },
+                "cell_class": {
+                    "value": "head"
                 },
                 "gain": {
                     "value": 1.0
@@ -5892,6 +3025,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5907,6 +3043,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5924,6 +3063,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5939,6 +3081,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5956,6 +3101,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -5971,6 +3119,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -5988,6 +3139,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6003,6 +3157,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6020,6 +3177,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6035,6 +3195,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6052,6 +3215,9 @@
                     "evotag": 1,
                     "value": 6.639679044548757
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6067,6 +3233,9 @@
                 "bias": {
                     "evotag": 1,
                     "value": 6.639679044548757
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6084,6 +3253,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6099,6 +3271,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6116,6 +3291,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6131,6 +3309,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6148,6 +3329,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6163,6 +3347,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6180,6 +3367,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6195,6 +3385,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6212,6 +3405,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6227,6 +3423,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -6244,6 +3443,9 @@
                     "evotag": 2,
                     "value": -4.2773387911698535
                 },
+                "cell_class": {
+                    "value": "vnc"
+                },
                 "gain": {
                     "value": 1.0
                 },
@@ -6259,6 +3461,9 @@
                 "bias": {
                     "evotag": 2,
                     "value": -4.2773387911698535
+                },
+                "cell_class": {
+                    "value": "vnc"
                 },
                 "gain": {
                     "value": 1.0
@@ -7911,6 +5116,10 @@
                     }
                 }
             ]
+        },
+        "model_name": {
+            "message": "Name of the model used for the nervous system.",
+            "value": "RS18"
         }
     },
     "stretch_receptor": {
@@ -7919,6 +5128,685 @@
         },
         "sr_vnc_gain": {
             "evotag": 14
+        }
+    },
+    "ventral_body": {
+        "weights": {
+            "message": "Ventral muscle to body weights in sparse format",
+            "value": [
+                {
+                    "from_musc": 1,
+                    "to_seg": 1,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 2,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 3,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 1,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 4,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 5,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 2,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 6,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 7,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 3,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 8,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 9,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 4,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 10,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 11,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 5,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 12,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 13,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 6,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 14,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 15,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 7,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 16,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 17,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 8,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 18,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 19,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 9,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 20,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 21,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 10,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 22,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 23,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 11,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 24,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 25,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 12,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 26,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 27,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 13,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 28,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 29,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 14,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 30,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 31,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 15,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 32,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 33,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 16,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 34,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 35,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 17,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 36,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 37,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 18,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 38,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 39,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 19,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 40,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 41,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 20,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 42,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 43,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 21,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 44,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 45,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 22,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 46,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 47,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 23,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 48,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 49,
+                    "weight": {
+                        "value": 0.5
+                    }
+                },
+                {
+                    "from_musc": 24,
+                    "to_seg": 50,
+                    "weight": {
+                        "value": 0.5
+                    }
+                }
+            ]
         }
     },
     "ventral_nmj": {

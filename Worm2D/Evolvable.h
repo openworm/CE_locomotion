@@ -32,6 +32,17 @@ bool getParFromJson1(const json & j, const string & name, T & val)
 
 }
 
+template<class T>
+bool getParFromJsonAny(const json & j, const vector<string> & names, T & val)
+{
+
+  for (const auto & name : names) {
+    if (getParFromJson1<T>(j, name, val)) return true;
+  }
+  return false;
+
+}
+
 
 class W2Dparameters
 {
@@ -97,12 +108,12 @@ double HSStepSize = 0.01;
 
 void setParsFromJson(const json & j){
 
-  HSStepSize = j["HSStepSize"]["value"];
+  getParFromJsonAny<double>(j, {"hs_step_size", "HSStepSize"}, HSStepSize);
   
 }
 void addParsToJson(json & j) const {
 
-  addParsToJson1<double>(j,{"HSStepSize"},{HSStepSize});
+  addParsToJson1<double>(j,{"hs_step_size"},{HSStepSize});
 
 }
 
@@ -120,11 +131,11 @@ bool randomInitialState = false;
 
 
 void setParsFromJson(const json & j){
-  randomInitialState = j["randomInitialState"]["value"];
+  getParFromJsonAny<bool>(j, {"random_initial_state", "randomInitialState"}, randomInitialState);
 }
 
 void addParsToJson(json & j) const {
-  j["randomInitialState"]["value"] = randomInitialState;
+  j["random_initial_state"]["value"] = randomInitialState;
 }
 
 void setPars(shared_ptr<const CmdArgs> cmd);
@@ -143,8 +154,8 @@ bool doOrigSRInput = true;
 bool doOrigMuscInput = true;
 
 void setParsFromJson(const json & j){
-  doOrigMuscInput = j["doOrigMuscInput"]["value"];
-  doOrigSRInput = j["doOrigSRInput"]["value"];
+  getParFromJsonAny<bool>(j, {"do_orig_musc_input", "doOrigMuscInput"}, doOrigMuscInput);
+  getParFromJsonAny<bool>(j, {"do_orig_sr_input", "doOrigSRInput"}, doOrigSRInput);
   W2DbaseparametersNML::setParsFromJson(j);
 }
 
@@ -152,8 +163,8 @@ void addParsToJson(json & j) const {
 
   //cout << "osmout " << doOrigSRInput << " " << doOrigMuscInput << endl;
   //assert(0);
-  j["doOrigMuscInput"]["value"] = doOrigMuscInput;
-  j["doOrigSRInput"]["value"] = doOrigSRInput;
+  j["do_orig_musc_input"]["value"] = doOrigMuscInput;
+  j["do_orig_sr_input"]["value"] = doOrigSRInput;
   W2DbaseparametersNML::addParsToJson(j);
 }
 
@@ -178,9 +189,9 @@ void setParsFromJson(const json & j){
 
 
 
-  getParFromJson1<double>(j,"OSCTbase",OSCTbase);
+  getParFromJsonAny<double>(j, {"osc_tbase", "OSCTbase"}, OSCTbase);
   getParFromJson1<double>(j,"agarfreq",agarfreq);
-  getParFromJson1<double>(j,"AvgSpeed",AvgSpeed);
+  getParFromJsonAny<double>(j, {"avg_speed", "AvgSpeed"}, AvgSpeed);
 
   //OSCTbase = j["OSCTbase"]["value"]; 
   //agarfreq = j["agarfreq"]["value"];
@@ -188,9 +199,9 @@ void setParsFromJson(const json & j){
 
 }
 void addParsToJson(json & j) const {
-  j["OSCTbase"]["value"] = OSCTbase;
+  j["osc_tbase"]["value"] = OSCTbase;
   j["agarfreq"]["value"] = agarfreq;
-  j["AvgSpeed"]["value"] = AvgSpeed;
+  j["avg_speed"]["value"] = AvgSpeed;
   
 }
 void show() const {cout << "agar pars " << OSCTbase  << " " << agarfreq << " " << AvgSpeed << endl;}
@@ -238,18 +249,19 @@ int doAngleDiff = 0;
 
 void setParsFromJson(const json & j){
   
-  doReverse =  j["doReverse"]["value"];
-  fitType = j["fitType"]["value"];
-  zeroGainsType = j["zeroGainsType"]["value"];
-  doAngleDiff = j["doAngleDiff"]["value"];
+  getParFromJsonAny<int>(j, {"do_reverse", "doReverse"}, doReverse);
+  getParFromJsonAny<int>(j, {"fit_type", "fitType"}, fitType);
+  getParFromJsonAny<int>(j, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType"}, zeroGainsType);
+  getParFromJsonAny<int>(j, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 
   AgarPars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
-  j["doReverse"]["value"] = doReverse;
-  j["fitType"]["value"] = fitType;
-  j["zeroGainsType"]["value"] = zeroGainsType;
-   j["doAngleDiff"]["value"] = doAngleDiff;
+  j.erase("zeroGainsType");
+  j["do_reverse"]["value"] = doReverse;
+  j["fit_type"]["value"] = fitType;
+  j["zero_gains_type"]["value"] = zeroGainsType;
+   j["do_angle_diff"]["value"] = doAngleDiff;
   AgarPars::addParsToJson(j);
 }
 
@@ -313,16 +325,16 @@ class gradParameters : public W2Dbaseparameters
   int taxis = 1, kinesis = 0;
 	bool resetAgentBody = false;
 
-  void setParsFromJson(const json & j){
+void setParsFromJson(const json & j){
 
   //assert(0);
-  resetAgentBody = getJsonVal<int>(j, "resetAgentBody", resetAgentBody, true);
+  getParFromJsonAny<bool>(j, {"reset_agent_body", "resetAgentBody"}, resetAgentBody);
   worm_rotation = getJsonVal<double>(j, "rotation", worm_rotation , true);
   orient_orig = getJsonVal<double>(j, "orient", orient_orig, true);
-  gradSteep = getJsonVal<double>(j, "gradSteep", gradSteep,true);
-  RunDuration = getJsonVal<double>(j,"RunDuration" , RunDuration ,true);
-  HSStepSize = getJsonVal<double>(j,"HSStepSize" , HSStepSize,true);
-  MaxDist = getJsonVal<double>(j, "MaxDist", MaxDist,true);
+  getParFromJsonAny<double>(j, {"grad_steep", "gradSteep"}, gradSteep);
+  getParFromJsonAny<double>(j, {"run_duration", "RunDuration"}, RunDuration);
+  getParFromJsonAny<double>(j, {"hs_step_size", "HSStepSize"}, HSStepSize);
+  getParFromJsonAny<double>(j, {"max_dist", "MaxDist"}, MaxDist);
   taxis = getJsonVal<int>(j, "taxis", taxis,true); 
   kinesis = getJsonVal<int>(j, "kinesis", kinesis,true); 
 
@@ -341,13 +353,13 @@ class gradParameters : public W2Dbaseparameters
 
 void addParsToJson(json & j) const {
 
-  addParsToJson1<double>(j,{"orient", "gradSteep", "RunDuration", 
-    "HSStepSize", "MaxDist", "rotation"},
+  addParsToJson1<double>(j,{"orient", "grad_steep", "run_duration", 
+    "hs_step_size", "max_dist", "rotation"},
     {orient_orig,gradSteep,RunDuration, HSStepSize, 
       MaxDist, worm_rotation});
 
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
-  addParsToJson1<bool>(j,{"resetAgentBody"}, {resetAgentBody});
+  addParsToJson1<bool>(j,{"reset_agent_body"}, {resetAgentBody});
 
   W2Dbaseparameters::addParsToJson(j);
 
@@ -374,18 +386,18 @@ void show() const {cout <<
 
 
 void setParsFromJson(const json & j){
-  AB_output_level = getJsonVal<double>(j, "AB_output_level", AB_output_level, true);
+  getParFromJsonAny<double>(j, {"ab_output_level", "AB_output_level"}, AB_output_level);
   //AB_output_level = j["AB_output_level"]["value"];
-  AVA_output = j["AVA_output"]["value"]; 
-  AVB_output = j["AVB_output"]["value"]; 
+  getParFromJsonAny<double>(j, {"ava_output", "AVA_output"}, AVA_output);
+  getParFromJsonAny<double>(j, {"avb_output", "AVB_output"}, AVB_output);
   W2Dbaseparameters::setParsFromJson(j);
   
 }
 
 void addParsToJson(json & j) const {
-  j["AB_output_level"]["value"] = AB_output_level;
-  j["AVA_output"]["value"] = AVA_output; 
-  j["AVB_output"]["value"] = AVB_output;
+  j["ab_output_level"]["value"] = AB_output_level;
+  j["ava_output"]["value"] = AVA_output;
+  j["avb_output"]["value"] = AVB_output;
   W2Dbaseparameters::addParsToJson(j);
 }
 
@@ -408,10 +420,10 @@ void show(){ W2DCEparsA::show();}
 
 void setParsFromJson(const json & j){
   //assert(0);
-  SREvoBot = getJsonVal<double>(j, "SREvoBot", SREvoBot, true);
-  SREvoTop = getJsonVal<double>(j, "SREvoTop", SREvoTop, true);
-  SREvoBotA = getJsonVal<double>(j, "SREvoBotA", SREvoBotA, true);
-  SREvoTopA = getJsonVal<double>(j, "SREvoTopA", SREvoTopA, true);
+  getParFromJsonAny<double>(j, {"sr_evo_bot", "SREvoBot"}, SREvoBot);
+  getParFromJsonAny<double>(j, {"sr_evo_top", "SREvoTop"}, SREvoTop);
+  getParFromJsonAny<double>(j, {"sr_evo_bot_a", "SREvoBotA"}, SREvoBotA);
+  getParFromJsonAny<double>(j, {"sr_evo_top_a", "SREvoTopA"}, SREvoTopA);
 
   //if (j.contains("SREvoBot"))
   //SREvoBot = j["SREvoBot"]["value"];
@@ -422,10 +434,10 @@ void setParsFromJson(const json & j){
   //SRCEpars::setParsFromJson(j);
 }
 void addParsToJson(json & j) const {
-  j["SREvoBot"]["value"] = SREvoBot;
-  j["SREvoTop"]["value"] = SREvoTop;
-  j["SREvoBotA"]["value"] = SREvoBotA;
-  j["SREvoTopA"]["value"] = SREvoTopA;
+  j["sr_evo_bot"]["value"] = SREvoBot;
+  j["sr_evo_top"]["value"] = SREvoTop;
+  j["sr_evo_bot_a"]["value"] = SREvoBotA;
+  j["sr_evo_top_a"]["value"] = SREvoTopA;
 
    W2DCEparsA::addParsToJson(j);
    //SRCEpars::addParsToJson(j);
@@ -465,21 +477,21 @@ virtual ~SRCEpars(){}
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
 
 void setParsFromJson(const json & j){
-  sr_type = getJsonVal<string>(j, "SRType" , sr_type, true);
-  SRForm = getJsonVal<int>(j, "SRForm" , SRForm , true);
+  getParFromJsonAny<string>(j, {"sr_type", "SRType"}, sr_type);
+  getParFromJsonAny<int>(j, {"sr_form", "SRForm"}, SRForm);
   //sr_type = j["SRType"]["value"]; 
   //SRForm = j["SRForm"]["value"];
-  nsegperstr = getJsonVal<int>(j, "SRSegPerSR"  , nsegperstr , true);
-  zeroGainsType = getJsonVal<int>(j, "SRZeroGainsType"  , zeroGainsType , true);
+  getParFromJsonAny<int>(j, {"sr_seg_per_sr", "SRSegPerSR"}, nsegperstr);
+  getParFromJsonAny<int>(j, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
 
   //nsegperstr = j["SRSegPerSR"]["value"];
   //assert(0);
 }
 void addParsToJson(json & j) const {
-  j["SRType"]["value"] = sr_type;
-  j["SRForm"]["value"] = SRForm;
-  j["SRSegPerSR"]["value"] = nsegperstr;
-  j["SRZeroGainsType"]["value"] = zeroGainsType;
+  j["sr_type"]["value"] = sr_type;
+  j["sr_form"]["value"] = SRForm;
+  j["sr_seg_per_sr"]["value"] = nsegperstr;
+  j["sr_zero_gains_type"]["value"] = zeroGainsType;
 
 }
 };
@@ -495,22 +507,19 @@ int offset = 0;
 
 void setParsFromJson(const json & j){
   SRCEpars::setParsFromJson(j);
-  offset = j["SROffset"]["value"];
+  getParFromJsonAny<int>(j, {"sr_offset", "SROffset"}, offset);
 }
 
 void addParsToJson(json & j) const {
 
   SRCEpars::addParsToJson(j);
-  j["SROffset"]["value"] = offset;
+  j["sr_offset"]["value"] = offset;
  
 }
 
 
 
 };
-
-
-
 
 
 

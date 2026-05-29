@@ -212,11 +212,11 @@ void Worm21::InitializeState(RandomState &rs)
     //assert(w1parss!=nullptr);
     
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     if (doLegacy){
     bool randomInitialState;
-    getValCJWorm<bool>("randomInitialState",randomInitialState);
+    getValCJWorm<bool>("random_initial_state",randomInitialState);
 
     if (randomInitialState)
     {
