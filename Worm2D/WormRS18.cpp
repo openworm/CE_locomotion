@@ -843,13 +843,13 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
     double NMJ_Gain_Map = namedVars["NMJ gain map D"];
     //namedVars["NMJ gain fact"] = 0.7;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"NMJ_DB", "NMJ_VBa", "NMJ_VBp", "NMJ_DD", "NMJ_VDa", "NMJ_VDp",
     "NMJ_SMDD", "NMJ_SMDV", "NMJ_RMDD", "NMJ_RMDV", "NMJ Gain"};
     var1.parDoub.vals = {NMJ_DB, NMJ_VBa, NMJ_VBp, NMJ_DD, NMJ_VDa, NMJ_VDp, 
     NMJ_SMDD, NMJ_SMDV, NMJ_RMDD, NMJ_RMDV, NMJ_Gain_Map};
 
-    var1.parInt.head = "Worm";
+    var1.parInt.head = "worm";
     var1.parInt.names = {"N_stretchrec", "HeadMotorNeuronMuscles", "VNCMuscleStart", "NmusclePerNU"};
     var1.parInt.vals = {N_stretchrec, HeadMotorNeuronMuscles, VNCMuscleStart, NmusclePerNU};
     var1.parInt.messages = {"Number of stretch receptors", 

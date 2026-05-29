@@ -605,6 +605,11 @@ def getModelName(network_json_data):
         return _value(ns["model_name"])
     if "Model name" in ns:
         return _value(ns["Model name"])
+    worm = network_json_data.get("worm", {})
+    if "main_model_name" in worm:
+        return _value(worm["main_model_name"])
+    if "Main model name" in worm:
+        return _value(worm["Main model name"])
     worm = network_json_data.get("Worm", {})
     if "Main model name" in worm:
         return _value(worm["Main model name"])
@@ -1003,7 +1008,8 @@ def makeMuscCellXml(network_json_data, cellX_filename, cell_names):
 
     print("generating MuscCellXml")
 
-    cell_taus = [network_json_data["Worm"]["T_muscle"]["value"]] * len(cell_names)
+    worm = network_json_data.get("worm", network_json_data.get("Worm", {}))
+    cell_taus = [worm["T_muscle"]["value"]] * len(cell_names)
     cell_states = [0] * len(cell_names)
     # print('taus')
     pop_taus = getVals(pop_names, cell_names, cell_taus)

@@ -449,6 +449,7 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
+    json worm = getSectionCopyWithLegacy(j, "worm");
     int n_size = 0;
     if (j.contains("nervous_system")
         && j.at("nervous_system").contains("cell_names")
@@ -463,14 +464,14 @@ wormIzqParams Worm2Dbase::getIzqPars(const json & j)
     }
     else
     {
-        n_size = j.at("Worm").at("N_size").at("value");
+        n_size = worm.at("N_size").at("value");
     }
 
     return
-  {j["Worm"]["N_neuronsperunit"]["value"], 
-    j["Worm"]["N_muscles"]["value"], 
-    j["Worm"]["T_muscle"]["value"],
-    j["Worm"]["N_units"]["value"],
+  {worm["N_neuronsperunit"]["value"], 
+    worm["N_muscles"]["value"], 
+    worm["T_muscle"]["value"],
+    worm["N_units"]["value"],
     n_size
   };
 }
@@ -1035,6 +1036,8 @@ void Worm2Dm::addParsToJson(json & j)
 void Worm2D::addParsToJson(json & j)
 {  
     
+    j["worm"]["do_orig_musc_input"]["value"] = doOrigMuscInput;
+    j["worm"]["do_orig_sr_input"]["value"] = doOrigSRInput;
     
     vector<string> names;
     if (j.contains("nervous_system")

@@ -100,6 +100,8 @@ def mergeJsons(file1, file2, outdir):
 
     addedNeurons = []
     appended_json_data = utils.getJsonFile(file2)
+    network_worm = network_json_data.setdefault("worm", network_json_data.pop("Worm", {}))
+    appended_worm = appended_json_data.get("worm", appended_json_data.get("Worm", {}))
     # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
     appendedSize = utils.getNervousSystemSize(appended_json_data)
@@ -107,7 +109,7 @@ def mergeJsons(file1, file2, outdir):
     # appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
     origDrivingSize = len(network_json_data["Driving input"]["strengths"]["value"])
 
-    network_json_data["Worm"]["N_size"]["value"] += appended_json_data["Worm"][
+    network_worm["N_size"]["value"] += appended_worm[
         "N_size"
     ]["value"]
 
@@ -122,9 +124,9 @@ def mergeJsons(file1, file2, outdir):
             network_json_data[NSname]["Section name"] = {}
         network_json_data[NSname]["Section name"]["value"] = section_names
 
-    if "Main model name" not in network_json_data["Worm"]:
-        network_json_data["Worm"]["Main model name"] = {}
-    network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+    if "main_model_name" not in network_worm:
+        network_worm["main_model_name"] = {}
+    network_worm["main_model_name"]["value"] = "COW2DSR"
 
     if "section sizes" in appended_json_data[NSname]:
         for key in appended_json_data[NSname]["section sizes"]:
@@ -143,9 +145,9 @@ def mergeJsons(file1, file2, outdir):
                 modulename
             ][parname]["value"]
 
-    for key, val in appended_json_data["Worm"].items():
-        if key not in network_json_data["Worm"]:
-            network_json_data["Worm"][key] = val
+    for key, val in appended_worm.items():
+        if key not in network_worm:
+            network_worm[key] = val
 
     if EOP not in network_json_data:
         network_json_data[EOP] = {}

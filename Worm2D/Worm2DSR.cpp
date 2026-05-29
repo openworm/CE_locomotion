@@ -338,7 +338,7 @@ vector<doubIntParamsHead> Worm2DSRb::getWormParams(){
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"variable 1"};
     var1.parDoub.vals = {1.0};
 
@@ -1884,8 +1884,9 @@ for (int i=0; i<spvec.size(); i++)
 SensorPars & sp1 = spvec[i];
 sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 }
-}else if (j["Worm"].contains("sensorM"))
+}else if ((j.contains("worm") ? j.at("worm") : j.at("Worm")).contains("sensorM"))
 {
+  json worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
 
   SensorPars & sp1 = spvec[0];
 
@@ -1903,8 +1904,8 @@ sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
 
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
-  sp1.sensorM = j["Worm"]["sensorM"]["value"];
-  sp1.sensorN = j["Worm"]["sensorN"]["value"];
+  sp1.sensorM = worm["sensorM"]["value"];
+  sp1.sensorN = worm["sensorN"]["value"];
   sp1.x_center = 0, sp1.y_center = 0;
  
 }
@@ -1939,8 +1940,9 @@ void Sensor::construct(const json & j)
   ind++;
   }
   
- }else if (j["Worm"].contains("sensorM"))
+ }else if ((j.contains("worm") ? j.at("worm") : j.at("Worm")).contains("sensorM"))
  {
+  json worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
 
 
   SensorPars sp1;
@@ -1958,8 +1960,8 @@ void Sensor::construct(const json & j)
 
   sp1.extInp1 = 0;
   sp1.extInp2 = 1;
-  sp1.sensorM = j["Worm"]["sensorM"]["value"];
-  sp1.sensorN = j["Worm"]["sensorN"]["value"];
+  sp1.sensorM = worm["sensorM"]["value"];
+  sp1.sensorN = worm["sensorN"]["value"];
   sp1.x_center = 0, sp1.y_center = 0;
   spvec.push_back(sp1);
 
@@ -1999,7 +2001,7 @@ sp1.writeParsToJson(j2["Sensor_" + to_string(i+1)]);
 if (spvec.size()>0)
 {
 const SensorPars & sp1 = spvec[0];
-sp1.writeParsToJson(j["Worm"]);
+sp1.writeParsToJson(j["worm"]);
 
 }
 }

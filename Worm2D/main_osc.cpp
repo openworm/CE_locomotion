@@ -49,9 +49,15 @@ int main (int argc, const char* argv[])
     //if (model_name == ""){
     //if (directoryExists(json_filename)){
         //j_orig = getJsonFromFile(json_filename);
-        if (j_orig["Worm"].contains("Main model name"))
+        if (j_orig.contains("worm") && j_orig["worm"].contains("main_model_name"))
+        model_name = j_orig["worm"]["main_model_name"]["value"];
+        else if (j_orig.contains("worm") && j_orig["worm"].contains("Main model name"))
+        model_name = j_orig["worm"]["Main model name"]["value"];
+        else if (j_orig.contains("Worm") && j_orig["Worm"].contains("Main model name"))
         model_name = j_orig["Worm"]["Main model name"]["value"];
-        else if (j_orig["Nervous system"].contains("Model name"))
+        else if (j_orig.contains("nervous_system") && j_orig["nervous_system"].contains("model_name"))
+        model_name = j_orig["nervous_system"]["model_name"]["value"];
+        else if (j_orig.contains("Nervous system") && j_orig["Nervous system"].contains("Model name"))
         model_name = j_orig["Nervous system"]["Model name"]["value"];
         
     }
@@ -107,7 +113,8 @@ int main (int argc, const char* argv[])
         //assert(0);
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
-        j_evo["Worm"]["Main model name"]["value"] = model_name;
+        j_evo["worm"]["main_model_name"]["value"] = model_name;
+        j_evo.erase("Worm");
         j_evo.erase("Nervous system");
         j_evo.erase("Dorsal NMJ");
         j_evo.erase("Ventral NMJ");
@@ -459,13 +466,14 @@ int main (int argc, const char* argv[])
     j["Simulation"]["randomseed"]["value"] = simrandseed;
 
     //cout << "const 1" << endl;
-    j["Worm"]["Main model name"]["value"] = model_name;
+    j["worm"]["main_model_name"]["value"] = model_name;
 
     if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);
+    j.erase("Worm");
     j.erase("Nervous system");
     j.erase("Dorsal NMJ");
     j.erase("Ventral NMJ");
