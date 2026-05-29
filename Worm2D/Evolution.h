@@ -344,22 +344,22 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
     
     if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.02, 1, 1, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
 
     assert(0 && "evotype not implemented");
 

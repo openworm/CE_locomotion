@@ -13,14 +13,14 @@ class EvolutionRS18 : public Evolution
     EvolutionRS18(int argc, const char* argv[], string modelname_)
     :Evolution(argc,argv, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
     ),speedoutput(getParameterInt(argc,argv,"--speed_output", "0")),
     evo_seed(getParameterInt(argc,argv,"--evo_seed", "0")){}
 
     EvolutionRS18(shared_ptr<const CmdArgs> cmd_, string modelname_)
     :Evolution(cmd_, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
     ),speedoutput(cmd_->getArgValInt("--speed_output", 0)),
     evo_seed(cmd_->getArgValInt("--evo_seed", 0))
     {

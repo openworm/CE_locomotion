@@ -768,6 +768,8 @@ void Evolution::configure()
     configure_p12();
 
     configure_p2();
+
+    if (s && evoPars1.CheckpointInterval > 0) s->WriteCheckpointFile();
  
     evolfile.close();
     genhistfile.close();

@@ -111,7 +111,7 @@ DEFAULTS = {
     "maxGens": None,
     "modelName": None,
     "reRand": False,
-    "checkPointInterval": 0,
+    "checkPointInterval": 1,
     "doCPT": True,
     "evoType": "Evo21",
     # "MutVar" : 0.1,
@@ -507,11 +507,12 @@ def run(a=None, **kwargs):
             "best.gen.dat",
             "phenotype.dat",
             "best.pheno.dat",
-            "search.cpt",
             "worm_data_evo.json",
             "worm_data_worm.json",
             "genhistory.dat",
         ]
+        if a.doCPT:
+            files.append("search.cpt")
 
         if a.doNML:
             files += [
