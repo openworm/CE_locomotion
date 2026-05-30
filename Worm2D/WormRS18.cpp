@@ -1346,7 +1346,7 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
    
 
     addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
-    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full, true);
     addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
     addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
 

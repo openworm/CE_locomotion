@@ -322,6 +322,28 @@ for (const string& s : names)
 return max_count;
 }
 
+static int getMaxReciprocalCounts(const json & j, const vector<string> & names)
+{
+  unordered_map<string, int> counts;
+
+  for (const string& s : names) counts[s] = 0;
+  for(auto it = j.begin(); it != j.end(); ++it)
+  {
+    auto from_it = counts.find(it->at("from"));
+    if (from_it != counts.end()) from_it->second++;
+
+    auto to_it = counts.find(it->at("to"));
+    if (to_it != counts.end()) to_it->second++;
+  }
+
+  int max_count = 0;
+
+  for (const string& s : names)
+    if (counts[s] > max_count) max_count = counts[s];
+
+  return max_count;
+}
+
 
 
 json getJsonFromFile(const string & jsonfile_)
@@ -362,6 +384,46 @@ vector<toFromWeight> meanDupes(vector<toFromWeight> v1)
   }
 
   return v3;
+}
+
+static vector<toFromWeight> collapseReciprocalToFromWeights(const vector<toFromWeight> & weights)
+{
+  vector<toFromWeight> collapsed;
+  vector<int> counts;
+
+  for (const toFromWeight & val : weights)
+  {
+    int from = min(val.w.from, val.to);
+    int to = max(val.w.from, val.to);
+
+    bool found = false;
+    for (size_t i = 0; i < collapsed.size(); ++i)
+    {
+      if (collapsed[i].w.from == from && collapsed[i].to == to)
+      {
+        if (fabs(collapsed[i].w.weight - val.w.weight) > 1e-12)
+        {
+          cout << "WARNING: reciprocal electrical connection weights differ for "
+               << from << "<->" << to << ": " << collapsed[i].w.weight
+               << " and " << val.w.weight
+               << "; using their average in JSON output" << endl;
+        }
+        collapsed[i].w.weight =
+          (collapsed[i].w.weight * counts[i] + val.w.weight) / (counts[i] + 1);
+        counts[i]++;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+    {
+      collapsed.push_back(toFromWeight(to, from, val.w.weight));
+      counts.push_back(1);
+    }
+  }
+
+  return collapsed;
 }
 
 
@@ -949,7 +1011,8 @@ void addMfuncTFI(json & j, const fromToInt & val, const vector<string> & cell_na
 }
 
 
-void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full)
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full,
+  bool reciprocal)
 {
 
   //if (!j.contains("nervous_system")) return;
@@ -961,8 +1024,21 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
   bool found = false;
   for (auto it = j.begin(); it != j.end(); ++it)
   {
-  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  bool same_direction =
+    it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1];
+  bool reciprocal_direction =
+    reciprocal && it->at("to")==cell_names_full[val.from-1] && it->at("from")==cell_names_full[val.to-1];
+  if (same_direction || reciprocal_direction)
   {
+   if (reciprocal_direction
+     && it->at("weight").contains("evotag")
+     && it->at("weight").at("evotag") != val.val)
+   {
+    cout << "WARNING: reciprocal electrical connection evotags differ for "
+         << cell_names_full[val.from-1] << "<->" << cell_names_full[val.to-1]
+         << ": " << it->at("weight").at("evotag") << " and " << val.val
+         << "; using the latter in JSON output" << endl;
+   }
    if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = val.val; 
    else (*it)["weight"]["evotag"] = val.val;
    found = true;
@@ -989,7 +1065,7 @@ void setCircuitSize(const json & j, NervousSystem& n)
   assert(j.contains("cell_names"));
   vector<string>  names = j["cell_names"]["value"].template get< vector<string> >();
   int maxchem = getMaxCounts(j["chemical_conns"]["value"], names, "to");
-  int maxelec = getMaxCounts(j["electrical_conns"]["value"], names, "to");
+  int maxelec = getMaxReciprocalCounts(j["electrical_conns"]["value"], names);
 
   n.SetCircuitSize(names.size(), maxchem, maxelec);
 
@@ -1071,25 +1147,39 @@ for (int i=0;i<cell_names_full.size();i++)
   }
 
 
-  {vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
+  {vector<toFromWeight> elec_wei = collapseReciprocalToFromWeights(
+    getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size));
   if (!j2.contains("electrical_conns")) j2["electrical_conns"] = json::object();
   if (!j2["electrical_conns"].contains("value")) j2["electrical_conns"]["value"] = json::array();
 
-  json & j22 = j2.at("electrical_conns").at("value");
+  json old_conns = j2.at("electrical_conns").at("value");
+  json new_conns = json::array();
   for (const toFromWeight& val : elec_wei)
   {
-    bool found = false;
-    for (auto it = j22.begin(); it != j22.end(); ++it)
-        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
-      {it->at("weight").at("value")=val.w.weight;found = true;break;}
-      if (found) continue;
-  json j = json::object();
-  j["to"] = cell_names_full[val.to-1];
-  j["from"] = cell_names_full[val.w.from-1];
-  j["weight"] =  json::object();
-  j["weight"]["value"] = val.w.weight;
-  j22.push_back(j);
+    const string & from_name = cell_names_full[val.w.from-1];
+    const string & to_name = cell_names_full[val.to-1];
+
+    json j = json::object();
+    for (auto it = old_conns.begin(); it != old_conns.end(); ++it)
+    {
+      bool same_direction =
+        it->at("to") == to_name && it->at("from") == from_name;
+      bool reciprocal_direction =
+        it->at("to") == from_name && it->at("from") == to_name;
+      if (same_direction || reciprocal_direction)
+      {
+        j = *it;
+        break;
+      }
+    }
+
+    j["to"] = to_name;
+    j["from"] = from_name;
+    if (!j.contains("weight")) j["weight"] = json::object();
+    j["weight"]["value"] = val.w.weight;
+    new_conns.push_back(j);
   }
+  j2["electrical_conns"]["value"] = new_conns;
   }
 
   

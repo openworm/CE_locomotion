@@ -13,7 +13,7 @@ inputFolderName = "experiments/izq_runs_nets_W2D21/103"
 outputFolderName = "testruns/exW2D21"
 
 args = dict(
-    simduration=58,
+    simduration=60,
     simtransient=50,
     modelName="W2D21",
     modelFolder="Worm2D",

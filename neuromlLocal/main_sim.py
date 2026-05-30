@@ -3,6 +3,7 @@ import sysconfig
 import os
 import functools
 import math
+import subprocess
 import xml.etree.ElementTree as ET
 
 
@@ -68,9 +69,19 @@ class Worm2DNRNSimulation:
         self.pop_name_list = ["m_" + val + "_Pop" + val for val in self.pop_list]
 
     def set_up_j(self):
-        import utils
+        import json
 
-        self.NSIds, self.VMIds, self.DMIds = utils.getCellIdDicts()
+        current = os.path.dirname(os.path.realpath(__file__))
+        filename = os.path.join(current, "cell_Ids.json")
+        if not os.path.isfile(filename):
+            print("cell_Ids.json not found")
+            sys.exit()
+        with open(filename) as f:
+            cellIdDict = json.load(f)
+
+        self.NSIds = cellIdDict["Nervous System"]
+        self.VMIds = cellIdDict.get("Ventral Muscles")
+        self.DMIds = cellIdDict.get("Dorsal Muscles")
         self.osc_params = self._load_oscillator_params()
         # print(self.DMIds)
         # sys.exit()
@@ -136,6 +147,8 @@ class Worm2DNRNSimulation:
             pynml.execute_command_in_dir_with_realtime_output(
                 command, run_dir, prefix="nrnivmodl >> "
             )
+        except ModuleNotFoundError:
+            subprocess.run(command.split(), cwd=run_dir, check=True)
         except KeyboardInterrupt:
             print_("\nCaught CTRL+C\n")
             sys.exit()
@@ -416,6 +429,9 @@ class Worm2DNRNSimulation:
 
     def run(self, skip_to_time=-1):
         self.ns.advance()
+        # NEURON updates some generated exposure variables in BREAKPOINT before
+        # the state advance. Refresh them here so C++ reads post-step values.
+        self.h.fcurrent()
         self.output_time += self.dt_seconds
 
     def save_results(self):

@@ -270,7 +270,8 @@ void addToFromWeight(json & j, const vector<toFromWeight> & vec, const string & 
 void addWeightentry(json & j, const vector<weightentry> & vec, const string & frompar, const string & weightpar);
 void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter, 
   const vector<string> & cell_names_full);
-void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full);
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full,
+  bool reciprocal = false);
 vector<string> getCellNamesUnits(const vector<string> & cell_names, int n_units);
 vector<toFromWeight> getNSToFromVec(TMatrix<weightentry> & vec, TVector<int> & sizes, int tot_size);
 void appendNSToJsonByCell(json & j, NervousSystem& n, const vector<string> & cell_names,

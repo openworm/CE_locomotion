@@ -6,7 +6,7 @@ experiments:
             spike times: [0.405, 8.555]
     Test2:
         expected:
-            spike times: [0.405, 8.005, 12.155, 17.355]
+            spike times: [0.405, 8.655]
     Test3:
         expected:
-            spike times: [0.455, 8.055, 12.205, 17.355]
+            spike times: [0.455, 8.655]

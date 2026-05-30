@@ -7231,40 +7231,8 @@
         "electrical_conns": {
             "value": [
                 {
-                    "from": "DB_1",
-                    "to": "DB_0",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VDA_0",
-                    "to": "DD_0",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_0",
-                    "to": "DD_0",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "DD_1",
-                    "to": "DD_0",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VBP_0",
-                    "to": "VBA_0",
+                    "from": "DB_0",
+                    "to": "DB_1",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7279,8 +7247,16 @@
                     }
                 },
                 {
-                    "from": "VDP_0",
-                    "to": "VDA_0",
+                    "from": "DD_0",
+                    "to": "VDP_0",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_0",
+                    "to": "DD_1",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
@@ -7295,30 +7271,6 @@
                     }
                 },
                 {
-                    "from": "VBA_1",
-                    "to": "VBP_0",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DB_1",
-                    "to": "VBP_0",
-                    "weight": {
-                        "evotag": 13,
-                        "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_0",
-                    "to": "VDP_0",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_0",
                     "to": "VDP_0",
                     "weight": {
@@ -7327,16 +7279,8 @@
                     }
                 },
                 {
-                    "from": "VDA_1",
-                    "to": "VDP_0",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "DB_0",
-                    "to": "DB_1",
+                    "from": "VBP_0",
+                    "to": "VBA_1",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7348,62 +7292,6 @@
                     "weight": {
                         "evotag": 13,
                         "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DB_2",
-                    "to": "DB_1",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DD_0",
-                    "to": "DD_1",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VDA_1",
-                    "to": "DD_1",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_1",
-                    "to": "DD_1",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "DD_2",
-                    "to": "DD_1",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VBP_0",
-                    "to": "VBA_1",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VBP_1",
-                    "to": "VBA_1",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
                     }
                 },
                 {
@@ -7415,6 +7303,14 @@
                     }
                 },
                 {
+                    "from": "DB_1",
+                    "to": "DB_2",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
                     "from": "DD_1",
                     "to": "VDA_1",
                     "weight": {
@@ -7423,8 +7319,16 @@
                     }
                 },
                 {
-                    "from": "VDP_1",
-                    "to": "VDA_1",
+                    "from": "DD_1",
+                    "to": "VDP_1",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_1",
+                    "to": "DD_2",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
@@ -7439,30 +7343,6 @@
                     }
                 },
                 {
-                    "from": "VBA_2",
-                    "to": "VBP_1",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DB_2",
-                    "to": "VBP_1",
-                    "weight": {
-                        "evotag": 13,
-                        "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_1",
-                    "to": "VDP_1",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_1",
                     "to": "VDP_1",
                     "weight": {
@@ -7471,16 +7351,8 @@
                     }
                 },
                 {
-                    "from": "VDA_2",
-                    "to": "VDP_1",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "DB_1",
-                    "to": "DB_2",
+                    "from": "VBP_1",
+                    "to": "VBA_2",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7492,62 +7364,6 @@
                     "weight": {
                         "evotag": 13,
                         "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DB_3",
-                    "to": "DB_2",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DD_1",
-                    "to": "DD_2",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VDA_2",
-                    "to": "DD_2",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_2",
-                    "to": "DD_2",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "DD_3",
-                    "to": "DD_2",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VBP_1",
-                    "to": "VBA_2",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VBP_2",
-                    "to": "VBA_2",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
                     }
                 },
                 {
@@ -7559,6 +7375,14 @@
                     }
                 },
                 {
+                    "from": "DB_2",
+                    "to": "DB_3",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
                     "from": "DD_2",
                     "to": "VDA_2",
                     "weight": {
@@ -7567,8 +7391,16 @@
                     }
                 },
                 {
-                    "from": "VDP_2",
-                    "to": "VDA_2",
+                    "from": "DD_2",
+                    "to": "VDP_2",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_2",
+                    "to": "DD_3",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
@@ -7583,30 +7415,6 @@
                     }
                 },
                 {
-                    "from": "VBA_3",
-                    "to": "VBP_2",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DB_3",
-                    "to": "VBP_2",
-                    "weight": {
-                        "evotag": 13,
-                        "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_2",
-                    "to": "VDP_2",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_2",
                     "to": "VDP_2",
                     "weight": {
@@ -7615,16 +7423,8 @@
                     }
                 },
                 {
-                    "from": "VDA_3",
-                    "to": "VDP_2",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "DB_2",
-                    "to": "DB_3",
+                    "from": "VBP_2",
+                    "to": "VBA_3",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7636,62 +7436,6 @@
                     "weight": {
                         "evotag": 13,
                         "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DB_4",
-                    "to": "DB_3",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DD_2",
-                    "to": "DD_3",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VDA_3",
-                    "to": "DD_3",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_3",
-                    "to": "DD_3",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "DD_4",
-                    "to": "DD_3",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VBP_2",
-                    "to": "VBA_3",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VBP_3",
-                    "to": "VBA_3",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
                     }
                 },
                 {
@@ -7703,6 +7447,14 @@
                     }
                 },
                 {
+                    "from": "DB_3",
+                    "to": "DB_4",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
                     "from": "DD_3",
                     "to": "VDA_3",
                     "weight": {
@@ -7711,8 +7463,16 @@
                     }
                 },
                 {
-                    "from": "VDP_3",
-                    "to": "VDA_3",
+                    "from": "DD_3",
+                    "to": "VDP_3",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_3",
+                    "to": "DD_4",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
@@ -7727,30 +7487,6 @@
                     }
                 },
                 {
-                    "from": "VBA_4",
-                    "to": "VBP_3",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DB_4",
-                    "to": "VBP_3",
-                    "weight": {
-                        "evotag": 13,
-                        "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_3",
-                    "to": "VDP_3",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_3",
                     "to": "VDP_3",
                     "weight": {
@@ -7759,16 +7495,8 @@
                     }
                 },
                 {
-                    "from": "VDA_4",
-                    "to": "VDP_3",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "DB_3",
-                    "to": "DB_4",
+                    "from": "VBP_3",
+                    "to": "VBA_4",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7780,62 +7508,6 @@
                     "weight": {
                         "evotag": 13,
                         "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DB_5",
-                    "to": "DB_4",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DD_3",
-                    "to": "DD_4",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VDA_4",
-                    "to": "DD_4",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_4",
-                    "to": "DD_4",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "DD_5",
-                    "to": "DD_4",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VBP_3",
-                    "to": "VBA_4",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VBP_4",
-                    "to": "VBA_4",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
                     }
                 },
                 {
@@ -7847,6 +7519,14 @@
                     }
                 },
                 {
+                    "from": "DB_4",
+                    "to": "DB_5",
+                    "weight": {
+                        "evotag": 12,
+                        "value": 1.88483448539094
+                    }
+                },
+                {
                     "from": "DD_4",
                     "to": "VDA_4",
                     "weight": {
@@ -7855,8 +7535,16 @@
                     }
                 },
                 {
-                    "from": "VDP_4",
-                    "to": "VDA_4",
+                    "from": "DD_4",
+                    "to": "VDP_4",
+                    "weight": {
+                        "evotag": 10,
+                        "value": 1.39879278264883
+                    }
+                },
+                {
+                    "from": "DD_4",
+                    "to": "DD_5",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
@@ -7871,30 +7559,6 @@
                     }
                 },
                 {
-                    "from": "VBA_5",
-                    "to": "VBP_4",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "DB_5",
-                    "to": "VBP_4",
-                    "weight": {
-                        "evotag": 13,
-                        "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_4",
-                    "to": "VDP_4",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_4",
                     "to": "VDP_4",
                     "weight": {
@@ -7903,16 +7567,8 @@
                     }
                 },
                 {
-                    "from": "VDA_5",
-                    "to": "VDP_4",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "DB_4",
-                    "to": "DB_5",
+                    "from": "VBP_4",
+                    "to": "VBA_5",
                     "weight": {
                         "evotag": 12,
                         "value": 1.88483448539094
@@ -7924,46 +7580,6 @@
                     "weight": {
                         "evotag": 13,
                         "value": 0.9111736171642986
-                    }
-                },
-                {
-                    "from": "DD_4",
-                    "to": "DD_5",
-                    "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "VDA_5",
-                    "to": "DD_5",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VDP_5",
-                    "to": "DD_5",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
-                    "from": "VBP_4",
-                    "to": "VBA_5",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
-                    }
-                },
-                {
-                    "from": "VBP_5",
-                    "to": "VBA_5",
-                    "weight": {
-                        "evotag": 12,
-                        "value": 1.88483448539094
                     }
                 },
                 {
@@ -7983,11 +7599,11 @@
                     }
                 },
                 {
-                    "from": "VDP_5",
-                    "to": "VDA_5",
+                    "from": "DD_5",
+                    "to": "VDP_5",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.8181178060731188
+                        "evotag": 10,
+                        "value": 1.39879278264883
                     }
                 },
                 {
@@ -7999,27 +7615,11 @@
                     }
                 },
                 {
-                    "from": "DD_5",
-                    "to": "VDP_5",
-                    "weight": {
-                        "evotag": 10,
-                        "value": 1.39879278264883
-                    }
-                },
-                {
                     "from": "VDA_5",
                     "to": "VDP_5",
                     "weight": {
                         "evotag": 11,
                         "value": 0.8181178060731188
-                    }
-                },
-                {
-                    "from": "RMDD_0",
-                    "to": "SMDD_0",
-                    "weight": {
-                        "evotag": 26,
-                        "value": 0.053770158804043455
                     }
                 },
                 {
@@ -8031,19 +7631,11 @@
                     }
                 },
                 {
-                    "from": "RMDV_0",
-                    "to": "RMDD_0",
+                    "from": "RMDD_0",
+                    "to": "RMDV_0",
                     "weight": {
                         "evotag": 27,
                         "value": 0.48888505069487664
-                    }
-                },
-                {
-                    "from": "RMDV_0",
-                    "to": "SMDV_0",
-                    "weight": {
-                        "evotag": 26,
-                        "value": 0.053770158804043455
                     }
                 },
                 {
@@ -8052,14 +7644,6 @@
                     "weight": {
                         "evotag": 26,
                         "value": 0.053770158804043455
-                    }
-                },
-                {
-                    "from": "RMDD_0",
-                    "to": "RMDV_0",
-                    "weight": {
-                        "evotag": 27,
-                        "value": 0.48888505069487664
                     }
                 }
             ]

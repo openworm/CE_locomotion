@@ -3,9 +3,9 @@
  
 target: testW2D21.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
-mep: .test.W2DSR21.mep
+mep: .test.izq_sim_W2D21.mep
 experiments:
-  Test2:
+  Test4:
     observables:
       spike times:
         file: 

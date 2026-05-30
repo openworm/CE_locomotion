@@ -2,6 +2,7 @@ import os
 import sys
 from run_main import run
 from neuromlLocal.regenerate import run as regenerate_run
+
 # sys.path.append("./neuromlLocal")
 import json
 import helper_funcs as hf
@@ -12,16 +13,16 @@ doNML = False
 doMuscles = False
 
 outputFolderName = "testruns/exW2DSR18srm"
-inputFolderName="testruns/exW2D18gen"
+inputFolderName = "testruns/exW2D18gen"
 
 hf.make_directory(outputFolderName, True, "Output folder for W2DSR18srm")
 
-with open(inputFolderName + '/worm_data_worm.json') as json_file:
+with open(inputFolderName + "/worm_data_worm.json") as json_file:
     json_data = json.load(json_file)
 
 json_data["stretch_receptor"]["set_direct"]["value"] = True
 
-with open(outputFolderName + '/worm_data_worm.json', "w") as f:
+with open(outputFolderName + "/worm_data_worm.json", "w") as f:
     json.dump(json_data, f)
 
 

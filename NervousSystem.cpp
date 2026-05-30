@@ -43,7 +43,7 @@ void NervousSystem::SetCircuitSize(int newsize, int newmaxchemconns, int newmaxe
     if (newmaxchemconns == -1) maxchemconns = size;
     else maxchemconns = min(newmaxchemconns, size);
     if (newmaxelecconns == -1) maxelecconns = maxchemconns;
-    else maxelecconns = min(newmaxelecconns, maxchemconns);
+    else maxelecconns = min(newmaxelecconns, size);
     states.SetBounds(1,size);
     states.FillContents(0.0);
     paststates.SetBounds(1,size);  
