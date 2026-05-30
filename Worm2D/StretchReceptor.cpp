@@ -451,13 +451,13 @@ void SR18::setParsFromJson(const json & j)
     if (j2.contains("set_direct") && j2.at("set_direct").at("value").get<bool>() && j2.contains("ns_d_weights")){
         SRWeightsSimp srw, nsrw;
 
-        nsrw.segToD = getToFromWeightVec(j.at("ns_d_weights").at("value"),
+        nsrw.segToD = getToFromWeightVec(j2.at("ns_d_weights").at("value"),
         "to_ns", "from_sr", "weight", name_index);
-        srw.segToD = getToFromWeightVec(j.at("d_weights").at("value"),
+        srw.segToD = getToFromWeightVec(j2.at("d_weights").at("value"),
         "to_sr", "from_seg", "weight");
-        nsrw.segToV = getToFromWeightVec(j.at("ns_v_weights").at("value"),
+        nsrw.segToV = getToFromWeightVec(j2.at("ns_v_weights").at("value"),
         "to_ns", "from_sr", "weight", name_index);
-        srw.segToV = getToFromWeightVec(j.at("v_weights").at("value"),
+        srw.segToV = getToFromWeightVec(j2.at("v_weights").at("value"),
         "to_sr", "from_seg", "weight");
 
         nssrweights.swapAll(nsrw);

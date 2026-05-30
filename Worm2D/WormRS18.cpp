@@ -809,11 +809,12 @@ void Worm18::addParsToJson(json & j)
 
     Worm2D::addParsToJson(j);
 
+    sr_ptr->addParsToJson(j);
+
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
-    else sr_ptr->addParsToJson(j);
 
     string nsHead = "Nervous system";
 

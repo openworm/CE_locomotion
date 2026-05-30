@@ -52,6 +52,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
     rm -rf testruns/exW2DSR18E
     rm -rf testruns/exW2D18genE
+    rm -rf testruns/exW2DSR18srm
 
     rm -rf exampleRun
     rm -rf exampleRun_nml
@@ -113,7 +114,9 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSR18.omt #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
     omv test -V .test.W2DSR18E.omt #inputFolderName="testruns/exW2D18gen",
     omv test -V .test.W2D18genE.omt
+    omv test -V .test.W2DSR18srm.omt
 
+    
     omv test -V .test.example.omt #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
     omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
