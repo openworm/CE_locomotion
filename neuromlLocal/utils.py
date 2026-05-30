@@ -3,6 +3,7 @@ import json
 import os
 import copy
 import re
+import math
 # import helper_funcs as hf
 
 from neuroml import (
@@ -15,6 +16,43 @@ from neuroml import (
 
 NS_NEW = "nervous_system"
 NS_OLD = "Nervous system"
+
+
+def collapseReciprocalElectricalConnections(weights, warn=True):
+    if weights is None:
+        return None
+
+    collapsed = []
+    by_pair = {}
+
+    for connection in weights:
+        pre = connection["from"]
+        post = connection["to"]
+
+        if pre == post:
+            collapsed.append(connection)
+            continue
+
+        pair = tuple(sorted((pre, post)))
+        if pair not in by_pair:
+            by_pair[pair] = len(collapsed)
+            collapsed.append(copy.deepcopy(connection))
+            continue
+
+        existing = collapsed[by_pair[pair]]
+        old_weight = existing["weight"]
+        new_weight = connection["weight"]
+
+        if not math.isclose(old_weight, new_weight, rel_tol=1e-9, abs_tol=1e-12):
+            if warn:
+                print(
+                    "WARNING: reciprocal electrical connection weights differ "
+                    "for %s<->%s: %s and %s; using their average for NML gap junction"
+                    % (pre, post, old_weight, new_weight)
+                )
+            existing["weight"] = 0.5 * (old_weight + new_weight)
+
+    return collapsed
 
 
 def getNervousSystem(network_json_data):
