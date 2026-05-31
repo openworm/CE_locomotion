@@ -948,7 +948,9 @@ def run(a=None, **kwargs):
         else:
             print(
                 "Simulation not needed as simulation parameters are the same as the existing ones.\n"
-                "Please supply new command line arguments."
+                "Please supply new command line arguments. Setting reRand to true will generate "
+                "a new simulation seed and rerun the simulation. If rand_initial_state is false, "
+                "the nervous-system initial states are still taken from the stored JSON values."
             )
             sys.exit(1)
 
