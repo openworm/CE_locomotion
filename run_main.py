@@ -637,6 +637,23 @@ def run(a=None, **kwargs):
     else:
         model_name = a.modelName
 
+    json_config_files = ["worm_data_worm.json", "worm_data_evo.json", "worm_data.json"]
+    if model_name == "W2DSR" and not any(
+        os.path.isfile(os.path.join(a.outputFolderName, filename))
+        for filename in json_config_files
+    ):
+        searched = ", ".join(
+            os.path.join(a.outputFolderName, filename) for filename in json_config_files
+        )
+        print(
+            "The W2DSR model requires a JSON configuration file, but none was found.\n"
+            f"Searched for: {searched}\n"
+            "Provide an inputFolderName containing worm_data_worm.json, worm_data_evo.json, "
+            "or worm_data.json, or write one of these files to outputFolderName before "
+            "calling run()."
+        )
+        sys.exit(1)
+
     if a.modelFolder in model_names:
         if model_name is None:
             model_name = model_names[a.modelFolder]

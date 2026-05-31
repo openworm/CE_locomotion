@@ -191,6 +191,7 @@ def get_worm_json(folder_name):
 
 def write_worm_json(folder_name, json_data):
     """Write worm_data_worm.json to a run directory."""
+    os.makedirs(folder_name, exist_ok=True)
     filename = os.path.join(folder_name, "worm_data_worm.json")
     with open(filename, "w") as f:
         json.dump(json_data, f)
