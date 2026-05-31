@@ -271,8 +271,7 @@ int main (int argc, const char* argv[])
 
     if (!(model_name == "W2DCE" || model_name == "W2DCESR") || prioritizeCmd)
     {
-    simrandseed =  cmd->getArgValLong("-R",-1);
-    if (simrandseed == -1) {cout << "Seed not set properly. Exiting." << endl; return 0;}
+    simrandseed =  cmd->getArgValLong("-R", simrandseed);
     w2->setWormPars(cmd);
     
     }
@@ -315,8 +314,24 @@ int main (int argc, const char* argv[])
     //const bool dotest = cmd->getArgValInt("--doTestRun",0);
     //const bool dotest = getParameterInt(argc,argv,"--doTestRun","0");
 
-    double simduration = cmd->getArgValDoub("-sd",10);
-    double simtransient = cmd->getArgValDoub("-st",10);   
+    double simduration = 10;
+    double simtransient = 10;
+    if (!j_evo.empty()){
+        if (j_evo.contains("Simulation")){
+            const json& j_sim = j_evo["Simulation"];
+            if (j_sim.contains("duration")) simduration = j_sim["duration"]["value"];
+            else if (j_sim.contains("Duration")) simduration = j_sim["Duration"]["value"];
+            if (j_sim.contains("transient")) simtransient = j_sim["transient"]["value"];
+            else if (j_sim.contains("Transient")) simtransient = j_sim["Transient"]["value"];
+        }
+        else if (j_evo.contains("Evolutionary Optimization Parameters")){
+            const json& j_sim = j_evo["Evolutionary Optimization Parameters"];
+            if (j_sim.contains("Duration")) simduration = j_sim["Duration"]["value"];
+            if (j_sim.contains("Transient")) simtransient = j_sim["Transient"]["value"];
+        }
+    }
+    simduration = cmd->getArgValDoub("-sd", simduration);
+    simtransient = cmd->getArgValDoub("-st", simtransient);   
     
     //WormFR* const w = dynamic_cast<WormFR*>(w2);
     int inputInd;

@@ -410,15 +410,19 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
     if a is None:
         a = argparse.Namespace()
 
+    provided_args = set(vars(a).keys())
+
     # Add arguments passed in by keyword.
     for key, value in kwargs.items():
         setattr(a, key, value)
+        provided_args.add(key)
 
     # Add defaults for arguments not provided.
     for key, value in DEFAULTS.items():
         if not hasattr(a, key):
             setattr(a, key, value)
 
+    a._provided_args = provided_args
     return a
 
 
@@ -821,6 +825,9 @@ def run(a=None, **kwargs):
         if hasattr(a, key):
             if not hasattr(a, val):
                 setattr(a, val, getattr(a, key))
+            if key in a._provided_args:
+                a._provided_args.remove(key)
+                a._provided_args.add(val)
             delattr(a, key)
 
     for new_key, old_key in legacy_parameter_names.items():
@@ -965,31 +972,74 @@ def run(a=None, **kwargs):
     # main_cmd = "../main"
     # main_cmd = "/home/adam/uclwork/CE_locomotion/experiments/.main"
 
-    if a.crandSeed is not None:
-        cmd += ["-r", str(a.crandSeed)]
+    if mainProcessName == "main_osc":
+        provided = a._provided_args
+
+        if "crandSeed" in provided and a.crandSeed is not None:
+            cmd += ["-r", str(a.crandSeed)]
+        elif "RandSeed" in provided or ("reRand" in provided and a.reRand):
+            if do_evol:
+                cmd += ["-R", str(evol_data["randomseed"])]
+            else:
+                cmd += ["-R", str(sim_data["seed"])]
+
+        if "popSize" in provided:
+            cmd += ["-p", str(evol_data["PopulationSize"])]
+        if "duration" in provided:
+            cmd += ["-d", str(evol_data["Duration"])]
+        if "transient" in provided:
+            cmd += ["-t", str(evol_data["Transient"])]
+        if "maxGens" in provided:
+            cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
+        if "simduration" in provided:
+            cmd += ["-sd", str(sim_data["Duration"])]
+        if "simtransient" in provided:
+            cmd += ["-st", str(sim_data["Transient"])]
+        if "doEvol" in provided:
+            cmd += ["--doevol", str(do_evol)]
+        if "checkPointInterval" in provided:
+            cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
+        if "doRandInit" in provided:
+            cmd += ["--dorandinit", str(sim_data["doRandInit"])]
+        if "doNML" in provided:
+            cmd += ["--donml", str(sim_data["doNML"])]
+
+        cmd += ["--folder", str(a.outputFolderName)]
+        if "modelName" in provided:
+            cmd += ["--modelname", str(model_name)]
+
+        if "doMuscSim" in provided:
+            cmd += ["--domusc", str(sim_data["doMuscSim"])]
+        if "doCPT" in provided:
+            cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        if "evoType" in provided:
+            cmd += ["--evoType", str(a.evoType)]
     else:
-        if do_evol:
-            cmd += ["-R", str(evol_data["randomseed"])]
+        if a.crandSeed is not None:
+            cmd += ["-r", str(a.crandSeed)]
         else:
-            cmd += ["-R", str(sim_data["seed"])]
+            if do_evol:
+                cmd += ["-R", str(evol_data["randomseed"])]
+            else:
+                cmd += ["-R", str(sim_data["seed"])]
 
-    # cmd += ["-sr", str(sim_data["seed"])]
-    cmd += ["-p", str(evol_data["PopulationSize"])]
-    cmd += ["-d", str(evol_data["Duration"])]
-    cmd += ["-t", str(evol_data["Transient"])]
-    cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
-    cmd += ["-sd", str(sim_data["Duration"])]
-    cmd += ["-st", str(sim_data["Transient"])]
-    cmd += ["--doevol", str(do_evol)]
-    cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
+        # cmd += ["-sr", str(sim_data["seed"])]
+        cmd += ["-p", str(evol_data["PopulationSize"])]
+        cmd += ["-d", str(evol_data["Duration"])]
+        cmd += ["-t", str(evol_data["Transient"])]
+        cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
+        cmd += ["-sd", str(sim_data["Duration"])]
+        cmd += ["-st", str(sim_data["Transient"])]
+        cmd += ["--doevol", str(do_evol)]
+        cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
 
-    cmd += ["--dorandinit", str(sim_data["doRandInit"])]
-    cmd += ["--donml", str(sim_data["doNML"])]
-    cmd += ["--folder", str(a.outputFolderName)]
-    cmd += ["--modelname", str(model_name)]
-    cmd += ["--domusc", str(sim_data["doMuscSim"])]
-    cmd += ["-docpt", str(TFtoInt(a.doCPT))]
-    cmd += ["--evoType", str(a.evoType)]
+        cmd += ["--dorandinit", str(sim_data["doRandInit"])]
+        cmd += ["--donml", str(sim_data["doNML"])]
+        cmd += ["--folder", str(a.outputFolderName)]
+        cmd += ["--modelname", str(model_name)]
+        cmd += ["--domusc", str(sim_data["doMuscSim"])]
+        cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        cmd += ["--evoType", str(a.evoType)]
 
     print(cmd)
     # sys.exit(1)

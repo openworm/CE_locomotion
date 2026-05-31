@@ -1076,7 +1076,7 @@ def reload_single_run(a=None, **kwargs):
 
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
-        for t in range(1, tmax, int(tmax / num)):
+        for t in range(1, tmax, max(1, int(tmax / num))):
             f = float(t) / tmax
 
             dd["t"].append(body_data[0][t])

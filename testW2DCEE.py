@@ -12,6 +12,8 @@ doMuscles = False
 outputFolderName = "testruns/exW2DCEE"
 
 args = dict(
+    duration=24,
+    transient=8,
     simduration=20,
     simtransient=0,
     maxGens=10,
@@ -32,6 +34,7 @@ args = dict(
     doLegacy=False,
     randomInitialState=True,
     SRZeroGainsType=1,
+    RandSeed=1233,
 )
 
 if doOrig:
