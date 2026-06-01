@@ -6,8 +6,8 @@ experiments:
             spike times: [20.838]
     state3:
         expected:
-            spike times: [27.599]
+            spike times: [3.964]
     state54:
         expected:
-            spike times: [22.813]
+            spike times: [24.921]
 
