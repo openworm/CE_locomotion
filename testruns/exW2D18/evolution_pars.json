@@ -5,7 +5,7 @@
     "MaxGenerations": 36,
     "Transient": 10,
     "CheckpointInterval": 5,
-    "EvolutionType": "Evo18",
+    "evo_type": "Evo18",
     "random_initial_state": false,
     "do_orig_musc_input": true,
     "do_orig_sr_input": true

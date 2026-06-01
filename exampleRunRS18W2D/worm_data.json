@@ -873,11 +873,11 @@
         "VectSize_temo": {
             "value": 30
         },
-        "evoType": {
-            "value": "Evo21"
-        },
         "evo_seed": {
             "value": 0
+        },
+        "evo_type": {
+            "value": "Evo21"
         },
         "fileprefix": {
             "value": ""

@@ -87,11 +87,11 @@
         "avg_speed": {
             "value": 0.00022
         },
-        "evoType": {
-            "value": "Evo21"
-        },
         "evo_seed": {
             "value": 0
+        },
+        "evo_type": {
+            "value": "Evo21"
         },
         "fileprefix": {
             "value": ""

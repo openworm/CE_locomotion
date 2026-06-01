@@ -27,7 +27,7 @@ defaults_base_CO = {
     "doRandInit": 0,
     "maxGens": 40,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 defaults_base_celoc = {
@@ -41,7 +41,7 @@ defaults_base_celoc = {
     "doRandInit": 0,
     "maxGens": 10,
     "doMuscSim": 0,
-    "evoType": "EvoCE",
+    "evo_type": "EvoCE",
     "MutVar": 0.05,
     "CrossProb": 0.5,
 }
@@ -57,7 +57,7 @@ defaults_base_2018 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 defaults_base_CO18 = {
@@ -71,7 +71,7 @@ defaults_base_CO18 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 
@@ -86,7 +86,7 @@ defaults_base_2021 = {
     "doRandInit": 0,
     "maxGens": 2000,
     "doMuscSim": 0,
-    "evoType": "Evo21",
+    "evo_type": "Evo21",
 }
 
 
@@ -113,7 +113,7 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 1,
     "doCPT": True,
-    "evoType": "Evo21",
+    "evo_type": "Evo21",
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
 }
@@ -143,14 +143,21 @@ def process_args():
 
     parser.add_argument(
         "-ET",
-        "--evoType",
+        "--evo_type",
         type=str,
-        metavar="<evoType>",
-        default=DEFAULTS["evoType"],
+        metavar="<evo_type>",
+        default=DEFAULTS["evo_type"],
         help=(
             "Name of evolution function.\nOptions include: Evo21, Evo18"
             # "Default is: %s" % DEFAULTS["modelName"]
         ),
+    )
+    parser.add_argument(
+        "--evoType",
+        type=str,
+        dest="evo_type",
+        default=argparse.SUPPRESS,
+        help=argparse.SUPPRESS,
     )
 
     parser.add_argument(
@@ -768,7 +775,7 @@ def run(a=None, **kwargs):
         "MaxGenerations",
         "Transient",
         "CheckpointInterval",
-        "EvolutionType",
+        "evo_type",
     ]
 
     evol_args = [
@@ -778,7 +785,7 @@ def run(a=None, **kwargs):
         a.maxGens,
         a.transient,
         a.checkPointInterval,
-        a.evoType,
+        a.evo_type,
     ]
 
     evol_defaults = [
@@ -788,7 +795,7 @@ def run(a=None, **kwargs):
         defaults_base["maxGens"],
         defaults_base["transient"],
         0,
-        defaults_base["evoType"],
+        defaults_base["evo_type"],
     ]
 
     a_replacements = {
@@ -817,13 +824,14 @@ def run(a=None, **kwargs):
         "doLegacy": "do_legacy",
         "initNSFromJson": "init_ns_from_json",
         "inputInd": "input_ind",
+        "evoType": "evo_type",
     }
     legacy_parameter_names = {
         new_key: old_key for old_key, new_key in a_replacements.items()
     }
     for key, val in a_replacements.items():
         if hasattr(a, key):
-            if not hasattr(a, val):
+            if key in a._provided_args or not hasattr(a, val):
                 setattr(a, val, getattr(a, key))
             if key in a._provided_args:
                 a._provided_args.remove(key)
@@ -863,6 +871,20 @@ def run(a=None, **kwargs):
                         key
                     ]["value"]
                 elif (
+                    key == "evo_type"
+                    and "evoType" in worm_data["Evolutionary Optimization Parameters"]
+                ):
+                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
+                        "evoType"
+                    ]["value"]
+                elif (
+                    key == "evo_type"
+                    and "EvolutionType" in worm_data["Evolutionary Optimization Parameters"]
+                ):
+                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
+                        "EvolutionType"
+                    ]["value"]
+                elif (
                     key in legacy_parameter_names
                     and legacy_parameter_names[key]
                     in worm_data["Evolutionary Optimization Parameters"]
@@ -880,6 +902,12 @@ def run(a=None, **kwargs):
         if old_key in evol_data:
             if new_key not in evol_data:
                 evol_data[new_key] = evol_data[old_key]
+            del evol_data[old_key]
+
+    for old_key in ["evoType", "EvolutionType"]:
+        if old_key in evol_data:
+            if "evo_type" not in evol_data:
+                evol_data["evo_type"] = evol_data[old_key]
             del evol_data[old_key]
 
     if a.reRand and do_evol and ("randomseed" in evol_data):
@@ -1012,8 +1040,8 @@ def run(a=None, **kwargs):
             cmd += ["--domusc", str(sim_data["doMuscSim"])]
         if "doCPT" in provided:
             cmd += ["-docpt", str(TFtoInt(a.doCPT))]
-        if "evoType" in provided:
-            cmd += ["--evoType", str(a.evoType)]
+        if "evo_type" in provided:
+            cmd += ["--evo_type", str(a.evo_type)]
     else:
         if a.crandSeed is not None:
             cmd += ["-r", str(a.crandSeed)]
@@ -1039,7 +1067,7 @@ def run(a=None, **kwargs):
         cmd += ["--modelname", str(model_name)]
         cmd += ["--domusc", str(sim_data["doMuscSim"])]
         cmd += ["-docpt", str(TFtoInt(a.doCPT))]
-        cmd += ["--evoType", str(a.evoType)]
+        cmd += ["--evo_type", str(evol_data["evo_type"])]
 
     print(cmd)
     # sys.exit(1)

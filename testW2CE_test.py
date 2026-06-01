@@ -20,7 +20,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     doCPT=True,
-    evoType="EvoCE",
+    evo_type="EvoCE",
     doReverse=2,
     SRType="None",
     ABLevel=3,

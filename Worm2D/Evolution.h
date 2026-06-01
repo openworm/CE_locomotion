@@ -277,7 +277,8 @@ template<class T>
 shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const CmdArgs> cmd_, 
     shared_ptr<T> evol1T_, shared_ptr<const json> json_ptr_)
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    string evotype_;
+    evol1T_->template getValCJEvo<string>("evo_type", evotype_);
     //const string & evotype_ = evoPars1.evoType;
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
@@ -328,7 +329,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 /* evoPars Evolvable_ptr::getDefaultEvoPars(int argc, const char* argv[]) 
 {
 
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    string evotype_ = getParameterString(argc,argv,"--evo_type","Evo21");
     return getDefaultEvoPars(evotype_); 
 
 } */
@@ -368,7 +369,8 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
 template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shared_ptr<T> evol1) 
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    string evotype_;
+    evol1->template getValCJEvo<string>("evo_type", evotype_);
     return getDefaultEvoPars(evotype_,evol1);    
 }
 

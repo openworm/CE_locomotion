@@ -5,5 +5,5 @@
     "MaxGenerations": 36,
     "Transient": 10,
     "CheckpointInterval": 5,
-    "EvolutionType": "Evo21"
+    "evo_type": "Evo21"
 }

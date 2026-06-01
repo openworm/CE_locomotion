@@ -483,8 +483,18 @@ int main (int argc, const char* argv[])
     //cout << "const 1" << endl;
     j["worm"]["main_model_name"]["value"] = model_name;
 
-    if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters"))
+    if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters")){
     j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
+    json& evo_json = j["Evolutionary Optimization Parameters"];
+    if (evo_json.contains("evoType")){
+        if (!evo_json.contains("evo_type")) evo_json["evo_type"] = evo_json["evoType"];
+        evo_json.erase("evoType");
+    }
+    if (evo_json.contains("EvolutionType")){
+        if (!evo_json.contains("evo_type")) evo_json["evo_type"] = evo_json["EvolutionType"];
+        evo_json.erase("EvolutionType");
+    }
+    }
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);

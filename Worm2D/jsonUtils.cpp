@@ -1557,7 +1557,9 @@ void evoPars::addParsToJson(json &j) const
          ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
     for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
-      {vector<string> names = {"fileprefix", "evoType"};
+      j.erase("evoType");
+      j.erase("EvolutionType");
+      {vector<string> names = {"fileprefix", "evo_type"};
       vector<string> vals = {fileprefix, evoType};
        for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
@@ -1614,6 +1616,7 @@ CheckpointInterval = cmd->getArgValInt("-cpt", CheckpointInterval);
 Duration = cmd->getArgValDoub("-d", Duration);
 Transient = cmd->getArgValDoub("-t", Transient);
 evoType = cmd->getArgVal("--evoType", evoType);
+evoType = cmd->getArgVal("--evo_type", evoType);
 
 if (seed_flag){ 
   long randomseed1 = cmd->getArgValLong("-R",-1);
@@ -1673,7 +1676,8 @@ void evoPars::setFromArgs(int argc, const char* argv[])
     if (strcmp(argv[arg],"-d")==0) Duration = stod(argv[arg+1]);
     if (strcmp(argv[arg],"-t")==0) Transient = stod(argv[arg+1]);
     if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = stoi(argv[arg+1]);
-    if (strcmp(argv[arg],"--evoType")==0) evoType = (string) argv[arg+1];
+    if (strcmp(argv[arg],"--evoType")==0 || strcmp(argv[arg],"--evo_type")==0)
+      evoType = (string) argv[arg+1];
     
 
     //cout << "doCPT " << doCPT << endl;

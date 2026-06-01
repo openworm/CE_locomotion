@@ -97,6 +97,14 @@ class baseParameters
             return true;
         }
 
+        const string legacy_key_str = legacyKeyForSnake(key_str);
+        if (!legacy_key_str.empty() &&
+            newSetVals.contains(section_str) && newSetVals.at(section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[section_str][legacy_key_str].at("value").get<T>();
+            return true;
+        }
+
         if (legacy_section_str != section_str &&
             newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(key_str))
         {
@@ -111,12 +119,20 @@ class baseParameters
             return true;
         }
 
+        if (!legacy_key_str.empty() && legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[legacy_section_str][legacy_key_str].at("value").get<T>();
+            return true;
+        }
+
     
         if (BPitsCmdArgs!=nullptr) {
             //cout << "hdjs cmd " << name_str << " " << val << endl;
 
          if( BPitsCmdArgs->getArgValT<T>("--" + key_str, val)
-             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)
+             || (!legacy_key_str.empty() && BPitsCmdArgs->getArgValT<T>("--" + legacy_key_str, val))) 
         {
               //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
@@ -128,12 +144,16 @@ class baseParameters
         {
             if (getJsonValTF<T>(BPitsJson.at(section_str), key_str, val, true)) return true;
             if (getJsonValTF<T>(BPitsJson.at(section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(section_str), legacy_key_str, val, true)) return true;
         }
 
         if (!BPitsJson.empty() && legacy_section_str != section_str && BPitsJson.contains(legacy_section_str)) 
         {
             if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), key_str, val, true)) return true;
             if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(legacy_section_str), legacy_key_str, val, true)) return true;
         }
 
        
@@ -243,6 +263,7 @@ class baseParameters
         defaultVals_["init_ns_from_json"] = true;
         defaultVals_["input_ind"] = -1;
         defaultVals_["debug"] = false;
+        defaultVals_["evo_type"] = "Evo21";
 
        return defaultVals_;
     }
@@ -434,6 +455,7 @@ class baseParameters
         if (key == "do_legacy") return "doLegacy";
         if (key == "init_ns_from_json") return "initNSFromJson";
         if (key == "input_ind") return "inputInd";
+        if (key == "evo_type") return "evoType";
         return "";
     }
 
