@@ -376,6 +376,8 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
     if (j.contains("Evolutionary Optimization Parameters"))
     {
         const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        getJsonValTF<int>(j_evo, "population_size", ep1.PopulationSize, true) ||
+        getJsonValTF<int>(j_evo, "PopulationSize", ep1.PopulationSize, true);
         getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
         getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
     }

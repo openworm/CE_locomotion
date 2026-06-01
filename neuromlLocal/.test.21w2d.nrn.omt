@@ -12,5 +12,5 @@ experiments:
           scaling: [1, 1]
         spike detection: 
           method: threshold
-          threshold: 1
+          threshold: -5
         tolerance: 0.00

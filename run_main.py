@@ -879,7 +879,8 @@ def run(a=None, **kwargs):
                     ]["value"]
                 elif (
                     key == "evo_type"
-                    and "EvolutionType" in worm_data["Evolutionary Optimization Parameters"]
+                    and "EvolutionType"
+                    in worm_data["Evolutionary Optimization Parameters"]
                 ):
                     evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
                         "EvolutionType"
