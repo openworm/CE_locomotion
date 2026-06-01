@@ -371,7 +371,15 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
 {
     string evotype_;
     evol1->template getValCJEvo<string>("evo_type", evotype_);
-    return getDefaultEvoPars(evotype_,evol1);    
+    evoPars ep1 = getDefaultEvoPars(evotype_,evol1);
+    const json & j = evol1->itsBPjson();
+    if (j.contains("Evolutionary Optimization Parameters"))
+    {
+        const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
+        getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
+    }
+    return ep1;    
 }
 
 
