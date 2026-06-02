@@ -1,4 +1,8 @@
-PYTHON_CONFIG ?= python3-config
+ifeq ($(CONDA_PREFIX),)
+    PYTHON_CONFIG ?= python3-config
+else
+    PYTHON_CONFIG ?= $(CONDA_PREFIX)/bin/python3-config
+endif
 
 
 #LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)

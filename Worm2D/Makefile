@@ -33,7 +33,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
     RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
 else ifeq ($(UNAME_S),Darwin)
-    RPATH_FLAG = -Wl,-rpath,@loader_path
+    RPATH_FLAG = -Wl,-rpath,@loader_path -Wl,-rpath,$(PYTHON_LIB_DIR)
 else
     $(error Unsupported OS)
 endif
