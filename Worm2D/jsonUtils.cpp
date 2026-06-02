@@ -41,6 +41,31 @@ static void getLimitPair(const json & j, double & lowerLimit, double & upperLimi
     j.at("val2").get_to(upperLimit);
 }
 
+static string makeEvotagString(int evotag)
+{
+  return "evotag_" + to_string(evotag);
+}
+
+static bool parseEvotagNumber(const json & j, int & evotag)
+{
+  if (j.is_number_integer()) {
+    evotag = j.get<int>();
+    return true;
+  }
+
+  if (!j.is_string()) return false;
+
+  const string tag = j.get<string>();
+  const string prefix = "evotag_";
+  if (tag.find(prefix) != 0) return false;
+  const string num = tag.substr(prefix.size());
+  if (num.empty()) return false;
+  for (char c : num)
+    if (!isdigit(static_cast<unsigned char>(c))) return false;
+  evotag = stoi(num);
+  return true;
+}
+
 template<class T>
 static Params<T> normaliseParamNames(Params<T> par)
 {
@@ -624,22 +649,49 @@ void from_json(const json& j, toFromWeight & w)
 
 void to_json(json & j, const intDoubDoub & w)
 {
-  j = json{{"evotag", w.ind}, {"lower_limit", w.val1}, {"upper_limit", w.val2}};
+  j = json{{"evotag", w.tag.empty() ? makeEvotagString(w.ind) : w.tag},
+           {"lower_limit", w.val1}, {"upper_limit", w.val2}};
+}
+
+json toEvolvableRangesJson(const vector<intDoubDoub> & ranges)
+{
+  json j = json::object();
+  for (int i=0;i<ranges.size();i++)
+  {
+    const string tag = ranges[i].tag.empty()
+      ? makeEvotagString(ranges[i].ind)
+      : ranges[i].tag;
+    j[tag] = {{"lower_limit", ranges[i].val1}, {"upper_limit", ranges[i].val2}};
+  }
+  return j;
+}
+
+json toEvolvableRangesJson(const vector<doubDoub> & ranges)
+{
+  json j = json::object();
+  for (int i=0;i<ranges.size();i++)
+    j[makeEvotagString(i+1)] = {{"lower_limit", ranges[i].val1},
+      {"upper_limit", ranges[i].val2}};
+  return j;
 }
 
 void from_json(const json& j, intDoubDoub & w) 
 {
         if (j.contains("evotag")) {
-          j.at("evotag").get_to(w.ind);
+          if (!parseEvotagNumber(j.at("evotag"), w.ind)) w.ind = 0;
+          w.tag = j.at("evotag").is_string()
+            ? j.at("evotag").get<string>()
+            : makeEvotagString(w.ind);
           getLimitPair(j, w.val1, w.val2);
           return;
         }
 
         if (j.is_object() && j.size() == 1) {
           const auto it = j.begin();
-          const string prefix = "evotag_";
-          if (it.key().find(prefix) == 0) {
-            w.ind = stoi(it.key().substr(prefix.size()));
+          w.tag = it.key();
+          json tagJson = it.key();
+          if (!parseEvotagNumber(tagJson, w.ind)) w.ind = 0;
+          if (it->is_object()) {
             getLimitPair(*it, w.val1, w.val2);
             return;
           }
@@ -663,8 +715,11 @@ void from_json(const json& j, doubDoub & w)
 vector<intPair> from_evo_json(const json& j)
 {
 vector<intPair> w;
-for(auto it = j.begin(); it != j.end(); ++it)
-  w.push_back({it->at("ind").get<int>(),it->at("evotag").get<int>()});
+for(auto it = j.begin(); it != j.end(); ++it) {
+  int evotag = 0;
+  parseEvotagNumber(it->at("evotag"), evotag);
+  w.push_back({it->at("ind").get<int>(), evotag});
+}
 
 return w;
 
@@ -673,7 +728,7 @@ return w;
 json to_evo_json(const vector<intPair> & w)
 {
 json j = json::array();
-for (int i=0;i<w.size();i++) j.push_back({{"ind", w[i].ind}, {"evotag", w[i].val}});
+for (int i=0;i<w.size();i++) j.push_back({{"ind", w[i].ind}, {"evotag", makeEvotagString(w[i].val)}});
 return j;
 }
 
@@ -691,14 +746,14 @@ void from_json(const json& j, intPair & w)
 
 void to_json(json & j, const fromToInt & w)
 {
-  j = json{{"to", w.to},  {"from", w.from},  {"evotag", w.val}};
+  j = json{{"to", w.to},  {"from", w.from},  {"evotag", makeEvotagString(w.val)}};
 }
 
 void from_json(const json& j, fromToInt & w) 
 {
         j.at("to").get_to(w.to);
         j.at("from").get_to(w.from);
-        j.at("evotag").get_to(w.val);
+        parseEvotagNumber(j.at("evotag"), w.val);
 }
 
 
@@ -1000,7 +1055,7 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
     if (!j.is_object()) j = json::object();
     if (!j.contains(name)) j[name] = json::object();
     if (!j.at(name).contains(parameter)) j[name][parameter] = json::object();
-    j[name][parameter]["evotag"] = val.val;
+    j[name][parameter]["evotag"] = makeEvotagString(val.val);
     }
     
 }
@@ -1048,15 +1103,15 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
   {
    if (reciprocal_direction
      && it->at("weight").contains("evotag")
-     && it->at("weight").at("evotag") != val.val)
+     && it->at("weight").at("evotag") != makeEvotagString(val.val))
    {
     cout << "WARNING: reciprocal electrical connection evotags differ for "
          << cell_names_full[val.from-1] << "<->" << cell_names_full[val.to-1]
-         << ": " << it->at("weight").at("evotag") << " and " << val.val
+         << ": " << it->at("weight").at("evotag") << " and " << makeEvotagString(val.val)
          << "; using the latter in JSON output" << endl;
    }
-   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = val.val; 
-   else (*it)["weight"]["evotag"] = val.val;
+   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = makeEvotagString(val.val); 
+   else (*it)["weight"]["evotag"] = makeEvotagString(val.val);
    found = true;
    break; 
   }
@@ -1067,7 +1122,7 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
     jconn["to"] = cell_names_full[val.to-1];
     jconn["from"] = cell_names_full[val.from-1];
     jconn["weight"]["value"] = 0.0;
-    jconn["weight"]["evotag"] = val.val;
+    jconn["weight"]["evotag"] = makeEvotagString(val.val);
     j.push_back(jconn);
   }
   }

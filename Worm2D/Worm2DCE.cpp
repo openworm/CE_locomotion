@@ -424,17 +424,17 @@ void WormCE::addEvolvableToJson(json & j)
      for (int i = 1; i <= 2; i++) vec.push_back({NMJmin, NMJmax});
      for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
 
-    j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
+    j["evolvable_ranges"] = toEvolvableRangesJson(vec);
   }
  
  // if (false){
-  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
-  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag", "evotag_1"}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag", "evotag_2"}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
  // }
 
-  j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
+  j["stretch_receptor"]["sr_a_gain"]["evotag"] = "evotag_1";
   j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
-  j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
+  j["stretch_receptor"]["sr_b_gain"]["evotag"] = "evotag_2";
   j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
 
 

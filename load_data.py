@@ -34,8 +34,17 @@ def normalize_evolvable_range_entries(evolvable_ranges):
     if evolvable_ranges is None:
         return entries
 
+    def evotag_number(evotag):
+        if isinstance(evotag, int):
+            return evotag
+        if isinstance(evotag, str) and evotag.startswith("evotag_"):
+            return int(evotag.replace("evotag_", "", 1))
+        return evotag
+
     for entry in evolvable_ranges.get("value", []):
         if "evotag" in entry:
+            entry = dict(entry)
+            entry["evotag"] = evotag_number(entry["evotag"])
             entries.append(entry)
             continue
 
@@ -43,11 +52,17 @@ def normalize_evolvable_range_entries(evolvable_ranges):
             continue
 
         evotag_key, attrs = next(iter(entry.items()))
-        if not evotag_key.startswith("evotag_"):
+
+        attrs = dict(attrs)
+        attrs["evotag"] = evotag_number(evotag_key)
+        entries.append(attrs)
+
+    for evotag_key, attrs in evolvable_ranges.items():
+        if evotag_key == "value" or not isinstance(attrs, dict):
             continue
 
         attrs = dict(attrs)
-        attrs["evotag"] = int(evotag_key.replace("evotag_", "", 1))
+        attrs["evotag"] = evotag_number(evotag_key)
         entries.append(attrs)
 
     return entries

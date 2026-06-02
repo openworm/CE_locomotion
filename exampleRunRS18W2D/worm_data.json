@@ -5362,214 +5362,244 @@
     "evolvable_ranges": {
         "value": [
             {
-                "active": true,
-                "evotag": 1,
-                "lower_limit": -15.0,
-                "name": "ns_cells_bias",
-                "upper_limit": 15.0
+                "evotag_1": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_cells_bias",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 2,
-                "lower_limit": -15.0,
-                "name": "ns_cells_bias",
-                "upper_limit": 15.0
+                "evotag_2": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_cells_bias",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 3,
-                "lower_limit": 0.5,
-                "name": "ns_cells_tau",
-                "upper_limit": 2.0
+                "evotag_3": {
+                    "active": true,
+                    "lower_limit": 0.5,
+                    "name": "ns_cells_tau",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 4,
-                "lower_limit": 0.5,
-                "name": "ns_cells_tau",
-                "upper_limit": 2.0
+                "evotag_4": {
+                    "active": true,
+                    "lower_limit": 0.5,
+                    "name": "ns_cells_tau",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 5,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_5": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 6,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_6": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 7,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_7": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 8,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_8": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 9,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_9": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 10,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_10": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 11,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_11": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 12,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_12": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 13,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_13": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 14,
-                "lower_limit": -200.0,
-                "name": "sr_vnc_gain",
-                "upper_limit": 0.0
+                "evotag_14": {
+                    "active": true,
+                    "lower_limit": -200.0,
+                    "name": "sr_vnc_gain",
+                    "upper_limit": 0.0
+                }
             },
             {
-                "active": true,
-                "evotag": 15,
-                "lower_limit": 0.0,
-                "name": "vnc_18_DB_VBA_VBP",
-                "upper_limit": 1.0
+                "evotag_15": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "vnc_18_DB_VBA_VBP",
+                    "upper_limit": 1.0
+                }
             },
             {
-                "active": true,
-                "evotag": 16,
-                "lower_limit": -1.0,
-                "name": "vnc_18_DD_VDA_VDP",
-                "upper_limit": 0.0
+                "evotag_16": {
+                    "active": true,
+                    "lower_limit": -1.0,
+                    "name": "vnc_18_DD_VDA_VDP",
+                    "upper_limit": 0.0
+                }
             },
             {
-                "active": true,
-                "evotag": 17,
-                "lower_limit": -15.0,
-                "name": "ns_cells_bias",
-                "upper_limit": 15.0
+                "evotag_17": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_cells_bias",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 18,
-                "lower_limit": -15.0,
-                "name": "ns_cells_bias",
-                "upper_limit": 15.0
+                "evotag_18": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_cells_bias",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 19,
-                "lower_limit": 0.5,
-                "name": "ns_cells_tau",
-                "upper_limit": 2.0
+                "evotag_19": {
+                    "active": true,
+                    "lower_limit": 0.5,
+                    "name": "ns_cells_tau",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 20,
-                "lower_limit": 0.5,
-                "name": "ns_cells_tau",
-                "upper_limit": 2.0
+                "evotag_20": {
+                    "active": true,
+                    "lower_limit": 0.5,
+                    "name": "ns_cells_tau",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 21,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_21": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 22,
-                "lower_limit": 4.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_22": {
+                    "active": true,
+                    "lower_limit": 4.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 23,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_23": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 24,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_24": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 25,
-                "lower_limit": -15.0,
-                "name": "ns_chemcons",
-                "upper_limit": 15.0
+                "evotag_25": {
+                    "active": true,
+                    "lower_limit": -15.0,
+                    "name": "ns_chemcons",
+                    "upper_limit": 15.0
+                }
             },
             {
-                "active": true,
-                "evotag": 26,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_26": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 27,
-                "lower_limit": 0.0,
-                "name": "ns_eleccons",
-                "upper_limit": 2.0
+                "evotag_27": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "ns_eleccons",
+                    "upper_limit": 2.0
+                }
             },
             {
-                "active": true,
-                "evotag": 28,
-                "lower_limit": -200.0,
-                "name": "sr_head_gain",
-                "upper_limit": 0.0
+                "evotag_28": {
+                    "active": true,
+                    "lower_limit": -200.0,
+                    "name": "sr_head_gain",
+                    "upper_limit": 0.0
+                }
             },
             {
-                "active": true,
-                "evotag": 29,
-                "lower_limit": 0.0,
-                "name": "vnc_18_SMDD_SMDV",
-                "upper_limit": 1.0
+                "evotag_29": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "vnc_18_SMDD_SMDV",
+                    "upper_limit": 1.0
+                }
             },
             {
-                "active": true,
-                "evotag": 30,
-                "lower_limit": 0.0,
-                "name": "vnc_18_RMDD_RMDV",
-                "upper_limit": 1.0
+                "evotag_30": {
+                    "active": true,
+                    "lower_limit": 0.0,
+                    "name": "vnc_18_RMDD_RMDV",
+                    "upper_limit": 1.0
+                }
             }
         ]
     },

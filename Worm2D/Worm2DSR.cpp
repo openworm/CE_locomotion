@@ -1,4 +1,6 @@
 #include "Worm2DSR.h"
+#include <algorithm>
+#include <set>
 //#include "../neuromlLocal/c302ForW2D.h"
 
 /* Worm2DSRm::Worm2DSRm(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> sr_ptr_):
@@ -483,8 +485,7 @@ json * getEvolvableRangeBody(json & entry)
   if (entry.contains("evotag")) return &entry;
   if (entry.size() != 1) return nullptr;
   auto it = entry.begin();
-  int evotag;
-  if (!parseEvoTagRangeKey(it.key(), evotag) || !it->is_object()) return nullptr;
+  if (!it->is_object()) return nullptr;
   return &(*it);
 }
 
@@ -494,15 +495,20 @@ const json * getEvolvableRangeBody(const json & entry)
   if (entry.contains("evotag")) return &entry;
   if (entry.size() != 1) return nullptr;
   auto it = entry.begin();
-  int evotag;
-  if (!parseEvoTagRangeKey(it.key(), evotag) || !it->is_object()) return nullptr;
+  if (!it->is_object()) return nullptr;
   return &(*it);
 }
 
 int getEvolvableRangeTag(const json & entry)
 {
   if (entry.is_object() && entry.contains("evotag"))
-    return entry.at("evotag").get<int>();
+  {
+    if (entry.at("evotag").is_number_integer()) return entry.at("evotag").get<int>();
+    int evotag;
+    if (entry.at("evotag").is_string()
+      && parseEvoTagRangeKey(entry.at("evotag").get<string>(), evotag)) return evotag;
+    return -1;
+  }
   if (entry.is_object() && entry.size() == 1) {
     auto it = entry.begin();
     int evotag;
@@ -511,37 +517,120 @@ int getEvolvableRangeTag(const json & entry)
   return -1;
 }
 
+string getEvolvableRangeTagString(const json & entry, int fallback)
+{
+  if (entry.is_object() && entry.contains("evotag")) {
+    if (entry.at("evotag").is_string()) return entry.at("evotag").get<string>();
+    if (entry.at("evotag").is_number_integer()) return makeEvoTagRangeKey(entry.at("evotag").get<int>());
+  }
+  if (entry.is_object() && entry.size() == 1) return entry.begin().key();
+  return makeEvoTagRangeKey(fallback);
+}
+
 vector<intDoubDoub> getEvolvableRangeVals(const json & ranges)
 {
   vector<intDoubDoub> vals;
-  if (!ranges.contains("value")) return vals;
+  set<string> seenTags;
+  int fallback = 1;
 
-  const json & rangeVals = ranges.at("value");
-  for (auto it = rangeVals.begin(); it != rangeVals.end(); ++it) {
-    intDoubDoub val = it->template get<intDoubDoub>();
+  auto addVal = [&](const json & entry, const string & tag) {
+    intDoubDoub val = entry.template get<intDoubDoub>();
+    val.tag = tag.empty() ? getEvolvableRangeTagString(entry, fallback) : tag;
+    if (val.ind <= 0) val.ind = fallback;
+    if (seenTags.find(val.tag) != seenTags.end())
+      cout << "WARNING: duplicate evolvable range evotag '" << val.tag
+           << "' found; evotag identifiers should be unique" << endl;
+    seenTags.insert(val.tag);
     vals.push_back(val);
+    fallback++;
+  };
+
+  if (ranges.contains("value") && ranges.at("value").is_array()) {
+    const json & rangeVals = ranges.at("value");
+    for (auto it = rangeVals.begin(); it != rangeVals.end(); ++it)
+      addVal(*it, "");
+    return vals;
   }
+
+  if (ranges.is_object()) {
+    vector<intDoubDoub> flatVals;
+    for (auto it = ranges.begin(); it != ranges.end(); ++it) {
+      if (it.key() == "value" || !it->is_object()) continue;
+      intDoubDoub val = json{{it.key(), *it}}.template get<intDoubDoub>();
+      val.tag = it.key();
+      if (val.ind <= 0) val.ind = fallback;
+      flatVals.push_back(val);
+      fallback++;
+    }
+
+    stable_sort(flatVals.begin(), flatVals.end(),
+      [](const intDoubDoub & a, const intDoubDoub & b) {
+        const bool aNumeric = a.ind > 0;
+        const bool bNumeric = b.ind > 0;
+        if (aNumeric && bNumeric) return a.ind < b.ind;
+        if (aNumeric != bNumeric) return aNumeric;
+        return false;
+      });
+
+    for (int i=0; i<flatVals.size(); i++) {
+      if (seenTags.find(flatVals[i].tag) != seenTags.end())
+        cout << "WARNING: duplicate evolvable range evotag '" << flatVals[i].tag
+             << "' found; evotag identifiers should be unique" << endl;
+      seenTags.insert(flatVals[i].tag);
+      vals.push_back(flatVals[i]);
+    }
+  }
+
   return vals;
 }
 
 void convertEvolvableRangesToKeyed(json & ranges)
 {
-  if (!ranges.contains("value") || !ranges["value"].is_array()) return;
+  json converted = json::object();
+  int fallback = 1;
 
-  json converted = json::array();
-  for (auto it = ranges["value"].begin(); it != ranges["value"].end(); ++it) {
-    int evotag = getEvolvableRangeTag(*it);
-    json * bodyPtr = getEvolvableRangeBody(*it);
-    if (evotag < 1 || bodyPtr == nullptr) {
-      converted.push_back(*it);
-      continue;
+  if (ranges.contains("value") && ranges["value"].is_array()) {
+    for (auto it = ranges["value"].begin(); it != ranges["value"].end(); ++it) {
+      string evotag = getEvolvableRangeTagString(*it, fallback);
+      json * bodyPtr = getEvolvableRangeBody(*it);
+      if (evotag.empty() || bodyPtr == nullptr) {
+        fallback++;
+        continue;
+      }
+
+      json body = *bodyPtr;
+      body.erase("evotag");
+      converted[evotag] = body;
+      fallback++;
     }
-
-    json body = *bodyPtr;
-    body.erase("evotag");
-    converted.push_back(json{{makeEvoTagRangeKey(evotag), body}});
+    ranges = converted;
+    return;
   }
-  ranges["value"] = converted;
+
+  if (!ranges.is_object()) return;
+  for (auto it = ranges.begin(); it != ranges.end(); ++it) {
+    if (it.key() == "value" || !it->is_object()) continue;
+    json body = *it;
+    body.erase("evotag");
+    converted[it.key()] = body;
+  }
+  ranges = converted;
+}
+
+json * getEvolvableRangeBodyByTag(json & ranges, const string & tag)
+{
+  if (ranges.contains("value") && ranges["value"].is_array()) {
+    for (auto it = ranges["value"].begin(); it != ranges["value"].end(); ++it) {
+      if (getEvolvableRangeTagString(*it, 1) != tag) continue;
+      return getEvolvableRangeBody(*it);
+    }
+    return nullptr;
+  }
+
+  if (ranges.is_object() && ranges.contains(tag) && ranges[tag].is_object())
+    return &ranges[tag];
+
+  return nullptr;
 }
 
 void Worm2DSRE::addEvolvableToJson(json & j)
@@ -550,7 +639,9 @@ void Worm2DSRE::addEvolvableToJson(json & j)
   const json * ranges = getEvolvableRanges(BPitsJson);
   if (ranges == nullptr) return;
 
-  j[evolvableRangesKey]["value"] = ranges->at("value");
+  json rangesOut = *ranges;
+  convertEvolvableRangesToKeyed(rangesOut);
+  j[evolvableRangesKey] = rangesOut;
   addEvoNames(j);
 
   return;
@@ -632,10 +723,37 @@ void shortenEvoName(string & evoName)
   replaceAll(evoName, "_weight_ventcons_", "_");
 }
 
+string getEvotagString(const json & evotag)
+{
+  if (evotag.is_string()) return evotag.get<string>();
+  if (evotag.is_number_integer()) return makeEvoTagRangeKey(evotag.get<int>());
+  return "";
+}
+
+int getEvotagNumber(const json & evotag)
+{
+  if (evotag.is_number_integer()) return evotag.get<int>();
+  if (evotag.is_string()) {
+    int ind;
+    if (parseEvoTagRangeKey(evotag.get<string>(), ind)) return ind;
+  }
+  return -1;
+}
+
 void setEvoNameFromTag(int evotag, vector<vector<string> > & evoNames, const vector<string> & path)
 {
   if (evotag < 1 || evotag > evoNames.size()) return;
   setEvoStr(evoNames[evotag-1], shortenEvoNamePath(path));
+}
+
+void setEvoNameFromTag(const string & evotag, vector<vector<string> > & evoNames,
+  const vector<string> & path, const vector<intDoubDoub> & vdd)
+{
+  for (int i=0; i<vdd.size(); i++)
+    if (vdd[i].tag == evotag) {
+      setEvoStr(evoNames[i], shortenEvoNamePath(path));
+      return;
+    }
 }
 
 
@@ -653,7 +771,7 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
 
   if (it2->at("evolvable").is_object()){
     const json & j1 = it2->at("evolvable");
-    int ind1 = j1["evotag"].get<int>();
+    int ind1 = getEvotagNumber(j1["evotag"]);
     setEvoNameFromTag(ind1, evoNames, path);
   }
   else if (it2->at("evolvable").is_number()){
@@ -687,7 +805,8 @@ void getEvoNames1(json::const_iterator it2, vector<vector<string> > & evoNames,
 
 }
 
-void getEvoNamesFromEvotags(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
+void getEvoNamesFromEvotags(const json& j, vector<vector<string> > & evoNames, vector<string> & path,
+  const vector<intDoubDoub> & vdd)
 {
     for(auto it = j.begin(); it != j.end(); ++it)
     {
@@ -704,21 +823,22 @@ void getEvoNamesFromEvotags(const json& j, vector<vector<string> > & evoNames, v
 
       if (hasEvotag)
       {
-        int evotag = it->at("evotag").get<int>();
-        setEvoNameFromTag(evotag, evoNames, path);
+        string evotag = getEvotagString(it->at("evotag"));
+        setEvoNameFromTag(evotag, evoNames, path, vdd);
       }
       else if (it->is_object() || it->is_array())
       {
-        getEvoNamesFromEvotags(*it, evoNames, path);
+        getEvoNamesFromEvotags(*it, evoNames, path, vdd);
       }
 
       if (pushKey) path.pop_back();
     }
 }
 
-void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path)
+void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<string> & path,
+  const vector<intDoubDoub> & vdd)
 {
-    getEvoNamesFromEvotags(j, evoNames, path);
+    getEvoNamesFromEvotags(j, evoNames, path, vdd);
     bool foundEvotagNames = false;
     for (int i=0;i<evoNames.size();i++)
     {
@@ -732,7 +852,7 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
       //else if (it->is_structured()) {
       else if (it->is_object()) {
       path.push_back(it.key());
-      getEvoNames(*it, evoNames, path);
+      getEvoNames(*it, evoNames, path, vdd);
       path.pop_back();
       }
     }
@@ -752,7 +872,7 @@ void addEvoNames(json & j)
   vector<vector<string> > evoNames(vdd.size());
   
   vector<string> path;
-  getEvoNames(j, evoNames, path);
+  getEvoNames(j, evoNames, path, vdd);
 
   
   vector<string> evoKeys(vdd.size());
@@ -770,19 +890,22 @@ void addEvoNames(json & j)
     shortenEvoName(evoKeys[i]);
   }
 
-  json & j2 = (*ranges)["value"];
+  convertEvolvableRangesToKeyed(*ranges);
+  json & j2 = *ranges;
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
-    json * body = getEvolvableRangeBody(*it);
-    const int evotag = getEvolvableRangeTag(*it);
-    if (body == nullptr || evotag < 1 || evotag > evoKeys.size()) continue;
-    (*body)["name"] = evoKeys[evotag-1];
+    if (!it->is_object()) continue;
+    json * body = &(*it);
+    const string evotag = it.key();
+    int phenind = -1;
+    for (int i=0; i<vdd.size(); i++)
+      if (vdd[i].tag == evotag) {phenind = i; break;}
+    if (body == nullptr || phenind < 0 || phenind >= evoKeys.size()) continue;
+    (*body)["name"] = evoKeys[phenind];
     if (!body->contains("active")) (*body)["active"] = true;
 
   }
-
-  convertEvolvableRangesToKeyed(*ranges);
 
 }
 
@@ -807,7 +930,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   vector<vector<string> > evoNames(vdd.size());
   
   vector<string> path;
-  getEvoNames(j, evoNames, path);
+  getEvoNames(j, evoNames, path, vdd);
 
   
   vector<string> evoKeys(vdd.size());
@@ -823,27 +946,25 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
     if (!it->contains("name"))
-    (*it)["name"] = evoKeys[it->at("evotag").get<int>()-1];
+    (*it)["name"] = evoKeys[getEvotagNumber(it->at("evotag"))-1];
 
   }
 
   }
 
 
-  json & j2 = (*ranges)["value"];
+  convertEvolvableRangesToKeyed(*ranges);
   vector<intDoubDoub> vddactive;
   //vector<bool> actives(vdd.size());
   //vector<int> inds(vdd.size());
-  int i =0;
-  for(auto it = j2.begin(); it != j2.end(); ++it)
+  for(int i=0; i<vdd.size(); i++)
   {
-    json * body = getEvolvableRangeBody(*it);
+    json * body = getEvolvableRangeBodyByTag(*ranges, vdd[i].tag);
     if (body == nullptr) continue;
     if (!body->contains("active")) (*body)["active"] = true;
     bool act1 = body->at("active").get<bool>();
     if (act1) vddactive.push_back(vdd[i]);
     //inds[i] = it->at("ind").get<int>();
-    i++;
 
   }
 
@@ -862,6 +983,20 @@ int getPhenind(const vector<intDoubDoub> & vdd, int indval)
 
 }
 
+int getPhenind(const vector<intDoubDoub> & vdd, const string & tag)
+{
+  for(int i=0; i<vdd.size(); i++)
+    if (tag == vdd[i].tag) return i;
+  return -1;
+}
+
+int getPhenindFromEvotag(const vector<intDoubDoub> & vdd, const json & evotag)
+{
+  if (evotag.is_string()) return getPhenind(vdd, evotag.get<string>());
+  if (evotag.is_number_integer()) return getPhenind(vdd, evotag.get<int>());
+  return -1;
+}
+
 void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef,
   const vector<intDoubDoub> & vdd)
 {
@@ -870,8 +1005,7 @@ void setParsFromPheno1v2(const TVector<double> &pheno, json & it2, Efunctor & ef
   
   assert(it2.contains("value") && it2.at("value").is_number());
   //cout << it2 << endl;
-  int evotag = it2.at("evotag").get<int>() ;//+ 1;
-  int phenind = getPhenind(vdd,evotag) + 1;
+  int phenind = getPhenindFromEvotag(vdd,it2.at("evotag")) + 1;
   if (phenind>0)
     if (it2.contains("mfunc")) 
     it2.at("value") = ef.eFunc(pheno[phenind], it2.at("mfunc"), true);
@@ -893,7 +1027,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
-          int phenind = getPhenind(vdd,jevol.at("evotag").get<int>()) + 1;
+          int phenind = getPhenindFromEvotag(vdd,jevol.at("evotag")) + 1;
           if (phenind>0){
           if (domfuncs && jevol.contains("mfunc"))
           it2->at("value") = ef.eFunc(pheno[phenind], jevol.at("mfunc"), true);
@@ -914,7 +1048,7 @@ void setParsFromPheno1(const TVector<double> &pheno, json::iterator it2, Efuncto
           if (itjevol->at("from").get<int>() == values[j].w.from 
           && itjevol->at("to").get<int>()  == values[j].to)
           {
-            int phenind = getPhenind(vdd,itjevol->at("evotag").get<int>()) + 1;
+            int phenind = getPhenindFromEvotag(vdd,itjevol->at("evotag")) + 1;
 
             //int phenind = itjevol->at("evotag").get<int>();
             
@@ -1386,7 +1520,7 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
-          int phenind = jevol.at("evotag").get<int>() - 1; 
+          int phenind = getEvotagNumber(jevol.at("evotag")) - 1; 
           pheno[phenind] = it2->at("value");
         }
         else if (it2->at("evolvable").is_number())
@@ -1405,7 +1539,7 @@ void getInitPhenoVals(vector<double> & pheno, json::const_iterator it2)
           if (itjevol->at("from").get<int>() == values[j].w.from && 
           itjevol->at("to").get<int>() == values[j].to)
           {
-            int phenind = itjevol->at("evotag").get<int>() - 1;
+            int phenind = getEvotagNumber(itjevol->at("evotag")) - 1;
             pheno[phenind] = values[j].w.weight;
             break;
           
@@ -1459,7 +1593,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
         if (it2->at("evolvable").is_object())
         {
           const json & jevol = it2->at("evolvable");
-          int phenind = getPhenind(vdd,jevol.at("evotag").get<int>());// + 1;
+          int phenind = getPhenindFromEvotag(vdd,jevol.at("evotag"));// + 1;
           if (phenind>=0){
           double phenval;
           if (do_mfunc && jevol.contains("mfunc")){
@@ -1500,7 +1634,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
           itjevol->at("to").get<int>() == values[j].to)
           {
             //int phenind = itjevol->at("val").get<int>() - 1;
-            int phenind = getPhenind(vdd,itjevol->at("evotag").get<int>());
+            int phenind = getPhenindFromEvotag(vdd,itjevol->at("evotag"));
 
             if (phenind>=0){
             double phenval;
@@ -1516,7 +1650,7 @@ void getInitGeno1(vector<double> & pheno, json::const_iterator it2, Efunctor & e
 
             if (false){
             cout << "phvals " << iind << " " << j << " " 
-            <<  itjevol->at("evotag").get<int>()
+            <<  getEvotagString(itjevol->at("evotag"))
             << " " << itjevol->at("from").get<int>() << " " <<  itjevol->at("to").get<int>()  << endl;
             //cout << "ph " << it.key() << " " << it2.key() << endl;
             //cout << "ph " << phenval << " " << pheno[phenind] << " " << values[j].w.weight << endl;
@@ -1594,7 +1728,7 @@ void getInitGeno1v2(vector<double> & pheno, const json & it2, Efunctor & ef,
 {
   assert(it2.contains("value") && it2.at("value").is_number());
 
-  int phenind = getPhenind(vdd, it2.at("evotag").get<int>());
+  int phenind = getPhenindFromEvotag(vdd, it2.at("evotag"));
   if (phenind >= 0) {
     double phenval;
     if (it2.contains("mfunc")) {
@@ -1741,7 +1875,7 @@ void Worm2DSRE::testJson(json & j)
   vec.push_back({3.0,4.0});
   vec.push_back({-1.0,2.0});
   vec.push_back({-10.0,5.0});
-  j[evolvableRangesKey]["value"] = vec; 
+  j[evolvableRangesKey] = toEvolvableRangesJson(vec); 
 
   {vector<fromToInt> vec;
   vec.push_back({1,3,1});

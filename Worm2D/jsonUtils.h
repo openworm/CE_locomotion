@@ -163,6 +163,8 @@ void to_json(json & j, const fromToInt & w);
 void from_json(const json& j, fromToInt & w);
 void to_json(json & j, const intDoubDoub & w);
 void from_json(const json& j, intDoubDoub & w);
+json toEvolvableRangesJson(const vector<intDoubDoub> & ranges);
+json toEvolvableRangesJson(const vector<doubDoub> & ranges);
 void to_json(json & j, const doubDoub & w);
 void from_json(const json& j, doubDoub & w);
 void splitWeightEntry(const vector<weightentry> & w, vector<int> & ind, vector<double> & weight);
