@@ -1013,13 +1013,13 @@ def run(a=None, **kwargs):
                 cmd += ["-R", str(sim_data["seed"])]
 
         if "popSize" in provided:
-            cmd += ["-p", str(evol_data["PopulationSize"])]
+            cmd += ["--population_size", str(evol_data["PopulationSize"])]
         if "duration" in provided:
-            cmd += ["-d", str(evol_data["Duration"])]
+            cmd += ["--duration", str(evol_data["Duration"])]
         if "transient" in provided:
-            cmd += ["-t", str(evol_data["Transient"])]
+            cmd += ["--transient", str(evol_data["Transient"])]
         if "maxGens" in provided:
-            cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
+            cmd += ["--max_generations", str(evol_data["MaxGenerations"])]
         if "simduration" in provided:
             cmd += ["-sd", str(sim_data["Duration"])]
         if "simtransient" in provided:
@@ -1027,7 +1027,7 @@ def run(a=None, **kwargs):
         if "doEvol" in provided:
             cmd += ["--doevol", str(do_evol)]
         if "checkPointInterval" in provided:
-            cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
+            cmd += ["--checkpoint_interval", str(evol_data["CheckpointInterval"])]
         if "doRandInit" in provided:
             cmd += ["--dorandinit", str(sim_data["doRandInit"])]
         if "doNML" in provided:

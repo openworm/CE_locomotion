@@ -1618,6 +1618,26 @@ Transient = cmd->getArgValDoub("-t", Transient);
 evoType = cmd->getArgVal("--evoType", evoType);
 evoType = cmd->getArgVal("--evo_type", evoType);
 
+SelectionMode = static_cast<TSelectionMode>(cmd->getArgValInt("--selection_mode", SelectionMode));
+ReproductionMode = static_cast<TReproductionMode>(cmd->getArgValInt("--reproduction_mode", ReproductionMode));
+PopulationSize = cmd->getArgValInt("--population_size", PopulationSize);
+MaxGenerations = cmd->getArgValInt("--max_generations", MaxGenerations);
+MutationVariance = cmd->getArgValDoub("--mutation_variance", MutationVariance);
+CrossoverProbability = cmd->getArgValDoub("--crossover_probability", CrossoverProbability);
+CrossoverMode = static_cast<TCrossoverMode>(cmd->getArgValInt("--crossover_mode", CrossoverMode));
+MaxExpectedOffspring = cmd->getArgValDoub("--max_expected_offspring", MaxExpectedOffspring);
+ElitistFraction = cmd->getArgValDoub("--elitist_fraction", ElitistFraction);
+SearchConstraint = cmd->getArgValInt("--search_constraint", SearchConstraint);
+CheckpointInterval = cmd->getArgValInt("--checkpoint_interval", CheckpointInterval);
+ReEvaluationFlag = static_cast<bool>(cmd->getArgValInt("--re_evaluation_flag", ReEvaluationFlag));
+skip_steps = cmd->getArgValInt("--skip_steps", skip_steps);
+Duration = cmd->getArgValDoub("--duration", Duration);
+Transient = cmd->getArgValDoub("--transient", Transient);
+StepSize = cmd->getArgValDoub("--step_size", StepSize);
+N_curvs = cmd->getArgValInt("--n_curvs", N_curvs);
+VectSize_temo = cmd->getArgValInt("--vect_size_temo", VectSize_temo);
+fileprefix = cmd->getArgVal("--fileprefix", fileprefix);
+
 if (seed_flag){ 
   long randomseed1 = cmd->getArgValLong("-R",-1);
   if (randomseed1!=-1)
@@ -1629,6 +1649,8 @@ if (seed_flag){
   if (randomseed1!=-1)
   {seed_flag = 0;randomseed = randomseed1 + static_cast<long>(time(NULL));}
 }
+
+randomseed = cmd->getArgValLong("--randomseed", randomseed);
 
 
 }

@@ -376,10 +376,51 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
     if (j.contains("Evolutionary Optimization Parameters"))
     {
         const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        int int_val;
+        getJsonValTF<long>(j_evo, "randomseed", ep1.randomseed, true);
+        if (getJsonValTF<int>(j_evo, "selection_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "SelectionMode", int_val, true))
+            ep1.SelectionMode = static_cast<TSelectionMode>(int_val);
+        if (getJsonValTF<int>(j_evo, "reproduction_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReproductionMode", int_val, true))
+            ep1.ReproductionMode = static_cast<TReproductionMode>(int_val);
         getJsonValTF<int>(j_evo, "population_size", ep1.PopulationSize, true) ||
         getJsonValTF<int>(j_evo, "PopulationSize", ep1.PopulationSize, true);
         getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
         getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
+        getJsonValTF<double>(j_evo, "mutation_variance", ep1.MutationVariance, true) ||
+        getJsonValTF<double>(j_evo, "MutationVariance", ep1.MutationVariance, true);
+        getJsonValTF<double>(j_evo, "crossover_probability", ep1.CrossoverProbability, true) ||
+        getJsonValTF<double>(j_evo, "CrossoverProbability", ep1.CrossoverProbability, true);
+        if (getJsonValTF<int>(j_evo, "crossover_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "CrossoverMode", int_val, true))
+            ep1.CrossoverMode = static_cast<TCrossoverMode>(int_val);
+        getJsonValTF<double>(j_evo, "max_expected_offspring", ep1.MaxExpectedOffspring, true) ||
+        getJsonValTF<double>(j_evo, "MaxExpectedOffspring", ep1.MaxExpectedOffspring, true);
+        getJsonValTF<double>(j_evo, "elitist_fraction", ep1.ElitistFraction, true) ||
+        getJsonValTF<double>(j_evo, "ElitistFraction", ep1.ElitistFraction, true);
+        getJsonValTF<int>(j_evo, "search_constraint", ep1.SearchConstraint, true) ||
+        getJsonValTF<int>(j_evo, "SearchConstraint", ep1.SearchConstraint, true);
+        getJsonValTF<int>(j_evo, "checkpoint_interval", ep1.CheckpointInterval, true) ||
+        getJsonValTF<int>(j_evo, "CheckpointInterval", ep1.CheckpointInterval, true);
+        if (getJsonValTF<int>(j_evo, "re_evaluation_flag", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReEvaluationFlag", int_val, true))
+            ep1.ReEvaluationFlag = static_cast<bool>(int_val);
+        getJsonValTF<int>(j_evo, "skip_steps", ep1.skip_steps, true);
+        getJsonValTF<double>(j_evo, "duration", ep1.Duration, true) ||
+        getJsonValTF<double>(j_evo, "Duration", ep1.Duration, true);
+        getJsonValTF<double>(j_evo, "transient", ep1.Transient, true) ||
+        getJsonValTF<double>(j_evo, "Transient", ep1.Transient, true);
+        getJsonValTF<double>(j_evo, "step_size", ep1.StepSize, true) ||
+        getJsonValTF<double>(j_evo, "StepSize", ep1.StepSize, true);
+        getJsonValTF<int>(j_evo, "n_curvs", ep1.N_curvs, true) ||
+        getJsonValTF<int>(j_evo, "N_curvs", ep1.N_curvs, true);
+        getJsonValTF<int>(j_evo, "vect_size_temo", ep1.VectSize_temo, true) ||
+        getJsonValTF<int>(j_evo, "VectSize_temo", ep1.VectSize_temo, true);
+        getJsonValTF<string>(j_evo, "fileprefix", ep1.fileprefix, true);
+        getJsonValTF<string>(j_evo, "evo_type", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "evoType", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "EvolutionType", ep1.evoType, true);
     }
     return ep1;    
 }
