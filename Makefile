@@ -15,10 +15,16 @@ endif
 LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
 LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
 CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
+
+# Add Homebrew paths for macOS
 LDFLAGS += "-L/opt/homebrew/lib"
-#LDFLAGS += "-L$(brew --prefix nlohmann-json)/lib"
 CXXFLAGS += "-I/opt/homebrew/include"
-#CXXFLAGS += "-I$(brew --prefix nlohmann-json)/include"
+
+# In a conda env, python3-config points -L at the (lib-less) config dir;
+# add the env's actual lib dir to the link path and embed an rpath for runtime.
+ifneq ($(CONDA_PREFIX),)
+    LDFLAGS += -L$(CONDA_PREFIX)/lib -Wl,-rpath,$(CONDA_PREFIX)/lib
+endif
 
 main: info main.o jsonUtils.o argUtils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o argUtils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)
