@@ -77,6 +77,7 @@ class EvoBase
     simPars setSimPars(shared_ptr<const CmdArgs> cmd);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
+    evoPars getEffectiveEvoParsForJson() const;
 
     void setUp();
     
