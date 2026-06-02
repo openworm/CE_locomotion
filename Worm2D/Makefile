@@ -45,6 +45,10 @@ CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR)
 LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
 LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
 
+# Extra flags for MacOS
+LDFLAGS += "-L/opt/homebrew/lib"
+CXXFLAGS += "-I/opt/homebrew/include"
+
 EXTRA_FLAGS := -fPIE -O3 -Iinc
 SANFLAG :=
 
