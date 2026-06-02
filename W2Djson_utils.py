@@ -17,6 +17,27 @@ def incNSvals(j1):
 NSname = "Nervous system"
 EOP = "Evolutionary Optimization Parameters"
 
+
+def normalize_evolvable_range_entries(evolvable_ranges):
+    entries = []
+    for entry in evolvable_ranges.get("value", []):
+        if "evotag" in entry:
+            entries.append(entry)
+            continue
+
+        if len(entry) != 1:
+            continue
+
+        evotag_key, attrs = next(iter(entry.items()))
+        if not evotag_key.startswith("evotag_"):
+            continue
+
+        attrs = dict(attrs)
+        attrs["evotag"] = int(evotag_key.replace("evotag_", "", 1))
+        entries.append(attrs)
+
+    return entries
+
 jsonNames = {
     # "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
     "List": {
@@ -227,7 +248,9 @@ def addEvolvable(network_json_data):
         )
     network_json_data.pop("Evolvable", None)
 
-    evolvables = network_json_data["evolvable_ranges"]["value"]
+    evolvables = normalize_evolvable_range_entries(
+        network_json_data["evolvable_ranges"]
+    )
     print(evolvables)
 
 

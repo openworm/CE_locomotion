@@ -29,6 +29,30 @@ def get_evolvable_ranges(network_json_data):
     return network_json_data.get("Evolvable")
 
 
+def normalize_evolvable_range_entries(evolvable_ranges):
+    entries = []
+    if evolvable_ranges is None:
+        return entries
+
+    for entry in evolvable_ranges.get("value", []):
+        if "evotag" in entry:
+            entries.append(entry)
+            continue
+
+        if len(entry) != 1:
+            continue
+
+        evotag_key, attrs = next(iter(entry.items()))
+        if not evotag_key.startswith("evotag_"):
+            continue
+
+        attrs = dict(attrs)
+        attrs["evotag"] = int(evotag_key.replace("evotag_", "", 1))
+        entries.append(attrs)
+
+    return entries
+
+
 sys.path.append("..")
 
 # import random
@@ -201,11 +225,10 @@ def plot_phenonames(
         "value"
     ]
 
-    evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(
-        evolvable_ranges, ["value", 0, "name"]
-    ):
-        evolvables = evolvable_ranges["value"]
+    evolvables = normalize_evolvable_range_entries(
+        get_evolvable_ranges(network_json_data)
+    )
+    if evolvables and "name" in evolvables[0]:
         phen_names = []
         phen_nums = []
         for val in evolvables:
@@ -710,11 +733,10 @@ def plot_hist(a=None):
         "value"
     ]
 
-    evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(
-        evolvable_ranges, ["value", 0, "name"]
-    ):
-        evolvables = evolvable_ranges["value"]
+    evolvables = normalize_evolvable_range_entries(
+        get_evolvable_ranges(network_json_data)
+    )
+    if evolvables and "name" in evolvables[0]:
         phen_names = []
         phen_nums = []
         for val in evolvables:

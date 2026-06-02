@@ -629,6 +629,22 @@ void to_json(json & j, const intDoubDoub & w)
 
 void from_json(const json& j, intDoubDoub & w) 
 {
+        if (j.contains("evotag")) {
+          j.at("evotag").get_to(w.ind);
+          getLimitPair(j, w.val1, w.val2);
+          return;
+        }
+
+        if (j.is_object() && j.size() == 1) {
+          const auto it = j.begin();
+          const string prefix = "evotag_";
+          if (it.key().find(prefix) == 0) {
+            w.ind = stoi(it.key().substr(prefix.size()));
+            getLimitPair(*it, w.val1, w.val2);
+            return;
+          }
+        }
+
         j.at("evotag").get_to(w.ind);
         getLimitPair(j, w.val1, w.val2);
 }

@@ -445,6 +445,7 @@ void Worm2DSR::writeAct()
 
 const string evolvableRangesKey = "evolvable_ranges";
 const string legacyEvolvableKey = "Evolvable";
+const string evoTagRangePrefix = "evotag_";
 
 json * getEvolvableRanges(json & j)
 {
@@ -458,6 +459,89 @@ const json * getEvolvableRanges(const json & j)
   if (j.contains(evolvableRangesKey)) return &j.at(evolvableRangesKey);
   if (j.contains(legacyEvolvableKey)) return &j.at(legacyEvolvableKey);
   return nullptr;
+}
+
+bool parseEvoTagRangeKey(const string & key, int & evotag)
+{
+  if (key.find(evoTagRangePrefix) != 0) return false;
+  const string num = key.substr(evoTagRangePrefix.size());
+  if (num.empty()) return false;
+  for (int i=0;i<num.size();i++)
+    if (num[i] < '0' || num[i] > '9') return false;
+  evotag = stoi(num);
+  return true;
+}
+
+string makeEvoTagRangeKey(int evotag)
+{
+  return evoTagRangePrefix + to_string(evotag);
+}
+
+json * getEvolvableRangeBody(json & entry)
+{
+  if (!entry.is_object()) return nullptr;
+  if (entry.contains("evotag")) return &entry;
+  if (entry.size() != 1) return nullptr;
+  auto it = entry.begin();
+  int evotag;
+  if (!parseEvoTagRangeKey(it.key(), evotag) || !it->is_object()) return nullptr;
+  return &(*it);
+}
+
+const json * getEvolvableRangeBody(const json & entry)
+{
+  if (!entry.is_object()) return nullptr;
+  if (entry.contains("evotag")) return &entry;
+  if (entry.size() != 1) return nullptr;
+  auto it = entry.begin();
+  int evotag;
+  if (!parseEvoTagRangeKey(it.key(), evotag) || !it->is_object()) return nullptr;
+  return &(*it);
+}
+
+int getEvolvableRangeTag(const json & entry)
+{
+  if (entry.is_object() && entry.contains("evotag"))
+    return entry.at("evotag").get<int>();
+  if (entry.is_object() && entry.size() == 1) {
+    auto it = entry.begin();
+    int evotag;
+    if (parseEvoTagRangeKey(it.key(), evotag)) return evotag;
+  }
+  return -1;
+}
+
+vector<intDoubDoub> getEvolvableRangeVals(const json & ranges)
+{
+  vector<intDoubDoub> vals;
+  if (!ranges.contains("value")) return vals;
+
+  const json & rangeVals = ranges.at("value");
+  for (auto it = rangeVals.begin(); it != rangeVals.end(); ++it) {
+    intDoubDoub val = it->template get<intDoubDoub>();
+    vals.push_back(val);
+  }
+  return vals;
+}
+
+void convertEvolvableRangesToKeyed(json & ranges)
+{
+  if (!ranges.contains("value") || !ranges["value"].is_array()) return;
+
+  json converted = json::array();
+  for (auto it = ranges["value"].begin(); it != ranges["value"].end(); ++it) {
+    int evotag = getEvolvableRangeTag(*it);
+    json * bodyPtr = getEvolvableRangeBody(*it);
+    if (evotag < 1 || bodyPtr == nullptr) {
+      converted.push_back(*it);
+      continue;
+    }
+
+    json body = *bodyPtr;
+    body.erase("evotag");
+    converted.push_back(json{{makeEvoTagRangeKey(evotag), body}});
+  }
+  ranges["value"] = converted;
 }
 
 void Worm2DSRE::addEvolvableToJson(json & j)
@@ -663,7 +747,7 @@ void addEvoNames(json & j)
 
   json * ranges = getEvolvableRanges(j);
   if (ranges == nullptr)  return;
-  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
+  vector<intDoubDoub> vdd = getEvolvableRangeVals(*ranges);
 
   vector<vector<string> > evoNames(vdd.size());
   
@@ -690,11 +774,15 @@ void addEvoNames(json & j)
 
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
-    (*it)["name"] = evoKeys[it->at("evotag").get<int>()-1];
-    if (!it->contains("active")) (*it)["active"] = true;
+    json * body = getEvolvableRangeBody(*it);
+    const int evotag = getEvolvableRangeTag(*it);
+    if (body == nullptr || evotag < 1 || evotag > evoKeys.size()) continue;
+    (*body)["name"] = evoKeys[evotag-1];
+    if (!body->contains("active")) (*body)["active"] = true;
 
   }
 
+  convertEvolvableRangesToKeyed(*ranges);
 
 }
 
@@ -709,7 +797,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   json * ranges = getEvolvableRanges(j);
   if (ranges == nullptr) return vector<intDoubDoub>(0);
 
-  vector<intDoubDoub> vdd = ranges->at("value").template get<vector<intDoubDoub>>();
+  vector<intDoubDoub> vdd = getEvolvableRangeVals(*ranges);
 
   //addEvoNames(j);
 
@@ -749,8 +837,10 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   int i =0;
   for(auto it = j2.begin(); it != j2.end(); ++it)
   {
-    if (!it->contains("active")) (*it)["active"] = true;
-    bool act1 = it->at("active").get<bool>();
+    json * body = getEvolvableRangeBody(*it);
+    if (body == nullptr) continue;
+    if (!body->contains("active")) (*body)["active"] = true;
+    bool act1 = body->at("active").get<bool>();
     if (act1) vddactive.push_back(vdd[i]);
     //inds[i] = it->at("ind").get<int>();
     i++;
