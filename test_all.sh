@@ -2,6 +2,7 @@
 set -ex
 
 quick_test=0
+parallel_jobs_for_make="-j1" # Adjust this based on your system's capabilities
 
 if [[ ($# -eq 1) && ($1 == '-q') ]]; then
     quick_test=1
@@ -14,30 +15,30 @@ rm -rf test_output/*.dat
 ./tests
 
 # Compile the main program
-make
+make ${parallel_jobs_for_make}
 
 
 # Compile the CE_orientation C++ code
 cd CE_orientation
 make clean
-make
+make ${parallel_jobs_for_make}
 cd ..
 
 cd RoyalSociety2018
 make clean
-make
+make ${parallel_jobs_for_make}
 cd ..
 
 cd network2021
 make clean
-make
+make ${parallel_jobs_for_make}
 cd ..
 
 # Compile the Worm2D C++ code
 cd Worm2D
 make clean
-make
-make main_osc
+make ${parallel_jobs_for_make}
+make ${parallel_jobs_for_make} main_osc
 cd ..
 
 ruff format *.py */*.py
