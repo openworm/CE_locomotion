@@ -2,7 +2,7 @@
 set -ex
 
 quick_test=0
-parallel_jobs_for_make="-j1" # Adjust this based on your system's capabilities
+parallel_jobs_for_make="-j4" # Adjust this based on your system's capabilities
 
 if [[ ($# -eq 1) && ($1 == '-q') ]]; then
     quick_test=1

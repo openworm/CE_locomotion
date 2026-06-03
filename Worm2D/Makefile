@@ -17,7 +17,8 @@ endif
 # ---------------------------
 PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
 PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-PYTHON_LIB := $(shell $(PYTHON) -c "import sysconfig, os; libname = os.path.splitext(sysconfig.get_config_var('LDLIBRARY'))[0]; print(libname[3:] if libname.startswith('lib') else libname)")
+PYTHON_LDVERSION := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDVERSION'))")
+PYTHON_LIB := python$(PYTHON_LDVERSION)
 
 # ---------------------------
 # Check that Python headers exist
@@ -82,7 +83,17 @@ vpath %.cpp ../
 # ---------------------------
 # Rules
 # ---------------------------
-all: main main_osc
+all: info main main_osc
+
+
+info:
+	@echo ' '
+	@echo '  - Compiling with '
+	@echo '      CXXFLAGS: ' $(CXXFLAGS) 
+	@echo '      LIBS: ' $(LIBS) 
+	@echo '      LDFLAGS: ' $(LDFLAGS) 
+	@echo ' '
+
 
 # Generic compilation rule
 %.o: %.cpp
