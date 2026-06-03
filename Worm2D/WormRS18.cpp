@@ -1088,7 +1088,7 @@ vec.push_back({-SRmax, 0.0});
 vec.push_back({0.0, NMJmax});
 vec.push_back({0.0, NMJmax});
 
-j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
+j["evolvable_ranges"] = toEvolvableRangesJson(vec);
 
  }
 
@@ -1125,12 +1125,12 @@ j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
         //biasvecj += json::object_t::value_type({{"ind", db}, {"val", 1}});
         //biasvecj += json::object_t::value_type({{"ind", vba}, {"val", 1}});
 
-        biasvecj.push_back({{"ind", db}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", vba}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", vbp}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", dd}, {"evotag", 2}});
-        biasvecj.push_back({{"ind", vda}, {"evotag", 2}});
-        biasvecj.push_back({{"ind", vdp}, {"evotag", 2}});
+        biasvecj.push_back({{"ind", db}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", vba}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", vbp}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", dd}, {"evotag", "evotag_2"}});
+        biasvecj.push_back({{"ind", vda}, {"evotag", "evotag_2"}});
+        biasvecj.push_back({{"ind", vdp}, {"evotag", "evotag_2"}});
 
 
          /*    biasvecj.push_back({db,1});
@@ -1162,20 +1162,20 @@ j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
 
 
 
-        chemvecj.push_back({{"from", db}, {"to", db}, {"evotag", 5}});
-        chemvecj.push_back({{"from", vba}, {"to", vba}, {"evotag", 5}});
-        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"evotag", 5}});
-        chemvecj.push_back({{"from", dd}, {"to", dd}, {"evotag", 6}});
-        chemvecj.push_back({{"from", vda}, {"to", vda}, {"evotag", 6}});
-        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"evotag", 6}});
-        chemvecj.push_back({{"from", db}, {"to", dd}, {"evotag", 7}});
-        chemvecj.push_back({{"from", vba}, {"to", vda}, {"evotag", 7}});
-        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", 7}});
-        chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", 8}});
-        chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", 8}});
-        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", 9}});
+        chemvecj.push_back({{"from", db}, {"to", db}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", vba}, {"to", vba}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", dd}, {"to", dd}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", vda}, {"to", vda}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", db}, {"to", dd}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", vba}, {"to", vda}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", "evotag_8"}});
+        chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", "evotag_8"}});
+        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", "evotag_9"}});
 
         addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
         {vba, dd,8}, cell_names_full, {{"f_ind", 1}, {"fact", 0.5}});
@@ -1243,8 +1243,8 @@ j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
     // Stretch receptor
     //sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
 
-   j["stretch_receptor"]["sr_vnc_gain"]["evotag"] = 14;
-   j["stretch_receptor"]["sr_head_gain"]["evotag"] = 28;
+   j["stretch_receptor"]["sr_vnc_gain"]["evotag"] = "evotag_14";
+   j["stretch_receptor"]["sr_head_gain"]["evotag"] = "evotag_28";
 
    
 
@@ -1288,10 +1288,10 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     biasvecj.push_back({SMDV,17});
     biasvecj.push_back({RMDD,18});
     biasvecj.push_back({RMDV,18}); */
-    biasvecj.push_back({{"ind", SMDD}, {"evotag", 17}});
-    biasvecj.push_back({{"ind", SMDV}, {"evotag", 17}});
-    biasvecj.push_back({{"ind", RMDD}, {"evotag", 18}});
-    biasvecj.push_back({{"ind", RMDV}, {"evotag", 18}});
+    biasvecj.push_back({{"ind", SMDD}, {"evotag", "evotag_17"}});
+    biasvecj.push_back({{"ind", SMDV}, {"evotag", "evotag_17"}});
+    biasvecj.push_back({{"ind", RMDD}, {"evotag", "evotag_18"}});
+    biasvecj.push_back({{"ind", RMDV}, {"evotag", "evotag_18"}});
 
     //if (false)
     {vector<intPair> & vec = biasvec;
@@ -1309,16 +1309,16 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     }
 
 
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"evotag", 21}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"evotag", 21}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"evotag", 22}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"evotag", 22}});
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"evotag", 23}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"evotag", 23}});
-    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"evotag", 24}});
-    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"evotag", 24}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", 25}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", 25}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"evotag", "evotag_21"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"evotag", "evotag_21"}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"evotag", "evotag_22"}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"evotag", "evotag_22"}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"evotag", "evotag_23"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"evotag", "evotag_23"}});
+    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"evotag", "evotag_24"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"evotag", "evotag_24"}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", "evotag_25"}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", "evotag_25"}});
 
 
 //if (false)

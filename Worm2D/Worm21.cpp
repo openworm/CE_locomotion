@@ -291,7 +291,7 @@ vec.push_back({0.0, ESRange});
 vec.push_back({0.0, ESRange});
 
 
-  j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
+  j["evolvable_ranges"] = toEvolvableRangesJson(vec);
   }
 
 vector<intPair> biasvec, tauvec;
@@ -417,8 +417,8 @@ nmjvecv.push_back({VA,38});
 addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
 addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
-j["vnc_nmj"]["gain_map_d"]["evotag"] = 39;
-j["vnc_nmj"]["gain_map_v"]["evotag"] = 39;
+j["vnc_nmj"]["gain_map_d"]["evotag"] = "evotag_39";
+j["vnc_nmj"]["gain_map_v"]["evotag"] = "evotag_39";
  
 
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);

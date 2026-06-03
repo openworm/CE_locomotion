@@ -143,7 +143,7 @@ struct weightentry {int from; double weight;};
     int ind; int val;}; */
 struct intPair {int ind; int val;};
 struct fromToInt {int from; int to; int val;};
-struct intDoubDoub {int ind; double val1; double val2;};
+struct intDoubDoub {int ind; double val1; double val2; string tag;};
 struct stringPair {string s1; string s2;};
 struct doubDoub {double val1; double val2;};
 template<class T> struct namedVal {string name; T val;};
