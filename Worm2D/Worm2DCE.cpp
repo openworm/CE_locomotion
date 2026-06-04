@@ -49,6 +49,7 @@ Worm2DCE(getIzqPars(j), new c302ForW2D(), cmd_)
 
   w2dsr_ptr = makeSRCE();
   sr_ptr = dynamic_pointer_cast<SRCE>(w2dsr_ptr);
+  json worm = getSectionCopyWithLegacy(j, "worm");
 
   //sr_ptr->basePar1 = this;
 
@@ -56,14 +57,14 @@ Worm2DCE(getIzqPars(j), new c302ForW2D(), cmd_)
   sr_ptr->setParsFromJson(j);
  
   
-  NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
-  NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
-  NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
-  NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
+  NMJ_DA = worm["NMJ_DA"]["value"];
+  NMJ_VA = worm["NMJ_VA"]["value"];
+  NMJ_DB = worm["NMJ_DB"]["value"];
+  NMJ_VB = worm["NMJ_VB"]["value"];
 
   // Inhibitory VNC NMJ Weight
-  NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
-  NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
+  NMJ_DD = worm["NMJ_DD"]["value"];
+  NMJ_VD = worm["NMJ_VD"]["value"];
 
   initConst();
 
@@ -207,6 +208,7 @@ WormCE::WormCE(const json & j, shared_ptr<const CmdArgs> cmd):WormCE(cmd)
 
  
  
+  json worm = getSectionCopyWithLegacy(j, "worm");
   //W2DCEpars1->setParsFromJson(j["Worm"]);
   sr_ptr->setParsFromJson(j);
   
@@ -216,14 +218,14 @@ WormCE::WormCE(const json & j, shared_ptr<const CmdArgs> cmd):WormCE(cmd)
   AVB_act = 0;
   AVB_inact = 0;
   
-  NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
-  NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
-  NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
-  NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
+  NMJ_DA = worm["NMJ_DA"]["value"];
+  NMJ_VA = worm["NMJ_VA"]["value"];
+  NMJ_DB = worm["NMJ_DB"]["value"];
+  NMJ_VB = worm["NMJ_VB"]["value"];
 
   // Inhibitory VNC NMJ Weight
-  NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
-  NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
+  NMJ_DD = worm["NMJ_DD"]["value"];
+  NMJ_VD = worm["NMJ_VD"]["value"];
 
   //W2DCEpars1->AVA_output = 0.0;
   //W2DCEpars1->AVB_output = 0.0;
@@ -422,17 +424,17 @@ void WormCE::addEvolvableToJson(json & j)
      for (int i = 1; i <= 2; i++) vec.push_back({NMJmin, NMJmax});
      for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
 
-    j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
+    j["evolvable_ranges"] = toEvolvableRangesJson(vec);
   }
  
  // if (false){
-  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag",1}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
-  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag",2}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag", "evotag_1"}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag", "evotag_2"}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
  // }
 
-  j["stretch_receptor"]["sr_a_gain"]["evotag"] = 1;
+  j["stretch_receptor"]["sr_a_gain"]["evotag"] = "evotag_1";
   j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
-  j["stretch_receptor"]["sr_b_gain"]["evotag"] = 2;
+  j["stretch_receptor"]["sr_b_gain"]["evotag"] = "evotag_2";
   j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
 
 
@@ -517,14 +519,14 @@ void WormCE::addEvolvableToJson(json & j)
   addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getDistinctCellNames());
   addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
-    getDistinctCellNames());
+    getDistinctCellNames(), true);
   addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
     getDistinctCellNames());
 
 /* addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, 
     getCellNamesUnits(getCellNamesUnit(), par1.N_units));
   addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, 
-    getCellNamesUnits(getCellNamesUnit(), par1.N_units));
+    getCellNamesUnits(getCellNamesUnit(), par1.N_units), true);
   addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", 
   getCellNamesUnits(getCellNamesUnit(), par1.N_units)); */
 
@@ -1727,7 +1729,7 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   vector<doubIntParamsHead> parvec;
   doubIntParamsHead var1;
 
-  var1.parDoub.head = "Worm";
+  var1.parDoub.head = "worm";
   var1.parDoub.names = {"NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
   var1.parDoub.vals = {NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
   append<string>(var1.parDoub.names,{"ava_act", "ava_inact", "avb_act", "avb_inact"});
@@ -1735,7 +1737,7 @@ vector<doubIntParamsHead> Worm2DCE::getWormParams(){
   append<double>(var1.parDoub.vals,{AVA_act, AVA_inact, AVB_act, AVB_inact});
   append<double>(var1.parDoub.vals,{AVA_output, AVB_output});
 
-  var1.parInt.head = "Worm";
+  var1.parInt.head = "worm";
   var1.parInt.vals = {N_stretchrec, NmusclePerNU};
   var1.parInt.names = {"N_stretchrec", "NmusclePerNU"};
   var1.parInt.messages = 

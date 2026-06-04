@@ -487,12 +487,34 @@ void EvoBase::addParsToJson(json & j)
     //doubIntParamsHead par1pars = evoPars1.getParams();
     //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
-    evoPars1.addParsToJson(j["Evolutionary Optimization Parameters"]);
+    getEffectiveEvoParsForJson().addParsToJson(j["Evolutionary Optimization Parameters"]);
     
  
     j["Evolutionary Optimization Parameters"]["VectSize"]["value"] = itsVectSize();
 
     addExtraParsToJson(j);
+}
+
+evoPars EvoBase::getEffectiveEvoParsForJson() const
+{
+    evoPars ep1 = evoPars1;
+    if (s)
+    {
+        ep1.SelectionMode = s->SelectionMode();
+        ep1.ReproductionMode = s->ReproductionMode();
+        ep1.PopulationSize = s->PopulationSize();
+        ep1.MaxGenerations = s->MaxGenerations();
+        ep1.MutationVariance = s->MutationVariance();
+        ep1.CrossoverProbability = s->CrossoverProbability();
+        ep1.CrossoverMode = s->CrossoverMode();
+        ep1.MaxExpectedOffspring = s->MaxExpectedOffspring();
+        ep1.ElitistFraction = s->ElitistFraction();
+        ep1.CheckpointInterval = static_cast<int>(s->CheckpointInterval());
+        ep1.ReEvaluationFlag = static_cast<bool>(s->ReEvaluationFlag());
+        if (s->SearchConstraint().Size() > 0)
+            ep1.SearchConstraint = s->SearchConstraint()(1);
+    }
+    return ep1;
 }
 
 simPars EvoBase::setSimPars(int argc, const char* argv[])
@@ -768,6 +790,8 @@ void Evolution::configure()
     configure_p12();
 
     configure_p2();
+
+    if (s && evoPars1.CheckpointInterval > 0) s->WriteCheckpointFile();
  
     evolfile.close();
     genhistfile.close();

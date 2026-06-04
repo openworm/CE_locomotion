@@ -233,6 +233,14 @@ doOrigSRInput(getValCJWorm<bool>("do_orig_sr_input"))
     //setUpBodyConn();
 }
 
+Worm2D::Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs):
+Worm2Dm(par1_, n_ptr_),m(dynamic_cast<Muscles&>(*m_ptr)),
+doOrigMuscInput(forceNoOrigInputs ? false : getValCJWorm<bool>("do_orig_musc_input")),
+doOrigSRInput(forceNoOrigInputs ? false : getValCJWorm<bool>("do_orig_sr_input"))
+{
+    setUp();
+}
+
 
 void Worm2Dbody::InitializeState(RandomState &rs)
 {
@@ -441,6 +449,7 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
+    json worm = getSectionCopyWithLegacy(j, "worm");
     int n_size = 0;
     if (j.contains("nervous_system")
         && j.at("nervous_system").contains("cell_names")
@@ -455,14 +464,14 @@ wormIzqParams Worm2Dbase::getIzqPars(const json & j)
     }
     else
     {
-        n_size = j.at("Worm").at("N_size").at("value");
+        n_size = worm.at("N_size").at("value");
     }
 
     return
-  {j["Worm"]["N_neuronsperunit"]["value"], 
-    j["Worm"]["N_muscles"]["value"], 
-    j["Worm"]["T_muscle"]["value"],
-    j["Worm"]["N_units"]["value"],
+  {worm["N_neuronsperunit"]["value"], 
+    worm["N_muscles"]["value"], 
+    worm["T_muscle"]["value"],
+    worm["N_units"]["value"],
     n_size
   };
 }
@@ -1027,6 +1036,8 @@ void Worm2Dm::addParsToJson(json & j)
 void Worm2D::addParsToJson(json & j)
 {  
     
+    j["worm"]["do_orig_musc_input"]["value"] = doOrigMuscInput;
+    j["worm"]["do_orig_sr_input"]["value"] = doOrigSRInput;
     
     vector<string> names;
     if (j.contains("nervous_system")
@@ -2461,17 +2472,19 @@ void InputSwitcher::construct(const json & j)
 {
    if (!j.contains("input_switcher")) return;
  
+  const json & input_switcher = j["input_switcher"];
+  if (!input_switcher.contains("size") || !input_switcher.contains("inputs")) return;
 
-  int size = j["input_switcher"]["size"]["value"].get<int>();
+  int size = input_switcher["size"]["value"].get<int>();
 
-  if (j["input_switcher"].contains("time_periods"))
+  if (input_switcher.contains("time_periods"))
   {
-  time_offset =  j["input_switcher"]["time_offset"]["value"].get<double>();
+  time_offset =  input_switcher["time_offset"]["value"].get<double>();
   {
   
   vector<double> periods1(size, 123456);
   total_period = 0;
-  const json & j2 = j["input_switcher"]["time_periods"]["value"];
+  const json & j2 = input_switcher["time_periods"]["value"];
   for (auto it = j2.begin(); it != j2.end(); ++it)
   {
     double period = it->at("value").get<double>();
@@ -2491,7 +2504,7 @@ void InputSwitcher::construct(const json & j)
   
     vector<vector<int> > inds1(size);
     vector<vector<double> > vals1(size);
-    const json & j2 = j["input_switcher"]["inputs"]["value"];
+    const json & j2 = input_switcher["inputs"]["value"];
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];

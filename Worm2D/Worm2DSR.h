@@ -64,6 +64,8 @@ protected:
 
 Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_, 
   shared_ptr<const CmdArgs> cmd, const json & j);
+Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_,
+  shared_ptr<const CmdArgs> cmd, const json & j, bool forceNoOrigInputs);
 Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_, 
   shared_ptr<const CmdArgs> cmd);
 
@@ -99,9 +101,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
 //json itsJson;
 const vector<intDoubDoub> genPhenLims;
 
-Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
-//Worm2DSR(json & j);
-Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
+
 
 void applyFuncables();
 void applyFuncables(json & j1_);
@@ -135,6 +135,12 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 void setParsFromPheno_old(const TVector<double> &pheno);
 void resetFromBPJson();
 void resetFromJson(const json & js1);
+
+protected:
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit, bool forceNoOrigInputs);
+//Worm2DSR(json & j);
+Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
@@ -232,7 +238,7 @@ public:
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
+  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit,true), Sensor(j, *this){}
 
 
 

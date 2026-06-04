@@ -36,7 +36,7 @@ args = dict(
     doOrigSRInput=False,
     doOrigMuscInput=False,
     checkPointInterval=5,
-    evoType="EvoCO2",
+    evo_type="EvoCO2",
     overwrite=True,
 )
 

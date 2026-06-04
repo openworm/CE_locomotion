@@ -12,6 +12,8 @@ doMuscles = False
 outputFolderName = "testruns/exW2DSR18E"
 
 args = dict(
+    duration=50,
+    transient=10,
     simduration=100,
     simtransient=0,
     maxGens=10,
@@ -25,13 +27,14 @@ args = dict(
     doTestRun=True,
     doOrigMuscInput=False,
     doOrigSRInput=False,
-    evoType="Evo18",
+    evo_type="Evo18",
     overwrite=True,
     doCPT=True,
     checkPointInterval=5,
     randomInitialState=False,
     doLegacy=False,
     debug=True,
+    RandSeed=929921,
 )
 
 if doOrig:

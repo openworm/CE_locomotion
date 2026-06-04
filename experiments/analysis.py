@@ -168,7 +168,8 @@ for dir in path_list:
     biases_list.append(getValsDict(biases, cell_names))
     taus = getNervousSystemVal(worm_data, "taus")
     taus_list.append(getValsDict(taus, cell_names))
-    worm_vals = getParsDict(worm_data["Worm"], wormPhenoPars[model_name])
+    worm_section = worm_data.get("worm", worm_data.get("Worm", {}))
+    worm_vals = getParsDict(worm_section, wormPhenoPars[model_name])
     if model_name == "CE":
         worm_vals["SR_A_gain"] = worm_data["Stretch receptor"]["SR_A_gain"]["value"]
         worm_vals["SR_B_gain"] = worm_data["Stretch receptor"]["SR_B_gain"]["value"]

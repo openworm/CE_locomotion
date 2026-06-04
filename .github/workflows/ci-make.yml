@@ -58,7 +58,6 @@ jobs:
         pip install numpy matplotlib ruff scipy modelspec
         pip install ipywidgets
         
-
         pip list
 
         which nrnivmodl

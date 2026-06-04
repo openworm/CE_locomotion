@@ -177,6 +177,9 @@ def run(a=None, **kwargs):
     electrical_weights = utils.getNervousSystemConnections(
         network_json_data, "electrical"
     )
+    electrical_weights = utils.collapseReciprocalElectricalConnections(
+        electrical_weights
+    )
 
     doMuscles = a.doMuscles
     if doMuscles:

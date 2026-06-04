@@ -3,5 +3,5 @@ system: Test
 experiments:
     state0:
         expected:
-            spike times: [1.040000e-01]
+            spike times: [0.012, 6.499, 13.315, 20.044, 26.758, 33.47, 40.182, 46.894]
 

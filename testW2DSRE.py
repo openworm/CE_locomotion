@@ -12,6 +12,8 @@ doMuscles = False
 outputFolderName = "testruns/exW2DSRE"
 
 args = dict(
+    duration=24,
+    transient=8,
     simduration=20,
     simtransient=0,
     maxGens=10,
@@ -27,12 +29,13 @@ args = dict(
     overwrite=True,
     doCPT=True,
     checkPointInterval=5,
-    evoType="EvoCE",
+    evo_type="EvoCE",
     doEvol=True,
     doLegacy=False,
     randomInitialState=True,
     SRZeroGainsType=1,
     debug=True,
+    RandSeed=1233,
 )
 
 if doOrig:

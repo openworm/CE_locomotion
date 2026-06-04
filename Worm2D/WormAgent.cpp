@@ -494,7 +494,7 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"MaxDist", "MaxVel", "MaxGauGradHeight", 
 		"ChemDiffConst", "HST", "HSP",
 	"w_CPG_SMBV", "w_CPG_SMBD", "sensorN", "sensorM", "outputGain"

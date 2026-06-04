@@ -2,6 +2,7 @@
 set -ex
 
 quick_test=0
+parallel_jobs_for_make="-j4" # Adjust this based on your system's capabilities
 
 if [[ ($# -eq 1) && ($1 == '-q') ]]; then
     quick_test=1
@@ -20,23 +21,23 @@ make
 # Compile the CE_orientation C++ code
 cd CE_orientation
 make clean
-make
+make 
 cd ..
 
 cd RoyalSociety2018
 make clean
-make
+make 
 cd ..
 
 cd network2021
 make clean
-make
+make 
 cd ..
 
 # Compile the Worm2D C++ code
 cd Worm2D
 make clean
-make
+make ${parallel_jobs_for_make}
 make main_osc
 cd ..
 
@@ -52,6 +53,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSR18 testruns/exW2DSR18_nml testruns/exW2DSR18_nml_musc
     rm -rf testruns/exW2DSR18E
     rm -rf testruns/exW2D18genE
+    rm -rf testruns/exW2DSR18srm
 
     rm -rf exampleRun
     rm -rf exampleRun_nml
@@ -113,7 +115,9 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSR18.omt #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
     omv test -V .test.W2DSR18E.omt #inputFolderName="testruns/exW2D18gen",
     omv test -V .test.W2D18genE.omt
+    omv test -V .test.W2DSR18srm.omt
 
+    
     omv test -V .test.example.omt #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
     omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep

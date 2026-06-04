@@ -3,12 +3,20 @@ from matplotlib import pyplot as plt
 import argparse
 import os
 import math
-from scipy.stats import binned_statistic
 import sys
 from functools import partial
-import ipywidgets as widgets
 import json
 import html
+
+try:
+    from scipy.stats import binned_statistic
+except ImportError:
+    binned_statistic = None
+
+try:
+    import ipywidgets as widgets
+except ImportError:
+    widgets = None
 
 
 dir_name = None
@@ -21,6 +29,16 @@ label_font_size = 14
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
 
+def get_worm2d_version():
+    # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
+    worm2d_h_file = os.path.join(os.path.dirname(__file__), "Worm2D", "Worm2D.h")
+    with open(worm2d_h_file, "r") as f:
+        for line in f:
+            if "W2D_VERSION" in line:
+                return line.split('"')[1]
+    return "Unknown"
+
+
 def short_repr(x, max_len=80):
     text = json.dumps(x, ensure_ascii=False)
     if len(text) > max_len:
@@ -29,6 +47,9 @@ def short_repr(x, max_len=80):
 
 
 def make_json_tree(obj, title="root"):
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON trees")
+
     if isinstance(obj, dict):
         children = []
         titles = []
@@ -83,6 +104,9 @@ def is_simple(value):
 
 
 def json_widget(obj):
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON widgets")
+
     if isinstance(obj, dict):
         children = []
         titles = []
@@ -123,6 +147,8 @@ def json_widget_2(obj, name="root"):
     Recursively display JSON-like Python objects using ipywidgets.
     Supports dicts, lists, strings, numbers, booleans, and None.
     """
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON widgets")
 
     if isinstance(obj, dict):
         children = []
@@ -164,6 +190,21 @@ def get_worm_file():
         worm_file = rename_file("worm_data.json")
 
     return worm_file
+
+
+def get_worm_json(folder_name):
+    """Load worm_data_worm.json from a run directory."""
+    filename = os.path.join(folder_name, "worm_data_worm.json")
+    with open(filename, "r") as f:
+        return json.load(f)
+
+
+def write_worm_json(folder_name, json_data):
+    """Write worm_data_worm.json to a run directory."""
+    os.makedirs(folder_name, exist_ok=True)
+    filename = os.path.join(folder_name, "worm_data_worm.json")
+    with open(filename, "w") as f:
+        json.dump(json_data, f)
 
 
 def checkDictName(dictval, namelist):
@@ -567,6 +608,9 @@ def angle_diff(a, b):
 
 
 def plotHist(ax, x, y):
+    if binned_statistic is None:
+        raise ImportError("scipy is required to plot binned histogram statistics")
+
     bins = 40
     # mean
     # y_mean, bin_edges, _ = binned_statistic(x, y, statistic='mean', bins=bins)

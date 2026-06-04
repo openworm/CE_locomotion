@@ -23,8 +23,8 @@ experiments:
           scaling: [1, 1]
         spike detection: 
           method: threshold
-          threshold: -10.55
-        tolerance: 3.6233196855002795e-05
+          threshold: -12
+        tolerance: 0.000504540867810237
   state54:
     observables:
       spike times:

@@ -1,20 +1,35 @@
-PYTHON_CONFIG ?= python3-config
+ifeq ($(CONDA_PREFIX),)
+    PYTHON ?= python3
+else
+    PYTHON ?= $(CONDA_PREFIX)/bin/python
+endif
 
+PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+PYTHON_LDVERSION := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDVERSION'))")
+PYTHON_LIB := python$(PYTHON_LDVERSION)
 
-#LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-#LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
-#REMOVE=-arch arm64 -arch x86_64
-#REPLACE=
-#CXXFLAGS0 := $(shell $(PYTHON_CONFIG) --embed --cflags)
-#CXXFLAGS := $(subst $(REMOVE),$(REPLACE),$(CXXFLAGS0))
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
+else ifeq ($(UNAME_S),Darwin)
+    RPATH_FLAG = -Wl,-rpath,@loader_path -Wl,-rpath,$(PYTHON_LIB_DIR)
+else
+    $(error Unsupported OS)
+endif
 
-LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --includes)
-LDFLAGS += "-L/opt/homebrew/lib"
-#LDFLAGS += "-L$(brew --prefix nlohmann-json)/lib"
-CXXFLAGS += "-I/opt/homebrew/include"
-#CXXFLAGS += "-I$(brew --prefix nlohmann-json)/include"
+CXXFLAGS := -I$(PYTHON_INCLUDE_DIR)
+LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
+LIBS := -l$(PYTHON_LIB)
+
+LDFLAGS += -L/opt/homebrew/lib
+CXXFLAGS += -I/opt/homebrew/include
+
+# In a conda env, python3-config points -L at the (lib-less) config dir;
+# add the env's actual lib dir to the link path and embed an rpath for runtime.
+ifneq ($(CONDA_PREFIX),)
+    LDFLAGS += -L$(CONDA_PREFIX)/lib -Wl,-rpath,$(CONDA_PREFIX)/lib
+endif
 
 main: info main.o jsonUtils.o argUtils.o Worm.o WormBody.o NervousSystem.o StretchReceptor.o Muscles.o TSearch.o random.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -pthread -o main main.o jsonUtils.o argUtils.o  Worm.o WormBody.o NervousSystem.o c302NervousSystem.o c302ForW2D.o owSignalSimulatorForWorm2D.o owSignalSimulator.o StretchReceptor.o Muscles.o TSearch.o random.o $(LIBS)

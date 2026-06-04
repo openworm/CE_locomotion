@@ -3,6 +3,7 @@ import json
 import os
 import copy
 import re
+import math
 # import helper_funcs as hf
 
 from neuroml import (
@@ -15,6 +16,43 @@ from neuroml import (
 
 NS_NEW = "nervous_system"
 NS_OLD = "Nervous system"
+
+
+def collapseReciprocalElectricalConnections(weights, warn=True):
+    if weights is None:
+        return None
+
+    collapsed = []
+    by_pair = {}
+
+    for connection in weights:
+        pre = connection["from"]
+        post = connection["to"]
+
+        if pre == post:
+            collapsed.append(connection)
+            continue
+
+        pair = tuple(sorted((pre, post)))
+        if pair not in by_pair:
+            by_pair[pair] = len(collapsed)
+            collapsed.append(copy.deepcopy(connection))
+            continue
+
+        existing = collapsed[by_pair[pair]]
+        old_weight = existing["weight"]
+        new_weight = connection["weight"]
+
+        if not math.isclose(old_weight, new_weight, rel_tol=1e-9, abs_tol=1e-12):
+            if warn:
+                print(
+                    "WARNING: reciprocal electrical connection weights differ "
+                    "for %s<->%s: %s and %s; using their average for NML gap junction"
+                    % (pre, post, old_weight, new_weight)
+                )
+            existing["weight"] = 0.5 * (old_weight + new_weight)
+
+    return collapsed
 
 
 def getNervousSystem(network_json_data):
@@ -605,6 +643,11 @@ def getModelName(network_json_data):
         return _value(ns["model_name"])
     if "Model name" in ns:
         return _value(ns["Model name"])
+    worm = network_json_data.get("worm", {})
+    if "main_model_name" in worm:
+        return _value(worm["main_model_name"])
+    if "Main model name" in worm:
+        return _value(worm["Main model name"])
     worm = network_json_data.get("Worm", {})
     if "Main model name" in worm:
         return _value(worm["Main model name"])
@@ -1003,7 +1046,8 @@ def makeMuscCellXml(network_json_data, cellX_filename, cell_names):
 
     print("generating MuscCellXml")
 
-    cell_taus = [network_json_data["Worm"]["T_muscle"]["value"]] * len(cell_names)
+    worm = network_json_data.get("worm", network_json_data.get("Worm", {}))
+    cell_taus = [worm["T_muscle"]["value"]] * len(cell_names)
     cell_states = [0] * len(cell_names)
     # print('taus')
     pop_taus = getVals(pop_names, cell_names, cell_taus)

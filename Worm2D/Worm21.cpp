@@ -291,7 +291,7 @@ vec.push_back({0.0, ESRange});
 vec.push_back({0.0, ESRange});
 
 
-  j["evolvable_ranges"]["value"] = toIntDoubDoub(vec);
+  j["evolvable_ranges"] = toEvolvableRangesJson(vec);
   }
 
 vector<intPair> biasvec, tauvec;
@@ -397,7 +397,7 @@ j["Nervous system"]["Chemical weights"]["evolvable"] = chemvec;
 j["Nervous system"]["Electrical weights"]["evolvable"] = elecvec;
 
 addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
-    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full, true);
     addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
     addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
 
@@ -417,8 +417,8 @@ nmjvecv.push_back({VA,38});
 addEvolvableIP(j["vnc_nmj"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
 addEvolvableIP(j["vnc_nmj"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
-j["vnc_nmj"]["gain_map_d"]["evotag"] = 39;
-j["vnc_nmj"]["gain_map_v"]["evotag"] = 39;
+j["vnc_nmj"]["gain_map_d"]["evotag"] = "evotag_39";
+j["vnc_nmj"]["gain_map_v"]["evotag"] = "evotag_39";
  
 
 j["VNC NMJ"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);

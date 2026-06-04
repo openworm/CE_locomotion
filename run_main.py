@@ -27,7 +27,7 @@ defaults_base_CO = {
     "doRandInit": 0,
     "maxGens": 40,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 defaults_base_celoc = {
@@ -41,7 +41,7 @@ defaults_base_celoc = {
     "doRandInit": 0,
     "maxGens": 10,
     "doMuscSim": 0,
-    "evoType": "EvoCE",
+    "evo_type": "EvoCE",
     "MutVar": 0.05,
     "CrossProb": 0.5,
 }
@@ -57,7 +57,7 @@ defaults_base_2018 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 defaults_base_CO18 = {
@@ -71,7 +71,7 @@ defaults_base_CO18 = {
     "doRandInit": 0,
     "maxGens": 1000,
     "doMuscSim": 0,
-    "evoType": "Evo18",
+    "evo_type": "Evo18",
 }
 
 
@@ -86,7 +86,7 @@ defaults_base_2021 = {
     "doRandInit": 0,
     "maxGens": 2000,
     "doMuscSim": 0,
-    "evoType": "Evo21",
+    "evo_type": "Evo21",
 }
 
 
@@ -111,9 +111,9 @@ DEFAULTS = {
     "maxGens": None,
     "modelName": None,
     "reRand": False,
-    "checkPointInterval": 0,
+    "checkPointInterval": 1,
     "doCPT": True,
-    "evoType": "Evo21",
+    "evo_type": "Evo21",
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
 }
@@ -125,7 +125,10 @@ def process_args():
     :returns: None
     """
     parser = argparse.ArgumentParser(
-        description=("A script for supplying arguments to execute Worm2D")
+        description=(
+            "A script for supplying arguments to execute Worm2D "
+            + hf.get_worm2d_version()
+        )
     )
 
     parser.add_argument(
@@ -143,14 +146,21 @@ def process_args():
 
     parser.add_argument(
         "-ET",
-        "--evoType",
+        "--evo_type",
         type=str,
-        metavar="<evoType>",
-        default=DEFAULTS["evoType"],
+        metavar="<evo_type>",
+        default=DEFAULTS["evo_type"],
         help=(
             "Name of evolution function.\nOptions include: Evo21, Evo18"
             # "Default is: %s" % DEFAULTS["modelName"]
         ),
+    )
+    parser.add_argument(
+        "--evoType",
+        type=str,
+        dest="evo_type",
+        default=argparse.SUPPRESS,
+        help=argparse.SUPPRESS,
     )
 
     parser.add_argument(
@@ -410,15 +420,19 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
     if a is None:
         a = argparse.Namespace()
 
+    provided_args = set(vars(a).keys())
+
     # Add arguments passed in by keyword.
     for key, value in kwargs.items():
         setattr(a, key, value)
+        provided_args.add(key)
 
     # Add defaults for arguments not provided.
     for key, value in DEFAULTS.items():
         if not hasattr(a, key):
             setattr(a, key, value)
 
+    a._provided_args = provided_args
     return a
 
 
@@ -507,23 +521,28 @@ def run(a=None, **kwargs):
             "best.gen.dat",
             "phenotype.dat",
             "best.pheno.dat",
-            "search.cpt",
             "worm_data_evo.json",
             "worm_data_worm.json",
             "genhistory.dat",
-            "cell_Ids.json",
-            "Worm2D.net.nml",
-            "LEMS_Worm2D.xml",
-            "LEMS_Worm2D_nrn.py",
-            "cell_syn_W2D.xml",
-            "cell_syn_W2D_cells.xml",
-            "cell_W2Dosc.xml",
-            "cell_W2Dosc_cells.xml",
-            "syn_W2D.xml",
-            "musc_W2D.xml",
-            "musc_W2D_cells.xml",
-            ".mod",
         ]
+        if a.doCPT:
+            files.append("search.cpt")
+
+        if a.doNML:
+            files += [
+                "cell_Ids.json",
+                "Worm2D.net.nml",
+                "LEMS_Worm2D.xml",
+                "LEMS_Worm2D_nrn.py",
+                "cell_syn_W2D.xml",
+                "cell_syn_W2D_cells.xml",
+                "cell_W2Dosc.xml",
+                "cell_W2Dosc_cells.xml",
+                "syn_W2D.xml",
+                "musc_W2D.xml",
+                "musc_W2D_cells.xml",
+                ".mod",
+            ]
 
         for file in files:
             input_filenames = glob.glob(a.inputFolderName + "/*" + file)
@@ -631,6 +650,23 @@ def run(a=None, **kwargs):
         print("'modelName' parameter is not set, so will use the json file value.\n")
     else:
         model_name = a.modelName
+
+    json_config_files = ["worm_data_worm.json", "worm_data_evo.json", "worm_data.json"]
+    if model_name == "W2DSR" and not any(
+        os.path.isfile(os.path.join(a.outputFolderName, filename))
+        for filename in json_config_files
+    ):
+        searched = ", ".join(
+            os.path.join(a.outputFolderName, filename) for filename in json_config_files
+        )
+        print(
+            "The W2DSR model requires a JSON configuration file, but none was found.\n"
+            f"Searched for: {searched}\n"
+            "Provide an inputFolderName containing worm_data_worm.json, worm_data_evo.json, "
+            "or worm_data.json, or write one of these files to outputFolderName before "
+            "calling run()."
+        )
+        sys.exit(1)
 
     if a.modelFolder in model_names:
         if model_name is None:
@@ -742,7 +778,7 @@ def run(a=None, **kwargs):
         "MaxGenerations",
         "Transient",
         "CheckpointInterval",
-        "EvolutionType",
+        "evo_type",
     ]
 
     evol_args = [
@@ -752,7 +788,7 @@ def run(a=None, **kwargs):
         a.maxGens,
         a.transient,
         a.checkPointInterval,
-        a.evoType,
+        a.evo_type,
     ]
 
     evol_defaults = [
@@ -762,7 +798,7 @@ def run(a=None, **kwargs):
         defaults_base["maxGens"],
         defaults_base["transient"],
         0,
-        defaults_base["evoType"],
+        defaults_base["evo_type"],
     ]
 
     a_replacements = {
@@ -791,14 +827,18 @@ def run(a=None, **kwargs):
         "doLegacy": "do_legacy",
         "initNSFromJson": "init_ns_from_json",
         "inputInd": "input_ind",
+        "evoType": "evo_type",
     }
     legacy_parameter_names = {
         new_key: old_key for old_key, new_key in a_replacements.items()
     }
     for key, val in a_replacements.items():
         if hasattr(a, key):
-            if not hasattr(a, val):
+            if key in a._provided_args or not hasattr(a, val):
                 setattr(a, val, getattr(a, key))
+            if key in a._provided_args:
+                a._provided_args.remove(key)
+                a._provided_args.add(val)
             delattr(a, key)
 
     for new_key, old_key in legacy_parameter_names.items():
@@ -834,6 +874,21 @@ def run(a=None, **kwargs):
                         key
                     ]["value"]
                 elif (
+                    key == "evo_type"
+                    and "evoType" in worm_data["Evolutionary Optimization Parameters"]
+                ):
+                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
+                        "evoType"
+                    ]["value"]
+                elif (
+                    key == "evo_type"
+                    and "EvolutionType"
+                    in worm_data["Evolutionary Optimization Parameters"]
+                ):
+                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
+                        "EvolutionType"
+                    ]["value"]
+                elif (
                     key in legacy_parameter_names
                     and legacy_parameter_names[key]
                     in worm_data["Evolutionary Optimization Parameters"]
@@ -842,7 +897,7 @@ def run(a=None, **kwargs):
                         legacy_parameter_names[key]
                     ]["value"]
                 else:
-                    print("Parameter not found in worm_data.json")
+                    print(f"Parameter {key} not found in worm_data.json")
     elif os.path.isfile(evol_par_file_base):
         with open(evol_par_file_base) as f:
             evol_data = json.load(f)
@@ -851,6 +906,12 @@ def run(a=None, **kwargs):
         if old_key in evol_data:
             if new_key not in evol_data:
                 evol_data[new_key] = evol_data[old_key]
+            del evol_data[old_key]
+
+    for old_key in ["evoType", "EvolutionType"]:
+        if old_key in evol_data:
+            if "evo_type" not in evol_data:
+                evol_data["evo_type"] = evol_data[old_key]
             del evol_data[old_key]
 
     if a.reRand and do_evol and ("randomseed" in evol_data):
@@ -926,7 +987,9 @@ def run(a=None, **kwargs):
         else:
             print(
                 "Simulation not needed as simulation parameters are the same as the existing ones.\n"
-                "Please supply new command line arguments."
+                "Please supply new command line arguments. Setting reRand to true will generate "
+                "a new simulation seed and rerun the simulation. If rand_initial_state is false, "
+                "the nervous-system initial states are still taken from the stored JSON values."
             )
             sys.exit(1)
 
@@ -941,31 +1004,78 @@ def run(a=None, **kwargs):
     # main_cmd = "../main"
     # main_cmd = "/home/adam/uclwork/CE_locomotion/experiments/.main"
 
-    if a.crandSeed is not None:
-        cmd += ["-r", str(a.crandSeed)]
+    if mainProcessName == "main_osc":
+        provided = a._provided_args
+
+        if "crandSeed" in provided and a.crandSeed is not None:
+            cmd += ["-r", str(a.crandSeed)]
+        elif "RandSeed" in provided or ("reRand" in provided and a.reRand):
+            if do_evol:
+                cmd += ["-R", str(evol_data["randomseed"])]
+            else:
+                cmd += ["-R", str(sim_data["seed"])]
+
+        if "popSize" in provided:
+            cmd += ["--population_size", str(evol_data["PopulationSize"])]
+        if "duration" in provided:
+            cmd += ["--duration", str(evol_data["Duration"])]
+        if "transient" in provided:
+            cmd += ["--transient", str(evol_data["Transient"])]
+        if "maxGens" in provided:
+            cmd += ["--max_generations", str(evol_data["MaxGenerations"])]
+        if "simduration" in provided:
+            cmd += ["-sd", str(sim_data["Duration"])]
+        if "simtransient" in provided:
+            cmd += ["-st", str(sim_data["Transient"])]
+        if "doEvol" in provided:
+            cmd += ["--doevol", str(do_evol)]
+        if "checkPointInterval" in provided:
+            cmd += ["--checkpoint_interval", str(evol_data["CheckpointInterval"])]
+        if "doRandInit" in provided:
+            cmd += ["--dorandinit", str(sim_data["doRandInit"])]
+        if "doNML" in provided:
+            cmd += ["--donml", str(sim_data["doNML"])]
+
+        cmd += ["--folder", str(a.outputFolderName)]
+        if "modelName" in provided:
+            cmd += ["--modelname", str(model_name)]
+
+        if "doMuscSim" in provided:
+            cmd += ["--domusc", str(sim_data["doMuscSim"])]
+        if "doCPT" in provided:
+            cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        if "evo_type" in provided:
+            cmd += ["--evo_type", str(a.evo_type)]
     else:
-        if do_evol:
-            cmd += ["-R", str(evol_data["randomseed"])]
+        if a.crandSeed is not None:
+            cmd += ["-r", str(a.crandSeed)]
         else:
-            cmd += ["-R", str(sim_data["seed"])]
+            if do_evol:
+                cmd += ["-R", str(evol_data["randomseed"])]
+            else:
+                cmd += ["-R", str(sim_data["seed"])]
 
-    # cmd += ["-sr", str(sim_data["seed"])]
-    cmd += ["-p", str(evol_data["PopulationSize"])]
-    cmd += ["-d", str(evol_data["Duration"])]
-    cmd += ["-t", str(evol_data["Transient"])]
-    cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
-    cmd += ["-sd", str(sim_data["Duration"])]
-    cmd += ["-st", str(sim_data["Transient"])]
-    cmd += ["--doevol", str(do_evol)]
-    cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
+        # cmd += ["-sr", str(sim_data["seed"])]
+        cmd += ["-p", str(evol_data["PopulationSize"])]
+        cmd += ["-d", str(evol_data["Duration"])]
+        cmd += ["-t", str(evol_data["Transient"])]
+        cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
+        cmd += ["-sd", str(sim_data["Duration"])]
+        cmd += ["-st", str(sim_data["Transient"])]
+        cmd += ["--doevol", str(do_evol)]
+        cmd += ["-cpt", str(evol_data["CheckpointInterval"])]
 
-    cmd += ["--dorandinit", str(sim_data["doRandInit"])]
-    cmd += ["--donml", str(sim_data["doNML"])]
-    cmd += ["--folder", str(a.outputFolderName)]
-    cmd += ["--modelname", str(model_name)]
-    cmd += ["--domusc", str(sim_data["doMuscSim"])]
-    cmd += ["-docpt", str(TFtoInt(a.doCPT))]
-    cmd += ["--evoType", str(a.evoType)]
+        cmd += ["--dorandinit", str(sim_data["doRandInit"])]
+        cmd += ["--donml", str(sim_data["doNML"])]
+        cmd += ["--folder", str(a.outputFolderName)]
+        cmd += ["--modelname", str(model_name)]
+        cmd += ["--domusc", str(sim_data["doMuscSim"])]
+        cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        cmd += ["--evo_type", str(evol_data["evo_type"])]
+
+    print(
+        "\n  Running Worm2D " + hf.get_worm2d_version() + " with the following command:"
+    )
 
     print(cmd)
     # sys.exit(1)
@@ -1021,7 +1131,7 @@ def run(a=None, **kwargs):
 
     if do_nml:
         if a.inputFolderName is not None and a.inputFolderName != a.outputFolderName:
-            files_sub = [".xml", ".nml"]
+            files_sub = [".xml", ".nml", ".mod"]
             files_pre = ["Worm2DNet", "LEMS", "cell_Ids.json"]
 
         input_filenames = []

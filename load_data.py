@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import sys
 import random
+from datetime import datetime
 
 # import argparse
 import os
@@ -27,6 +28,45 @@ def get_evolvable_ranges(network_json_data):
     if "evolvable_ranges" in network_json_data:
         return network_json_data["evolvable_ranges"]
     return network_json_data.get("Evolvable")
+
+
+def normalize_evolvable_range_entries(evolvable_ranges):
+    entries = []
+    if evolvable_ranges is None:
+        return entries
+
+    def evotag_number(evotag):
+        if isinstance(evotag, int):
+            return evotag
+        if isinstance(evotag, str) and evotag.startswith("evotag_"):
+            return int(evotag.replace("evotag_", "", 1))
+        return evotag
+
+    for entry in evolvable_ranges.get("value", []):
+        if "evotag" in entry:
+            entry = dict(entry)
+            entry["evotag"] = evotag_number(entry["evotag"])
+            entries.append(entry)
+            continue
+
+        if len(entry) != 1:
+            continue
+
+        evotag_key, attrs = next(iter(entry.items()))
+
+        attrs = dict(attrs)
+        attrs["evotag"] = evotag_number(evotag_key)
+        entries.append(attrs)
+
+    for evotag_key, attrs in evolvable_ranges.items():
+        if evotag_key == "value" or not isinstance(attrs, dict):
+            continue
+
+        attrs = dict(attrs)
+        attrs["evotag"] = evotag_number(evotag_key)
+        entries.append(attrs)
+
+    return entries
 
 
 sys.path.append("..")
@@ -150,6 +190,14 @@ def sign(val):
     return (val > 0) * 2.0 - 1.0
 
 
+def signed_log(val):
+    val = np.asarray(val)
+    out = np.zeros_like(val, dtype=float)
+    mask = np.isfinite(val) & (val != 0)
+    out[mask] = np.sign(val[mask]) * np.log(np.abs(val[mask]))
+    return out
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -167,11 +215,9 @@ short_phen_names = {
 def getEvolTrans(evol_data):
     evol_data_diff_1 = evol_data / evol_data[0]
     # evol_data_diff_1 = (evol_data - evol_data[0]) / evol_data[0]
-    evol_data_diff_11 = sign(evol_data_diff_1) * np.log(np.abs(evol_data_diff_1))
+    evol_data_diff_11 = signed_log(evol_data_diff_1)
     evol_data_diff_13 = evol_data - evol_data[0]
-    evol_data_diff_131 = sign(evol_data_diff_13[1:]) * np.log(
-        np.abs(evol_data_diff_13[1:])
-    )
+    evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
 
     return [evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
 
@@ -195,11 +241,10 @@ def plot_phenonames(
         "value"
     ]
 
-    evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(
-        evolvable_ranges, ["value", 0, "name"]
-    ):
-        evolvables = evolvable_ranges["value"]
+    evolvables = normalize_evolvable_range_entries(
+        get_evolvable_ranges(network_json_data)
+    )
+    if evolvables and "name" in evolvables[0]:
         phen_names = []
         phen_nums = []
         for val in evolvables:
@@ -241,9 +286,7 @@ def plot_phenonames(
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
     evol_data_full_diff0 = evol_data / evol_data[0]
-    evol_data_full_diff = sign(evol_data_full_diff0) * np.log(
-        np.abs(evol_data_full_diff0)
-    )
+    evol_data_full_diff = signed_log(evol_data_full_diff0)
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
@@ -262,7 +305,7 @@ def plot_phenonames(
 
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
 
-    evol_data_log = sign(evol_data) * np.log(np.abs(evol_data))
+    evol_data_log = signed_log(evol_data)
     evol_data_log = getAvData_1(evol_data_log, avlentop=avlentop)
 
     evol_data_init = evol_data_log[0]
@@ -406,6 +449,7 @@ def plot_phenonames(
                 gridline.set_alpha(0.8)
             axval[row_num, col_num].grid(axis="x")
             axval[row_num, col_num].grid(axis="y")
+            axval[row_num, col_num].axhline(0, color="0.25", linewidth=1.6, zorder=1)
 
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
@@ -648,11 +692,44 @@ def plot_fig_g(
     handles, labels = ax2.get_legend_handles_labels()
 
     ax_leg.axis("off")
-    ax_leg.legend(handles, labels, loc="best", ncol=3, frameon=True)
+    legend_fontsize = 8
+    legend = ax_leg.legend(
+        handles, labels, loc="best", ncol=3, frameon=True, fontsize=legend_fontsize
+    )
+    fig_g.canvas.draw()
+    legend_bbox = legend.get_window_extent(renderer=fig_g.canvas.get_renderer())
+    ax_bbox = ax_leg.get_window_extent(renderer=fig_g.canvas.get_renderer())
+    if legend_bbox.width > ax_bbox.width:
+        legend.remove()
+        ax_leg.legend(
+            handles, labels, loc="best", ncol=2, frameon=True, fontsize=legend_fontsize
+        )
 
     fig_g.savefig(filename1, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename1)
     plt.close()
+
+    if os.path.basename(filename1) == "EvoHist.png":
+        save_evohist_legend_figures(handles, labels, legend_fontsize)
+
+
+def save_evohist_legend_figures(handles, labels, legend_fontsize):
+    for ncols in [3, 4]:
+        fig_leg = plt.figure(figsize=(8, 2.5))
+        ax_leg = fig_leg.add_subplot(111)
+        ax_leg.axis("off")
+        ax_leg.legend(
+            handles,
+            labels,
+            loc="center",
+            ncol=ncols,
+            frameon=True,
+            fontsize=legend_fontsize,
+        )
+        filename = hf.rename_file("EvoHist_legend_%dcol.png" % ncols)
+        fig_leg.savefig(filename, bbox_inches="tight", dpi=300)
+        print("Saved plot image to: %s" % filename)
+        plt.close(fig_leg)
 
 
 def plot_hist(a=None):
@@ -672,11 +749,10 @@ def plot_hist(a=None):
         "value"
     ]
 
-    evolvable_ranges = get_evolvable_ranges(network_json_data)
-    if evolvable_ranges is not None and hf.checkDictName(
-        evolvable_ranges, ["value", 0, "name"]
-    ):
-        evolvables = evolvable_ranges["value"]
+    evolvables = normalize_evolvable_range_entries(
+        get_evolvable_ranges(network_json_data)
+    )
+    if evolvables and "name" in evolvables[0]:
         phen_names = []
         phen_nums = []
         for val in evolvables:
@@ -817,6 +893,17 @@ def plot_evols(a=None, **kwargs):
     mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["ytick.labelsize"] = 12
 
+    gen_file = getFileName("genhistory.dat")
+    fit_file = getFileName("fitness.dat")
+    if gen_file is None or fit_file is None:
+        return
+    if len(hf.load_nonragged_arrays(gen_file)) == 0:
+        print("No evolution history data found; skipping evolution plots.")
+        return
+    if len(hf.load_nonragged_arrays(fit_file)) == 0:
+        print("No fitness history data found; skipping evolution plots.")
+        return
+
     plot_hist(a=a)
     plot_fit()
     plot_phenonames(a=a)
@@ -859,6 +946,11 @@ def reload_single_run(a=None, **kwargs):
     else:
         plot_format = utils.plot_formats[a.modelName]
 
+    def imshow_time_extent(t_values, row_count):
+        if len(t_values) == 0:
+            return [0, 0, 0, row_count]
+        return [t_values[0], t_values[-1], 0, row_count]
+
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
 
     """ step_size = network_json_data["Evolutionary Optimization Parameters"]["StepSize"][
@@ -900,19 +992,13 @@ def reload_single_run(a=None, **kwargs):
         # plt.legend()
 
         data_list = act_data[data_offset : data_size + data_offset, data_seg]
-        dy = 1
-        dx = t_data[1] - t_data[0]
+        t_plot = t_data[data_seg]
         # axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[plot_num, 1].imshow(
             data_list,
             aspect="auto",
             interpolation="nearest",
-            extent=[
-                0,
-                data_list.shape[1] * dx,
-                0,
-                data_list.shape[0] * dy,
-            ],
+            extent=imshow_time_extent(t_plot, data_list.shape[0]),
         )
 
         # axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
@@ -963,19 +1049,12 @@ def reload_single_run(a=None, **kwargs):
         curv_data_less_time = curv_data[1:, data_seg]
         t_data = t_data[data_seg]
 
-        dy = 1
-        dx = t_data[1] - t_data[0]
         axs[count_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[count_num, 1].imshow(
             curv_data_less_time,
             aspect="auto",
             interpolation="nearest",
-            extent=[
-                0,
-                curv_data_less_time.shape[1] * dx,
-                0,
-                curv_data_less_time.shape[0] * dy,
-            ],
+            extent=imshow_time_extent(t_data, curv_data_less_time.shape[0]),
         )
         if False:
             axs[count_num, 1].set_xticks(np.linspace(0, len(data_seg), 8))
@@ -1025,6 +1104,23 @@ def reload_single_run(a=None, **kwargs):
         wcon = {}
         wcon["data"] = []
 
+        wcon["units"] = {
+            "t": "s",
+            "x": "mm",
+            "y": "mm",
+        }
+
+        wcon["metadata"] = {
+            "timestamp": datetime.now().isoformat(),
+            "protocol": [
+                "Simulation of worm behaviour by Worm2D",
+            ],
+            "software": {
+                "name": "Worm2D",
+                "version": hf.get_worm2d_version(),
+            },
+        }
+
         dd = {}
         wcon["data"].append(dd)
         dd["id"] = "test"
@@ -1035,7 +1131,7 @@ def reload_single_run(a=None, **kwargs):
 
         fig_body, ax_body = plt.subplots(figsize=(5, 5))
 
-        for t in range(1, tmax, int(tmax / num)):
+        for t in range(1, tmax, max(1, int(tmax / num))):
             f = float(t) / tmax
 
             dd["t"].append(body_data[0][t])
@@ -1100,6 +1196,7 @@ def reload_single_run(a=None, **kwargs):
 
         ax_body.set_xlabel("X Position (mm)", fontsize=label_font_size)
         ax_body.set_ylabel("Y Position (mm)", fontsize=label_font_size)
+        ax_body.set_aspect("equal")
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
         fig_body.savefig(filename, bbox_inches="tight", dpi=300)

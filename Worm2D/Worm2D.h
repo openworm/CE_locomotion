@@ -19,6 +19,8 @@
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
 
+const string W2D_VERSION = "v0.1.0";
+
 //class SRCE;
 
 void setEvoStr(vector<string> & vecval, const vector<string> & evoName);
@@ -67,9 +69,10 @@ class baseParameters
     void setValCJ(const string & name_str, const T & val, const string & bstr)
     {
         const string key_str = snakeCaseKey(name_str);
-        if (!newSetVals.contains(bstr)) newSetVals[bstr] = json::object();
-        if (!newSetVals.at(bstr).contains(key_str)) newSetVals[bstr][key_str] =  json::object();
-        newSetVals[bstr][key_str]["value"] = val;
+        const string section_str = canonicalSectionKey(bstr);
+        if (!newSetVals.contains(section_str)) newSetVals[section_str] = json::object();
+        if (!newSetVals.at(section_str).contains(key_str)) newSetVals[section_str][key_str] =  json::object();
+        newSetVals[section_str][key_str]["value"] = val;
 
         addValToJson(name_str,val,bstr);
     }
@@ -79,18 +82,49 @@ class baseParameters
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
         const string key_str = snakeCaseKey(name_str);
+        const string section_str = canonicalSectionKey(bstr);
+        const string legacy_section_str = legacySectionKey(section_str);
        
 
-        if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(key_str))
+        if (newSetVals.contains(section_str) && newSetVals.at(section_str).contains(key_str))
         {
              //cout << "hdjs ns " << name_str << " " << val << endl;
-            val = newSetVals[bstr][key_str].at("value").get<T>();
+            val = newSetVals[section_str][key_str].at("value").get<T>();
             return true;
         }
 
-        if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
+        if (newSetVals.contains(section_str) && newSetVals.at(section_str).contains(name_str))
         {
-            val = newSetVals[bstr][name_str].at("value").get<T>();
+            val = newSetVals[section_str][name_str].at("value").get<T>();
+            return true;
+        }
+
+        const string legacy_key_str = legacyKeyForSnake(key_str);
+        if (!legacy_key_str.empty() &&
+            newSetVals.contains(section_str) && newSetVals.at(section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[section_str][legacy_key_str].at("value").get<T>();
+            return true;
+        }
+
+        if (legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(key_str))
+        {
+            val = newSetVals[legacy_section_str][key_str].at("value").get<T>();
+            return true;
+        }
+
+        if (legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(name_str))
+        {
+            val = newSetVals[legacy_section_str][name_str].at("value").get<T>();
+            return true;
+        }
+
+        if (!legacy_key_str.empty() && legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[legacy_section_str][legacy_key_str].at("value").get<T>();
             return true;
         }
 
@@ -99,7 +133,8 @@ class baseParameters
             //cout << "hdjs cmd " << name_str << " " << val << endl;
 
          if( BPitsCmdArgs->getArgValT<T>("--" + key_str, val)
-             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)
+             || (!legacy_key_str.empty() && BPitsCmdArgs->getArgValT<T>("--" + legacy_key_str, val))) 
         {
               //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
@@ -107,10 +142,20 @@ class baseParameters
         }
     }
 
-        if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
+        if (!BPitsJson.empty() && BPitsJson.contains(section_str)) 
         {
-            if (getJsonValTF<T>(BPitsJson.at(bstr), key_str, val, true)) return true;
-            if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(section_str), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(section_str), legacy_key_str, val, true)) return true;
+        }
+
+        if (!BPitsJson.empty() && legacy_section_str != section_str && BPitsJson.contains(legacy_section_str)) 
+        {
+            if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(legacy_section_str), legacy_key_str, val, true)) return true;
         }
 
        
@@ -220,6 +265,7 @@ class baseParameters
         defaultVals_["init_ns_from_json"] = true;
         defaultVals_["input_ind"] = -1;
         defaultVals_["debug"] = false;
+        defaultVals_["evo_type"] = "Evo21";
 
        return defaultVals_;
     }
@@ -229,12 +275,26 @@ class baseParameters
     {
         const string key_str = snakeCaseKey(name_str);
         const string legacy_key_str = legacyKeyForSnake(key_str);
-        if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
-        //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
-        if (!BPitsJson.at(bstr).contains(key_str)) BPitsJson[bstr][key_str] = json::object();
-        BPitsJson[bstr][key_str]["value"] = val;
-        if (name_str != key_str) BPitsJson[bstr].erase(name_str);
-        if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[bstr].erase(legacy_key_str);
+        const string section_str = canonicalSectionKey(bstr);
+        const string legacy_section_str = legacySectionKey(section_str);
+        if (!BPitsJson.contains(section_str)) BPitsJson[section_str] = json::object();
+        if (!BPitsJson.at(section_str).contains(key_str)) BPitsJson[section_str][key_str] = json::object();
+        BPitsJson[section_str][key_str]["value"] = val;
+        if (name_str != key_str) BPitsJson[section_str].erase(name_str);
+        if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[section_str].erase(legacy_key_str);
+        if (legacy_section_str != section_str && BPitsJson.contains(legacy_section_str))
+        {
+            if (BPitsJson.at(legacy_section_str).is_object())
+            {
+                json merged = BPitsJson.at(legacy_section_str);
+                merged.update(BPitsJson.at(section_str));
+                BPitsJson[section_str] = merged;
+                BPitsJson[section_str][key_str]["value"] = val;
+                BPitsJson[section_str].erase(name_str);
+                if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[section_str].erase(legacy_key_str);
+            }
+            BPitsJson.erase(legacy_section_str);
+        }
     }
 
    /*  void addParsToJson(json & j)
@@ -259,6 +319,7 @@ class baseParameters
     void removeLegacyParameterKeys(json & j) const
     {
         if (!j.is_object()) return;
+        mergeLegacySection(j, "worm", "Worm");
         for (auto section = j.begin(); section != j.end(); ++section)
         {
             if (!section.value().is_object()) continue;
@@ -275,6 +336,52 @@ class baseParameters
                 }
             }
         }
+    }
+
+    static string canonicalSectionKey(const string & section)
+    {
+        if (section == "Worm") return "worm";
+        return section;
+    }
+
+    static string legacySectionKey(const string & section)
+    {
+        if (section == "worm") return "Worm";
+        return section;
+    }
+
+    static const json & getSectionWithLegacy(const json & j, const string & section)
+    {
+        const string section_str = canonicalSectionKey(section);
+        if (j.contains(section_str)) return j.at(section_str);
+        const string legacy_section_str = legacySectionKey(section_str);
+        return j.at(legacy_section_str);
+    }
+
+    static json getSectionCopyWithLegacy(const json & j, const string & section)
+    {
+        const string section_str = canonicalSectionKey(section);
+        const string legacy_section_str = legacySectionKey(section_str);
+        json out = json::object();
+        if (legacy_section_str != section_str && j.contains(legacy_section_str)
+            && j.at(legacy_section_str).is_object())
+            out.update(j.at(legacy_section_str));
+        if (j.contains(section_str) && j.at(section_str).is_object())
+            out.update(j.at(section_str));
+        return out;
+    }
+
+    static void mergeLegacySection(json & j, const string & section, const string & legacy_section)
+    {
+        if (!j.is_object() || !j.contains(legacy_section)) return;
+        if (!j.contains(section)) j[section] = json::object();
+        if (j.at(section).is_object() && j.at(legacy_section).is_object())
+        {
+            json merged = j.at(legacy_section);
+            merged.update(j.at(section));
+            j[section] = merged;
+        }
+        j.erase(legacy_section);
     }
 
     static string snakeCaseKey(const string & name)
@@ -350,6 +457,7 @@ class baseParameters
         if (key == "do_legacy") return "doLegacy";
         if (key == "init_ns_from_json") return "initNSFromJson";
         if (key == "input_ind") return "inputInd";
+        if (key == "evo_type") return "evoType";
         return "";
     }
 
@@ -397,8 +505,8 @@ struct wormIzqParams
     const doubIntParamsHead getParams() const
     {
         doubIntParamsHead var1;
-        var1.parDoub.head = "Worm";
-        var1.parInt.head = "Worm";
+        var1.parDoub.head = "worm";
+        var1.parInt.head = "worm";
         var1.parDoub.names = {"T_muscle"};
         var1.parDoub.vals = {T_muscle};
         var1.parInt.names = {"N_neuronsperunit", "N_muscles", "N_units", "N_size"};
@@ -835,6 +943,7 @@ class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
     void setMuscBodExt(const json & j);
 
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();

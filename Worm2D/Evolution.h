@@ -77,6 +77,7 @@ class EvoBase
     simPars setSimPars(shared_ptr<const CmdArgs> cmd);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
+    evoPars getEffectiveEvoParsForJson() const;
 
     void setUp();
     
@@ -277,7 +278,8 @@ template<class T>
 shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const CmdArgs> cmd_, 
     shared_ptr<T> evol1T_, shared_ptr<const json> json_ptr_)
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    string evotype_;
+    evol1T_->template getValCJEvo<string>("evo_type", evotype_);
     //const string & evotype_ = evoPars1.evoType;
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
@@ -328,7 +330,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 /* evoPars Evolvable_ptr::getDefaultEvoPars(int argc, const char* argv[]) 
 {
 
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    string evotype_ = getParameterString(argc,argv,"--evo_type","Evo21");
     return getDefaultEvoPars(evotype_); 
 
 } */
@@ -344,22 +346,22 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
     
     if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.02, 1, 1, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
 
     assert(0 && "evotype not implemented");
 
@@ -368,8 +370,60 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
 template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shared_ptr<T> evol1) 
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
-    return getDefaultEvoPars(evotype_,evol1);    
+    string evotype_;
+    evol1->template getValCJEvo<string>("evo_type", evotype_);
+    evoPars ep1 = getDefaultEvoPars(evotype_,evol1);
+    const json & j = evol1->itsBPjson();
+    if (j.contains("Evolutionary Optimization Parameters"))
+    {
+        const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        int int_val;
+        getJsonValTF<long>(j_evo, "randomseed", ep1.randomseed, true);
+        if (getJsonValTF<int>(j_evo, "selection_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "SelectionMode", int_val, true))
+            ep1.SelectionMode = static_cast<TSelectionMode>(int_val);
+        if (getJsonValTF<int>(j_evo, "reproduction_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReproductionMode", int_val, true))
+            ep1.ReproductionMode = static_cast<TReproductionMode>(int_val);
+        getJsonValTF<int>(j_evo, "population_size", ep1.PopulationSize, true) ||
+        getJsonValTF<int>(j_evo, "PopulationSize", ep1.PopulationSize, true);
+        getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
+        getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
+        getJsonValTF<double>(j_evo, "mutation_variance", ep1.MutationVariance, true) ||
+        getJsonValTF<double>(j_evo, "MutationVariance", ep1.MutationVariance, true);
+        getJsonValTF<double>(j_evo, "crossover_probability", ep1.CrossoverProbability, true) ||
+        getJsonValTF<double>(j_evo, "CrossoverProbability", ep1.CrossoverProbability, true);
+        if (getJsonValTF<int>(j_evo, "crossover_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "CrossoverMode", int_val, true))
+            ep1.CrossoverMode = static_cast<TCrossoverMode>(int_val);
+        getJsonValTF<double>(j_evo, "max_expected_offspring", ep1.MaxExpectedOffspring, true) ||
+        getJsonValTF<double>(j_evo, "MaxExpectedOffspring", ep1.MaxExpectedOffspring, true);
+        getJsonValTF<double>(j_evo, "elitist_fraction", ep1.ElitistFraction, true) ||
+        getJsonValTF<double>(j_evo, "ElitistFraction", ep1.ElitistFraction, true);
+        getJsonValTF<int>(j_evo, "search_constraint", ep1.SearchConstraint, true) ||
+        getJsonValTF<int>(j_evo, "SearchConstraint", ep1.SearchConstraint, true);
+        getJsonValTF<int>(j_evo, "checkpoint_interval", ep1.CheckpointInterval, true) ||
+        getJsonValTF<int>(j_evo, "CheckpointInterval", ep1.CheckpointInterval, true);
+        if (getJsonValTF<int>(j_evo, "re_evaluation_flag", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReEvaluationFlag", int_val, true))
+            ep1.ReEvaluationFlag = static_cast<bool>(int_val);
+        getJsonValTF<int>(j_evo, "skip_steps", ep1.skip_steps, true);
+        getJsonValTF<double>(j_evo, "duration", ep1.Duration, true) ||
+        getJsonValTF<double>(j_evo, "Duration", ep1.Duration, true);
+        getJsonValTF<double>(j_evo, "transient", ep1.Transient, true) ||
+        getJsonValTF<double>(j_evo, "Transient", ep1.Transient, true);
+        getJsonValTF<double>(j_evo, "step_size", ep1.StepSize, true) ||
+        getJsonValTF<double>(j_evo, "StepSize", ep1.StepSize, true);
+        getJsonValTF<int>(j_evo, "n_curvs", ep1.N_curvs, true) ||
+        getJsonValTF<int>(j_evo, "N_curvs", ep1.N_curvs, true);
+        getJsonValTF<int>(j_evo, "vect_size_temo", ep1.VectSize_temo, true) ||
+        getJsonValTF<int>(j_evo, "VectSize_temo", ep1.VectSize_temo, true);
+        getJsonValTF<string>(j_evo, "fileprefix", ep1.fileprefix, true);
+        getJsonValTF<string>(j_evo, "evo_type", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "evoType", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "EvolutionType", ep1.evoType, true);
+    }
+    return ep1;    
 }
 
 

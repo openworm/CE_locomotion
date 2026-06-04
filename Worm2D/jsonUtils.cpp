@@ -41,6 +41,31 @@ static void getLimitPair(const json & j, double & lowerLimit, double & upperLimi
     j.at("val2").get_to(upperLimit);
 }
 
+static string makeEvotagString(int evotag)
+{
+  return "evotag_" + to_string(evotag);
+}
+
+static bool parseEvotagNumber(const json & j, int & evotag)
+{
+  if (j.is_number_integer()) {
+    evotag = j.get<int>();
+    return true;
+  }
+
+  if (!j.is_string()) return false;
+
+  const string tag = j.get<string>();
+  const string prefix = "evotag_";
+  if (tag.find(prefix) != 0) return false;
+  const string num = tag.substr(prefix.size());
+  if (num.empty()) return false;
+  for (char c : num)
+    if (!isdigit(static_cast<unsigned char>(c))) return false;
+  evotag = stoi(num);
+  return true;
+}
+
 template<class T>
 static Params<T> normaliseParamNames(Params<T> par)
 {
@@ -322,6 +347,28 @@ for (const string& s : names)
 return max_count;
 }
 
+static int getMaxReciprocalCounts(const json & j, const vector<string> & names)
+{
+  unordered_map<string, int> counts;
+
+  for (const string& s : names) counts[s] = 0;
+  for(auto it = j.begin(); it != j.end(); ++it)
+  {
+    auto from_it = counts.find(it->at("from"));
+    if (from_it != counts.end()) from_it->second++;
+
+    auto to_it = counts.find(it->at("to"));
+    if (to_it != counts.end()) to_it->second++;
+  }
+
+  int max_count = 0;
+
+  for (const string& s : names)
+    if (counts[s] > max_count) max_count = counts[s];
+
+  return max_count;
+}
+
 
 
 json getJsonFromFile(const string & jsonfile_)
@@ -362,6 +409,46 @@ vector<toFromWeight> meanDupes(vector<toFromWeight> v1)
   }
 
   return v3;
+}
+
+static vector<toFromWeight> collapseReciprocalToFromWeights(const vector<toFromWeight> & weights)
+{
+  vector<toFromWeight> collapsed;
+  vector<int> counts;
+
+  for (const toFromWeight & val : weights)
+  {
+    int from = min(val.w.from, val.to);
+    int to = max(val.w.from, val.to);
+
+    bool found = false;
+    for (size_t i = 0; i < collapsed.size(); ++i)
+    {
+      if (collapsed[i].w.from == from && collapsed[i].to == to)
+      {
+        if (fabs(collapsed[i].w.weight - val.w.weight) > 1e-12)
+        {
+          cout << "WARNING: reciprocal electrical connection weights differ for "
+               << from << "<->" << to << ": " << collapsed[i].w.weight
+               << " and " << val.w.weight
+               << "; using their average in JSON output" << endl;
+        }
+        collapsed[i].w.weight =
+          (collapsed[i].w.weight * counts[i] + val.w.weight) / (counts[i] + 1);
+        counts[i]++;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+    {
+      collapsed.push_back(toFromWeight(to, from, val.w.weight));
+      counts.push_back(1);
+    }
+  }
+
+  return collapsed;
 }
 
 
@@ -562,11 +649,54 @@ void from_json(const json& j, toFromWeight & w)
 
 void to_json(json & j, const intDoubDoub & w)
 {
-  j = json{{"evotag", w.ind}, {"lower_limit", w.val1}, {"upper_limit", w.val2}};
+  j = json{{"evotag", w.tag.empty() ? makeEvotagString(w.ind) : w.tag},
+           {"lower_limit", w.val1}, {"upper_limit", w.val2}};
+}
+
+json toEvolvableRangesJson(const vector<intDoubDoub> & ranges)
+{
+  json j = json::object();
+  for (int i=0;i<ranges.size();i++)
+  {
+    const string tag = ranges[i].tag.empty()
+      ? makeEvotagString(ranges[i].ind)
+      : ranges[i].tag;
+    j[tag] = {{"lower_limit", ranges[i].val1}, {"upper_limit", ranges[i].val2}};
+  }
+  return j;
+}
+
+json toEvolvableRangesJson(const vector<doubDoub> & ranges)
+{
+  json j = json::object();
+  for (int i=0;i<ranges.size();i++)
+    j[makeEvotagString(i+1)] = {{"lower_limit", ranges[i].val1},
+      {"upper_limit", ranges[i].val2}};
+  return j;
 }
 
 void from_json(const json& j, intDoubDoub & w) 
 {
+        if (j.contains("evotag")) {
+          if (!parseEvotagNumber(j.at("evotag"), w.ind)) w.ind = 0;
+          w.tag = j.at("evotag").is_string()
+            ? j.at("evotag").get<string>()
+            : makeEvotagString(w.ind);
+          getLimitPair(j, w.val1, w.val2);
+          return;
+        }
+
+        if (j.is_object() && j.size() == 1) {
+          const auto it = j.begin();
+          w.tag = it.key();
+          json tagJson = it.key();
+          if (!parseEvotagNumber(tagJson, w.ind)) w.ind = 0;
+          if (it->is_object()) {
+            getLimitPair(*it, w.val1, w.val2);
+            return;
+          }
+        }
+
         j.at("evotag").get_to(w.ind);
         getLimitPair(j, w.val1, w.val2);
 }
@@ -585,8 +715,11 @@ void from_json(const json& j, doubDoub & w)
 vector<intPair> from_evo_json(const json& j)
 {
 vector<intPair> w;
-for(auto it = j.begin(); it != j.end(); ++it)
-  w.push_back({it->at("ind").get<int>(),it->at("evotag").get<int>()});
+for(auto it = j.begin(); it != j.end(); ++it) {
+  int evotag = 0;
+  parseEvotagNumber(it->at("evotag"), evotag);
+  w.push_back({it->at("ind").get<int>(), evotag});
+}
 
 return w;
 
@@ -595,7 +728,7 @@ return w;
 json to_evo_json(const vector<intPair> & w)
 {
 json j = json::array();
-for (int i=0;i<w.size();i++) j.push_back({{"ind", w[i].ind}, {"evotag", w[i].val}});
+for (int i=0;i<w.size();i++) j.push_back({{"ind", w[i].ind}, {"evotag", makeEvotagString(w[i].val)}});
 return j;
 }
 
@@ -613,14 +746,14 @@ void from_json(const json& j, intPair & w)
 
 void to_json(json & j, const fromToInt & w)
 {
-  j = json{{"to", w.to},  {"from", w.from},  {"evotag", w.val}};
+  j = json{{"to", w.to},  {"from", w.from},  {"evotag", makeEvotagString(w.val)}};
 }
 
 void from_json(const json& j, fromToInt & w) 
 {
         j.at("to").get_to(w.to);
         j.at("from").get_to(w.from);
-        j.at("evotag").get_to(w.val);
+        parseEvotagNumber(j.at("evotag"), w.val);
 }
 
 
@@ -922,7 +1055,7 @@ void addEvolvableIP(json & j, vector<intPair> & vec, const string & parameter,
     if (!j.is_object()) j = json::object();
     if (!j.contains(name)) j[name] = json::object();
     if (!j.at(name).contains(parameter)) j[name][parameter] = json::object();
-    j[name][parameter]["evotag"] = val.val;
+    j[name][parameter]["evotag"] = makeEvotagString(val.val);
     }
     
 }
@@ -949,7 +1082,8 @@ void addMfuncTFI(json & j, const fromToInt & val, const vector<string> & cell_na
 }
 
 
-void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full)
+void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<string> & cell_names_full,
+  bool reciprocal)
 {
 
   //if (!j.contains("nervous_system")) return;
@@ -961,10 +1095,23 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
   bool found = false;
   for (auto it = j.begin(); it != j.end(); ++it)
   {
-  if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1]) 
+  bool same_direction =
+    it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.from-1];
+  bool reciprocal_direction =
+    reciprocal && it->at("to")==cell_names_full[val.from-1] && it->at("from")==cell_names_full[val.to-1];
+  if (same_direction || reciprocal_direction)
   {
-   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = val.val; 
-   else (*it)["weight"]["evotag"] = val.val;
+   if (reciprocal_direction
+     && it->at("weight").contains("evotag")
+     && it->at("weight").at("evotag") != makeEvotagString(val.val))
+   {
+    cout << "WARNING: reciprocal electrical connection evotags differ for "
+         << cell_names_full[val.from-1] << "<->" << cell_names_full[val.to-1]
+         << ": " << it->at("weight").at("evotag") << " and " << makeEvotagString(val.val)
+         << "; using the latter in JSON output" << endl;
+   }
+   if (it->at("weight").contains("evotag")) it->at("weight").at("evotag") = makeEvotagString(val.val); 
+   else (*it)["weight"]["evotag"] = makeEvotagString(val.val);
    found = true;
    break; 
   }
@@ -975,7 +1122,7 @@ void addEvolvableTFI(json & j, const vector<fromToInt> & vec, const vector<strin
     jconn["to"] = cell_names_full[val.to-1];
     jconn["from"] = cell_names_full[val.from-1];
     jconn["weight"]["value"] = 0.0;
-    jconn["weight"]["evotag"] = val.val;
+    jconn["weight"]["evotag"] = makeEvotagString(val.val);
     j.push_back(jconn);
   }
   }
@@ -989,7 +1136,7 @@ void setCircuitSize(const json & j, NervousSystem& n)
   assert(j.contains("cell_names"));
   vector<string>  names = j["cell_names"]["value"].template get< vector<string> >();
   int maxchem = getMaxCounts(j["chemical_conns"]["value"], names, "to");
-  int maxelec = getMaxCounts(j["electrical_conns"]["value"], names, "to");
+  int maxelec = getMaxReciprocalCounts(j["electrical_conns"]["value"], names);
 
   n.SetCircuitSize(names.size(), maxchem, maxelec);
 
@@ -1071,25 +1218,39 @@ for (int i=0;i<cell_names_full.size();i++)
   }
 
 
-  {vector<toFromWeight> elec_wei = getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size);
+  {vector<toFromWeight> elec_wei = collapseReciprocalToFromWeights(
+    getNSToFromVec(n.electricalweights, n.NumElectricalConns, n.size));
   if (!j2.contains("electrical_conns")) j2["electrical_conns"] = json::object();
   if (!j2["electrical_conns"].contains("value")) j2["electrical_conns"]["value"] = json::array();
 
-  json & j22 = j2.at("electrical_conns").at("value");
+  json old_conns = j2.at("electrical_conns").at("value");
+  json new_conns = json::array();
   for (const toFromWeight& val : elec_wei)
   {
-    bool found = false;
-    for (auto it = j22.begin(); it != j22.end(); ++it)
-        if (it->at("to")==cell_names_full[val.to-1] && it->at("from")==cell_names_full[val.w.from-1])
-      {it->at("weight").at("value")=val.w.weight;found = true;break;}
-      if (found) continue;
-  json j = json::object();
-  j["to"] = cell_names_full[val.to-1];
-  j["from"] = cell_names_full[val.w.from-1];
-  j["weight"] =  json::object();
-  j["weight"]["value"] = val.w.weight;
-  j22.push_back(j);
+    const string & from_name = cell_names_full[val.w.from-1];
+    const string & to_name = cell_names_full[val.to-1];
+
+    json j = json::object();
+    for (auto it = old_conns.begin(); it != old_conns.end(); ++it)
+    {
+      bool same_direction =
+        it->at("to") == to_name && it->at("from") == from_name;
+      bool reciprocal_direction =
+        it->at("to") == from_name && it->at("from") == to_name;
+      if (same_direction || reciprocal_direction)
+      {
+        j = *it;
+        break;
+      }
+    }
+
+    j["to"] = to_name;
+    j["from"] = from_name;
+    if (!j.contains("weight")) j["weight"] = json::object();
+    j["weight"]["value"] = val.w.weight;
+    new_conns.push_back(j);
   }
+  j2["electrical_conns"]["value"] = new_conns;
   }
 
   
@@ -1467,7 +1628,9 @@ void evoPars::addParsToJson(json &j) const
          ReEvaluationFlag, skip_steps, N_curvs, VectSize_temo};
     for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
-      {vector<string> names = {"fileprefix", "evoType"};
+      j.erase("evoType");
+      j.erase("EvolutionType");
+      {vector<string> names = {"fileprefix", "evo_type"};
       vector<string> vals = {fileprefix, evoType};
        for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
@@ -1524,6 +1687,27 @@ CheckpointInterval = cmd->getArgValInt("-cpt", CheckpointInterval);
 Duration = cmd->getArgValDoub("-d", Duration);
 Transient = cmd->getArgValDoub("-t", Transient);
 evoType = cmd->getArgVal("--evoType", evoType);
+evoType = cmd->getArgVal("--evo_type", evoType);
+
+SelectionMode = static_cast<TSelectionMode>(cmd->getArgValInt("--selection_mode", SelectionMode));
+ReproductionMode = static_cast<TReproductionMode>(cmd->getArgValInt("--reproduction_mode", ReproductionMode));
+PopulationSize = cmd->getArgValInt("--population_size", PopulationSize);
+MaxGenerations = cmd->getArgValInt("--max_generations", MaxGenerations);
+MutationVariance = cmd->getArgValDoub("--mutation_variance", MutationVariance);
+CrossoverProbability = cmd->getArgValDoub("--crossover_probability", CrossoverProbability);
+CrossoverMode = static_cast<TCrossoverMode>(cmd->getArgValInt("--crossover_mode", CrossoverMode));
+MaxExpectedOffspring = cmd->getArgValDoub("--max_expected_offspring", MaxExpectedOffspring);
+ElitistFraction = cmd->getArgValDoub("--elitist_fraction", ElitistFraction);
+SearchConstraint = cmd->getArgValInt("--search_constraint", SearchConstraint);
+CheckpointInterval = cmd->getArgValInt("--checkpoint_interval", CheckpointInterval);
+ReEvaluationFlag = static_cast<bool>(cmd->getArgValInt("--re_evaluation_flag", ReEvaluationFlag));
+skip_steps = cmd->getArgValInt("--skip_steps", skip_steps);
+Duration = cmd->getArgValDoub("--duration", Duration);
+Transient = cmd->getArgValDoub("--transient", Transient);
+StepSize = cmd->getArgValDoub("--step_size", StepSize);
+N_curvs = cmd->getArgValInt("--n_curvs", N_curvs);
+VectSize_temo = cmd->getArgValInt("--vect_size_temo", VectSize_temo);
+fileprefix = cmd->getArgVal("--fileprefix", fileprefix);
 
 if (seed_flag){ 
   long randomseed1 = cmd->getArgValLong("-R",-1);
@@ -1536,6 +1720,8 @@ if (seed_flag){
   if (randomseed1!=-1)
   {seed_flag = 0;randomseed = randomseed1 + static_cast<long>(time(NULL));}
 }
+
+randomseed = cmd->getArgValLong("--randomseed", randomseed);
 
 
 }
@@ -1583,7 +1769,8 @@ void evoPars::setFromArgs(int argc, const char* argv[])
     if (strcmp(argv[arg],"-d")==0) Duration = stod(argv[arg+1]);
     if (strcmp(argv[arg],"-t")==0) Transient = stod(argv[arg+1]);
     if (strcmp(argv[arg],"-cpt")==0) CheckpointInterval = stoi(argv[arg+1]);
-    if (strcmp(argv[arg],"--evoType")==0) evoType = (string) argv[arg+1];
+    if (strcmp(argv[arg],"--evoType")==0 || strcmp(argv[arg],"--evo_type")==0)
+      evoType = (string) argv[arg+1];
     
 
     //cout << "doCPT " << doCPT << endl;

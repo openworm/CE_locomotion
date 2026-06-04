@@ -15,6 +15,6 @@ run(
     overwrite=True,
     checkPointInterval=5,
     reRand=True,
-    evoType="EvoCO",
+    evo_type="EvoCO",
     doTestRun=True,
 )
