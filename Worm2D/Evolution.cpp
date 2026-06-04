@@ -4,11 +4,106 @@
 #include <sys/stat.h>
 //#include <stdio.h>
 #include <iostream>
+#include <set>
 
 
 
 string EvoBase::rename_file(string filename){return evoPars1.directoryName + "/" + 
     evoPars1.fileprefix + filename;}
+
+bool fileExistsForEvolution(const string & filename)
+{
+    struct stat buffer;
+    return stat(filename.c_str(), &buffer) == 0;
+}
+
+string makeEvolutionEvotagString(int evotag)
+{
+    return "evotag_" + to_string(evotag);
+}
+
+string evotagJsonToString(const json & j)
+{
+    if (j.is_string()) return j.get<string>();
+    if (j.is_number_integer()) return makeEvolutionEvotagString(j.get<int>());
+    if (j.is_number()) return makeEvolutionEvotagString(static_cast<int>(j.get<double>()));
+    return "";
+}
+
+bool evolvableRangeEntryIsActive(const json & body)
+{
+    if (!body.is_object()) return true;
+    if (!body.contains("active")) return true;
+    return body.at("active").get<bool>();
+}
+
+void addActiveEvotagFromRangeEntry(const json & entry, vector<string> & tags)
+{
+    if (!entry.is_object()) return;
+
+    if (entry.size() == 1 && !entry.contains("evotag")) {
+        auto it = entry.begin();
+        if (evolvableRangeEntryIsActive(*it)) tags.push_back(it.key());
+        return;
+    }
+
+    if (!evolvableRangeEntryIsActive(entry)) return;
+    if (!entry.contains("evotag")) return;
+
+    const string tag = evotagJsonToString(entry.at("evotag"));
+    if (tag.size() > 0) tags.push_back(tag);
+}
+
+vector<string> getActiveEvotagsFromEvolvableRanges(const json & ranges)
+{
+    vector<string> tags;
+
+    if (ranges.contains("value") && ranges.at("value").is_array()) {
+        for (auto it = ranges.at("value").begin(); it != ranges.at("value").end(); ++it)
+            addActiveEvotagFromRangeEntry(*it, tags);
+        return tags;
+    }
+
+    if (!ranges.is_object()) return tags;
+
+    for (auto it = ranges.begin(); it != ranges.end(); ++it) {
+        if (it.key() == "value") continue;
+        if (evolvableRangeEntryIsActive(*it)) tags.push_back(it.key());
+    }
+
+    return tags;
+}
+
+vector<string> getEvolvedUsedEvotags(const json & j)
+{
+    vector<string> tags;
+    if (!j.contains("evolved_used")) return tags;
+
+    const json & evolvedUsed = j.at("evolved_used");
+    const json * values = nullptr;
+    if (evolvedUsed.is_array()) values = &evolvedUsed;
+    else if (evolvedUsed.is_object() && evolvedUsed.contains("value")
+        && evolvedUsed.at("value").is_array()) values = &evolvedUsed.at("value");
+    else return tags;
+
+    for (auto it = values->begin(); it != values->end(); ++it) {
+        const string tag = evotagJsonToString(*it);
+        if (tag.size() > 0) tags.push_back(tag);
+    }
+
+    return tags;
+}
+
+bool evotagSetsAreIdentical(const vector<string> & activeTags,
+    const vector<string> & usedTags)
+{
+    set<string> activeSet(activeTags.begin(), activeTags.end());
+    set<string> usedSet(usedTags.begin(), usedTags.end());
+
+    return activeTags.size() == activeSet.size()
+        && usedTags.size() == usedSet.size()
+        && activeSet == usedSet;
+}
 
 
 EvoBase::EvoBase(shared_ptr<const CmdArgs> cmd_, evoPars ep1)
@@ -140,18 +235,28 @@ void EvoBase::construct(int vsize_, int offset_)
 {
 
 
-    if (!setFromCPTflag) setFromCPT2(vsize_);
+    const bool allowPreviousEvolutionFiles =
+        (vsize_ == 0) || evolvedUsedMatchesActiveEvotags();
+
+    if (!setFromCPTflag) setFromCPT2(vsize_, allowPreviousEvolutionFiles);
     if (doResume) return;
 
     string filename;
     bool foundFile = false;
     filename = rename_file("best.gen.dat");
     struct stat buffer;   
-    if (stat (filename.c_str(), &buffer) == 0) 
+    if (allowPreviousEvolutionFiles && stat (filename.c_str(), &buffer) == 0)
     {
      vector<double> bestgenvec;
      getVecFromFile<double>(filename, bestgenvec);
-     if (bestgenvec.size()==vsize_) foundFile = true;
+     if (vsize_ == 0 || bestgenvec.size()==vsize_) foundFile = true;
+    }
+    else if (!allowPreviousEvolutionFiles
+        && fileExistsForEvolution(filename))
+    {
+        cout << "Skipping " << filename
+             << " because active evolvable_ranges evotags do not match evolved_used"
+             << endl;
     }
 
     if (foundFile == false){
@@ -160,8 +265,12 @@ void EvoBase::construct(int vsize_, int offset_)
     {
         vector<double> bestgenvec;
         getVecFromFile<double>(filename, bestgenvec);
-        assert(bestgenvec.size()==vsize_);
-        foundFile = true;
+        if (vsize_ == 0 || bestgenvec.size()==vsize_) foundFile = true;
+        else {
+            cout << "Skipping " << filename
+                 << " because gene size " << bestgenvec.size()
+                 << " does not match current vector size " << vsize_ << endl;
+        }
     }
     }
 
@@ -208,7 +317,46 @@ void EvoBase::construct(int vsize_, int offset_)
 
 
 
-void EvoBase::setFromCPT2(int vsize_)
+bool EvoBase::evolvedUsedMatchesActiveEvotags()
+{
+    vector<string> jsonFilenames = {
+        rename_file("worm_data_evo.json"),
+        rename_file("worm_data_worm.json"),
+        rename_file("worm_data.json")
+    };
+
+    for (int i=0; i<jsonFilenames.size(); i++) {
+        if (!fileExistsForEvolution(jsonFilenames[i])) continue;
+
+        const json j = getJsonFromFile(jsonFilenames[i]);
+        if (!j.contains("evolvable_ranges")) continue;
+
+        const vector<string> activeTags =
+            getActiveEvotagsFromEvolvableRanges(j.at("evolvable_ranges"));
+        const vector<string> usedTags = getEvolvedUsedEvotags(j);
+
+        if (activeTags.size() == 0 || usedTags.size() == 0) {
+            cout << "Previous evolution files are not evotag-compatible with "
+                 << jsonFilenames[i]
+                 << " because active evolvable_ranges or evolved_used is empty"
+                 << endl;
+            return false;
+        }
+
+        const bool matches = evotagSetsAreIdentical(activeTags, usedTags);
+        if (!matches) {
+            cout << "Previous evolution files are not evotag-compatible with "
+                 << jsonFilenames[i]
+                 << " because active evolvable_ranges evotags do not match evolved_used"
+                 << endl;
+        }
+        return matches;
+    }
+
+    return false;
+}
+
+void EvoBase::setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles)
 {
     doResume = false;
     setFromCPTflag = true;
@@ -224,13 +372,20 @@ void EvoBase::setFromCPT2(int vsize_)
     struct stat buffer;   
     if (doCPT && (stat (filename_.c_str(), &buffer) == 0)) {
 
+        if (!allowPreviousEvolutionFiles) {
+            cout << "Skipping " << filename_
+                 << " because active evolvable_ranges evotags do not match evolved_used"
+                 << endl;
+            return;
+        }
+
       //  cout << "set from cpt " << filename_ << endl; 
         {TSearch * stest = new TSearch(1);
         stest->cptfilename = filename_;
         stest->ReadCheckpointFile();
         const int testVsize = stest->VectorSize();
         delete stest;
-        if (testVsize!=vsize_) return;
+        if (vsize_ > 0 && testVsize!=vsize_) return;
         }
 
         s = new TSearch(1);

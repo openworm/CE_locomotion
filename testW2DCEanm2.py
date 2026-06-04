@@ -36,15 +36,15 @@ run(
 
 
 json_data = get_worm_json(origFolderName)
-json_data['evolvable_ranges']['evotag_1']["active"] = False
+#json_data['evolvable_ranges']['evotag_1']["active"] = False
 json_data['evolvable_ranges']['evotag_2']["active"] = False
-json_data['evolvable_ranges']['evotag_DA_0_1_tau'] = {
+json_data['evolvable_ranges']['DA_0_1_tau'] = {
             "active": True,
             "lower_limit": 0.0,
             "upper_limit": 100.0
         }
-json_data['nervous_system']['cells']['DA_0']['tau']['evotag'] = "evotag_DA_0_1_tau"
-json_data['nervous_system']['cells']['DA_1']['tau']['evotag'] = "evotag_DA_0_1_tau"
+json_data['nervous_system']['cells']['DA_0']['tau']['evotag'] = "DA_0_1_tau"
+json_data['nervous_system']['cells']['DA_1']['tau']['evotag'] = "DA_0_1_tau"
 write_worm_json(outputFolderName_2, json_data)
 args['outputFolderName']=outputFolderName_2
 

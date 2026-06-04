@@ -675,6 +675,23 @@ json toEvolvableRangesJson(const vector<doubDoub> & ranges)
   return j;
 }
 
+json toEvolvedUsedJson(const vector<intDoubDoub> & ranges)
+{
+  json j = json::array();
+  for (int i=0;i<ranges.size();i++)
+    j.push_back(ranges[i].tag.empty()
+      ? makeEvotagString(ranges[i].ind)
+      : ranges[i].tag);
+  return j;
+}
+
+json toEvolvedUsedJson(const vector<doubDoub> & ranges)
+{
+  json j = json::array();
+  for (int i=0;i<ranges.size();i++) j.push_back(makeEvotagString(i+1));
+  return j;
+}
+
 void from_json(const json& j, intDoubDoub & w) 
 {
         if (j.contains("evotag")) {

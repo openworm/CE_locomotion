@@ -63,7 +63,7 @@ class EvoBase
     string rename_file(string filename);
     //evoParsNonConst evoParsNC;
     void setFromCPT();
-    void setFromCPT2(int vsize_);
+    void setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles = true);
     const int itsVectSize() const {if (s) return s->VectorSize(); assert(0 && "s not set");}
 
     protected:
@@ -86,6 +86,7 @@ class EvoBase
     void setPopFromBestGenoFile(int offset = 0);
     //void setPopFromBestGenoFile2();
     void construct(int vsize_, int offset_);
+    bool evolvedUsedMatchesActiveEvotags();
     void configure_p11();
     //void constructAll(int vsize_, int offset_);
     

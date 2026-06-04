@@ -292,6 +292,7 @@ vec.push_back({0.0, ESRange});
 
 
   j["evolvable_ranges"] = toEvolvableRangesJson(vec);
+  j["evolved_used"]["value"] = toEvolvedUsedJson(vec);
   }
 
 vector<intPair> biasvec, tauvec;

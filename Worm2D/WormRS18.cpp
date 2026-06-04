@@ -1089,6 +1089,7 @@ vec.push_back({0.0, NMJmax});
 vec.push_back({0.0, NMJmax});
 
 j["evolvable_ranges"] = toEvolvableRangesJson(vec);
+j["evolved_used"]["value"] = toEvolvedUsedJson(vec);
 
  }
 
