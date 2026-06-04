@@ -1,9 +1,10 @@
 from run_main import run
+from helper_funcs import get_worm_json, write_worm_json, delete_directory
 
 outputFolderName = "testruns/exW2DCEanm2"
 outputFolderName_2 = "testruns/exW2DCEanm2_1"
 origFolderName = "testruns/exW2DCEanm"
-from helper_funcs import get_worm_json, write_worm_json, delete_directory
+
 
 # x = 0.1
 delete_directory(outputFolderName_2)
