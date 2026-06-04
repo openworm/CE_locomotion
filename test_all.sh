@@ -15,30 +15,30 @@ rm -rf test_output/*.dat
 ./tests
 
 # Compile the main program
-make ${parallel_jobs_for_make}
+make
 
 
 # Compile the CE_orientation C++ code
 cd CE_orientation
 make clean
-make ${parallel_jobs_for_make}
+make 
 cd ..
 
 cd RoyalSociety2018
 make clean
-make ${parallel_jobs_for_make}
+make 
 cd ..
 
 cd network2021
 make clean
-make ${parallel_jobs_for_make}
+make 
 cd ..
 
 # Compile the Worm2D C++ code
 cd Worm2D
 make clean
 make ${parallel_jobs_for_make}
-make ${parallel_jobs_for_make} main_osc
+make main_osc
 cd ..
 
 ruff format *.py */*.py
