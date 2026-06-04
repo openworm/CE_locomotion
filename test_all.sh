@@ -69,6 +69,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSRE21
     rm -rf testruns/exW2DCEa
     rm -rf testruns/exW2DCEanm
+    rm -rf testruns/exW2DCEanm2 testruns/exW2DCEanm2_1
 
     rm -rf exampleRunCEW2D exampleRunCEW2D_nml
     
@@ -130,7 +131,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCEFRv2.omt
     omv test -V .test.W2DSRFR.omt
     omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
-    
+    omv test -V .test.W2DCEanm2.omt
 
     omv test -V .test.CO.omt
     omv test -V .test.COW2D.omt

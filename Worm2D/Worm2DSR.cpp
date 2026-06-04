@@ -917,7 +917,7 @@ void addEvoNames(json & j)
     for (int i=0; i<vdd.size(); i++)
       if (vdd[i].tag == evotag) {phenind = i; break;}
     if (body == nullptr || phenind < 0 || phenind >= evoKeys.size()) continue;
-    (*body)["name"] = evoKeys[phenind];
+    if (!body->contains("name")) (*body)["name"] = evoKeys[phenind];
     if (!body->contains("active")) (*body)["active"] = true;
 
   }
