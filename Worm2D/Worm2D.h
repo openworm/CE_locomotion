@@ -19,6 +19,8 @@
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
 
+const string W2D_VERSION = "v0.1.0";
+
 //class SRCE;
 
 void setEvoStr(vector<string> & vecval, const vector<string> & evoName);
