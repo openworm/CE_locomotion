@@ -646,70 +646,70 @@ def plot_fit():
     plt.close()
 
 
-def plot_fig_g(
-    fit_data, plot_data_3, gen_index_orig, titles, gen_indices, phen_names, filename1
-):
-    fig_g = plt.figure(figsize=(12, 12))
-    gs = fig_g.add_gridspec(3, 2)
+def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1):
+    fig_g, axs = plt.subplots(2, 2, figsize=(12, 10), squeeze=False)
+    plot_axes = list(axs.flat)
 
-    # 5 plot axes + 1 legend axes
-    ax1 = fig_g.add_subplot(gs[0, 0])
-    ax2 = fig_g.add_subplot(gs[1, 0])
-    ax3 = fig_g.add_subplot(gs[2, 0])
-    ax4 = fig_g.add_subplot(gs[0, 1])
-    ax5 = fig_g.add_subplot(gs[1, 1])
-    ax_leg = fig_g.add_subplot(gs[2, 1])
+    plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
+    axs[1, 0].set_xlabel("Generation", fontsize=label_font_size)
+    axs[1, 1].set_xlabel("Generation", fontsize=label_font_size)
 
-    plot_axes = [ax2, ax3, ax4, ax5]
+    handles, labels = plot_axes[0].get_legend_handles_labels()
 
-    initial_gen = 0
-    final_gen = 1000
+    legend_fontsize = 10
+    legend = None
+    legend_bbox = None
+    fig_width = fig_g.get_window_extent().width
+    for ncols in range(len(labels), 0, -1):
+        legend = fig_g.legend(
+            handles,
+            labels,
+            loc="lower center",
+            bbox_to_anchor=(0.5, 0.01),
+            ncol=ncols,
+            frameon=True,
+            fontsize=legend_fontsize,
+        )
+        fig_g.canvas.draw()
+        legend_bbox = legend.get_window_extent(renderer=fig_g.canvas.get_renderer())
+        if legend_bbox.width <= fig_width * 0.96:
+            break
+        legend.remove()
 
-    gen_index = gen_index_orig
-    gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
+    legend_height = legend_bbox.height / fig_g.get_window_extent().height
+    fig_g.subplots_adjust(bottom=legend_height + 0.09)
+    fig_g.savefig(filename1, bbox_inches="tight", dpi=300)
+    print("Saved plot image to: %s" % filename1)
+    plt.close(fig_g)
 
-    ax1.plot(
-        gen_index[gen_seg],
-        fit_data[gen_seg, 0],
+    if os.path.basename(filename1) == "EvoHist.png":
+        save_evohist_legend_figures(handles, labels, legend_fontsize)
+
+
+def plot_evohist_fitness(fit_data, filename):
+    fig, ax = plt.subplots(figsize=(6, 4))
+    gen_index = fit_data[:, 0]
+    log_fitness = np.log(fit_data[:, (1, 2)])
+    ax.plot(
+        gen_index,
+        log_fitness[:, 0],
         label="Best phenotype",
         color="black",
         linestyle="-",
     )
-    ax1.plot(
-        gen_index[gen_seg],
-        fit_data[gen_seg, 1],
+    ax.plot(
+        gen_index,
+        log_fitness[:, 1],
         label="Population fitness",
         color="red",
         linestyle="-",
     )
-    ax1.set_title("Log Fitness", fontsize=title_font_size)
-    ax1.legend()
-    plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
-    ax3.set_xlabel("Generation", fontsize=label_font_size)
-    ax5.set_xlabel("Generation", fontsize=label_font_size)
-
-    handles, labels = ax2.get_legend_handles_labels()
-
-    ax_leg.axis("off")
-    legend_fontsize = 8
-    legend = ax_leg.legend(
-        handles, labels, loc="best", ncol=3, frameon=True, fontsize=legend_fontsize
-    )
-    fig_g.canvas.draw()
-    legend_bbox = legend.get_window_extent(renderer=fig_g.canvas.get_renderer())
-    ax_bbox = ax_leg.get_window_extent(renderer=fig_g.canvas.get_renderer())
-    if legend_bbox.width > ax_bbox.width:
-        legend.remove()
-        ax_leg.legend(
-            handles, labels, loc="best", ncol=2, frameon=True, fontsize=legend_fontsize
-        )
-
-    fig_g.savefig(filename1, bbox_inches="tight", dpi=300)
-    print("Saved plot image to: %s" % filename1)
-    plt.close()
-
-    if os.path.basename(filename1) == "EvoHist.png":
-        save_evohist_legend_figures(handles, labels, legend_fontsize)
+    ax.set_title("Log Fitness", fontsize=title_font_size)
+    ax.set_xlabel("Generation", fontsize=label_font_size)
+    ax.legend()
+    fig.savefig(filename, bbox_inches="tight", dpi=300)
+    print("Saved plot image to: %s" % filename)
+    plt.close(fig)
 
 
 def save_evohist_legend_figures(handles, labels, legend_fontsize):
@@ -737,7 +737,7 @@ def plot_hist(a=None):
         return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
-    fit_data = np.log(fit_data[:, (1, 2)])
+    plot_evohist_fitness(fit_data, hf.rename_file("EvoHist_fitness.png"))
 
     # evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
     # evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
@@ -814,9 +814,7 @@ def plot_hist(a=None):
     # plot_hist_1(evol_data, phen_size, phen_size, phen_names, "EvolutionHistoryMax.png")
 
     plot_fig_g(
-        fit_data,
         plot_data_3,
-        gen_index_orig,
         titles,
         gen_indices,
         phen_names,
@@ -838,9 +836,7 @@ def plot_hist(a=None):
         plot_data_3_avs.append(np.array(pdout).T)
 
     plot_fig_g(
-        fit_data,
         plot_data_3_avs,
-        gen_index_orig,
         titles,
         gen_indices,
         phen_names_set,

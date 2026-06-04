@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import argparse
 import os
+import shutil
 import math
 import sys
 from functools import partial
@@ -195,6 +196,17 @@ def write_worm_json(folder_name, json_data):
     filename = os.path.join(folder_name, "worm_data_worm.json")
     with open(filename, "w") as f:
         json.dump(json_data, f)
+
+
+def delete_directory(directory_path):
+    """Recursively delete a directory, returning True if it existed."""
+    path = os.path.abspath(directory_path)
+    if path in (os.path.abspath(os.curdir), os.path.abspath(os.sep)):
+        raise ValueError("Refusing to delete the current directory or filesystem root")
+    if not os.path.isdir(path):
+        return False
+    shutil.rmtree(path)
+    return True
 
 
 def checkDictName(dictval, namelist):

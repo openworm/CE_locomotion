@@ -734,7 +734,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
 template<class T>
 double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, 
     RandomState &rs, 
-    int direction,
+    const int direction,
     shared_ptr<T> w_ptr){
 
     const double & Duration = evoPars1.Duration;
@@ -764,6 +764,12 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
     const double BBCfit = AvgSpeed*Duration;
     const double agarfreq = EparsR->agarfreq;
 
+    const bool doAngleDiff = EparsR->doAngleDiff;
+    const int fitType = EparsR->fitType;
+
+    const int dbunit = EparsR->dbunit;
+    const int vbunit = EparsR->vbunit;
+    const bool dodir = (direction == 1 || direction == 2);
 
         // Fitness
         double fitness_tr = 0.0;
@@ -881,20 +887,20 @@ if (false)
        
         //assert(0);
        
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(dbunit);
+        VBp = w.n_ptr->NeuronOutput(vbunit);
     
-        cout << "db " << DBp << " " << VBp << endl;
+        //cout << "db " << DBp << " " << VBp << endl;
 
         w.Step(); // determine sign of derivative
     
 
-        dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-        dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+        dDB = w.n_ptr->NeuronOutput(dbunit) - DBp;
+        dVB = w.n_ptr->NeuronOutput(vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(dbunit);
+        VBp = w.n_ptr->NeuronOutput(vbunit);
         
         double xt = w.CoMx(), xtp;
         double yt = w.CoMy(), ytp;
@@ -906,13 +912,13 @@ if (false)
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-            dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+            dDB = w.n_ptr->NeuronOutput(dbunit) - DBp;
+            dVB = w.n_ptr->NeuronOutput(vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - w.n_ptr->NeuronOutput(EparsR->dbunit));
-            oscVB += abs(VBp - w.n_ptr->NeuronOutput(EparsR->vbunit));
+            oscDB += abs(DBp - w.n_ptr->NeuronOutput(dbunit));
+            oscVB += abs(VBp - w.n_ptr->NeuronOutput(vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -927,8 +933,8 @@ if (false)
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-            VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+            DBp = w.n_ptr->NeuronOutput(dbunit);
+            VBp = w.n_ptr->NeuronOutput(vbunit);
             
             //// Locomotion
             // Current and past centroid position
@@ -944,18 +950,18 @@ if (false)
             bodyorientation = w.Orientation();                  // Orientation of the body position
             movementorientation = atan2(yt-ytp,xt-xtp);
             
-            if (EparsR->doAngleDiff)
+            if (doAngleDiff)
             anglediff = angle_diff(movementorientation,bodyorientation);
             else
             // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            if (direction == 1 || direction == 2){
-            if (EparsR->fitType == 0)
+            if (dodir){
+            if (fitType == 0)
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             else temp = cos(anglediff);
             }
             else{
-            if (EparsR->fitType == 0) 
+            if (fitType == 0) 
             temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
             else temp = cos(anglediff)*-1;
             }

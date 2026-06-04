@@ -643,11 +643,26 @@ void Worm2DSRE::addEvolvableToJson(json & j)
   convertEvolvableRangesToKeyed(rangesOut);
   j[evolvableRangesKey] = rangesOut;
   addEvoNames(j);
+  j["evolved_used"]["value"] = getEvolvedUsedTags();
 
   return;
 
 
 
+}
+
+vector<string> Worm2DSRE::getEvolvedUsedTags() const
+{
+  vector<string> tags;
+  for (int i=0; i<genPhenLims.size(); i++)
+  {
+    if (genPhenLims[i].tag.size() > 0)
+      tags.push_back(genPhenLims[i].tag);
+    else
+      tags.push_back(makeEvoTagRangeKey(genPhenLims[i].ind));
+  }
+
+  return tags;
 }
 
 

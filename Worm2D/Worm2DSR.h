@@ -117,6 +117,7 @@ void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
 //Worm2DSREpars makeVals(const json & j);
 //vector<doubDoub> makeVals(const json & j);
 vector<intDoubDoub> makeVals();
+vector<string> getEvolvedUsedTags() const;
 void testJson(json & j);
 //void setInitGeno();
 void setInitPheno();
