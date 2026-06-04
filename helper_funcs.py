@@ -29,6 +29,16 @@ label_font_size = 14
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
 
+def get_worm2d_version():
+    # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
+    worm2d_h_file = os.path.join(os.path.dirname(__file__), "Worm2D", "Worm2D.h")
+    with open(worm2d_h_file, "r") as f:
+        for line in f:
+            if "W2D_VERSION" in line:
+                return line.split('"')[1]
+    return "Unknown"
+
+
 def short_repr(x, max_len=80):
     text = json.dumps(x, ensure_ascii=False)
     if len(text) > max_len:
