@@ -2,15 +2,37 @@
 CC = g++ -Wall
 
 ifeq ($(CONDA_PREFIX),)
-    PYTHON_CONFIG ?= python3-config
+    PYTHON ?= python3
 else
-    PYTHON_CONFIG ?= $(CONDA_PREFIX)/bin/python3-config
+    PYTHON ?= $(CONDA_PREFIX)/bin/python
 endif
 
+PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+PYTHON_LDVERSION := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDVERSION'))")
+PYTHON_LIB := python$(PYTHON_LDVERSION)
 
-LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
+else ifeq ($(UNAME_S),Darwin)
+    RPATH_FLAG = -Wl,-rpath,@loader_path -Wl,-rpath,$(PYTHON_LIB_DIR)
+else
+    $(error Unsupported OS)
+endif
+
+CXXFLAGS := -I$(PYTHON_INCLUDE_DIR)
+LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
+LIBS := -l$(PYTHON_LIB)
+
+LDFLAGS += -L/opt/homebrew/lib
+CXXFLAGS += -I/opt/homebrew/include
+
+# In a conda env, python3-config points -L at the (lib-less) config dir;
+# add the env's actual lib dir to the link path and embed an rpath for runtime.
+ifneq ($(CONDA_PREFIX),)
+    LDFLAGS += -L$(CONDA_PREFIX)/lib -Wl,-rpath,$(CONDA_PREFIX)/lib
+endif
 
 EXTRA_FLAGS :=   -fPIE -O3  -Iinc
 

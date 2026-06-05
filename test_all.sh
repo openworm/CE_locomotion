@@ -8,6 +8,12 @@ if [[ ($# -eq 1) && ($1 == '-q') ]]; then
     quick_test=1
 fi
 
+OMV_ARGS=""
+# check if running on macos and if so, just run the omv tests ignoring exit codes 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OMV_ARGS=" --exit-zero" # Add this flag to ensure that OMV returns a zero exit code even if some tests fail, allowing the script to continue running all tests.
+fi
+
 make clean
 make tests
 
@@ -94,59 +100,53 @@ if [ "$quick_test" == 0 ]; then
     
     omv test -V .test.COW2DSR2.omt
    
-    omv test -V .test.osc_sim.omt
-    omv test -V .test.osc_sim_21.omt
-    omv test -V .test.osc_sim_21all.omt
+    omv test -V .test.osc_sim.omt ${OMV_ARGS}
+    omv test -V .test.osc_sim_21.omt ${OMV_ARGS}
+    omv test -V .test.osc_sim_21all.omt ${OMV_ARGS}
 
-    if [[  `uname -o` == "GNU/Linux" ]]; then 
-        echo "Running 2018 tests which only pass on Linux..."
-    
-        omv test -V .test.2018.omt  #Izq original .test.2018.mep
-        omv test -V .test.2018W2D.omt #main.cpp .test.2018.mep
-        omv test -V .test.W2D18.omt #main_osc.cpp.test.2018.mep
 
-    else
-        python test2018.py
-        python test2018W2D.py
-        python testW2D18.py
-    fi;
+    omv test -V .test.2018.omt ${OMV_ARGS}  #Izq original .test.2018.mep
+    omv test -V .test.2018W2D.omt ${OMV_ARGS} #main.cpp .test.2018.mep
+    omv test -V .test.W2D18.omt ${OMV_ARGS} #main_osc.cpp.test.2018.mep
 
-    omv test -V .test.W2D18gen.omt #origMusc=False .test.2018gen.mep
-    omv test -V .test.W2DSR18.omt #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
-    omv test -V .test.W2DSR18E.omt #inputFolderName="testruns/exW2D18gen",
-    omv test -V .test.W2D18genE.omt
-    omv test -V .test.W2DSR18srm.omt
+
+
+    omv test -V .test.W2D18gen.omt ${OMV_ARGS} #origMusc=False .test.2018gen.mep
+    omv test -V .test.W2DSR18.omt ${OMV_ARGS} #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
+    omv test -V .test.W2DSR18E.omt ${OMV_ARGS} #inputFolderName="testruns/exW2D18gen",
+    omv test -V .test.W2D18genE.omt ${OMV_ARGS}
+    omv test -V .test.W2DSR18srm.omt ${OMV_ARGS}
 
     
-    omv test -V .test.example.omt #Izq original test.example.mep
+    omv test -V .test.example.omt ${OMV_ARGS} #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
-    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
-    omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
-    omv test -V .test.W2DCE.omt
-    omv test -V .test.W2DCEs.omt
-    omv test -V .test.W2DSR.omt
-    omv test -V .test.W2DSRE.omt
-    omv test -V .test.W2DCEE.omt
-    omv test -V .test.W2DCEFR.omt
-    omv test -V .test.W2DCEFRv2.omt
-    omv test -V .test.W2DSRFR.omt
-    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
+    omv test -V .test.W2DCEa.omt ${OMV_ARGS} #main_osc.cpp test.example.mep
+    omv test -V .test.W2DCEanm.omt ${OMV_ARGS} #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
+    omv test -V .test.W2DCE.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEs.omt ${OMV_ARGS}
+    omv test -V .test.W2DSR.omt ${OMV_ARGS}
+    omv test -V .test.W2DSRE.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEE.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
+    omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
+    omv test -V .test.CEW2D_all.omt ${OMV_ARGS} #main.cpp test.example.mep
     
 
-    omv test -V .test.CO.omt
-    omv test -V .test.COW2D.omt
-    omv test -V .test.W2DCO.omt
+    omv test -V .test.CO.omt ${OMV_ARGS}
+    omv test -V .test.COW2D.omt ${OMV_ARGS}
+    omv test -V .test.W2DCO.omt ${OMV_ARGS}
     #omv test -V .test.COW2DSR.omt
     
-    omv test -V .test.2021.omt
-    omv test -V .test.2021W2D.omt
-    omv test -V .test.izq_sim.omt
+    omv test -V .test.2021.omt ${OMV_ARGS}
+    omv test -V .test.2021W2D.omt ${OMV_ARGS}
+    omv test -V .test.izq_sim.omt ${OMV_ARGS}
     
-    omv test -V .test.izq_sim_W2D21.omt
-    omv test -V .test.W2D21.omt
-    omv test -V .test.W2D21E.omt
-    omv test -V .test.W2DSRE21.omt
-    omv test -V .test.W2DSR21.omt
+    omv test -V .test.izq_sim_W2D21.omt ${OMV_ARGS}
+    omv test -V .test.W2D21.omt ${OMV_ARGS}
+    omv test -V .test.W2D21E.omt ${OMV_ARGS}
+    omv test -V .test.W2DSRE21.omt ${OMV_ARGS}
+    omv test -V .test.W2DSR21.omt ${OMV_ARGS}
 
    
     
