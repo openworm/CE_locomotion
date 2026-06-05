@@ -21,7 +21,7 @@ else
     $(error Unsupported OS)
 endif
 
-CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR)
+CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR) -std=c++11
 LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
 LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
 
