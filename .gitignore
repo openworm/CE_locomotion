@@ -93,6 +93,12 @@
 /experiments/*/Fit*.png
 /experiments/*/Mot*.png
 /experiments/*/Or*.png
+/experiments/*/Ev*.png
+/experiments/*/LE*.png
+/experiments/*/Wo*.png
+/experiments/*/*.cpt
+/experiments/*/*.gv
+/experiments/*/beha*
 
 /testruns/*/*.dat
 /testruns/*/*.json
