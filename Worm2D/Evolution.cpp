@@ -235,23 +235,23 @@ void EvoBase::construct(int vsize_, int offset_)
 {
 
 
-    const bool allowPreviousEvolutionFiles =
+    previousEvolutionFilesCompatible =
         (vsize_ == 0) || evolvedUsedMatchesActiveEvotags();
 
-    if (!setFromCPTflag) setFromCPT2(vsize_, allowPreviousEvolutionFiles);
+    if (!setFromCPTflag) setFromCPT2(vsize_, previousEvolutionFilesCompatible);
     if (doResume) return;
 
     string filename;
     bool foundFile = false;
     filename = rename_file("best.gen.dat");
     struct stat buffer;   
-    if (allowPreviousEvolutionFiles && stat (filename.c_str(), &buffer) == 0)
+    if (previousEvolutionFilesCompatible && stat (filename.c_str(), &buffer) == 0)
     {
      vector<double> bestgenvec;
      getVecFromFile<double>(filename, bestgenvec);
      if (vsize_ == 0 || bestgenvec.size()==vsize_) foundFile = true;
     }
-    else if (!allowPreviousEvolutionFiles
+    else if (!previousEvolutionFilesCompatible
         && fileExistsForEvolution(filename))
     {
         cout << "Skipping " << filename
@@ -469,8 +469,10 @@ void EvoBase::setUp()
     //setFromCPT();
 
     filename_ = rename_file("genhistory.dat");
-    if (stat (filename_.c_str(), &buffer) == 0) genhistfile.open(filename_, std::ios_base::app);
-    else genhistfile.open(filename_, std::ios_base::out);
+    if (stat (filename_.c_str(), &buffer) == 0 && previousEvolutionFilesCompatible)
+        genhistfile.open(filename_, std::ios_base::app);
+    else
+        genhistfile.open(filename_, std::ios_base::out);
     //genhistfile2.open(rename_file("gendiffhistory.dat"), ioflag);
     //doneFirst = false;
     evolfile << setprecision(10);

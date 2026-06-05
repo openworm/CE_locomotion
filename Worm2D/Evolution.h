@@ -111,6 +111,7 @@ class EvoBase
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
     bool doResume;
+    bool previousEvolutionFilesCompatible = true;
     int popsize;
     int initGenNum = 0;
 };

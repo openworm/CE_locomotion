@@ -54,6 +54,14 @@ args['outputFolderName']=outputFolderName_3
 run(**args) 
 
 
+json_data = get_worm_json(outputFolderName_3)
+json_data['evolvable_ranges']['evotag_1']["active"] = False
+json_data['evolvable_ranges']['evotag_2']["active"] = True
+write_worm_json(outputFolderName_3, json_data)
+
+args['outputFolderName']=outputFolderName_3
+run(**args) 
+
 if False:
     json_data = get_worm_json(origFolderName)
     #json_data['evolvable_ranges']['evotag_1']["active"] = False

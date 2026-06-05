@@ -608,7 +608,6 @@ def run(a=None, **kwargs):
             a.inputFolderName, a.outputFolderName
         )
         previous_evolution_files = {
-            "fitness.dat",
             "best.gen.dat",
             "phenotype.dat",
             "best.phen.dat",
