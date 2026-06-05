@@ -21,20 +21,15 @@ else
     $(error Unsupported OS)
 endif
 
-CXXFLAGS := -I$(PYTHON_INCLUDE_DIR)
+CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR)
 LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
-LIBS := -l$(PYTHON_LIB)
+LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
 
-LDFLAGS += -L/opt/homebrew/lib
-CXXFLAGS += -I/opt/homebrew/include
+# Extra flags for MacOS
+LDFLAGS += "-L/opt/homebrew/lib"
+CXXFLAGS += "-I/opt/homebrew/include"
 
-# In a conda env, python3-config points -L at the (lib-less) config dir;
-# add the env's actual lib dir to the link path and embed an rpath for runtime.
-ifneq ($(CONDA_PREFIX),)
-    LDFLAGS += -L$(CONDA_PREFIX)/lib -Wl,-rpath,$(CONDA_PREFIX)/lib
-endif
-
-EXTRA_FLAGS :=   -fPIE -O3  -Iinc
+EXTRA_FLAGS := -fPIE -O3 -Iinc
 
 testc302NervousSystem.o: testc302NervousSystem.cpp ../c302NervousSystem.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) testc302NervousSystem.cpp
