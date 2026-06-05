@@ -460,6 +460,100 @@ def TFtoInt(val):
     sys.exit(1)
 
 
+JSON_CONFIG_FILES = ["worm_data_worm.json", "worm_data_evo.json", "worm_data.json"]
+
+
+def _evotag_to_string(evotag):
+    if isinstance(evotag, int):
+        return "evotag_" + str(evotag)
+    return str(evotag)
+
+
+def _active_evotags_from_ranges(evolvable_ranges):
+    if not isinstance(evolvable_ranges, dict):
+        return []
+
+    tags = []
+    if isinstance(evolvable_ranges.get("value"), list):
+        for index, entry in enumerate(evolvable_ranges["value"], start=1):
+            if not isinstance(entry, dict):
+                continue
+            if "evotag" in entry:
+                body = entry
+                tag = _evotag_to_string(entry["evotag"])
+            elif len(entry) == 1:
+                tag, body = next(iter(entry.items()))
+            else:
+                tag = "evotag_" + str(index)
+                body = entry
+            if not isinstance(body, dict) or body.get("active", True):
+                tags.append(tag)
+        return tags
+
+    for tag, body in evolvable_ranges.items():
+        if tag == "value" or not isinstance(body, dict):
+            continue
+        if body.get("active", True):
+            tags.append(tag)
+    return tags
+
+
+def _evolved_used_from_json(json_data):
+    evolved_used = json_data.get("evolved_used", {})
+    if isinstance(evolved_used, dict):
+        evolved_used = evolved_used.get("value", [])
+    if not isinstance(evolved_used, list):
+        return []
+    return [_evotag_to_string(tag) for tag in evolved_used]
+
+
+def _get_run_config_json(folder_name):
+    for filename in JSON_CONFIG_FILES:
+        path = os.path.join(folder_name, filename)
+        if os.path.isfile(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f), path
+    return None, None
+
+
+def _same_evotag_set(active_tags, evolved_used_tags):
+    return (
+        len(active_tags) > 0
+        and len(evolved_used_tags) > 0
+        and len(active_tags) == len(set(active_tags))
+        and len(evolved_used_tags) == len(set(evolved_used_tags))
+        and set(active_tags) == set(evolved_used_tags)
+    )
+
+
+def _can_copy_previous_evolution_files(input_folder, output_folder):
+    output_json, output_path = _get_run_config_json(output_folder)
+    if output_json is None or "evolvable_ranges" not in output_json:
+        return True
+
+    active_tags = _active_evotags_from_ranges(output_json["evolvable_ranges"])
+    used_tags = _evolved_used_from_json(output_json)
+
+    if not used_tags:
+        input_json, _ = _get_run_config_json(input_folder)
+        if input_json is not None:
+            used_tags = _evolved_used_from_json(input_json)
+
+    if not used_tags:
+        return True
+
+    if _same_evotag_set(active_tags, used_tags):
+        return True
+
+    print(
+        "Input evolution history will not be copied because active "
+        "evolvable_ranges evotags in "
+        + output_path
+        + " do not match evolved_used."
+    )
+    return False
+
+
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
 
@@ -510,6 +604,19 @@ def run(a=None, **kwargs):
         else:
             prefix = ""
 
+        can_copy_previous_evolution_files = _can_copy_previous_evolution_files(
+            a.inputFolderName, a.outputFolderName
+        )
+        previous_evolution_files = {
+            "fitness.dat",
+            "best.gen.dat",
+            "phenotype.dat",
+            "best.phen.dat",
+            "best.pheno.dat",
+            "genhistory.dat",
+            "search.cpt",
+        }
+
         files = [
             "fitness.dat",
             "simulation_pars.json",
@@ -546,11 +653,17 @@ def run(a=None, **kwargs):
             # print(input_filenames)
             for file1 in input_filenames:
                 filename1 = pathlib.Path(file1).name
+                if (
+                    not can_copy_previous_evolution_files
+                    and filename1 in previous_evolution_files
+                ):
+                    continue
                 input_path = a.inputFolderName + "/" + filename1
+                output_path = a.outputFolderName + "/" + prefix + filename1
                 if os.path.isfile(input_path):
-                    shutil.copyfile(
-                        input_path, a.outputFolderName + "/" + prefix + filename1
-                    )
+                    if os.path.isfile(output_path):
+                        continue
+                    shutil.copyfile(input_path, output_path)
         if hasattr(a, "modifyJson"):
             if getattr(a, "modifyJson"):
                 json_path_mod = a.outputFolderName + "/" + prefix + "worm_data_evo.json"

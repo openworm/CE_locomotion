@@ -3,12 +3,14 @@ from helper_funcs import get_worm_json, write_worm_json, delete_directory
 
 outputFolderName = "testruns/exW2DCEanm2"
 outputFolderName_2 = "testruns/exW2DCEanm2_1"
+outputFolderName_3 = "testruns/exW2DCEanm2_2"
 origFolderName = "testruns/exW2DCEanm"
 
 
 # x = 0.1
 delete_directory(outputFolderName_2)
 delete_directory(outputFolderName)
+delete_directory(outputFolderName_3)
 json_data = get_worm_json(origFolderName)
 #json_data['evolvable_ranges']['evotag_2']["active"] = False
 write_worm_json(outputFolderName, json_data)
@@ -27,16 +29,14 @@ args = dict(
     reRand=True,
     RandSeed=900351
 )
+
 args['outputFolderName']=outputFolderName
-# args['simduration']=3 #duration of simulation run
-# args['simtransient']=0 #transient of simulation run
-# args['doEvol'] = False #do not perform an optimization
-run(
-    **args
-)  # the ExampleActivity.png and Motion.png figures must be reloaded above to see results
+run(**args)  
 
 
-json_data = get_worm_json(origFolderName)
+
+
+json_data = get_worm_json(outputFolderName)
 #json_data['evolvable_ranges']['evotag_1']["active"] = False
 json_data['evolvable_ranges']['evotag_2']["active"] = False
 json_data['evolvable_ranges']['DA_0_1_tau'] = {
@@ -47,9 +47,28 @@ json_data['evolvable_ranges']['DA_0_1_tau'] = {
         }
 json_data['nervous_system']['cells']['DA_0']['tau']['evotag'] = "DA_0_1_tau"
 json_data['nervous_system']['cells']['DA_1']['tau']['evotag'] = "DA_0_1_tau"
-write_worm_json(outputFolderName_2, json_data)
-args['outputFolderName']=outputFolderName_2
+write_worm_json(outputFolderName_3, json_data)
 
-run(
-    **args
-)  # 
+args['inputFolderName']=outputFolderName
+args['outputFolderName']=outputFolderName_3
+run(**args) 
+
+
+if False:
+    json_data = get_worm_json(origFolderName)
+    #json_data['evolvable_ranges']['evotag_1']["active"] = False
+    json_data['evolvable_ranges']['evotag_2']["active"] = False
+    json_data['evolvable_ranges']['DA_0_1_tau'] = {
+                "active": True,
+                "lower_limit": 0.0,
+                "upper_limit": 100.0,
+                "name": "DA_tau"
+            }
+    json_data['nervous_system']['cells']['DA_0']['tau']['evotag'] = "DA_0_1_tau"
+    json_data['nervous_system']['cells']['DA_1']['tau']['evotag'] = "DA_0_1_tau"
+    write_worm_json(outputFolderName_2, json_data)
+    args['outputFolderName']=outputFolderName_2
+
+    run(
+        **args
+    )  # 

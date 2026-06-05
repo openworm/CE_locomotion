@@ -320,8 +320,8 @@ void EvoBase::construct(int vsize_, int offset_)
 bool EvoBase::evolvedUsedMatchesActiveEvotags()
 {
     vector<string> jsonFilenames = {
-        rename_file("worm_data_evo.json"),
         rename_file("worm_data_worm.json"),
+        rename_file("worm_data_evo.json"),
         rename_file("worm_data.json")
     };
 
