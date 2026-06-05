@@ -1,5 +1,6 @@
 #include "Worm2DSR.h"
 #include <algorithm>
+#include <map>
 #include <set>
 //#include "../neuromlLocal/c302ForW2D.h"
 
@@ -584,6 +585,62 @@ vector<intDoubDoub> getEvolvableRangeVals(const json & ranges)
   return vals;
 }
 
+vector<string> getEvolvedUsedTagOrder(const json & j)
+{
+  vector<string> tags;
+  if (!j.contains("evolved_used")) return tags;
+
+  const json & evolvedUsed = j.at("evolved_used");
+  const json * values = nullptr;
+  if (evolvedUsed.is_array()) values = &evolvedUsed;
+  else if (evolvedUsed.is_object()
+      && evolvedUsed.contains("value")
+      && evolvedUsed.at("value").is_array())
+    values = &evolvedUsed.at("value");
+
+  if (values == nullptr) return tags;
+  for (auto it = values->begin(); it != values->end(); ++it)
+  {
+    if (it->is_string()) tags.push_back(it->get<string>());
+    else if (it->is_number_integer()) tags.push_back(makeEvoTagRangeKey(it->get<int>()));
+  }
+  return tags;
+}
+
+vector<intDoubDoub> orderEvolvableRangeVals(vector<intDoubDoub> vals,
+  const vector<string> & tagOrder)
+{
+  if (tagOrder.empty()) return vals;
+
+  vector<intDoubDoub> ordered;
+  vector<bool> used(vals.size(), false);
+
+  for (int i=0; i<tagOrder.size(); i++)
+  {
+    for (int j=0; j<vals.size(); j++)
+    {
+      if (used[j] || vals[j].tag != tagOrder[i]) continue;
+      ordered.push_back(vals[j]);
+      used[j] = true;
+      break;
+    }
+  }
+
+  for (int i=0; i<vals.size(); i++)
+    if (!used[i]) ordered.push_back(vals[i]);
+
+  return ordered;
+}
+
+vector<intDoubDoub> getEvolvableRangeValsFromJson(const json & j)
+{
+  const json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr) return vector<intDoubDoub>(0);
+  return orderEvolvableRangeVals(
+    getEvolvableRangeVals(*ranges),
+    getEvolvedUsedTagOrder(j));
+}
+
 void convertEvolvableRangesToKeyed(json & ranges)
 {
   json converted = json::object();
@@ -643,7 +700,6 @@ void Worm2DSRE::addEvolvableToJson(json & j)
   convertEvolvableRangesToKeyed(rangesOut);
   j[evolvableRangesKey] = rangesOut;
   addEvoNames(j);
-  j["evolved_used"]["value"] = getEvolvedUsedTags();
 
   return;
 
@@ -876,13 +932,123 @@ void getEvoNames(const json& j, vector<vector<string> > & evoNames, vector<strin
     
 }
 
+string makeUniqueEvotagKey(const string & baseKey, set<string> & usedKeys,
+  int startIndex)
+{
+  string key = baseKey;
+  int suffix = startIndex;
+  while (usedKeys.find(key) != usedKeys.end())
+  {
+    key = baseKey + "_" + to_string(suffix);
+    suffix++;
+  }
+  usedKeys.insert(key);
+  return key;
+}
+
+void renameEvotagReferences(json & j, const map<string, string> & tagMap)
+{
+  if (j.is_object())
+  {
+    if (j.contains("evotag") && j["evotag"].is_string())
+    {
+      auto found = tagMap.find(j["evotag"].get<string>());
+      if (found != tagMap.end()) j["evotag"] = found->second;
+    }
+
+    for (auto it = j.begin(); it != j.end(); ++it)
+      renameEvotagReferences(*it, tagMap);
+  }
+  else if (j.is_array())
+  {
+    for (auto it = j.begin(); it != j.end(); ++it)
+    {
+      if (it->is_string())
+      {
+        auto found = tagMap.find(it->get<string>());
+        if (found != tagMap.end()) *it = found->second;
+      }
+      else renameEvotagReferences(*it, tagMap);
+    }
+  }
+}
+
+void renameDefaultEvotagKeysToNames(json & j, const vector<intDoubDoub> & vdd)
+{
+  json * ranges = getEvolvableRanges(j);
+  if (ranges == nullptr || !ranges->is_object()) return;
+
+  map<string, int> defaultNameCounts;
+  set<string> reservedKeys;
+
+  for (auto it = ranges->begin(); it != ranges->end(); ++it)
+  {
+    if (!it->is_object()) continue;
+    int evotagNumber;
+    if (parseEvoTagRangeKey(it.key(), evotagNumber))
+    {
+      string defaultName = it->contains("name") && it->at("name").is_string()
+        ? it->at("name").get<string>()
+        : it.key();
+      defaultNameCounts[defaultName]++;
+    }
+    else reservedKeys.insert(it.key());
+  }
+
+  json renamedRanges = json::object();
+  map<string, string> tagMap;
+  map<string, int> duplicateIndexes;
+  set<string> usedKeys = reservedKeys;
+  vector<string> evolvedUsed;
+
+  for (int i=0; i<vdd.size(); i++)
+  {
+    const string & oldTag = vdd[i].tag;
+    if (!ranges->contains(oldTag) || !ranges->at(oldTag).is_object()) continue;
+
+    json body = ranges->at(oldTag);
+    int evotagNumber;
+    string newTag = oldTag;
+    if (parseEvoTagRangeKey(oldTag, evotagNumber))
+    {
+      string baseKey = body.contains("name") && body.at("name").is_string()
+        ? body.at("name").get<string>()
+        : oldTag;
+      if (defaultNameCounts[baseKey] > 1)
+      {
+        int & duplicateIndex = duplicateIndexes[baseKey];
+        newTag = makeUniqueEvotagKey(
+          baseKey + "_" + to_string(duplicateIndex), usedKeys, 0);
+        duplicateIndex++;
+      }
+      else newTag = makeUniqueEvotagKey(baseKey, usedKeys, 0);
+      tagMap[oldTag] = newTag;
+    }
+    else usedKeys.insert(oldTag);
+
+    renamedRanges[newTag] = body;
+    if (body.value("active", true)) evolvedUsed.push_back(newTag);
+  }
+
+  for (auto it = ranges->begin(); it != ranges->end(); ++it)
+  {
+    if (renamedRanges.contains(it.key()) || tagMap.find(it.key()) != tagMap.end())
+      continue;
+    renamedRanges[it.key()] = *it;
+  }
+
+  *ranges = renamedRanges;
+  renameEvotagReferences(j, tagMap);
+  j["evolved_used"]["value"] = evolvedUsed;
+}
+
 
 void addEvoNames(json & j)
 {
 
   json * ranges = getEvolvableRanges(j);
   if (ranges == nullptr)  return;
-  vector<intDoubDoub> vdd = getEvolvableRangeVals(*ranges);
+  vector<intDoubDoub> vdd = getEvolvableRangeValsFromJson(j);
 
   vector<vector<string> > evoNames(vdd.size());
   
@@ -922,6 +1088,7 @@ void addEvoNames(json & j)
 
   }
 
+  renameDefaultEvotagKeysToNames(j, vdd);
 }
 
 
@@ -935,7 +1102,7 @@ vector<intDoubDoub> Worm2DSRE::makeVals()
   json * ranges = getEvolvableRanges(j);
   if (ranges == nullptr) return vector<intDoubDoub>(0);
 
-  vector<intDoubDoub> vdd = getEvolvableRangeVals(*ranges);
+  vector<intDoubDoub> vdd = getEvolvableRangeValsFromJson(j);
 
   //addEvoNames(j);
 

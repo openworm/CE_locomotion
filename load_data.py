@@ -29,10 +29,21 @@ def get_evolvable_ranges(network_json_data):
     return network_json_data.get("Evolvable")
 
 
-def normalize_evolvable_range_entries(evolvable_ranges):
+def get_evolved_used_order(network_json_data):
+    evolved_used = network_json_data.get("evolved_used", {})
+    if isinstance(evolved_used, dict):
+        evolved_used = evolved_used.get("value", [])
+    if isinstance(evolved_used, list):
+        return [str(val) for val in evolved_used]
+    return []
+
+
+def normalize_evolvable_range_entries(evolvable_ranges, evolved_used_order=None):
     entries = []
     if evolvable_ranges is None:
         return entries
+    if evolved_used_order is None:
+        evolved_used_order = []
 
     def evotag_number(evotag):
         if isinstance(evotag, int):
@@ -44,7 +55,9 @@ def normalize_evolvable_range_entries(evolvable_ranges):
     for entry in evolvable_ranges.get("value", []):
         if "evotag" in entry:
             entry = dict(entry)
+            evotag_key = entry["evotag"]
             entry["evotag"] = evotag_number(entry["evotag"])
+            entry["evotag_key"] = str(evotag_key)
             entries.append(entry)
             continue
 
@@ -55,6 +68,7 @@ def normalize_evolvable_range_entries(evolvable_ranges):
 
         attrs = dict(attrs)
         attrs["evotag"] = evotag_number(evotag_key)
+        attrs["evotag_key"] = str(evotag_key)
         entries.append(attrs)
 
     for evotag_key, attrs in evolvable_ranges.items():
@@ -63,7 +77,12 @@ def normalize_evolvable_range_entries(evolvable_ranges):
 
         attrs = dict(attrs)
         attrs["evotag"] = evotag_number(evotag_key)
+        attrs["evotag_key"] = str(evotag_key)
         entries.append(attrs)
+
+    if evolved_used_order:
+        order = {tag: ind for ind, tag in enumerate(evolved_used_order)}
+        entries.sort(key=lambda entry: order.get(entry.get("evotag_key"), len(order)))
 
     return entries
 
@@ -241,10 +260,12 @@ def plot_phenonames(
     ]
 
     evolvables = normalize_evolvable_range_entries(
-        get_evolvable_ranges(network_json_data)
+        get_evolvable_ranges(network_json_data),
+        get_evolved_used_order(network_json_data),
     )
     if evolvables and "name" in evolvables[0]:
         phen_names = []
+        phen_tags = []
         phen_nums = []
         for val in evolvables:
             if not (("active" in val) & (not val["active"])):
@@ -252,10 +273,12 @@ def plot_phenonames(
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
                 phen_names.append(name)
+                phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
+        phen_tags = phen_names
         phen_nums = network_json_data["PhenoNamesNums"]["value"]
     else:
         print("PhenoNames needed for pheno plot")
@@ -267,6 +290,7 @@ def plot_phenonames(
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
         phen_names += network_json_data_RS18["PhenoNames"]["value"]
+        phen_tags += network_json_data_RS18["PhenoNames"]["value"]
         phen_nums += network_json_data_RS18["PhenoNamesNums"]["value"]
 
     phen_offset = vectsize * 2
@@ -453,7 +477,7 @@ def plot_phenonames(
     axs[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
     axs2[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
-    axs2[row_num, col_num].set_xticklabels(phen_names, rotation="vertical")
+    axs2[row_num, col_num].set_xticklabels(phen_tags, rotation="vertical")
     for tick, color in zip(axs[row_num, col_num].get_xticklabels(), cycle(colors30)):
         tick.set_color(color)
     for tick, color in zip(axs2[row_num, col_num].get_xticklabels(), cycle(colors30)):
@@ -749,10 +773,12 @@ def plot_hist(a=None):
     ]
 
     evolvables = normalize_evolvable_range_entries(
-        get_evolvable_ranges(network_json_data)
+        get_evolvable_ranges(network_json_data),
+        get_evolved_used_order(network_json_data),
     )
     if evolvables and "name" in evolvables[0]:
         phen_names = []
+        phen_tags = []
         phen_nums = []
         for val in evolvables:
             if not (("active" in val) & (not val["active"])):
@@ -760,6 +786,7 @@ def plot_hist(a=None):
                 for key, val2 in short_phen_names.items():
                     name = name.replace(key, val2)
                 phen_names.append(name)
+                phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
     else:
         print("evolvable_ranges names not found for plot_hist")
@@ -817,7 +844,7 @@ def plot_hist(a=None):
         plot_data_3,
         titles,
         gen_indices,
-        phen_names,
+        phen_tags,
         hf.rename_file("EvoHist.png"),
     )
 
