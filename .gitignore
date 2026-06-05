@@ -83,6 +83,7 @@
 /ex*/*.mod
 /ex*/*.nml
 /ex*/*.xml
+/ex*/*.wcon
 
 
 /experiments/*/*.dat
@@ -99,6 +100,7 @@
 /experiments/*/*.cpt
 /experiments/*/*.gv
 /experiments/*/beha*
+/experiments/*/*.wcon
 
 /testruns/*/*.dat
 /testruns/*/*.json
@@ -113,3 +115,5 @@
 /testruns/*/*.*ml
 /testruns/*/*.gv
 /testruns/*/*.cpt
+/testruns/*/*.wcon
+/RoyalSociety2018/testRS18_2
