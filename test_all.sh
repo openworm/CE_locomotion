@@ -76,6 +76,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2DSRE21
     rm -rf testruns/exW2DCEa
     rm -rf testruns/exW2DCEanm
+    rm -rf testruns/exW2DCEanm2 testruns/exW2DCEanm2_1
 
     rm -rf exampleRunCEW2D exampleRunCEW2D_nml
     
@@ -98,6 +99,23 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/COW2DSRE_test_out
 
     
+    omv test -V .test.example.omt #Izq original test.example.mep
+    #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+    omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
+    omv test -V .test.W2DCEanm2.omt
+    omv test -V .test.W2DCE.omt
+    omv test -V .test.W2DCEs.omt
+    omv test -V .test.W2DSR.omt
+    omv test -V .test.W2DSRE.omt
+    omv test -V .test.W2DCEE.omt
+    omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
+    omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
+    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
+   
+
+
     omv test -V .test.COW2DSR2.omt
    
     omv test -V .test.osc_sim.omt ${OMV_ARGS}
@@ -117,20 +135,6 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2D18genE.omt ${OMV_ARGS}
     omv test -V .test.W2DSR18srm.omt ${OMV_ARGS}
 
-    
-    omv test -V .test.example.omt #Izq original test.example.mep
-    #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
-    omv test -V .test.W2DCEa.omt  #main_osc.cpp test.example.mep
-    omv test -V .test.W2DCEanm.omt  #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
-    omv test -V .test.W2DCE.omt 
-    omv test -V .test.W2DCEs.omt 
-    omv test -V .test.W2DSR.omt 
-    omv test -V .test.W2DSRE.omt 
-    omv test -V .test.W2DCEE.omt 
-    omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
-    omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
-    omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
-    omv test -V .test.CEW2D_all.omt  #main.cpp test.example.mep
     
 
     omv test -V .test.CO.omt 

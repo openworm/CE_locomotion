@@ -425,6 +425,7 @@ void WormCE::addEvolvableToJson(json & j)
      for (int i = 1; i <= 1; i++)  vec.push_back({-NMJmax, -NMJmin});
 
     j["evolvable_ranges"] = toEvolvableRangesJson(vec);
+    j["evolved_used"]["value"] = toEvolvedUsedJson(vec);
   }
  
  // if (false){
