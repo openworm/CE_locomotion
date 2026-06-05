@@ -92,11 +92,32 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/COW2DSRE_test_out
 
     
+    omv test -V .test.example.omt #Izq original test.example.mep
+    #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+    omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
+    omv test -V .test.W2DCEanm2.omt
+    omv test -V .test.W2DCE.omt
+    omv test -V .test.W2DCEs.omt
+    omv test -V .test.W2DSR.omt
+    omv test -V .test.W2DSRE.omt
+    omv test -V .test.W2DCEE.omt
+    omv test -V .test.W2DCEFR.omt
+    omv test -V .test.W2DCEFRv2.omt
+    omv test -V .test.W2DSRFR.omt
+    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
+   
+
+
     omv test -V .test.COW2DSR2.omt
    
     omv test -V .test.osc_sim.omt
     omv test -V .test.osc_sim_21.omt
     omv test -V .test.osc_sim_21all.omt
+
+
+
+
 
     if [[  `uname -o` == "GNU/Linux" ]]; then 
         echo "Running 2018 tests which only pass on Linux..."
@@ -118,20 +139,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSR18srm.omt
 
     
-    omv test -V .test.example.omt #Izq original test.example.mep
-    #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
-    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
-    omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
-    omv test -V .test.W2DCE.omt
-    omv test -V .test.W2DCEs.omt
-    omv test -V .test.W2DSR.omt
-    omv test -V .test.W2DSRE.omt
-    omv test -V .test.W2DCEE.omt
-    omv test -V .test.W2DCEFR.omt
-    omv test -V .test.W2DCEFRv2.omt
-    omv test -V .test.W2DSRFR.omt
-    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
-    omv test -V .test.W2DCEanm2.omt
+    
 
     omv test -V .test.CO.omt
     omv test -V .test.COW2D.omt
