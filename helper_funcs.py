@@ -1,13 +1,15 @@
-import numpy as np
-from matplotlib import pyplot as plt
 import argparse
+import copy
+import html
+import json
+import math
 import os
 import shutil
-import math
 import sys
 from functools import partial
-import json
-import html
+
+import numpy as np
+from matplotlib import pyplot as plt
 
 try:
     from scipy.stats import binned_statistic
@@ -196,6 +198,179 @@ def write_worm_json(folder_name, json_data):
     filename = os.path.join(folder_name, "worm_data_worm.json")
     with open(filename, "w") as f:
         json.dump(json_data, f)
+
+
+def remove_nervous_system_cell(json_data, cell_name):
+    """Return a copy of a modern worm JSON dictionary without one NS cell."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    removed_evotags = set()
+
+    def collect_evotags(value):
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                removed_evotags.add(evotag)
+            for child in value.values():
+                collect_evotags(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect_evotags(child)
+
+    def references_cell(value):
+        if not isinstance(value, dict):
+            return False
+        for key, child in value.items():
+            key_lower = str(key).lower()
+            if (
+                child == cell_name
+                and (
+                    key_lower
+                    in {
+                        "from",
+                        "to",
+                        "from_cell",
+                        "to_cell",
+                        "cell",
+                        "cell_name",
+                    }
+                    or key_lower.endswith("_cell")
+                    or key_lower.endswith("_cell_name")
+                )
+            ):
+                return True
+        return False
+
+    collect_evotags(cells[cell_name])
+    del cells[cell_name]
+
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    removed_index = None
+    if isinstance(cell_names, list) and cell_name in cell_names:
+        removed_index = cell_names.index(cell_name)
+        cell_names.pop(removed_index)
+
+    no_suffix = nervous_system.get("cell_names_no_suffix", {}).get("value")
+    if (
+        removed_index is not None
+        and isinstance(no_suffix, list)
+        and removed_index < len(no_suffix)
+    ):
+        no_suffix.pop(removed_index)
+    elif isinstance(no_suffix, list):
+        base_name = cell_name.rsplit("_", 1)[0]
+        if base_name in no_suffix:
+            no_suffix.remove(base_name)
+
+    evotag_registry_keys = {"evolvable_ranges", "evolved_used", "Evolvable"}
+
+    def remove_references(value, at_root=False):
+        if isinstance(value, dict):
+            for key in list(value):
+                child = value[key]
+                if at_root and key in evotag_registry_keys:
+                    continue
+                if key == cell_name:
+                    collect_evotags(child)
+                    del value[key]
+                    continue
+                remove_references(child)
+        elif isinstance(value, list):
+            kept = []
+            for child in value:
+                remove = child == cell_name or references_cell(child)
+                if remove:
+                    collect_evotags(child)
+                else:
+                    remove_references(child)
+                    kept.append(child)
+            value[:] = kept
+
+    remove_references(result, at_root=True)
+
+    # The modern format stores the nervous-system size in the worm object.
+    for section_name in ("worm", "Worm"):
+        section = result.get(section_name)
+        if not isinstance(section, dict):
+            continue
+        for size_key in ("N_size", "n_size"):
+            size_obj = section.get(size_key)
+            if (
+                isinstance(size_obj, dict)
+                and isinstance(size_obj.get("value"), int)
+                and size_obj["value"] > 0
+            ):
+                size_obj["value"] -= 1
+
+    def collect_remaining_evotags(value, at_root=False, output=None):
+        if output is None:
+            output = set()
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                output.add(evotag)
+            for key, child in value.items():
+                if at_root and key in evotag_registry_keys:
+                    continue
+                collect_remaining_evotags(child, output=output)
+        elif isinstance(value, list):
+            for child in value:
+                collect_remaining_evotags(child, output=output)
+        return output
+
+    remaining_evotags = collect_remaining_evotags(result, at_root=True)
+    unused_evotags = removed_evotags - remaining_evotags
+
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in unused_evotags:
+            ranges.pop(str(evotag), None)
+
+        entries = ranges.get("value")
+        if isinstance(entries, list):
+            kept = []
+            for entry in entries:
+                entry_tag = None
+                if isinstance(entry, dict):
+                    if "evotag" in entry:
+                        entry_tag = entry["evotag"]
+                    elif len(entry) == 1:
+                        entry_tag = next(iter(entry))
+                if entry_tag not in unused_evotags:
+                    kept.append(entry)
+            entries[:] = kept
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict):
+        used_values = evolved_used.get("value")
+    else:
+        used_values = evolved_used
+    if isinstance(used_values, list):
+        used_values[:] = [tag for tag in used_values if tag not in unused_evotags]
+
+    legacy_ranges = result.get("Evolvable")
+    if isinstance(legacy_ranges, dict) and isinstance(legacy_ranges.get("value"), list):
+        legacy_ranges["value"][:] = [
+            entry
+            for entry in legacy_ranges["value"]
+            if not isinstance(entry, dict) or entry.get("evotag") not in unused_evotags
+        ]
+
+    return result
 
 
 def delete_directory(directory_path):
