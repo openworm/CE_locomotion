@@ -209,6 +209,37 @@ def delete_directory(directory_path):
     return True
 
 
+def delete_notebook_directory(subfolder_name, subsubfolder_name):
+    """Delete a direct child directory from a subfolder of the current directory."""
+    for name in (subfolder_name, subsubfolder_name):
+        if (
+            not isinstance(name, str)
+            or name in ("", ".", "..")
+            or os.path.isabs(name)
+            or os.path.basename(name) != name
+            or os.sep in name
+            or (os.altsep is not None and os.altsep in name)
+        ):
+            raise ValueError("Arguments must be single folder names, not paths")
+
+    parent_path = os.path.abspath(os.path.join(os.curdir, subfolder_name))
+    if not os.path.isdir(parent_path):
+        return False
+    if os.path.islink(parent_path):
+        raise ValueError("Refusing to use a symbolic link as the parent folder")
+
+    target_path = os.path.abspath(os.path.join(parent_path, subsubfolder_name))
+    if os.path.dirname(target_path) != parent_path:
+        raise ValueError("Target must be a direct child of the parent folder")
+    if not os.path.isdir(target_path):
+        return False
+    if os.path.islink(target_path):
+        raise ValueError("Refusing to delete a symbolic link")
+
+    shutil.rmtree(target_path)
+    return True
+
+
 def checkDictName(dictval, namelist):
     dictval1 = dictval
     for val in namelist:
