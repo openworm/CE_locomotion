@@ -38,8 +38,8 @@ json_data['evolvable_ranges']['ns_cells_bias_0']["active"] = False
 json_data['evolvable_ranges']['ns_chemcons_1']["active"] = False
 json_data['evolvable_ranges']['DA_0_1_tau'] = {
             "active": True,
-            "lower_limit": 0.0,
-            "upper_limit": 100.0,
+            "lower_limit": 0.1,
+            "upper_limit": 2.5,
             "name": "DA_tau"
         }
 json_data['nervous_system']['cells']['DA_0']['tau']['evotag'] = "DA_0_1_tau"
