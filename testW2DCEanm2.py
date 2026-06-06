@@ -34,8 +34,8 @@ run(**args)
 
 
 json_data = get_worm_json(origFolderName)
-json_data['evolvable_ranges']['evotag_1']["active"] = False
-json_data['evolvable_ranges']['evotag_2']["active"] = False
+json_data['evolvable_ranges']['ns_cells_bias_0']["active"] = False
+json_data['evolvable_ranges']['ns_chemcons_1']["active"] = False
 json_data['evolvable_ranges']['DA_0_1_tau'] = {
             "active": True,
             "lower_limit": 0.0,
