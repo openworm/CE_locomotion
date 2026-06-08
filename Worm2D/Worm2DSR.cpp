@@ -2341,7 +2341,17 @@ void Sensor::construct(const json & j)
 
 void  Sensor::addParsToJson(json & j) const
 {
-  if (spvec.size()<1) return;
+  if (spvec.empty())
+  {
+    j.erase("sensors");
+    j.erase("Sensors");
+    if (j.contains("worm"))
+    {
+      j["worm"].erase("sensorM");
+      j["worm"].erase("sensorN");
+    }
+    return;
+  }
 
   json & environmentsJson = j["environments"];
   for (int i = 0; i<spvec.size(); i++)

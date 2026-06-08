@@ -982,6 +982,8 @@ def delete_sensor(json_data, sensor_name):
     sensors.clear()
     for index, (_, remaining_sensor) in enumerate(ordered_sensors, start=1):
         sensors["sensor_{}".format(index)] = remaining_sensor
+    if not sensors:
+        result.pop("sensors", None)
 
     def collect_remaining_evotags(value, at_root=False, output=None):
         if output is None:
