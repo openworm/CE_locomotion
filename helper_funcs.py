@@ -200,6 +200,49 @@ def write_worm_json(folder_name, json_data):
         json.dump(json_data, f)
 
 
+def add_environment(
+    json_data,
+    name=None,
+    x_center=0.0,
+    y_center=0.0,
+    grad_steep=0.5,
+):
+    """Return a copy of a worm JSON dictionary with a new environment."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    for parameter_name, value in (
+        ("x_center", x_center),
+        ("y_center", y_center),
+        ("grad_steep", grad_steep),
+    ):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("{} must be a number".format(parameter_name))
+
+    result = copy.deepcopy(json_data)
+    environments = result.setdefault("environments", {})
+    if not isinstance(environments, dict):
+        raise TypeError("'environments' must be a dictionary")
+
+    if name is None:
+        index = 1
+        while "environment_{}".format(index) in environments:
+            index += 1
+        name = "environment_{}".format(index)
+    elif not isinstance(name, str) or not name.strip():
+        raise ValueError("name must be a non-empty string")
+    elif name in environments:
+        raise ValueError("Environment {!r} already exists".format(name))
+
+    environments[name] = {
+        "name": {"value": name},
+        "x_center": {"value": float(x_center)},
+        "y_center": {"value": float(y_center)},
+        "grad_steep": {"value": float(grad_steep)},
+    }
+    return result
+
+
 def remove_nervous_system_cell(json_data, cell_name):
     """Return a copy of a modern worm JSON dictionary without one NS cell."""
     if not isinstance(json_data, dict):
