@@ -813,10 +813,21 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
         return;
     }
 
-    vector<toFromWeight> vec1 = j["Driving input"]["weights"]["value"].template get< vector<toFromWeight> >();
-    vector<double> exvec = j["Driving input"]["strengths"]["value"].template get< vector<double> >();
-    externalInputs.swap(exvec);
-    externalInputConn.swap(vec1);
+    if (j.contains("Driving input"))
+    {
+        vector<toFromWeight> vec1 =
+            j["Driving input"]["weights"]["value"].
+            template get< vector<toFromWeight> >();
+        vector<double> exvec =
+            j["Driving input"]["strengths"]["value"].
+            template get< vector<double> >();
+        externalInputs.swap(exvec);
+        externalInputConn.swap(vec1);
+        return;
+    }
+
+    externalInputs.clear();
+    externalInputConn.clear();
 
 }
 
@@ -897,55 +908,72 @@ void Worm2Dbase::addParsToJson(json & j)
     assert(!names.empty() && names[0]!="not implemented");
 
 
-    
-     {json & j22 =  j["driving_inputs"]["weights"]["value"];
-    j["driving_inputs"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
-    for (const toFromWeight & val : externalInputConn)
+    if (!externalInputs.empty() || !externalInputConn.empty())
     {
-        assert(val.w.from-1<names.size() && val.w.from-1>=0);
-        bool found = false;
-        for (auto it = j22.begin(); it != j22.end(); ++it)
-            if (it->at("to_cell")==names[val.to-1] && it->at("from_input")==val.w.from)
-        {it->at("weight").at("value")=val.w.weight;found = true;break;}
-        if (found) continue;
+        {
+            json & j22 = j["driving_inputs"]["weights"]["value"];
+            j["driving_inputs"]["weights"]["message"] =
+                "Weights of driving inputs to Nervous System in sparse format";
+            for (const toFromWeight & val : externalInputConn)
+            {
+                assert(val.w.from-1<names.size() && val.w.from-1>=0);
+                bool found = false;
+                for (auto it = j22.begin(); it != j22.end(); ++it)
+                    if (it->at("to_cell")==names[val.to-1]
+                        && it->at("from_input")==val.w.from)
+                    {
+                        it->at("weight").at("value")=val.w.weight;
+                        found = true;
+                        break;
+                    }
+                if (found) continue;
 
-        json j2 = json::object();
-        j2["from_input"] = val.w.from;
-        j2["to_cell"] = names[val.to-1];
-        j2["weight"]["value"] = val.w.weight;
-        j22.push_back(j2);
-    }  
+                json j2 = json::object();
+                j2["from_input"] = val.w.from;
+                j2["to_cell"] = names[val.to-1];
+                j2["weight"]["value"] = val.w.weight;
+                j22.push_back(j2);
+            }
+        }
+
+        {
+            json & j22 = j["driving_inputs"]["inputs"]["value"];
+            j["driving_inputs"]["inputs"]["message"] =
+                "Driving input strength to Nervous System";
+            for (int i=0;i<externalInputs.size();i++)
+            {
+                bool found = false;
+                for (auto it = j22.begin(); it != j22.end(); ++it)
+                    if (it->at("input_num")==i+1)
+                    {
+                        it->at("strength").at("value")=externalInputs[i];
+                        found = true;
+                        break;
+                    }
+                if (found) continue;
+
+                json j2 = json::object();
+                j2["input_num"] = i+1;
+                j2["strength"]["value"] = externalInputs[i];
+                j22.push_back(j2);
+            }
+        }
+
+        appendVectorToJson<toFromWeight>(
+            j["Driving input"]["weights"], externalInputConn);
+        j["Driving input"]["weights"]["message"] =
+            "Weights of driving inputs to Nervous System in sparse format";
+        appendVectorToJson<double>(
+            j["Driving input"]["strengths"], externalInputs);
+        j["Driving input"]["strengths"]["message"] =
+            "Driving input strength to Nervous System in sparse format";
+        j["Driving input"]["size"]["value"] = externalInputs.size();
     }
-
-
+    else
     {
-     json & j22 =  j["driving_inputs"]["inputs"]["value"];
-    j["driving_inputs"]["inputs"]["message"] = "Driving input strength to Nervous System";
-    for (int i=0;i<externalInputs.size();i++) {
-
-        bool found = false;
-        for (auto it = j22.begin(); it != j22.end(); ++it)
-            if (it->at("input_num")==i+1)
-        {it->at("strength").at("value")=externalInputs[i];found = true;break;}
-        if (found) continue;
-
-        json j2 = json::object();
-        j2["input_num"] = i+1;
-        j2["strength"]["value"] = externalInputs[i];
-        j22.push_back(j2);
+        j.erase("driving_inputs");
+        j.erase("Driving input");
     }
-    }
-
-
-//if (false){
-    appendVectorToJson<toFromWeight>(j["Driving input"]["weights"], externalInputConn);
-    j["Driving input"]["weights"]["message"] = "Weights of driving inputs to Nervous System in sparse format";
-    appendVectorToJson<double>(j["Driving input"]["strengths"], externalInputs);
-    j["Driving input"]["strengths"]["message"] = "Driving input strength to Nervous System in sparse format";
-
-    j["Driving input"]["size"]["value"] = externalInputs.size();
-    
-//}
 
 
     appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
