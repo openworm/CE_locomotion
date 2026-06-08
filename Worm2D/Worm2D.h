@@ -988,5 +988,6 @@ public:
 virtual void ResetAgentsBody()  = 0;
 virtual double distanceToCenter() const = 0;
 virtual void InitializeSensors(RandomState& rs) = 0;
+virtual void setGradientSteepness(const double &) {}
 
 };

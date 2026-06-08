@@ -1444,9 +1444,10 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
         w.setValCJWorm("kinesis",kinesis);
 
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
-		{
+            {
 
             w.setValCJWorm("gradSteep",gradSteep);
+            wg.setGradientSteepness(gradSteep);
 
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
@@ -1607,8 +1608,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
         w.setValCJWorm("kinesis",kinesis);
 
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
-		{
-                  w.setValCJWorm("gradSteep",gradSteep);
+			{
+	                  w.setValCJWorm("gradSteep",gradSteep);
+                  wg.setGradientSteepness(gradSteep);
 
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
             //for (double orient = 0.0; orient < 2*Pi; orient +=2* Pi)

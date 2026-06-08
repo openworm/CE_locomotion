@@ -162,6 +162,18 @@ Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 };
 
 
+class EnvironmentPars
+{
+  public:
+
+string name;
+double x_center, y_center, gradSteep;
+
+void setParsFromJson(const string & key, const json & j);
+void writeParsToJson(json & j) const;
+};
+
+
 class SensorPars
 {
   public:
@@ -174,7 +186,8 @@ int iSensorN, iSensorM;
 //double chemCon, presentAvgCon, pastAvgCon;
 double presentAvgCon, pastAvgCon;
 int extInp1, extInp2;
-double gradSteep, HSStepSize, x_center, y_center;
+double HSStepSize;
+string environmentName;
 
 void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
@@ -208,6 +221,7 @@ void UpdateChemCon();
 void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
 void InitializeSensors(RandomState& rs);
+void setGradientSteepness(const double & gradSteep) override;
 void ResetAgentsBody(){
   //wb.ResetAgentsBody(CO2DSRpars);
   wb.ResetAgentsBody(wb);
@@ -218,6 +232,10 @@ Worm2Dm & wb;
 //shared_ptr<baseParameters> sensor_basePars1;
 
 vector<SensorPars> spvec;
+vector<EnvironmentPars> environmentVec;
+
+EnvironmentPars & getEnvironment(const string & name);
+const EnvironmentPars & getEnvironment(const string & name) const;
 
 //vector<double> chemConHistory;
 //TVector<double> chemConHistory;

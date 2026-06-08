@@ -914,336 +914,336 @@
                     "from_cell": "SMDD_0",
                     "to_musc": 1,
                     "weight": {
-                        "value": 0.40836305475865037
+                        "value": 0.3113361431885208
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 1,
                     "weight": {
-                        "value": 0.5121440691794563
+                        "value": 0.604122956800013
                     }
                 },
                 {
                     "from_cell": "SMDD_0",
                     "to_musc": 2,
                     "weight": {
-                        "value": 0.39985549111784513
+                        "value": 0.30484997353876
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 2,
                     "weight": {
-                        "value": 0.501474401071551
+                        "value": 0.5915370618666794
                     }
                 },
                 {
                     "from_cell": "SMDD_0",
                     "to_musc": 3,
                     "weight": {
-                        "value": 0.39134792747703995
+                        "value": 0.29836380388899914
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 3,
                     "weight": {
-                        "value": 0.49080473296364563
+                        "value": 0.5789511669333458
                     }
                 },
                 {
                     "from_cell": "SMDD_0",
                     "to_musc": 4,
                     "weight": {
-                        "value": 0.38284036383623476
+                        "value": 0.2918776342392383
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 4,
                     "weight": {
-                        "value": 0.4801350648557403
+                        "value": 0.5663652720000123
                     }
                 },
                 {
                     "from_cell": "SMDD_0",
                     "to_musc": 5,
                     "weight": {
-                        "value": 0.3743328001954295
+                        "value": 0.2853914645894774
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 5,
                     "weight": {
-                        "value": 0.46946539674783494
+                        "value": 0.5537793770666786
                     }
                 },
                 {
                     "from_cell": "SMDD_0",
                     "to_musc": 6,
                     "weight": {
-                        "value": 0.3658252365546243
+                        "value": 0.2789052949397166
                     }
                 },
                 {
                     "from_cell": "RMDD_0",
                     "to_musc": 6,
                     "weight": {
-                        "value": 0.4587957286399297
+                        "value": 0.5411934821333451
                     }
                 },
                 {
                     "from_cell": "DD_0",
                     "to_musc": 7,
                     "weight": {
-                        "value": -0.2681043975080199
+                        "value": -0.17873191960164314
                     }
                 },
                 {
                     "from_cell": "DB_0",
                     "to_musc": 7,
                     "weight": {
-                        "value": 0.5155888261052943
+                        "value": 0.4488464333799006
                     }
                 },
                 {
                     "from_cell": "DD_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": -0.2617209594721147
+                        "value": -0.17447639770636594
                     }
                 },
                 {
                     "from_cell": "DB_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": 0.5033129016742159
+                        "value": 0.4381596135375221
                     }
                 },
                 {
                     "from_cell": "DD_0",
                     "to_musc": 9,
                     "weight": {
-                        "value": -0.25533752143620947
+                        "value": -0.17022087581108872
                     }
                 },
                 {
                     "from_cell": "DB_0",
                     "to_musc": 9,
                     "weight": {
-                        "value": 0.4910369772431375
+                        "value": 0.4274727936951435
                     }
                 },
                 {
                     "from_cell": "DD_1",
                     "to_musc": 10,
                     "weight": {
-                        "value": -0.24895408340030423
+                        "value": -0.1659653539158115
                     }
                 },
                 {
                     "from_cell": "DB_1",
                     "to_musc": 10,
                     "weight": {
-                        "value": 0.47876105281205905
+                        "value": 0.4167859738527649
                     }
                 },
                 {
                     "from_cell": "DD_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": -0.24257064536439896
+                        "value": -0.16170983202053427
                     }
                 },
                 {
                     "from_cell": "DB_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": 0.46648512838098055
+                        "value": 0.40609915401038627
                     }
                 },
                 {
                     "from_cell": "DD_1",
                     "to_musc": 12,
                     "weight": {
-                        "value": -0.23618720732849374
+                        "value": -0.15745431012525707
                     }
                 },
                 {
                     "from_cell": "DB_1",
                     "to_musc": 12,
                     "weight": {
-                        "value": 0.45420920394990216
+                        "value": 0.3954123341680077
                     }
                 },
                 {
                     "from_cell": "DD_2",
                     "to_musc": 13,
                     "weight": {
-                        "value": -0.2298037692925885
+                        "value": -0.15319878822997982
                     }
                 },
                 {
                     "from_cell": "DB_2",
                     "to_musc": 13,
                     "weight": {
-                        "value": 0.44193327951882366
+                        "value": 0.38472551432562907
                     }
                 },
                 {
                     "from_cell": "DD_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": -0.2234203312566833
+                        "value": -0.14894326633470265
                     }
                 },
                 {
                     "from_cell": "DB_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": 0.4296573550877454
+                        "value": 0.3740386944832506
                     }
                 },
                 {
                     "from_cell": "DD_2",
                     "to_musc": 15,
                     "weight": {
-                        "value": -0.21703689322077802
+                        "value": -0.1446877444394254
                     }
                 },
                 {
                     "from_cell": "DB_2",
                     "to_musc": 15,
                     "weight": {
-                        "value": 0.4173814306566668
+                        "value": 0.3633518746408719
                     }
                 },
                 {
                     "from_cell": "DD_3",
                     "to_musc": 16,
                     "weight": {
-                        "value": -0.2106534551848728
+                        "value": -0.14043222254414817
                     }
                 },
                 {
                     "from_cell": "DB_3",
                     "to_musc": 16,
                     "weight": {
-                        "value": 0.4051055062255884
+                        "value": 0.35266505479849336
                     }
                 },
                 {
                     "from_cell": "DD_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": -0.2042700171489676
+                        "value": -0.13617670064887097
                     }
                 },
                 {
                     "from_cell": "DB_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": 0.39282958179451
+                        "value": 0.3419782349561148
                     }
                 },
                 {
                     "from_cell": "DD_3",
                     "to_musc": 18,
                     "weight": {
-                        "value": -0.1978865791130623
+                        "value": -0.13192117875359372
                     }
                 },
                 {
                     "from_cell": "DB_3",
                     "to_musc": 18,
                     "weight": {
-                        "value": 0.38055365736343144
+                        "value": 0.3312914151137361
                     }
                 },
                 {
                     "from_cell": "DD_4",
                     "to_musc": 19,
                     "weight": {
-                        "value": -0.1915031410771571
+                        "value": -0.12766565685831655
                     }
                 },
                 {
                     "from_cell": "DB_4",
                     "to_musc": 19,
                     "weight": {
-                        "value": 0.3682777329323531
+                        "value": 0.32060459527135765
                     }
                 },
                 {
                     "from_cell": "DD_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": -0.1851197030412519
+                        "value": -0.12341013496303933
                     }
                 },
                 {
                     "from_cell": "DB_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": 0.3560018085012747
+                        "value": 0.3099177754289791
                     }
                 },
                 {
                     "from_cell": "DD_4",
                     "to_musc": 21,
                     "weight": {
-                        "value": -0.17873626500534662
+                        "value": -0.11915461306776208
                     }
                 },
                 {
                     "from_cell": "DB_4",
                     "to_musc": 21,
                     "weight": {
-                        "value": 0.34372588407019616
+                        "value": 0.2992309555866004
                     }
                 },
                 {
                     "from_cell": "DD_5",
                     "to_musc": 22,
                     "weight": {
-                        "value": -0.1723528269694414
+                        "value": -0.11489909117248488
                     }
                 },
                 {
                     "from_cell": "DB_5",
                     "to_musc": 22,
                     "weight": {
-                        "value": 0.3314499596391178
+                        "value": 0.28854413574422183
                     }
                 },
                 {
                     "from_cell": "DD_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": -0.1659693889335362
+                        "value": -0.11064356927720768
                     }
                 },
                 {
                     "from_cell": "DB_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": 0.3191740352080394
+                        "value": 0.2778573159018433
                     }
                 },
                 {
                     "from_cell": "DD_5",
                     "to_musc": 24,
                     "weight": {
-                        "value": -0.1595859508976309
+                        "value": -0.10638804738193043
                     }
                 },
                 {
                     "from_cell": "DB_5",
                     "to_musc": 24,
                     "weight": {
-                        "value": 0.3068981107769609
+                        "value": 0.26717049605946463
                     }
                 }
             ]
@@ -1260,247 +1260,219 @@
         }
     },
     "evolvable_ranges": {
+        "ns_cells_bias_0": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_cells_bias",
+            "upper_limit": 15.0
+        },
+        "ns_cells_bias_1": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_cells_bias",
+            "upper_limit": 15.0
+        },
+        "ns_cells_bias_2": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_cells_bias",
+            "upper_limit": 15.0
+        },
+        "ns_cells_bias_3": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_cells_bias",
+            "upper_limit": 15.0
+        },
+        "ns_cells_tau_0": {
+            "active": true,
+            "lower_limit": 0.5,
+            "name": "ns_cells_tau",
+            "upper_limit": 2.0
+        },
+        "ns_cells_tau_1": {
+            "active": true,
+            "lower_limit": 0.5,
+            "name": "ns_cells_tau",
+            "upper_limit": 2.0
+        },
+        "ns_cells_tau_2": {
+            "active": true,
+            "lower_limit": 0.5,
+            "name": "ns_cells_tau",
+            "upper_limit": 2.0
+        },
+        "ns_cells_tau_3": {
+            "active": true,
+            "lower_limit": 0.5,
+            "name": "ns_cells_tau",
+            "upper_limit": 2.0
+        },
+        "ns_chemcons_0": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_1": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_2": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_3": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_4": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_5": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_6": {
+            "active": true,
+            "lower_limit": 4.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_7": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_8": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_chemcons_9": {
+            "active": true,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0
+        },
+        "ns_eleccons_0": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "ns_eleccons_1": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "ns_eleccons_2": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "ns_eleccons_3": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "ns_eleccons_4": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "ns_eleccons_5": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "ns_eleccons",
+            "upper_limit": 2.0
+        },
+        "sr_head_gain": {
+            "active": true,
+            "lower_limit": -200.0,
+            "name": "sr_head_gain",
+            "upper_limit": 0.0
+        },
+        "sr_vnc_gain": {
+            "active": true,
+            "lower_limit": -200.0,
+            "name": "sr_vnc_gain",
+            "upper_limit": 0.0
+        },
+        "vnc_18_DB_VBA_VBP": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "vnc_18_DB_VBA_VBP",
+            "upper_limit": 1.0
+        },
+        "vnc_18_DD_VDA_VDP": {
+            "active": true,
+            "lower_limit": -1.0,
+            "name": "vnc_18_DD_VDA_VDP",
+            "upper_limit": 0.0
+        },
+        "vnc_18_RMDD_RMDV": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "vnc_18_RMDD_RMDV",
+            "upper_limit": 1.0
+        },
+        "vnc_18_SMDD_SMDV": {
+            "active": true,
+            "lower_limit": 0.0,
+            "name": "vnc_18_SMDD_SMDV",
+            "upper_limit": 1.0
+        }
+    },
+    "evolved_used": {
         "value": [
-            {
-                "evotag_1": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_cells_bias",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_2": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_cells_bias",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_3": {
-                    "active": true,
-                    "lower_limit": 0.5,
-                    "name": "ns_cells_tau",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_4": {
-                    "active": true,
-                    "lower_limit": 0.5,
-                    "name": "ns_cells_tau",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_5": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_6": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_7": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_8": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_9": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_10": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_11": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_12": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_13": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_14": {
-                    "active": true,
-                    "lower_limit": -200.0,
-                    "name": "sr_vnc_gain",
-                    "upper_limit": 0.0
-                }
-            },
-            {
-                "evotag_15": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "vnc_18_DB_VBA_VBP",
-                    "upper_limit": 1.0
-                }
-            },
-            {
-                "evotag_16": {
-                    "active": true,
-                    "lower_limit": -1.0,
-                    "name": "vnc_18_DD_VDA_VDP",
-                    "upper_limit": 0.0
-                }
-            },
-            {
-                "evotag_17": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_cells_bias",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_18": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_cells_bias",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_19": {
-                    "active": true,
-                    "lower_limit": 0.5,
-                    "name": "ns_cells_tau",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_20": {
-                    "active": true,
-                    "lower_limit": 0.5,
-                    "name": "ns_cells_tau",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_21": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_22": {
-                    "active": true,
-                    "lower_limit": 4.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_23": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_24": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_25": {
-                    "active": true,
-                    "lower_limit": -15.0,
-                    "name": "ns_chemcons",
-                    "upper_limit": 15.0
-                }
-            },
-            {
-                "evotag_26": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_27": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "ns_eleccons",
-                    "upper_limit": 2.0
-                }
-            },
-            {
-                "evotag_28": {
-                    "active": true,
-                    "lower_limit": -200.0,
-                    "name": "sr_head_gain",
-                    "upper_limit": 0.0
-                }
-            },
-            {
-                "evotag_29": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "vnc_18_SMDD_SMDV",
-                    "upper_limit": 1.0
-                }
-            },
-            {
-                "evotag_30": {
-                    "active": true,
-                    "lower_limit": 0.0,
-                    "name": "vnc_18_RMDD_RMDV",
-                    "upper_limit": 1.0
-                }
-            }
+            "ns_cells_bias_0",
+            "ns_cells_bias_1",
+            "ns_cells_tau_0",
+            "ns_cells_tau_1",
+            "ns_chemcons_0",
+            "ns_chemcons_1",
+            "ns_chemcons_2",
+            "ns_chemcons_3",
+            "ns_chemcons_4",
+            "ns_eleccons_0",
+            "ns_eleccons_1",
+            "ns_eleccons_2",
+            "ns_eleccons_3",
+            "sr_vnc_gain",
+            "vnc_18_DB_VBA_VBP",
+            "vnc_18_DD_VDA_VDP",
+            "ns_cells_bias_2",
+            "ns_cells_bias_3",
+            "ns_cells_tau_2",
+            "ns_cells_tau_3",
+            "ns_chemcons_5",
+            "ns_chemcons_6",
+            "ns_chemcons_7",
+            "ns_chemcons_8",
+            "ns_chemcons_9",
+            "ns_eleccons_4",
+            "ns_eleccons_5",
+            "sr_head_gain",
+            "vnc_18_SMDD_SMDV",
+            "vnc_18_RMDD_RMDV"
         ]
     },
     "nervous_system": {
@@ -1595,8 +1567,8 @@
         "cells": {
             "DB_0": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1608,14 +1580,14 @@
                     "value": 0.013888888888888888
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DB_1": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1627,14 +1599,14 @@
                     "value": 0.18055555555555555
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DB_2": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1646,14 +1618,14 @@
                     "value": 0.3472222222222222
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DB_3": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1665,14 +1637,14 @@
                     "value": 0.5138888888888888
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DB_4": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1684,14 +1656,14 @@
                     "value": 0.6805555555555556
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DB_5": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1703,14 +1675,14 @@
                     "value": 0.8472222222222222
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "DD_0": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1722,14 +1694,14 @@
                     "value": 0.041666666666666664
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "DD_1": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1741,14 +1713,14 @@
                     "value": 0.20833333333333334
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "DD_2": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1760,14 +1732,14 @@
                     "value": 0.375
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "DD_3": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1779,14 +1751,14 @@
                     "value": 0.5416666666666666
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "DD_4": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1798,14 +1770,14 @@
                     "value": 0.7083333333333334
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "DD_5": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1817,14 +1789,14 @@
                     "value": 0.875
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "RMDD_0": {
                 "bias": {
-                    "evotag": 18,
-                    "value": -5.783300330646684
+                    "evotag": "ns_cells_bias_3",
+                    "value": -8.956848156121332
                 },
                 "cell_class": {
                     "value": "head"
@@ -1836,14 +1808,14 @@
                     "value": 0.375
                 },
                 "tau": {
-                    "evotag": 20,
-                    "value": 1.6263440567817524
+                    "evotag": "ns_cells_tau_3",
+                    "value": 1.3569435877410378
                 }
             },
             "RMDV_0": {
                 "bias": {
-                    "evotag": 18,
-                    "value": -5.783300330646684
+                    "evotag": "ns_cells_bias_3",
+                    "value": -8.956848156121332
                 },
                 "cell_class": {
                     "value": "head"
@@ -1855,14 +1827,14 @@
                     "value": 0.875
                 },
                 "tau": {
-                    "evotag": 20,
-                    "value": 1.6263440567817524
+                    "evotag": "ns_cells_tau_3",
+                    "value": 1.3569435877410378
                 }
             },
             "SMDD_0": {
                 "bias": {
-                    "evotag": 17,
-                    "value": 13.461932453160422
+                    "evotag": "ns_cells_bias_2",
+                    "value": 14.320326459473849
                 },
                 "cell_class": {
                     "value": "head"
@@ -1874,14 +1846,14 @@
                     "value": 0.125
                 },
                 "tau": {
-                    "evotag": 19,
-                    "value": 1.3292850801805738
+                    "evotag": "ns_cells_tau_2",
+                    "value": 1.094330262433681
                 }
             },
             "SMDV_0": {
                 "bias": {
-                    "evotag": 17,
-                    "value": 13.461932453160422
+                    "evotag": "ns_cells_bias_2",
+                    "value": 14.320326459473849
                 },
                 "cell_class": {
                     "value": "head"
@@ -1893,14 +1865,14 @@
                     "value": 0.625
                 },
                 "tau": {
-                    "evotag": 19,
-                    "value": 1.3292850801805738
+                    "evotag": "ns_cells_tau_2",
+                    "value": 1.094330262433681
                 }
             },
             "VBA_0": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1912,14 +1884,14 @@
                     "value": 0.06944444444444445
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBA_1": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1931,14 +1903,14 @@
                     "value": 0.2361111111111111
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBA_2": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1950,14 +1922,14 @@
                     "value": 0.4027777777777778
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBA_3": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1969,14 +1941,14 @@
                     "value": 0.5694444444444444
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBA_4": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -1988,14 +1960,14 @@
                     "value": 0.7361111111111112
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBA_5": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2007,14 +1979,14 @@
                     "value": 0.9027777777777778
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_0": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2026,14 +1998,14 @@
                     "value": 0.125
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_1": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2045,14 +2017,14 @@
                     "value": 0.2916666666666667
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_2": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2064,14 +2036,14 @@
                     "value": 0.4583333333333333
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_3": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2083,14 +2055,14 @@
                     "value": 0.625
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_4": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2102,14 +2074,14 @@
                     "value": 0.7916666666666666
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VBP_5": {
                 "bias": {
-                    "evotag": 1,
-                    "value": 3.9641105207371217
+                    "evotag": "ns_cells_bias_0",
+                    "value": 6.639679044548757
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2121,14 +2093,14 @@
                     "value": 0.9583333333333334
                 },
                 "tau": {
-                    "evotag": 3,
-                    "value": 1.2597603933956034
+                    "evotag": "ns_cells_tau_0",
+                    "value": 1.3074563809822102
                 }
             },
             "VDA_0": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2140,14 +2112,14 @@
                     "value": 0.09722222222222222
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDA_1": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2159,14 +2131,14 @@
                     "value": 0.2638888888888889
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDA_2": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2178,14 +2150,14 @@
                     "value": 0.4305555555555556
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDA_3": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2197,14 +2169,14 @@
                     "value": 0.5972222222222222
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDA_4": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2216,14 +2188,14 @@
                     "value": 0.7638888888888888
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDA_5": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2235,14 +2207,14 @@
                     "value": 0.9305555555555556
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_0": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2254,14 +2226,14 @@
                     "value": 0.1527777777777778
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_1": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2273,14 +2245,14 @@
                     "value": 0.3194444444444444
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_2": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2292,14 +2264,14 @@
                     "value": 0.4861111111111111
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_3": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2311,14 +2283,14 @@
                     "value": 0.6527777777777778
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_4": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2330,14 +2302,14 @@
                     "value": 0.8194444444444444
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             },
             "VDP_5": {
                 "bias": {
-                    "evotag": 2,
-                    "value": -3.1233022262582995
+                    "evotag": "ns_cells_bias_1",
+                    "value": -4.2773387911698535
                 },
                 "cell_class": {
                     "value": "vnc"
@@ -2349,8 +2321,8 @@
                     "value": 0.9861111111111112
                 },
                 "tau": {
-                    "evotag": 4,
-                    "value": 2.0
+                    "evotag": "ns_cells_tau_1",
+                    "value": 0.5934118347527259
                 }
             }
         },
@@ -2360,800 +2332,800 @@
                     "from": "DB_0",
                     "to": "DB_0",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_0",
                     "to": "DD_0",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_0",
                     "to": "DD_0",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_0",
                     "to": "DD_0",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_0",
                     "to": "DD_0",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_0",
                     "to": "VBA_0",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_0",
                     "to": "VDA_0",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_0",
                     "to": "VDA_0",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_0",
                     "to": "VDA_0",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_0",
                     "to": "VDA_0",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_0",
                     "to": "VBP_0",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_0",
                     "to": "VDP_0",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_0",
                     "to": "VDP_0",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_0",
                     "to": "VDP_0",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DB_1",
                     "to": "DB_1",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_1",
                     "to": "DD_1",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_1",
                     "to": "DD_1",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_1",
                     "to": "DD_1",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_1",
                     "to": "DD_1",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_1",
                     "to": "VBA_1",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_1",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_1",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_1",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_1",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_1",
                     "to": "VBP_1",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_1",
                     "to": "VDP_1",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_1",
                     "to": "VDP_1",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_1",
                     "to": "VDP_1",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DB_2",
                     "to": "DB_2",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_2",
                     "to": "DD_2",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_2",
                     "to": "DD_2",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_2",
                     "to": "DD_2",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_2",
                     "to": "DD_2",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_2",
                     "to": "VBA_2",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_2",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_2",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_2",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_2",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_2",
                     "to": "VBP_2",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_2",
                     "to": "VDP_2",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_2",
                     "to": "VDP_2",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_2",
                     "to": "VDP_2",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DB_3",
                     "to": "DB_3",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_3",
                     "to": "DD_3",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_3",
                     "to": "DD_3",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_3",
                     "to": "DD_3",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_3",
                     "to": "DD_3",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_3",
                     "to": "VBA_3",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_3",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_3",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_3",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_3",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_3",
                     "to": "VBP_3",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_3",
                     "to": "VDP_3",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_3",
                     "to": "VDP_3",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_3",
                     "to": "VDP_3",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DB_4",
                     "to": "DB_4",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_4",
                     "to": "DD_4",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_4",
                     "to": "DD_4",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_4",
                     "to": "DD_4",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_4",
                     "to": "DD_4",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_4",
                     "to": "VBA_4",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_4",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_4",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_4",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_4",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_4",
                     "to": "VBP_4",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_4",
                     "to": "VDP_4",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_4",
                     "to": "VDP_4",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_4",
                     "to": "VDP_4",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DB_5",
                     "to": "DB_5",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "DD_5",
                     "to": "DD_5",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "DB_5",
                     "to": "DD_5",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "VBA_5",
                     "to": "DD_5",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBP_5",
                     "to": "DD_5",
                     "weight": {
-                        "evotag": 8,
+                        "evotag": "ns_chemcons_3",
                         "mfunc": {
                             "f_ind": 1,
                             "fact": 0.5
                         },
-                        "value": 4.91310434213354
+                        "value": 5.607163879809375
                     }
                 },
                 {
                     "from": "VBA_5",
                     "to": "VBA_5",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDA_5",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBA_5",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_5",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "DD_5",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 9,
-                        "value": -1.3406903239471977
+                        "evotag": "ns_chemcons_4",
+                        "value": 0.6596015379449341
                     }
                 },
                 {
                     "from": "VBP_5",
                     "to": "VBP_5",
                     "weight": {
-                        "evotag": 5,
-                        "value": -2.3683248311883114
+                        "evotag": "ns_chemcons_0",
+                        "value": -5.550118755452354
                     }
                 },
                 {
                     "from": "VDP_5",
                     "to": "VDP_5",
                     "weight": {
-                        "evotag": 6,
-                        "value": -2.7962017972440427
+                        "evotag": "ns_chemcons_1",
+                        "value": 0.3513728194013169
                     }
                 },
                 {
                     "from": "VBP_5",
                     "to": "VDP_5",
                     "weight": {
-                        "evotag": 7,
-                        "value": -2.6834567394382844
+                        "evotag": "ns_chemcons_2",
+                        "value": -2.9326612186508574
                     }
                 },
                 {
                     "from": "DB_5",
                     "to": "VDP_5",
                     "weight": {
-                        "evotag": 8,
-                        "value": 9.82620868426708
+                        "evotag": "ns_chemcons_3",
+                        "value": 11.21432775961875
                     }
                 },
                 {
                     "from": "SMDD_0",
                     "to": "SMDD_0",
                     "weight": {
-                        "evotag": 21,
-                        "value": -5.300540358804277
+                        "evotag": "ns_chemcons_5",
+                        "value": -10.960944334234014
                     }
                 },
                 {
                     "from": "SMDV_0",
                     "to": "SMDD_0",
                     "weight": {
-                        "evotag": 23,
-                        "value": -14.40647663569087
+                        "evotag": "ns_chemcons_7",
+                        "value": -14.616899217975464
                     }
                 },
                 {
                     "from": "RMDD_0",
                     "to": "RMDD_0",
                     "weight": {
-                        "evotag": 22,
-                        "value": 9.730929642748189
+                        "evotag": "ns_chemcons_6",
+                        "value": 5.008961604382065
                     }
                 },
                 {
                     "from": "SMDV_0",
                     "to": "RMDD_0",
                     "weight": {
-                        "evotag": 24,
-                        "value": -7.9043591851647586
+                        "evotag": "ns_chemcons_8",
+                        "value": 12.564995889688687
                     }
                 },
                 {
                     "from": "RMDV_0",
                     "to": "RMDD_0",
                     "weight": {
-                        "evotag": 25,
-                        "value": -1.3735761293940518
+                        "evotag": "ns_chemcons_9",
+                        "value": -3.7862083156650312
                     }
                 },
                 {
                     "from": "SMDV_0",
                     "to": "SMDV_0",
                     "weight": {
-                        "evotag": 21,
-                        "value": -5.300540358804277
+                        "evotag": "ns_chemcons_5",
+                        "value": -10.960944334234014
                     }
                 },
                 {
                     "from": "SMDD_0",
                     "to": "SMDV_0",
                     "weight": {
-                        "evotag": 23,
-                        "value": -14.40647663569087
+                        "evotag": "ns_chemcons_7",
+                        "value": -14.616899217975464
                     }
                 },
                 {
                     "from": "RMDV_0",
                     "to": "RMDV_0",
                     "weight": {
-                        "evotag": 22,
-                        "value": 9.730929642748189
+                        "evotag": "ns_chemcons_6",
+                        "value": 5.008961604382065
                     }
                 },
                 {
                     "from": "SMDD_0",
                     "to": "RMDV_0",
                     "weight": {
-                        "evotag": 24,
-                        "value": -7.9043591851647586
+                        "evotag": "ns_chemcons_8",
+                        "value": 12.564995889688687
                     }
                 },
                 {
                     "from": "RMDD_0",
                     "to": "RMDV_0",
                     "weight": {
-                        "evotag": 25,
-                        "value": -1.3735761293940518
+                        "evotag": "ns_chemcons_9",
+                        "value": -3.7862083156650312
                     }
                 }
             ]
@@ -3164,416 +3136,416 @@
                     "from": "DB_0",
                     "to": "DB_1",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "DD_0",
                     "to": "VDA_0",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_0",
                     "to": "VDP_0",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_0",
                     "to": "DD_1",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBA_0",
                     "to": "VBP_0",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_0",
                     "to": "VDP_0",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBP_0",
                     "to": "VBA_1",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VBP_0",
                     "to": "DB_1",
                     "weight": {
-                        "evotag": 13,
-                        "value": 0.22074622798036536
+                        "evotag": "ns_eleccons_3",
+                        "value": 0.9111736171642986
                     }
                 },
                 {
                     "from": "VDP_0",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "DB_1",
                     "to": "DB_2",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "DD_1",
                     "to": "VDA_1",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_1",
                     "to": "VDP_1",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_1",
                     "to": "DD_2",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBA_1",
                     "to": "VBP_1",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_1",
                     "to": "VDP_1",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBP_1",
                     "to": "VBA_2",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VBP_1",
                     "to": "DB_2",
                     "weight": {
-                        "evotag": 13,
-                        "value": 0.22074622798036536
+                        "evotag": "ns_eleccons_3",
+                        "value": 0.9111736171642986
                     }
                 },
                 {
                     "from": "VDP_1",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "DB_2",
                     "to": "DB_3",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "DD_2",
                     "to": "VDA_2",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_2",
                     "to": "VDP_2",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_2",
                     "to": "DD_3",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBA_2",
                     "to": "VBP_2",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_2",
                     "to": "VDP_2",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBP_2",
                     "to": "VBA_3",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VBP_2",
                     "to": "DB_3",
                     "weight": {
-                        "evotag": 13,
-                        "value": 0.22074622798036536
+                        "evotag": "ns_eleccons_3",
+                        "value": 0.9111736171642986
                     }
                 },
                 {
                     "from": "VDP_2",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "DB_3",
                     "to": "DB_4",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "DD_3",
                     "to": "VDA_3",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_3",
                     "to": "VDP_3",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_3",
                     "to": "DD_4",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBA_3",
                     "to": "VBP_3",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_3",
                     "to": "VDP_3",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBP_3",
                     "to": "VBA_4",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VBP_3",
                     "to": "DB_4",
                     "weight": {
-                        "evotag": 13,
-                        "value": 0.22074622798036536
+                        "evotag": "ns_eleccons_3",
+                        "value": 0.9111736171642986
                     }
                 },
                 {
                     "from": "VDP_3",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "DB_4",
                     "to": "DB_5",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "DD_4",
                     "to": "VDA_4",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_4",
                     "to": "VDP_4",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_4",
                     "to": "DD_5",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBA_4",
                     "to": "VBP_4",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_4",
                     "to": "VDP_4",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "VBP_4",
                     "to": "VBA_5",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VBP_4",
                     "to": "DB_5",
                     "weight": {
-                        "evotag": 13,
-                        "value": 0.22074622798036536
+                        "evotag": "ns_eleccons_3",
+                        "value": 0.9111736171642986
                     }
                 },
                 {
                     "from": "VDP_4",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "DD_5",
                     "to": "VDA_5",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "DD_5",
                     "to": "VDP_5",
                     "weight": {
-                        "evotag": 10,
-                        "value": 1.2561048498155747
+                        "evotag": "ns_eleccons_0",
+                        "value": 1.39879278264883
                     }
                 },
                 {
                     "from": "VBA_5",
                     "to": "VBP_5",
                     "weight": {
-                        "evotag": 12,
-                        "value": 1.9027132087828833
+                        "evotag": "ns_eleccons_2",
+                        "value": 1.88483448539094
                     }
                 },
                 {
                     "from": "VDA_5",
                     "to": "VDP_5",
                     "weight": {
-                        "evotag": 11,
-                        "value": 0.14701736026232348
+                        "evotag": "ns_eleccons_1",
+                        "value": 0.8181178060731188
                     }
                 },
                 {
                     "from": "SMDD_0",
                     "to": "RMDD_0",
                     "weight": {
-                        "evotag": 26,
-                        "value": 0.18121247448044076
+                        "evotag": "ns_eleccons_4",
+                        "value": 0.053770158804043455
                     }
                 },
                 {
                     "from": "RMDD_0",
                     "to": "RMDV_0",
                     "weight": {
-                        "evotag": 27,
-                        "value": 0.9792151807346469
+                        "evotag": "ns_eleccons_5",
+                        "value": 0.48888505069487664
                     }
                 },
                 {
                     "from": "SMDV_0",
                     "to": "RMDV_0",
                     "weight": {
-                        "evotag": 26,
-                        "value": 0.18121247448044076
+                        "evotag": "ns_eleccons_4",
+                        "value": 0.053770158804043455
                     }
                 }
             ]
@@ -3591,350 +3563,350 @@
                     "from_seg": 7,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 8,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 9,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 10,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 11,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 12,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 13,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 14,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 15,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 16,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 17,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 18,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 19,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 20,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 7,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 8,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 9,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 10,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 11,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 12,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 13,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 14,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 15,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 16,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 17,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 18,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 19,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 20,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 21,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 22,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 23,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 24,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 25,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 26,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 27,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 28,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 29,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 30,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 31,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 32,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 33,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 34,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 35,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 36,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 37,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 38,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 39,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 40,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 41,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 42,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 }
             ]
@@ -4102,15 +4074,15 @@
             "value": false
         },
         "sr_head_gain": {
-            "evotag": 28,
-            "value": -154.77736937862608
+            "evotag": "sr_head_gain",
+            "value": -138.2050366078975
         },
         "sr_head_sr": {
             "value": true
         },
         "sr_vnc_gain": {
-            "evotag": 14,
-            "value": -42.661507917801835
+            "evotag": "sr_vnc_gain",
+            "value": -158.32632980043937
         },
         "sr_vnc_sr": {
             "value": true
@@ -4125,602 +4097,602 @@
                     "from_seg": 7,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 8,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 9,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 10,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 11,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 12,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 13,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 14,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 15,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 16,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 17,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 18,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 19,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 20,
                     "to_sr": 1,
                     "weight": {
-                        "value": -11.055526384187576
+                        "value": -9.871788329135537
                     }
                 },
                 {
                     "from_seg": 7,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 9,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 8,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 10,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 9,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 11,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 10,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 12,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 11,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 13,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 12,
                     "to_sr": 2,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 14,
                     "to_sr": 8,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 13,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 15,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 14,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 16,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 15,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 17,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 16,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 18,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 17,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 19,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 18,
                     "to_sr": 3,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 20,
                     "to_sr": 9,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 19,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 21,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 20,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 22,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 21,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 23,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 22,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 24,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 23,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 25,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 24,
                     "to_sr": 4,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 26,
                     "to_sr": 10,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 25,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 27,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 26,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 28,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 27,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 29,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 28,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 30,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 29,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 31,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 30,
                     "to_sr": 5,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 32,
                     "to_sr": 11,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 31,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 33,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 32,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 34,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 33,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 35,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 34,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 36,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 35,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 37,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 36,
                     "to_sr": 6,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 38,
                     "to_sr": 12,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 37,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 39,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 38,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 40,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 39,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 41,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 40,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 42,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 41,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 43,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 42,
                     "to_sr": 7,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 },
                 {
                     "from_seg": 44,
                     "to_sr": 13,
                     "weight": {
-                        "value": -7.110251319633639
+                        "value": -26.38772163340656
                     }
                 }
             ]
@@ -5413,420 +5385,420 @@
                     "from_cell": "SMDV_0",
                     "to_musc": 1,
                     "weight": {
-                        "value": 0.40836305475865037
+                        "value": 0.3113361431885208
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 1,
                     "weight": {
-                        "value": 0.5121440691794563
+                        "value": 0.604122956800013
                     }
                 },
                 {
                     "from_cell": "SMDV_0",
                     "to_musc": 2,
                     "weight": {
-                        "value": 0.39985549111784513
+                        "value": 0.30484997353876
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 2,
                     "weight": {
-                        "value": 0.501474401071551
+                        "value": 0.5915370618666794
                     }
                 },
                 {
                     "from_cell": "SMDV_0",
                     "to_musc": 3,
                     "weight": {
-                        "value": 0.39134792747703995
+                        "value": 0.29836380388899914
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 3,
                     "weight": {
-                        "value": 0.49080473296364563
+                        "value": 0.5789511669333458
                     }
                 },
                 {
                     "from_cell": "SMDV_0",
                     "to_musc": 4,
                     "weight": {
-                        "value": 0.38284036383623476
+                        "value": 0.2918776342392383
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 4,
                     "weight": {
-                        "value": 0.4801350648557403
+                        "value": 0.5663652720000123
                     }
                 },
                 {
                     "from_cell": "SMDV_0",
                     "to_musc": 5,
                     "weight": {
-                        "value": 0.3743328001954295
+                        "value": 0.2853914645894774
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 5,
                     "weight": {
-                        "value": 0.46946539674783494
+                        "value": 0.5537793770666786
                     }
                 },
                 {
                     "from_cell": "SMDV_0",
                     "to_musc": 6,
                     "weight": {
-                        "value": 0.3658252365546243
+                        "value": 0.2789052949397166
                     }
                 },
                 {
                     "from_cell": "RMDV_0",
                     "to_musc": 6,
                     "weight": {
-                        "value": 0.4587957286399297
+                        "value": 0.5411934821333451
                     }
                 },
                 {
                     "from_cell": "VDA_0",
                     "to_musc": 7,
                     "weight": {
-                        "value": -0.2681043975080199
+                        "value": -0.17873191960164314
                     }
                 },
                 {
                     "from_cell": "VBA_0",
                     "to_musc": 7,
                     "weight": {
-                        "value": 0.5155888261052943
+                        "value": 0.4488464333799006
                     }
                 },
                 {
                     "from_cell": "VDA_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": -0.13086047973605736
+                        "value": -0.08723819885318297
                     }
                 },
                 {
                     "from_cell": "VBA_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": 0.25165645083710797
+                        "value": 0.21907980676876104
                     }
                 },
                 {
                     "from_cell": "VDP_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": -0.13086047973605736
+                        "value": -0.08723819885318297
                     }
                 },
                 {
                     "from_cell": "VBP_0",
                     "to_musc": 8,
                     "weight": {
-                        "value": 0.25165645083710797
+                        "value": 0.21907980676876104
                     }
                 },
                 {
                     "from_cell": "VDP_0",
                     "to_musc": 9,
                     "weight": {
-                        "value": -0.25533752143620947
+                        "value": -0.17022087581108872
                     }
                 },
                 {
                     "from_cell": "VBP_0",
                     "to_musc": 9,
                     "weight": {
-                        "value": 0.4910369772431375
+                        "value": 0.4274727936951435
                     }
                 },
                 {
                     "from_cell": "VDA_1",
                     "to_musc": 10,
                     "weight": {
-                        "value": -0.24895408340030423
+                        "value": -0.1659653539158115
                     }
                 },
                 {
                     "from_cell": "VBA_1",
                     "to_musc": 10,
                     "weight": {
-                        "value": 0.47876105281205905
+                        "value": 0.4167859738527649
                     }
                 },
                 {
                     "from_cell": "VDA_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": -0.12128532268219948
+                        "value": -0.08085491601026713
                     }
                 },
                 {
                     "from_cell": "VBA_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": 0.23324256419049028
+                        "value": 0.20304957700519313
                     }
                 },
                 {
                     "from_cell": "VDP_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": -0.12128532268219948
+                        "value": -0.08085491601026713
                     }
                 },
                 {
                     "from_cell": "VBP_1",
                     "to_musc": 11,
                     "weight": {
-                        "value": 0.23324256419049028
+                        "value": 0.20304957700519313
                     }
                 },
                 {
                     "from_cell": "VDP_1",
                     "to_musc": 12,
                     "weight": {
-                        "value": -0.23618720732849374
+                        "value": -0.15745431012525707
                     }
                 },
                 {
                     "from_cell": "VBP_1",
                     "to_musc": 12,
                     "weight": {
-                        "value": 0.45420920394990216
+                        "value": 0.3954123341680077
                     }
                 },
                 {
                     "from_cell": "VDA_2",
                     "to_musc": 13,
                     "weight": {
-                        "value": -0.2298037692925885
+                        "value": -0.15319878822997982
                     }
                 },
                 {
                     "from_cell": "VBA_2",
                     "to_musc": 13,
                     "weight": {
-                        "value": 0.44193327951882366
+                        "value": 0.38472551432562907
                     }
                 },
                 {
                     "from_cell": "VDA_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": -0.11171016562834166
+                        "value": -0.07447163316735132
                     }
                 },
                 {
                     "from_cell": "VBA_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": 0.2148286775438727
+                        "value": 0.1870193472416253
                     }
                 },
                 {
                     "from_cell": "VDP_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": -0.11171016562834166
+                        "value": -0.07447163316735132
                     }
                 },
                 {
                     "from_cell": "VBP_2",
                     "to_musc": 14,
                     "weight": {
-                        "value": 0.2148286775438727
+                        "value": 0.1870193472416253
                     }
                 },
                 {
                     "from_cell": "VDP_2",
                     "to_musc": 15,
                     "weight": {
-                        "value": -0.21703689322077802
+                        "value": -0.1446877444394254
                     }
                 },
                 {
                     "from_cell": "VBP_2",
                     "to_musc": 15,
                     "weight": {
-                        "value": 0.4173814306566668
+                        "value": 0.3633518746408719
                     }
                 },
                 {
                     "from_cell": "VDA_3",
                     "to_musc": 16,
                     "weight": {
-                        "value": -0.2106534551848728
+                        "value": -0.14043222254414817
                     }
                 },
                 {
                     "from_cell": "VBA_3",
                     "to_musc": 16,
                     "weight": {
-                        "value": 0.4051055062255884
+                        "value": 0.35266505479849336
                     }
                 },
                 {
                     "from_cell": "VDA_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": -0.1021350085744838
+                        "value": -0.06808835032443548
                     }
                 },
                 {
                     "from_cell": "VBA_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": 0.196414790897255
+                        "value": 0.1709891174780574
                     }
                 },
                 {
                     "from_cell": "VDP_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": -0.1021350085744838
+                        "value": -0.06808835032443548
                     }
                 },
                 {
                     "from_cell": "VBP_3",
                     "to_musc": 17,
                     "weight": {
-                        "value": 0.196414790897255
+                        "value": 0.1709891174780574
                     }
                 },
                 {
                     "from_cell": "VDP_3",
                     "to_musc": 18,
                     "weight": {
-                        "value": -0.1978865791130623
+                        "value": -0.13192117875359372
                     }
                 },
                 {
                     "from_cell": "VBP_3",
                     "to_musc": 18,
                     "weight": {
-                        "value": 0.38055365736343144
+                        "value": 0.3312914151137361
                     }
                 },
                 {
                     "from_cell": "VDA_4",
                     "to_musc": 19,
                     "weight": {
-                        "value": -0.1915031410771571
+                        "value": -0.12766565685831655
                     }
                 },
                 {
                     "from_cell": "VBA_4",
                     "to_musc": 19,
                     "weight": {
-                        "value": 0.3682777329323531
+                        "value": 0.32060459527135765
                     }
                 },
                 {
                     "from_cell": "VDA_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": -0.09255985152062594
+                        "value": -0.06170506748151967
                     }
                 },
                 {
                     "from_cell": "VBA_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": 0.17800090425063736
+                        "value": 0.15495888771448954
                     }
                 },
                 {
                     "from_cell": "VDP_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": -0.09255985152062594
+                        "value": -0.06170506748151967
                     }
                 },
                 {
                     "from_cell": "VBP_4",
                     "to_musc": 20,
                     "weight": {
-                        "value": 0.17800090425063736
+                        "value": 0.15495888771448954
                     }
                 },
                 {
                     "from_cell": "VDP_4",
                     "to_musc": 21,
                     "weight": {
-                        "value": -0.17873626500534662
+                        "value": -0.11915461306776208
                     }
                 },
                 {
                     "from_cell": "VBP_4",
                     "to_musc": 21,
                     "weight": {
-                        "value": 0.34372588407019616
+                        "value": 0.2992309555866004
                     }
                 },
                 {
                     "from_cell": "VDA_5",
                     "to_musc": 22,
                     "weight": {
-                        "value": -0.1723528269694414
+                        "value": -0.11489909117248488
                     }
                 },
                 {
                     "from_cell": "VBA_5",
                     "to_musc": 22,
                     "weight": {
-                        "value": 0.3314499596391178
+                        "value": 0.28854413574422183
                     }
                 },
                 {
                     "from_cell": "VDA_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": -0.0829846944667681
+                        "value": -0.05532178463860384
                     }
                 },
                 {
                     "from_cell": "VBA_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": 0.1595870176040197
+                        "value": 0.13892865795092166
                     }
                 },
                 {
                     "from_cell": "VDP_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": -0.0829846944667681
+                        "value": -0.05532178463860384
                     }
                 },
                 {
                     "from_cell": "VBP_5",
                     "to_musc": 23,
                     "weight": {
-                        "value": 0.1595870176040197
+                        "value": 0.13892865795092166
                     }
                 },
                 {
                     "from_cell": "VDP_5",
                     "to_musc": 24,
                     "weight": {
-                        "value": -0.1595859508976309
+                        "value": -0.10638804738193043
                     }
                 },
                 {
                     "from_cell": "VBP_5",
                     "to_musc": 24,
                     "weight": {
-                        "value": 0.3068981107769609
+                        "value": 0.26717049605946463
                     }
                 }
             ]
@@ -5837,29 +5809,29 @@
             "DB": {
                 "cell_ind": 1,
                 "weight": {
-                    "evotag": 15,
-                    "value": 0.84177767527395
+                    "evotag": "vnc_18_DB_VBA_VBP",
+                    "value": 0.7328105034773889
                 }
             },
             "DD": {
                 "cell_ind": 2,
                 "weight": {
-                    "evotag": 16,
-                    "value": -0.43772146531921624
+                    "evotag": "vnc_18_DD_VDA_VDP",
+                    "value": -0.2918072156761521
                 }
             },
             "RMDD": {
                 "cell_ind": 38,
                 "weight": {
-                    "evotag": 30,
-                    "value": 0.7316343845420805
+                    "evotag": "vnc_18_RMDD_RMDV",
+                    "value": 0.8630327954285901
                 }
             },
             "SMDD": {
                 "cell_ind": 37,
                 "weight": {
-                    "evotag": 29,
-                    "value": 0.5833757925123577
+                    "evotag": "vnc_18_SMDD_SMDV",
+                    "value": 0.44476591884074407
                 }
             }
         },
@@ -5879,43 +5851,43 @@
             "RMDV": {
                 "cell_ind": 40,
                 "weight": {
-                    "evotag": 30,
-                    "value": 0.7316343845420805
+                    "evotag": "vnc_18_RMDD_RMDV",
+                    "value": 0.8630327954285901
                 }
             },
             "SMDV": {
                 "cell_ind": 39,
                 "weight": {
-                    "evotag": 29,
-                    "value": 0.5833757925123577
+                    "evotag": "vnc_18_SMDD_SMDV",
+                    "value": 0.44476591884074407
                 }
             },
             "VBA": {
                 "cell_ind": 3,
                 "weight": {
-                    "evotag": 15,
-                    "value": 0.84177767527395
+                    "evotag": "vnc_18_DB_VBA_VBP",
+                    "value": 0.7328105034773889
                 }
             },
             "VBP": {
                 "cell_ind": 5,
                 "weight": {
-                    "evotag": 15,
-                    "value": 0.84177767527395
+                    "evotag": "vnc_18_DB_VBA_VBP",
+                    "value": 0.7328105034773889
                 }
             },
             "VDA": {
                 "cell_ind": 4,
                 "weight": {
-                    "evotag": 16,
-                    "value": -0.43772146531921624
+                    "evotag": "vnc_18_DD_VDA_VDP",
+                    "value": -0.2918072156761521
                 }
             },
             "VDP": {
                 "cell_ind": 6,
                 "weight": {
-                    "evotag": 16,
-                    "value": -0.43772146531921624
+                    "evotag": "vnc_18_DD_VDA_VDP",
+                    "value": -0.2918072156761521
                 }
             }
         }
@@ -5929,34 +5901,34 @@
             "value": 0.5
         },
         "NMJ_DB": {
-            "value": 0.84177767527395
+            "value": 0.7328105034773889
         },
         "NMJ_DD": {
-            "value": -0.43772146531921624
+            "value": -0.2918072156761521
         },
         "NMJ_RMDD": {
-            "value": 0.7316343845420805
+            "value": 0.8630327954285901
         },
         "NMJ_RMDV": {
-            "value": 0.7316343845420805
+            "value": 0.8630327954285901
         },
         "NMJ_SMDD": {
-            "value": 0.5833757925123577
+            "value": 0.44476591884074407
         },
         "NMJ_SMDV": {
-            "value": 0.5833757925123577
+            "value": 0.44476591884074407
         },
         "NMJ_VBa": {
-            "value": 0.84177767527395
+            "value": 0.7328105034773889
         },
         "NMJ_VBp": {
-            "value": 0.84177767527395
+            "value": 0.7328105034773889
         },
         "NMJ_VDa": {
-            "value": -0.43772146531921624
+            "value": -0.2918072156761521
         },
         "NMJ_VDp": {
-            "value": -0.43772146531921624
+            "value": -0.2918072156761521
         },
         "N_muscles": {
             "value": 24
@@ -5990,6 +5962,9 @@
         },
         "do_orig_sr_input": {
             "value": true
+        },
+        "main_model_name": {
+            "value": "W2D18"
         }
     }
 }

@@ -2156,45 +2156,14 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 
 void Sensor::InitialiseAgent()
 {
-	//VelDelta = (int) (HST/gradPars->HSStepSize);
-
-  if (spvec.size()>0){
-
   double HSStepSize;
   wb.getValCJWorm<double>("hs_step_size",HSStepSize);
-  double gradSteep;
-  wb.getValCJWorm<double>("grad_steep",gradSteep);
-
-  spvec[0].HSStepSize = HSStepSize;
-  spvec[0].gradSteep = gradSteep;
-
-  //spvec[0].HSStepSize = CO2DSRpars->HSStepSize;
-  //spvec[0].gradSteep = CO2DSRpars->gradSteep;
-
+  for (SensorPars & sensor : spvec)
+  {
+    sensor.HSStepSize = HSStepSize;
+    sensor.iSensorN = static_cast<int>(sensor.sensorN/sensor.HSStepSize);
+    sensor.iSensorM = static_cast<int>(sensor.sensorM/sensor.HSStepSize);
   }
-
-  for (int i = 0; i<spvec.size(); i++){
-
-  SensorPars & sp1 = spvec[i];
-	sp1.iSensorN = (int) (sp1.sensorN/sp1.HSStepSize);
-	//dSensorN = (double) iSensorN;
-	sp1.iSensorM = (int) (sp1.sensorM/sp1.HSStepSize);
-  }
-
-
-	//dSensorM = (double) iSensorM;
-	//int upperbound = ((int) (((2*CO2DSRpars->RunDuration) + sensorN + sensorM) / CO2DSRpars->HSStepSize)) + 1;
-
-	//cout << "uppervel " << upperbound << " " << VelDelta << endl;
- 	
-	//chemConHistory.SetBounds(1, upperbound);
-	//chemConHistory.FillContents(0.0);
-
-	//histCurv.SetBounds(1, VelDelta);
-	//histCurv.FillContents(0.0);
-	//histTheta.SetBounds(1, VelDelta);
-	//histTheta.FillContents(0.0);
-	
 }
 
 
@@ -2207,215 +2176,197 @@ void WormCO2DSR::Step1()
    
 }
 
+void EnvironmentPars::setParsFromJson(const string & key, const json & j)
+{
+  name = key;
+  if (j.contains("name")) name = j.at("name").at("value").get<string>();
+  x_center = j.at("x_center").at("value").get<double>();
+  y_center = j.at("y_center").at("value").get<double>();
+  gradSteep = j.at("grad_steep").at("value").get<double>();
+}
+
+void EnvironmentPars::writeParsToJson(json & j) const
+{
+  j["name"]["value"] = name;
+  j["x_center"]["value"] = x_center;
+  j["y_center"]["value"] = y_center;
+  j["grad_steep"]["value"] = gradSteep;
+}
+
 void SensorPars::writeParsToJson2(json & j) const
 {
-
-addParsToJson1<double>(j,{"sensor_n","sensor_m","grad_steep", 
-  "hs_stepsize", "x_center", "y_center"},
-    {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
-addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
-
+  addParsToJson1<double>(j,{"sensor_n","sensor_m","hs_stepsize"},
+    {sensorN,sensorM,HSStepSize});
+  addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
+  j["environment"]["value"] = environmentName;
 }
 
 void SensorPars::writeParsToJson(json & j) const
 {
-
-addParsToJson1<double>(j,{"sensorN","sensorM","gradSteep", 
-  "HSStepSize", "x_center", "y_center"},
-    {sensorN,sensorM,gradSteep,HSStepSize,x_center,y_center});
-addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
-
+  addParsToJson1<double>(j,{"sensorN","sensorM","HSStepSize"},
+    {sensorN,sensorM,HSStepSize});
+  addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
+  j["environment"]["value"] = environmentName;
 }
 
 void SensorPars::setParsFromJson2(const json & j)
 {
-
   sensorN = j["sensor_n"]["value"];
   sensorM = j["sensor_m"]["value"];
-  gradSteep = j["grad_steep"]["value"];
   HSStepSize = j["hs_stepsize"]["value"];
-  x_center  = j["x_center"]["value"];
-  y_center = j["y_center"]["value"];
   extInp1 = j["ext_inp_1"]["value"];
   extInp2 = j["ext_inp_2"]["value"];
-
-//double sensorN, sensorM;
-//double dSensorN, dSensorM;
-//int iSensorN, iSensorM;
-//double chemCon, presentAvgCon, pastAvgCon;
-//double presentAvgCon, pastAvgCon;
-//int extInp1, extInp2;
-//double gradSteep, HSStepSize, x_center, y_center;
-
+  if (j.contains("environment"))
+    environmentName = j["environment"]["value"].get<string>();
 }
 
 void SensorPars::setParsFromJson(const json & j)
 {
-
   sensorN = j["sensorN"]["value"];
   sensorM = j["sensorM"]["value"];
-  gradSteep = j["gradSteep"]["value"];
   HSStepSize = j["HSStepSize"]["value"];
-  x_center  = j["x_center"]["value"];
-  y_center = j["y_center"]["value"];
   extInp1 = j["extInp1"]["value"];
   extInp2 = j["extInp2"]["value"];
-
-//double sensorN, sensorM;
-//double dSensorN, dSensorM;
-//int iSensorN, iSensorM;
-//double chemCon, presentAvgCon, pastAvgCon;
-//double presentAvgCon, pastAvgCon;
-//int extInp1, extInp2;
-//double gradSteep, HSStepSize, x_center, y_center;
-
+  if (j.contains("environment"))
+    environmentName = j["environment"]["value"].get<string>();
 }
 
 void Sensor::setParsFromJson(const json & j)
 {
+  spvec.clear();
+  environmentVec.clear();
+  construct(j);
+}
 
-  if (j.contains("sensors")){
-const json & j2 = j["sensors"];
-for (int i=0; i<spvec.size(); i++)
+EnvironmentPars & Sensor::getEnvironment(const string & name)
 {
-SensorPars & sp1 = spvec[i];
-sp1.setParsFromJson2(j2["sensor_" + to_string(i+1)]);
+  for (EnvironmentPars & environment : environmentVec)
+    if (environment.name == name) return environment;
+  throw runtime_error("Sensor refers to unknown environment '" + name + "'");
 }
 
-  }
-else if (j.contains("Sensors")){
-const json & j2 = j["Sensors"];
-for (int i=0; i<spvec.size(); i++)
+const EnvironmentPars & Sensor::getEnvironment(const string & name) const
 {
-SensorPars & sp1 = spvec[i];
-sp1.setParsFromJson(j2["Sensor_" + to_string(i+1)]);
+  for (const EnvironmentPars & environment : environmentVec)
+    if (environment.name == name) return environment;
+  throw runtime_error("Sensor refers to unknown environment '" + name + "'");
 }
-}else if ((j.contains("worm") ? j.at("worm") : j.at("Worm")).contains("sensorM"))
-{
-  json worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
-
-  SensorPars & sp1 = spvec[0];
-
-  double HSStepSize;
-  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
-  double gradSteep;
-  wb.getValCJWorm<double>("grad_steep",gradSteep);
-
-  sp1.gradSteep = gradSteep;
-  sp1.HSStepSize = HSStepSize;
-
-  //sp1.gradSteep = CO2DSRpars->gradSteep;
-  //sp1.HSStepSize = CO2DSRpars->HSStepSize;
-
-
-  sp1.extInp1 = 0;
-  sp1.extInp2 = 1;
-  sp1.sensorM = worm["sensorM"]["value"];
-  sp1.sensorN = worm["sensorN"]["value"];
-  sp1.x_center = 0, sp1.y_center = 0;
- 
-}
-
-}
-
-
 
 void Sensor::construct(const json & j)
 {
+  if (j.contains("environments"))
+  {
+    for (const auto & item : j.at("environments").items())
+    {
+      EnvironmentPars environment;
+      environment.setParsFromJson(item.key(), item.value());
+      for (const EnvironmentPars & existing : environmentVec)
+        if (existing.name == environment.name)
+          throw runtime_error("Duplicate environment name '" + environment.name + "'");
+      environmentVec.push_back(environment);
+    }
+  }
+
   if (j.contains("sensors"))
- {
-  const json & j2 = j["sensors"];
-  int ind = 1;
-  while(j2.contains("sensor_" + to_string(ind))){
-
-  SensorPars sp1;
-  sp1.setParsFromJson2(j2["sensor_" + to_string(ind)]);
-  spvec.push_back(sp1);
-  ind++;
+  {
+    const json & sensors = j["sensors"];
+    int ind = 1;
+    while(sensors.contains("sensor_" + to_string(ind)))
+    {
+      const json & sensorJson = sensors["sensor_" + to_string(ind)];
+      SensorPars sensor;
+      sensor.setParsFromJson2(sensorJson);
+      if (sensor.environmentName.empty())
+      {
+        EnvironmentPars environment;
+        environment.name = "environment_" + to_string(ind);
+        environment.x_center = sensorJson.at("x_center").at("value");
+        environment.y_center = sensorJson.at("y_center").at("value");
+        environment.gradSteep = sensorJson.at("grad_steep").at("value");
+        environmentVec.push_back(environment);
+        sensor.environmentName = environment.name;
+      }
+      getEnvironment(sensor.environmentName);
+      spvec.push_back(sensor);
+      ind++;
+    }
   }
- }
   else if (j.contains("Sensors"))
- {
-  const json & j2 = j["Sensors"];
-  int ind = 1;
-  while(j2.contains("Sensor_" + to_string(ind))){
-
-  SensorPars sp1;
-  sp1.setParsFromJson(j2["Sensor_" + to_string(ind)]);
-  spvec.push_back(sp1);
-  ind++;
+  {
+    const json & sensors = j["Sensors"];
+    int ind = 1;
+    while(sensors.contains("Sensor_" + to_string(ind)))
+    {
+      const json & sensorJson = sensors["Sensor_" + to_string(ind)];
+      SensorPars sensor;
+      sensor.setParsFromJson(sensorJson);
+      if (sensor.environmentName.empty())
+      {
+        EnvironmentPars environment;
+        environment.name = "environment_" + to_string(ind);
+        environment.x_center = sensorJson.at("x_center").at("value");
+        environment.y_center = sensorJson.at("y_center").at("value");
+        environment.gradSteep = sensorJson.at("gradSteep").at("value");
+        environmentVec.push_back(environment);
+        sensor.environmentName = environment.name;
+      }
+      getEnvironment(sensor.environmentName);
+      spvec.push_back(sensor);
+      ind++;
+    }
   }
-  
- }else if ((j.contains("worm") ? j.at("worm") : j.at("Worm")).contains("sensorM"))
- {
-  json worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
+  else if ((j.contains("worm") ? j.at("worm") : j.at("Worm")).contains("sensorM"))
+  {
+    const json & worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
+    SensorPars sensor;
+    wb.getValCJWorm<double>("hs_step_size",sensor.HSStepSize);
+    sensor.extInp1 = 0;
+    sensor.extInp2 = 1;
+    sensor.sensorM = worm["sensorM"]["value"];
+    sensor.sensorN = worm["sensorN"]["value"];
+    sensor.environmentName = "environment_1";
 
-
-  SensorPars sp1;
-
-  double HSStepSize;
-  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
-  double gradSteep;
-  wb.getValCJWorm<double>("grad_steep",gradSteep);
-
-  sp1.gradSteep = gradSteep;
-  sp1.HSStepSize = HSStepSize;
-
-  //sp1.gradSteep = CO2DSRpars->gradSteep;
-  //sp1.HSStepSize = CO2DSRpars->HSStepSize;
-
-  sp1.extInp1 = 0;
-  sp1.extInp2 = 1;
-  sp1.sensorM = worm["sensorM"]["value"];
-  sp1.sensorN = worm["sensorN"]["value"];
-  sp1.x_center = 0, sp1.y_center = 0;
-  spvec.push_back(sp1);
-
-  
- }
-
- 
+    EnvironmentPars environment;
+    environment.name = sensor.environmentName;
+    environment.x_center = 0;
+    environment.y_center = 0;
+    wb.getValCJWorm<double>("grad_steep",environment.gradSteep);
+    environmentVec.push_back(environment);
+    spvec.push_back(sensor);
+  }
 }
 
 void  Sensor::addParsToJson(json & j) const
 {
+  if (spvec.size()<1) return;
 
- 
-if (spvec.size()<1) return;
+  json & environmentsJson = j["environments"];
+  for (int i = 0; i<spvec.size(); i++)
+  {
+    const SensorPars & sensor = spvec[i];
+    json & sensorJson = j["sensors"]["sensor_" + to_string(i+1)];
+    json & environmentJson = environmentsJson[sensor.environmentName];
+    for (const string & key : {"x_center", "y_center", "grad_steep"})
+      if (!environmentJson.contains(key) && sensorJson.contains(key))
+        environmentJson[key] = sensorJson[key];
 
-{json & j2 = j["sensors"];
+    sensor.writeParsToJson2(sensorJson);
+    sensorJson.erase("x_center");
+    sensorJson.erase("y_center");
+    sensorJson.erase("grad_steep");
+  }
 
-for (int i =0; i<spvec.size(); i++)
-{
-
-const SensorPars & sp1 = spvec[i];
-sp1.writeParsToJson2(j2["sensor_" + to_string(i+1)]);
-
-}
-}
-
-
-{json & j2 = j["Sensors"];
-
-for (int i =0; i<spvec.size(); i++)
-{
-
-const SensorPars & sp1 = spvec[i];
-sp1.writeParsToJson(j2["Sensor_" + to_string(i+1)]);
-
-}
-if (spvec.size()>0)
-{
-const SensorPars & sp1 = spvec[0];
-sp1.writeParsToJson(j["worm"]);
-
-}
-}
-
-
-
-
-
+  for (const EnvironmentPars & environment : environmentVec)
+  {
+    json & environmentJson = environmentsJson[environment.name];
+    environment.writeParsToJson(environmentJson);
+  }
+  j.erase("Sensors");
+  if (j.contains("worm"))
+  {
+    j["worm"].erase("sensorM");
+    j["worm"].erase("sensorN");
+  }
 }
 
 
@@ -2426,10 +2377,9 @@ void Sensor::ResetChemCon()
   for (int i = 0; i<spvec.size(); i++){
     
   SensorPars & sp1 = spvec[i];
-	double chemCon = -headDistanceToLocation(sp1.x_center,sp1.y_center) * sp1.gradSteep;
-
-	//double dist = distanceToCenter();
-	//chemCon = -dist * CO2DSRpars->gradSteep;
+  const EnvironmentPars & environment = getEnvironment(sp1.environmentName);
+	double chemCon = -headDistanceToLocation(
+    environment.x_center,environment.y_center) * environment.gradSteep;
 
 	//pastCon = chemCon;
   sp1.chemConHistory.clear();
@@ -2448,8 +2398,10 @@ void Sensor::UpdateChemCon()
 	for (int i = 0; i<spvec.size(); i++){
     
   SensorPars & sp1 = spvec[i];
+  const EnvironmentPars & environment = getEnvironment(sp1.environmentName);
 	//pastCon = chemCon;
-	double chemCon = -headDistanceToLocation(sp1.x_center,sp1.y_center) * sp1.gradSteep;
+	double chemCon = -headDistanceToLocation(
+    environment.x_center,environment.y_center) * environment.gradSteep;
   sp1.chemConHistory.push_back(chemCon);
 
   }
@@ -2483,6 +2435,12 @@ void Sensor::assignExternalInput(vector<double> & externalInputs)
 	externalInputs[sp1.extInp2] =  tempDiff < 0.0 ? fabs(tempDiff): 0.0;
 
   }
+}
+
+void Sensor::setGradientSteepness(const double & gradSteep)
+{
+  for (EnvironmentPars & environment : environmentVec)
+    environment.gradSteep = gradSteep;
 }
 
 
