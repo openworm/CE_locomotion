@@ -2236,6 +2236,9 @@ void Sensor::setParsFromJson(const json & j)
   spvec.clear();
   environmentVec.clear();
   construct(j);
+  InitialiseAgent();
+  ResetChemCon();
+  UpdateChemCon();
 }
 
 EnvironmentPars & Sensor::getEnvironment(const string & name)
@@ -2346,7 +2349,7 @@ void  Sensor::addParsToJson(json & j) const
     const SensorPars & sensor = spvec[i];
     json & sensorJson = j["sensors"]["sensor_" + to_string(i+1)];
     json & environmentJson = environmentsJson[sensor.environmentName];
-    for (const string & key : {"x_center", "y_center", "grad_steep"})
+    for (const string key : {"x_center", "y_center", "grad_steep"})
       if (!environmentJson.contains(key) && sensorJson.contains(key))
         environmentJson[key] = sensorJson[key];
 
@@ -2411,14 +2414,26 @@ void Sensor::UpdateChemCon()
 
 void Sensor::assignExternalInput(vector<double> & externalInputs)
 {
-  
-
-
-  for (int i = 0; i<spvec.size(); i++){
-    
-   
-
+  for (size_t i = 0; i < spvec.size(); i++){
   SensorPars & sp1 = spvec[i];
+
+  const size_t requiredHistory =
+    static_cast<size_t>(sp1.iSensorN + sp1.iSensorM + 1);
+  if (sp1.iSensorN <= 0 || sp1.iSensorM <= 0
+      || sp1.chemConHistory.size() < requiredHistory)
+    throw runtime_error(
+      "Invalid sensor_" + to_string(i + 1) + " history: size="
+      + to_string(sp1.chemConHistory.size()) + ", iSensorN="
+      + to_string(sp1.iSensorN) + ", iSensorM="
+      + to_string(sp1.iSensorM));
+  if (sp1.extInp1 < 0 || sp1.extInp2 < 0
+      || static_cast<size_t>(sp1.extInp1) >= externalInputs.size()
+      || static_cast<size_t>(sp1.extInp2) >= externalInputs.size())
+    throw runtime_error(
+      "Invalid external input index for sensor_" + to_string(i + 1)
+      + ": ext_inp_1=" + to_string(sp1.extInp1)
+      + ", ext_inp_2=" + to_string(sp1.extInp2)
+      + ", input count=" + to_string(externalInputs.size()));
 
   double dSensorN = (double) sp1.iSensorN;
   double dSensorM = (double) sp1.iSensorM;
