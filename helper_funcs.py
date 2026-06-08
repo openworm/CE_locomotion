@@ -243,6 +243,135 @@ def add_environment(
     return result
 
 
+def add_sensor(
+    json_data,
+    environment_name,
+    sensor_n=2.0,
+    sensor_m=2.0,
+    hs_stepsize=0.01,
+    input_strength=0.0,
+):
+    """Return a copy of a worm JSON dictionary with a new sensor."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(environment_name, str) or not environment_name:
+        raise ValueError("environment_name must be a non-empty string")
+
+    for parameter_name, value in (
+        ("sensor_n", sensor_n),
+        ("sensor_m", sensor_m),
+        ("hs_stepsize", hs_stepsize),
+        ("input_strength", input_strength),
+    ):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("{} must be a number".format(parameter_name))
+    if sensor_n <= 0 or sensor_m <= 0 or hs_stepsize <= 0:
+        raise ValueError("sensor_n, sensor_m and hs_stepsize must be positive")
+
+    result = copy.deepcopy(json_data)
+    environments = result.get("environments")
+    if not isinstance(environments, dict):
+        raise KeyError("JSON does not contain an 'environments' object")
+
+    canonical_environment_name = None
+    if environment_name in environments:
+        environment = environments[environment_name]
+        canonical_environment_name = environment_name
+        if isinstance(environment, dict):
+            stored_name = environment.get("name", {}).get("value")
+            if isinstance(stored_name, str) and stored_name:
+                canonical_environment_name = stored_name
+    else:
+        for environment in environments.values():
+            if (
+                isinstance(environment, dict)
+                and environment.get("name", {}).get("value") == environment_name
+            ):
+                canonical_environment_name = environment_name
+                break
+    if canonical_environment_name is None:
+        raise KeyError("Environment {!r} does not exist".format(environment_name))
+
+    sensors = result.setdefault("sensors", {})
+    if not isinstance(sensors, dict):
+        raise TypeError("'sensors' must be a dictionary")
+    sensor_index = 1
+    while "sensor_{}".format(sensor_index) in sensors:
+        sensor_index += 1
+    sensor_name = "sensor_{}".format(sensor_index)
+
+    driving_inputs = result.setdefault("driving_inputs", {})
+    if not isinstance(driving_inputs, dict):
+        raise TypeError("'driving_inputs' must be a dictionary")
+
+    inputs = driving_inputs.setdefault(
+        "inputs",
+        {
+            "message": "Driving input strength to Nervous System",
+            "value": [],
+        },
+    )
+    if not isinstance(inputs, dict):
+        raise TypeError("'driving_inputs.inputs' must be a dictionary")
+    if inputs.get("value") is None:
+        inputs["value"] = []
+    if not isinstance(inputs.get("value"), list):
+        raise TypeError("'driving_inputs.inputs.value' must be a list")
+    inputs.setdefault("message", "Driving input strength to Nervous System")
+
+    weights = driving_inputs.setdefault(
+        "weights",
+        {
+            "message": (
+                "Weights of driving inputs to Nervous System in sparse format"
+            ),
+            "value": [],
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("'driving_inputs.weights' must be a dictionary")
+    if weights.get("value") is None:
+        weights["value"] = []
+    if not isinstance(weights.get("value"), list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+    weights.setdefault(
+        "message", "Weights of driving inputs to Nervous System in sparse format"
+    )
+
+    used_input_numbers = []
+    for input_entry in inputs["value"]:
+        if not isinstance(input_entry, dict):
+            raise TypeError("Each driving input must be a dictionary")
+        input_number = input_entry.get("input_num")
+        if (
+            isinstance(input_number, bool)
+            or not isinstance(input_number, int)
+            or input_number < 1
+        ):
+            raise ValueError("Driving input numbers must be positive integers")
+        used_input_numbers.append(input_number)
+
+    first_input_number = max(used_input_numbers, default=0) + 1
+    second_input_number = first_input_number + 1
+    for input_number in (first_input_number, second_input_number):
+        inputs["value"].append(
+            {
+                "input_num": input_number,
+                "strength": {"value": float(input_strength)},
+            }
+        )
+
+    sensors[sensor_name] = {
+        "environment": {"value": canonical_environment_name},
+        "ext_inp_1": {"value": first_input_number - 1},
+        "ext_inp_2": {"value": second_input_number - 1},
+        "hs_stepsize": {"value": float(hs_stepsize)},
+        "sensor_m": {"value": float(sensor_m)},
+        "sensor_n": {"value": float(sensor_n)},
+    }
+    return result
+
+
 def remove_nervous_system_cell(json_data, cell_name):
     """Return a copy of a modern worm JSON dictionary without one NS cell."""
     if not isinstance(json_data, dict):
