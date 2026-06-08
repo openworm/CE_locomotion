@@ -545,13 +545,19 @@ def add_sensor_connection(
     return result
 
 
+def add_cell(json_data):
+    """Return a copy with one default cell added, plus the new cell name."""
+    result, cell_names = add_random_cell_network(json_data, 1, 0.0)
+    return result, cell_names[0]
+
+
 def add_random_cell_network(
     json_data,
     number_of_cells,
     connection_probability,
     random_seed=None,
 ):
-    """Return a copy with an isolated random directed cell network added."""
+    """Return a copy plus names for an isolated random directed cell network."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if (
@@ -621,8 +627,7 @@ def add_random_cell_network(
     new_names = []
     name_index = 1
     while len(new_names) < number_of_cells:
-        base_name = "RandomCell_{}".format(name_index)
-        full_name = base_name + "_0"
+        full_name = "Cell_{}".format(name_index)
         name_index += 1
         if full_name in existing_names:
             continue
@@ -635,7 +640,7 @@ def add_random_cell_network(
             "tau": {"value": 1.0},
         }
         cell_names.append(full_name)
-        no_suffix_names.append(base_name)
+        no_suffix_names.append(full_name)
         existing_names.add(full_name)
         new_names.append(full_name)
 
@@ -666,7 +671,7 @@ def add_random_cell_network(
             ):
                 size_object["value"] += number_of_cells
 
-    return result
+    return result, new_names
 
 
 def add_cell_connection(
@@ -838,6 +843,262 @@ def delete_cell_connection(json_data, from_cell, to_cell):
             for evotag in evolved_used["value"]
             if evotag not in unused_evotags
         ]
+    return result
+
+
+def _add_connection_evotag(
+    json_data,
+    from_cell,
+    to_cell,
+    connection_key,
+    range_name,
+    lower_limit,
+    upper_limit,
+    evotag_name=None,
+    reciprocal=False,
+):
+    """Add an evotag to an existing nervous-system connection."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError(
+                "{} must be a non-empty string".format(argument_name)
+            )
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    for cell_name in (from_cell, to_cell):
+        if cell_name not in cells:
+            raise KeyError(
+                "Cell {!r} was not found in nervous_system.cells".format(
+                    cell_name
+                )
+            )
+
+    connection_object = nervous_system.get(connection_key)
+    if not isinstance(connection_object, dict):
+        raise KeyError(
+            "JSON does not contain 'nervous_system.{}'".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+
+    matching_connections = []
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each connection must be a dictionary")
+        direct_match = (
+            connection.get("from") == from_cell
+            and connection.get("to") == to_cell
+        )
+        reverse_match = reciprocal and (
+            connection.get("from") == to_cell
+            and connection.get("to") == from_cell
+        )
+        if direct_match or reverse_match:
+            weight = connection.get("weight")
+            if not isinstance(weight, dict) or "value" not in weight:
+                raise TypeError("Connection weight must contain a value")
+            matching_connections.append(connection)
+
+    if not matching_connections:
+        connection_type = (
+            "electrical" if reciprocal else "chemical"
+        )
+        raise KeyError(
+            "No {} connection exists between {!r} and {!r}".format(
+                connection_type, from_cell, to_cell
+            )
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    if evotag_name is None:
+        existing_evotag = matching_connections[0]["weight"].get("evotag")
+        if isinstance(existing_evotag, str) and existing_evotag:
+            evotag_name = existing_evotag
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(nervous_system)
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    for connection in matching_connections:
+        connection["weight"]["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+    return result
+
+
+def add_chemical_connection_evotag(
+    json_data,
+    from_cell,
+    to_cell,
+    evotag_name=None,
+):
+    """Return a copy with an evotag added to a chemical connection."""
+    return _add_connection_evotag(
+        json_data,
+        from_cell,
+        to_cell,
+        "chemical_conns",
+        "ns_chemcons",
+        -15.0,
+        15.0,
+        evotag_name=evotag_name,
+    )
+
+
+def add_electrical_connection_evotag(
+    json_data,
+    first_cell,
+    second_cell,
+    evotag_name=None,
+):
+    """Return a copy with an evotag added to an electrical connection."""
+    return _add_connection_evotag(
+        json_data,
+        first_cell,
+        second_cell,
+        "electrical_conns",
+        "ns_eleccons",
+        0.0,
+        2.0,
+        evotag_name=evotag_name,
+        reciprocal=True,
+    )
+
+
+def add_cell_parameter_evotag(
+    json_data,
+    cell_name,
+    parameter_name,
+    evotag_name=None,
+):
+    """Return a copy with a cell parameter marked as evolvable."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("cell_name", cell_name),
+        ("parameter_name", parameter_name),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError(
+                "{} must be a non-empty string".format(argument_name)
+            )
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+    cell = cells[cell_name]
+    if not isinstance(cell, dict) or parameter_name not in cell:
+        raise KeyError(
+            "Parameter {!r} was not found for cell {!r}".format(
+                parameter_name, cell_name
+            )
+        )
+    parameter = cell[parameter_name]
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError(
+            "{}.{} must be an object containing 'value'".format(
+                cell_name, parameter_name
+            )
+        )
+    parameter_value = parameter["value"]
+    if isinstance(parameter_value, bool) or not isinstance(
+        parameter_value, (int, float)
+    ):
+        raise TypeError(
+            "{}.{} must have a numeric value".format(cell_name, parameter_name)
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    existing_evotag = parameter.get("evotag")
+    if evotag_name is None and isinstance(existing_evotag, str):
+        evotag_name = existing_evotag
+
+    range_name = "ns_cells_{}".format(parameter_name)
+    if evotag_name is None:
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in evolvable_ranges:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    parameter["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        default_ranges = {
+            "bias": (-15.0, 15.0),
+            "tau": (0.1, 4.2),
+            "gain": (0.0, 2.0),
+            "state": (-1.0, 1.0),
+        }
+        if parameter_name in default_ranges:
+            lower_limit, upper_limit = default_ranges[parameter_name]
+        else:
+            span = max(1.0, abs(float(parameter_value)))
+            lower_limit = float(parameter_value) - span
+            upper_limit = float(parameter_value) + span
+
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+
     return result
 
 
@@ -1211,6 +1472,8 @@ def delete_directory(directory_path):
     shutil.rmtree(path)
     return True
 
+def delete_subfolder_directory(subfolder_name, subsubfolder_name):
+    return delete_notebook_directory(subfolder_name, subsubfolder_name)
 
 def delete_notebook_directory(subfolder_name, subsubfolder_name):
     """Delete a direct child directory from a subfolder of the current directory."""
