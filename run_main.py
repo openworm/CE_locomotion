@@ -125,7 +125,10 @@ def process_args():
     :returns: None
     """
     parser = argparse.ArgumentParser(
-        description=("A script for supplying arguments to execute Worm2D")
+        description=(
+            "A script for supplying arguments to execute Worm2D "
+            + hf.get_worm2d_version()
+        )
     )
 
     parser.add_argument(
@@ -1006,7 +1009,7 @@ def run(a=None, **kwargs):
                         legacy_parameter_names[key]
                     ]["value"]
                 else:
-                    print("Parameter not found in worm_data.json")
+                    print(f"Parameter {key} not found in worm_data.json")
     elif os.path.isfile(evol_par_file_base):
         with open(evol_par_file_base) as f:
             evol_data = json.load(f)
@@ -1181,6 +1184,10 @@ def run(a=None, **kwargs):
         cmd += ["--domusc", str(sim_data["doMuscSim"])]
         cmd += ["-docpt", str(TFtoInt(a.doCPT))]
         cmd += ["--evo_type", str(evol_data["evo_type"])]
+
+    print(
+        "\n  Running Worm2D " + hf.get_worm2d_version() + " with the following command:"
+    )
 
     print(cmd)
     # sys.exit(1)
