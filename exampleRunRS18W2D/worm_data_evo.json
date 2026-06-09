@@ -1285,16 +1285,6 @@
             ]
         }
     },
-    "driving_inputs": {
-        "inputs": {
-            "message": "Driving input strength to Nervous System",
-            "value": null
-        },
-        "weights": {
-            "message": "Weights of driving inputs to Nervous System in sparse format",
-            "value": null
-        }
-    },
     "evolvable_ranges": {
         "ns_cells_bias_0": {
             "active": true,
