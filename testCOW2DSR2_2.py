@@ -6,17 +6,17 @@ import helper_funcs as hf
 
 Pi = 3.1415926
 
-indir = "testruns/COW2DSRE_test"
+indir = "testruns/COW2DSRE_test_3"
 
 doOrig = True
 doNML = False
 doMuscles = False
 
 inputFolderName = indir
-outputFolderName = indir + "_out_2"
+outputFolderName = indir + "_out"
 doInputFolder = True
 
-hf.delete_subfolder_directory('testruns', 'COW2DSRE_test_out_2')
+hf.delete_subfolder_directory('testruns', 'COW2DSRE_test_3_out')
 
 if doInputFolder is True:
     json_data = hf.get_worm_json(indir)
