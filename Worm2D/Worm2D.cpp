@@ -757,40 +757,40 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
         NSOutputConn.swap(vec1);
     }
 
-    //if (false){
+    vector<string> names;
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
+    {
+        names = j.at("nervous_system").at("cell_names").at("value").
+        template get< vector<string> >();
+    }
+    else names = getDistinctCellNames();
+
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system")
+    && j.at("Nervous system").contains("Cell name")
+    && j.at("Nervous system").at("Cell name").contains("value")
+    && j.at("Nervous system").at("Cell name").at("value").is_array())
+    {
+        names = makeUnique(j.at("Nervous system").
+        at("Cell name").at("value").template get< vector<string> >());
+    }
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
+    {
+        int size = j.at("Nervous system").at("size").at("value").get<int>();
+        names.clear();
+        for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
+    }
+
+    unordered_map<string, int> name_index;
+    for (size_t i = 0; i < names.size(); ++i)
+        name_index[names[i]] = static_cast<int>(i) + 1;
+
+    vector<double> exvec;
+    vector<toFromWeight> vec1;
+
     if (j.contains("driving_inputs")){
-        vector<string> names;
-        if (j.contains("nervous_system")
-        && j.at("nervous_system").contains("cell_names")
-        && j.at("nervous_system").at("cell_names").contains("value")
-        && j.at("nervous_system").at("cell_names").at("value").is_array())
-        {
-            names = j.at("nervous_system").at("cell_names").at("value").
-            template get< vector<string> >();
-        }
-        else names = getDistinctCellNames();
-
-        if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system") 
-        && j.at("Nervous system").contains("Cell name") 
-        && j.at("Nervous system").at("Cell name").contains("value") 
-        && j.at("Nervous system").at("Cell name").at("value").is_array())
-        {
-            names = makeUnique(j.at("Nervous system").
-            at("Cell name").at("value").template get< vector<string> >());
-        }
-        if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system"))
-        {
-            int size = j.at("Nervous system").at("size").at("value").get<int>();
-            names.clear();
-            for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
-        }
-        assert(!names.empty() && names[0]!="not implemented");
-
-        unordered_map<string, int> name_index;
-        for (size_t i = 0; i < names.size(); ++i)
-            name_index[names[i]] = static_cast<int>(i) + 1;
-
-        vector<double> exvec;
         for (const auto& input : j.at("driving_inputs").at("inputs").at("value"))
         {
             int input_num = input.at("input_num").get<int>();
@@ -798,7 +798,6 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
             exvec[input_num-1] = input.at("strength").at("value").get<double>();
         }
 
-        vector<toFromWeight> vec1;
         for (const auto& conn : j.at("driving_inputs").at("weights").at("value"))
         {
             toFromWeight val;
@@ -807,27 +806,48 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
             val.w.weight = conn.at("weight").at("value").get<double>();
             vec1.push_back(val);
         }
-
-        externalInputs.swap(exvec);
-        externalInputConn.swap(vec1);
-        return;
     }
-
-    if (j.contains("Driving input"))
+    else if (j.contains("Driving input"))
     {
-        vector<toFromWeight> vec1 =
+        vec1 =
             j["Driving input"]["weights"]["value"].
             template get< vector<toFromWeight> >();
-        vector<double> exvec =
+        exvec =
             j["Driving input"]["strengths"]["value"].
             template get< vector<double> >();
-        externalInputs.swap(exvec);
-        externalInputConn.swap(vec1);
-        return;
     }
 
-    externalInputs.clear();
-    externalInputConn.clear();
+    if (j.contains("sensors"))
+    {
+        const json & sensors = j.at("sensors");
+        int sensorIndex = 1;
+        while (sensors.contains("sensor_" + to_string(sensorIndex)))
+        {
+            const json & sensor = sensors.at("sensor_" + to_string(sensorIndex));
+            if (sensor.contains("weights"))
+            {
+                const int firstInput = static_cast<int>(exvec.size());
+                exvec.resize(exvec.size() + 2, 0.0);
+                const json & weights = sensor.at("weights").at("value");
+                for (const auto & conn : weights)
+                {
+                    const int output = conn.at("from_output").get<int>();
+                    if (output < 1 || output > 2)
+                        throw runtime_error(
+                            "Sensor output number must be 1 or 2");
+                    toFromWeight val;
+                    val.w.from = firstInput + output;
+                    val.to = name_index.at(conn.at("to_cell").get<string>());
+                    val.w.weight = conn.at("weight").at("value").get<double>();
+                    vec1.push_back(val);
+                }
+            }
+            sensorIndex++;
+        }
+    }
+
+    externalInputs.swap(exvec);
+    externalInputConn.swap(vec1);
 
 }
 
@@ -916,7 +936,7 @@ void Worm2Dbase::addParsToJson(json & j)
                 "Weights of driving inputs to Nervous System in sparse format";
             for (const toFromWeight & val : externalInputConn)
             {
-                assert(val.w.from-1<names.size() && val.w.from-1>=0);
+                assert(val.to-1<names.size() && val.to-1>=0);
                 bool found = false;
                 for (auto it = j22.begin(); it != j22.end(); ++it)
                     if (it->at("to_cell")==names[val.to-1]

@@ -317,7 +317,6 @@ def add_sensor(
     sensor_n=2.0,
     sensor_m=2.0,
     hs_stepsize=0.01,
-    input_strength=0.0,
 ):
     """Return a copy of a worm JSON dictionary with a new sensor."""
     if not isinstance(json_data, dict):
@@ -329,7 +328,6 @@ def add_sensor(
         ("sensor_n", sensor_n),
         ("sensor_m", sensor_m),
         ("hs_stepsize", hs_stepsize),
-        ("input_strength", input_strength),
     ):
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TypeError("{} must be a number".format(parameter_name))
@@ -368,74 +366,15 @@ def add_sensor(
         sensor_index += 1
     sensor_name = "sensor_{}".format(sensor_index)
 
-    driving_inputs = result.setdefault("driving_inputs", {})
-    if not isinstance(driving_inputs, dict):
-        raise TypeError("'driving_inputs' must be a dictionary")
-
-    inputs = driving_inputs.setdefault(
-        "inputs",
-        {
-            "message": "Driving input strength to Nervous System",
-            "value": [],
-        },
-    )
-    if not isinstance(inputs, dict):
-        raise TypeError("'driving_inputs.inputs' must be a dictionary")
-    if inputs.get("value") is None:
-        inputs["value"] = []
-    if not isinstance(inputs.get("value"), list):
-        raise TypeError("'driving_inputs.inputs.value' must be a list")
-    inputs.setdefault("message", "Driving input strength to Nervous System")
-
-    weights = driving_inputs.setdefault(
-        "weights",
-        {
-            "message": (
-                "Weights of driving inputs to Nervous System in sparse format"
-            ),
-            "value": [],
-        },
-    )
-    if not isinstance(weights, dict):
-        raise TypeError("'driving_inputs.weights' must be a dictionary")
-    if weights.get("value") is None:
-        weights["value"] = []
-    if not isinstance(weights.get("value"), list):
-        raise TypeError("'driving_inputs.weights.value' must be a list")
-    weights.setdefault(
-        "message", "Weights of driving inputs to Nervous System in sparse format"
-    )
-
-    used_input_numbers = []
-    for input_entry in inputs["value"]:
-        if not isinstance(input_entry, dict):
-            raise TypeError("Each driving input must be a dictionary")
-        input_number = input_entry.get("input_num")
-        if (
-            isinstance(input_number, bool)
-            or not isinstance(input_number, int)
-            or input_number < 1
-        ):
-            raise ValueError("Driving input numbers must be positive integers")
-        used_input_numbers.append(input_number)
-
-    first_input_number = max(used_input_numbers, default=0) + 1
-    second_input_number = first_input_number + 1
-    for input_number in (first_input_number, second_input_number):
-        inputs["value"].append(
-            {
-                "input_num": input_number,
-                "strength": {"value": float(input_strength)},
-            }
-        )
-
     sensors[sensor_name] = {
         "environment": {"value": canonical_environment_name},
-        "ext_inp_1": {"value": first_input_number - 1},
-        "ext_inp_2": {"value": second_input_number - 1},
         "hs_stepsize": {"value": float(hs_stepsize)},
         "sensor_m": {"value": float(sensor_m)},
         "sensor_n": {"value": float(sensor_n)},
+        "weights": {
+            "message": "Weights from sensor outputs to Nervous System cells",
+            "value": [],
+        },
     }
     return result
 
@@ -443,17 +382,28 @@ def add_sensor(
 def add_sensor_connection(
     json_data,
     sensor_name,
-    ext_inp_name,
+    output_name,
     cell_name,
     weight=1.0,
+    make_evolvable=False,
+    evotag_name=None,
 ):
-    """Return a copy with a sensor driving-input connection added."""
+    """Return a copy with a sensor-output connection added."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(sensor_name, str) or not sensor_name:
         raise ValueError("sensor_name must be a non-empty string")
-    if ext_inp_name not in {"ext_inp_1", "ext_inp_2"}:
-        raise ValueError("ext_inp_name must be 'ext_inp_1' or 'ext_inp_2'")
+    output_numbers = {
+        "output_1": 1,
+        "output_2": 2,
+        "ext_inp_1": 1,
+        "ext_inp_2": 2,
+    }
+    if output_name not in output_numbers:
+        raise ValueError(
+            "output_name must be 'output_1' or 'output_2'"
+        )
+    output_number = output_numbers[output_name]
     if not isinstance(cell_name, str) or not cell_name:
         raise ValueError("cell_name must be a non-empty string")
     if isinstance(weight, bool) or not isinstance(weight, (int, float)):
@@ -470,19 +420,6 @@ def add_sensor_connection(
     if not isinstance(sensor, dict):
         raise TypeError("Sensor {!r} must be a dictionary".format(sensor_name))
 
-    input_index = sensor.get(ext_inp_name, {}).get("value")
-    if (
-        isinstance(input_index, bool)
-        or not isinstance(input_index, int)
-        or input_index < 0
-    ):
-        raise ValueError(
-            "{}.{} must contain a non-negative integer".format(
-                sensor_name, ext_inp_name
-            )
-        )
-    input_number = input_index + 1
-
     nervous_system = result.get("nervous_system")
     if not isinstance(nervous_system, dict):
         raise KeyError("JSON does not contain a 'nervous_system' object")
@@ -492,57 +429,56 @@ def add_sensor_connection(
             "Cell {!r} was not found in nervous_system.cells".format(cell_name)
         )
 
-    driving_inputs = result.get("driving_inputs")
-    if not isinstance(driving_inputs, dict):
-        raise KeyError("JSON does not contain a 'driving_inputs' object")
-    inputs = driving_inputs.get("inputs", {}).get("value")
-    if not isinstance(inputs, list):
-        raise TypeError("'driving_inputs.inputs.value' must be a list")
-    if not any(
-        isinstance(entry, dict) and entry.get("input_num") == input_number
-        for entry in inputs
-    ):
-        raise KeyError("Driving input {} does not exist".format(input_number))
-
-    weights = driving_inputs.setdefault(
+    weights = sensor.setdefault(
         "weights",
         {
-            "message": (
-                "Weights of driving inputs to Nervous System in sparse format"
-            ),
+            "message": "Weights from sensor outputs to Nervous System cells",
             "value": [],
         },
     )
     if not isinstance(weights, dict):
-        raise TypeError("'driving_inputs.weights' must be a dictionary")
+        raise TypeError("Sensor 'weights' must be a dictionary")
     if weights.get("value") is None:
         weights["value"] = []
     if not isinstance(weights.get("value"), list):
-        raise TypeError("'driving_inputs.weights.value' must be a list")
+        raise TypeError("Sensor 'weights.value' must be a list")
     weights.setdefault(
-        "message", "Weights of driving inputs to Nervous System in sparse format"
+        "message", "Weights from sensor outputs to Nervous System cells"
     )
 
     for connection in weights["value"]:
         if not isinstance(connection, dict):
             raise TypeError("Each driving input connection must be a dictionary")
         if (
-            connection.get("from_input") == input_number
+            connection.get("from_output") == output_number
             and connection.get("to_cell") == cell_name
         ):
             raise ValueError(
                 "A connection from {}.{} to {!r} already exists".format(
-                    sensor_name, ext_inp_name, cell_name
+                    sensor_name, output_name, cell_name
                 )
             )
 
     weights["value"].append(
         {
-            "from_input": input_number,
+            "from_output": output_number,
             "to_cell": cell_name,
             "weight": {"value": float(weight)},
         }
     )
+    if make_evolvable:
+        result = add_evotag(
+            result,
+            [
+                "sensors",
+                sensor_name,
+                "weights",
+                "value",
+                len(weights["value"]) - 1,
+                "weight",
+            ],
+            evotag_name,
+        )
     return result
 
 
@@ -1252,6 +1188,8 @@ def add_evotag(json_data, keys, evotag_name=None):
             lower_limit, upper_limit = 0.0, 2.0
         elif "driving_inputs" in keys and terminal_name == "weight":
             lower_limit, upper_limit = -1500.0, 1500.0
+        elif "sensors" in keys and terminal_name == "weight":
+            lower_limit, upper_limit = -1500.0, 1500.0
         elif terminal_name in {"sensor_n", "sensor_m", "tau"}:
             lower_limit, upper_limit = 0.1, 4.2
         elif terminal_name == "bias":
@@ -1305,6 +1243,78 @@ def delete_sensor(json_data, sensor_name):
         elif isinstance(value, list):
             for child in value:
                 collect_evotags(child)
+
+    if "ext_inp_1" not in sensor and "ext_inp_2" not in sensor:
+        collect_evotags(sensor)
+        del sensors[sensor_name]
+
+        def sensor_number(name):
+            prefix = "sensor_"
+            if not name.startswith(prefix) or not name[len(prefix):].isdigit():
+                raise ValueError(
+                    "Sensor names must use the form 'sensor_N': {!r}".format(
+                        name
+                    )
+                )
+            return int(name[len(prefix):])
+
+        ordered_sensors = sorted(
+            sensors.items(), key=lambda item: sensor_number(item[0])
+        )
+        sensors.clear()
+        for index, (_, remaining_sensor) in enumerate(
+            ordered_sensors, start=1
+        ):
+            sensors["sensor_{}".format(index)] = remaining_sensor
+        if not sensors:
+            result.pop("sensors", None)
+            for section_name in ("worm", "Worm"):
+                section = result.get(section_name)
+                if isinstance(section, dict):
+                    section.pop("sensorM", None)
+                    section.pop("sensorN", None)
+
+        def collect_remaining_evotags(value, at_root=False, output=None):
+            if output is None:
+                output = set()
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if (
+                    isinstance(evotag, (str, int))
+                    and not isinstance(evotag, bool)
+                ):
+                    output.add(evotag)
+                for key, child in value.items():
+                    if at_root and key in {
+                        "evolvable_ranges",
+                        "evolved_used",
+                        "Evolvable",
+                    }:
+                        continue
+                    collect_remaining_evotags(child, output=output)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_remaining_evotags(child, output=output)
+            return output
+
+        unused_evotags = removed_evotags - collect_remaining_evotags(
+            result, at_root=True
+        )
+        ranges = result.get("evolvable_ranges")
+        if isinstance(ranges, dict):
+            for evotag in unused_evotags:
+                ranges.pop(str(evotag), None)
+
+        evolved_used = result.get("evolved_used")
+        if isinstance(evolved_used, dict) and isinstance(
+            evolved_used.get("value"), list
+        ):
+            evolved_used["value"] = [
+                evotag
+                for evotag in evolved_used["value"]
+                if evotag not in unused_evotags
+            ]
+        return result
 
     removed_input_numbers = set()
     for key in ("ext_inp_1", "ext_inp_2"):

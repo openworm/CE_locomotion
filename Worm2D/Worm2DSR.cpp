@@ -222,8 +222,7 @@ void Worm2DSRE::resetFromJson(const json & js1)
 
 
     setMuscBodExt(js1);
-
-    //what about sensor??
+    makeExternalInputConnFromJson(js1);
 }
 
 void Worm2DSRE::resetFromBPJson()
@@ -2197,8 +2196,9 @@ void SensorPars::writeParsToJson2(json & j) const
 {
   addParsToJson1<double>(j,{"sensor_n","sensor_m","hs_stepsize"},
     {sensorN,sensorM,HSStepSize});
-  addParsToJson1<int>(j,{"ext_inp_1", "ext_inp_2"}, {extInp1, extInp2});
   j["environment"]["value"] = environmentName;
+  j.erase("ext_inp_1");
+  j.erase("ext_inp_2");
 }
 
 void SensorPars::writeParsToJson(json & j) const
@@ -2214,8 +2214,8 @@ void SensorPars::setParsFromJson2(const json & j)
   sensorN = j["sensor_n"]["value"];
   sensorM = j["sensor_m"]["value"];
   HSStepSize = j["hs_stepsize"]["value"];
-  extInp1 = j["ext_inp_1"]["value"];
-  extInp2 = j["ext_inp_2"]["value"];
+  if (j.contains("ext_inp_1")) extInp1 = j["ext_inp_1"]["value"];
+  if (j.contains("ext_inp_2")) extInp2 = j["ext_inp_2"]["value"];
   if (j.contains("environment"))
     environmentName = j["environment"]["value"].get<string>();
 }
@@ -2257,6 +2257,24 @@ const EnvironmentPars & Sensor::getEnvironment(const string & name) const
 
 void Sensor::construct(const json & j)
 {
+  int nextHiddenInput = 0;
+  if (j.contains("driving_inputs")
+      && j.at("driving_inputs").contains("inputs")
+      && j.at("driving_inputs").at("inputs").contains("value"))
+  {
+    for (const auto & input :
+         j.at("driving_inputs").at("inputs").at("value"))
+      nextHiddenInput = max(
+        nextHiddenInput, input.at("input_num").get<int>());
+  }
+  else if (j.contains("Driving input")
+           && j.at("Driving input").contains("strengths")
+           && j.at("Driving input").at("strengths").contains("value"))
+  {
+    nextHiddenInput = static_cast<int>(
+      j.at("Driving input").at("strengths").at("value").size());
+  }
+
   if (j.contains("environments"))
   {
     for (const auto & item : j.at("environments").items())
@@ -2279,6 +2297,11 @@ void Sensor::construct(const json & j)
       const json & sensorJson = sensors["sensor_" + to_string(ind)];
       SensorPars sensor;
       sensor.setParsFromJson2(sensorJson);
+      if (sensor.extInp1 < 0 || sensor.extInp2 < 0)
+      {
+        sensor.extInp1 = nextHiddenInput++;
+        sensor.extInp2 = nextHiddenInput++;
+      }
       if (sensor.environmentName.empty())
       {
         EnvironmentPars environment;
@@ -2353,21 +2376,127 @@ void  Sensor::addParsToJson(json & j) const
     return;
   }
 
+  vector<string> cellNames;
+  if (j.contains("nervous_system")
+      && j.at("nervous_system").contains("cell_names")
+      && j.at("nervous_system").at("cell_names").contains("value"))
+    cellNames = j.at("nervous_system").at("cell_names").at("value").
+      template get<vector<string>>();
+  else
+    cellNames = wb.getDistinctCellNames();
+
+  const json drivingWeights =
+    j.contains("driving_inputs")
+    && j.at("driving_inputs").contains("weights")
+    && j.at("driving_inputs").at("weights").contains("value")
+      ? j.at("driving_inputs").at("weights").at("value")
+      : json::array();
+
+  set<int> sensorInputNumbers;
   json & environmentsJson = j["environments"];
   for (int i = 0; i<spvec.size(); i++)
   {
     const SensorPars & sensor = spvec[i];
     json & sensorJson = j["sensors"]["sensor_" + to_string(i+1)];
+    const json previousWeights =
+      sensorJson.contains("weights")
+      && sensorJson.at("weights").contains("value")
+        ? sensorJson.at("weights").at("value")
+        : json::array();
     json & environmentJson = environmentsJson[sensor.environmentName];
     for (const string key : {"x_center", "y_center", "grad_steep"})
       if (!environmentJson.contains(key) && sensorJson.contains(key))
         environmentJson[key] = sensorJson[key];
 
     sensor.writeParsToJson2(sensorJson);
+    json newWeights = json::array();
+    const int inputNumbers[2] = {sensor.extInp1 + 1, sensor.extInp2 + 1};
+    sensorInputNumbers.insert(inputNumbers[0]);
+    sensorInputNumbers.insert(inputNumbers[1]);
+
+    for (const toFromWeight & connection : wb.itsExternalInputConn())
+    {
+      int output = 0;
+      if (connection.w.from == inputNumbers[0]) output = 1;
+      else if (connection.w.from == inputNumbers[1]) output = 2;
+      else continue;
+
+      if (connection.to < 1
+          || static_cast<size_t>(connection.to) > cellNames.size())
+        throw runtime_error("Sensor connection refers to an unknown cell index");
+      const string & cellName = cellNames[connection.to - 1];
+
+      json entry;
+      for (const auto & oldEntry : previousWeights)
+        if (oldEntry.value("from_output", 0) == output
+            && oldEntry.value("to_cell", string()) == cellName)
+        {
+          entry = oldEntry;
+          break;
+        }
+      if (entry.is_null())
+        for (const auto & oldEntry : drivingWeights)
+          if (oldEntry.value("from_input", 0) == connection.w.from
+              && oldEntry.value("to_cell", string()) == cellName)
+          {
+            entry = oldEntry;
+            entry.erase("from_input");
+            break;
+          }
+
+      if (entry.is_null()) entry = json::object();
+      entry["from_output"] = output;
+      entry["to_cell"] = cellName;
+      entry["weight"]["value"] = connection.w.weight;
+      newWeights.push_back(entry);
+    }
+    sensorJson["weights"]["message"] =
+      "Weights from sensor outputs to Nervous System cells";
+    sensorJson["weights"]["value"] = newWeights;
     sensorJson.erase("x_center");
     sensorJson.erase("y_center");
     sensorJson.erase("grad_steep");
   }
+
+  if (j.contains("driving_inputs"))
+  {
+    json remainingInputs = json::array();
+    map<int, int> inputNumberMap;
+    if (j.at("driving_inputs").contains("inputs")
+        && j.at("driving_inputs").at("inputs").contains("value"))
+      for (const auto & input :
+           j.at("driving_inputs").at("inputs").at("value"))
+      {
+        const int oldNumber = input.at("input_num").get<int>();
+        if (sensorInputNumbers.count(oldNumber)) continue;
+        json newInput = input;
+        const int newNumber = static_cast<int>(remainingInputs.size()) + 1;
+        newInput["input_num"] = newNumber;
+        inputNumberMap[oldNumber] = newNumber;
+        remainingInputs.push_back(newInput);
+      }
+
+    json remainingWeights = json::array();
+    for (const auto & connection : drivingWeights)
+    {
+      const int oldNumber = connection.at("from_input").get<int>();
+      if (sensorInputNumbers.count(oldNumber)) continue;
+      auto mapped = inputNumberMap.find(oldNumber);
+      if (mapped == inputNumberMap.end()) continue;
+      json newConnection = connection;
+      newConnection["from_input"] = mapped->second;
+      remainingWeights.push_back(newConnection);
+    }
+
+    if (remainingInputs.empty() && remainingWeights.empty())
+      j.erase("driving_inputs");
+    else
+    {
+      j["driving_inputs"]["inputs"]["value"] = remainingInputs;
+      j["driving_inputs"]["weights"]["value"] = remainingWeights;
+    }
+  }
+  j.erase("Driving input");
 
   for (const EnvironmentPars & environment : environmentVec)
   {

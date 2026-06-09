@@ -738,6 +738,9 @@ template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
 const vector<double> & itsExternalInputs() const {return externalInputs;}
+const vector<toFromWeight> & itsExternalInputConn() const {
+    return externalInputConn;
+}
 virtual const vector<string> getDistinctCellNames() {return {"not implemented"};}
 
 Efunctor itsEf;

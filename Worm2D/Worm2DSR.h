@@ -185,7 +185,7 @@ double sensorN, sensorM;
 int iSensorN, iSensorM;
 //double chemCon, presentAvgCon, pastAvgCon;
 double presentAvgCon, pastAvgCon;
-int extInp1, extInp2;
+int extInp1 = -1, extInp2 = -1;
 double HSStepSize;
 string environmentName;
 
