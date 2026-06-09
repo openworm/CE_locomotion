@@ -2197,6 +2197,20 @@ void SensorPars::writeParsToJson2(json & j) const
   addParsToJson1<double>(j,{"sensor_n","sensor_m","hs_stepsize"},
     {sensorN,sensorM,HSStepSize});
   j["environment"]["value"] = environmentName;
+  j["outputs"]["message"] =
+    "Available sensor output names for sensor-to-cell connections";
+  j["outputs"]["value"] = {
+    {
+      {"name", "output_1"},
+      {"description",
+       "Positive change in sensed concentration (present average above past average)"}
+    },
+    {
+      {"name", "output_2"},
+      {"description",
+       "Negative change in sensed concentration (past average above present average)"}
+    }
+  };
   j.erase("ext_inp_1");
   j.erase("ext_inp_2");
 }

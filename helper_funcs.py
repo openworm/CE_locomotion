@@ -371,6 +371,27 @@ def add_sensor(
         "hs_stepsize": {"value": float(hs_stepsize)},
         "sensor_m": {"value": float(sensor_m)},
         "sensor_n": {"value": float(sensor_n)},
+        "outputs": {
+            "message": (
+                "Available sensor output names for sensor-to-cell connections"
+            ),
+            "value": [
+                {
+                    "name": "output_1",
+                    "description": (
+                        "Positive change in sensed concentration "
+                        "(present average above past average)"
+                    ),
+                },
+                {
+                    "name": "output_2",
+                    "description": (
+                        "Negative change in sensed concentration "
+                        "(past average above present average)"
+                    ),
+                },
+            ],
+        },
         "weights": {
             "message": "Weights from sensor outputs to Nervous System cells",
             "value": [],
@@ -388,7 +409,7 @@ def add_sensor_connection(
     make_evolvable=False,
     evotag_name=None,
 ):
-    """Return a copy with a sensor-output connection added."""
+    """Return a copy with a sensor-output connection added if absent."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(sensor_name, str) or not sensor_name:
@@ -453,11 +474,7 @@ def add_sensor_connection(
             connection.get("from_output") == output_number
             and connection.get("to_cell") == cell_name
         ):
-            raise ValueError(
-                "A connection from {}.{} to {!r} already exists".format(
-                    sensor_name, output_name, cell_name
-                )
-            )
+            return result
 
     weights["value"].append(
         {
