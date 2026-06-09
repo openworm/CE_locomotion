@@ -103,7 +103,6 @@ void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
     orient_orig = cmd->getArgValDoub("--orient", orient_orig);
     getParFromCmdAny<double>(cmd, {"grad_steep", "gradSteep"}, gradSteep);
     getParFromCmdAny<double>(cmd, {"run_duration", "RunDuration"}, RunDuration);
-    getParFromCmdAny<double>(cmd, {"hs_step_size", "HSStepSize"}, HSStepSize);
     taxis = cmd->getArgValInt("--taxis", taxis);
     kinesis = cmd->getArgValInt("--kinesis", kinesis);
     getParFromCmdAny<bool>(cmd, {"reset_agent_body", "resetAgentBody"}, resetAgentBody);
@@ -212,9 +211,7 @@ setPars(cmd);
 
 void gradEvoPars::setPars(shared_ptr<const CmdArgs> cmd)
 {
-    
-    getParFromCmdAny<double>(cmd, {"hs_step_size", "HSStepSize"}, HSStepSize);
-    
+    (void)cmd;
 }
 
 

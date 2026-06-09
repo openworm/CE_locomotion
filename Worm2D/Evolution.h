@@ -1388,15 +1388,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
 
-    //T w(this->cmd);
-    //w.setStepSize(StepSize);
-
-    //w.setWormPars(cmd);
-
-    w.setValCJWorm("HSStepSize",StepSize);
-
-    //double t1;
-    //w.getValCJWorm("hs_step_size", t1);
+    w.setStepSize(StepSize);
 
     w.InitializeState(rs);
     w.setParsFromGeno(genotype);
@@ -1561,11 +1553,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     w.setParsFromGeno(genotype);
 
 
+    w.setStepSize(StepSize);
     w.InitializeState(rs);
     w.initForSimulation(rs);
-    
-    
-    w.setStepSize(StepSize);
     
     //shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
     //assert(w1!=nullptr);
@@ -1584,7 +1574,6 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
               
     double rundur = Transient + Duration;
     w.setValCJWorm("RunDuration",rundur);
-    w.setValCJWorm("HSStepSize",StepSize);
     w.setValCJWorm("resetAgentBody",true);
     w.setValCJWorm("orient",Pi);
 

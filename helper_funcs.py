@@ -326,7 +326,6 @@ def add_sensor(
     environment_name,
     sensor_n=2.0,
     sensor_m=2.0,
-    hs_stepsize=0.01,
 ):
     """Return a copy of a worm JSON dictionary with a new sensor."""
     if not isinstance(json_data, dict):
@@ -337,12 +336,11 @@ def add_sensor(
     for parameter_name, value in (
         ("sensor_n", sensor_n),
         ("sensor_m", sensor_m),
-        ("hs_stepsize", hs_stepsize),
     ):
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TypeError("{} must be a number".format(parameter_name))
-    if sensor_n <= 0 or sensor_m <= 0 or hs_stepsize <= 0:
-        raise ValueError("sensor_n, sensor_m and hs_stepsize must be positive")
+    if sensor_n <= 0 or sensor_m <= 0:
+        raise ValueError("sensor_n and sensor_m must be positive")
 
     result = copy.deepcopy(json_data)
     environments = result.get("environments")
@@ -378,7 +376,6 @@ def add_sensor(
 
     sensors[sensor_name] = {
         "environment": {"value": canonical_environment_name},
-        "hs_stepsize": {"value": float(hs_stepsize)},
         "sensor_m": {"value": float(sensor_m)},
         "sensor_n": {"value": float(sensor_n)},
         "outputs": {

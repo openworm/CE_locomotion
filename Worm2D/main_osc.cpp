@@ -285,6 +285,7 @@ int main (int argc, const char* argv[])
     rs.SetRandomSeed(simrandseed);
     //cout << "simrandseed " << simrandseed << endl;
 
+    w2->setStepSize(StepSize);
     w2->InitializeState(rs);
 
     if (false)
@@ -298,7 +299,6 @@ int main (int argc, const char* argv[])
 
     //cout << "const 1" << endl;
     w2->initForSimulation(rs);
-    w2->setStepSize(StepSize);
     w2->setDataskips(skip_steps);
     //w->setPrefix("sim");
     w2->InitializeData(directoryName);
@@ -499,6 +499,12 @@ int main (int argc, const char* argv[])
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);
+    if (j.contains("worm")) j["worm"].erase("hs_step_size");
+    if (j.contains("Evolutionary Optimization Parameters"))
+    {
+        j["Evolutionary Optimization Parameters"].erase("hs_step_size");
+        j["Evolutionary Optimization Parameters"].erase("HSStepSize");
+    }
     j.erase("Worm");
     j.erase("Nervous system");
     j.erase("Dorsal NMJ");

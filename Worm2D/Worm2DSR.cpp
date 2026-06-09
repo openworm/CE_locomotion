@@ -2155,8 +2155,7 @@ void WormCO2DSR::InitializeState(RandomState &rs)
 
 void Sensor::InitialiseAgent()
 {
-  double HSStepSize;
-  wb.getValCJWorm<double>("hs_step_size",HSStepSize);
+  const double HSStepSize = wb.itsStepSize();
   for (SensorPars & sensor : spvec)
   {
     sensor.HSStepSize = HSStepSize;
@@ -2194,8 +2193,7 @@ void EnvironmentPars::writeParsToJson(json & j) const
 
 void SensorPars::writeParsToJson2(json & j) const
 {
-  addParsToJson1<double>(j,{"sensor_n","sensor_m","hs_stepsize"},
-    {sensorN,sensorM,HSStepSize});
+  addParsToJson1<double>(j,{"sensor_n","sensor_m"}, {sensorN,sensorM});
   j["environment"]["value"] = environmentName;
   j["outputs"]["message"] =
     "Available sensor output names for sensor-to-cell connections";
@@ -2213,12 +2211,13 @@ void SensorPars::writeParsToJson2(json & j) const
   };
   j.erase("ext_inp_1");
   j.erase("ext_inp_2");
+  j.erase("hs_stepsize");
 }
 
 void SensorPars::writeParsToJson(json & j) const
 {
-  addParsToJson1<double>(j,{"sensorN","sensorM","HSStepSize"},
-    {sensorN,sensorM,HSStepSize});
+  addParsToJson1<double>(j,{"sensorN","sensorM"}, {sensorN,sensorM});
+  j.erase("HSStepSize");
   addParsToJson1<int>(j,{"extInp1", "extInp2"}, {extInp1, extInp2});
   j["environment"]["value"] = environmentName;
 }
@@ -2227,7 +2226,7 @@ void SensorPars::setParsFromJson2(const json & j)
 {
   sensorN = j["sensor_n"]["value"];
   sensorM = j["sensor_m"]["value"];
-  HSStepSize = j["hs_stepsize"]["value"];
+  if (j.contains("hs_stepsize")) HSStepSize = j["hs_stepsize"]["value"];
   if (j.contains("ext_inp_1")) extInp1 = j["ext_inp_1"]["value"];
   if (j.contains("ext_inp_2")) extInp2 = j["ext_inp_2"]["value"];
   if (j.contains("environment"))
@@ -2238,7 +2237,7 @@ void SensorPars::setParsFromJson(const json & j)
 {
   sensorN = j["sensorN"]["value"];
   sensorM = j["sensorM"]["value"];
-  HSStepSize = j["HSStepSize"]["value"];
+  if (j.contains("HSStepSize")) HSStepSize = j["HSStepSize"]["value"];
   extInp1 = j["extInp1"]["value"];
   extInp2 = j["extInp2"]["value"];
   if (j.contains("environment"))
@@ -2359,7 +2358,7 @@ void Sensor::construct(const json & j)
   {
     const json & worm = j.contains("worm") ? j.at("worm") : j.at("Worm");
     SensorPars sensor;
-    wb.getValCJWorm<double>("hs_step_size",sensor.HSStepSize);
+    sensor.HSStepSize = wb.itsStepSize();
     sensor.extInp1 = 0;
     sensor.extInp2 = 1;
     sensor.sensorM = worm["sensorM"]["value"];

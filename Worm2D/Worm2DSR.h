@@ -186,7 +186,7 @@ int iSensorN, iSensorM;
 //double chemCon, presentAvgCon, pastAvgCon;
 double presentAvgCon, pastAvgCon;
 int extInp1 = -1, extInp2 = -1;
-double HSStepSize;
+double HSStepSize = 0.01;
 string environmentName;
 
 void setParsFromJson2(const json & j);

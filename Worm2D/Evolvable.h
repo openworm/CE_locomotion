@@ -115,17 +115,10 @@ public:
 
 gradEvoPars(shared_ptr<const CmdArgs> cmd);
 
-double HSStepSize = 0.01;
-
-void setParsFromJson(const json & j){
-
-  getParFromJsonAny<double>(j, {"hs_step_size", "HSStepSize"}, HSStepSize);
-  
-}
+void setParsFromJson(const json &) {}
 void addParsToJson(json & j) const {
-
-  addParsToJson1<double>(j,{"hs_step_size"},{HSStepSize});
-
+  j.erase("hs_step_size");
+  j.erase("HSStepSize");
 }
 
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
@@ -337,7 +330,7 @@ class gradParameters : public W2Dbaseparameters
   
   void setPars(shared_ptr<const CmdArgs> cmd);
 
-  double orient_orig = 0, gradSteep = 0.5, RunDuration = 1000, HSStepSize = 0.01, 
+  double orient_orig = 0, gradSteep = 0.5, RunDuration = 1000,
   MaxDist = 4.5, worm_rotation = 0.0;
   //double orient_orig = 0, gradSteep = 0.5, RunDuration = 100,  MaxDist = 4.5;
   int taxis = 1, kinesis = 0;
@@ -351,7 +344,6 @@ void setParsFromJson(const json & j){
   orient_orig = getJsonVal<double>(j, "orient", orient_orig, true);
   getParFromJsonAny<double>(j, {"grad_steep", "gradSteep"}, gradSteep);
   getParFromJsonAny<double>(j, {"run_duration", "RunDuration"}, RunDuration);
-  getParFromJsonAny<double>(j, {"hs_step_size", "HSStepSize"}, HSStepSize);
   getParFromJsonAny<double>(j, {"max_dist", "MaxDist"}, MaxDist);
   taxis = getJsonVal<int>(j, "taxis", taxis,true); 
   kinesis = getJsonVal<int>(j, "kinesis", kinesis,true); 
@@ -371,13 +363,14 @@ void setParsFromJson(const json & j){
 
 void addParsToJson(json & j) const {
 
-  addParsToJson1<double>(j,{"orient", "grad_steep", "run_duration", 
-    "hs_step_size", "max_dist", "rotation"},
-    {orient_orig,gradSteep,RunDuration, HSStepSize, 
-      MaxDist, worm_rotation});
+  addParsToJson1<double>(j,{"orient", "grad_steep", "run_duration",
+    "max_dist", "rotation"},
+    {orient_orig,gradSteep,RunDuration, MaxDist, worm_rotation});
 
   addParsToJson1<int>(j,{"taxis", "kinesis"}, {taxis,kinesis});
   addParsToJson1<bool>(j,{"reset_agent_body"}, {resetAgentBody});
+  j.erase("hs_step_size");
+  j.erase("HSStepSize");
 
   W2Dbaseparameters::addParsToJson(j);
 
@@ -538,6 +531,4 @@ void addParsToJson(json & j) const {
 
 
 };
-
-
 

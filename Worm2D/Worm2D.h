@@ -233,7 +233,6 @@ class baseParameters
         defaultVals_["orient"] = 0.0;
         defaultVals_["grad_steep"] = 0.5;
         defaultVals_["run_duration"] = 1000;
-        defaultVals_["hs_step_size"] = 0.01;
         defaultVals_["max_dist"] = 4.5;
         defaultVals_["taxis"] = 1;
         defaultVals_["kinesis"] = 0;
@@ -335,6 +334,12 @@ class baseParameters
                     section.value().erase(legacy_key_str);
                 }
             }
+        }
+        if (j.contains("worm")) j["worm"].erase("hs_step_size");
+        if (j.contains("Evolutionary Optimization Parameters"))
+        {
+            j["Evolutionary Optimization Parameters"].erase("hs_step_size");
+            j["Evolutionary Optimization Parameters"].erase("HSStepSize");
         }
     }
 

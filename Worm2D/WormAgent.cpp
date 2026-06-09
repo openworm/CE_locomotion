@@ -78,14 +78,7 @@ void WormAgent::SetWormParametersFromFile(const char* fnm)
 
 void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
 {
-	
-	//Worm2Dbase::setWormPars(cmd_);
-	//size = cmd_->getArgValInt("--size", size);
-
-    double HSStepSize;
-    getValCJWorm<double>("hs_step_size",HSStepSize);
-
-	setStepSize(HSStepSize);
+	(void)cmd_;
 }
 
 
@@ -214,9 +207,6 @@ void WormAgent::zeroCircuit()
 
 void WormAgent::setSimParsDefault()
 {
-	double HSStepSize;
-    getValCJWorm<double>("hs_step_size",HSStepSize);
-	setStepSize(HSStepSize);
 }
 
 
@@ -227,7 +217,6 @@ void WormAgent::setSimPars(double orient_orig_,
 	setValCJWorm<double>("orient",orient_orig_);
 	setValCJWorm<double>("gradSteep",gradSteep_);
 	setValCJWorm<double>("RunDuration",RunDuration_);
-	setValCJWorm<double>("HSStepSize",HSStepSize_);
 	setValCJWorm<int>("taxis",taxis_);
 	setValCJWorm<int>("kinesis",kinesis_);
 
@@ -281,11 +270,9 @@ void WormAgent::InitializeState(RandomState &rs_)
 
 void WormAgent::InitialiseAgent()
 {
-	double HSStepSize, RunDuration; 
-    getValCJWorm<double>("hs_step_size",HSStepSize);
+	const double HSStepSize = itsStepSize();
+	double RunDuration;
 	getValCJWorm<double>("run_duration",RunDuration);
-
-	setStepSize(HSStepSize);
 
 
 	VelDelta = (int) (HST/HSStepSize);
@@ -708,8 +695,7 @@ const double MaxDifSensor = HST;
 
 const double TauMax = HST;
 
-double HSStepSize;
-getValCJWorm<double>("hs_step_size",HSStepSize);
+const double HSStepSize = itsStepSize();
 
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;
