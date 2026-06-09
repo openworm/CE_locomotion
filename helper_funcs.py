@@ -7,6 +7,7 @@ import os
 import random
 import shutil
 import sys
+from collections import Counter
 from functools import partial
 
 import numpy as np
@@ -1102,6 +1103,178 @@ def add_cell_parameter_evotag(
     return result
 
 
+def add_evotag(json_data, keys, evotag_name=None):
+    """Return a copy with the numeric value at a JSON path made evolvable."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(
+                        key, depth
+                    )
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    if keys[-1] == "value":
+        parameter = result
+        for key in keys[:-1]:
+            if isinstance(parameter, dict):
+                parameter = parameter[key]
+            else:
+                parameter = parameter[key]
+    else:
+        parameter = current
+
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError("The JSON path must identify an object containing 'value'")
+    parameter_value = parameter["value"]
+    if isinstance(parameter_value, bool) or not isinstance(
+        parameter_value, (int, float)
+    ):
+        raise TypeError("The selected value must be numeric")
+
+    name_parts = []
+    replacements = {
+        "nervous_system": "ns",
+        "chemical_conns": "chemcons",
+        "electrical_conns": "eleccons",
+        "stretch_receptor": "sr",
+    }
+    previous_key = None
+    for key in keys:
+        if isinstance(key, int) or key == "value":
+            continue
+        if previous_key == "cells":
+            previous_key = key
+            continue
+        part = replacements.get(str(key), str(key))
+        if (
+            part == "weight"
+            and name_parts
+            and name_parts[-1] in {"chemcons", "eleccons"}
+        ):
+            continue
+        name_parts.append(part)
+        previous_key = key
+    range_name = "_".join(name_parts)
+    if not range_name:
+        raise ValueError("The JSON path does not produce a valid evotag name")
+    terminal_name = next(
+        (
+            str(key)
+            for key in reversed(keys)
+            if not isinstance(key, int) and key != "value"
+        ),
+        "",
+    )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    existing_evotag = parameter.get("evotag")
+    if evotag_name is None and isinstance(existing_evotag, str):
+        evotag_name = existing_evotag
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(result)
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    parameter["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        matching_limits = Counter()
+        for range_entry in evolvable_ranges.values():
+            if (
+                isinstance(range_entry, dict)
+                and range_entry.get("name") == range_name
+                and isinstance(range_entry.get("lower_limit"), (int, float))
+                and isinstance(range_entry.get("upper_limit"), (int, float))
+            ):
+                matching_limits[
+                    (
+                        range_entry["lower_limit"],
+                        range_entry["upper_limit"],
+                    )
+                ] += 1
+
+        if matching_limits:
+            lower_limit, upper_limit = matching_limits.most_common(1)[0][0]
+        elif "chemical_conns" in keys:
+            lower_limit, upper_limit = -15.0, 15.0
+        elif "electrical_conns" in keys:
+            lower_limit, upper_limit = 0.0, 2.0
+        elif "driving_inputs" in keys and terminal_name == "weight":
+            lower_limit, upper_limit = -1500.0, 1500.0
+        elif terminal_name in {"sensor_n", "sensor_m", "tau"}:
+            lower_limit, upper_limit = 0.1, 4.2
+        elif terminal_name == "bias":
+            lower_limit, upper_limit = -15.0, 15.0
+        elif terminal_name == "gain":
+            lower_limit, upper_limit = 0.0, 2.0
+        elif terminal_name == "state":
+            lower_limit, upper_limit = -1.0, 1.0
+        else:
+            span = max(1.0, abs(float(parameter_value)))
+            lower_limit = float(parameter_value) - span
+            upper_limit = float(parameter_value) + span
+
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+
+    return result
+
+
 def delete_sensor(json_data, sensor_name):
     """Return a copy with a sensor and its dedicated driving inputs removed."""
     if not isinstance(json_data, dict):
@@ -1245,6 +1418,11 @@ def delete_sensor(json_data, sensor_name):
         sensors["sensor_{}".format(index)] = remaining_sensor
     if not sensors:
         result.pop("sensors", None)
+        for section_name in ("worm", "Worm"):
+            section = result.get(section_name)
+            if isinstance(section, dict):
+                section.pop("sensorM", None)
+                section.pop("sensorN", None)
 
     def collect_remaining_evotags(value, at_root=False, output=None):
         if output is None:
