@@ -15,6 +15,7 @@
 //cpbjvbk8yxl
 int main (int argc, const char* argv[])
 {
+    cout << "Starting Worm2D " << W2D_VERSION << endl;
 
     shared_ptr<const CmdArgs> cmd = make_shared<const CmdArgs>(argc, argv);
     

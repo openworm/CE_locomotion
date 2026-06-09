@@ -17,7 +17,8 @@ endif
 # ---------------------------
 PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
 PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-PYTHON_LIB := $(shell $(PYTHON) -c "import sysconfig, os; libname = os.path.splitext(sysconfig.get_config_var('LDLIBRARY'))[0]; print(libname[3:] if libname.startswith('lib') else libname)")
+PYTHON_LDVERSION := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDVERSION'))")
+PYTHON_LIB := python$(PYTHON_LDVERSION)
 
 # ---------------------------
 # Check that Python headers exist
@@ -33,7 +34,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
     RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
 else ifeq ($(UNAME_S),Darwin)
-    RPATH_FLAG = -Wl,-rpath,@loader_path
+    RPATH_FLAG = -Wl,-rpath,@loader_path -Wl,-rpath,$(PYTHON_LIB_DIR)
 else
     $(error Unsupported OS)
 endif
@@ -44,6 +45,10 @@ endif
 CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR)
 LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
 LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
+
+# Extra flags for MacOS
+LDFLAGS += "-L/opt/homebrew/lib"
+CXXFLAGS += "-I/opt/homebrew/include"
 
 EXTRA_FLAGS := -fPIE -O3 -Iinc
 SANFLAG :=
@@ -78,7 +83,17 @@ vpath %.cpp ../
 # ---------------------------
 # Rules
 # ---------------------------
-all: main main_osc
+all: info main main_osc
+
+
+info:
+	@echo ' '
+	@echo '  - Compiling with '
+	@echo '      CXXFLAGS: ' $(CXXFLAGS) 
+	@echo '      LIBS: ' $(LIBS) 
+	@echo '      LDFLAGS: ' $(LDFLAGS) 
+	@echo ' '
+
 
 # Generic compilation rule
 %.o: %.cpp

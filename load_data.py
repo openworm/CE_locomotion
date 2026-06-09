@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import sys
 import random
+from datetime import datetime
 
 # import argparse
 import os
@@ -1126,6 +1127,23 @@ def reload_single_run(a=None, **kwargs):
         wcon = {}
         wcon["data"] = []
 
+        wcon["units"] = {
+            "t": "s",
+            "x": "mm",
+            "y": "mm",
+        }
+
+        wcon["metadata"] = {
+            "timestamp": datetime.now().isoformat(),
+            "protocol": [
+                "Simulation of worm behaviour by Worm2D",
+            ],
+            "software": {
+                "name": "Worm2D",
+                "version": hf.get_worm2d_version(),
+            },
+        }
+
         dd = {}
         wcon["data"].append(dd)
         dd["id"] = "test"
@@ -1201,6 +1219,7 @@ def reload_single_run(a=None, **kwargs):
 
         ax_body.set_xlabel("X Position (mm)", fontsize=label_font_size)
         ax_body.set_ylabel("Y Position (mm)", fontsize=label_font_size)
+        ax_body.set_aspect("equal")
         fig_body.tight_layout()
         filename = hf.rename_file("Motion.png")
         fig_body.savefig(filename, bbox_inches="tight", dpi=300)
