@@ -116,7 +116,7 @@ if [ "$quick_test" == 0 ]; then
    
 
 
-    omv test -V .test.COW2DSR2.omt
+    omv test -V .test.COW2DSR2.omt ${OMV_ARGS}
    
     omv test -V .test.osc_sim.omt ${OMV_ARGS}
     omv test -V .test.osc_sim_21.omt 
