@@ -709,6 +709,80 @@ def add_cell_connection(
     return result
 
 
+def _get_cell_connection(
+    json_data,
+    from_cell,
+    to_cell,
+    connection_key,
+    reciprocal=False,
+):
+    """Return a copy of a matching nervous-system connection, if present."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for parameter_name, cell_name in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(cell_name, str) or not cell_name:
+            raise ValueError(
+                "{} must be a non-empty string".format(parameter_name)
+            )
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        return None
+    connection_object = nervous_system.get(connection_key)
+    if connection_object is None:
+        return None
+    if not isinstance(connection_object, dict):
+        raise TypeError(
+            "'nervous_system.{}' must be a dictionary".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if connections is None:
+        return None
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each connection must be a dictionary")
+        direct_match = (
+            connection.get("from") == from_cell
+            and connection.get("to") == to_cell
+        )
+        reverse_match = reciprocal and (
+            connection.get("from") == to_cell
+            and connection.get("to") == from_cell
+        )
+        if direct_match or reverse_match:
+            return copy.deepcopy(connection)
+    return None
+
+
+def get_chemical_connection(json_data, from_cell, to_cell):
+    """Return the directed chemical connection, or None if it is absent."""
+    return _get_cell_connection(
+        json_data,
+        from_cell,
+        to_cell,
+        "chemical_conns",
+    )
+
+
+def get_electrical_connection(json_data, first_cell, second_cell):
+    """Return the reciprocal electrical connection, or None if absent."""
+    return _get_cell_connection(
+        json_data,
+        first_cell,
+        second_cell,
+        "electrical_conns",
+        reciprocal=True,
+    )
+
+
 def delete_cell_connection(json_data, from_cell, to_cell):
     """Return a copy with one directed chemical connection removed if present."""
     if not isinstance(json_data, dict):

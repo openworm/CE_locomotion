@@ -8,10 +8,10 @@ Pi = 3.1415926
 
 
 indir = 'COW2DSRE_test_3'
-indir = 'example_W2D18L'
+#indir = 'example_W2D18L'
 outdir = indir + "_CO2out"
 pfolder = 'testruns'
-pfolder = 'notebooks'
+#pfolder = 'notebooks'
 
 doOrig = True
 doNML = False
@@ -78,7 +78,7 @@ args = dict(
     transient=10,
     simduration=500,
     simtransient=0,
-    maxGens=100,
+    maxGens=10,
     popSize=16,
     RandSeed=187057,
     modelName="W2DSR",
