@@ -7,11 +7,11 @@ import helper_funcs as hf
 Pi = 3.1415926
 
 
-indir = 'COW2DSRE_test_3'
-indir = 'example_W2D18L'
+indir = "COW2DSRE_test_3"
+indir = "example_W2D18L"
 outdir = indir + "_CO2out"
-pfolder = 'testruns'
-pfolder = 'notebooks'
+pfolder = "testruns"
+pfolder = "notebooks"
 
 doOrig = True
 doNML = False
@@ -26,51 +26,55 @@ hf.delete_subfolder_directory(pfolder, outdir)
 doDelete = False
 renewJson = True
 if doInputFolder is True:
-
     if renewJson is True:
         json_data = hf.get_worm_json(inputFolderName)
         if doDelete is True:
-            json_data=hf.remove_nervous_system_cell(json_data, "Cell_41_0")
-            json_data=hf.remove_nervous_system_cell(json_data, "Cell_42_0")
-            json_data=hf.remove_nervous_system_cell(json_data, "Cell_43_0")
-            json_data=hf.remove_nervous_system_cell(json_data, "Cell_44_0")
-            json_data=hf.delete_sensor(json_data, 'sensor_1')
-            json_data=hf.delete_environment(json_data, 'environment_1')
+            json_data = hf.remove_nervous_system_cell(json_data, "Cell_41_0")
+            json_data = hf.remove_nervous_system_cell(json_data, "Cell_42_0")
+            json_data = hf.remove_nervous_system_cell(json_data, "Cell_43_0")
+            json_data = hf.remove_nervous_system_cell(json_data, "Cell_44_0")
+            json_data = hf.delete_sensor(json_data, "sensor_1")
+            json_data = hf.delete_environment(json_data, "environment_1")
 
-        json_data, cell_names=hf.add_random_cell_network(json_data, 4, 1)
+        json_data, cell_names = hf.add_random_cell_network(json_data, 4, 1)
         for cell_name in cell_names:
-            json_data=hf.add_cell_connection(json_data,cell_name,cell_name)
+            json_data = hf.add_cell_connection(json_data, cell_name, cell_name)
             json_data = hf.add_chemical_connection_evotag(
-                            json_data, cell_name, cell_name
-                        )
-        json_data=hf.add_environment(json_data, "salt_environment")
-        json_data=hf.add_sensor(json_data, "salt_environment")
-        keys =["sensors", "sensor_1", "sensor_m"]
-        json_data=hf.add_evotag(json_data, keys )
-        keys =["sensors", "sensor_1", "sensor_n"]
-        json_data=hf.add_evotag(json_data, keys )
+                json_data, cell_name, cell_name
+            )
+        json_data = hf.add_environment(json_data, "salt_environment")
+        json_data = hf.add_sensor(json_data, "salt_environment")
+        keys = ["sensors", "sensor_1", "sensor_m"]
+        json_data = hf.add_evotag(json_data, keys)
+        keys = ["sensors", "sensor_1", "sensor_n"]
+        json_data = hf.add_evotag(json_data, keys)
         evolvable_pars = ["tau", "bias"]
         for cell_name in cell_names:
-            json_data=hf.add_sensor_connection(json_data,"sensor_1",
-                                 "output_1",cell_name ,make_evolvable=True)
-            json_data=hf.add_sensor_connection(json_data,"sensor_1",
-                                 "output_2",cell_name ,make_evolvable=True)
+            json_data = hf.add_sensor_connection(
+                json_data, "sensor_1", "output_1", cell_name, make_evolvable=True
+            )
+            json_data = hf.add_sensor_connection(
+                json_data, "sensor_1", "output_2", cell_name, make_evolvable=True
+            )
             for evolvable_par in evolvable_pars:
-                json_data=hf.add_cell_parameter_evotag(json_data, cell_name,
-                                                    evolvable_par)
+                json_data = hf.add_cell_parameter_evotag(
+                    json_data, cell_name, evolvable_par
+                )
                 for cell_name_2 in cell_names:
                     if cell_name_2 != cell_name:
                         json_data = hf.add_chemical_connection_evotag(
                             json_data, cell_name, cell_name_2
                         )
-        head_cells = ["SMDD_0","SMDV_0"]
-        for (cell_name, head_cell) in zip(cell_names[0:2],head_cells):
-            json_data=hf.add_cell_connection(json_data, cell_name, head_cell)
-            json_data=hf.add_chemical_connection_evotag(json_data, cell_name, head_cell)
-        
-    #json_data=hf.delete_sensor(json_data, 'sensor_1')
-        #json_data=hf.delete_environment(json_data, 'environment_1')
-        #json_data['evolvable_ranges']['evotag_2']["active"] = False
+        head_cells = ["SMDD_0", "SMDV_0"]
+        for cell_name, head_cell in zip(cell_names[0:2], head_cells):
+            json_data = hf.add_cell_connection(json_data, cell_name, head_cell)
+            json_data = hf.add_chemical_connection_evotag(
+                json_data, cell_name, head_cell
+            )
+
+        # json_data=hf.delete_sensor(json_data, 'sensor_1')
+        # json_data=hf.delete_environment(json_data, 'environment_1')
+        # json_data['evolvable_ranges']['evotag_2']["active"] = False
         hf.write_worm_json(outputFolderName, json_data)
 
 args = dict(
@@ -96,7 +100,7 @@ args = dict(
     checkPointInterval=5,
     evo_type="EvoCO2",
     overwrite=True,
-    doCPT=True
+    doCPT=True,
 )
 
 if doInputFolder is True:

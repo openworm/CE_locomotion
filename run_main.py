@@ -550,9 +550,7 @@ def _can_copy_previous_evolution_files(input_folder, output_folder):
 
     print(
         "Input evolution history will not be copied because active "
-        "evolvable_ranges evotags in "
-        + output_path
-        + " do not match evolved_used."
+        "evolvable_ranges evotags in " + output_path + " do not match evolved_used."
     )
     return False
 
