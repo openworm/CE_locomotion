@@ -5,8 +5,8 @@ import pathlib
 
 
 def joinJson(json1, json2):
-    j1_size = json1["Nervous system"]["size"]["value"]
-    j2_size = json2["Nervous system"]["size"]["value"]
+    j1_size = utils.getNervousSystemSize(json1)
+    j2_size = utils.getNervousSystemSize(json2)
     return j1_size + j2_size
 
 
@@ -16,6 +16,44 @@ def incNSvals(j1):
 
 NSname = "Nervous system"
 EOP = "Evolutionary Optimization Parameters"
+
+
+def normalize_evolvable_range_entries(evolvable_ranges):
+    entries = []
+
+    def evotag_number(evotag):
+        if isinstance(evotag, int):
+            return evotag
+        if isinstance(evotag, str) and evotag.startswith("evotag_"):
+            return int(evotag.replace("evotag_", "", 1))
+        return evotag
+
+    for entry in evolvable_ranges.get("value", []):
+        if "evotag" in entry:
+            entry = dict(entry)
+            entry["evotag"] = evotag_number(entry["evotag"])
+            entries.append(entry)
+            continue
+
+        if len(entry) != 1:
+            continue
+
+        evotag_key, attrs = next(iter(entry.items()))
+
+        attrs = dict(attrs)
+        attrs["evotag"] = evotag_number(evotag_key)
+        entries.append(attrs)
+
+    for evotag_key, attrs in evolvable_ranges.items():
+        if evotag_key == "value" or not isinstance(attrs, dict):
+            continue
+
+        attrs = dict(attrs)
+        attrs["evotag"] = evotag_number(evotag_key)
+        entries.append(attrs)
+
+    return entries
+
 
 jsonNames = {
     # "List": {NSname: ["biases", "taus", "gains", "states", "externalinputs"]},
@@ -100,31 +138,33 @@ def mergeJsons(file1, file2, outdir):
 
     addedNeurons = []
     appended_json_data = utils.getJsonFile(file2)
+    network_worm = network_json_data.setdefault(
+        "worm", network_json_data.pop("Worm", {})
+    )
+    appended_worm = appended_json_data.get("worm", appended_json_data.get("Worm", {}))
     # "W2Dmoddev/testruns/testCO18Full/CO18Full_worm_data_evo.json"
 
-    appendedSize = appended_json_data[NSname]["size"]["value"]
-    origSize = network_json_data[NSname]["size"]["value"]
+    appendedSize = utils.getNervousSystemSize(appended_json_data)
+    origSize = utils.getNervousSystemSize(network_json_data)
     # appendedDrivingSize = len(appended_json_data["Driving input"]["strengths"]["value"])
     origDrivingSize = len(network_json_data["Driving input"]["strengths"]["value"])
 
-    network_json_data["Worm"]["N_size"]["value"] += appended_json_data["Worm"][
-        "N_size"
-    ]["value"]
+    network_worm["N_size"]["value"] += appended_worm["N_size"]["value"]
 
     # network_json_data[NSname]["Model name"]["value"] = "COW2DSR"
     # json_model_name = network_json_data[NSname]["Model name"]["value"]
 
     section_names = utils.getNSvalue(network_json_data, "Section name")
     if section_names is None:
-        json_model_name = network_json_data[NSname]["Model name"]["value"]
+        json_model_name = utils.getModelName(network_json_data)
         section_names = utils.default_cells[json_model_name]["Section name"]
         if "Section name" not in network_json_data[NSname]:
             network_json_data[NSname]["Section name"] = {}
         network_json_data[NSname]["Section name"]["value"] = section_names
 
-    if "Main model name" not in network_json_data["Worm"]:
-        network_json_data["Worm"]["Main model name"] = {}
-    network_json_data["Worm"]["Main model name"]["value"] = "COW2DSR"
+    if "main_model_name" not in network_worm:
+        network_worm["main_model_name"] = {}
+    network_worm["main_model_name"]["value"] = "COW2DSR"
 
     if "section sizes" in appended_json_data[NSname]:
         for key in appended_json_data[NSname]["section sizes"]:
@@ -143,9 +183,9 @@ def mergeJsons(file1, file2, outdir):
                 modulename
             ][parname]["value"]
 
-    for key, val in appended_json_data["Worm"].items():
-        if key not in network_json_data["Worm"]:
-            network_json_data["Worm"][key] = val
+    for key, val in appended_worm.items():
+        if key not in network_worm:
+            network_worm[key] = val
 
     if EOP not in network_json_data:
         network_json_data[EOP] = {}
@@ -191,11 +231,19 @@ def mergeJsons(file1, file2, outdir):
             }
         )
 
-    network_json_data[NSname]["Model name"]["value"] = (
-        network_json_data[NSname]["Model name"]["value"]
+    joined_model_name = (
+        utils.getModelName(network_json_data)
         + "_"
-        + appended_json_data[NSname]["Model name"]["value"]
+        + utils.getModelName(appended_json_data)
     )
+    if "nervous_system" in network_json_data:
+        network_json_data["nervous_system"].setdefault("model_name", {})["value"] = (
+            joined_model_name
+        )
+    else:
+        network_json_data[NSname].setdefault("Model name", {})["value"] = (
+            joined_model_name
+        )
 
     # hf.make_directory("test_json_utils", overwrite=True)
     network_json_data["Driving input"]["size"]["value"] += appended_json_data[
@@ -211,18 +259,22 @@ def mergeJsons(file1, file2, outdir):
 
 
 def addEvolvable(network_json_data):
-    if "Evolvable" not in network_json_data:
-        network_json_data["Evolvable"] = {}
-        network_json_data["Evolvable"]["value"] = []
+    if "evolvable_ranges" not in network_json_data:
+        network_json_data["evolvable_ranges"] = network_json_data.get(
+            "Evolvable", {"value": []}
+        )
+    network_json_data.pop("Evolvable", None)
 
-    evolvables = network_json_data["Evolvable"]["value"]
+    evolvables = normalize_evolvable_range_entries(
+        network_json_data["evolvable_ranges"]
+    )
     print(evolvables)
 
 
 def addCells(network_json_data):
     cell_names = utils.getCellNames(network_json_data)
     section_names = utils.getNSvalue(network_json_data, "Section name")
-    json_model_name = network_json_data[NSname]["Model name"]["value"]
+    json_model_name = utils.getModelName(network_json_data)
     if cell_names is None:
         cell_names = utils.default_cells[json_model_name]["names"]
         network_json_data[NSname]["Cell name"]["value"] = cell_names

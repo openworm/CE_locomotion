@@ -26,6 +26,7 @@
     <!-- <Exposure name="v" dimension="none"/> --> <!-- Already exposed from baseCellMembPotDL -->
     <Exposure name="spiking" dimension="none"/>
     <Exposure name="state" dimension="none"/>
+    <Exposure name="output" dimension="none"/>
    
 
     <Exposure name="iSyn" dimension="current" description="Total current due to synaptic inputs"/>
@@ -39,6 +40,7 @@
         
         <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
         <DerivedVariable name="state" dimension="none" exposure="state" value="v/MVOLT" />
+        <DerivedVariable name="output" dimension="none" exposure="output" value="state" />
         
 
         <DerivedVariable name="iMemb" dimension="current" exposure="iMemb" value="((0-state)*PAMP + iSyn)"/>

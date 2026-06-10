@@ -1,13 +1,35 @@
 
 CC = g++ -Wall
-PYTHON_CONFIG ?= python3-config
 
+ifeq ($(CONDA_PREFIX),)
+    PYTHON ?= python3
+else
+    PYTHON ?= $(CONDA_PREFIX)/bin/python
+endif
 
-LIBS := $(shell $(PYTHON_CONFIG) --embed --libs)
-LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
-CXXFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
+PYTHON_INCLUDE_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_paths()['include'])")
+PYTHON_LIB_DIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+PYTHON_LDVERSION := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LDVERSION'))")
+PYTHON_LIB := python$(PYTHON_LDVERSION)
 
-EXTRA_FLAGS :=   -fPIE -O3  -Iinc
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    RPATH_FLAG = -Wl,-rpath,$(PYTHON_LIB_DIR)
+else ifeq ($(UNAME_S),Darwin)
+    RPATH_FLAG = -Wl,-rpath,@loader_path -Wl,-rpath,$(PYTHON_LIB_DIR)
+else
+    $(error Unsupported OS)
+endif
+
+CXXFLAGS := -Wall -I$(PYTHON_INCLUDE_DIR) -std=c++11
+LDFLAGS := -L$(PYTHON_LIB_DIR) $(RPATH_FLAG)
+LIBS := -l$(PYTHON_LIB) -lpthread -ldl -lutil -lm
+
+# Extra flags for MacOS
+LDFLAGS += "-L/opt/homebrew/lib"
+CXXFLAGS += "-I/opt/homebrew/include"
+
+EXTRA_FLAGS := -fPIE -O3 -Iinc
 
 testc302NervousSystem.o: testc302NervousSystem.cpp ../c302NervousSystem.h
 	$(CC) -c -O3 $(CXXFLAGS) $(LDFLAGS) $(EXTRA_FLAGS) testc302NervousSystem.cpp

@@ -41,14 +41,14 @@ class EvolutionCO : virtual public Evolution
     EvolutionCO(int argc, const char* argv[], double StepSize_, int circuitsize_):Evolution(argc,argv,
       {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, StepSize_, 23, getVectSize(circuitsize_)},
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, StepSize_, 23, getVectSize(circuitsize_)},
         getVectSize(circuitsize_)),MinDifSensor(10*StepSize_),TauMin(10*StepSize_),
         CircuitSize(circuitsize_){}
 
     EvolutionCO(shared_ptr<const CmdArgs> cmd_, double StepSize_, int circuitsize_):Evolution(cmd_,
       {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, StepSize_, 23, getVectSize(circuitsize_)},
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, StepSize_, 23, getVectSize(circuitsize_)},
         getVectSize(circuitsize_)),MinDifSensor(10*StepSize_),TauMin(10*StepSize_),
         CircuitSize(circuitsize_){ cout << "evol CO " << endl;}
 

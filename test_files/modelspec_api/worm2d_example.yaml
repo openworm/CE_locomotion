@@ -1,0 +1,6 @@
+Body:
+    C_agar_par_total:
+        value: 0.001
+        message: This is just a dummy value
+    C_agar_perp_total:
+        value: 2.0

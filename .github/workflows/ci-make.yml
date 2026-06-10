@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:        
-        runs-on: [ubuntu-22.04, ubuntu-latest ] #, macos-latest, macos-14 ]
+        runs-on: [ubuntu-22.04, ubuntu-latest, macos-latest, macos-14 ]
         python-version: [ "3.10", "3.12" ] # Note: 3.14 causes issues with Neuron 8.2.7
 
     steps:
@@ -47,11 +47,6 @@ jobs:
           make tests
           ./tests
 
-    - name: Test C++/Python interactions
-      run: |
-        cd test_files
-        ./test.sh 
-
     - name: Test makefile
       run: make
 
@@ -60,12 +55,20 @@ jobs:
         pip install setuptools==80 # needed for Neuron on py >=3.12
         pip install NEURON==8.2.7
         pip install OSBModelValidation pyNeuroML
-        pip install numpy matplotlib ruff  scipy
+        pip install numpy matplotlib ruff scipy modelspec
+        pip install ipywidgets
         
         pip list
 
         which nrnivmodl
         nrnivmodl 
+        
+    - name: Test C++/Python interactions
+      run: |
+        cd test_files
+        ./test.sh 
+        cd modelspec_api
+        ./test.sh
         
     - name: Test directly running main program
       run: |

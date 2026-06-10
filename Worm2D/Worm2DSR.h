@@ -64,6 +64,8 @@ protected:
 
 Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_, 
   shared_ptr<const CmdArgs> cmd, const json & j);
+Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_,
+  shared_ptr<const CmdArgs> cmd, const json & j, bool forceNoOrigInputs);
 Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_, shared_ptr<SR> w2dsr_ptr_, 
   shared_ptr<const CmdArgs> cmd);
 
@@ -99,9 +101,7 @@ class Worm2DSRE : public Worm2DSR, public EvolvableS
 //json itsJson;
 const vector<intDoubDoub> genPhenLims;
 
-Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
-//Worm2DSR(json & j);
-Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
+
 
 void applyFuncables();
 void applyFuncables(json & j1_);
@@ -117,6 +117,7 @@ void PhenGenMapping(vector<double> &gen, const vector<double> &phen);
 //Worm2DSREpars makeVals(const json & j);
 //vector<doubDoub> makeVals(const json & j);
 vector<intDoubDoub> makeVals();
+vector<string> getEvolvedUsedTags() const;
 void testJson(json & j);
 //void setInitGeno();
 void setInitPheno();
@@ -135,6 +136,12 @@ void writeOrigGen(shared_ptr<const CmdArgs> cmd, const vector<double> & initGeno
 void setParsFromPheno_old(const TVector<double> &pheno);
 void resetFromBPJson();
 void resetFromJson(const json & js1);
+
+protected:
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false);
+Worm2DSRE(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit, bool forceNoOrigInputs);
+//Worm2DSR(json & j);
+Worm2DSRE(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd);
 
 //const Worm2DSREpars genPhenPars;
 //vector<doubDoub> genPhenLims;
@@ -155,6 +162,18 @@ void resetFromJson(const json & js1);
 };
 
 
+class EnvironmentPars
+{
+  public:
+
+string name;
+double x_center, y_center, gradSteep;
+
+void setParsFromJson(const string & key, const json & j);
+void writeParsToJson(json & j) const;
+};
+
+
 class SensorPars
 {
   public:
@@ -166,12 +185,14 @@ double sensorN, sensorM;
 int iSensorN, iSensorM;
 //double chemCon, presentAvgCon, pastAvgCon;
 double presentAvgCon, pastAvgCon;
-int extInp1, extInp2;
-double gradSteep, HSStepSize, x_center, y_center;
+int extInp1 = -1, extInp2 = -1;
+double HSStepSize = 0.01;
+string environmentName;
 
+void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
 void writeParsToJson(json & j) const;
-
+void writeParsToJson2(json & j) const;
 };
 
 class Sensor  : public WormGrad
@@ -200,6 +221,7 @@ void UpdateChemCon();
 void InitialiseAgent();
 void assignExternalInput(vector<double> & externalInputs);
 void InitializeSensors(RandomState& rs);
+void setGradientSteepness(const double & gradSteep) override;
 void ResetAgentsBody(){
   //wb.ResetAgentsBody(CO2DSRpars);
   wb.ResetAgentsBody(wb);
@@ -210,6 +232,10 @@ Worm2Dm & wb;
 //shared_ptr<baseParameters> sensor_basePars1;
 
 vector<SensorPars> spvec;
+vector<EnvironmentPars> environmentVec;
+
+EnvironmentPars & getEnvironment(const string & name);
+const EnvironmentPars & getEnvironment(const string & name) const;
 
 //vector<double> chemConHistory;
 //TVector<double> chemConHistory;
@@ -230,10 +256,9 @@ public:
 //Worm2DSR(jsonfilename_,cmd){}
 WormCO2DSR(const string & jsonfilename_, shared_ptr<const CmdArgs> cmd):
 WormCO2DSR(getJsonFromFile(jsonfilename_),cmd){}
-
-
 WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false):Worm2Dm(getIzqPars(j),
-  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit), Sensor(j, *this){}
+  getNS(cmd, j), cmd, j), Worm2DSRE(j,cmd,callInit,true), Sensor(j, *this){}
+
 
 
 void addParsToJson(json & j);
@@ -258,6 +283,9 @@ void InitializeState(RandomState &rs);
 //void InitialiseAgent();
 void Step1();
 void assignExternalInput();
+
+protected:
+
 
 
 

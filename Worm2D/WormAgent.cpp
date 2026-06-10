@@ -78,14 +78,7 @@ void WormAgent::SetWormParametersFromFile(const char* fnm)
 
 void WormAgent::setWormPars(shared_ptr<const CmdArgs> cmd_)
 {
-	
-	//Worm2Dbase::setWormPars(cmd_);
-	//size = cmd_->getArgValInt("--size", size);
-
-    double HSStepSize;
-    getValCJWorm<double>("HSStepSize",HSStepSize);
-
-	setStepSize(HSStepSize);
+	(void)cmd_;
 }
 
 
@@ -214,9 +207,6 @@ void WormAgent::zeroCircuit()
 
 void WormAgent::setSimParsDefault()
 {
-	double HSStepSize;
-    getValCJWorm<double>("HSStepSize",HSStepSize);
-	setStepSize(HSStepSize);
 }
 
 
@@ -227,7 +217,6 @@ void WormAgent::setSimPars(double orient_orig_,
 	setValCJWorm<double>("orient",orient_orig_);
 	setValCJWorm<double>("gradSteep",gradSteep_);
 	setValCJWorm<double>("RunDuration",RunDuration_);
-	setValCJWorm<double>("HSStepSize",HSStepSize_);
 	setValCJWorm<int>("taxis",taxis_);
 	setValCJWorm<int>("kinesis",kinesis_);
 
@@ -281,11 +270,9 @@ void WormAgent::InitializeState(RandomState &rs_)
 
 void WormAgent::InitialiseAgent()
 {
-	double HSStepSize, RunDuration; 
-    getValCJWorm<double>("HSStepSize",HSStepSize);
-	getValCJWorm<double>("RunDuration",RunDuration);
-
-	setStepSize(HSStepSize);
+	const double HSStepSize = itsStepSize();
+	double RunDuration;
+	getValCJWorm<double>("run_duration",RunDuration);
 
 
 	VelDelta = (int) (HST/HSStepSize);
@@ -317,7 +304,7 @@ void WormAgent::ResetAgentsBody()
 	getValCJWorm<int>("kinesis",kinesis);
 
 	double MaxDist1;//, orient1;
-    getValCJWorm<double>("MaxDist",MaxDist1);
+    getValCJWorm<double>("max_dist",MaxDist1);
 	getValCJWorm<double>("orient",orient);
 	distanceToCentre = -MaxDist1;
 
@@ -339,7 +326,7 @@ void WormAgent::ResetChemCon()
 {
 
 	//double gradSteep; 
-    getValCJWorm<double>("gradSteep",gradSteep);
+    getValCJWorm<double>("grad_steep",gradSteep);
 	chemCon = -DistanceToCentre() * gradSteep;
 
 	//double dist = distanceToCenter();
@@ -379,7 +366,7 @@ double WormAgent::distanceToCenter() const
 void WormAgent::UpdateChemCon()
 {
 	//double gradSteep; 
-    //getValCJWorm<double>("gradSteep",gradSteep);
+    //getValCJWorm<double>("grad_steep",gradSteep);
 
 	//double dist = distanceToCenter();
 	setDistanceToCentre();
@@ -494,7 +481,7 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"MaxDist", "MaxVel", "MaxGauGradHeight", 
 		"ChemDiffConst", "HST", "HSP",
 	"w_CPG_SMBV", "w_CPG_SMBD", "sensorN", "sensorM", "outputGain"
@@ -522,9 +509,59 @@ vector<doubIntParamsHead> WormAgent::getWormParams()
 
 void WormAgent::addParsToJson(json & j)
 {
-    Worm2Dbase::addParsToJson(j);
+   
 	string nsHead = "Nervous system";
-    appendAllNSJson(j[nsHead], dynamic_cast<NervousSystem&>(*n_ptr));
+	
+
+	NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
+    if (n_ptr1){
+    appendAllNSJson(j[nsHead], *n_ptr1);
+    }
+
+
+ 	vector<string> names;
+    if (j.contains("nervous_system")
+    && j.at("nervous_system").contains("cell_names")
+    && j.at("nervous_system").at("cell_names").contains("value")
+    && j.at("nervous_system").at("cell_names").at("value").is_array())
+    names = j.at("nervous_system").at("cell_names").at("value").template get< vector<string> >();
+    else names = getDistinctCellNames();
+
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system")
+    && j.at("Nervous system").is_object()
+    && j.at("Nervous system").contains("Cell name") 
+    && j.at("Nervous system").at("Cell name").contains("value") 
+    && j.at("Nervous system").at("Cell name").at("value").is_array())
+    {
+    names = makeUnique(j.at("Nervous system").
+    at("Cell name").at("value").template get< vector<string> >());
+    }
+    if ((names.empty() || names[0]=="not implemented") && j.contains("Nervous system")
+    && j.at("Nervous system").is_object()
+    && j.at("Nervous system").contains("size")
+    && j.at("Nervous system").at("size").contains("value"))
+    {
+        int size = j.at("Nervous system").at("size").at("value").get<int>();
+        names.clear();
+        for (int i=1; i<=size; i++) names.push_back("cell_"+to_string(i-1));
+    }
+    if (names.empty() || names[0]=="not implemented")
+    {
+        names.clear();
+        for (int i=0; i<par1.N_size; i++) names.push_back("cell_"+to_string(i));
+    }
+    assert(!names.empty() && names[0]!="not implemented");
+
+	 
+    if (n_ptr1){
+    appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
+    }
+
+
+
+
+
+
 	j[nsHead]["section sizes"]["interneurons"]["value"] = size;
 	j[nsHead]["section sizes"]["interneurons"]["plot order"] = 0;
 
@@ -533,6 +570,8 @@ void WormAgent::addParsToJson(json & j)
 	par.vals = {getVector<double>(w_ASER), getVector<double>(w_ASEL)};
 	appendToJson<vector<double> >(j["Sensory"],par);
 
+	Worm2Dbase::addParsToJson(j);
+	 
 }
 
 
@@ -656,8 +695,7 @@ const double MaxDifSensor = HST;
 
 const double TauMax = HST;
 
-double HSStepSize;
-getValCJWorm<double>("HSStepSize",HSStepSize);
+const double HSStepSize = itsStepSize();
 
 const double MinNeckTurnGain = 1.0;
 const double MaxNeckTurnGain = 2.0;

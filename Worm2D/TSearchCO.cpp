@@ -78,7 +78,7 @@ TSearch::TSearch(int VSize, double (*EvalFn)(TVector<double> &, RandomState &))
 	SetCrossoverProbability(0.0);
 	SetSearchConstraint(1);
 	SetReEvaluationFlag(0);
-	SetCheckpointInterval(0);
+	SetCheckpointInterval(1);
 }
 
 

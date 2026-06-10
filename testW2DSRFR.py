@@ -30,7 +30,7 @@ args = dict(
     doPlotEvol=True,
     doNML=False,
     doCPT=True,
-    evoType="EvoCE",
+    evo_type="EvoCE",
     doReverse=2,
     SRType="None",
     ABLevel=3,
@@ -46,6 +46,8 @@ args = dict(
     doLegacy=False,
     SRZeroGainsType=1,
     # doLegacy = True
+    debug=True,
+    doTestRun=False,
 )
 
 if doOrig:

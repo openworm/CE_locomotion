@@ -62,7 +62,7 @@ simulation->oneValFunc(inc_neuron_input_func,i-1,value);
 }
 
 
-double c302ForW2D::NeuronState(int i)
+const double & c302ForW2D::NeuronState(int i)
 {
     if (newstep2){
     state_value =  simulation->vecValFunc(get_states_func);
@@ -71,7 +71,7 @@ double c302ForW2D::NeuronState(int i)
 return state_value[i-1];
 }
 
-double c302ForW2D::NeuronOutput(int i)
+const double & c302ForW2D::NeuronOutput(int i)
 {
     if (newstep){
     output_value =  simulation->vecValFunc(get_output_func);

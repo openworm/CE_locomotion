@@ -87,18 +87,22 @@ Worm2D21(getJsonFromFile(jsonfilename_), cmd_){}
 
 Worm2D21::Worm2D21(const json & j, shared_ptr<const CmdArgs> cmd_):Worm2D21(cmd_)
 {
+json worm = getSectionCopyWithLegacy(j, "worm");
 
 // NMJ Weight
-NMJ_AS = j["Worm"]["NMJ_AS"]["value"];
-NMJ_DA = j["Worm"]["NMJ_DA"]["value"];
-NMJ_DB = j["Worm"]["NMJ_DB"]["value"];
-NMJ_DD = j["Worm"]["NMJ_DD"]["value"];
-NMJ_VD = j["Worm"]["NMJ_VD"]["value"];
-NMJ_VB = j["Worm"]["NMJ_VB"]["value"];
-NMJ_VA = j["Worm"]["NMJ_VA"]["value"];
+NMJ_AS = worm["NMJ_AS"]["value"];
+NMJ_DA = worm["NMJ_DA"]["value"];
+NMJ_DB = worm["NMJ_DB"]["value"];
+NMJ_DD = worm["NMJ_DD"]["value"];
+NMJ_VD = worm["NMJ_VD"]["value"];
+NMJ_VB = worm["NMJ_VB"]["value"];
+NMJ_VA = worm["NMJ_VA"]["value"];
 
 // NMJ Gain XXX
-NMJ_Gain_Map = j["Worm"]["NMJ_Gain_Map"]["value"];
+if (worm.contains("nmj_gain_map"))
+    NMJ_Gain_Map = worm["nmj_gain_map"]["value"];
+else
+    NMJ_Gain_Map = worm["NMJ_Gain_Map"]["value"];
 
 
 /* NMJ_Gain.SetBounds(1, par1.N_muscles);
@@ -127,7 +131,7 @@ void Worm2D21m::InitializeState(RandomState &rs)
     Worm2Dm::InitializeState(rs);
 
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     //if (false)
     if (doLegacy)
@@ -149,7 +153,7 @@ void Worm2D21m::setForward()
 {
 
    double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
   AVA_output =  0;
   AVB_output =  AB_output_level;
 }
@@ -157,7 +161,7 @@ void Worm2D21m::setForward()
 void Worm2D21m::setBackward()
 {
   double AB_output_level;
-  getValCJWorm<double>("AB_output_level",AB_output_level);
+  getValCJWorm<double>("ab_output_level",AB_output_level);
 
   AVA_output =  AB_output_level;
   AVB_output =  0;
@@ -391,7 +395,7 @@ vector<doubIntParamsHead> Worm2D21m::getWormParams(){
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"wAVA_DA", "wAVA_VA", "wAVB_DB", "wAVB_VB", "AVA", "AVB"};
     var1.parDoub.vals = {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, 
         AVA_output, AVB_output};
@@ -407,7 +411,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
     vector<doubIntParamsHead> parvec;
     doubIntParamsHead var1;
     
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"NMJ_Gain_Map", "NMJ_AS", "NMJ_DA", "NMJ_DB", "NMJ_VD", "NMJ_VB", "NMJ_VA", "NMJ_DD"};
     var1.parDoub.vals = {NMJ_Gain_Map, NMJ_AS, NMJ_DA, NMJ_DB, NMJ_VD, NMJ_VB, NMJ_VA, NMJ_DD};
 
@@ -416,7 +420,7 @@ vector<doubIntParamsHead> Worm2D21::getWormParams(){
     append<double>(var1.parDoub.vals, {wAVA_DA, wAVA_VA, wAVB_DB, wAVB_VB, AVA_output, AVB_output});
    
   
-    var1.parInt.head = "Worm";
+    var1.parInt.head = "worm";
     var1.parInt.vals = {startingMuscleA,NmusclePerNUA, startingMuscleB, NmusclePerNUB};
     var1.parInt.names = {"startingMuscleA","NmusclePerNUA", "startingMuscleB","NmusclePerNUB"};
     
@@ -472,8 +476,9 @@ void Worm2D21m::addParsToJson(json & j){
 
 
 void Worm2D21::addParsToJson(json & j){
-        Worm2D::addParsToJson(j);
+       
         Worm2D21m::addParsToJson(j);
+        Worm2D::addParsToJson(j);
          
     }
 

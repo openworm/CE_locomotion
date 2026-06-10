@@ -79,27 +79,13 @@ def make_fig(model_name):
         ]["value"]
 
     plot_transient = act_data[0, 0]
-    plot_time = plot_format["plot_time"]
+    plot_end = min(act_data[0, -1], body[-1, 0], curv[-1, 0])
+    plot_time = min(10.0, max(0.0, plot_end - plot_transient))
 
-    if False:
-        worm_sim_file = hf.rename_file("worm_data_worm.json")
-        if os.path.isfile(worm_sim_file):
-            worm_sim_data = utils.getJsonFile(worm_sim_file)
-            if "Simulation" in worm_sim_data:
-                plot_time = worm_sim_data["Simulation"]["duration"]["value"]
-
-    plot_ex = max(0, plot_time - 40)
-    plot_transient = plot_transient + plot_ex / 2
-    plot_time = plot_time - plot_ex
-
-    worm_plot_time = plot_format["worm_plot_time"]
     if "Evolutionary Optimization Parameters" in network_json_data:
-        AvgSpeed = (
-            network_json_data["Evolutionary Optimization Parameters"]["AvgSpeed"][
-                "value"
-            ]
-            * 1000.0
-        )
+        evo_pars = network_json_data["Evolutionary Optimization Parameters"]
+        avg_speed_key = "avg_speed" if "avg_speed" in evo_pars else "AvgSpeed"
+        AvgSpeed = evo_pars[avg_speed_key]["value"] * 1000.0
     elif "AvgSpeed" in plot_format:
         AvgSpeed = plot_format["AvgSpeed"]
 
@@ -115,7 +101,7 @@ def make_fig(model_name):
     ################################################
     ############ Trayectory #######
     ###############################
-    def plot_worm(ax, k):
+    def plot_worm(ax, k, snapshot_time):
         dx, dy = x[k] - xc[k], y[k] - yc[k]
         dx = dx  # / 100.0
         dy = dy  # / 100.0
@@ -135,7 +121,7 @@ def make_fig(model_name):
         ax.text(
             -0.0004,
             0.0001,
-            "t = %.2f" % (k * (step_size * skip_steps)),
+            "t = %.2f" % snapshot_time,
             ha="center",
             va="center",
             fontsize=26,
@@ -147,27 +133,31 @@ def make_fig(model_name):
     r = (
         2 * 40 * 10**-6 * np.abs(np.sin(np.arccos((np.arange(51) - 25) / (25 + 0.2))))
     )  # body radius, from BBC model
-    worm_plot_period = worm_plot_time / (step_size * skip_steps)
-    for k, t in enumerate(np.linspace(0, worm_plot_period, 6)):
-        print(t)
-        plot_worm(ax0[k], int(t))
+    dt = step_size * skip_steps
+    available_snapshot_time = max(0.0, (len(body) - 1) * dt)
+    snapshot_times = np.linspace(0.0, min(2.0, available_snapshot_time), 6)
+    for k, t in enumerate(snapshot_times):
+        plot_worm(ax0[k], min(int(round(t / dt)), len(body) - 1), t)
 
     ################################################
     fzl = 26
     ############ Curvature  ######
     ###############################
-    low_lim = int(plot_ex / (2.0 * step_size * skip_steps))
-    hi_lim = int(plot_time / (step_size * skip_steps))
-    # print("lsls ", plot_ex, step_size, skip_steps, low_lim, hi_lim)
+    curv_times = curv[:, 0]
+    low_lim = np.searchsorted(curv_times, plot_transient, side="left")
+    hi_lim = np.searchsorted(curv_times, plot_transient + plot_time, side="right")
+    hi_lim = min(max(low_lim + 1, hi_lim), len(curv_times))
+    # print("lsls ", plot_transient, plot_time, low_lim, hi_lim)
     # sys.exit(0)
     imcurv = ax1.imshow(
         # curv.T[1:, :],
-        curv.T[1:, low_lim : hi_lim + low_lim],
+        curv.T[1:, low_lim:hi_lim],
         cmap=plt.get_cmap("seismic"),
         aspect="auto",
         vmin=-10,
         vmax=10,
         origin="lower",
+        extent=[curv_times[low_lim], curv_times[hi_lim - 1], 0, curv.shape[1] - 1],
     )
     # ax1.set_xlim(low_lim, hi_lim + low_lim)
     # ax1.set_xlim(int(plot_transient / (step_size * skip_steps)),
@@ -219,7 +209,7 @@ def make_fig(model_name):
             print(plot_cell_unit)
             print("Index error")
             exit()
-        print("cell ind is ", ind1)
+        # print("cell ind is ", ind1)
         # ind1 = cell_names.index(cell)
         ax3.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax3.set_xlim(plot_transient, plot_transient + plot_time)
@@ -251,7 +241,7 @@ def make_fig(model_name):
         if ind1 is None:
             print("Index error")
             exit()
-        print("cell ind is ", ind1)
+        # print("cell ind is ", ind1)
         # ax4.plot(act_data[0] - plot_transient, act_data[1 + ind1], col, linewidth=3)
         ax4.plot(act_data[0], act_data[1 + ind1], col, linewidth=3)
         ax4.set_xlim(plot_transient, plot_transient + plot_time)
@@ -282,3 +272,4 @@ def make_fig(model_name):
     fig.subplots_adjust(left=0.08, bottom=0.02, right=1.0, top=0.98)
     plt.savefig(hf.rename_file("behavior.png"), dpi=100)
     plt.savefig(hf.rename_file("behavior.pdf"))
+    plt.close()

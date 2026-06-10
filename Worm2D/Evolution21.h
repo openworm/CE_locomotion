@@ -11,13 +11,13 @@ class Evolution21:public Evolution
     Evolution21(int argc, const char* argv[]):Evolution(argc,argv,
       {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
     ){}
 
     Evolution21(shared_ptr<const CmdArgs> cmd_):Evolution(cmd_,
       {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, 44},44
     ){}
 
     void GenPhenMapping(const TVector<double> &gen, TVector<double> &phen);

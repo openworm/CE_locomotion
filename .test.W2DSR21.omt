@@ -3,9 +3,9 @@
  
 target: testW2DSR21.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
-mep: .test.W2DSR21.mep
+mep: .test.izq_sim_W2D21.mep
 experiments:
-  Test:
+  Test2:
     observables:
       spike times:
         file: 
@@ -15,8 +15,8 @@ experiments:
         spike detection: 
           method: threshold
           threshold: 0.5
-        tolerance: 0.031
-  Test2:
+        tolerance: 0.0
+  Test4:
     observables:
       spike times:
         file: 
@@ -37,4 +37,4 @@ experiments:
         spike detection: 
           method: threshold
           threshold: 0.5
-        tolerance: 0.031
+        tolerance: 0.0

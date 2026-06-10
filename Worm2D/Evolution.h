@@ -63,7 +63,7 @@ class EvoBase
     string rename_file(string filename);
     //evoParsNonConst evoParsNC;
     void setFromCPT();
-    void setFromCPT2(int vsize_);
+    void setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles = true);
     const int itsVectSize() const {if (s) return s->VectorSize(); assert(0 && "s not set");}
 
     protected:
@@ -77,6 +77,7 @@ class EvoBase
     simPars setSimPars(shared_ptr<const CmdArgs> cmd);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1);
     evoPars setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_);
+    evoPars getEffectiveEvoParsForJson() const;
 
     void setUp();
     
@@ -85,6 +86,7 @@ class EvoBase
     void setPopFromBestGenoFile(int offset = 0);
     //void setPopFromBestGenoFile2();
     void construct(int vsize_, int offset_);
+    bool evolvedUsedMatchesActiveEvotags();
     void configure_p11();
     //void constructAll(int vsize_, int offset_);
     
@@ -109,6 +111,7 @@ class EvoBase
     ofstream evolfile, genhistfile;//, genhistfile2;
     const bool writeBestFlag;
     bool doResume;
+    bool previousEvolutionFilesCompatible = true;
     int popsize;
     int initGenNum = 0;
 };
@@ -277,7 +280,8 @@ template<class T>
 shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const CmdArgs> cmd_, 
     shared_ptr<T> evol1T_, shared_ptr<const json> json_ptr_)
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
+    string evotype_;
+    evol1T_->template getValCJEvo<string>("evo_type", evotype_);
     //const string & evotype_ = evoPars1.evoType;
 
     shared_ptr<EvolvableS> evol1_ = dynamic_pointer_cast<EvolvableS>(evol1T_);
@@ -328,7 +332,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 /* evoPars Evolvable_ptr::getDefaultEvoPars(int argc, const char* argv[]) 
 {
 
-    string evotype_ = getParameterString(argc,argv,"--evoType","Evo21");
+    string evotype_ = getParameterString(argc,argv,"--evo_type","Evo21");
     return getDefaultEvoPars(evotype_); 
 
 } */
@@ -337,29 +341,29 @@ template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<T> evol1) 
 {
 
-    cout << "evotype " << evotype_ << endl;
+    //cout << "evotype " << evotype_ << endl;
     
 
 
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 0, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 0, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
     
     if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 0, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.02, 1, 1, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
 
     assert(0 && "evotype not implemented");
 
@@ -368,8 +372,60 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
 template<class T>
 evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shared_ptr<T> evol1) 
 {
-    string evotype_ = cmd_->getArgVal("--evoType","Evo21");
-    return getDefaultEvoPars(evotype_,evol1);    
+    string evotype_;
+    evol1->template getValCJEvo<string>("evo_type", evotype_);
+    evoPars ep1 = getDefaultEvoPars(evotype_,evol1);
+    const json & j = evol1->itsBPjson();
+    if (j.contains("Evolutionary Optimization Parameters"))
+    {
+        const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        int int_val;
+        getJsonValTF<long>(j_evo, "randomseed", ep1.randomseed, true);
+        if (getJsonValTF<int>(j_evo, "selection_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "SelectionMode", int_val, true))
+            ep1.SelectionMode = static_cast<TSelectionMode>(int_val);
+        if (getJsonValTF<int>(j_evo, "reproduction_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReproductionMode", int_val, true))
+            ep1.ReproductionMode = static_cast<TReproductionMode>(int_val);
+        getJsonValTF<int>(j_evo, "population_size", ep1.PopulationSize, true) ||
+        getJsonValTF<int>(j_evo, "PopulationSize", ep1.PopulationSize, true);
+        getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
+        getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
+        getJsonValTF<double>(j_evo, "mutation_variance", ep1.MutationVariance, true) ||
+        getJsonValTF<double>(j_evo, "MutationVariance", ep1.MutationVariance, true);
+        getJsonValTF<double>(j_evo, "crossover_probability", ep1.CrossoverProbability, true) ||
+        getJsonValTF<double>(j_evo, "CrossoverProbability", ep1.CrossoverProbability, true);
+        if (getJsonValTF<int>(j_evo, "crossover_mode", int_val, true) ||
+            getJsonValTF<int>(j_evo, "CrossoverMode", int_val, true))
+            ep1.CrossoverMode = static_cast<TCrossoverMode>(int_val);
+        getJsonValTF<double>(j_evo, "max_expected_offspring", ep1.MaxExpectedOffspring, true) ||
+        getJsonValTF<double>(j_evo, "MaxExpectedOffspring", ep1.MaxExpectedOffspring, true);
+        getJsonValTF<double>(j_evo, "elitist_fraction", ep1.ElitistFraction, true) ||
+        getJsonValTF<double>(j_evo, "ElitistFraction", ep1.ElitistFraction, true);
+        getJsonValTF<int>(j_evo, "search_constraint", ep1.SearchConstraint, true) ||
+        getJsonValTF<int>(j_evo, "SearchConstraint", ep1.SearchConstraint, true);
+        getJsonValTF<int>(j_evo, "checkpoint_interval", ep1.CheckpointInterval, true) ||
+        getJsonValTF<int>(j_evo, "CheckpointInterval", ep1.CheckpointInterval, true);
+        if (getJsonValTF<int>(j_evo, "re_evaluation_flag", int_val, true) ||
+            getJsonValTF<int>(j_evo, "ReEvaluationFlag", int_val, true))
+            ep1.ReEvaluationFlag = static_cast<bool>(int_val);
+        getJsonValTF<int>(j_evo, "skip_steps", ep1.skip_steps, true);
+        getJsonValTF<double>(j_evo, "duration", ep1.Duration, true) ||
+        getJsonValTF<double>(j_evo, "Duration", ep1.Duration, true);
+        getJsonValTF<double>(j_evo, "transient", ep1.Transient, true) ||
+        getJsonValTF<double>(j_evo, "Transient", ep1.Transient, true);
+        getJsonValTF<double>(j_evo, "step_size", ep1.StepSize, true) ||
+        getJsonValTF<double>(j_evo, "StepSize", ep1.StepSize, true);
+        getJsonValTF<int>(j_evo, "n_curvs", ep1.N_curvs, true) ||
+        getJsonValTF<int>(j_evo, "N_curvs", ep1.N_curvs, true);
+        getJsonValTF<int>(j_evo, "vect_size_temo", ep1.VectSize_temo, true) ||
+        getJsonValTF<int>(j_evo, "VectSize_temo", ep1.VectSize_temo, true);
+        getJsonValTF<string>(j_evo, "fileprefix", ep1.fileprefix, true);
+        getJsonValTF<string>(j_evo, "evo_type", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "evoType", ep1.evoType, true) ||
+        getJsonValTF<string>(j_evo, "EvolutionType", ep1.evoType, true);
+    }
+    return ep1;    
 }
 
 
@@ -470,6 +526,7 @@ public:
 template<class T>
 void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
 {
+    
         //T w(pheno, true);
         shared_ptr<T> w_ptr = this->getTw();
         //T & w = *w_ptr; 
@@ -490,16 +547,28 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         w_ptr->InitializeState(rs); 
         w_ptr->initForSimulation(rs);
 
-        //assert(0);
+        
 
         json j;
       
+       
         w_ptr->addParsToJson(j);
+        
         addParsToJson(j);
 
         //this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
 
+        w_ptr->cleanLegacyParameterKeys(j);
+        j.erase("Nervous system");
+        j.erase("Dorsal NMJ");
+        j.erase("Ventral NMJ");
+        j.erase("Dorsal body");
+        j.erase("Ventral body");
+        j.erase("Stretch receptor");
+        j.erase("VNC NMJ");
+        j.erase("VNC 18");
+        j.erase("Driving input");
         
         ofstream json_out(rename_file("worm_data_evo.json"));
         json_out << std::setw(4) << j << std::endl;
@@ -667,7 +736,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
 template<class T>
 double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype, 
     RandomState &rs, 
-    int direction,
+    const int direction,
     shared_ptr<T> w_ptr){
 
     const double & Duration = evoPars1.Duration;
@@ -697,6 +766,12 @@ double Evolvable_ptrB<T>::Evaluation21Rp1(TVector<double> &genotype,
     const double BBCfit = AvgSpeed*Duration;
     const double agarfreq = EparsR->agarfreq;
 
+    const bool doAngleDiff = EparsR->doAngleDiff;
+    const int fitType = EparsR->fitType;
+
+    const int dbunit = EparsR->dbunit;
+    const int vbunit = EparsR->vbunit;
+    const bool dodir = (direction == 1 || direction == 2);
 
         // Fitness
         double fitness_tr = 0.0;
@@ -814,20 +889,20 @@ if (false)
        
         //assert(0);
        
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(dbunit);
+        VBp = w.n_ptr->NeuronOutput(vbunit);
     
-        cout << "db " << DBp << " " << VBp << endl;
+        //cout << "db " << DBp << " " << VBp << endl;
 
         w.Step(); // determine sign of derivative
     
 
-        dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-        dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+        dDB = w.n_ptr->NeuronOutput(dbunit) - DBp;
+        dVB = w.n_ptr->NeuronOutput(vbunit) - VBp;
         signtagDB = (dDB  > 0) ? 1 : -1;
         signtagVB = (dVB  > 0) ? 1 : -1;
-        DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-        VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+        DBp = w.n_ptr->NeuronOutput(dbunit);
+        VBp = w.n_ptr->NeuronOutput(vbunit);
         
         double xt = w.CoMx(), xtp;
         double yt = w.CoMy(), ytp;
@@ -839,13 +914,13 @@ if (false)
             
             ///// Oscilation
             // check changes in sign of derivative
-            dDB = w.n_ptr->NeuronOutput(EparsR->dbunit) - DBp;
-            dVB = w.n_ptr->NeuronOutput(EparsR->vbunit) - VBp;
+            dDB = w.n_ptr->NeuronOutput(dbunit) - DBp;
+            dVB = w.n_ptr->NeuronOutput(vbunit) - VBp;
             signDB = (dDB  > 0) ? 1 : ((dDB  < 0) ? -1 : 0);
             signVB = (dVB  > 0) ? 1 : ((dVB  < 0) ? -1 : 0);
     
-            oscDB += abs(DBp - w.n_ptr->NeuronOutput(EparsR->dbunit));
-            oscVB += abs(VBp - w.n_ptr->NeuronOutput(EparsR->vbunit));
+            oscDB += abs(DBp - w.n_ptr->NeuronOutput(dbunit));
+            oscVB += abs(VBp - w.n_ptr->NeuronOutput(vbunit));
     
             if ((signDB == -1) and (signtagDB >= 0)){
                 pDB +=1;
@@ -860,8 +935,8 @@ if (false)
     
             signtagDB = signDB;
             signtagVB = signVB;
-            DBp = w.n_ptr->NeuronOutput(EparsR->dbunit);
-            VBp = w.n_ptr->NeuronOutput(EparsR->vbunit);
+            DBp = w.n_ptr->NeuronOutput(dbunit);
+            VBp = w.n_ptr->NeuronOutput(vbunit);
             
             //// Locomotion
             // Current and past centroid position
@@ -877,18 +952,18 @@ if (false)
             bodyorientation = w.Orientation();                  // Orientation of the body position
             movementorientation = atan2(yt-ytp,xt-xtp);
             
-            if (EparsR->doAngleDiff)
+            if (doAngleDiff)
             anglediff = angle_diff(movementorientation,bodyorientation);
             else
             // Orientation of the movement
             anglediff = movementorientation - bodyorientation;  // Check how orientations align
-            if (direction == 1 || direction == 2){
-            if (EparsR->fitType == 0)
+            if (dodir){
+            if (fitType == 0)
             temp = cos(anglediff) > 0.0 ? 1.0 : -1.0;           // Add to fitness only movement forward
             else temp = cos(anglediff);
             }
             else{
-            if (EparsR->fitType == 0) 
+            if (fitType == 0) 
             temp = cos(anglediff) > 0.0 ? -1.0 : 1.0;           // Add to fitness only movement backward
             else temp = cos(anglediff)*-1;
             }
@@ -934,12 +1009,12 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     //for (int i=0;i<genotype.Size();i++) initial_genotype[i]=genotype(i+1);
    
     shared_ptr<T> w_ptr = this->getTw();
-
+ 
 
     int zeroGainsType;
-    w_ptr->getValCJWorm("SRZeroGainsType", zeroGainsType);
+    w_ptr->getValCJWorm("sr_zero_gains_type", zeroGainsType);
     int doReverse;
-    w_ptr->getValCJWorm("doReverse", doReverse);
+    w_ptr->getValCJWorm("do_reverse", doReverse);
 
     
 
@@ -1101,7 +1176,7 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
 {
 
    
-
+   
 
   const double & Duration = evoPars1.Duration;
   //const int & VectSize = evoPars1.VectSize;
@@ -1115,12 +1190,12 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
   
     int fitType; //, doAngleDiff;
-    w_ptr->getValCJWorm("fitType", fitType);
-    //w_ptr->getValCJWorm("doAngleDiff", doAngleDiff);
+    w_ptr->getValCJWorm("fit_type", fitType);
+    //w_ptr->getValCJWorm("do_angle_diff", doAngleDiff);
 
  
     double AvgSpeed;
-    w_ptr->getValCJWorm("AvgSpeed", AvgSpeed);
+    w_ptr->getValCJWorm("avg_speed", AvgSpeed);
 
 
     //const double AvgSpeed = EparsR->AvgSpeed;
@@ -1313,15 +1388,7 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     shared_ptr<T> w_ptr = this->getTw();
     T & w = *w_ptr; 
 
-    //T w(this->cmd);
-    //w.setStepSize(StepSize);
-
-    //w.setWormPars(cmd);
-
-    w.setValCJWorm("HSStepSize",StepSize);
-
-    //double t1;
-    //w.getValCJWorm("HSStepSize", t1);
+    w.setStepSize(StepSize);
 
     w.InitializeState(rs);
     w.setParsFromGeno(genotype);
@@ -1343,14 +1410,14 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
     const double Pi	=	3.1415926;
 
     double MaxDist;
-    w.getValCJWorm("MaxDist", MaxDist);
+    w.getValCJWorm("max_dist", MaxDist);
 
     double rundur = Transient + Duration;
     w.setValCJWorm("RunDuration", rundur);
     
 
     //double rd;
-    //w.getValCJWorm("RunDuration",rd);
+    //w.getValCJWorm("run_duration",rd);
 
 
     //cout << "rd ... " << Transient + Duration << " " << rd << " " << MaxDist << endl;
@@ -1369,9 +1436,10 @@ double Evolvable_ptrB<T>::EvaluationCO(TVector<double> &genotype, RandomState &r
         w.setValCJWorm("kinesis",kinesis);
 
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
-		{
+            {
 
             w.setValCJWorm("gradSteep",gradSteep);
+            wg.setGradientSteepness(gradSteep);
 
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
 			{
@@ -1485,11 +1553,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
     w.setParsFromGeno(genotype);
 
 
+    w.setStepSize(StepSize);
     w.InitializeState(rs);
     w.initForSimulation(rs);
-    
-    
-    w.setStepSize(StepSize);
     
     //shared_ptr<gradParameters> w1 = dynamic_pointer_cast<gradParameters>(w.W2Dbaseparameters1b);
     //assert(w1!=nullptr);
@@ -1508,12 +1574,11 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
               
     double rundur = Transient + Duration;
     w.setValCJWorm("RunDuration",rundur);
-    w.setValCJWorm("HSStepSize",StepSize);
     w.setValCJWorm("resetAgentBody",true);
     w.setValCJWorm("orient",Pi);
 
     double MaxDist;
-    w.getValCJWorm("MaxDist", MaxDist);
+    w.getValCJWorm("max_dist", MaxDist);
 
     WormGrad & wg = dynamic_cast<WormGrad&>(w);
     
@@ -1532,8 +1597,9 @@ double Evolvable_ptrB<T>::EvaluationCO2(TVector<double> &genotype, RandomState &
         w.setValCJWorm("kinesis",kinesis);
 
 		for (double gradSteep = 0.5; gradSteep <= 0.5; gradSteep += 0.2)
-		{
-                  w.setValCJWorm("gradSteep",gradSteep);
+			{
+	                  w.setValCJWorm("gradSteep",gradSteep);
+                  wg.setGradientSteepness(gradSteep);
 
 			for (double orient = 0.0; orient < 2*Pi; orient += Pi/2)
             //for (double orient = 0.0; orient < 2*Pi; orient +=2* Pi)
@@ -1748,4 +1814,3 @@ double Evolvable_ptrB<T>::Evaluation18(TVector<double> &genotype, RandomState & 
 
     return fitness;
 }
-

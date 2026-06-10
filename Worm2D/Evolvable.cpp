@@ -79,7 +79,7 @@ W2Dbaseparameters::W2Dbaseparameters(int argc, const char* argv[])
 
 void W2DbaseparametersNML::setPars(shared_ptr<const CmdArgs> cmd)
 {
-    randomInitialState = cmd->getArgValInt("--randomInitialState", randomInitialState);
+    getParFromCmdAny<bool>(cmd, {"random_initial_state", "randomInitialState"}, randomInitialState);
     //cout << "randomInitialState " << randomInitialState << endl;
     //assert(0);
 
@@ -89,8 +89,8 @@ void W2Dbaseparameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
     
     
-    doOrigSRInput = cmd->getArgValInt("--doOrigSRInput", doOrigSRInput);
-    doOrigMuscInput = cmd->getArgValInt("--doOrigMuscInput", doOrigMuscInput);
+    getParFromCmdAny<bool>(cmd, {"do_orig_sr_input", "doOrigSRInput"}, doOrigSRInput);
+    getParFromCmdAny<bool>(cmd, {"do_orig_musc_input", "doOrigMuscInput"}, doOrigMuscInput);
     W2DbaseparametersNML::setPars(cmd);
     //cout << "osm " << doOrigSRInput << " " << doOrigMuscInput << endl;
     //assert(0);
@@ -101,12 +101,11 @@ void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
 {
     worm_rotation= cmd->getArgValDoub("--rotation", worm_rotation);
     orient_orig = cmd->getArgValDoub("--orient", orient_orig);
-    gradSteep = cmd->getArgValDoub("--gradSteep", gradSteep);
-    RunDuration = cmd->getArgValDoub("--RunDuration", RunDuration);
-    HSStepSize = cmd->getArgValDoub("--HSStepSize", HSStepSize);
+    getParFromCmdAny<double>(cmd, {"grad_steep", "gradSteep"}, gradSteep);
+    getParFromCmdAny<double>(cmd, {"run_duration", "RunDuration"}, RunDuration);
     taxis = cmd->getArgValInt("--taxis", taxis);
     kinesis = cmd->getArgValInt("--kinesis", kinesis);
-    resetAgentBody = cmd->getArgValInt("--resetAgentBody", resetAgentBody);
+    getParFromCmdAny<bool>(cmd, {"reset_agent_body", "resetAgentBody"}, resetAgentBody);
     W2Dbaseparameters::setPars(cmd);
 
 }
@@ -116,9 +115,9 @@ void gradParameters::setPars(shared_ptr<const CmdArgs> cmd)
 void W2DCEparsA::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-    AB_output_level =  cmd->getArgValDoub("--ABLevel",AB_output_level );
-    AVA_output = cmd->getArgValDoub("--AVAOutputLevel", AVA_output);
-    AVB_output = cmd->getArgValDoub("--AVBOutputLevel", AVB_output);
+    getParFromCmdAny<double>(cmd, {"ab_output_level", "AB_output_level", "ABLevel"}, AB_output_level);
+    getParFromCmdAny<double>(cmd, {"ava_output", "AVA_output", "AVAOutputLevel"}, AVA_output);
+    getParFromCmdAny<double>(cmd, {"avb_output", "AVB_output", "AVBOutputLevel"}, AVB_output);
     W2Dbaseparameters::setPars(cmd);
 }
 
@@ -154,9 +153,10 @@ void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
 sr_type = cmd->getArgVal("--SRType",sr_type);
-SRForm = cmd->getArgValInt("--SRForm",SRForm);
+getParFromCmdAny<string>(cmd, {"sr_type", "SRType"}, sr_type);
+getParFromCmdAny<int>(cmd, {"sr_form", "SRForm"}, SRForm);
 //nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
-zeroGainsType = cmd->getArgValInt("--SRZeroGainsType",zeroGainsType);
+getParFromCmdAny<int>(cmd, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
 
 
 assert(sr_type == "SR_TRANS_STRETCH" ||  sr_type ==  "SR_TRANS_CONTRACT" 
@@ -170,9 +170,9 @@ void SRRegpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
 SRCEpars::setPars(cmd);
-nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
+getParFromCmdAny<int>(cmd, {"sr_seg_per_sr", "SRSegPerSR"}, nsegperstr);
 //nsegperstr = cmd->getArgValInt("--SRSegPerSR",5);
-offset = cmd->getArgValInt("--SROffset",offset);
+getParFromCmdAny<int>(cmd, {"sr_offset", "SROffset"}, offset);
 
 }
 
@@ -182,10 +182,10 @@ offset = cmd->getArgValInt("--SROffset",offset);
 void W2DCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-  SREvoBot = cmd->getArgValDoub("--SREvoBot",SREvoBot);
-  SREvoTop = cmd->getArgValDoub("--SREvoTop",SREvoTop);
-  SREvoBotA = cmd->getArgValDoub("--SREvoBotA",SREvoBotA);
-  SREvoTopA = cmd->getArgValDoub("--SREvoTopA",SREvoTopA);
+  getParFromCmdAny<double>(cmd, {"sr_evo_bot", "SREvoBot"}, SREvoBot);
+  getParFromCmdAny<double>(cmd, {"sr_evo_top", "SREvoTop"}, SREvoTop);
+  getParFromCmdAny<double>(cmd, {"sr_evo_bot_a", "SREvoBotA"}, SREvoBotA);
+  getParFromCmdAny<double>(cmd, {"sr_evo_top_a", "SREvoTopA"}, SREvoTopA);
   W2DCEparsA::setPars(cmd);
 }
 
@@ -211,9 +211,7 @@ setPars(cmd);
 
 void gradEvoPars::setPars(shared_ptr<const CmdArgs> cmd)
 {
-    
-    HSStepSize = cmd->getArgValDoub("--HSStepSize", HSStepSize);
-    
+    (void)cmd;
 }
 
 
@@ -224,9 +222,9 @@ setPars(cmd);
 
 void AgarPars::setPars(shared_ptr<const CmdArgs> cmd)
 {
-    OSCTbase = cmd->getArgValDoub("--OSCTbase",OSCTbase);
+    getParFromCmdAny<double>(cmd, {"osc_tbase", "OSCTbase"}, OSCTbase);
     agarfreq = cmd->getArgValDoub("--agarfreq",agarfreq);
-    AvgSpeed = cmd->getArgValDoub("--AvgSpeed",AvgSpeed);
+    getParFromCmdAny<double>(cmd, {"avg_speed", "AvgSpeed"}, AvgSpeed);
 
 }
 
@@ -256,10 +254,10 @@ EvolparametersCE::EvolparametersCE(int argc, const char* argv[]):AgarPars(argc,a
 EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
 {
 
-    doReverse = cmd->getArgValInt("--doReverse",doReverse);
-    fitType = cmd->getArgValInt("--fitType",fitType);
-    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
-    doAngleDiff= cmd->getArgValInt("--doAngleDiff",doAngleDiff);
+    getParFromCmdAny<int>(cmd, {"do_reverse", "doReverse"}, doReverse);
+    getParFromCmdAny<int>(cmd, {"fit_type", "fitType"}, fitType);
+    getParFromCmdAny<int>(cmd, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType", "SRZeroGainsTypeEvo"}, zeroGainsType);
+    getParFromCmdAny<int>(cmd, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 }
 
 void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
@@ -267,10 +265,10 @@ void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
     AgarPars::setPars(cmd);
     //doAlternateEvo = atoi(getParameter(argc,argv,"--doAlternateEvo","0"));
 
-    doReverse = cmd->getArgValInt("--doReverse",doReverse);
-    fitType = cmd->getArgValInt("--fitType",fitType);
-    zeroGainsType = cmd->getArgValInt("--SRZeroGainsTypeEvo",zeroGainsType);
-    doAngleDiff= cmd->getArgValInt("--doAngleDiff",doAngleDiff);
+    getParFromCmdAny<int>(cmd, {"do_reverse", "doReverse"}, doReverse);
+    getParFromCmdAny<int>(cmd, {"fit_type", "fitType"}, fitType);
+    getParFromCmdAny<int>(cmd, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType", "SRZeroGainsTypeEvo"}, zeroGainsType);
+    getParFromCmdAny<int>(cmd, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 
     //sr_type = getParameter(argc,argv,"--SRType","None");
 }

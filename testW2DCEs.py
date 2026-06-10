@@ -16,7 +16,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     # doCPT=True,
-    evoType="EvoCE",
+    evo_type="EvoCE",
     AvgSpeed=0.0001,
     # SRType = "SR_TRANS_STRETCH"
     doTestRun=True,

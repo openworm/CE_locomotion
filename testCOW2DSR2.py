@@ -18,11 +18,11 @@ doInputFolder = True
 args = dict(
     duration=50,
     transient=10,
-    simduration=800,
+    simduration=500,
     simtransient=0,
-    maxGens=10,
-    popSize=26,
-    RandSeed=87057,
+    maxGens=4,
+    popSize=16,
+    RandSeed=187857,
     modelName="W2DSR",
     modelFolder="Worm2D",
     outputFolderName=outputFolderName,
@@ -36,7 +36,7 @@ args = dict(
     doOrigSRInput=False,
     doOrigMuscInput=False,
     checkPointInterval=5,
-    evoType="EvoCO2",
+    evo_type="EvoCO2",
     overwrite=True,
 )
 

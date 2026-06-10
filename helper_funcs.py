@@ -1,11 +1,28 @@
+import argparse
+import copy
+import html
+import json
+import math
+import os
+import random
+import shutil
+import sys
+from collections import Counter
+from functools import partial
+
 import numpy as np
 from matplotlib import pyplot as plt
-import argparse
-import os
-import math
-from scipy.stats import binned_statistic
-import sys
-from functools import partial
+
+try:
+    from scipy.stats import binned_statistic
+except ImportError:
+    binned_statistic = None
+
+try:
+    import ipywidgets as widgets
+except ImportError:
+    widgets = None
+
 
 dir_name = None
 file_prefix = None
@@ -15,6 +32,159 @@ label_font_size = 14
 
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
+
+
+def get_worm2d_version():
+    # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
+    worm2d_h_file = os.path.join(os.path.dirname(__file__), "Worm2D", "Worm2D.h")
+    with open(worm2d_h_file, "r") as f:
+        for line in f:
+            if "W2D_VERSION" in line:
+                return line.split('"')[1]
+    return "Unknown"
+
+
+def short_repr(x, max_len=80):
+    text = json.dumps(x, ensure_ascii=False)
+    if len(text) > max_len:
+        text = text[:max_len] + "..."
+    return html.escape(text)
+
+
+def make_json_tree(obj, title="root"):
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON trees")
+
+    if isinstance(obj, dict):
+        children = []
+        titles = []
+
+        for key, value in obj.items():
+            children.append(make_json_tree(value, key))
+
+            if isinstance(value, dict):
+                titles.append(f"{key}  {{...}}")
+            elif isinstance(value, list):
+                titles.append(f"{key}  [...]")
+            else:
+                titles.append(f"{key}: {short_repr(value)}")
+
+        acc = widgets.Accordion(children=children)
+        for i, t in enumerate(titles):
+            acc.set_title(i, t)
+
+        return acc
+
+    elif isinstance(obj, list):
+        if all(is_simple(x) for x in obj):
+            text = json.dumps(obj, indent=2, ensure_ascii=False)
+            return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+        children = []
+        titles = []
+
+        for value in obj:
+            children.append(make_json_tree(value))
+
+            if isinstance(value, dict):
+                titles.append("{...}")
+            elif isinstance(value, list):
+                titles.append("[...]")
+            else:
+                titles.append(short_repr(value))
+
+        acc = widgets.Accordion(children=children)
+        for i, t in enumerate(titles):
+            acc.set_title(i, t)
+
+        return acc
+
+    else:
+        text = json.dumps(obj, indent=2, ensure_ascii=False)
+        return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+
+def is_simple(value):
+    return isinstance(value, (str, int, float, bool)) or value is None
+
+
+def json_widget(obj):
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON widgets")
+
+    if isinstance(obj, dict):
+        children = []
+        titles = []
+
+        for key, value in obj.items():
+            children.append(json_widget(value))
+            titles.append(str(key))
+
+        acc = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            acc.set_title(i, title)
+
+        return acc
+
+    elif isinstance(obj, list):
+        if all(is_simple(x) for x in obj):
+            text = json.dumps(obj, indent=2)
+            return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+        else:
+            children = [json_widget(value) for value in obj]
+
+            acc = widgets.Accordion(children=children)
+
+            # Hide the numeric index by using a generic or blank title
+            for i in range(len(children)):
+                acc.set_title(i, "")
+
+            return acc
+
+    else:
+        text = json.dumps(obj, indent=2)
+        return widgets.HTML(f"<pre>{html.escape(text)}</pre>")
+
+
+def json_widget_2(obj, name="root"):
+    """
+    Recursively display JSON-like Python objects using ipywidgets.
+    Supports dicts, lists, strings, numbers, booleans, and None.
+    """
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON widgets")
+
+    if isinstance(obj, dict):
+        children = []
+        titles = []
+
+        for key, value in obj.items():
+            children.append(json_widget(value, str(key)))
+            titles.append(str(key))
+
+        accordion = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            accordion.set_title(i, title)
+
+        return accordion
+
+    elif isinstance(obj, list):
+        children = []
+        titles = []
+
+        for i, value in enumerate(obj):
+            children.append(json_widget(value, f"[{i}]"))
+            titles.append(f"[{i}]")
+
+        accordion = widgets.Accordion(children=children)
+        for i, title in enumerate(titles):
+            accordion.set_title(i, title)
+
+        return accordion
+
+    else:
+        return widgets.HTML(value=f"<pre>{repr(obj)}</pre>")
 
 
 def get_worm_file():
@@ -27,10 +197,1454 @@ def get_worm_file():
     return worm_file
 
 
+def get_worm_json(folder_name):
+    """Load worm_data_worm.json from a run directory."""
+    filename = os.path.join(folder_name, "worm_data_worm.json")
+    with open(filename, "r") as f:
+        return json.load(f)
+
+
+def write_worm_json(folder_name, json_data):
+    """Write worm_data_worm.json to a run directory."""
+    os.makedirs(folder_name, exist_ok=True)
+    filename = os.path.join(folder_name, "worm_data_worm.json")
+    with open(filename, "w") as f:
+        json.dump(json_data, f)
+
+
+def add_environment(
+    json_data,
+    name=None,
+    x_center=0.0,
+    y_center=0.0,
+    grad_steep=0.5,
+):
+    """Return a copy of a worm JSON dictionary with a new environment."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    for parameter_name, value in (
+        ("x_center", x_center),
+        ("y_center", y_center),
+        ("grad_steep", grad_steep),
+    ):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("{} must be a number".format(parameter_name))
+
+    result = copy.deepcopy(json_data)
+    environments = result.setdefault("environments", {})
+    if not isinstance(environments, dict):
+        raise TypeError("'environments' must be a dictionary")
+
+    if name is None:
+        index = 1
+        while "environment_{}".format(index) in environments:
+            index += 1
+        name = "environment_{}".format(index)
+    elif not isinstance(name, str) or not name.strip():
+        raise ValueError("name must be a non-empty string")
+    elif name in environments:
+        raise ValueError("Environment {!r} already exists".format(name))
+
+    environments[name] = {
+        "name": {"value": name},
+        "x_center": {"value": float(x_center)},
+        "y_center": {"value": float(y_center)},
+        "grad_steep": {"value": float(grad_steep)},
+    }
+    return result
+
+
+def delete_environment(json_data, environment_name):
+    """Return a copy with an unused environment removed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(environment_name, str) or not environment_name:
+        raise ValueError("environment_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    environments = result.get("environments")
+    if not isinstance(environments, dict):
+        raise KeyError("JSON does not contain an 'environments' object")
+
+    environment_key = None
+    canonical_name = None
+    if environment_name in environments:
+        environment_key = environment_name
+        environment = environments[environment_key]
+        canonical_name = environment_name
+        if isinstance(environment, dict):
+            stored_name = environment.get("name", {}).get("value")
+            if isinstance(stored_name, str) and stored_name:
+                canonical_name = stored_name
+    else:
+        for key, environment in environments.items():
+            if (
+                isinstance(environment, dict)
+                and environment.get("name", {}).get("value") == environment_name
+            ):
+                environment_key = key
+                canonical_name = environment_name
+                break
+    if environment_key is None:
+        raise KeyError("Environment {!r} does not exist".format(environment_name))
+
+    sensors = result.get("sensors", {})
+    if not isinstance(sensors, dict):
+        raise TypeError("'sensors' must be a dictionary")
+
+    users = []
+    for sensor_name, sensor in sensors.items():
+        if not isinstance(sensor, dict):
+            raise TypeError("Sensor {!r} must be a dictionary".format(sensor_name))
+        sensor_environment = sensor.get("environment", {}).get("value")
+        if sensor_environment in {
+            environment_name,
+            environment_key,
+            canonical_name,
+        }:
+            users.append(sensor_name)
+
+    if users:
+        raise ValueError(
+            "Environment {!r} is used by: {}".format(
+                canonical_name, ", ".join(sorted(users))
+            )
+        )
+
+    del environments[environment_key]
+    if not environments:
+        result.pop("environments", None)
+    return result
+
+
+def add_sensor(
+    json_data,
+    environment_name,
+    sensor_n=2.0,
+    sensor_m=2.0,
+):
+    """Return a copy of a worm JSON dictionary with a new sensor."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(environment_name, str) or not environment_name:
+        raise ValueError("environment_name must be a non-empty string")
+
+    for parameter_name, value in (
+        ("sensor_n", sensor_n),
+        ("sensor_m", sensor_m),
+    ):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("{} must be a number".format(parameter_name))
+    if sensor_n <= 0 or sensor_m <= 0:
+        raise ValueError("sensor_n and sensor_m must be positive")
+
+    result = copy.deepcopy(json_data)
+    environments = result.get("environments")
+    if not isinstance(environments, dict):
+        raise KeyError("JSON does not contain an 'environments' object")
+
+    canonical_environment_name = None
+    if environment_name in environments:
+        environment = environments[environment_name]
+        canonical_environment_name = environment_name
+        if isinstance(environment, dict):
+            stored_name = environment.get("name", {}).get("value")
+            if isinstance(stored_name, str) and stored_name:
+                canonical_environment_name = stored_name
+    else:
+        for environment in environments.values():
+            if (
+                isinstance(environment, dict)
+                and environment.get("name", {}).get("value") == environment_name
+            ):
+                canonical_environment_name = environment_name
+                break
+    if canonical_environment_name is None:
+        raise KeyError("Environment {!r} does not exist".format(environment_name))
+
+    sensors = result.setdefault("sensors", {})
+    if not isinstance(sensors, dict):
+        raise TypeError("'sensors' must be a dictionary")
+    sensor_index = 1
+    while "sensor_{}".format(sensor_index) in sensors:
+        sensor_index += 1
+    sensor_name = "sensor_{}".format(sensor_index)
+
+    sensors[sensor_name] = {
+        "environment": {"value": canonical_environment_name},
+        "sensor_m": {"value": float(sensor_m)},
+        "sensor_n": {"value": float(sensor_n)},
+        "outputs": {
+            "message": ("Available sensor output names for sensor-to-cell connections"),
+            "value": [
+                {
+                    "name": "output_1",
+                    "description": (
+                        "Positive change in sensed concentration "
+                        "(present average above past average)"
+                    ),
+                },
+                {
+                    "name": "output_2",
+                    "description": (
+                        "Negative change in sensed concentration "
+                        "(past average above present average)"
+                    ),
+                },
+            ],
+        },
+        "weights": {
+            "message": "Weights from sensor outputs to Nervous System cells",
+            "value": [],
+        },
+    }
+    return result
+
+
+def add_sensor_connection(
+    json_data,
+    sensor_name,
+    output_name,
+    cell_name,
+    weight=1.0,
+    make_evolvable=False,
+    evotag_name=None,
+):
+    """Return a copy with a sensor-output connection added if absent."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(sensor_name, str) or not sensor_name:
+        raise ValueError("sensor_name must be a non-empty string")
+    output_numbers = {
+        "output_1": 1,
+        "output_2": 2,
+        "ext_inp_1": 1,
+        "ext_inp_2": 2,
+    }
+    if output_name not in output_numbers:
+        raise ValueError("output_name must be 'output_1' or 'output_2'")
+    output_number = output_numbers[output_name]
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+
+    result = copy.deepcopy(json_data)
+
+    sensors = result.get("sensors")
+    if not isinstance(sensors, dict):
+        raise KeyError("JSON does not contain a 'sensors' object")
+    if sensor_name not in sensors:
+        raise KeyError("Sensor {!r} does not exist".format(sensor_name))
+    sensor = sensors[sensor_name]
+    if not isinstance(sensor, dict):
+        raise TypeError("Sensor {!r} must be a dictionary".format(sensor_name))
+
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    weights = sensor.setdefault(
+        "weights",
+        {
+            "message": "Weights from sensor outputs to Nervous System cells",
+            "value": [],
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("Sensor 'weights' must be a dictionary")
+    if weights.get("value") is None:
+        weights["value"] = []
+    if not isinstance(weights.get("value"), list):
+        raise TypeError("Sensor 'weights.value' must be a list")
+    weights.setdefault("message", "Weights from sensor outputs to Nervous System cells")
+
+    for connection in weights["value"]:
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving input connection must be a dictionary")
+        if (
+            connection.get("from_output") == output_number
+            and connection.get("to_cell") == cell_name
+        ):
+            return result
+
+    weights["value"].append(
+        {
+            "from_output": output_number,
+            "to_cell": cell_name,
+            "weight": {"value": float(weight)},
+        }
+    )
+    if make_evolvable:
+        result = add_evotag(
+            result,
+            [
+                "sensors",
+                sensor_name,
+                "weights",
+                "value",
+                len(weights["value"]) - 1,
+                "weight",
+            ],
+            evotag_name,
+        )
+    return result
+
+
+def add_cell(json_data):
+    """Return a copy with one default cell added, plus the new cell name."""
+    result, cell_names = add_random_cell_network(json_data, 1, 0.0)
+    return result, cell_names[0]
+
+
+def add_random_cell_network(
+    json_data,
+    number_of_cells,
+    connection_probability,
+    random_seed=None,
+):
+    """Return a copy plus names for an isolated random directed cell network."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if (
+        isinstance(number_of_cells, bool)
+        or not isinstance(number_of_cells, int)
+        or number_of_cells < 1
+    ):
+        raise ValueError("number_of_cells must be a positive integer")
+    if (
+        isinstance(connection_probability, bool)
+        or not isinstance(connection_probability, (int, float))
+        or not 0.0 <= connection_probability <= 1.0
+    ):
+        raise ValueError("connection_probability must be between 0 and 1")
+    if random_seed is not None and (
+        isinstance(random_seed, bool) or not isinstance(random_seed, int)
+    ):
+        raise TypeError("random_seed must be an integer or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cells = nervous_system.setdefault("cells", {})
+    if not isinstance(cells, dict):
+        raise TypeError("'nervous_system.cells' must be a dictionary")
+
+    cell_names_object = nervous_system.setdefault("cell_names", {"value": []})
+    if not isinstance(cell_names_object, dict):
+        raise TypeError("'nervous_system.cell_names' must be a dictionary")
+    if cell_names_object.get("value") is None:
+        cell_names_object["value"] = []
+    cell_names = cell_names_object.get("value")
+    if not isinstance(cell_names, list):
+        raise TypeError("'nervous_system.cell_names.value' must be a list")
+
+    no_suffix_object = nervous_system.setdefault("cell_names_no_suffix", {"value": []})
+    if not isinstance(no_suffix_object, dict):
+        raise TypeError("'nervous_system.cell_names_no_suffix' must be a dictionary")
+    if no_suffix_object.get("value") is None:
+        no_suffix_object["value"] = []
+    no_suffix_names = no_suffix_object.get("value")
+    if not isinstance(no_suffix_names, list):
+        raise TypeError("'nervous_system.cell_names_no_suffix.value' must be a list")
+
+    chemical_conns = nervous_system.setdefault("chemical_conns", {"value": []})
+    if not isinstance(chemical_conns, dict):
+        raise TypeError("'nervous_system.chemical_conns' must be a dictionary")
+    if chemical_conns.get("value") is None:
+        chemical_conns["value"] = []
+    connections = chemical_conns.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'nervous_system.chemical_conns.value' must be a list")
+
+    existing_names = set(cells) | set(cell_names)
+    new_names = []
+    name_index = 1
+    while len(new_names) < number_of_cells:
+        full_name = "Cell_{}".format(name_index)
+        name_index += 1
+        if full_name in existing_names:
+            continue
+
+        cells[full_name] = {
+            "bias": {"value": 0.0},
+            "cell_class": {"value": "interneuron"},
+            "gain": {"value": 1.0},
+            "state": {"value": 0.0},
+            "tau": {"value": 1.0},
+        }
+        cell_names.append(full_name)
+        no_suffix_names.append(full_name)
+        existing_names.add(full_name)
+        new_names.append(full_name)
+
+    rng = random.Random(random_seed)
+    for from_cell in new_names:
+        for to_cell in new_names:
+            if from_cell == to_cell:
+                continue
+            if rng.random() < connection_probability:
+                connections.append(
+                    {
+                        "from": from_cell,
+                        "to": to_cell,
+                        "weight": {"value": rng.uniform(-1.0, 1.0)},
+                    }
+                )
+
+    for section_name in ("worm", "Worm"):
+        section = result.get(section_name)
+        if not isinstance(section, dict):
+            continue
+        for size_key in ("N_size", "n_size"):
+            size_object = section.get(size_key)
+            if (
+                isinstance(size_object, dict)
+                and isinstance(size_object.get("value"), int)
+                and not isinstance(size_object.get("value"), bool)
+            ):
+                size_object["value"] += number_of_cells
+
+    return result, new_names
+
+
+def add_cell_connection(
+    json_data,
+    from_cell,
+    to_cell,
+    weight=None,
+    random_seed=None,
+):
+    """Return a copy with one directed chemical connection added if absent."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for parameter_name, cell_name in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(cell_name, str) or not cell_name:
+            raise ValueError("{} must be a non-empty string".format(parameter_name))
+    if weight is not None and (
+        isinstance(weight, bool) or not isinstance(weight, (int, float))
+    ):
+        raise TypeError("weight must be a number or None")
+    if random_seed is not None and (
+        isinstance(random_seed, bool) or not isinstance(random_seed, int)
+    ):
+        raise TypeError("random_seed must be an integer or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    for cell_name in (from_cell, to_cell):
+        if cell_name not in cells:
+            raise KeyError(
+                "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+            )
+
+    chemical_conns = nervous_system.setdefault("chemical_conns", {"value": []})
+    if not isinstance(chemical_conns, dict):
+        raise TypeError("'nervous_system.chemical_conns' must be a dictionary")
+    if chemical_conns.get("value") is None:
+        chemical_conns["value"] = []
+    connections = chemical_conns.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'nervous_system.chemical_conns.value' must be a list")
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        if connection.get("from") == from_cell and connection.get("to") == to_cell:
+            return result
+
+    if weight is None:
+        weight = random.Random(random_seed).uniform(-1.0, 1.0)
+    connections.append(
+        {
+            "from": from_cell,
+            "to": to_cell,
+            "weight": {"value": float(weight)},
+        }
+    )
+    return result
+
+
+def delete_cell_connection(json_data, from_cell, to_cell):
+    """Return a copy with one directed chemical connection removed if present."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for parameter_name, cell_name in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(cell_name, str) or not cell_name:
+            raise ValueError("{} must be a non-empty string".format(parameter_name))
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    for cell_name in (from_cell, to_cell):
+        if cell_name not in cells:
+            raise KeyError(
+                "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+            )
+
+    chemical_conns = nervous_system.get("chemical_conns")
+    if not isinstance(chemical_conns, dict):
+        raise KeyError("JSON does not contain 'nervous_system.chemical_conns'")
+    connections = chemical_conns.get("value")
+    if connections is None:
+        return result
+    if not isinstance(connections, list):
+        raise TypeError("'nervous_system.chemical_conns.value' must be a list")
+
+    removed_evotags = set()
+    remaining_connections = []
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        if connection.get("from") == from_cell and connection.get("to") == to_cell:
+            evotag = connection.get("weight", {}).get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                removed_evotags.add(evotag)
+            continue
+        remaining_connections.append(connection)
+    chemical_conns["value"] = remaining_connections
+
+    if not removed_evotags:
+        return result
+
+    def collect_remaining_evotags(value, at_root=False, output=None):
+        if output is None:
+            output = set()
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                output.add(evotag)
+            for key, child in value.items():
+                if at_root and key in {
+                    "evolvable_ranges",
+                    "evolved_used",
+                    "Evolvable",
+                }:
+                    continue
+                collect_remaining_evotags(child, output=output)
+        elif isinstance(value, list):
+            for child in value:
+                collect_remaining_evotags(child, output=output)
+        return output
+
+    unused_evotags = removed_evotags - collect_remaining_evotags(result, at_root=True)
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in unused_evotags:
+            ranges.pop(str(evotag), None)
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict) and isinstance(evolved_used.get("value"), list):
+        evolved_used["value"] = [
+            evotag for evotag in evolved_used["value"] if evotag not in unused_evotags
+        ]
+    return result
+
+
+def _add_connection_evotag(
+    json_data,
+    from_cell,
+    to_cell,
+    connection_key,
+    range_name,
+    lower_limit,
+    upper_limit,
+    evotag_name=None,
+    reciprocal=False,
+):
+    """Add an evotag to an existing nervous-system connection."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    for cell_name in (from_cell, to_cell):
+        if cell_name not in cells:
+            raise KeyError(
+                "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+            )
+
+    connection_object = nervous_system.get(connection_key)
+    if not isinstance(connection_object, dict):
+        raise KeyError(
+            "JSON does not contain 'nervous_system.{}'".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+
+    matching_connections = []
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each connection must be a dictionary")
+        direct_match = (
+            connection.get("from") == from_cell and connection.get("to") == to_cell
+        )
+        reverse_match = reciprocal and (
+            connection.get("from") == to_cell and connection.get("to") == from_cell
+        )
+        if direct_match or reverse_match:
+            weight = connection.get("weight")
+            if not isinstance(weight, dict) or "value" not in weight:
+                raise TypeError("Connection weight must contain a value")
+            matching_connections.append(connection)
+
+    if not matching_connections:
+        connection_type = "electrical" if reciprocal else "chemical"
+        raise KeyError(
+            "No {} connection exists between {!r} and {!r}".format(
+                connection_type, from_cell, to_cell
+            )
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    if evotag_name is None:
+        existing_evotag = matching_connections[0]["weight"].get("evotag")
+        if isinstance(existing_evotag, str) and existing_evotag:
+            evotag_name = existing_evotag
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(nervous_system)
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    for connection in matching_connections:
+        connection["weight"]["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+    return result
+
+
+def add_chemical_connection_evotag(
+    json_data,
+    from_cell,
+    to_cell,
+    evotag_name=None,
+):
+    """Return a copy with an evotag added to a chemical connection."""
+    return _add_connection_evotag(
+        json_data,
+        from_cell,
+        to_cell,
+        "chemical_conns",
+        "ns_chemcons",
+        -15.0,
+        15.0,
+        evotag_name=evotag_name,
+    )
+
+
+def add_electrical_connection_evotag(
+    json_data,
+    first_cell,
+    second_cell,
+    evotag_name=None,
+):
+    """Return a copy with an evotag added to an electrical connection."""
+    return _add_connection_evotag(
+        json_data,
+        first_cell,
+        second_cell,
+        "electrical_conns",
+        "ns_eleccons",
+        0.0,
+        2.0,
+        evotag_name=evotag_name,
+        reciprocal=True,
+    )
+
+
+def add_cell_parameter_evotag(
+    json_data,
+    cell_name,
+    parameter_name,
+    evotag_name=None,
+):
+    """Return a copy with a cell parameter marked as evolvable."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("cell_name", cell_name),
+        ("parameter_name", parameter_name),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+    cell = cells[cell_name]
+    if not isinstance(cell, dict) or parameter_name not in cell:
+        raise KeyError(
+            "Parameter {!r} was not found for cell {!r}".format(
+                parameter_name, cell_name
+            )
+        )
+    parameter = cell[parameter_name]
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError(
+            "{}.{} must be an object containing 'value'".format(
+                cell_name, parameter_name
+            )
+        )
+    parameter_value = parameter["value"]
+    if isinstance(parameter_value, bool) or not isinstance(
+        parameter_value, (int, float)
+    ):
+        raise TypeError(
+            "{}.{} must have a numeric value".format(cell_name, parameter_name)
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    existing_evotag = parameter.get("evotag")
+    if evotag_name is None and isinstance(existing_evotag, str):
+        evotag_name = existing_evotag
+
+    range_name = "ns_cells_{}".format(parameter_name)
+    if evotag_name is None:
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in evolvable_ranges:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    parameter["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        default_ranges = {
+            "bias": (-15.0, 15.0),
+            "tau": (0.1, 4.2),
+            "gain": (0.0, 2.0),
+            "state": (-1.0, 1.0),
+        }
+        if parameter_name in default_ranges:
+            lower_limit, upper_limit = default_ranges[parameter_name]
+        else:
+            span = max(1.0, abs(float(parameter_value)))
+            lower_limit = float(parameter_value) - span
+            upper_limit = float(parameter_value) + span
+
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+
+    return result
+
+
+def add_evotag(json_data, keys, evotag_name=None):
+    """Return a copy with the numeric value at a JSON path made evolvable."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(key, depth)
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    if keys[-1] == "value":
+        parameter = result
+        for key in keys[:-1]:
+            if isinstance(parameter, dict):
+                parameter = parameter[key]
+            else:
+                parameter = parameter[key]
+    else:
+        parameter = current
+
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError("The JSON path must identify an object containing 'value'")
+    parameter_value = parameter["value"]
+    if isinstance(parameter_value, bool) or not isinstance(
+        parameter_value, (int, float)
+    ):
+        raise TypeError("The selected value must be numeric")
+
+    name_parts = []
+    replacements = {
+        "nervous_system": "ns",
+        "chemical_conns": "chemcons",
+        "electrical_conns": "eleccons",
+        "stretch_receptor": "sr",
+    }
+    previous_key = None
+    for key in keys:
+        if isinstance(key, int) or key == "value":
+            continue
+        if previous_key == "cells":
+            previous_key = key
+            continue
+        part = replacements.get(str(key), str(key))
+        if (
+            part == "weight"
+            and name_parts
+            and name_parts[-1] in {"chemcons", "eleccons"}
+        ):
+            continue
+        name_parts.append(part)
+        previous_key = key
+    range_name = "_".join(name_parts)
+    if not range_name:
+        raise ValueError("The JSON path does not produce a valid evotag name")
+    terminal_name = next(
+        (
+            str(key)
+            for key in reversed(keys)
+            if not isinstance(key, int) and key != "value"
+        ),
+        "",
+    )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    existing_evotag = parameter.get("evotag")
+    if evotag_name is None and isinstance(existing_evotag, str):
+        evotag_name = existing_evotag
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(result)
+        suffix = 0
+        while "{}_{}".format(range_name, suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "{}_{}".format(range_name, suffix)
+
+    parameter["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        matching_limits = Counter()
+        for range_entry in evolvable_ranges.values():
+            if (
+                isinstance(range_entry, dict)
+                and range_entry.get("name") == range_name
+                and isinstance(range_entry.get("lower_limit"), (int, float))
+                and isinstance(range_entry.get("upper_limit"), (int, float))
+            ):
+                matching_limits[
+                    (
+                        range_entry["lower_limit"],
+                        range_entry["upper_limit"],
+                    )
+                ] += 1
+
+        if matching_limits:
+            lower_limit, upper_limit = matching_limits.most_common(1)[0][0]
+        elif "chemical_conns" in keys:
+            lower_limit, upper_limit = -15.0, 15.0
+        elif "electrical_conns" in keys:
+            lower_limit, upper_limit = 0.0, 2.0
+        elif "driving_inputs" in keys and terminal_name == "weight":
+            lower_limit, upper_limit = -1500.0, 1500.0
+        elif "sensors" in keys and terminal_name == "weight":
+            lower_limit, upper_limit = -1500.0, 1500.0
+        elif terminal_name in {"sensor_n", "sensor_m", "tau"}:
+            lower_limit, upper_limit = 0.1, 4.2
+        elif terminal_name == "bias":
+            lower_limit, upper_limit = -15.0, 15.0
+        elif terminal_name == "gain":
+            lower_limit, upper_limit = 0.0, 2.0
+        elif terminal_name == "state":
+            lower_limit, upper_limit = -1.0, 1.0
+        else:
+            span = max(1.0, abs(float(parameter_value)))
+            lower_limit = float(parameter_value) - span
+            upper_limit = float(parameter_value) + span
+
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": lower_limit,
+            "name": range_name,
+            "upper_limit": upper_limit,
+        }
+
+    return result
+
+
+def delete_sensor(json_data, sensor_name):
+    """Return a copy with a sensor and its dedicated driving inputs removed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(sensor_name, str) or not sensor_name:
+        raise ValueError("sensor_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    sensors = result.get("sensors")
+    if not isinstance(sensors, dict):
+        raise KeyError("JSON does not contain a 'sensors' object")
+    if sensor_name not in sensors:
+        raise KeyError("Sensor {!r} does not exist".format(sensor_name))
+
+    sensor = sensors[sensor_name]
+    if not isinstance(sensor, dict):
+        raise TypeError("Sensor {!r} must be a dictionary".format(sensor_name))
+
+    removed_evotags = set()
+
+    def collect_evotags(value):
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                removed_evotags.add(evotag)
+            for child in value.values():
+                collect_evotags(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect_evotags(child)
+
+    if "ext_inp_1" not in sensor and "ext_inp_2" not in sensor:
+        collect_evotags(sensor)
+        del sensors[sensor_name]
+
+        def sensor_number(name):
+            prefix = "sensor_"
+            if not name.startswith(prefix) or not name[len(prefix) :].isdigit():
+                raise ValueError(
+                    "Sensor names must use the form 'sensor_N': {!r}".format(name)
+                )
+            return int(name[len(prefix) :])
+
+        ordered_sensors = sorted(
+            sensors.items(), key=lambda item: sensor_number(item[0])
+        )
+        sensors.clear()
+        for index, (_, remaining_sensor) in enumerate(ordered_sensors, start=1):
+            sensors["sensor_{}".format(index)] = remaining_sensor
+        if not sensors:
+            result.pop("sensors", None)
+            for section_name in ("worm", "Worm"):
+                section = result.get(section_name)
+                if isinstance(section, dict):
+                    section.pop("sensorM", None)
+                    section.pop("sensorN", None)
+
+        def collect_remaining_evotags(value, at_root=False, output=None):
+            if output is None:
+                output = set()
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                    output.add(evotag)
+                for key, child in value.items():
+                    if at_root and key in {
+                        "evolvable_ranges",
+                        "evolved_used",
+                        "Evolvable",
+                    }:
+                        continue
+                    collect_remaining_evotags(child, output=output)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_remaining_evotags(child, output=output)
+            return output
+
+        unused_evotags = removed_evotags - collect_remaining_evotags(
+            result, at_root=True
+        )
+        ranges = result.get("evolvable_ranges")
+        if isinstance(ranges, dict):
+            for evotag in unused_evotags:
+                ranges.pop(str(evotag), None)
+
+        evolved_used = result.get("evolved_used")
+        if isinstance(evolved_used, dict) and isinstance(
+            evolved_used.get("value"), list
+        ):
+            evolved_used["value"] = [
+                evotag
+                for evotag in evolved_used["value"]
+                if evotag not in unused_evotags
+            ]
+        return result
+
+    removed_input_numbers = set()
+    for key in ("ext_inp_1", "ext_inp_2"):
+        value = sensor.get(key, {}).get("value")
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise ValueError(
+                "{}.{} must contain a non-negative integer".format(sensor_name, key)
+            )
+        removed_input_numbers.add(value + 1)
+
+    for other_name, other_sensor in sensors.items():
+        if other_name == sensor_name or not isinstance(other_sensor, dict):
+            continue
+        for key in ("ext_inp_1", "ext_inp_2"):
+            value = other_sensor.get(key, {}).get("value")
+            if isinstance(value, int) and not isinstance(value, bool):
+                if value + 1 in removed_input_numbers:
+                    raise ValueError(
+                        "Driving input {} is also used by sensor {!r}".format(
+                            value + 1, other_name
+                        )
+                    )
+
+    collect_evotags(sensor)
+    del sensors[sensor_name]
+
+    driving_inputs = result.get("driving_inputs")
+    if not isinstance(driving_inputs, dict):
+        raise KeyError("JSON does not contain a 'driving_inputs' object")
+
+    inputs = driving_inputs.get("inputs", {}).get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'driving_inputs.inputs.value' must be a list")
+
+    remaining_inputs = []
+    for entry in inputs:
+        if not isinstance(entry, dict):
+            raise TypeError("Each driving input must be a dictionary")
+        input_number = entry.get("input_num")
+        if (
+            isinstance(input_number, bool)
+            or not isinstance(input_number, int)
+            or input_number < 1
+        ):
+            raise ValueError("Driving input numbers must be positive integers")
+        if input_number not in removed_input_numbers:
+            remaining_inputs.append(entry)
+
+    remaining_inputs.sort(key=lambda entry: entry["input_num"])
+    input_number_map = {
+        entry["input_num"]: new_number
+        for new_number, entry in enumerate(remaining_inputs, start=1)
+    }
+    for entry in remaining_inputs:
+        entry["input_num"] = input_number_map[entry["input_num"]]
+    driving_inputs["inputs"]["value"] = remaining_inputs
+
+    weights = driving_inputs.get("weights", {}).get("value")
+    if weights is None:
+        weights = []
+    if not isinstance(weights, list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+
+    remaining_weights = []
+    for connection in weights:
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving input connection must be a dictionary")
+        input_number = connection.get("from_input")
+        if input_number in removed_input_numbers:
+            collect_evotags(connection)
+            continue
+        if input_number not in input_number_map:
+            raise ValueError(
+                "Connection refers to missing driving input {}".format(input_number)
+            )
+        connection["from_input"] = input_number_map[input_number]
+        remaining_weights.append(connection)
+    driving_inputs.setdefault("weights", {})["value"] = remaining_weights
+
+    for remaining_sensor in sensors.values():
+        if not isinstance(remaining_sensor, dict):
+            raise TypeError("Each sensor must be a dictionary")
+        for key in ("ext_inp_1", "ext_inp_2"):
+            old_index = remaining_sensor.get(key, {}).get("value")
+            old_input_number = old_index + 1
+            if old_input_number not in input_number_map:
+                raise ValueError(
+                    "Sensor refers to missing driving input {}".format(old_input_number)
+                )
+            remaining_sensor[key]["value"] = input_number_map[old_input_number] - 1
+
+    def sensor_number(name):
+        prefix = "sensor_"
+        if not name.startswith(prefix) or not name[len(prefix) :].isdigit():
+            raise ValueError(
+                "Sensor names must use the form 'sensor_N': {!r}".format(name)
+            )
+        return int(name[len(prefix) :])
+
+    ordered_sensors = sorted(sensors.items(), key=lambda item: sensor_number(item[0]))
+    sensors.clear()
+    for index, (_, remaining_sensor) in enumerate(ordered_sensors, start=1):
+        sensors["sensor_{}".format(index)] = remaining_sensor
+    if not sensors:
+        result.pop("sensors", None)
+        for section_name in ("worm", "Worm"):
+            section = result.get(section_name)
+            if isinstance(section, dict):
+                section.pop("sensorM", None)
+                section.pop("sensorN", None)
+
+    def collect_remaining_evotags(value, at_root=False, output=None):
+        if output is None:
+            output = set()
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                output.add(evotag)
+            for key, child in value.items():
+                if at_root and key in {
+                    "evolvable_ranges",
+                    "evolved_used",
+                    "Evolvable",
+                }:
+                    continue
+                collect_remaining_evotags(child, output=output)
+        elif isinstance(value, list):
+            for child in value:
+                collect_remaining_evotags(child, output=output)
+        return output
+
+    unused_evotags = removed_evotags - collect_remaining_evotags(result, at_root=True)
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in unused_evotags:
+            ranges.pop(str(evotag), None)
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict) and isinstance(evolved_used.get("value"), list):
+        evolved_used["value"] = [
+            evotag for evotag in evolved_used["value"] if evotag not in unused_evotags
+        ]
+
+    if not remaining_inputs and not remaining_weights:
+        result.pop("driving_inputs", None)
+    return result
+
+
+def remove_nervous_system_cell(json_data, cell_name):
+    """Return a copy of a modern worm JSON dictionary without one NS cell."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    removed_evotags = set()
+
+    def collect_evotags(value):
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                removed_evotags.add(evotag)
+            for child in value.values():
+                collect_evotags(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect_evotags(child)
+
+    def references_cell(value):
+        if not isinstance(value, dict):
+            return False
+        for key, child in value.items():
+            key_lower = str(key).lower()
+            if child == cell_name and (
+                key_lower
+                in {
+                    "from",
+                    "to",
+                    "from_cell",
+                    "to_cell",
+                    "cell",
+                    "cell_name",
+                }
+                or key_lower.endswith("_cell")
+                or key_lower.endswith("_cell_name")
+            ):
+                return True
+        return False
+
+    collect_evotags(cells[cell_name])
+    del cells[cell_name]
+
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    removed_index = None
+    if isinstance(cell_names, list) and cell_name in cell_names:
+        removed_index = cell_names.index(cell_name)
+        cell_names.pop(removed_index)
+
+    no_suffix = nervous_system.get("cell_names_no_suffix", {}).get("value")
+    if (
+        removed_index is not None
+        and isinstance(no_suffix, list)
+        and removed_index < len(no_suffix)
+    ):
+        no_suffix.pop(removed_index)
+    elif isinstance(no_suffix, list):
+        base_name = cell_name.rsplit("_", 1)[0]
+        if base_name in no_suffix:
+            no_suffix.remove(base_name)
+
+    evotag_registry_keys = {"evolvable_ranges", "evolved_used", "Evolvable"}
+
+    def remove_references(value, at_root=False):
+        if isinstance(value, dict):
+            for key in list(value):
+                child = value[key]
+                if at_root and key in evotag_registry_keys:
+                    continue
+                if key == cell_name:
+                    collect_evotags(child)
+                    del value[key]
+                    continue
+                remove_references(child)
+        elif isinstance(value, list):
+            kept = []
+            for child in value:
+                remove = child == cell_name or references_cell(child)
+                if remove:
+                    collect_evotags(child)
+                else:
+                    remove_references(child)
+                    kept.append(child)
+            value[:] = kept
+
+    remove_references(result, at_root=True)
+
+    # The modern format stores the nervous-system size in the worm object.
+    for section_name in ("worm", "Worm"):
+        section = result.get(section_name)
+        if not isinstance(section, dict):
+            continue
+        for size_key in ("N_size", "n_size"):
+            size_obj = section.get(size_key)
+            if (
+                isinstance(size_obj, dict)
+                and isinstance(size_obj.get("value"), int)
+                and size_obj["value"] > 0
+            ):
+                size_obj["value"] -= 1
+
+    def collect_remaining_evotags(value, at_root=False, output=None):
+        if output is None:
+            output = set()
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+                output.add(evotag)
+            for key, child in value.items():
+                if at_root and key in evotag_registry_keys:
+                    continue
+                collect_remaining_evotags(child, output=output)
+        elif isinstance(value, list):
+            for child in value:
+                collect_remaining_evotags(child, output=output)
+        return output
+
+    remaining_evotags = collect_remaining_evotags(result, at_root=True)
+    unused_evotags = removed_evotags - remaining_evotags
+
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in unused_evotags:
+            ranges.pop(str(evotag), None)
+
+        entries = ranges.get("value")
+        if isinstance(entries, list):
+            kept = []
+            for entry in entries:
+                entry_tag = None
+                if isinstance(entry, dict):
+                    if "evotag" in entry:
+                        entry_tag = entry["evotag"]
+                    elif len(entry) == 1:
+                        entry_tag = next(iter(entry))
+                if entry_tag not in unused_evotags:
+                    kept.append(entry)
+            entries[:] = kept
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict):
+        used_values = evolved_used.get("value")
+    else:
+        used_values = evolved_used
+    if isinstance(used_values, list):
+        used_values[:] = [tag for tag in used_values if tag not in unused_evotags]
+
+    legacy_ranges = result.get("Evolvable")
+    if isinstance(legacy_ranges, dict) and isinstance(legacy_ranges.get("value"), list):
+        legacy_ranges["value"][:] = [
+            entry
+            for entry in legacy_ranges["value"]
+            if not isinstance(entry, dict) or entry.get("evotag") not in unused_evotags
+        ]
+
+    return result
+
+
+def delete_directory(directory_path):
+    """Recursively delete a directory, returning True if it existed."""
+    path = os.path.abspath(directory_path)
+    if path in (os.path.abspath(os.curdir), os.path.abspath(os.sep)):
+        raise ValueError("Refusing to delete the current directory or filesystem root")
+    if not os.path.isdir(path):
+        return False
+    shutil.rmtree(path)
+    return True
+
+
+def delete_subfolder_directory(subfolder_name, subsubfolder_name):
+    return delete_notebook_directory(subfolder_name, subsubfolder_name)
+
+
+def delete_notebook_directory(subfolder_name, subsubfolder_name):
+    """Delete a direct child directory from a subfolder of the current directory."""
+    for name in (subfolder_name, subsubfolder_name):
+        if (
+            not isinstance(name, str)
+            or name in ("", ".", "..")
+            or os.path.isabs(name)
+            or os.path.basename(name) != name
+            or os.sep in name
+            or (os.altsep is not None and os.altsep in name)
+        ):
+            raise ValueError("Arguments must be single folder names, not paths")
+
+    parent_path = os.path.abspath(os.path.join(os.curdir, subfolder_name))
+    if not os.path.isdir(parent_path):
+        return False
+    if os.path.islink(parent_path):
+        raise ValueError("Refusing to use a symbolic link as the parent folder")
+
+    target_path = os.path.abspath(os.path.join(parent_path, subsubfolder_name))
+    if os.path.dirname(target_path) != parent_path:
+        raise ValueError("Target must be a direct child of the parent folder")
+    if not os.path.isdir(target_path):
+        return False
+    if os.path.islink(target_path):
+        raise ValueError("Refusing to delete a symbolic link")
+
+    shutil.rmtree(target_path)
+    return True
+
+
 def checkDictName(dictval, namelist):
     dictval1 = dictval
     for val in namelist:
-        print(val)
+        # print(val)
         # if isinstance(val, int):
         if not isinstance(val, int) and val not in dictval1:
             return False
@@ -428,6 +2042,9 @@ def angle_diff(a, b):
 
 
 def plotHist(ax, x, y):
+    if binned_statistic is None:
+        raise ImportError("scipy is required to plot binned histogram statistics")
+
     bins = 40
     # mean
     # y_mean, bin_edges, _ = binned_statistic(x, y, statistic='mean', bins=bins)

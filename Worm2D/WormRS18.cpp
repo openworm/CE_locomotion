@@ -42,10 +42,10 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
     n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
 
     //doOrigSRInput18 = true;
-    //getValCJ<bool>("doOrigSRInput", doOrigSRInput18);
+    //getValCJ<bool>("do_orig_sr_input", doOrigSRInput18);
 
     //doOrigMuscInput18 = true;
-    //getValCJ<bool>("doOrigMuscInput", doOrigMuscInput18); 
+    //getValCJ<bool>("do_orig_musc_input", doOrigMuscInput18); 
 
 } //for WormCO18Full
 
@@ -367,15 +367,15 @@ void Worm18::InitializeState(RandomState &rs)
     //assert(w1parss!=nullptr);
 
     //bool rIS = false;
-    //getValCJ<bool>("randomInitialState", rIS);
+    //getValCJ<bool>("random_initial_state", rIS);
     
     bool doLegacy;
-    getValCJWorm<bool>("doLegacy",doLegacy);
+    getValCJWorm<bool>("do_legacy",doLegacy);
 
     if (doLegacy){
 
     bool randomInitialState;
-    getValCJWorm<bool>("randomInitialState",randomInitialState);
+    getValCJWorm<bool>("random_initial_state",randomInitialState);
 
     if(randomInitialState)n.RandomizeCircuitState(-0.5, 0.5, rs);
     else 
@@ -637,7 +637,7 @@ void Worm18::preNStep()
 
 
     //bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
 
 
@@ -712,7 +712,7 @@ void Worm18::postNStep()
 {
 
     //bool doOrigMuscInput;
-    //getValCJWorm<bool>("doOrigMuscInput",doOrigMuscInput);
+    //getValCJWorm<bool>("do_orig_musc_input",doOrigMuscInput);
 
     if (doOrigMuscInput) setMuscleInputOrig();
     else setMuscleInput();
@@ -776,6 +776,25 @@ void Worm18::Step1()
     //t += StepSize;
 }
 
+const vector<string> Worm18::getSectionNames()
+{
+vector<string> v1(par1.N_units*par1.N_neuronsperunit, "vnc");
+vector<string> v2(4, "head");
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+
+}
+
+const vector<string> Worm18::getDistinctCellNames()
+{
+vector<string> v1 = getCellNamesUnits({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
+vector<string> v2 = {"SMDD_0", "RMDD_0", "SMDV_0", "RMDV_0"};
+v1.insert(v1.end(),v2.begin(),v2.end());
+return v1;
+
+}
+
 const vector<string>  Worm18::getCellNames() 
 {
     vector<string> v1 = getCellNamesAll({"DB", "DD", "VBA", "VDA", "VBP", "VDP"}, par1.N_units);
@@ -786,36 +805,32 @@ const vector<string>  Worm18::getCellNames()
 
 void Worm18::addParsToJson(json & j)
 {
-    //string nsHead = "Head Nervous system";
-    //appendAllNSJson(j[nsHead], h);
-    //vector<string> cell_names = {"SMDD", "RMDD", "SMDV", "RMDV"};
-    //appendCellNamesToJson(j[nsHead], cell_names, 1);
-
-    //NervousSystem & n = dynamic_cast<NervousSystem&>(*n_ptr);
-
-    //shared_ptr<W2Dbaseparameters> w1parss = dynamic_pointer_cast<W2Dbaseparameters>(W2Dbaseparameters1b);
-    //assert(w1parss!=nullptr);
 
 
+    Worm2D::addParsToJson(j);
 
-   // bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    sr_ptr->addParsToJson(j);
 
     if (doOrigSRInput){
     Params<double> par = sr.getStretchReceptorParams();
     appendToJson<double>(j["Stretch receptor"], par);
      }
-    else sr_ptr->addParsToJson(j);
-
 
     string nsHead = "Nervous system";
+
+    if (false){
     appendAllNSJson(j[nsHead], n);
+    }
+
+   
+
+   
     j[nsHead]["section sizes"]["head"]["value"] = 4;
     j[nsHead]["section sizes"]["head"]["plot order"] = 0;
     j[nsHead]["section sizes"]["VNC"]["value"] = 36;
     j[nsHead]["section sizes"]["VNC"]["plot order"] = 1;
 
-    Worm2D::addParsToJson(j);
+   
     //string nsHead = "Nervous system";
     //appendCellNamesToJson(j[nsHead], getCellNames(), 1);
     //appendCellNamesToJson(j[nsHead], getHeadCellNames(), 1);
@@ -829,13 +844,13 @@ vector<doubIntParamsHead> Worm18::getWormParams(){
     double NMJ_Gain_Map = namedVars["NMJ gain map D"];
     //namedVars["NMJ gain fact"] = 0.7;
 
-    var1.parDoub.head = "Worm";
+    var1.parDoub.head = "worm";
     var1.parDoub.names = {"NMJ_DB", "NMJ_VBa", "NMJ_VBp", "NMJ_DD", "NMJ_VDa", "NMJ_VDp",
     "NMJ_SMDD", "NMJ_SMDV", "NMJ_RMDD", "NMJ_RMDV", "NMJ Gain"};
     var1.parDoub.vals = {NMJ_DB, NMJ_VBa, NMJ_VBp, NMJ_DD, NMJ_VDa, NMJ_VDp, 
     NMJ_SMDD, NMJ_SMDV, NMJ_RMDD, NMJ_RMDV, NMJ_Gain_Map};
 
-    var1.parInt.head = "Worm";
+    var1.parInt.head = "worm";
     var1.parInt.names = {"N_stretchrec", "HeadMotorNeuronMuscles", "VNCMuscleStart", "NmusclePerNU"};
     var1.parInt.vals = {N_stretchrec, HeadMotorNeuronMuscles, VNCMuscleStart, NmusclePerNU};
     var1.parInt.messages = {"Number of stretch receptors", 
@@ -865,7 +880,7 @@ void Worm18::writeAct()
    // StretchReceptor18 * sr_ptr2 = &sr;
 
    // bool doOrigSRInput;
-   // getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+   // getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
   size_t pos = getPos("act.dat");
   ofstream & ofs = ofsvec[pos];  
@@ -962,7 +977,7 @@ void Worm18::DumpParams(ofstream &ofs)
 
 
     //bool doOrigSRInput;
-    //getValCJWorm<bool>("doOrigSRInput",doOrigSRInput);
+    //getValCJWorm<bool>("do_orig_sr_input",doOrigSRInput);
 
     if (doOrigSRInput)
     ofs << "SR Gain (VNC and Head): " << sr.SRvncgain << " " << sr.SRheadgain << endl;
@@ -1073,7 +1088,8 @@ vec.push_back({-SRmax, 0.0});
 vec.push_back({0.0, NMJmax});
 vec.push_back({0.0, NMJmax});
 
-j["Evolvable"]["value"] = toIntDoubDoub(vec);
+j["evolvable_ranges"] = toEvolvableRangesJson(vec);
+j["evolved_used"]["value"] = toEvolvedUsedJson(vec);
 
  }
 
@@ -1083,11 +1099,14 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
     json biasvecj = json::array();
     //json biasvecj = json::object();
 
-    for (int u = 1; u <= par1.N_units; u++){
-
     int db, dd, vba, vda, vbp, vdp;
     int ddNext, dbNext, vdaNext, vbaNext;
 
+    const vector<string>  cell_names_full = getDistinctCellNames();
+
+    for (int u = 1; u <= par1.N_units; u++){
+
+    
 
         db = nn(DB,u);
         dd = nn(DD,u);
@@ -1107,12 +1126,12 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
         //biasvecj += json::object_t::value_type({{"ind", db}, {"val", 1}});
         //biasvecj += json::object_t::value_type({{"ind", vba}, {"val", 1}});
 
-        biasvecj.push_back({{"ind", db}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", vba}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", vbp}, {"evotag", 1}});
-        biasvecj.push_back({{"ind", dd}, {"evotag", 2}});
-        biasvecj.push_back({{"ind", vda}, {"evotag", 2}});
-        biasvecj.push_back({{"ind", vdp}, {"evotag", 2}});
+        biasvecj.push_back({{"ind", db}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", vba}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", vbp}, {"evotag", "evotag_1"}});
+        biasvecj.push_back({{"ind", dd}, {"evotag", "evotag_2"}});
+        biasvecj.push_back({{"ind", vda}, {"evotag", "evotag_2"}});
+        biasvecj.push_back({{"ind", vdp}, {"evotag", "evotag_2"}});
 
 
          /*    biasvecj.push_back({db,1});
@@ -1122,7 +1141,7 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
             biasvecj.push_back({vda,2});
             biasvecj.push_back({vdp,2}); */
 
-            if (false)
+            //if (false)
             {vector<intPair> & vec = biasvec;
             vec.push_back({db,1});
             vec.push_back({vba,1});
@@ -1144,23 +1163,27 @@ j["Evolvable"]["value"] = toIntDoubDoub(vec);
 
 
 
-        chemvecj.push_back({{"from", db}, {"to", db}, {"evotag", 5}});
-        chemvecj.push_back({{"from", vba}, {"to", vba}, {"evotag", 5}});
-        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"evotag", 5}});
-        chemvecj.push_back({{"from", dd}, {"to", dd}, {"evotag", 6}});
-        chemvecj.push_back({{"from", vda}, {"to", vda}, {"evotag", 6}});
-        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"evotag", 6}});
-        chemvecj.push_back({{"from", db}, {"to", dd}, {"evotag", 7}});
-        chemvecj.push_back({{"from", vba}, {"to", vda}, {"evotag", 7}});
-        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", 7}});
-        chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", 8}});
-        chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", 8}});
-        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", 8}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", 9}});
+        chemvecj.push_back({{"from", db}, {"to", db}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", vba}, {"to", vba}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", vbp}, {"to", vbp}, {"evotag", "evotag_5"}});
+        chemvecj.push_back({{"from", dd}, {"to", dd}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", vda}, {"to", vda}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", vdp}, {"to", vdp}, {"evotag", "evotag_6"}});
+        chemvecj.push_back({{"from", db}, {"to", dd}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", vba}, {"to", vda}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", "evotag_7"}});
+        chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", "evotag_8"}});
+        chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", "evotag_8"}});
+        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", "evotag_9"}});
 
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vba, dd,8}, cell_names_full, {{"f_ind", 1}, {"fact", 0.5}});
+        addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
+        {vbp, dd,8}, cell_names_full , {{"f_ind", 1}, {"fact", 0.5}});
 
-if (false)
+//if (false)
         {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({db,db,5});
@@ -1221,7 +1244,11 @@ if (false)
     // Stretch receptor
     //sr.SetStretchReceptorParams(N_segments, N_stretchrec, v(14), v(28));
 
+   j["stretch_receptor"]["sr_vnc_gain"]["evotag"] = "evotag_14";
+   j["stretch_receptor"]["sr_head_gain"]["evotag"] = "evotag_28";
+
    
+
 
     j["Stretch receptor"]["SRvncgain"]["evolvable"] = 14;
     j["Stretch receptor"]["SRheadgain"]["evolvable"] = 28;
@@ -1243,7 +1270,8 @@ nmjvecv.push_back({VDP,16});
 nmjvecv.push_back({SMDV,29});
 nmjvecv.push_back({RMDV,30});
 
-
+addEvolvableIP(j["vnc_18"]["dorsal_conns"], nmjvecd , "weight", getCellNames());
+addEvolvableIP(j["vnc_18"]["ventral_conns"], nmjvecv , "weight", getCellNames());
 
 
 j["VNC 18"]["V inds"]["evolvable"] = to_evo_json(nmjvecv);
@@ -1261,12 +1289,12 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     biasvecj.push_back({SMDV,17});
     biasvecj.push_back({RMDD,18});
     biasvecj.push_back({RMDV,18}); */
-    biasvecj.push_back({{"ind", SMDD}, {"evotag", 17}});
-    biasvecj.push_back({{"ind", SMDV}, {"evotag", 17}});
-    biasvecj.push_back({{"ind", RMDD}, {"evotag", 18}});
-    biasvecj.push_back({{"ind", RMDV}, {"evotag", 18}});
+    biasvecj.push_back({{"ind", SMDD}, {"evotag", "evotag_17"}});
+    biasvecj.push_back({{"ind", SMDV}, {"evotag", "evotag_17"}});
+    biasvecj.push_back({{"ind", RMDD}, {"evotag", "evotag_18"}});
+    biasvecj.push_back({{"ind", RMDV}, {"evotag", "evotag_18"}});
 
-    if (false)
+    //if (false)
     {vector<intPair> & vec = biasvec;
     vec.push_back({SMDD,17});
     vec.push_back({SMDV,17});
@@ -1282,18 +1310,19 @@ j["VNC 18"]["D inds"]["evolvable"] = to_evo_json(nmjvecd);
     }
 
 
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"evotag", 21}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"evotag", 21}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"evotag", 22}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"evotag", 22}});
-    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"evotag", 23}});
-    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"evotag", 23}});
-    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"evotag", 24}});
-    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"evotag", 24}});
-    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", 25}});
-    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", 25}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDD}, {"evotag", "evotag_21"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDV}, {"evotag", "evotag_21"}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDD}, {"evotag", "evotag_22"}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDV}, {"evotag", "evotag_22"}});
+    chemvecj.push_back({{"from", SMDD}, {"to", SMDV}, {"evotag", "evotag_23"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", SMDD}, {"evotag", "evotag_23"}});
+    chemvecj.push_back({{"from", SMDD}, {"to", RMDV}, {"evotag", "evotag_24"}});
+    chemvecj.push_back({{"from", SMDV}, {"to", RMDD}, {"evotag", "evotag_24"}});
+    chemvecj.push_back({{"from", RMDD}, {"to", RMDV}, {"evotag", "evotag_25"}});
+    chemvecj.push_back({{"from", RMDV}, {"to", RMDD}, {"evotag", "evotag_25"}});
 
-if (false)
+
+//if (false)
   {
             vector<fromToInt> & vec = chemvec;
             vec.push_back({SMDD, SMDD,21});
@@ -1313,6 +1342,16 @@ if (false)
         push_back_double({SMDV, RMDV,26}, vec);
         push_back_double({RMDV, RMDD,27}, vec);    
         }
+
+   
+   
+
+    addEvolvableTFI(j["nervous_system"]["chemical_conns"]["value"], chemvec, cell_names_full);
+    addEvolvableTFI(j["nervous_system"]["electrical_conns"]["value"], elecvec, cell_names_full, true);
+    addEvolvableIP(j["nervous_system"]["cells"], biasvec, "bias", cell_names_full);
+    addEvolvableIP(j["nervous_system"]["cells"], tauvec, "tau", cell_names_full);
+
+  
 
 
 

@@ -24,17 +24,19 @@ args = dict(
     modelFolder="Worm2D",
     inputFolderName=inputFolderName,
     outputFolderName=outputFolderName,
+    overwrite=True,
     reRand=False,
     doTestRun=True,
     doOrigMuscInput=False,
     modifyJson=False,
     doEvol=True,
     checkPointInterval=5,
-    evoType="Evo21",
+    evo_type="Evo21",
     SimStepSize=0.01,
     SimSkipSteps=4,
     randomInitialState=False,
     doLegacy=False,
+    debug=True,
     # initNSFromJson = False
 )
 

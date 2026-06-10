@@ -20,7 +20,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     doCPT=True,
-    evoType="EvoCE",
+    evo_type="EvoCE",
     doReverse=2,
     SRType="None",
     ABLevel=3,
@@ -34,5 +34,6 @@ run(
     doOrigSRInput=False,
     doLegacy=False,
     SRZeroGainsType=1,
+    doTestRun=False,
     # MutVar = 0.5
 )

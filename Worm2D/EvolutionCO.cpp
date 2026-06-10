@@ -98,7 +98,7 @@ double EvolutionCO::EvaluationFunction(TVector<double> &v, RandomState &rs, Worm
     double rundur = evoPars1.Transient + evoPars1.Duration;
 
 	Worm->setValCJWorm<double>("RunDuration",rundur);
-	Worm->setValCJWorm<double>("HSStepSize",evoPars1.StepSize);
+	Worm->setStepSize(evoPars1.StepSize);
 
 	double f, accdist, totaldist;
 	int k = 0;

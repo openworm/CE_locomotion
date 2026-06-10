@@ -19,6 +19,8 @@
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
 
+const string W2D_VERSION = "v0.1.0";
+
 //class SRCE;
 
 void setEvoStr(vector<string> & vecval, const vector<string> & evoName);
@@ -30,14 +32,19 @@ void addEvoNames(json & j);
 
 extern string main_directoryname, main_modelname;
 int nn1(int neuronNumber, int unitNumber, int N_neuronsperunit);
+
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain, int);
+    const vector<int> & neurons, const vector<double> & NMJs, const int & mi, const int & to, 
+    const TVector<double> & NMJ_Gain, const int &);
 //string main_directoryname;
 //string main_modelname;
 
 void makeMuscleConnHelp1(vector<toFromWeight> & vec1, 
-    const vector<int> & neurons, const vector<double> & NMJs, int unit, int to_muscle, 
-    const vector<double> & NMJ_Gain, int N_neuronsperunit);
+    const vector<int> & neurons, const vector<double> & NMJs, const int & unit, const int & to_muscle, 
+    const vector<double> & NMJ_Gain, const int & N_neuronsperunit);
+
+
+    
 
 class baseParameters
 {
@@ -61,9 +68,11 @@ class baseParameters
     template<class T>
     void setValCJ(const string & name_str, const T & val, const string & bstr)
     {
-        if (!newSetVals.contains(bstr)) newSetVals[bstr] = json::object();
-        if (!newSetVals.at(bstr).contains(name_str)) newSetVals[bstr][name_str] =  json::object();
-        newSetVals[bstr][name_str]["value"] = val;
+        const string key_str = snakeCaseKey(name_str);
+        const string section_str = canonicalSectionKey(bstr);
+        if (!newSetVals.contains(section_str)) newSetVals[section_str] = json::object();
+        if (!newSetVals.at(section_str).contains(key_str)) newSetVals[section_str][key_str] =  json::object();
+        newSetVals[section_str][key_str]["value"] = val;
 
         addValToJson(name_str,val,bstr);
     }
@@ -72,12 +81,50 @@ class baseParameters
     template<class T>
     bool getValCJ(const string & name_str, T & val, const string & bstr) 
     {
+        const string key_str = snakeCaseKey(name_str);
+        const string section_str = canonicalSectionKey(bstr);
+        const string legacy_section_str = legacySectionKey(section_str);
        
 
-        if (newSetVals.contains(bstr) && newSetVals.at(bstr).contains(name_str))
+        if (newSetVals.contains(section_str) && newSetVals.at(section_str).contains(key_str))
         {
              //cout << "hdjs ns " << name_str << " " << val << endl;
-            val = newSetVals[bstr][name_str].at("value").get<T>();
+            val = newSetVals[section_str][key_str].at("value").get<T>();
+            return true;
+        }
+
+        if (newSetVals.contains(section_str) && newSetVals.at(section_str).contains(name_str))
+        {
+            val = newSetVals[section_str][name_str].at("value").get<T>();
+            return true;
+        }
+
+        const string legacy_key_str = legacyKeyForSnake(key_str);
+        if (!legacy_key_str.empty() &&
+            newSetVals.contains(section_str) && newSetVals.at(section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[section_str][legacy_key_str].at("value").get<T>();
+            return true;
+        }
+
+        if (legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(key_str))
+        {
+            val = newSetVals[legacy_section_str][key_str].at("value").get<T>();
+            return true;
+        }
+
+        if (legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(name_str))
+        {
+            val = newSetVals[legacy_section_str][name_str].at("value").get<T>();
+            return true;
+        }
+
+        if (!legacy_key_str.empty() && legacy_section_str != section_str &&
+            newSetVals.contains(legacy_section_str) && newSetVals.at(legacy_section_str).contains(legacy_key_str))
+        {
+            val = newSetVals[legacy_section_str][legacy_key_str].at("value").get<T>();
             return true;
         }
 
@@ -85,7 +132,9 @@ class baseParameters
         if (BPitsCmdArgs!=nullptr) {
             //cout << "hdjs cmd " << name_str << " " << val << endl;
 
-         if( BPitsCmdArgs->getArgValT<T>("--" + name_str, val)) 
+         if( BPitsCmdArgs->getArgValT<T>("--" + key_str, val)
+             || BPitsCmdArgs->getArgValT<T>("--" + name_str, val)
+             || (!legacy_key_str.empty() && BPitsCmdArgs->getArgValT<T>("--" + legacy_key_str, val))) 
         {
               //cout << "hdjs cmd " << name_str << " " << val << endl;
             addValToJson(name_str,val,bstr);
@@ -93,15 +142,28 @@ class baseParameters
         }
     }
 
-        if (!BPitsJson.empty() && BPitsJson.contains(bstr)) 
-        if (getJsonValTF<T>(BPitsJson.at(bstr), name_str, val, true)) return true;
+        if (!BPitsJson.empty() && BPitsJson.contains(section_str)) 
+        {
+            if (getJsonValTF<T>(BPitsJson.at(section_str), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(section_str), legacy_key_str, val, true)) return true;
+        }
+
+        if (!BPitsJson.empty() && legacy_section_str != section_str && BPitsJson.contains(legacy_section_str)) 
+        {
+            if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(legacy_section_str), legacy_key_str, val, true)) return true;
+        }
 
        
        
-        if (defaultVals.contains(name_str)) {
+        if (defaultVals.contains(key_str)) {
 
          
-            val = defaultVals.at(name_str).get<T>();
+            val = defaultVals.at(key_str).get<T>();
             addValToJson(name_str,val,bstr);
                //cout << "hdjs ds " << name_str << " " << val << endl;
             return true;
@@ -162,45 +224,47 @@ class baseParameters
     json setDefaultVals()
     {
         json defaultVals_;
-        defaultVals_["randomInitialState"] = false;
-        defaultVals_["doOrigMuscInput"] = true;
-        defaultVals_["doOrigSRInput"] = true;
+        defaultVals_["random_initial_state"] = false;
+        defaultVals_["do_orig_musc_input"] = true;
+        defaultVals_["do_orig_sr_input"] = true;
 
-        defaultVals_["resetAgentBody"] = false;
+        defaultVals_["reset_agent_body"] = false;
         defaultVals_["rotation"] = 0.0;
         defaultVals_["orient"] = 0.0;
-        defaultVals_["gradSteep"] = 0.5;
-        defaultVals_["RunDuration"] = 1000;
-        defaultVals_["HSStepSize"] = 0.01;
-        defaultVals_["MaxDist"] = 4.5;
+        defaultVals_["grad_steep"] = 0.5;
+        defaultVals_["run_duration"] = 1000;
+        defaultVals_["max_dist"] = 4.5;
         defaultVals_["taxis"] = 1;
         defaultVals_["kinesis"] = 0;
-        defaultVals_["SREvoBot"]=0;
-        defaultVals_["SREvoTop"]=200;
-        defaultVals_["SREvoBotA"]=0;
-        defaultVals_["SREvoTopA"]=200;
-        defaultVals_["AB_output_level"] = 1.0;
-        defaultVals_["SRType"] = "None";
-        defaultVals_["SRForm"] = 0;
-        defaultVals_["SRSegPerSR"] = 6;
-        defaultVals_["SRZeroGainsType"] = 0;
-        defaultVals_["SROffset"] = 0;
-        defaultVals_["NMJWeight"] = 1;
-        defaultVals_["doReverse"] = 0;
+        defaultVals_["sr_evo_bot"]=0;
+        defaultVals_["sr_evo_top"]=200;
+        defaultVals_["sr_evo_bot_a"]=0;
+        defaultVals_["sr_evo_top_a"]=200;
+        defaultVals_["ab_output_level"] = 1.0;
+        defaultVals_["sr_type"] = "None";
+        defaultVals_["sr_form"] = 0;
+        defaultVals_["sr_seg_per_sr"] = 6;
+        defaultVals_["sr_zero_gains_type"] = 0;
+        defaultVals_["sr_offset"] = 0;
+        defaultVals_["nmj_weight"] = 1;
+        defaultVals_["do_reverse"] = 0;
 
-        defaultVals_["OSCTbase"] = 0.25; // Cap for oscillation evaluation
+        defaultVals_["do_test_run"] = true;
+
+        defaultVals_["osc_tbase"] = 0.25; // Cap for oscillation evaluation
         defaultVals_["agarfreq"] = 0.44;
-        defaultVals_["AvgSpeed"] = 0.00022; 
+        defaultVals_["avg_speed"] = 0.00022; 
 
-        defaultVals_["NMJ_VN"] = 1; 
-        defaultVals_["NMJ_DN"] = 1; 
-        defaultVals_["NMJ_Gain_Map"] = 1;
-        defaultVals_["fitType"] = 0;
-        defaultVals_["doAngleDiff"] = 0;
-        defaultVals_["doLegacy"] = true;
-        defaultVals_["initNSFromJson"] = true;
-        defaultVals_["inputInd"] = -1;
+        defaultVals_["nmj_vn"] = 1; 
+        defaultVals_["nmj_dn"] = 1; 
+        defaultVals_["nmj_gain_map"] = 1;
+        defaultVals_["fit_type"] = 0;
+        defaultVals_["do_angle_diff"] = 0;
+        defaultVals_["do_legacy"] = true;
+        defaultVals_["init_ns_from_json"] = true;
+        defaultVals_["input_ind"] = -1;
         defaultVals_["debug"] = false;
+        defaultVals_["evo_type"] = "Evo21";
 
        return defaultVals_;
     }
@@ -208,10 +272,28 @@ class baseParameters
     template<class T>
     void addValToJson(const string & name_str, const T & val, const string & bstr)
     {
-        if (!BPitsJson.contains(bstr)) return; //only add variable if top level exists
-        //if (!BPitsJson.contains(bstr)) BPitsJson[bstr] = json::object();
-        if (!BPitsJson.at(bstr).contains(name_str)) BPitsJson[bstr][name_str] = json::object();
-        BPitsJson[bstr][name_str]["value"] = val;
+        const string key_str = snakeCaseKey(name_str);
+        const string legacy_key_str = legacyKeyForSnake(key_str);
+        const string section_str = canonicalSectionKey(bstr);
+        const string legacy_section_str = legacySectionKey(section_str);
+        if (!BPitsJson.contains(section_str)) BPitsJson[section_str] = json::object();
+        if (!BPitsJson.at(section_str).contains(key_str)) BPitsJson[section_str][key_str] = json::object();
+        BPitsJson[section_str][key_str]["value"] = val;
+        if (name_str != key_str) BPitsJson[section_str].erase(name_str);
+        if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[section_str].erase(legacy_key_str);
+        if (legacy_section_str != section_str && BPitsJson.contains(legacy_section_str))
+        {
+            if (BPitsJson.at(legacy_section_str).is_object())
+            {
+                json merged = BPitsJson.at(legacy_section_str);
+                merged.update(BPitsJson.at(section_str));
+                BPitsJson[section_str] = merged;
+                BPitsJson[section_str][key_str]["value"] = val;
+                BPitsJson[section_str].erase(name_str);
+                if (!legacy_key_str.empty() && legacy_key_str != key_str) BPitsJson[section_str].erase(legacy_key_str);
+            }
+            BPitsJson.erase(legacy_section_str);
+        }
     }
 
    /*  void addParsToJson(json & j)
@@ -227,10 +309,163 @@ class baseParameters
  */
     //shared_ptr<const json itsJsonPtr()const {return &itsJson;} 
 
-    const json & itsNewSetVals(){return newSetVals;}
-
+    const json & itsNewSetVals() const {return newSetVals;}
+    const json & itsBPjson() const {return BPitsJson;}
+    void cleanLegacyParameterKeys(json & j) const {removeLegacyParameterKeys(j);}
+    
     friend class Efunctor;
     protected:
+    void removeLegacyParameterKeys(json & j) const
+    {
+        if (!j.is_object()) return;
+        mergeLegacySection(j, "worm", "Worm");
+        for (auto section = j.begin(); section != j.end(); ++section)
+        {
+            if (!section.value().is_object()) continue;
+            for (auto it = defaultVals.begin(); it != defaultVals.end(); ++it)
+            {
+                const string key_str = it.key();
+                const string legacy_key_str = legacyKeyForSnake(key_str);
+                if (!legacy_key_str.empty() && legacy_key_str != key_str &&
+                    section.value().contains(legacy_key_str))
+                {
+                    if (!section.value().contains(key_str))
+                        section.value()[key_str] = section.value()[legacy_key_str];
+                    section.value().erase(legacy_key_str);
+                }
+            }
+        }
+        if (j.contains("worm")) j["worm"].erase("hs_step_size");
+        if (j.contains("Evolutionary Optimization Parameters"))
+        {
+            j["Evolutionary Optimization Parameters"].erase("hs_step_size");
+            j["Evolutionary Optimization Parameters"].erase("HSStepSize");
+        }
+    }
+
+    static string canonicalSectionKey(const string & section)
+    {
+        if (section == "Worm") return "worm";
+        return section;
+    }
+
+    static string legacySectionKey(const string & section)
+    {
+        if (section == "worm") return "Worm";
+        return section;
+    }
+
+    static const json & getSectionWithLegacy(const json & j, const string & section)
+    {
+        const string section_str = canonicalSectionKey(section);
+        if (j.contains(section_str)) return j.at(section_str);
+        const string legacy_section_str = legacySectionKey(section_str);
+        return j.at(legacy_section_str);
+    }
+
+    static json getSectionCopyWithLegacy(const json & j, const string & section)
+    {
+        const string section_str = canonicalSectionKey(section);
+        const string legacy_section_str = legacySectionKey(section_str);
+        json out = json::object();
+        if (legacy_section_str != section_str && j.contains(legacy_section_str)
+            && j.at(legacy_section_str).is_object())
+            out.update(j.at(legacy_section_str));
+        if (j.contains(section_str) && j.at(section_str).is_object())
+            out.update(j.at(section_str));
+        return out;
+    }
+
+    static void mergeLegacySection(json & j, const string & section, const string & legacy_section)
+    {
+        if (!j.is_object() || !j.contains(legacy_section)) return;
+        if (!j.contains(section)) j[section] = json::object();
+        if (j.at(section).is_object() && j.at(legacy_section).is_object())
+        {
+            json merged = j.at(legacy_section);
+            merged.update(j.at(section));
+            j[section] = merged;
+        }
+        j.erase(legacy_section);
+    }
+
+    static string snakeCaseKey(const string & name)
+    {
+        string key;
+        for (string::size_type i = 0; i < name.size(); i++)
+        {
+            const char c = name[i];
+            const bool is_upper = (c >= 'A' && c <= 'Z');
+            const bool is_lower = (c >= 'a' && c <= 'z');
+            const bool is_digit = (c >= '0' && c <= '9');
+            const bool is_alnum = is_upper || is_lower || is_digit;
+
+            if (!is_alnum)
+            {
+                if (!key.empty() && key.back() != '_') key.push_back('_');
+                continue;
+            }
+
+            if (is_upper && !key.empty() && key.back() != '_')
+            {
+                const char prev = name[i-1];
+                const bool prev_is_upper = (prev >= 'A' && prev <= 'Z');
+                const bool prev_is_lower = (prev >= 'a' && prev <= 'z');
+                const bool prev_is_digit = (prev >= '0' && prev <= '9');
+                bool next_is_lower = false;
+                if (i + 1 < name.size())
+                {
+                    const char next = name[i+1];
+                    next_is_lower = (next >= 'a' && next <= 'z');
+                }
+                if (prev_is_lower || prev_is_digit || (prev_is_upper && next_is_lower))
+                    key.push_back('_');
+            }
+
+            key.push_back(is_upper ? c - 'A' + 'a' : c);
+        }
+
+        if (!key.empty() && key.back() == '_') key.pop_back();
+        return key;
+    }
+
+    static string legacyKeyForSnake(const string & key)
+    {
+        if (key == "random_initial_state") return "randomInitialState";
+        if (key == "do_orig_musc_input") return "doOrigMuscInput";
+        if (key == "do_orig_sr_input") return "doOrigSRInput";
+        if (key == "reset_agent_body") return "resetAgentBody";
+        if (key == "grad_steep") return "gradSteep";
+        if (key == "run_duration") return "RunDuration";
+        if (key == "hs_step_size") return "HSStepSize";
+        if (key == "max_dist") return "MaxDist";
+        if (key == "sr_evo_bot") return "SREvoBot";
+        if (key == "sr_evo_top") return "SREvoTop";
+        if (key == "sr_evo_bot_a") return "SREvoBotA";
+        if (key == "sr_evo_top_a") return "SREvoTopA";
+        if (key == "ab_output_level") return "AB_output_level";
+        if (key == "sr_type") return "SRType";
+        if (key == "sr_form") return "SRForm";
+        if (key == "sr_seg_per_sr") return "SRSegPerSR";
+        if (key == "sr_zero_gains_type") return "SRZeroGainsType";
+        if (key == "sr_offset") return "SROffset";
+        if (key == "nmj_weight") return "NMJWeight";
+        if (key == "do_reverse") return "doReverse";
+        if (key == "do_test_run") return "doTestRun";
+        if (key == "osc_tbase") return "OSCTbase";
+        if (key == "avg_speed") return "AvgSpeed";
+        if (key == "nmj_vn") return "NMJ_VN";
+        if (key == "nmj_dn") return "NMJ_DN";
+        if (key == "nmj_gain_map") return "NMJ_Gain_Map";
+        if (key == "fit_type") return "fitType";
+        if (key == "do_angle_diff") return "doAngleDiff";
+        if (key == "do_legacy") return "doLegacy";
+        if (key == "init_ns_from_json") return "initNSFromJson";
+        if (key == "input_ind") return "inputInd";
+        if (key == "evo_type") return "evoType";
+        return "";
+    }
+
     json BPitsJson;
     //shared_ptr<const json> itsJson = nullptr;
     //shared_ptr<json> itsJson = nullptr;
@@ -275,8 +510,8 @@ struct wormIzqParams
     const doubIntParamsHead getParams() const
     {
         doubIntParamsHead var1;
-        var1.parDoub.head = "Worm";
-        var1.parInt.head = "Worm";
+        var1.parDoub.head = "worm";
+        var1.parInt.head = "worm";
         var1.parDoub.names = {"T_muscle"};
         var1.parDoub.vals = {T_muscle};
         var1.parInt.names = {"N_neuronsperunit", "N_muscles", "N_units", "N_size"};
@@ -468,6 +703,7 @@ virtual double getVelocity() = 0;
 const wormIzqParams par1;
 int nn(int neuronNumber, int unitNumber) const;
 
+virtual const vector<string> getSectionNames() {return vector<string>(par1.N_size, "vnc");}
 
 virtual ~Worm2Dbase(){
         if (m_ptr) delete m_ptr; 
@@ -508,7 +744,11 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
-
+const vector<double> & itsExternalInputs() const {return externalInputs;}
+const vector<toFromWeight> & itsExternalInputConn() const {
+    return externalInputConn;
+}
+virtual const vector<string> getDistinctCellNames() {return {"not implemented"};}
 
 Efunctor itsEf;
 
@@ -563,7 +803,8 @@ vector<double> externalInputs;
 //vector<double> sjdkdsdjddssdsloe;
 //double sjdkdsdjddssdsloe;
 void setExternalInput();
-virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+//virtual void assignExternalInput(){fill(externalInputs.begin(), externalInputs.end(), 0);}
+virtual void assignExternalInput(){return;}
 
 void assignExternalInputOnce(const int & ind, const double & val){externalInputs[ind]=val;}
 
@@ -584,7 +825,7 @@ const baseConsts baseconsts;
 
 
 
-class Worm2Dm : public Worm2Dbody, public Worm2Dbase
+class Worm2Dm : public Worm2Dbody, public Worm2Dbase //Worm2Dm has body
 {
     public:
 
@@ -596,7 +837,9 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
     //virtual void initForSimulation() =  0;
 
     virtual const vector<string> getCellNames() {return {"not implemented"};}
+    virtual const vector<string> getCellNamesUnit() {return {"not implemented"};}
     
+
     virtual void setMuscleInput() {return;}
     double getVelocity(){return Worm2Dbody::getVelocity();}
     virtual void addParsToJson(json & j);
@@ -645,7 +888,7 @@ class Worm2Dm : public Worm2Dbody, public Worm2Dbase
 
 
 
-class Worm2D : virtual public Worm2Dm
+class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
 {
     
     public:
@@ -680,14 +923,25 @@ class Worm2D : virtual public Worm2Dm
     virtual vector<toFromWeight> makeDorsalMuscleConn() {assert(0);}  //from neurons to muscles
 
 
-
+    //void addMuscleParsToJson(json & j);
     void setUpMuscleConn(); //calls make dorsal and ventral musccon to set up connections. 
     void setUpMuscleConn(const json & j);
+
     void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
-    vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
+    const vector<int> & neurons, const vector<double> & NMJs, 
+    const int & unit, const int & to_muscle, const TVector<double> & NMJ_Gain);
+
+    //void makeMuscleConnHelp(vector<toFromWeight> & vec1, 
+    //vector<int> neurons, vector<double> NMJs, int mi, int to, TVector<double> & NMJ_Gain);
+
     //vector<toFromWeight> makeMuscleConn(vector<int> dorsalNeurons, vector<double> dorsalNMJ);
-    vector<toFromWeight> makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
-    TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc);
+    //vector<toFromWeight> makeMuscleConnW2D(vector<int> neurons, vector<double> NMJ,
+    //TVector<double> & NMJ_Gain, vector<intPair> & unitToMusc);
+
+
+    vector<toFromWeight> makeMuscleConnW2D(const vector<int> & neurons, const vector<double> & NMJ,
+    const TVector<double> & NMJ_Gain, const vector<intPair> & unitToMusc);
+
 
     virtual void setMuscleInputOrig(){assert(0 && "setMuscleInputOrig needs overriding");}
     void setMuscleInput(); //calls setMuscleInputVec()
@@ -697,6 +951,7 @@ class Worm2D : virtual public Worm2Dm
     void setMuscBodExt(const json & j);
 
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();
@@ -743,7 +998,6 @@ public:
 virtual void ResetAgentsBody()  = 0;
 virtual double distanceToCenter() const = 0;
 virtual void InitializeSensors(RandomState& rs) = 0;
+virtual void setGradientSteepness(const double &) {}
 
 };
-
-

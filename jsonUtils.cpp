@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <cctype>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -19,6 +20,22 @@ using std::string;
 using std::cout;
 using std::function;
 using std::vector;
+
+static string normaliseJsonFieldName(string name)
+{
+  for (char & c : name) {
+    if (c == ' ') c = '_';
+    else c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+  return name;
+}
+
+template<class T>
+static Params<T> normaliseParamNames(Params<T> par)
+{
+  for (string & name : par.names) name = normaliseJsonFieldName(name);
+  return par;
+}
 
 
 
@@ -683,10 +700,10 @@ void writeParsToJson(json & j, wormForJson & w, string file_name)
 {
 
 {Params<double> par = getBodyParams(w.b);
-appendToJson<double>(j["Body"],par);}
+appendToJson<double>(j["body"], normaliseParamNames(par));}
 
 {Params<int> par = getBodyParamsInts(w.b);
-appendToJson<int>(j["Body"],par);}
+appendToJson<int>(j["body"], normaliseParamNames(par));}
 
 {Params<double> par = getStretchReceptorParams(w.sr);
 appendToJson<double>(j["Stretch receptor"],par);

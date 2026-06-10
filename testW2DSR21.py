@@ -13,7 +13,7 @@ inputFolderName = "experiments/izq_runs_nets_W2D21/103"
 outputFolderName = "testruns/exW2DSR21"
 
 args = dict(
-    simduration=58,
+    simduration=60,
     simtransient=50,
     modelName="W2DSR",
     modelFolder="Worm2D",
@@ -23,6 +23,7 @@ args = dict(
     doTestRun=True,
     doOrigMuscInput=False,
     modifyJson=False,
+    debug=True,
 )
 
 if doOrig:

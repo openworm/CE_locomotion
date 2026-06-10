@@ -6310,5 +6310,20 @@
                 ]
             ]
         }
-    ]
+    ],
+    "units": {
+        "t": "s",
+        "x": "mm",
+        "y": "mm"
+    },
+    "metadata": {
+        "timestamp": "2026-06-09T18:53:37.804751",
+        "protocol": [
+            "Simulation of worm behaviour by Worm2D"
+        ],
+        "software": {
+            "name": "Worm2D",
+            "version": "v0.1.0"
+        }
+    }
 }

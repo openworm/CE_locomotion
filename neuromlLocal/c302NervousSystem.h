@@ -20,17 +20,17 @@ c302NervousSystem(const std::string & popStruct, const int & popSize):c302ForW2D
 
 void SetChemicalSynapseWeight(int from, int to, double value);
 void SetNeuronBias(int i, double value);
-double NeuronBias(int i);
+const double & NeuronBias(int i);
 void SetNeuronGain(int i, double value);
 void SetNeuronTimeConstant(int i, double value);
-double NeuronTimeConstant(int i);
-double NeuronState(int i);
-double ChemicalSynapseWeight(int from, int to);
+const double & NeuronTimeConstant(int i);
+const double & NeuronState(int i);
+const double & ChemicalSynapseWeight(int from, int to);
 
 
 void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) ;
 void SetNeuronOutput(int i, double value);
-double ElectricalSynapseWeight(int from, int to);
+const double & ElectricalSynapseWeight(int from, int to);
 void SetElectricalSynapseWeight(int n1, int n2, double value);
 
 
@@ -43,6 +43,8 @@ void SetElectricalSynapseWeight(int n1, int n2, double value);
  const std::vector<double> & getOutputValues() const {return output_value;}
  ostream & writeOutputValues(ostream & os) {return writeVector(os,output_value);}
  bool skipCalc = 1;
+ double cached_value = 0.0;
+ const double zero_value = 0.0;
 
 
 

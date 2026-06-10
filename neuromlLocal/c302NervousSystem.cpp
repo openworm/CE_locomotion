@@ -24,27 +24,31 @@ void c302NervousSystem::SetNeuronTimeConstant(int i, double value)
     simulation->strValFunc("set_neuron_parameter", "tau", i-1, value);
 }
 
-double  c302NervousSystem::NeuronTimeConstant(int i)
+const double & c302NervousSystem::NeuronTimeConstant(int i)
 {
-    if (skipCalc) return 0;
-    return simulation->getValFunc("get_neuron_parameter", "tau", i-1);
+    if (skipCalc) return zero_value;
+    cached_value = simulation->getValFunc("get_neuron_parameter", "tau", i-1);
+    return cached_value;
 }
 
-double c302NervousSystem::NeuronBias(int i)
+const double & c302NervousSystem::NeuronBias(int i)
 {
-    if (skipCalc) return 0;
-    return simulation->getValFunc("get_neuron_parameter", "bias", i-1);
+    if (skipCalc) return zero_value;
+    cached_value = simulation->getValFunc("get_neuron_parameter", "bias", i-1);
+    return cached_value;
 }
 
-double c302NervousSystem::NeuronState(int i)
+const double & c302NervousSystem::NeuronState(int i)
 {
-    if (skipCalc) return 0;
-    return simulation->getValFunc("get_neuron_parameter", "state", i-1);
+    if (skipCalc) return zero_value;
+    cached_value = simulation->getValFunc("get_neuron_parameter", "state", i-1);
+    return cached_value;
 }
-double c302NervousSystem::ChemicalSynapseWeight(int from, int to)
+const double & c302NervousSystem::ChemicalSynapseWeight(int from, int to)
 {
-    if (skipCalc) return 0;
-    return simulation->getTwoValFunc("get_synaptic_weight", from-1, to-1);
+    if (skipCalc) return zero_value;
+    cached_value = simulation->getTwoValFunc("get_synaptic_weight", from-1, to-1);
+    return cached_value;
 
 }
 
@@ -55,6 +59,5 @@ void c302NervousSystem::RandomizeCircuitOutput(double lb, double ub, RandomState
 
 void c302NervousSystem::SetCircuitSize(int newsize, int maxchemconns, int maxelecconns) {return;}
 void c302NervousSystem::SetNeuronOutput(int i, double value) {return;}
-double c302NervousSystem::ElectricalSynapseWeight(int from, int to) {return 0;}
+const double & c302NervousSystem::ElectricalSynapseWeight(int from, int to) {return zero_value;}
 void c302NervousSystem::SetElectricalSynapseWeight(int n1, int n2, double value) {return;} 
-
