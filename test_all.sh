@@ -199,9 +199,8 @@ if [ "$quick_test" == 0 ]; then
 
     python test2021W2D_nml.py
 
+    make tests2
+
+    rm -rf test_output_2/*.dat
+    ./tests2
 fi
-
-make tests2
-
-rm -rf test_output_2/*.dat
-./tests2
