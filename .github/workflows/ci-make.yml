@@ -57,6 +57,7 @@ jobs:
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib ruff scipy modelspec
         pip install ipywidgets
+        pip install pytest nbmake
         
         pip list
 
@@ -78,6 +79,12 @@ jobs:
     - name: Test Python command line script
       run: |
         python run_main.py -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
+
+    - name: Test Jupyter notebooks
+      run: |
+        pytest --nbmake --nbmake-kernel=python3 *.ipynb
+
+
 
     - name: Test using test_all.sh
       run: |
