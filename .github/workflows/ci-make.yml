@@ -85,7 +85,7 @@ jobs:
 
         ./test_all.sh -q # Run the quick tests - to ensure all C++ built...
 
-        pytest --nbmake --nbmake-kernel=python3 *.ipynb
+        pytest -vs --nbmake --nbmake-kernel=python3 *.ipynb
 
         ls -alth notebooks/example*
 
