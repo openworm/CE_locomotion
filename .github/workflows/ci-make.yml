@@ -57,7 +57,7 @@ jobs:
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib ruff scipy modelspec
         pip install ipywidgets
-        pip install pytest nbmake
+        pip install pytest nbmake pandas
         
         pip list
 
