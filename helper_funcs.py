@@ -512,6 +512,98 @@ def add_cell(json_data):
     return result, cell_names[0]
 
 
+def delete_all_evotags(json_data):
+    """Return a copy without evotags or their registry fields."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    fields_to_remove = {"evotag", "evolvable_ranges", "evolved_used"}
+
+    def remove_fields(value):
+        if isinstance(value, dict):
+            return {
+                key: remove_fields(child)
+                for key, child in value.items()
+                if key not in fields_to_remove
+            }
+        if isinstance(value, list):
+            return [remove_fields(child) for child in value]
+        return copy.deepcopy(value)
+
+    return remove_fields(json_data)
+
+
+def rename_cell(json_data, old_name, new_name):
+    """Return a copy with a nervous-system cell renamed everywhere."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("old_name", old_name),
+        ("new_name", new_name),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError(
+                "{} must be a non-empty string".format(argument_name)
+            )
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    if old_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(old_name)
+        )
+    if new_name != old_name and new_name in cells:
+        raise ValueError("Cell {!r} already exists".format(new_name))
+    if new_name == old_name:
+        return copy.deepcopy(json_data)
+
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    cell_index = None
+    if isinstance(cell_names, list) and old_name in cell_names:
+        cell_index = cell_names.index(old_name)
+
+    def replace_name(value):
+        if isinstance(value, dict):
+            renamed = {}
+            for key, child in value.items():
+                renamed_key = new_name if key == old_name else key
+                if renamed_key in renamed:
+                    raise ValueError(
+                        "Renaming {!r} to {!r} would overwrite a dictionary "
+                        "entry".format(old_name, new_name)
+                    )
+                renamed[renamed_key] = replace_name(child)
+            return renamed
+        if isinstance(value, list):
+            return [replace_name(child) for child in value]
+        if value == old_name:
+            return new_name
+        return copy.deepcopy(value)
+
+    result = replace_name(json_data)
+
+    no_suffix_names = (
+        result.get("nervous_system", {})
+        .get("cell_names_no_suffix", {})
+        .get("value")
+    )
+    if (
+        cell_index is not None
+        and isinstance(no_suffix_names, list)
+        and cell_index < len(no_suffix_names)
+    ):
+        stem, separator, suffix = new_name.rpartition("_")
+        no_suffix_names[cell_index] = (
+            stem if separator and suffix.isdigit() else new_name
+        )
+
+    return result
+
+
 def add_random_cell_network(
     json_data,
     number_of_cells,
@@ -1021,6 +1113,164 @@ def add_chemical_connection_evotag(
         15.0,
         evotag_name=evotag_name,
     )
+
+
+def add_chemical_connection_stem_evotag(
+    json_data,
+    from_stem,
+    to_stem,
+    evotag_name=None,
+):
+    """Return updated JSON and the evotag assigned to same-index connections."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_stem", from_stem),
+        ("to_stem", to_stem),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError(
+                "{} must be a non-empty string".format(argument_name)
+            )
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    connection_object = nervous_system.get("chemical_conns")
+    if not isinstance(connection_object, dict):
+        raise KeyError(
+            "JSON does not contain 'nervous_system.chemical_conns'"
+        )
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.chemical_conns.value' must be a list"
+        )
+
+    def matching_suffix(cell_name, stem):
+        if not isinstance(cell_name, str):
+            return None
+        prefix = stem + "_"
+        if not cell_name.startswith(prefix):
+            return None
+        suffix = cell_name[len(prefix):]
+        return suffix if suffix.isdigit() else None
+
+    matching_connections = []
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        from_suffix = matching_suffix(connection.get("from"), from_stem)
+        to_suffix = matching_suffix(connection.get("to"), to_stem)
+        if from_suffix is None or from_suffix != to_suffix:
+            continue
+        weight = connection.get("weight")
+        if not isinstance(weight, dict) or "value" not in weight:
+            raise TypeError("Connection weight must contain a value")
+        matching_connections.append(connection)
+
+    if not matching_connections:
+        raise KeyError(
+            "No same-index chemical connections exist from stem {!r} "
+            "to stem {!r}".format(from_stem, to_stem)
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(result)
+        suffix = 0
+        while "ns_chemcons_{}".format(suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "ns_chemcons_{}".format(suffix)
+
+    for connection in matching_connections:
+        connection["weight"]["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0,
+        }
+    return result, evotag_name
+
+
+def remove_chemical_connection_stem_mfunc(
+    json_data,
+    from_stem,
+    to_stem,
+):
+    """Remove mfunc from same-index chemical connections between two stems."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_stem", from_stem),
+        ("to_stem", to_stem),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError(
+                "{} must be a non-empty string".format(argument_name)
+            )
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    connection_object = nervous_system.get("chemical_conns")
+    if not isinstance(connection_object, dict):
+        raise KeyError(
+            "JSON does not contain 'nervous_system.chemical_conns'"
+        )
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.chemical_conns.value' must be a list"
+        )
+
+    def matching_suffix(cell_name, stem):
+        if not isinstance(cell_name, str):
+            return None
+        prefix = stem + "_"
+        if not cell_name.startswith(prefix):
+            return None
+        suffix = cell_name[len(prefix):]
+        return suffix if suffix.isdigit() else None
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        from_suffix = matching_suffix(connection.get("from"), from_stem)
+        to_suffix = matching_suffix(connection.get("to"), to_stem)
+        if from_suffix is None or from_suffix != to_suffix:
+            continue
+        weight = connection.get("weight")
+        if not isinstance(weight, dict):
+            raise TypeError("Connection weight must be a dictionary")
+        weight.pop("mfunc", None)
+
+    return result
 
 
 def add_electrical_connection_evotag(
