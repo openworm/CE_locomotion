@@ -533,6 +533,81 @@ def delete_all_evotags(json_data):
     return remove_fields(json_data)
 
 
+def find_evotag_occurrences(json_data, evotag_name):
+    """Return matching evotag entries indexed by their JSON paths."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    occurrences = {}
+
+    def path_string(path):
+        result = ""
+        for part in path:
+            if isinstance(part, int):
+                result += "[{}]".format(part)
+            else:
+                if result:
+                    result += "."
+                result += str(part)
+        return result
+
+    def find_matches(value, path=()):
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag_name:
+                occurrences[path_string(path)] = copy.deepcopy(value)
+            for key, child in value.items():
+                find_matches(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                find_matches(child, path + (index,))
+
+    find_matches(json_data)
+    return occurrences
+
+
+def find_evotag_objects(json_data, evotag_name):
+    """Return the JSON hierarchy containing objects with a matching evotag."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    no_match = object()
+
+    def matching_hierarchy(value):
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag_name:
+                return copy.deepcopy(value)
+
+            matches = {}
+            for key, child in value.items():
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches[key] = child_match
+            if matches and "from" in value and "to" in value:
+                matches = {
+                    "from": copy.deepcopy(value["from"]),
+                    "to": copy.deepcopy(value["to"]),
+                    **matches,
+                }
+            return matches if matches else no_match
+
+        if isinstance(value, list):
+            matches = []
+            for child in value:
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches.append(child_match)
+            return matches if matches else no_match
+
+        return no_match
+
+    result = matching_hierarchy(json_data)
+    return {} if result is no_match else result
+
+
 def rename_cell(json_data, old_name, new_name):
     """Return a copy with a nervous-system cell renamed everywhere."""
     if not isinstance(json_data, dict):
