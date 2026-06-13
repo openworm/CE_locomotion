@@ -506,10 +506,156 @@ def add_sensor_connection(
     return result
 
 
+def add_cell_muscle_connection(
+    json_data,
+    cell_name,
+    muscle_number,
+    muscle_side,
+    weight=1.0,
+    make_evolvable=False,
+    evotag_name=None,
+):
+    """Return a copy with a cell-to-muscle connection added if absent."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+    if isinstance(muscle_number, bool) or not isinstance(muscle_number, int):
+        raise TypeError("muscle_number must be an integer")
+    if muscle_number < 1:
+        raise ValueError("muscle_number must be at least 1")
+    if not isinstance(muscle_side, str):
+        raise TypeError("muscle_side must be a string")
+    muscle_side = muscle_side.lower()
+    if muscle_side not in {"dorsal", "ventral"}:
+        raise ValueError("muscle_side must be 'dorsal' or 'ventral'")
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+    if not isinstance(make_evolvable, bool):
+        raise TypeError("make_evolvable must be a boolean")
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    muscle = result.get("Muscle")
+    if not isinstance(muscle, dict):
+        raise KeyError("JSON does not contain a 'Muscle' object")
+    muscle_count_object = muscle.get("Nmuscles")
+    if (
+        not isinstance(muscle_count_object, dict)
+        or isinstance(muscle_count_object.get("value"), bool)
+        or not isinstance(muscle_count_object.get("value"), int)
+    ):
+        raise TypeError("'Muscle.Nmuscles.value' must be an integer")
+    muscle_count = muscle_count_object["value"]
+    if muscle_number > muscle_count:
+        raise ValueError(
+            "muscle_number must not exceed the muscle count ({})".format(
+                muscle_count
+            )
+        )
+
+    nmj_name = "{}_nmj".format(muscle_side)
+    weights = result.setdefault(
+        nmj_name,
+        {
+            "weights": {
+                "message": "{} NMJ weights in sparse format".format(
+                    muscle_side.capitalize()
+                ),
+                "value": [],
+            }
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("'{}' must be a dictionary".format(nmj_name))
+    weights = weights.setdefault(
+        "weights",
+        {
+            "message": "{} NMJ weights in sparse format".format(
+                muscle_side.capitalize()
+            ),
+            "value": [],
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("'{}.weights' must be a dictionary".format(nmj_name))
+    if weights.get("value") is None:
+        weights["value"] = []
+    connections = weights.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'{}.weights.value' must be a list".format(nmj_name))
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each cell-to-muscle connection must be a dictionary")
+        if (
+            connection.get("from_cell") == cell_name
+            and connection.get("to_musc") == muscle_number
+        ):
+            return result
+
+    connections.append(
+        {
+            "from_cell": cell_name,
+            "to_musc": muscle_number,
+            "weight": {"value": float(weight)},
+        }
+    )
+    if make_evolvable or evotag_name is not None:
+        result = add_evotag(
+            result,
+            [
+                nmj_name,
+                "weights",
+                "value",
+                len(connections) - 1,
+                "weight",
+            ],
+            evotag_name,
+        )
+    return result
+
+
 def add_cell(json_data):
     """Return a copy with one default cell added, plus the new cell name."""
     result, cell_names = add_random_cell_network(json_data, 1, 0.0)
     return result, cell_names[0]
+
+
+def get_cell_names_by_stem(json_data, stem):
+    """Return cell names whose numeric suffix follows the requested stem."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(stem, str) or not stem:
+        raise ValueError("stem must be a non-empty string")
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    if not isinstance(cell_names, list):
+        raise TypeError("'nervous_system.cell_names.value' must be a list")
+
+    prefix = stem + "_"
+    matches = []
+    for cell_name in cell_names:
+        if not isinstance(cell_name, str):
+            raise TypeError("Each cell name must be a string")
+        if cell_name.startswith(prefix) and cell_name[len(prefix):].isdigit():
+            matches.append(cell_name)
+    return matches
 
 
 def delete_all_evotags(json_data):
@@ -1458,6 +1604,79 @@ def add_cell_parameter_evotag(
             "name": range_name,
             "upper_limit": upper_limit,
         }
+
+    return result
+
+
+def set_json_value(json_data, keys, new_value):
+    """Return a copy with the value at an existing JSON path replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys[:-1]):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(
+                        key, depth
+                    )
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    final_position = len(keys) - 1
+    final_key = keys[-1]
+    if isinstance(current, dict):
+        if final_key not in current:
+            raise KeyError(
+                "JSON path does not contain {!r} at position {}".format(
+                    final_key, final_position
+                )
+            )
+        current[final_key] = copy.deepcopy(new_value)
+    elif isinstance(current, list):
+        if isinstance(final_key, bool) or not isinstance(final_key, int):
+            raise TypeError(
+                "List path component at position {} must be an integer".format(
+                    final_position
+                )
+            )
+        try:
+            current[final_key] = copy.deepcopy(new_value)
+        except IndexError:
+            raise IndexError(
+                "List index {} is out of range at path position {}".format(
+                    final_key, final_position
+                )
+            )
+    else:
+        raise TypeError(
+            "JSON path reaches a non-container at position {}".format(
+                final_position
+            )
+        )
 
     return result
 

@@ -389,7 +389,9 @@ int main (int argc, const char* argv[])
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
    
     int zeroGainsType;
-    w2->getValCJWorm("sr_zero_gains_type", zeroGainsType);
+    w2->getValCJ(
+        "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+    );
     int doReverse;
     w2->getValCJWorm("do_reverse", doReverse);
 

@@ -743,7 +743,9 @@ void Worm2DCE::setForward()
 
 
   int zeroGainsType;
-  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
+  getValCJ<int>(
+      "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+  );
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
   
   //AVA_output =  0;
@@ -770,7 +772,9 @@ void Worm2DCE::setBackward()
 
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
-  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
+  getValCJ<int>(
+      "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+  );
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
   
   //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;

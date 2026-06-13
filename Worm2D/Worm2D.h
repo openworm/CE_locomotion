@@ -219,6 +219,13 @@ class baseParameters
 
     }
 
+    template<class T>
+    bool getCmdVal(const string & name_str, T & val) const
+    {
+        return BPitsCmdArgs != nullptr
+            && BPitsCmdArgs->getArgValT<T>("--" + name_str, val);
+    }
+
 
 
     json setDefaultVals()
@@ -244,7 +251,7 @@ class baseParameters
         defaultVals_["sr_type"] = "None";
         defaultVals_["sr_form"] = 0;
         defaultVals_["sr_seg_per_sr"] = 6;
-        defaultVals_["sr_zero_gains_type"] = 0;
+        defaultVals_["sr_zero_gains_type"] = 1;
         defaultVals_["sr_offset"] = 0;
         defaultVals_["nmj_weight"] = 1;
         defaultVals_["do_reverse"] = 0;

@@ -62,6 +62,8 @@ virtual ~W2Dparameters(){}
 virtual void setParsFromJson(const json & j) = 0;
 virtual void addParsToJson(json & j) const = 0;
 virtual void setPars(shared_ptr<const CmdArgs> cmd) = 0;
+virtual void setRootParsFromJson(const json &) {}
+virtual void addRootParsToJson(json &) const {}
 };
 
 
@@ -267,13 +269,34 @@ void setParsFromJson(const json & j){
 
   AgarPars::setParsFromJson(j);
 }
+void setRootParsFromJson(const json & j) {
+  if (j.contains("stretch_receptor"))
+    getParFromJsonAny<int>(
+      j.at("stretch_receptor"),
+      {"sr_zero_gains_type_evo", "SRZeroGainsTypeEvo"},
+      zeroGainsType
+    );
+  else if (j.contains("Stretch receptor"))
+    getParFromJsonAny<int>(
+      j.at("Stretch receptor"),
+      {"sr_zero_gains_type_evo", "SRZeroGainsTypeEvo"},
+      zeroGainsType
+    );
+}
 void addParsToJson(json & j) const {
+  if (!j.is_object()) j = json::object();
   j.erase("zeroGainsType");
+  j.erase("zero_gains_type");
+  j.erase("sr_zero_gains_type_evo");
+  j.erase("SRZeroGainsTypeEvo");
   j["do_reverse"]["value"] = doReverse;
   j["fit_type"]["value"] = fitType;
-  j["zero_gains_type"]["value"] = zeroGainsType;
    j["do_angle_diff"]["value"] = doAngleDiff;
   AgarPars::addParsToJson(j);
+}
+void addRootParsToJson(json & j) const {
+  j["stretch_receptor"]["sr_zero_gains_type_evo"]["value"] =
+    zeroGainsType;
 }
 
 void show() const {cout << " eparsCE doReverse " <<  doReverse << endl; AgarPars::show();}
@@ -531,4 +554,3 @@ void addParsToJson(json & j) const {
 
 
 };
-
