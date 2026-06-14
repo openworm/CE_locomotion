@@ -512,6 +512,7 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
 
 void Worm2Dbase::Step() 
 { //StepSize = StepSize_; 
+    InputSwitcher::updateScheduledInput(t, externalInputs);
     Step1(); 
 
     incSimTimes();
@@ -2440,19 +2441,79 @@ void InputSwitcher::setInputOnce(const int & ind, vector<double> & externalInput
 {
      
 if (ind<0) return;
-   // inputInd = ind;
-  assert(ind<inds.size());
+  if (static_cast<size_t>(ind) >= inds.size())
+    throw runtime_error(
+        "Input-switcher index " + to_string(ind)
+        + " is outside the configured input range");
   vector<int> & indvec = inds[ind];
   vector<double> & valvec = vals[ind];
 
   //for (int i=0;i<indvec.size();i++) cout << indvec[i] << " " << valvec[i] << endl;
   //assert(0);
 
-  for (int i=0;i<indvec.size();i++) externalInputs[indvec[i]] = valvec[i];
+  for (int i=0;i<indvec.size();i++)
+  {
+    if (
+        indvec[i] < 0
+        || static_cast<size_t>(indvec[i]) >= externalInputs.size())
+      throw runtime_error(
+          "Input-switcher input number " + to_string(indvec[i] + 1)
+          + " is outside the available driving-input range");
+    externalInputs[indvec[i]] = valvec[i];
+  }
   //cout << " exx ";
   //for (int i=0;i<externalInputs.size();i++) cout << " " << externalInputs[i];
   //cout << endl;
 
+}
+
+void InputSwitcher::resetScheduledInput()
+{
+  current_schedule_entry = -1;
+  previous_schedule_time = -1;
+}
+
+void InputSwitcher::activateScheduleForSimulation()
+{
+  scheduleActive = true;
+  resetScheduledInput();
+}
+
+void InputSwitcher::updateScheduledInput(
+    const double & current_time, vector<double> & externalInputs)
+{
+  if (
+      !scheduleActive
+      || scheduled_input_indices.empty()
+      || current_time < time_offset)
+  {
+    previous_schedule_time = current_time;
+    return;
+  }
+
+  if (previous_schedule_time >= 0 && current_time < previous_schedule_time)
+    current_schedule_entry = -1;
+  previous_schedule_time = current_time;
+
+  const double elapsed_time = current_time - time_offset;
+  double cycle_time = fmod(elapsed_time, total_period);
+  if (cycle_time < 0) cycle_time += total_period;
+
+  int schedule_entry = 0;
+  double boundary = timeperiods[0];
+  while (
+      schedule_entry + 1 < static_cast<int>(timeperiods.size())
+      && cycle_time >= boundary)
+  {
+    schedule_entry++;
+    boundary += timeperiods[schedule_entry];
+  }
+
+  if (schedule_entry != current_schedule_entry)
+  {
+    setInputOnce(scheduled_input_indices[schedule_entry], externalInputs);
+    current_schedule_entry = schedule_entry;
+  }
 }
 
 void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double> & externalInputs)
@@ -2480,16 +2541,18 @@ void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double>
 void InputSwitcher::addParsToJson(json & j) const
 {
     if (inds.size()<=0) return;
-    if (!j.contains("input_switcher")) j["input_switcher"] = {};
+    if (
+        !j.contains("input_switcher")
+        || !j["input_switcher"].is_object())
+      j["input_switcher"] = json::object();
     json & j2 = j["input_switcher"];
-    if (!j2.contains("input_index")) j2["input_index"]["value"] = -1;
+    j2.erase("input_index");
+    j2["doEvolution"]["value"] = doEvolution;
     j2["size"]["value"] = inds.size();
     if (timeperiods.size()>0){
     j2["time_offset"]["value"] = time_offset;
-        json timeperiods_j = json::array();
-        for (int i=0;i<timeperiods.size();i++)
-            timeperiods_j.push_back({{"input_num", i}, {"value", timeperiods[i]}});
-    j2["time_periods"]["value"] = timeperiods_j;
+    j2["input_indices"]["value"] = scheduled_input_indices;
+    j2["time_periods"]["value"] = timeperiods;
     }
 
   
@@ -2503,7 +2566,7 @@ void InputSwitcher::addParsToJson(json & j) const
     const vector<double> & valvec = vals[i];
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
-    arr2.push_back({{"input_num", indvec[j]}, {"value", valvec[j]}});
+    arr2.push_back({{"input_num", indvec[j] + 1}, {"value", valvec[j]}});
     //arr1.push_back({{"value", arr2},{"ind", i+1}});
     arr1.push_back({{"value", arr2},{"input_index", i}});
     }
@@ -2518,41 +2581,45 @@ void InputSwitcher::addParsToJson(json & j) const
 
 void InputSwitcher::construct(const json & j)
 {
+  scheduled_input_indices.clear();
+  timeperiods.clear();
+  time_offset = 0;
+  total_period = 0;
+  doEvolution = false;
+  scheduleActive = false;
+  resetScheduledInput();
+
    if (!j.contains("input_switcher")) return;
  
   const json & input_switcher = j["input_switcher"];
   if (!input_switcher.contains("size") || !input_switcher.contains("inputs")) return;
 
+  if (input_switcher.contains("doEvolution"))
+  {
+    const json & do_evolution = input_switcher.at("doEvolution");
+    if (
+        !do_evolution.is_object()
+        || !do_evolution.contains("value")
+        || !do_evolution.at("value").is_boolean())
+      throw runtime_error(
+          "input_switcher.doEvolution.value must be a boolean");
+    doEvolution = do_evolution.at("value").get<bool>();
+  }
+  scheduleActive = doEvolution;
+
   int size = input_switcher["size"]["value"].get<int>();
-
-  if (input_switcher.contains("time_periods"))
-  {
-  time_offset =  input_switcher["time_offset"]["value"].get<double>();
-  {
-  
-  vector<double> periods1(size, 123456);
-  total_period = 0;
-  const json & j2 = input_switcher["time_periods"]["value"];
-  for (auto it = j2.begin(); it != j2.end(); ++it)
-  {
-    double period = it->at("value").get<double>();
-    total_period += period;
-    //periods1[it->at("input_num").get<int>()-1] = period;
-    periods1[it->at("input_num").get<int>()] = period;
-  }
-
-  for (int i=0;i<periods1.size();i++) assert(check123456(periods1[i]));
-
-    timeperiods.swap(periods1);
-
-  } 
-  }
 
   {
   
     vector<vector<int> > inds1(size);
     vector<vector<double> > vals1(size);
     const json & j2 = input_switcher["inputs"]["value"];
+    bool legacy_zero_based = false;
+    for (auto it = j2.begin(); it != j2.end(); ++it)
+      for (const auto & input : it->at("value"))
+        if (input.at("input_num").get<int>() == 0)
+          legacy_zero_based = true;
+
     for (auto it = j2.begin(); it != j2.end(); ++it)
     {
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
@@ -2564,7 +2631,14 @@ void InputSwitcher::construct(const json & j)
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
       {
-        indvec.push_back(it2->at("input_num").get<int>());
+        const int input_num = it2->at("input_num").get<int>();
+        if (
+            (!legacy_zero_based && input_num < 1)
+            || (legacy_zero_based && input_num < 0))
+          throw runtime_error(
+              "input_switcher input_num values must be positive integers");
+        indvec.push_back(
+            legacy_zero_based ? input_num : input_num - 1);
         valvec.push_back(it2->at("value").get<double>());
       } 
 
@@ -2583,6 +2657,50 @@ void InputSwitcher::construct(const json & j)
 
   }
 
- 
+  const bool has_input_indices = input_switcher.contains("input_indices");
+  const bool has_time_periods = input_switcher.contains("time_periods");
+  if (has_input_indices != has_time_periods)
+    throw runtime_error(
+        "input_switcher.input_indices and input_switcher.time_periods "
+        "must either both be present or both be absent");
+
+  if (has_input_indices)
+  {
+    if (!input_switcher.contains("time_offset"))
+      throw runtime_error(
+          "input_switcher.time_offset is required for a timed schedule");
+
+    time_offset =
+        input_switcher["time_offset"]["value"].get<double>();
+    scheduled_input_indices =
+        input_switcher["input_indices"]["value"].get<vector<int> >();
+    timeperiods =
+        input_switcher["time_periods"]["value"].get<vector<double> >();
+
+    if (!isfinite(time_offset) || time_offset < 0)
+      throw runtime_error(
+          "input_switcher.time_offset must be a finite non-negative value");
+    if (
+        scheduled_input_indices.empty()
+        || scheduled_input_indices.size() != timeperiods.size())
+      throw runtime_error(
+          "input_switcher.input_indices and input_switcher.time_periods "
+          "must be non-empty lists of the same length");
+
+    for (size_t i = 0; i < scheduled_input_indices.size(); i++)
+    {
+      const int input_index = scheduled_input_indices[i];
+      if (input_index < 0 || input_index >= size)
+        throw runtime_error(
+            "input_switcher.input_indices contains index "
+            + to_string(input_index)
+            + ", which is outside the configured input range");
+      if (!isfinite(timeperiods[i]) || timeperiods[i] <= 0)
+        throw runtime_error(
+            "input_switcher.time_periods must contain finite positive "
+            "durations in seconds");
+      total_period += timeperiods[i];
+    }
+  }
 
 }

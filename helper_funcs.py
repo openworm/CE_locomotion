@@ -658,6 +658,195 @@ def get_cell_names_by_stem(json_data, stem):
     return matches
 
 
+def set_input_switcher_input(
+    json_data,
+    input_index,
+    input_nums,
+    values,
+):
+    """Return a copy with an input-switcher pattern added or replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if isinstance(input_index, bool) or not isinstance(input_index, int):
+        raise TypeError("input_index must be an integer")
+    if input_index < 0:
+        raise ValueError("input_index must be non-negative")
+    if not isinstance(input_nums, (list, tuple)) or not input_nums:
+        raise ValueError("input_nums must be a non-empty list or tuple")
+    if not isinstance(values, (list, tuple)) or not values:
+        raise ValueError("values must be a non-empty list or tuple")
+    if len(input_nums) != len(values):
+        raise ValueError("input_nums and values must have the same length")
+
+    pattern_values = []
+    seen_input_nums = set()
+    for input_num, value in zip(input_nums, values):
+        if isinstance(input_num, bool) or not isinstance(input_num, int):
+            raise TypeError("Each input number must be an integer")
+        if input_num < 1:
+            raise ValueError("Each input number must be at least 1")
+        if input_num in seen_input_nums:
+            raise ValueError(
+                "Input number {} occurs more than once".format(input_num)
+            )
+        seen_input_nums.add(input_num)
+
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("Each input value must be a number")
+        if not math.isfinite(value):
+            raise ValueError("Each input value must be finite")
+        pattern_values.append(
+            {"input_num": input_num, "value": float(value)}
+        )
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.setdefault("input_switcher", {})
+    if not isinstance(input_switcher, dict):
+        raise TypeError("'input_switcher' must be a dictionary")
+    inputs_object = input_switcher.setdefault("inputs", {"value": []})
+    if not isinstance(inputs_object, dict):
+        raise TypeError("'input_switcher.inputs' must be a dictionary")
+    if inputs_object.get("value") is None:
+        inputs_object["value"] = []
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'input_switcher.inputs.value' must be a list")
+
+    legacy_zero_based = False
+    for pattern in inputs:
+        if not isinstance(pattern, dict):
+            raise TypeError("Each input-switcher pattern must be a dictionary")
+        pattern_entries = pattern.get("value")
+        if not isinstance(pattern_entries, list):
+            raise TypeError(
+                "Each input-switcher pattern value must be a list"
+            )
+        for entry in pattern_entries:
+            if not isinstance(entry, dict):
+                raise TypeError(
+                    "Each input-switcher pattern entry must be a dictionary"
+                )
+            existing_input_num = entry.get("input_num")
+            if (
+                isinstance(existing_input_num, bool)
+                or not isinstance(existing_input_num, int)
+                or existing_input_num < 0
+            ):
+                raise TypeError(
+                    "Each existing input number must be a non-negative integer"
+                )
+            if existing_input_num == 0:
+                legacy_zero_based = True
+
+    if legacy_zero_based:
+        for pattern in inputs:
+            for entry in pattern["value"]:
+                entry["input_num"] += 1
+
+    new_pattern = {
+        "input_index": input_index,
+        "value": pattern_values,
+    }
+    matching_positions = []
+    for position, pattern in enumerate(inputs):
+        if pattern.get("input_index") == input_index:
+            matching_positions.append(position)
+
+    if matching_positions:
+        inputs[matching_positions[0]] = new_pattern
+        for position in reversed(matching_positions[1:]):
+            inputs.pop(position)
+    else:
+        inputs.append(new_pattern)
+
+    size_object = input_switcher.setdefault("size", {"value": 0})
+    if not isinstance(size_object, dict):
+        raise TypeError("'input_switcher.size' must be a dictionary")
+    current_size = size_object.get("value", 0)
+    if (
+        isinstance(current_size, bool)
+        or not isinstance(current_size, int)
+        or current_size < 0
+    ):
+        raise TypeError(
+            "'input_switcher.size.value' must be a non-negative integer"
+        )
+    size_object["value"] = max(current_size, input_index + 1)
+    return result
+
+
+def set_input_switcher_schedule(
+    json_data,
+    time_periods,
+    input_indices,
+    time_offset=0.0,
+    do_evolution=False,
+):
+    """Return a copy with a repeating input-switcher schedule set in seconds."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(time_periods, (list, tuple)) or not time_periods:
+        raise ValueError("time_periods must be a non-empty list or tuple")
+    if not isinstance(input_indices, (list, tuple)) or not input_indices:
+        raise ValueError("input_indices must be a non-empty list or tuple")
+    if len(time_periods) != len(input_indices):
+        raise ValueError(
+            "time_periods and input_indices must have the same length"
+        )
+    if (
+        isinstance(time_offset, bool)
+        or not isinstance(time_offset, (int, float))
+    ):
+        raise TypeError("time_offset must be a number")
+    if not math.isfinite(time_offset) or time_offset < 0:
+        raise ValueError("time_offset must be finite and non-negative")
+    if not isinstance(do_evolution, bool):
+        raise TypeError("do_evolution must be a boolean")
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.get("input_switcher")
+    if not isinstance(input_switcher, dict):
+        raise KeyError("JSON does not contain an 'input_switcher' object")
+    size_object = input_switcher.get("size")
+    if not isinstance(size_object, dict):
+        raise KeyError("JSON does not contain 'input_switcher.size'")
+    input_count = size_object.get("value")
+    if (
+        isinstance(input_count, bool)
+        or not isinstance(input_count, int)
+        or input_count < 1
+    ):
+        raise TypeError("'input_switcher.size.value' must be a positive integer")
+
+    periods = []
+    for period in time_periods:
+        if isinstance(period, bool) or not isinstance(period, (int, float)):
+            raise TypeError("Each time period must be a number")
+        if not math.isfinite(period) or period <= 0:
+            raise ValueError(
+                "Each time period must be finite and greater than zero"
+            )
+        periods.append(float(period))
+
+    indices = []
+    for input_index in input_indices:
+        if isinstance(input_index, bool) or not isinstance(input_index, int):
+            raise TypeError("Each input index must be an integer")
+        if input_index < 0 or input_index >= input_count:
+            raise ValueError(
+                "Input index {} is outside the configured range 0 to {}".format(
+                    input_index, input_count - 1
+                )
+            )
+        indices.append(input_index)
+
+    input_switcher["time_periods"] = {"value": periods}
+    input_switcher["input_indices"] = {"value": indices}
+    input_switcher["time_offset"] = {"value": float(time_offset)}
+    input_switcher["doEvolution"] = {"value": do_evolution}
+    return result
+
+
 def delete_all_evotags(json_data):
     """Return a copy without evotags or their registry fields."""
     if not isinstance(json_data, dict):

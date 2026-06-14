@@ -344,23 +344,12 @@ int main (int argc, const char* argv[])
     if (true){
     if (w2dsre) w2dsre->applyFuncablesExt();
     if (inputInd>=0) w2->setInputOnce(inputInd);
-    
 
-    //
-    //for (int i=0;i<w2->itsExternalInputs().size(); i++)
-    //cout << i << " " << w2->itsExternalInputs()[i] << endl;
-    //cout << "inputInd " << inputInd << endl;
-    //assert(0);
-
-    
 
 
     }
 
-    //if (w!=nullptr) w->setForward();
 
-    //double simduration = getParameterDouble(argc,argv,"-sd","10");
-    //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
 

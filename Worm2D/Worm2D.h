@@ -607,6 +607,10 @@ class InputSwitcher
   void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
 
   void setInputOnce(const int & ind, vector<double> & externalInputs);
+  void updateScheduledInput(
+      const double & current_time, vector<double> & externalInputs);
+  void resetScheduledInput();
+  void activateScheduleForSimulation();
   void construct(const json & j);
  
   void setParsFromJson(const json & j){construct(j);}
@@ -617,8 +621,13 @@ class InputSwitcher
       vals.swap(vals_);}
 
   private:
+  vector<int> scheduled_input_indices;
   vector<double> timeperiods;
   double time_offset = 0, total_period = 0;
+  bool doEvolution = false;
+  bool scheduleActive = false;
+  int current_schedule_entry = -1;
+  double previous_schedule_time = -1;
   vector<vector<int> > inds;
   vector<vector<double> > vals;
   //int inputInd = -1;
@@ -717,7 +726,11 @@ virtual ~Worm2Dbase(){
         if (n_ptr) delete n_ptr;
 }
 
-virtual void setTime(double t_){t=t_;datatime=t_;}
+virtual void setTime(double t_){
+    t=t_;
+    datatime=t_;
+    InputSwitcher::resetScheduledInput();
+}
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
@@ -751,6 +764,9 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
+void activateInputScheduleForSimulation() {
+    InputSwitcher::activateScheduleForSimulation();
+}
 const vector<double> & itsExternalInputs() const {return externalInputs;}
 const vector<toFromWeight> & itsExternalInputConn() const {
     return externalInputConn;

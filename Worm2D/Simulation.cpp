@@ -4,6 +4,8 @@
 
 void Simulation::runSimulation(Worm2Dbase & w)
 {
+    w.activateInputScheduleForSimulation();
+
     //w.setBasename(sp.directoryName);
     
     //w.dataReset();

@@ -6,12 +6,18 @@ import re
 import math
 # import helper_funcs as hf
 
-from neuroml import (
-    ElectricalProjection,
-    ContinuousProjection,
-    ContinuousConnectionInstanceW,
-    ElectricalConnectionInstanceW,
-)
+try:
+    from neuroml import (
+        ElectricalProjection,
+        ContinuousProjection,
+        ContinuousConnectionInstanceW,
+        ElectricalConnectionInstanceW,
+    )
+except ImportError:
+    ElectricalProjection = None
+    ContinuousProjection = None
+    ContinuousConnectionInstanceW = None
+    ElectricalConnectionInstanceW = None
 
 
 NS_NEW = "nervous_system"
@@ -806,6 +812,11 @@ def makeProjectionsConnections(
     conn_indices=None,
     projNames=None,
 ):
+    if ContinuousProjection is None:
+        raise ImportError(
+            "The neuroml package is required to generate NeuroML projections"
+        )
+
     if not post_pop_cell_names:
         post_pop_cell_names = pop_cell_names
     if not post_cell_names:
