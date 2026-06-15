@@ -264,7 +264,8 @@ void setParsFromJson(const json & j){
   
   getParFromJsonAny<int>(j, {"do_reverse", "doReverse"}, doReverse);
   getParFromJsonAny<int>(j, {"fit_type", "fitType"}, fitType);
-  getParFromJsonAny<int>(j, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType"}, zeroGainsType);
+  getParFromJsonAny<int>(
+      j, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
   getParFromJsonAny<int>(j, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 
   AgarPars::setParsFromJson(j);
@@ -273,13 +274,13 @@ void setRootParsFromJson(const json & j) {
   if (j.contains("stretch_receptor"))
     getParFromJsonAny<int>(
       j.at("stretch_receptor"),
-      {"sr_zero_gains_type_evo", "SRZeroGainsTypeEvo"},
+      {"sr_zero_gains_type", "SRZeroGainsType"},
       zeroGainsType
     );
   else if (j.contains("Stretch receptor"))
     getParFromJsonAny<int>(
       j.at("Stretch receptor"),
-      {"sr_zero_gains_type_evo", "SRZeroGainsTypeEvo"},
+      {"sr_zero_gains_type", "SRZeroGainsType"},
       zeroGainsType
     );
 }
@@ -295,8 +296,15 @@ void addParsToJson(json & j) const {
   AgarPars::addParsToJson(j);
 }
 void addRootParsToJson(json & j) const {
-  j["stretch_receptor"]["sr_zero_gains_type_evo"]["value"] =
-    zeroGainsType;
+  if (
+      j.contains("stretch_receptor")
+      && j.at("stretch_receptor").is_object())
+  {
+    j["stretch_receptor"].erase("sr_zero_gains_type_evo");
+    j["stretch_receptor"].erase("SRZeroGainsTypeEvo");
+    j["stretch_receptor"]["sr_zero_gains_type"]["value"] =
+      zeroGainsType;
+  }
 }
 
 void show() const {cout << " eparsCE doReverse " <<  doReverse << endl; AgarPars::show();}

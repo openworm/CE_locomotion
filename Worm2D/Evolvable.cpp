@@ -256,7 +256,8 @@ EvolparametersCE::EvolparametersCE(shared_ptr<const CmdArgs> cmd):AgarPars(cmd)
 
     getParFromCmdAny<int>(cmd, {"do_reverse", "doReverse"}, doReverse);
     getParFromCmdAny<int>(cmd, {"fit_type", "fitType"}, fitType);
-    getParFromCmdAny<int>(cmd, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType", "SRZeroGainsTypeEvo"}, zeroGainsType);
+    getParFromCmdAny<int>(
+        cmd, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
     getParFromCmdAny<int>(cmd, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 }
 
@@ -267,7 +268,8 @@ void EvolparametersCE::setPars(shared_ptr<const CmdArgs> cmd)
 
     getParFromCmdAny<int>(cmd, {"do_reverse", "doReverse"}, doReverse);
     getParFromCmdAny<int>(cmd, {"fit_type", "fitType"}, fitType);
-    getParFromCmdAny<int>(cmd, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType", "SRZeroGainsTypeEvo"}, zeroGainsType);
+    getParFromCmdAny<int>(
+        cmd, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
     getParFromCmdAny<int>(cmd, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 
     //sr_type = getParameter(argc,argv,"--SRType","None");

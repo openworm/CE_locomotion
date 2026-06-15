@@ -178,6 +178,12 @@ void SR18::addParsToJson(json & j) const
 
 void SRCE::addParsToJson(json & j) const
 {
+    if (
+        !j.contains("stretch_receptor")
+        || !j.at("stretch_receptor").is_object())
+      j["stretch_receptor"] = json::object();
+    j["stretch_receptor"].erase("sr_zero_gains_type_evo");
+    j["stretch_receptor"].erase("SRZeroGainsTypeEvo");
     j["stretch_receptor"]["sr_zero_gains_type"]["value"] =
         zeroGainsType;
     
