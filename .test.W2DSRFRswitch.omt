@@ -1,0 +1,29 @@
+# Framework for running automated tests on Open Source Brain
+# See https://github.com/OpenSourceBrain/osb-model-validation for more details
+ 
+target: testW2DSRFRswitch.py
+engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
+mep: .test.W2DCEFRv2.mep
+experiments:
+  Test:
+    observables:
+      spike times:
+        file: 
+          path: testruns/exW2DCEFRswitch/act.dat
+          columns: [0,2]
+          scaling: [1,1]
+        spike detection: 
+          method: threshold
+          threshold: 2
+        tolerance: 0  
+  Test2:
+    observables:
+      spike times:
+        file: 
+          path: testruns/exW2DCEFRswitch/act.dat
+          columns: [0,3]
+          scaling: [1,1]
+        spike detection: 
+          method: threshold
+          threshold: -10
+        tolerance: 0
