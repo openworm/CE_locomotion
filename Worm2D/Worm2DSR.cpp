@@ -1485,6 +1485,51 @@ void Worm2DSRE::applyFuncables(json & j1_)
 recursive_applyFuncablev2(j1_, itsEf);
 }
 
+void Worm2DSRE::applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval)
+{
+    NervousSystem * nervous_system =
+        dynamic_cast<NervousSystem *>(n_ptr);
+    TVector<double> states;
+    TVector<double> past_states;
+    if (nervous_system != nullptr)
+    {
+        states = nervous_system->states;
+        past_states = nervous_system->paststates;
+    }
+    const vector<double> saved_external_inputs = externalInputs;
+
+    Worm2Dbase::applyScheduledFuncable(
+        function_index, has_condval, condval);
+    if (!getCurrentPheno().empty())
+        callEfcond();
+    else
+    {
+        json transformed = BPitsJson;
+        applyFuncables(transformed);
+        resetScheduledFuncableFromJson(transformed);
+    }
+
+    if (nervous_system != nullptr)
+    {
+        for (int i = 1; i <= nervous_system->CircuitSize(); i++)
+            nervous_system->SetNeuronState(i, states[i]);
+        nervous_system->paststates = past_states;
+    }
+    externalInputs = saved_external_inputs;
+}
+
+void Worm2DSRE::resetScheduledFuncableFromJson(const json & j)
+{
+    resetFromJson(j);
+}
+
+void WormCO2DSR::resetScheduledFuncableFromJson(const json & j)
+{
+    resetFromJson(j);
+    Sensor::setParsFromJson(j);
+}
+
 
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)

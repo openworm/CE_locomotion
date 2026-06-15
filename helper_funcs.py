@@ -847,6 +847,88 @@ def set_input_switcher_schedule(
     return result
 
 
+def set_funcable_schedule(
+    json_data,
+    function_index,
+    time_intervals,
+    condvals=None,
+    time_offset=0.0,
+    do_evolution=False,
+    schedule_name=None,
+):
+    """Return a copy with a repeating schedule for one Funcable function."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if (
+        isinstance(function_index, bool)
+        or not isinstance(function_index, int)
+        or function_index < 1
+    ):
+        raise ValueError("function_index must be a positive integer")
+    if not isinstance(time_intervals, (list, tuple)) or not time_intervals:
+        raise ValueError("time_intervals must be a non-empty list or tuple")
+    if (
+        isinstance(time_offset, bool)
+        or not isinstance(time_offset, (int, float))
+    ):
+        raise TypeError("time_offset must be a number")
+    if not math.isfinite(time_offset) or time_offset < 0:
+        raise ValueError("time_offset must be finite and non-negative")
+    if not isinstance(do_evolution, bool):
+        raise TypeError("do_evolution must be a boolean")
+    if schedule_name is not None and (
+        not isinstance(schedule_name, str) or not schedule_name
+    ):
+        raise ValueError("schedule_name must be a non-empty string or None")
+
+    intervals = []
+    for interval in time_intervals:
+        if isinstance(interval, bool) or not isinstance(
+            interval, (int, float)
+        ):
+            raise TypeError("Each time interval must be a number")
+        if not math.isfinite(interval) or interval <= 0:
+            raise ValueError(
+                "Each time interval must be finite and greater than zero"
+            )
+        intervals.append(float(interval))
+
+    condition_values = None
+    if condvals is not None:
+        if not isinstance(condvals, (list, tuple)):
+            raise TypeError("condvals must be a list, tuple or None")
+        if len(condvals) != len(intervals):
+            raise ValueError(
+                "condvals and time_intervals must have the same length"
+            )
+        condition_values = []
+        for condval in condvals:
+            if isinstance(condval, bool) or not isinstance(condval, int):
+                raise TypeError("Each condval must be an integer")
+            condition_values.append(condval)
+
+    result = copy.deepcopy(json_data)
+    funcable = result.setdefault("Funcable", {})
+    if not isinstance(funcable, dict):
+        raise TypeError("'Funcable' must be a dictionary")
+    schedules = funcable.setdefault("schedules", {})
+    if not isinstance(schedules, dict):
+        raise TypeError("'Funcable.schedules' must be a dictionary")
+
+    if schedule_name is None:
+        schedule_name = "function_{}".format(function_index)
+    schedule = {
+        "function_index": {"value": function_index},
+        "time_intervals": {"value": intervals},
+        "time_offset": {"value": float(time_offset)},
+        "doEvolution": {"value": do_evolution},
+    }
+    if condition_values is not None:
+        schedule["condvals"] = {"value": condition_values}
+    schedules[schedule_name] = schedule
+    return result
+
+
 def delete_all_evotags(json_data):
     """Return a copy without evotags or their registry fields."""
     if not isinstance(json_data, dict):

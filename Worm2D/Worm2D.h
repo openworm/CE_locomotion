@@ -494,6 +494,8 @@ double eFunc(const double & val, const json & j, bool setItsJson = false);
 //double eFunc1(const double & val, const json & j);
 
 void reset(){itsJson = {};}
+void setFunctionCondition(
+    const int function_index, const bool has_condval, const int condval);
 
 baseParameters & bp;
 const bool condf;
@@ -708,6 +710,8 @@ virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
 virtual void addEvolvableToJson(json & j) {return;}
 virtual void addFuncableToJson(json & j) {return;}
+virtual void applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval);
 void addParsToJson();
 
 const NSForW2D & itsNS() const {return *n_ptr;}
@@ -730,6 +734,7 @@ virtual void setTime(double t_){
     t=t_;
     datatime=t_;
     InputSwitcher::resetScheduledInput();
+    resetFuncableSchedules();
 }
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
@@ -767,6 +772,7 @@ void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInpu
 void activateInputScheduleForSimulation() {
     InputSwitcher::activateScheduleForSimulation();
 }
+void activateFuncableSchedulesForSimulation();
 const vector<double> & itsExternalInputs() const {return externalInputs;}
 const vector<toFromWeight> & itsExternalInputConn() const {
     return externalInputConn;
@@ -776,6 +782,22 @@ virtual const vector<string> getDistinctCellNames() {return {"not implemented"};
 Efunctor itsEf;
 
 protected:
+struct FuncableSchedule
+{
+    int function_index = -1;
+    vector<double> time_intervals;
+    vector<int> condvals;
+    double time_offset = 0, total_period = 0;
+    bool doEvolution = false, active = false;
+    int current_entry = -1;
+    double previous_time = -1;
+};
+
+vector<FuncableSchedule> funcableSchedules;
+void constructFuncableSchedules(const json & j);
+void resetFuncableSchedules();
+void updateScheduledFuncables(const double current_time);
+
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,

@@ -110,7 +110,13 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 
   if (j.at("f_ind").get<int>() == 1) 
   {
-    const bool cond1 = (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1) || setItsJson;
+    const bool scheduled =
+      itsJson.contains("functions")
+      && itsJson.at("functions").contains(to_string(1));
+    const bool cond1 =
+      scheduled
+      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1)
+      || setItsJson;
     const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(1));
 
     if (!(cond1 || cond2)) return val;
@@ -128,8 +134,27 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 
     const int cond = j.at("cond").get<int>();
 
-    const bool cond1 = (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2) || setItsJson;
-    if (cond1 && itsJson.contains("condval") && cond == itsJson.at("condval").get<int>()) return 0;
+    const bool scheduled =
+      itsJson.contains("functions")
+      && itsJson.at("functions").contains(to_string(2));
+    const bool cond1 =
+      scheduled
+      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2)
+      || setItsJson;
+    if (scheduled)
+    {
+      const json & function =
+        itsJson.at("functions").at(to_string(2));
+      if (
+          function.contains("condval")
+          && cond == function.at("condval").get<int>())
+        return 0;
+    }
+    else if (
+        cond1
+        && itsJson.contains("condval")
+        && cond == itsJson.at("condval").get<int>())
+      return 0;
  
     const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(2));
 
@@ -147,6 +172,14 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
 
   assert(0);
 
+}
+
+void Efunctor::setFunctionCondition(
+    const int function_index, const bool has_condval, const int condval)
+{
+  json & function = itsJson["functions"][to_string(function_index)];
+  function = json::object();
+  if (has_condval) function["condval"] = condval;
 }
 
 ////////////////////////////
@@ -179,8 +212,7 @@ Worm2Dbase::Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_,
 par1(par1_),m_ptr(m_ptr_),n_ptr(n_ptr_), baseParameters(j,cmd_), InputSwitcher(j),
 itsEf(*this),baseconsts(makeBaseConsts())
 {
-
-   
+    constructFuncableSchedules(j);
 }
 
 
@@ -513,11 +545,152 @@ void Worm2Dbody::AngleCurvature(TVector<double> &c)
 void Worm2Dbase::Step() 
 { //StepSize = StepSize_; 
     InputSwitcher::updateScheduledInput(t, externalInputs);
+    updateScheduledFuncables(t);
     Step1(); 
 
     incSimTimes();
     //datatime = t;
     //datatime += StepSize_; 
+}
+
+void Worm2Dbase::applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval)
+{
+    itsEf.setFunctionCondition(function_index, has_condval, condval);
+}
+
+void Worm2Dbase::resetFuncableSchedules()
+{
+    for (FuncableSchedule & schedule : funcableSchedules)
+    {
+        schedule.current_entry = -1;
+        schedule.previous_time = -1;
+    }
+}
+
+void Worm2Dbase::activateFuncableSchedulesForSimulation()
+{
+    for (FuncableSchedule & schedule : funcableSchedules)
+        schedule.active = true;
+    resetFuncableSchedules();
+}
+
+void Worm2Dbase::updateScheduledFuncables(const double current_time)
+{
+    for (FuncableSchedule & schedule : funcableSchedules)
+    {
+        if (!schedule.active || current_time < schedule.time_offset)
+        {
+            schedule.previous_time = current_time;
+            continue;
+        }
+
+        if (
+            schedule.previous_time >= 0
+            && current_time < schedule.previous_time)
+          schedule.current_entry = -1;
+        schedule.previous_time = current_time;
+
+        double cycle_time =
+            fmod(current_time - schedule.time_offset, schedule.total_period);
+        if (cycle_time < 0) cycle_time += schedule.total_period;
+
+        int entry = 0;
+        double boundary = schedule.time_intervals[0];
+        while (
+            entry + 1 < static_cast<int>(schedule.time_intervals.size())
+            && cycle_time >= boundary)
+        {
+            entry++;
+            boundary += schedule.time_intervals[entry];
+        }
+
+        if (entry == schedule.current_entry) continue;
+        schedule.current_entry = entry;
+        const bool has_condval = !schedule.condvals.empty();
+        applyScheduledFuncable(
+            schedule.function_index,
+            has_condval,
+            has_condval ? schedule.condvals[entry] : 0);
+    }
+}
+
+void Worm2Dbase::constructFuncableSchedules(const json & j)
+{
+    funcableSchedules.clear();
+    if (
+        !j.contains("Funcable")
+        || !j.at("Funcable").is_object()
+        || !j.at("Funcable").contains("schedules"))
+      return;
+
+    const json & schedules = j.at("Funcable").at("schedules");
+    if (!schedules.is_object())
+      throw runtime_error("Funcable.schedules must be an object");
+
+    for (const auto & item : schedules.items())
+    {
+        const json & value = item.value();
+        if (!value.is_object())
+          throw runtime_error("Each Funcable schedule must be an object");
+
+        FuncableSchedule schedule;
+        if (
+            !value.contains("function_index")
+            || !value.at("function_index").contains("value"))
+          throw runtime_error(
+              "Funcable schedule " + item.key()
+              + " requires function_index.value");
+        schedule.function_index =
+            value.at("function_index").at("value").get<int>();
+        if (schedule.function_index < 1)
+          throw runtime_error(
+              "Funcable schedule function_index must be positive");
+
+        if (
+            !value.contains("time_intervals")
+            || !value.at("time_intervals").contains("value"))
+          throw runtime_error(
+              "Funcable schedule " + item.key()
+              + " requires time_intervals.value");
+        schedule.time_intervals =
+            value.at("time_intervals").at("value").get<vector<double> >();
+        if (schedule.time_intervals.empty())
+          throw runtime_error(
+              "Funcable schedule time_intervals must not be empty");
+        for (const double interval : schedule.time_intervals)
+        {
+            if (!isfinite(interval) || interval <= 0)
+              throw runtime_error(
+                  "Funcable schedule intervals must be finite and positive");
+            schedule.total_period += interval;
+        }
+
+        if (value.contains("condvals"))
+        {
+            schedule.condvals =
+                value.at("condvals").at("value").get<vector<int> >();
+            if (
+                schedule.condvals.size()
+                != schedule.time_intervals.size())
+              throw runtime_error(
+                  "Funcable schedule condvals and time_intervals must "
+                  "have the same length");
+        }
+
+        if (value.contains("time_offset"))
+          schedule.time_offset =
+              value.at("time_offset").at("value").get<double>();
+        if (!isfinite(schedule.time_offset) || schedule.time_offset < 0)
+          throw runtime_error(
+              "Funcable schedule time_offset must be finite and non-negative");
+
+        if (value.contains("doEvolution"))
+          schedule.doEvolution =
+              value.at("doEvolution").at("value").get<bool>();
+        schedule.active = schedule.doEvolution;
+        funcableSchedules.push_back(schedule);
+    }
 }
 
 void Worm2Dbase::randomizeNS(RandomState &rs)
