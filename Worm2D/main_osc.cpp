@@ -431,7 +431,7 @@ int main (int argc, const char* argv[])
     bool doforward = forwardfirst;
     for (int mode=0;mode<2;mode++){
     if (mode==1) {doforward = !forwardfirst; 
-        w2->randomizeNS(rs);
+        //w2->randomizeNS(rs);
         s1.sp.Transient = 0;
         }
 
