@@ -39,6 +39,210 @@ def get_evolved_used_order(network_json_data):
     return []
 
 
+def _json_value(obj, default=None):
+    if isinstance(obj, dict) and "value" in obj:
+        return obj["value"]
+    if obj is None:
+        return default
+    return obj
+
+
+def _normalise_cell_class_name(name):
+    cleaned = str(name).strip().lower().replace("_", " ")
+    for suffix in (" neurons", " neuron", " cells", " cell", " class"):
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[: -len(suffix)]
+    cleaned = cleaned.strip().replace(" ", "_")
+    aliases = {
+        "body": "vnc",
+        "vnc_neurons": "vnc",
+        "ventral_nerve_cord": "vnc",
+        "inter": "interneuron",
+        "inter_neurons": "interneuron",
+        "interneurons": "interneuron",
+    }
+    return aliases.get(cleaned, cleaned)
+
+
+def _cell_names_for_class(network_json_data, cell_class):
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(cell_names, list) or not cell_names:
+        raise ValueError("'nervous_system.cell_names.value' must be a non-empty list")
+
+    cells = nervous_system.get("cells", {})
+    if not isinstance(cells, dict):
+        cells = {}
+
+    wanted_class = _normalise_cell_class_name(cell_class)
+    selected_cells = []
+    for cell_name in cell_names:
+        cell = cells.get(cell_name, {})
+        class_name = _json_value(cell.get("cell_class"))
+        if (
+            class_name is not None
+            and _normalise_cell_class_name(class_name) == wanted_class
+        ):
+            selected_cells.append(cell_name)
+    return selected_cells
+
+
+def get_activity_cell_names_by_numbers(
+    output_folder,
+    cell_class,
+    cell_numbers,
+    one_based=False,
+):
+    """Map ExampleActivity imshow row numbers for one cell class to cell names."""
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+    if isinstance(cell_numbers, (int, np.integer)):
+        cell_numbers = [int(cell_numbers)]
+    if not isinstance(cell_numbers, (list, tuple)) or not cell_numbers:
+        raise ValueError("cell_numbers must be a non-empty list or tuple")
+
+    network_json_data = utils.getJsonFile(worm_file)
+    class_cells = _cell_names_for_class(network_json_data, cell_class)
+    if not class_cells:
+        raise ValueError("No cells found for cell class {!r}".format(cell_class))
+
+    selected_cells = []
+    for cell_number in cell_numbers:
+        if isinstance(cell_number, bool) or not isinstance(
+            cell_number, (int, np.integer)
+        ):
+            raise TypeError("Each cell number must be an integer")
+        index = int(cell_number) - 1 if one_based else int(cell_number)
+        if index < 0 or index >= len(class_cells):
+            raise IndexError(
+                "Cell number {} is outside the valid range {} to {}".format(
+                    cell_number,
+                    1 if one_based else 0,
+                    len(class_cells) if one_based else len(class_cells) - 1,
+                )
+            )
+        selected_cells.append(class_cells[index])
+    return selected_cells
+
+
+def plot_selected_activity(
+    output_folder,
+    cells_or_class,
+    time_interval=None,
+    save_png=False,
+    filename="SelectedActivity.png",
+):
+    """Return a two-panel activity figure for selected cells or one cell class."""
+    act_file = os.path.join(output_folder, "act.dat")
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(act_file):
+        raise FileNotFoundError("Could not find act.dat in {}".format(output_folder))
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+
+    network_json_data = utils.getJsonFile(worm_file)
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(cell_names, list) or not cell_names:
+        raise ValueError("'nervous_system.cell_names.value' must be a non-empty list")
+
+    cells = nervous_system.get("cells", {})
+    if not isinstance(cells, dict):
+        cells = {}
+
+    if isinstance(cells_or_class, str):
+        selected_cells = _cell_names_for_class(network_json_data, cells_or_class)
+        if not selected_cells:
+            raise ValueError(
+                "No cells found for cell class {!r}".format(cells_or_class)
+            )
+    elif isinstance(cells_or_class, (list, tuple)):
+        selected_cells = list(cells_or_class)
+        if not selected_cells:
+            raise ValueError("cells_or_class must contain at least one cell name")
+    else:
+        raise TypeError("cells_or_class must be a cell-class string or a list of cells")
+
+    missing_cells = [cell for cell in selected_cells if cell not in cell_names]
+    if missing_cells:
+        raise ValueError("Unknown cell name(s): {}".format(", ".join(missing_cells)))
+
+    act_data = np.loadtxt(act_file).T
+    if act_data.ndim != 2 or act_data.shape[0] < len(cell_names) + 1:
+        raise ValueError("act.dat does not contain the expected activity columns")
+
+    t_data = act_data[0]
+    if time_interval is None:
+        t_start = t_data[0]
+        t_end = t_data[-1]
+    else:
+        if not isinstance(time_interval, (list, tuple)) or len(time_interval) != 2:
+            raise ValueError("time_interval must be None or a (start, end) pair")
+        t_start, t_end = time_interval
+        if t_start is None:
+            t_start = t_data[0]
+        if t_end is None:
+            t_end = t_data[-1]
+        if t_end < t_start:
+            raise ValueError("time_interval end must not be less than start")
+
+    data_seg = (t_data >= t_start) & (t_data <= t_end)
+    if not np.any(data_seg):
+        raise ValueError("time_interval does not overlap the act.dat time range")
+
+    selected_indices = [cell_names.index(cell) + 1 for cell in selected_cells]
+    selected_data = act_data[selected_indices][:, data_seg]
+    t_plot = t_data[data_seg]
+
+    fig_height = max(4.0, 1.1 + 0.22 * len(selected_cells))
+    fig, axs = plt.subplots(2, 1, figsize=(10, fig_height), sharex=True)
+
+    for cell_name, row in zip(selected_cells, selected_data):
+        axs[0].plot(t_plot, row, linewidth=0.8, label=cell_name)
+    axs[0].set_ylabel("Activity")
+    axs[0].legend(
+        loc="upper right",
+        fontsize="small",
+        ncol=max(1, min(4, len(selected_cells))),
+    )
+
+    extent = [t_plot[0], t_plot[-1], 0, len(selected_cells)]
+    axs[1].imshow(
+        selected_data,
+        aspect="auto",
+        interpolation="nearest",
+        extent=extent,
+    )
+    axs[1].set_yticks(np.arange(len(selected_cells)) + 0.5)
+    axs[1].set_yticklabels(selected_cells)
+    axs[1].set_xlabel("Time (s)")
+    axs[1].set_ylabel("Cell")
+
+    title = (
+        cells_or_class
+        if isinstance(cells_or_class, str)
+        else "{} selected cells".format(len(selected_cells))
+    )
+    axs[0].set_title("Activity: {}".format(title))
+    fig.tight_layout()
+
+    if save_png:
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def normalize_evolvable_range_entries(evolvable_ranges, evolved_used_order=None):
     entries = []
     if evolvable_ranges is None:

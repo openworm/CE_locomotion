@@ -992,6 +992,29 @@ def find_evotag_objects(json_data, evotag_name):
         raise ValueError("evotag_name must be a non-empty string")
 
     no_match = object()
+    connection_context_keys = (
+        "from",
+        "to",
+        "from_cell",
+        "to_cell",
+        "from_input",
+        "input_num",
+        "from_output",
+        "to_output",
+        "from_sr",
+        "to_ns",
+        "from_musc",
+        "to_musc",
+        "to_seg",
+        "cell_ind",
+    )
+
+    def connection_context(value):
+        return {
+            key: copy.deepcopy(value[key])
+            for key in connection_context_keys
+            if key in value
+        }
 
     def matching_hierarchy(value):
         if isinstance(value, dict):
@@ -1003,12 +1026,8 @@ def find_evotag_objects(json_data, evotag_name):
                 child_match = matching_hierarchy(child)
                 if child_match is not no_match:
                     matches[key] = child_match
-            if matches and "from" in value and "to" in value:
-                matches = {
-                    "from": copy.deepcopy(value["from"]),
-                    "to": copy.deepcopy(value["to"]),
-                    **matches,
-                }
+            if matches:
+                matches = {**connection_context(value), **matches}
             return matches if matches else no_match
 
         if isinstance(value, list):
@@ -2035,6 +2054,8 @@ def add_evotag(json_data, keys, evotag_name=None):
             continue
         name_parts.append(part)
         previous_key = key
+    if len(name_parts) >= 3 and name_parts[-1] == "weight" and "weights" in name_parts:
+        name_parts.remove("weights")
     range_name = "_".join(name_parts)
     if not range_name:
         raise ValueError("The JSON path does not produce a valid evotag name")
