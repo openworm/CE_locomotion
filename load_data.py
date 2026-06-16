@@ -217,6 +217,20 @@ def signed_log(val):
     return out
 
 
+def safe_ratio_to_initial(evol_data):
+    evol_data = np.asarray(evol_data, dtype=float)
+    initial = evol_data[0]
+    out = np.zeros_like(evol_data, dtype=float)
+    np.divide(
+        evol_data,
+        initial,
+        out=out,
+        where=np.isfinite(initial) & (initial != 0),
+    )
+    out[~np.isfinite(out)] = 0.0
+    return out
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -232,7 +246,7 @@ short_phen_names = {
 
 
 def getEvolTrans(evol_data):
-    evol_data_diff_1 = evol_data / evol_data[0]
+    evol_data_diff_1 = safe_ratio_to_initial(evol_data)
     # evol_data_diff_1 = (evol_data - evol_data[0]) / evol_data[0]
     evol_data_diff_11 = signed_log(evol_data_diff_1)
     evol_data_diff_13 = evol_data - evol_data[0]
@@ -309,7 +323,7 @@ def plot_phenonames(
 
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
-    evol_data_full_diff0 = evol_data / evol_data[0]
+    evol_data_full_diff0 = safe_ratio_to_initial(evol_data)
     evol_data_full_diff = signed_log(evol_data_full_diff0)
 
     avlentop = 1
