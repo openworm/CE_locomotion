@@ -1705,13 +1705,14 @@ void Worm2DCE::writeAct()
     }
     // Muscles
     //ofs << "\nM: ";
-    if (m_ptr){
-    for (int i = 1; i <= par1.N_muscles; i++) {
-      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
-    }}
-    ofs << endl;
-  }
-}
+	    if (m_ptr){
+	    for (int i = 1; i <= par1.N_muscles; i++) {
+	      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+	    }}
+	    writeExtInp(ofs);
+	    ofs << endl;
+	  }
+	}
 
 
 void Worm2DCE::DumpParams(ofstream &ofs) {

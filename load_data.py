@@ -1182,15 +1182,19 @@ def reload_single_run(a=None, **kwargs):
     if a.modelName == "W2DSR":
         a.modelName = main_model_name or utils.getModelName(network_json_data)
 
-    if a.modelName == "COW2DSR":
-        plot_format = utils.getPlotFormat(network_json_data)
-    else:
-        plot_format = utils.plot_formats[a.modelName]
-
     def imshow_time_extent(t_values, row_count):
         if len(t_values) == 0:
             return [0, 0, 0, row_count]
         return [t_values[0], t_values[-1], 0, row_count]
+
+    def set_imshow_row_ticks(ax, row_count, max_labels=12):
+        if row_count <= 0:
+            ax.set_yticks([])
+            return
+        step = max(1, int(math.ceil(row_count / max_labels)))
+        rows = np.arange(0, row_count, step)
+        ax.set_yticks(rows + 0.5)
+        ax.set_yticklabels([str(row + 1) for row in rows])
 
     # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
 
@@ -1209,6 +1213,209 @@ def reload_single_run(a=None, **kwargs):
     act_data = np.loadtxt(act_file).T
     t_data = act_data[0]
 
+    def class_title(class_name):
+        class_key = str(class_name)
+        if class_key in utils.jsonToStringMap:
+            return utils.jsonToStringMap[class_key]
+        normalised = _normalise_cell_class_name(class_key)
+        if normalised == "vnc":
+            return "VNC Neurons"
+        if normalised == "head":
+            return "Head Neurons"
+        if normalised == "interneuron":
+            return "Interneurons"
+        return class_key.replace("_", " ").title()
+
+    def get_int_value(section, key, default=0):
+        value = network_json_data.get(section, {}).get(key)
+        value = _json_value(value, default)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return default
+        return int(value)
+
+    def has_new_cell_metadata():
+        nervous_system = network_json_data.get("nervous_system")
+        return (
+            isinstance(nervous_system, dict)
+            and isinstance(nervous_system.get("cells"), dict)
+            and isinstance(_json_value(nervous_system.get("cell_names")), list)
+        )
+
+    def build_new_activity_panels():
+        panels = []
+        act_column_count = act_data.shape[0] - 1
+        next_column = 1
+
+        sr_count = 0
+        stretch_receptor = network_json_data.get("stretch_receptor")
+        if isinstance(stretch_receptor, dict):
+            sr_count = _json_value(stretch_receptor.get("plot_size"), 0)
+        elif "Stretch receptor" in network_json_data:
+            sr_count = _json_value(
+                network_json_data["Stretch receptor"].get("plot size"), 0
+            )
+        if isinstance(sr_count, (int, float)) and sr_count > 0:
+            sr_count = min(int(sr_count), act_column_count - (next_column - 1))
+            if sr_count > 0:
+                panels.append(
+                    {
+                        "title": "Stretch receptors",
+                        "indices": list(range(next_column, next_column + sr_count)),
+                        "labels": ["SR {}".format(i) for i in range(sr_count)],
+                    }
+                )
+                next_column += sr_count
+
+        nervous_system = network_json_data["nervous_system"]
+        cell_names = _json_value(nervous_system["cell_names"], [])
+        cells = nervous_system["cells"]
+        vnc_cell_count = (
+            get_int_value("worm", "N_units")
+            * get_int_value("worm", "N_neuronsperunit")
+        )
+        if vnc_cell_count > 0 and vnc_cell_count < len(cell_names):
+            act_cell_names = cell_names[vnc_cell_count:] + cell_names[:vnc_cell_count]
+        else:
+            act_cell_names = list(cell_names)
+
+        cell_count = min(len(act_cell_names), act_column_count - (next_column - 1))
+        if cell_count > 0:
+            class_groups = []
+            for cell_name in act_cell_names[:cell_count]:
+                cell = cells.get(cell_name, {})
+                cell_class = _json_value(cell.get("cell_class"), "Neurons")
+                if not class_groups or class_groups[-1]["class"] != cell_class:
+                    class_groups.append({"class": cell_class, "cells": []})
+                class_groups[-1]["cells"].append(cell_name)
+
+            for group in class_groups:
+                group_size = len(group["cells"])
+                panels.append(
+                    {
+                        "title": class_title(group["class"]),
+                        "indices": list(range(next_column, next_column + group_size)),
+                        "labels": group["cells"],
+                    }
+                )
+                next_column += group_size
+
+        muscle_count = 0
+        if "Muscle" in network_json_data:
+            muscle_count = _json_value(
+                network_json_data["Muscle"].get("Nmuscles"), 0
+            )
+            if isinstance(muscle_count, (int, float)):
+                muscle_count = int(muscle_count) * 2
+        muscle_count = min(muscle_count, act_column_count - (next_column - 1))
+        if muscle_count > 0:
+            panels.append(
+                {
+                    "title": "Muscles",
+                    "indices": list(range(next_column, next_column + muscle_count)),
+                    "labels": ["Mu {}".format(i) for i in range(muscle_count)],
+                }
+            )
+            next_column += muscle_count
+
+        remaining_count = act_data.shape[0] - next_column
+        if remaining_count > 0:
+            input_switcher = network_json_data.get("input_switcher", {})
+            has_scheduled_driving_inputs = (
+                isinstance(input_switcher, dict)
+                and "input_indices" in input_switcher
+                and "time_periods" in input_switcher
+            )
+            driving_count = 0
+            driving_inputs = network_json_data.get("driving_inputs")
+            if isinstance(driving_inputs, dict):
+                driving_values = _json_value(
+                    driving_inputs.get("inputs", {}).get("value"), []
+                )
+                if isinstance(driving_values, list):
+                    driving_count = len(driving_values)
+            if driving_count == 0 and has_scheduled_driving_inputs:
+                driving_count = _json_value(input_switcher.get("size"), 0)
+                if isinstance(driving_count, bool) or not isinstance(
+                    driving_count, (int, float)
+                ):
+                    driving_count = 0
+            driving_count = min(driving_count, remaining_count)
+
+            if driving_count > 0:
+                if has_scheduled_driving_inputs:
+                    panels.append(
+                        {
+                            "title": "Scheduled driving inputs",
+                            "indices": list(
+                                range(next_column, next_column + driving_count)
+                            ),
+                            "labels": [
+                                "input_{}".format(i + 1)
+                                for i in range(driving_count)
+                            ],
+                        }
+                    )
+                next_column += driving_count
+                remaining_count -= driving_count
+
+            sensor_count = 0
+            sensors = network_json_data.get("sensors")
+            if isinstance(sensors, dict):
+                sensor_names = sorted(
+                    key for key in sensors if str(key).startswith("sensor_")
+                )
+                sensor_count = min(len(sensor_names) * 2, remaining_count)
+                if sensor_count > 0:
+                    labels = []
+                    for sensor_name in sensor_names:
+                        labels.extend(
+                            [
+                                "{} output_1".format(sensor_name),
+                                "{} output_2".format(sensor_name),
+                            ]
+                        )
+                    panels.append(
+                        {
+                            "title": "Sensor outputs",
+                            "indices": list(
+                                range(next_column, next_column + sensor_count)
+                            ),
+                            "labels": labels[:sensor_count],
+                        }
+                    )
+                    next_column += sensor_count
+                    remaining_count -= sensor_count
+
+            if remaining_count > 0:
+                panels.append(
+                    {
+                        "title": "External inputs",
+                        "indices": list(
+                            range(next_column, next_column + remaining_count)
+                        ),
+                        "labels": [
+                            "input_{}".format(i + 1)
+                            for i in range(remaining_count)
+                        ],
+                    }
+                )
+
+        return panels
+
+    use_new_activity_panels = has_new_cell_metadata()
+    if use_new_activity_panels:
+        activity_panels = build_new_activity_panels()
+        plot_format = {
+            "do_curv_plot": True,
+            "do_body_plot": True,
+        }
+    else:
+        if a.modelName == "COW2DSR":
+            plot_format = utils.getPlotFormat(network_json_data)
+        else:
+            plot_format = utils.plot_formats[a.modelName]
+        activity_panels = []
+
     if a.modelName == "CO18" or a.modelName == "CO18Full":
         # network_json_data = utils.getJsonFile(hf.rename_file("worm_data.json"))
         CO18_size = utils.getNervousSystemSize(network_json_data)
@@ -1218,21 +1425,21 @@ def reload_single_run(a=None, **kwargs):
         ]
         plot_format["plot_col_divs"] = [CO18_size, 2]
 
-    def makeFigure(data_offset, data_size, title, label, plot_num):
+    def makePanel(indices, title, labels, plot_num):
         axs[plot_num, 0].set_title(title, fontsize=title_font_size)
         axs[plot_num, 1].set_title(title, fontsize=title_font_size)
 
-        for i in range(data_offset, data_size + data_offset):
+        for row_index, label in zip(indices, labels):
             axs[plot_num, 0].plot(
                 t_data[data_seg],
-                act_data[i][data_seg],
-                label=label + " %i" % (i - data_offset),
+                act_data[row_index][data_seg],
+                label=label,
                 linewidth=0.5,
             )
             # axs[plot_num, 0].xaxis.set_ticklabels([])
         # plt.legend()
 
-        data_list = act_data[data_offset : data_size + data_offset, data_seg]
+        data_list = act_data[indices, :][:, data_seg]
         t_plot = t_data[data_seg]
         # axs[plot_num, 1].set_title("Body curvature", fontsize=title_font_size)
         axs[plot_num, 1].imshow(
@@ -1240,13 +1447,23 @@ def reload_single_run(a=None, **kwargs):
             aspect="auto",
             interpolation="nearest",
             extent=imshow_time_extent(t_plot, data_list.shape[0]),
+            origin="lower",
         )
 
         # axs[plot_num, 1].imshow(data_list, aspect="auto", interpolation="nearest")
         # axs[plot_num, 1].xaxis.set_ticklabels([])
-        axs[plot_num, 1].yaxis.set_major_locator(MaxNLocator(integer=True))
+        set_imshow_row_ticks(axs[plot_num, 1], data_list.shape[0])
 
-    plot_rows = len(plot_format["fig_titles"])
+    def makeFigure(data_offset, data_size, title, label, plot_num):
+        indices = list(range(data_offset, data_size + data_offset))
+        labels = [label + " %i" % i for i in range(data_size)]
+        makePanel(indices, title, labels, plot_num)
+
+    plot_rows = (
+        len(activity_panels)
+        if use_new_activity_panels
+        else len(plot_format["fig_titles"])
+    )
     if plot_format["do_curv_plot"] or plot_format["do_body_plot"]:
         plot_rows += 1
     if plot_rows > 1:
@@ -1262,19 +1479,31 @@ def reload_single_run(a=None, **kwargs):
 
     offset = 1
     count_num = 0
-    for val in zip(
-        plot_format["data_sizes"], plot_format["fig_titles"], plot_format["fig_labels"]
-    ):
-        makeFigure(offset, *val, count_num)
-        if False:
-            if count_num < len(plot_format["data_sizes"]) - 1:
-                axs[count_num, 0].xaxis.set_ticklabels([])
-            else:
-                axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
-        axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
-        axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
-        count_num += 1
-        offset += val[0]
+    if use_new_activity_panels:
+        for panel in activity_panels:
+            makePanel(
+                panel["indices"],
+                panel["title"],
+                panel["labels"],
+                count_num,
+            )
+            axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+            axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
+            count_num += 1
+    else:
+        for val in zip(
+            plot_format["data_sizes"], plot_format["fig_titles"], plot_format["fig_labels"]
+        ):
+            makeFigure(offset, *val, count_num)
+            if False:
+                if count_num < len(plot_format["data_sizes"]) - 1:
+                    axs[count_num, 0].xaxis.set_ticklabels([])
+                else:
+                    axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+            axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
+            axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
+            count_num += 1
+            offset += val[0]
 
     ###  Worm body curvature
     if plot_format["do_curv_plot"]:
