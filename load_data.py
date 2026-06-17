@@ -243,6 +243,706 @@ def plot_selected_activity(
     return fig
 
 
+def plot_cell_connections(
+    output_folder,
+    cell_names,
+    save_png=False,
+    filename="CellConnections.png",
+):
+    """Return a figure showing selected cells and connected model objects."""
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import FancyArrowPatch
+
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+    if isinstance(cell_names, str):
+        raise TypeError("cell_names must be a list or tuple of cell names")
+    if not isinstance(cell_names, (list, tuple)) or not cell_names:
+        raise ValueError("cell_names must be a non-empty list or tuple")
+
+    selected_cells = [str(cell_name) for cell_name in cell_names]
+    if len(set(selected_cells)) != len(selected_cells):
+        raise ValueError("cell_names contains duplicate entries")
+
+    network_json_data = utils.getJsonFile(worm_file)
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    json_cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(json_cell_names, list):
+        raise ValueError("'nervous_system.cell_names.value' must be a list")
+    missing_cells = [
+        cell_name for cell_name in selected_cells if cell_name not in json_cell_names
+    ]
+    if missing_cells:
+        raise ValueError("Unknown cell name(s): {}".format(", ".join(missing_cells)))
+
+    selected_set = set(selected_cells)
+
+    def connection_weight(connection):
+        weight = _json_value(connection.get("weight"), 1.0)
+        if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+            return 1.0
+        return float(weight)
+
+    def connection_list(connection_key):
+        connection_object = nervous_system.get(connection_key, {})
+        if connection_object is None:
+            return []
+        if not isinstance(connection_object, dict):
+            raise TypeError(
+                "'nervous_system.{}' must be a dictionary".format(connection_key)
+            )
+        connections = connection_object.get("value", [])
+        if connections is None:
+            return []
+        if not isinstance(connections, list):
+            raise TypeError(
+                "'nervous_system.{}.value' must be a list".format(connection_key)
+            )
+        return connections
+
+    nodes = {cell_name: {"type": "cell"} for cell_name in selected_cells}
+    edges = []
+
+    def add_node(node_name, node_type):
+        nodes.setdefault(str(node_name), {"type": node_type})
+
+    def add_edge(from_node, to_node, weight, edge_type, bidirectional=False):
+        edges.append(
+            {
+                "from": str(from_node),
+                "to": str(to_node),
+                "weight": float(weight),
+                "type": edge_type,
+                "bidirectional": bidirectional,
+            }
+        )
+
+    cell_name_set = set(json_cell_names)
+    secondary_cells = []
+
+    def add_secondary_cell(cell_name):
+        if cell_name in selected_set or cell_name not in cell_name_set:
+            return
+        if cell_name not in nodes:
+            nodes[cell_name] = {"type": "secondary cell"}
+            secondary_cells.append(cell_name)
+
+    for connection in connection_list("chemical_conns"):
+        if (
+            isinstance(connection, dict)
+            and connection.get("from") in cell_name_set
+            and connection.get("to") in cell_name_set
+            and (
+                connection.get("from") in selected_set
+                or connection.get("to") in selected_set
+            )
+        ):
+            add_secondary_cell(connection["from"])
+            add_secondary_cell(connection["to"])
+            add_edge(
+                connection["from"],
+                connection["to"],
+                connection_weight(connection),
+                "chemical",
+            )
+
+    for connection in connection_list("electrical_conns"):
+        if (
+            isinstance(connection, dict)
+            and connection.get("from") in cell_name_set
+            and connection.get("to") in cell_name_set
+            and (
+                connection.get("from") in selected_set
+                or connection.get("to") in selected_set
+            )
+        ):
+            add_secondary_cell(connection["from"])
+            add_secondary_cell(connection["to"])
+            add_edge(
+                connection["from"],
+                connection["to"],
+                connection_weight(connection),
+                "electrical",
+                bidirectional=True,
+            )
+
+    stretch_receptor = network_json_data.get("stretch_receptor")
+    if isinstance(stretch_receptor, dict):
+        for weights_key, prefix in (("ns_d_weights", "D_SR"), ("ns_v_weights", "V_SR")):
+            weights = stretch_receptor.get(weights_key, {}).get("value", [])
+            if weights is None:
+                continue
+            if not isinstance(weights, list):
+                raise TypeError(
+                    "'stretch_receptor.{}.value' must be a list".format(weights_key)
+                )
+            for connection in weights:
+                if not isinstance(connection, dict):
+                    continue
+                to_cell = connection.get("to_ns")
+                if to_cell not in selected_set:
+                    continue
+                from_node = "{}_{}".format(prefix, connection.get("from_sr"))
+                add_node(from_node, "stretch receptor")
+                add_edge(
+                    from_node,
+                    to_cell,
+                    connection_weight(connection),
+                    "stretch receptor",
+                )
+
+    sensors = network_json_data.get("sensors")
+    if isinstance(sensors, dict):
+        for sensor_name, sensor in sensors.items():
+            if not isinstance(sensor, dict):
+                continue
+            weights = sensor.get("weights", {}).get("value", [])
+            if weights is None:
+                continue
+            if not isinstance(weights, list):
+                raise TypeError(
+                    "'sensors.{}.weights.value' must be a list".format(sensor_name)
+                )
+            for connection in weights:
+                if not isinstance(connection, dict):
+                    continue
+                to_cell = connection.get("to_cell")
+                if to_cell not in selected_set:
+                    continue
+                from_output = connection.get("from_output", connection.get("from_input"))
+                from_node = "{}_output_{}".format(sensor_name, from_output)
+                add_node(from_node, "sensor")
+                add_edge(
+                    from_node,
+                    to_cell,
+                    connection_weight(connection),
+                    "sensor",
+                )
+
+    driving_inputs = network_json_data.get("driving_inputs")
+    if isinstance(driving_inputs, dict):
+        weights = driving_inputs.get("weights", {}).get("value", [])
+        if weights is not None:
+            if not isinstance(weights, list):
+                raise TypeError("'driving_inputs.weights.value' must be a list")
+            for connection in weights:
+                if not isinstance(connection, dict):
+                    continue
+                to_cell = connection.get("to_cell")
+                if to_cell not in selected_set:
+                    continue
+                from_node = "input_{}".format(connection.get("from_input"))
+                add_node(from_node, "driving input")
+                add_edge(
+                    from_node,
+                    to_cell,
+                    connection_weight(connection),
+                    "driving input",
+                )
+
+    for nmj_key, prefix in (("dorsal_nmj", "D_musc"), ("ventral_nmj", "V_musc")):
+        nmj = network_json_data.get(nmj_key)
+        if not isinstance(nmj, dict):
+            continue
+        weights = nmj.get("weights", {}).get("value", [])
+        if weights is None:
+            continue
+        if not isinstance(weights, list):
+            raise TypeError("'{}.weights.value' must be a list".format(nmj_key))
+        for connection in weights:
+            if not isinstance(connection, dict):
+                continue
+            from_cell = connection.get("from_cell")
+            if from_cell not in selected_set:
+                continue
+            to_node = "{}_{}".format(prefix, connection.get("to_musc"))
+            add_node(to_node, "muscle")
+            add_edge(
+                from_cell,
+                to_node,
+                connection_weight(connection),
+                "muscle",
+            )
+
+    displayed_weights = [
+        abs(edge["weight"])
+        for edge in edges
+    ]
+    max_abs_weight = max(displayed_weights) if displayed_weights else 1.0
+    if max_abs_weight <= 0:
+        max_abs_weight = 1.0
+
+    def connection_width(edge):
+        scaled = abs(edge["weight"]) / max_abs_weight
+        return 0.6 + 3.4 * scaled
+
+    fig_size = max(6.0, 0.35 * len(nodes) + 3.5)
+    fig, ax = plt.subplots(figsize=(fig_size, fig_size))
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+    angles = np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
+    positions = {
+        cell_name: np.array([np.cos(angle), np.sin(angle)])
+        for cell_name, angle in zip(selected_cells, angles)
+    }
+    if secondary_cells:
+        secondary_angles = np.linspace(0, 2 * np.pi, len(secondary_cells), endpoint=False)
+        for cell_name, angle in zip(secondary_cells, secondary_angles):
+            positions[cell_name] = np.array(
+                [1.35 * np.cos(angle), 1.35 * np.sin(angle)]
+            )
+    external_nodes = [
+        node_name
+        for node_name in nodes
+        if nodes[node_name]["type"] not in ("cell", "secondary cell")
+    ]
+    if external_nodes:
+        external_angles = np.linspace(0, 2 * np.pi, len(external_nodes), endpoint=False)
+        for node_name, angle in zip(external_nodes, external_angles):
+            positions[node_name] = np.array(
+                [1.85 * np.cos(angle), 1.85 * np.sin(angle)]
+            )
+
+    node_radius = 0.115 if len(selected_cells) <= 12 else 0.09
+    edge_start = node_radius * 1.08
+    node_styles = {
+        "cell": {
+            "marker": "o",
+            "size": 850,
+            "facecolor": "white",
+            "edgecolor": "black",
+        },
+        "secondary cell": {
+            "marker": "o",
+            "size": 720,
+            "facecolor": "#E8E8E8",
+            "edgecolor": "#555555",
+        },
+        "stretch receptor": {
+            "marker": "s",
+            "size": 650,
+            "facecolor": "#F1E5A6",
+            "edgecolor": "#806000",
+        },
+        "sensor": {
+            "marker": "D",
+            "size": 650,
+            "facecolor": "#B6E3C6",
+            "edgecolor": "#26733D",
+        },
+        "driving input": {
+            "marker": "h",
+            "size": 700,
+            "facecolor": "#D9C6F2",
+            "edgecolor": "#634197",
+        },
+        "muscle": {
+            "marker": "^",
+            "size": 700,
+            "facecolor": "#F4B6B6",
+            "edgecolor": "#A33A3A",
+        },
+    }
+
+    def shortened_points(from_cell, to_cell):
+        start = positions[from_cell].copy()
+        end = positions[to_cell].copy()
+        direction = end - start
+        distance = np.linalg.norm(direction)
+        if distance == 0:
+            return start, end
+        unit = direction / distance
+        return start + unit * edge_start, end - unit * edge_start
+
+    def edge_color(edge):
+        if edge["type"] == "electrical":
+            return "#4C78A8" if edge["weight"] >= 0 else "#7570B3"
+        return "#D95F02" if edge["weight"] >= 0 else "#7570B3"
+
+    def draw_edge(edge, rad, alpha=0.85):
+        from_cell = edge["from"]
+        to_cell = edge["to"]
+        linewidth = connection_width(edge)
+        color = edge_color(edge)
+        arrowstyle = "<->" if edge["bidirectional"] else "-|>"
+        linestyle = "--" if edge["type"] == "electrical" else "-"
+        if from_cell == to_cell:
+            center = positions[from_cell]
+            loop = FancyArrowPatch(
+                center + np.array([0.0, node_radius * 1.25]),
+                center + np.array([node_radius * 1.25, 0.0]),
+                arrowstyle=arrowstyle,
+                mutation_scale=12,
+                connectionstyle="arc3,rad=1.2",
+                linewidth=linewidth,
+                linestyle=linestyle,
+                color=color,
+                alpha=alpha,
+            )
+            ax.add_patch(loop)
+            return
+
+        start, end = shortened_points(from_cell, to_cell)
+        arrow = FancyArrowPatch(
+            start,
+            end,
+            arrowstyle=arrowstyle,
+            mutation_scale=12,
+            connectionstyle="arc3,rad={}".format(rad),
+            linewidth=linewidth,
+            linestyle=linestyle,
+            color=color,
+            alpha=alpha,
+        )
+        ax.add_patch(arrow)
+
+    for index, edge in enumerate(edges):
+        rad = 0.09 if index % 2 == 0 else -0.09
+        if edge["type"] == "electrical":
+            rad = -0.08
+        draw_edge(edge, rad=rad, alpha=0.78 if edge["type"] == "electrical" else 0.85)
+
+    for node_name, position in positions.items():
+        node_type = nodes[node_name]["type"]
+        style = node_styles.get(node_type, node_styles["cell"])
+        ax.scatter(
+            [position[0]],
+            [position[1]],
+            s=style["size"],
+            marker=style["marker"],
+            facecolors=style["facecolor"],
+            edgecolors=style["edgecolor"],
+            linewidths=1.2,
+            zorder=3,
+        )
+        ax.text(
+            position[0],
+            position[1],
+            node_name,
+            ha="center",
+            va="center",
+            fontsize=8 if len(nodes) <= 16 else 6,
+            zorder=4,
+        )
+
+    edge_legend = [
+        Line2D([0], [0], color="#D95F02", linewidth=1.8, label="Positive"),
+        Line2D([0], [0], color="#7570B3", linewidth=1.8, label="Negative"),
+        Line2D(
+            [0],
+            [0],
+            color="#4C78A8",
+            linewidth=1.8,
+            linestyle="--",
+            label="Electrical",
+        ),
+        Line2D([0], [0], color="0.25", linewidth=0.8, label="Weak"),
+        Line2D([0], [0], color="0.25", linewidth=4.0, label="Strong"),
+    ]
+    node_legend = [
+        Line2D(
+            [0],
+            [0],
+            marker=style["marker"],
+            color="none",
+            markerfacecolor=style["facecolor"],
+            markeredgecolor=style["edgecolor"],
+            markersize=8,
+            label=node_type.title(),
+        )
+        for node_type, style in node_styles.items()
+        if any(nodes[node]["type"] == node_type for node in nodes)
+    ]
+    ax.legend(
+        handles=edge_legend + node_legend,
+        loc="upper right",
+        frameon=False,
+        fontsize="small",
+        ncol=2 if len(nodes) > 12 else 1,
+    )
+    ax.set_title(
+        "{} selected cells, {} displayed connections".format(
+            len(selected_cells),
+            len(edges),
+        )
+    )
+    ax.set_xlim(-2.2, 2.2)
+    ax.set_ylim(-2.2, 2.2)
+    fig.tight_layout()
+
+    if save_png:
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
+def plot_json_structure(
+    output_folder,
+    save_png=False,
+    filename="JsonStructure.png",
+):
+    """Return a schematic figure of the main connected JSON model objects."""
+    from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+
+    network_json_data = utils.getJsonFile(worm_file)
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(cell_names, list):
+        cell_names = []
+
+    def values_list(section, key="value"):
+        if not isinstance(section, dict):
+            return []
+        values = section.get(key, [])
+        if values is None:
+            return []
+        if isinstance(values, dict) and "value" in values:
+            values = values["value"]
+        return values if isinstance(values, list) else []
+
+    def weight_count(section, key="weights"):
+        if not isinstance(section, dict):
+            return 0
+        return len(values_list(section.get(key, {})))
+
+    def wrap_cell_names(names, columns=4):
+        if not names:
+            return "No cell names found"
+        rows = int(math.ceil(len(names) / columns))
+        lines = []
+        for row in range(rows):
+            row_names = names[row::rows]
+            lines.append("   ".join(row_names))
+        return "\n".join(lines)
+
+    def box_text(title, body_lines):
+        if isinstance(body_lines, str):
+            body = body_lines
+        else:
+            body = "\n".join(str(line) for line in body_lines if line is not None)
+        return "{}\n{}".format(title, body).strip()
+
+    sr = network_json_data.get("stretch_receptor")
+    sensors = network_json_data.get("sensors")
+    dorsal_nmj = network_json_data.get("dorsal_nmj")
+    ventral_nmj = network_json_data.get("ventral_nmj")
+    driving_inputs = network_json_data.get("driving_inputs")
+
+    chemical_count = len(values_list(nervous_system.get("chemical_conns", {})))
+    electrical_count = len(values_list(nervous_system.get("electrical_conns", {})))
+    ns_text = box_text(
+        "nervous_system",
+        [
+            "{} cells".format(len(cell_names)),
+            "{} chemical, {} electrical conns".format(
+                chemical_count, electrical_count
+            ),
+            wrap_cell_names(cell_names),
+        ],
+    )
+
+    boxes = {
+        "nervous_system": {
+            "xy": (0.28, 0.22),
+            "wh": (0.44, 0.56),
+            "text": ns_text,
+            "facecolor": "#F7F7F7",
+        }
+    }
+
+    if isinstance(dorsal_nmj, dict):
+        boxes["dorsal_muscles"] = {
+            "xy": (0.77, 0.58),
+            "wh": (0.18, 0.16),
+            "text": box_text(
+                "dorsal_nmj\nDorsal muscles",
+                ["{} weights".format(weight_count(dorsal_nmj))],
+            ),
+            "facecolor": "#F4B6B6",
+        }
+    if isinstance(ventral_nmj, dict):
+        boxes["ventral_muscles"] = {
+            "xy": (0.77, 0.26),
+            "wh": (0.18, 0.16),
+            "text": box_text(
+                "ventral_nmj\nVentral muscles",
+                ["{} weights".format(weight_count(ventral_nmj))],
+            ),
+            "facecolor": "#F4C7B6",
+        }
+    if isinstance(sr, dict):
+        ns_d = len(values_list(sr.get("ns_d_weights", {})))
+        ns_v = len(values_list(sr.get("ns_v_weights", {})))
+        d_body = len(values_list(sr.get("d_weights", {})))
+        v_body = len(values_list(sr.get("v_weights", {})))
+        boxes["stretch_receptor"] = {
+            "xy": (0.04, 0.58),
+            "wh": (0.18, 0.18),
+            "text": box_text(
+                "stretch_receptor",
+                [
+                    "{} dorsal-to-NS weights".format(ns_d),
+                    "{} ventral-to-NS weights".format(ns_v),
+                ],
+            ),
+            "facecolor": "#F1E5A6",
+        }
+        if d_body or v_body:
+            boxes["body_segments"] = {
+                "xy": (0.04, 0.82),
+                "wh": (0.18, 0.10),
+                "text": box_text(
+                    "body segments",
+                    ["{} dorsal, {} ventral SR weights".format(d_body, v_body)],
+                ),
+                "facecolor": "#E7D8B9",
+            }
+    if isinstance(sensors, dict) and sensors:
+        sensor_weight_total = 0
+        environment_names = []
+        for sensor in sensors.values():
+            if not isinstance(sensor, dict):
+                continue
+            sensor_weight_total += weight_count(sensor)
+            environment_name = _json_value(sensor.get("environment"))
+            if environment_name is not None:
+                environment_names.append(str(environment_name))
+        boxes["sensors"] = {
+            "xy": (0.04, 0.25),
+            "wh": (0.18, 0.17),
+            "text": box_text(
+                "sensors",
+                [
+                    "{} sensors".format(len(sensors)),
+                    "{} output-to-NS weights".format(sensor_weight_total),
+                ],
+            ),
+            "facecolor": "#B6E3C6",
+        }
+        if environment_names:
+            unique_environments = sorted(set(environment_names))
+            boxes["environments"] = {
+                "xy": (0.04, 0.08),
+                "wh": (0.18, 0.10),
+                "text": box_text(
+                    "environments",
+                    ", ".join(unique_environments),
+                ),
+                "facecolor": "#D7EBC4",
+            }
+    if isinstance(driving_inputs, dict) and driving_inputs:
+        boxes["driving_inputs"] = {
+            "xy": (0.28, 0.04),
+            "wh": (0.18, 0.10),
+            "text": box_text(
+                "driving_inputs",
+                ["{} weights".format(weight_count(driving_inputs))],
+            ),
+            "facecolor": "#D9C6F2",
+        }
+
+    fig, ax = plt.subplots(figsize=(13, 8))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+
+    def center(name):
+        x, y = boxes[name]["xy"]
+        w, h = boxes[name]["wh"]
+        return np.array([x + w / 2.0, y + h / 2.0])
+
+    def add_box(name):
+        spec = boxes[name]
+        x, y = spec["xy"]
+        w, h = spec["wh"]
+        patch = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012",
+            facecolor=spec["facecolor"],
+            edgecolor="#333333",
+            linewidth=1.2,
+        )
+        ax.add_patch(patch)
+        ax.text(
+            x + w / 2.0,
+            y + h / 2.0,
+            spec["text"],
+            ha="center",
+            va="center",
+            fontsize=8 if name == "nervous_system" else 10,
+        )
+
+    def add_arrow(from_name, to_name, label=None):
+        if from_name not in boxes or to_name not in boxes:
+            return
+        start = center(from_name)
+        end = center(to_name)
+        direction = end - start
+        distance = np.linalg.norm(direction)
+        if distance == 0:
+            return
+        unit = direction / distance
+        start = start + 0.07 * unit
+        end = end - 0.07 * unit
+        arrow = FancyArrowPatch(
+            start,
+            end,
+            arrowstyle="-|>",
+            mutation_scale=14,
+            linewidth=1.4,
+            color="#333333",
+            connectionstyle="arc3,rad=0.05",
+        )
+        ax.add_patch(arrow)
+        if label:
+            midpoint = (start + end) / 2.0
+            ax.text(
+                midpoint[0],
+                midpoint[1],
+                label,
+                ha="center",
+                va="center",
+                fontsize=8,
+                bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.75},
+            )
+
+    for name in boxes:
+        add_box(name)
+
+    add_arrow("nervous_system", "dorsal_muscles", "dorsal_nmj")
+    add_arrow("nervous_system", "ventral_muscles", "ventral_nmj")
+    add_arrow("body_segments", "stretch_receptor", "body-to-SR")
+    add_arrow("stretch_receptor", "nervous_system", "SR-to-NS")
+    add_arrow("environments", "sensors", "environment")
+    add_arrow("sensors", "nervous_system", "sensor outputs")
+    add_arrow("driving_inputs", "nervous_system", "inputs")
+
+    fig.tight_layout()
+
+    if save_png:
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def normalize_evolvable_range_entries(evolvable_ranges, evolved_used_order=None):
     entries = []
     if evolvable_ranges is None:
