@@ -252,6 +252,9 @@ def plot_cell_connections(
     primary_rotation=0.0,
     secondary_rotation=None,
     external_rotation=None,
+    symbol_text_scale=1.0,
+    node_scale=None,
+    text_scale=None,
 ):
     """Return a figure showing selected cells and connected model objects."""
     from matplotlib.lines import Line2D
@@ -270,6 +273,23 @@ def plot_cell_connections(
     selected_cells = [str(cell_name) for cell_name in cell_names]
     if len(set(selected_cells)) != len(selected_cells):
         raise ValueError("cell_names contains duplicate entries")
+    if (
+        isinstance(symbol_text_scale, bool)
+        or not isinstance(symbol_text_scale, (int, float))
+        or symbol_text_scale <= 0
+    ):
+        raise ValueError("symbol_text_scale must be a positive number")
+    if node_scale is None:
+        node_scale = symbol_text_scale
+    if text_scale is None:
+        text_scale = symbol_text_scale
+    for scale_name, scale_value in (("node_scale", node_scale), ("text_scale", text_scale)):
+        if (
+            isinstance(scale_value, bool)
+            or not isinstance(scale_value, (int, float))
+            or scale_value <= 0
+        ):
+            raise ValueError("{} must be a positive number".format(scale_name))
 
     network_json_data = utils.getJsonFile(worm_file)
     nervous_system = network_json_data.get("nervous_system")
@@ -534,8 +554,8 @@ def plot_cell_connections(
                 [1.85 * np.cos(angle), 1.85 * np.sin(angle)]
             )
 
-    node_radius = 0.115 if len(selected_cells) <= 12 else 0.09
-    edge_start = node_radius * 1.08
+    marker_area_scale = float(node_scale) ** 2
+    arrow_mutation_scale = 12 * max(1.0, min(float(node_scale), 1.6))
     node_styles = {
         "cell": {
             "marker": "o",
@@ -575,15 +595,12 @@ def plot_cell_connections(
         },
     }
 
-    def shortened_points(from_cell, to_cell):
-        start = positions[from_cell].copy()
-        end = positions[to_cell].copy()
-        direction = end - start
-        distance = np.linalg.norm(direction)
-        if distance == 0:
-            return start, end
-        unit = direction / distance
-        return start + unit * edge_start, end - unit * edge_start
+    def node_shrink_points(node_name):
+        node_type = nodes[node_name]["type"]
+        style = node_styles.get(node_type, node_styles["cell"])
+        marker_diameter = math.sqrt(style["size"] * marker_area_scale)
+        shape_margin = 0.8 if style["marker"] in ("D", "s", "^", "h") else 0.65
+        return marker_diameter * shape_margin + 5.0 * max(1.0, float(node_scale))
 
     def edge_color(edge):
         if edge["type"] == "electrical":
@@ -599,31 +616,35 @@ def plot_cell_connections(
         linestyle = "--" if edge["type"] == "electrical" else "-"
         if from_cell == to_cell:
             center = positions[from_cell]
+            loop_radius = 0.13 * max(1.0, float(node_scale))
             loop = FancyArrowPatch(
-                center + np.array([0.0, node_radius * 1.25]),
-                center + np.array([node_radius * 1.25, 0.0]),
+                center + np.array([0.0, loop_radius]),
+                center + np.array([loop_radius, 0.0]),
                 arrowstyle=arrowstyle,
-                mutation_scale=12,
+                mutation_scale=arrow_mutation_scale,
                 connectionstyle="arc3,rad=1.2",
                 linewidth=linewidth,
                 linestyle=linestyle,
                 color=color,
                 alpha=alpha,
+                shrinkA=node_shrink_points(from_cell),
+                shrinkB=node_shrink_points(to_cell),
             )
             ax.add_patch(loop)
             return
 
-        start, end = shortened_points(from_cell, to_cell)
         arrow = FancyArrowPatch(
-            start,
-            end,
+            positions[from_cell],
+            positions[to_cell],
             arrowstyle=arrowstyle,
-            mutation_scale=12,
+            mutation_scale=arrow_mutation_scale,
             connectionstyle="arc3,rad={}".format(rad),
             linewidth=linewidth,
             linestyle=linestyle,
             color=color,
             alpha=alpha,
+            shrinkA=node_shrink_points(from_cell),
+            shrinkB=node_shrink_points(to_cell),
         )
         ax.add_patch(arrow)
 
@@ -644,7 +665,7 @@ def plot_cell_connections(
         ax.scatter(
             [position[0]],
             [position[1]],
-            s=style["size"],
+            s=style["size"] * marker_area_scale,
             marker=style["marker"],
             facecolors=style["facecolor"],
             edgecolors=style["edgecolor"],
@@ -657,7 +678,7 @@ def plot_cell_connections(
             display_node_name(node_name, node_type),
             ha="center",
             va="center",
-            fontsize=8 if len(nodes) <= 16 else 6,
+            fontsize=(8 if len(nodes) <= 16 else 6) * text_scale,
             zorder=4,
         )
 
@@ -683,7 +704,7 @@ def plot_cell_connections(
             color="none",
             markerfacecolor=style["facecolor"],
             markeredgecolor=style["edgecolor"],
-            markersize=8,
+            markersize=8 * node_scale,
             label=node_type.title(),
         )
         for node_type, style in node_styles.items()
@@ -691,16 +712,18 @@ def plot_cell_connections(
     ]
     ax.legend(
         handles=edge_legend + node_legend,
-        loc="upper right",
+        loc="upper left",
+        bbox_to_anchor=(1.02, 1.0),
         frameon=False,
-        fontsize="small",
+        fontsize=8 * text_scale,
         ncol=2 if len(nodes) > 12 else 1,
     )
     ax.set_title(
         "{} selected cells, {} displayed connections".format(
             len(selected_cells),
             len(edges),
-        )
+        ),
+        fontsize=12 * text_scale,
     )
     ax.set_xlim(-2.2, 2.2)
     ax.set_ylim(-2.2, 2.2)
