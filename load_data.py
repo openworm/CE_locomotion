@@ -248,6 +248,10 @@ def plot_cell_connections(
     cell_names,
     save_png=False,
     filename="CellConnections.png",
+    hide_self_connections=True,
+    primary_rotation=0.0,
+    secondary_rotation=None,
+    external_rotation=None,
 ):
     """Return a figure showing selected cells and connected model objects."""
     from matplotlib.lines import Line2D
@@ -313,6 +317,8 @@ def plot_cell_connections(
         nodes.setdefault(str(node_name), {"type": node_type})
 
     def add_edge(from_node, to_node, weight, edge_type, bidirectional=False):
+        if hide_self_connections and str(from_node) == str(to_node):
+            return
         edges.append(
             {
                 "from": str(from_node),
@@ -487,13 +493,24 @@ def plot_cell_connections(
     ax.set_aspect("equal")
     ax.axis("off")
 
-    angles = np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
+    primary_rotation_rad = np.deg2rad(primary_rotation)
+    angles = (
+        np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
+        + primary_rotation_rad
+    )
     positions = {
         cell_name: np.array([np.cos(angle), np.sin(angle)])
         for cell_name, angle in zip(selected_cells, angles)
     }
     if secondary_cells:
-        secondary_angles = np.linspace(0, 2 * np.pi, len(secondary_cells), endpoint=False)
+        if secondary_rotation is None:
+            secondary_rotation_rad = primary_rotation_rad + np.pi / len(selected_cells)
+        else:
+            secondary_rotation_rad = np.deg2rad(secondary_rotation)
+        secondary_angles = (
+            np.linspace(0, 2 * np.pi, len(secondary_cells), endpoint=False)
+            + secondary_rotation_rad
+        )
         for cell_name, angle in zip(secondary_cells, secondary_angles):
             positions[cell_name] = np.array(
                 [1.35 * np.cos(angle), 1.35 * np.sin(angle)]
@@ -504,7 +521,14 @@ def plot_cell_connections(
         if nodes[node_name]["type"] not in ("cell", "secondary cell")
     ]
     if external_nodes:
-        external_angles = np.linspace(0, 2 * np.pi, len(external_nodes), endpoint=False)
+        if external_rotation is None:
+            external_rotation_rad = primary_rotation_rad
+        else:
+            external_rotation_rad = np.deg2rad(external_rotation)
+        external_angles = (
+            np.linspace(0, 2 * np.pi, len(external_nodes), endpoint=False)
+            + external_rotation_rad
+        )
         for node_name, angle in zip(external_nodes, external_angles):
             positions[node_name] = np.array(
                 [1.85 * np.cos(angle), 1.85 * np.sin(angle)]
@@ -609,6 +633,11 @@ def plot_cell_connections(
             rad = -0.08
         draw_edge(edge, rad=rad, alpha=0.78 if edge["type"] == "electrical" else 0.85)
 
+    def display_node_name(node_name, node_type):
+        if node_type == "sensor":
+            return str(node_name).replace("_output_", "_")
+        return node_name
+
     for node_name, position in positions.items():
         node_type = nodes[node_name]["type"]
         style = node_styles.get(node_type, node_styles["cell"])
@@ -625,7 +654,7 @@ def plot_cell_connections(
         ax.text(
             position[0],
             position[1],
-            node_name,
+            display_node_name(node_name, node_type),
             ha="center",
             va="center",
             fontsize=8 if len(nodes) <= 16 else 6,
@@ -731,6 +760,16 @@ def plot_json_structure(
             lines.append("   ".join(row_names))
         return "\n".join(lines)
 
+    def class_label(class_name):
+        class_name = str(class_name)
+        normalised = _normalise_cell_class_name(class_name)
+        labels = {
+            "vnc": "VNC",
+            "head": "Head neurons",
+            "interneuron": "Interneurons",
+        }
+        return labels.get(normalised, class_name.replace("_", " ").title())
+
     def box_text(title, body_lines):
         if isinstance(body_lines, str):
             body = body_lines
@@ -746,6 +785,17 @@ def plot_json_structure(
 
     chemical_count = len(values_list(nervous_system.get("chemical_conns", {})))
     electrical_count = len(values_list(nervous_system.get("electrical_conns", {})))
+    cells = nervous_system.get("cells", {})
+    if not isinstance(cells, dict):
+        cells = {}
+    cell_class_groups = []
+    for cell_name in cell_names:
+        cell = cells.get(cell_name, {})
+        cell_class = _json_value(cell.get("cell_class"), "uncategorized")
+        if not cell_class_groups or cell_class_groups[-1]["class"] != cell_class:
+            cell_class_groups.append({"class": cell_class, "cells": []})
+        cell_class_groups[-1]["cells"].append(cell_name)
+
     ns_text = box_text(
         "nervous_system",
         [
@@ -753,23 +803,23 @@ def plot_json_structure(
             "{} chemical, {} electrical conns".format(
                 chemical_count, electrical_count
             ),
-            wrap_cell_names(cell_names),
         ],
     )
 
     boxes = {
         "nervous_system": {
-            "xy": (0.28, 0.22),
-            "wh": (0.44, 0.56),
+            "xy": (0.27, 0.08),
+            "wh": (0.40, 0.56),
             "text": ns_text,
             "facecolor": "#F7F7F7",
+            "cell_class_groups": cell_class_groups,
         }
     }
 
     if isinstance(dorsal_nmj, dict):
         boxes["dorsal_muscles"] = {
-            "xy": (0.77, 0.58),
-            "wh": (0.18, 0.16),
+            "xy": (0.72, 0.43),
+            "wh": (0.16, 0.14),
             "text": box_text(
                 "dorsal_nmj\nDorsal muscles",
                 ["{} weights".format(weight_count(dorsal_nmj))],
@@ -778,8 +828,8 @@ def plot_json_structure(
         }
     if isinstance(ventral_nmj, dict):
         boxes["ventral_muscles"] = {
-            "xy": (0.77, 0.26),
-            "wh": (0.18, 0.16),
+            "xy": (0.72, 0.15),
+            "wh": (0.16, 0.14),
             "text": box_text(
                 "ventral_nmj\nVentral muscles",
                 ["{} weights".format(weight_count(ventral_nmj))],
@@ -792,7 +842,7 @@ def plot_json_structure(
         d_body = len(values_list(sr.get("d_weights", {})))
         v_body = len(values_list(sr.get("v_weights", {})))
         boxes["stretch_receptor"] = {
-            "xy": (0.04, 0.58),
+            "xy": (0.04, 0.62),
             "wh": (0.18, 0.18),
             "text": box_text(
                 "stretch_receptor",
@@ -805,11 +855,14 @@ def plot_json_structure(
         }
         if d_body or v_body:
             boxes["body_segments"] = {
-                "xy": (0.04, 0.82),
-                "wh": (0.18, 0.10),
+                "xy": (0.58, 0.69),
+                "wh": (0.16, 0.11),
                 "text": box_text(
                     "body segments",
-                    ["{} dorsal, {} ventral SR weights".format(d_body, v_body)],
+                    [
+                        "{} dorsal SR weights".format(d_body),
+                        "{} ventral SR weights".format(v_body),
+                    ],
                 ),
                 "facecolor": "#E7D8B9",
             }
@@ -858,8 +911,13 @@ def plot_json_structure(
         }
 
     fig, ax = plt.subplots(figsize=(13, 8))
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
+    min_x = min(spec["xy"][0] for spec in boxes.values())
+    max_x = max(spec["xy"][0] + spec["wh"][0] for spec in boxes.values())
+    min_y = min(spec["xy"][1] for spec in boxes.values())
+    max_y = max(spec["xy"][1] + spec["wh"][1] for spec in boxes.values())
+    pad = 0.025
+    ax.set_xlim(min_x - pad, max_x + pad)
+    ax.set_ylim(min_y - pad, max_y + pad)
     ax.axis("off")
 
     def center(name):
@@ -881,14 +939,64 @@ def plot_json_structure(
             linewidth=1.2,
         )
         ax.add_patch(patch)
+        if name != "nervous_system":
+            ax.text(
+                x + w / 2.0,
+                y + h / 2.0,
+                spec["text"],
+                ha="center",
+                va="center",
+                fontsize=13,
+            )
+            return
+
         ax.text(
             x + w / 2.0,
-            y + h / 2.0,
+            y + h - 0.025,
             spec["text"],
             ha="center",
-            va="center",
-            fontsize=8 if name == "nervous_system" else 10,
+            va="top",
+            fontsize=12,
+            fontweight="bold",
         )
+        groups = spec.get("cell_class_groups", [])
+        if not groups:
+            return
+
+        inner_x = x + 0.025
+        inner_w = w - 0.05
+        inner_top = y + h - 0.105
+        inner_bottom = y + 0.025
+        gap = 0.012
+        class_h = (inner_top - inner_bottom - gap * (len(groups) - 1)) / len(groups)
+        class_colors = ["#EAF2FA", "#EEF6E8", "#F9EFE4", "#F2EAF7", "#F4F4E6"]
+        for group_index, group in enumerate(groups):
+            gy = inner_top - (group_index + 1) * class_h - group_index * gap
+            class_patch = FancyBboxPatch(
+                (inner_x, gy),
+                inner_w,
+                class_h,
+                boxstyle="round,pad=0.006",
+                facecolor=class_colors[group_index % len(class_colors)],
+                edgecolor="#777777",
+                linewidth=0.8,
+            )
+            ax.add_patch(class_patch)
+            group_cells = group["cells"]
+            columns = 6 if len(group_cells) > 12 else 3
+            text = "{} ({})\n{}".format(
+                class_label(group["class"]),
+                len(group_cells),
+                wrap_cell_names(group_cells, columns=columns),
+            )
+            ax.text(
+                inner_x + inner_w / 2.0,
+                gy + class_h / 2.0,
+                text,
+                ha="center",
+                va="center",
+                fontsize=10.5 if len(group_cells) > 16 else 12,
+            )
 
     def add_arrow(from_name, to_name, label=None):
         if from_name not in boxes or to_name not in boxes:
@@ -900,8 +1008,10 @@ def plot_json_structure(
         if distance == 0:
             return
         unit = direction / distance
-        start = start + 0.07 * unit
-        end = end - 0.07 * unit
+        start_trim = 0.15 if from_name == "nervous_system" else 0.07
+        end_trim = 0.15 if to_name == "nervous_system" else 0.07
+        start = start + start_trim * unit
+        end = end - end_trim * unit
         arrow = FancyArrowPatch(
             start,
             end,
@@ -920,7 +1030,7 @@ def plot_json_structure(
                 label,
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=10.5,
                 bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.75},
             )
 
@@ -929,16 +1039,23 @@ def plot_json_structure(
 
     add_arrow("nervous_system", "dorsal_muscles", "dorsal_nmj")
     add_arrow("nervous_system", "ventral_muscles", "ventral_nmj")
+    add_arrow("dorsal_muscles", "body_segments", "body force")
+    add_arrow("ventral_muscles", "body_segments", "body force")
     add_arrow("body_segments", "stretch_receptor", "body-to-SR")
     add_arrow("stretch_receptor", "nervous_system", "SR-to-NS")
     add_arrow("environments", "sensors", "environment")
     add_arrow("sensors", "nervous_system", "sensor outputs")
     add_arrow("driving_inputs", "nervous_system", "inputs")
 
-    fig.tight_layout()
+    fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
 
     if save_png:
-        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+        fig.savefig(
+            os.path.join(output_folder, filename),
+            bbox_inches="tight",
+            pad_inches=0.02,
+            dpi=300,
+        )
 
     return fig
 
