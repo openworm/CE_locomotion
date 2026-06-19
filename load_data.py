@@ -805,7 +805,7 @@ def plot_json_structure(
 
     sr = network_json_data.get("stretch_receptor")
     sensors = network_json_data.get("sensors")
-    environments = network_json_data.get("environments")
+    #environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
     driving_inputs = network_json_data.get("driving_inputs")
