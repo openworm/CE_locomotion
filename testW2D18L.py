@@ -90,18 +90,18 @@ if renewJson is True:
                 json_data, cell_name, cell_name
             )
     json_data = hf.add_environment(json_data, "salt_environment")
-    json_data = hf.add_sensor(json_data, "salt_environment")
-    keys = ["sensors", "sensor_1", "sensor_m"]
+    json_data, sensor_name = hf.add_sensor(json_data, "salt_environment")
+    keys = ["sensors", sensor_name, "sensor_m"]
     json_data = hf.add_evotag(json_data, keys)
-    keys = ["sensors", "sensor_1", "sensor_n"]
+    keys = ["sensors", sensor_name, "sensor_n"]
     json_data = hf.add_evotag(json_data, keys)
     evolvable_pars = ["tau", "bias"]
     for cell_name in cell_names:
         json_data = hf.add_sensor_connection(
-            json_data, "sensor_1", "output_1", cell_name, make_evolvable=True
+            json_data, sensor_name, "output_1", cell_name, make_evolvable=True
         )
         json_data = hf.add_sensor_connection(
-            json_data, "sensor_1", "output_2", cell_name, make_evolvable=True
+            json_data, sensor_name, "output_2", cell_name, make_evolvable=True
         )
         for evolvable_par in evolvable_pars:
             json_data = hf.add_cell_parameter_evotag(

@@ -805,6 +805,7 @@ def plot_json_structure(
 
     sr = network_json_data.get("stretch_receptor")
     sensors = network_json_data.get("sensors")
+    environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
     driving_inputs = network_json_data.get("driving_inputs")
@@ -891,38 +892,51 @@ def plot_json_structure(
                 "facecolor": "#E7D8B9",
             }
     if isinstance(sensors, dict) and sensors:
-        sensor_weight_total = 0
-        environment_names = []
-        for sensor in sensors.values():
+        sensors_by_environment = {}
+        for sensor_name, sensor in sensors.items():
             if not isinstance(sensor, dict):
                 continue
-            sensor_weight_total += weight_count(sensor)
             environment_name = _json_value(sensor.get("environment"))
             if environment_name is not None:
-                environment_names.append(str(environment_name))
+                environment_name = str(environment_name)
+            else:
+                environment_name = "unassigned"
+            sensors_by_environment.setdefault(environment_name, []).append(
+                (sensor_name, weight_count(sensor))
+            )
+        sensor_entries = []
+        for environment_name in sorted(sensors_by_environment):
+            sensor_summaries = []
+            for sensor_name, _sensor_weights in sorted(
+                sensors_by_environment[environment_name]
+            ):
+                sensor = sensors.get(sensor_name, {})
+                output_count = len(values_list(sensor.get("outputs", {})))
+                sensor_summaries.append(
+                    "{}: {} outputs".format(sensor_name, output_count)
+                )
+            sensor_entries.append(
+                {
+                    "id": environment_name,
+                    "title": environment_name,
+                    "lines": sensor_summaries,
+                }
+            )
+        sensor_box_h = (
+            min(0.26, max(0.17, 0.07 + 0.075 * len(sensor_entries)))
+            if len(sensor_entries) > 1
+            else 0.17
+        )
         boxes["sensors"] = {
             "xy": (0.04, 0.25),
-            "wh": (0.18, 0.17),
+            "wh": (0.18, sensor_box_h),
             "text": box_text(
-                "sensors",
-                [
-                    "{} sensors".format(len(sensors)),
-                    "{} output-to-NS weights".format(sensor_weight_total),
-                ],
+                "environments",
+                "" if len(sensor_entries) > 1 else sensor_entries[0]["lines"],
             ),
             "facecolor": "#B6E3C6",
+            "sub_boxes": sensor_entries if len(sensor_entries) > 1 else [],
         }
-        if environment_names:
-            unique_environments = sorted(set(environment_names))
-            boxes["environments"] = {
-                "xy": (0.04, 0.08),
-                "wh": (0.18, 0.10),
-                "text": box_text(
-                    "environments",
-                    ", ".join(unique_environments),
-                ),
-                "facecolor": "#D7EBC4",
-            }
     if isinstance(driving_inputs, dict) and driving_inputs:
         boxes["driving_inputs"] = {
             "xy": (0.28, 0.04),
@@ -949,6 +963,8 @@ def plot_json_structure(
         w, h = boxes[name]["wh"]
         return np.array([x + w / 2.0, y + h / 2.0])
 
+    sub_box_centers = {}
+
     def add_box(name):
         spec = boxes[name]
         x, y = spec["xy"]
@@ -964,6 +980,75 @@ def plot_json_structure(
         )
         ax.add_patch(patch)
         if name != "nervous_system":
+            sub_boxes = spec.get("sub_boxes", [])
+            if sub_boxes:
+                title_position = spec.get("sub_box_title_position", "top")
+                title_y = y + 0.018 if title_position == "bottom" else y + h - 0.018
+                ax.text(
+                    x + w / 2.0,
+                    title_y,
+                    spec["text"],
+                    ha="center",
+                    va="bottom" if title_position == "bottom" else "top",
+                    fontsize=12,
+                    fontweight="bold",
+                )
+                inner_x = x + 0.015
+                inner_w = w - 0.03
+                inner_top = y + h - (0.018 if title_position == "bottom" else 0.060)
+                inner_bottom = y + (0.060 if title_position == "bottom" else 0.018)
+                gap = 0.010
+                sub_h = (
+                    inner_top - inner_bottom - gap * (len(sub_boxes) - 1)
+                ) / len(sub_boxes)
+                sub_colors = ["#EAF5D8", "#EEF6E8", "#F5F1D8", "#E7F1E4"]
+                for sub_index, sub_box in enumerate(sub_boxes):
+                    sy = inner_top - (sub_index + 1) * sub_h - sub_index * gap
+                    sub_patch = FancyBboxPatch(
+                        (inner_x, sy),
+                        inner_w,
+                        sub_h,
+                        boxstyle="round,pad=0.004",
+                        facecolor=sub_colors[sub_index % len(sub_colors)],
+                        edgecolor="#777777",
+                        linewidth=0.8,
+                    )
+                    ax.add_patch(sub_patch)
+                    sub_id = sub_box.get("id", sub_box.get("title", sub_index))
+                    sub_box_centers[(name, sub_id)] = np.array(
+                        [inner_x + inner_w / 2.0, sy + sub_h / 2.0]
+                    )
+                    sub_box_centers[(name, sub_id, "left")] = np.array(
+                        [inner_x + inner_w * 0.25, sy + sub_h / 2.0]
+                    )
+                    sub_box_centers[(name, sub_id, "right")] = np.array(
+                        [inner_x + inner_w * 0.75, sy + sub_h / 2.0]
+                    )
+                    sub_box_centers[(name, sub_id, "top_left")] = np.array(
+                        [inner_x + inner_w * 0.32, sy + sub_h * 0.92]
+                    )
+                    sub_box_centers[(name, sub_id, "top_right")] = np.array(
+                        [inner_x + inner_w * 0.68, sy + sub_h * 0.92]
+                    )
+                    sub_box_centers[(name, sub_id, "bottom_left")] = np.array(
+                        [inner_x + inner_w * 0.32, sy + sub_h * 0.08]
+                    )
+                    sub_box_centers[(name, sub_id, "bottom_right")] = np.array(
+                        [inner_x + inner_w * 0.68, sy + sub_h * 0.08]
+                    )
+                    lines = sub_box.get("lines", [])
+                    text = str(sub_box.get("title", ""))
+                    if lines:
+                        text += "\n" + "\n".join(str(line) for line in lines)
+                    ax.text(
+                        inner_x + inner_w / 2.0,
+                        sy + sub_h / 2.0,
+                        text,
+                        ha="center",
+                        va="center",
+                        fontsize=9.5 if len(lines) > 2 else 11,
+                    )
+                return
             ax.text(
                 x + w / 2.0,
                 y + h / 2.0,
@@ -1022,18 +1107,19 @@ def plot_json_structure(
                 fontsize=10.5 if len(group_cells) > 16 else 12,
             )
 
-    def add_arrow(from_name, to_name, label=None):
-        if from_name not in boxes or to_name not in boxes:
-            return
-        start = center(from_name)
-        end = center(to_name)
+    def add_arrow_between_points(
+        start,
+        end,
+        label=None,
+        start_trim=0.07,
+        end_trim=0.07,
+        rad=0.05,
+    ):
         direction = end - start
         distance = np.linalg.norm(direction)
         if distance == 0:
             return
         unit = direction / distance
-        start_trim = 0.15 if from_name == "nervous_system" else 0.07
-        end_trim = 0.15 if to_name == "nervous_system" else 0.07
         start = start + start_trim * unit
         end = end - end_trim * unit
         arrow = FancyArrowPatch(
@@ -1043,7 +1129,7 @@ def plot_json_structure(
             mutation_scale=14,
             linewidth=1.4,
             color="#333333",
-            connectionstyle="arc3,rad=0.05",
+            connectionstyle="arc3,rad={}".format(rad),
         )
         ax.add_patch(arrow)
         if label:
@@ -1058,6 +1144,17 @@ def plot_json_structure(
                 bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.75},
             )
 
+    def add_arrow(from_name, to_name, label=None):
+        if from_name not in boxes or to_name not in boxes:
+            return
+        add_arrow_between_points(
+            center(from_name),
+            center(to_name),
+            label=label,
+            start_trim=0.15 if from_name == "nervous_system" else 0.07,
+            end_trim=0.15 if to_name == "nervous_system" else 0.07,
+        )
+
     for name in boxes:
         add_box(name)
 
@@ -1067,7 +1164,6 @@ def plot_json_structure(
     add_arrow("ventral_muscles", "body_segments", "body force")
     add_arrow("body_segments", "stretch_receptor", "body-to-SR")
     add_arrow("stretch_receptor", "nervous_system", "SR-to-NS")
-    add_arrow("environments", "sensors", "environment")
     add_arrow("sensors", "nervous_system", "sensor outputs")
     add_arrow("driving_inputs", "nervous_system", "inputs")
 

@@ -994,10 +994,9 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
     if (j.contains("sensors"))
     {
         const json & sensors = j.at("sensors");
-        int sensorIndex = 1;
-        while (sensors.contains("sensor_" + to_string(sensorIndex)))
+        for (const auto& sensorItem : sensors.items())
         {
-            const json & sensor = sensors.at("sensor_" + to_string(sensorIndex));
+            const json & sensor = sensorItem.value();
             if (sensor.contains("weights"))
             {
                 const int firstInput = static_cast<int>(exvec.size());
@@ -1016,7 +1015,6 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
                     vec1.push_back(val);
                 }
             }
-            sensorIndex++;
         }
     }
 

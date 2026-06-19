@@ -2350,10 +2350,11 @@ void Sensor::construct(const json & j)
   {
     const json & sensors = j["sensors"];
     int ind = 1;
-    while(sensors.contains("sensor_" + to_string(ind)))
+    for (const auto & item : sensors.items())
     {
-      const json & sensorJson = sensors["sensor_" + to_string(ind)];
+      const json & sensorJson = item.value();
       SensorPars sensor;
+      sensor.name = item.key();
       sensor.setParsFromJson2(sensorJson);
       if (sensor.extInp1 < 0 || sensor.extInp2 < 0)
       {
@@ -2383,6 +2384,7 @@ void Sensor::construct(const json & j)
     {
       const json & sensorJson = sensors["Sensor_" + to_string(ind)];
       SensorPars sensor;
+      sensor.name = "sensor_" + to_string(ind);
       sensor.setParsFromJson(sensorJson);
       if (sensor.environmentName.empty())
       {
@@ -2451,11 +2453,17 @@ void  Sensor::addParsToJson(json & j) const
       : json::array();
 
   set<int> sensorInputNumbers;
+  json oldSensors = j.contains("sensors") ? j.at("sensors") : json::object();
+  j["sensors"] = json::object();
   json & environmentsJson = j["environments"];
   for (int i = 0; i<spvec.size(); i++)
   {
     const SensorPars & sensor = spvec[i];
-    json & sensorJson = j["sensors"]["sensor_" + to_string(i+1)];
+    const string sensorName =
+      sensor.name.empty() ? "sensor_" + to_string(i+1) : sensor.name;
+    json & sensorJson = j["sensors"][sensorName];
+    if (oldSensors.contains(sensorName) && oldSensors.at(sensorName).is_object())
+      sensorJson = oldSensors.at(sensorName);
     const json previousWeights =
       sensorJson.contains("weights")
       && sensorJson.at("weights").contains("value")

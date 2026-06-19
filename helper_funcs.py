@@ -321,14 +321,17 @@ def delete_environment(json_data, environment_name):
 def add_sensor(
     json_data,
     environment_name,
+    name=None,
     sensor_n=2.0,
     sensor_m=2.0,
 ):
-    """Return a copy of a worm JSON dictionary with a new sensor."""
+    """Return a copy of a worm JSON dictionary plus the new sensor name."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(environment_name, str) or not environment_name:
         raise ValueError("environment_name must be a non-empty string")
+    if name is not None and (not isinstance(name, str) or not name.strip()):
+        raise ValueError("name must be a non-empty string")
 
     for parameter_name, value in (
         ("sensor_n", sensor_n),
@@ -366,10 +369,15 @@ def add_sensor(
     sensors = result.setdefault("sensors", {})
     if not isinstance(sensors, dict):
         raise TypeError("'sensors' must be a dictionary")
-    sensor_index = 1
-    while "sensor_{}".format(sensor_index) in sensors:
-        sensor_index += 1
-    sensor_name = "sensor_{}".format(sensor_index)
+    if name is None:
+        sensor_index = 1
+        while "sensor_{}".format(sensor_index) in sensors:
+            sensor_index += 1
+        sensor_name = "sensor_{}".format(sensor_index)
+    else:
+        sensor_name = name.strip()
+        if sensor_name in sensors:
+            raise ValueError("Sensor {!r} already exists".format(sensor_name))
 
     sensors[sensor_name] = {
         "environment": {"value": canonical_environment_name},
@@ -399,7 +407,7 @@ def add_sensor(
             "value": [],
         },
     }
-    return result
+    return result, sensor_name
 
 
 def add_sensor_connection(

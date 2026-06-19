@@ -186,11 +186,12 @@ vector<double> chemConHistory;
 double sensorN, sensorM;
 //double dSensorN, dSensorM;
 int iSensorN, iSensorM;
-//double chemCon, presentAvgCon, pastAvgCon;
-double presentAvgCon, pastAvgCon;
-int extInp1 = -1, extInp2 = -1;
-double HSStepSize = 0.01;
-string environmentName;
+	//double chemCon, presentAvgCon, pastAvgCon;
+	double presentAvgCon, pastAvgCon;
+	int extInp1 = -1, extInp2 = -1;
+	double HSStepSize = 0.01;
+	string name;
+	string environmentName;
 
 void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
