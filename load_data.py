@@ -2164,6 +2164,8 @@ def reload_single_run(a=None, **kwargs):
         return class_key.replace("_", " ").title()
 
     def get_int_value(section, key, default=0):
+        if not isinstance(network_json_data, dict):
+            return default
         value = network_json_data.get(section, {}).get(key)
         value = _json_value(value, default)
         if isinstance(value, bool) or not isinstance(value, (int, float)):
@@ -2171,6 +2173,8 @@ def reload_single_run(a=None, **kwargs):
         return int(value)
 
     def has_new_cell_metadata():
+        if not isinstance(network_json_data, dict):
+            return False
         nervous_system = network_json_data.get("nervous_system")
         return (
             isinstance(nervous_system, dict)
