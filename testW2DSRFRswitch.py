@@ -2,6 +2,7 @@ import os
 import sys
 from run_main import run
 from neuromlLocal.regenerate import run as regenerate_run
+
 # sys.path.append("./neuromlLocal")
 import helper_funcs as hf
 
@@ -9,12 +10,12 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-#indir = 'COW2DSRE_test_3'
-indir = 'exW2DCEFR'
-#indir = 'COW2DSRE_test'
+# indir = 'COW2DSRE_test_3'
+indir = "exW2DCEFR"
+# indir = 'COW2DSRE_test'
 outdir = indir + "switch"
-pfolder = 'testruns'
-#pfolder = 'notebooks'
+pfolder = "testruns"
+# pfolder = 'notebooks'
 
 inputFolderName = pfolder + "/" + indir
 outputFolderName = pfolder + "/" + outdir
@@ -73,18 +74,14 @@ if doInputFolder is True:
             time_offset=0,
         )
         json_data = hf.set_funcable_schedule(
-    json_data,
-    function_index=2,
-    time_intervals=[20, 10],
-    condvals=[1, 0],
-    time_offset=0,
-    schedule_name="alternating_gains",
-)
+            json_data,
+            function_index=2,
+            time_intervals=[20, 10],
+            condvals=[1, 0],
+            time_offset=0,
+            schedule_name="alternating_gains",
+        )
         hf.write_worm_json(outputFolderName, json_data)
-   
-
-
-
 
 
 if doOrig:

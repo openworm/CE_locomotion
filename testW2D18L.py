@@ -7,12 +7,12 @@ import helper_funcs as hf
 Pi = 3.1415926
 
 
-#indir = 'COW2DSRE_test_3'
-indir = 'testW2D18L'
-#indir = 'COW2DSRE_test'
+# indir = 'COW2DSRE_test_3'
+indir = "testW2D18L"
+# indir = 'COW2DSRE_test'
 outdir = indir + "_out"
-pfolder = 'testruns'
-#pfolder = 'notebooks'
+pfolder = "testruns"
+# pfolder = 'notebooks'
 
 doOrig = True
 doNML = False
@@ -56,71 +56,73 @@ args = dict(
 )
 
 args["popSize"] = 16
-args["doCPT"]= True
+args["doCPT"] = True
 
 if doInputFolder is True:
     args["inputFolderName"] = inputFolderName
     hf.delete_subfolder_directory(pfolder, outdir)
 
 
-
 if renewJson is True:
-
     json_data = hf.get_worm_json(inputFolderName)
     old_names = ["Cell_41_0", "Cell_42_0", "Cell_43_0", "Cell_44_0"]
 
     if doDelete is True:
         for cell_name in old_names:
-            json_data=hf.remove_nervous_system_cell(json_data, cell_name)
-        json_data=hf.delete_sensor(json_data, 'sensor_1')
-        json_data=hf.delete_environment(json_data, 'environment_1')
+            json_data = hf.remove_nervous_system_cell(json_data, cell_name)
+        json_data = hf.delete_sensor(json_data, "sensor_1")
+        json_data = hf.delete_environment(json_data, "environment_1")
 
     json_data = hf.delete_all_evotags(json_data)
 
-    json_data, cell_names=hf.add_random_cell_network(json_data, 4, 1, 
-                                                     random_seed=random_seed)
-    for (old_cell_name, cell_name) in zip(old_names, cell_names):
+    json_data, cell_names = hf.add_random_cell_network(
+        json_data, 4, 1, random_seed=random_seed
+    )
+    for old_cell_name, cell_name in zip(old_names, cell_names):
         json_data = hf.rename_cell(json_data, cell_name, old_cell_name)
     cell_names = old_names
     if addSelfConns is True:
         for cell_name in cell_names:
-            json_data=hf.add_cell_connection(json_data,cell_name,cell_name, 
-                                             random_seed=random_seed)
+            json_data = hf.add_cell_connection(
+                json_data, cell_name, cell_name, random_seed=random_seed
+            )
             json_data = hf.add_chemical_connection_evotag(
-                            json_data, cell_name, cell_name
-                    )
-    json_data=hf.add_environment(json_data, "salt_environment")
-    json_data=hf.add_sensor(json_data, "salt_environment")
-    keys =["sensors", "sensor_1", "sensor_m"]
-    json_data=hf.add_evotag(json_data, keys )
-    keys =["sensors", "sensor_1", "sensor_n"]
-    json_data=hf.add_evotag(json_data, keys )
+                json_data, cell_name, cell_name
+            )
+    json_data = hf.add_environment(json_data, "salt_environment")
+    json_data = hf.add_sensor(json_data, "salt_environment")
+    keys = ["sensors", "sensor_1", "sensor_m"]
+    json_data = hf.add_evotag(json_data, keys)
+    keys = ["sensors", "sensor_1", "sensor_n"]
+    json_data = hf.add_evotag(json_data, keys)
     evolvable_pars = ["tau", "bias"]
     for cell_name in cell_names:
-        json_data=hf.add_sensor_connection(json_data,"sensor_1",
-                                "output_1",cell_name ,make_evolvable=True)
-        json_data=hf.add_sensor_connection(json_data,"sensor_1",
-                                "output_2",cell_name ,make_evolvable=True)
+        json_data = hf.add_sensor_connection(
+            json_data, "sensor_1", "output_1", cell_name, make_evolvable=True
+        )
+        json_data = hf.add_sensor_connection(
+            json_data, "sensor_1", "output_2", cell_name, make_evolvable=True
+        )
         for evolvable_par in evolvable_pars:
-            json_data=hf.add_cell_parameter_evotag(json_data, cell_name,
-                                                evolvable_par)
+            json_data = hf.add_cell_parameter_evotag(
+                json_data, cell_name, evolvable_par
+            )
             for cell_name_2 in cell_names:
                 if cell_name_2 != cell_name:
                     json_data = hf.add_chemical_connection_evotag(
                         json_data, cell_name, cell_name_2
                     )
-    head_cells = ["SMDD_0","SMDV_0"]
-    for (cell_name, head_cell) in zip(cell_names[0:2],head_cells):
-        json_data=hf.add_cell_connection(json_data, cell_name, head_cell, 
-                                         random_seed=random_seed)
-        json_data=hf.add_chemical_connection_evotag(json_data, cell_name, head_cell)
-    
+    head_cells = ["SMDD_0", "SMDV_0"]
+    for cell_name, head_cell in zip(cell_names[0:2], head_cells):
+        json_data = hf.add_cell_connection(
+            json_data, cell_name, head_cell, random_seed=random_seed
+        )
+        json_data = hf.add_chemical_connection_evotag(json_data, cell_name, head_cell)
 
-#json_data=hf.delete_sensor(json_data, 'sensor_1')
-    #json_data=hf.delete_environment(json_data, 'environment_1')
-    #json_data['evolvable_ranges']['evotag_2']["active"] = False
+    # json_data=hf.delete_sensor(json_data, 'sensor_1')
+    # json_data=hf.delete_environment(json_data, 'environment_1')
+    # json_data['evolvable_ranges']['evotag_2']["active"] = False
     hf.write_worm_json(outputFolderName, json_data)
-
 
 
 if doOrig:

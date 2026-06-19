@@ -12,7 +12,8 @@ from datetime import datetime
 # import argparse
 import os
 import neuromlLocal.utils as utils
-from matplotlib.ticker import MaxNLocator
+
+# from matplotlib.ticker import MaxNLocator
 import math
 import helper_funcs as hf
 
@@ -283,7 +284,10 @@ def plot_cell_connections(
         node_scale = symbol_text_scale
     if text_scale is None:
         text_scale = symbol_text_scale
-    for scale_name, scale_value in (("node_scale", node_scale), ("text_scale", text_scale)):
+    for scale_name, scale_value in (
+        ("node_scale", node_scale),
+        ("text_scale", text_scale),
+    ):
         if (
             isinstance(scale_value, bool)
             or not isinstance(scale_value, (int, float))
@@ -441,7 +445,9 @@ def plot_cell_connections(
                 to_cell = connection.get("to_cell")
                 if to_cell not in selected_set:
                     continue
-                from_output = connection.get("from_output", connection.get("from_input"))
+                from_output = connection.get(
+                    "from_output", connection.get("from_input")
+                )
                 from_node = "{}_output_{}".format(sensor_name, from_output)
                 add_node(from_node, "sensor")
                 add_edge(
@@ -496,10 +502,7 @@ def plot_cell_connections(
                 "muscle",
             )
 
-    displayed_weights = [
-        abs(edge["weight"])
-        for edge in edges
-    ]
+    displayed_weights = [abs(edge["weight"]) for edge in edges]
     max_abs_weight = max(displayed_weights) if displayed_weights else 1.0
     if max_abs_weight <= 0:
         max_abs_weight = 1.0
@@ -599,8 +602,8 @@ def plot_cell_connections(
         node_type = nodes[node_name]["type"]
         style = node_styles.get(node_type, node_styles["cell"])
         marker_diameter = math.sqrt(style["size"] * marker_area_scale)
-        shape_margin = 0.8 if style["marker"] in ("D", "s", "^", "h") else 0.65
-        return marker_diameter * shape_margin + 5.0 * max(1.0, float(node_scale))
+        shape_margin = 0.58 if style["marker"] in ("D", "s", "^", "h") else 0.46
+        return marker_diameter * shape_margin + 1.5 * max(1.0, float(node_scale))
 
     def edge_color(edge):
         if edge["type"] == "electrical":
@@ -823,9 +826,7 @@ def plot_json_structure(
         "nervous_system",
         [
             "{} cells".format(len(cell_names)),
-            "{} chemical, {} electrical conns".format(
-                chemical_count, electrical_count
-            ),
+            "{} chemical, {} electrical conns".format(chemical_count, electrical_count),
         ],
     )
 
@@ -2109,9 +2110,8 @@ def reload_single_run(a=None, **kwargs):
         nervous_system = network_json_data["nervous_system"]
         cell_names = _json_value(nervous_system["cell_names"], [])
         cells = nervous_system["cells"]
-        vnc_cell_count = (
-            get_int_value("worm", "N_units")
-            * get_int_value("worm", "N_neuronsperunit")
+        vnc_cell_count = get_int_value("worm", "N_units") * get_int_value(
+            "worm", "N_neuronsperunit"
         )
         if vnc_cell_count > 0 and vnc_cell_count < len(cell_names):
             act_cell_names = cell_names[vnc_cell_count:] + cell_names[:vnc_cell_count]
@@ -2141,9 +2141,7 @@ def reload_single_run(a=None, **kwargs):
 
         muscle_count = 0
         if "Muscle" in network_json_data:
-            muscle_count = _json_value(
-                network_json_data["Muscle"].get("Nmuscles"), 0
-            )
+            muscle_count = _json_value(network_json_data["Muscle"].get("Nmuscles"), 0)
             if isinstance(muscle_count, (int, float)):
                 muscle_count = int(muscle_count) * 2
         muscle_count = min(muscle_count, act_column_count - (next_column - 1))
@@ -2190,8 +2188,7 @@ def reload_single_run(a=None, **kwargs):
                                 range(next_column, next_column + driving_count)
                             ),
                             "labels": [
-                                "input_{}".format(i + 1)
-                                for i in range(driving_count)
+                                "input_{}".format(i + 1) for i in range(driving_count)
                             ],
                         }
                     )
@@ -2234,8 +2231,7 @@ def reload_single_run(a=None, **kwargs):
                             range(next_column, next_column + remaining_count)
                         ),
                         "labels": [
-                            "input_{}".format(i + 1)
-                            for i in range(remaining_count)
+                            "input_{}".format(i + 1) for i in range(remaining_count)
                         ],
                     }
                 )
@@ -2264,6 +2260,32 @@ def reload_single_run(a=None, **kwargs):
             "S" + str(i) for i in range(2)
         ]
         plot_format["plot_col_divs"] = [CO18_size, 2]
+
+    curv_file = None
+    if plot_format["do_curv_plot"]:
+        curv_t_file = hf.rename_file("curv_t.dat")
+        curv_dat_file = hf.rename_file("curv.dat")
+        if os.path.isfile(curv_t_file):
+            curv_file = curv_t_file
+        elif os.path.isfile(curv_dat_file):
+            curv_file = curv_dat_file
+        else:
+            print(
+                "Skipping curvature plot: neither %s nor %s found"
+                % (curv_t_file, curv_dat_file)
+            )
+    do_curv_plot = plot_format["do_curv_plot"] and curv_file is not None
+
+    body_file = None
+    if plot_format["do_body_plot"]:
+        if a.modelName == "CO" or a.modelName == "W2DCO":
+            body_file = hf.rename_file("bodypos.dat")
+        else:
+            body_file = hf.rename_file("body.dat")
+        if not os.path.isfile(body_file):
+            print("Skipping body position plot: %s not found" % body_file)
+            body_file = None
+    do_body_plot = plot_format["do_body_plot"] and body_file is not None
 
     def makePanel(indices, title, labels, plot_num):
         axs[plot_num, 0].set_title(title, fontsize=title_font_size)
@@ -2304,7 +2326,7 @@ def reload_single_run(a=None, **kwargs):
         if use_new_activity_panels
         else len(plot_format["fig_titles"])
     )
-    if plot_format["do_curv_plot"] or plot_format["do_body_plot"]:
+    if do_curv_plot or do_body_plot:
         plot_rows += 1
     if plot_rows > 1:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, plot_rows * 2))
@@ -2332,7 +2354,9 @@ def reload_single_run(a=None, **kwargs):
             count_num += 1
     else:
         for val in zip(
-            plot_format["data_sizes"], plot_format["fig_titles"], plot_format["fig_labels"]
+            plot_format["data_sizes"],
+            plot_format["fig_titles"],
+            plot_format["fig_labels"],
         ):
             makeFigure(offset, *val, count_num)
             if False:
@@ -2346,12 +2370,7 @@ def reload_single_run(a=None, **kwargs):
             offset += val[0]
 
     ###  Worm body curvature
-    if plot_format["do_curv_plot"]:
-        if os.path.isfile(hf.rename_file("curv_t.dat")):
-            curv_file = hf.rename_file("curv_t.dat")
-        else:
-            curv_file = hf.rename_file("curv.dat")
-
+    if do_curv_plot:
         print("Loading curvature data from: %s" % curv_file)
         curv_data = np.loadtxt(curv_file).T
         t_data = curv_data[0]
@@ -2376,16 +2395,7 @@ def reload_single_run(a=None, **kwargs):
 
         ###  Body position
 
-    if plot_format["do_body_plot"]:
-        if a.modelName == "CO" or a.modelName == "W2DCO":
-            body_file = hf.rename_file("bodypos.dat")
-        else:
-            body_file = hf.rename_file("body.dat")
-            """ if os.path.isfile(hf.rename_file("body_mm.dat")):
-                body_file = hf.rename_file("body_mm.dat")
-            else:
-                body_file = hf.rename_file("body.dat") """
-
+    if do_body_plot:
         print("Loading body position data from: %s" % body_file)
         body_data = np.loadtxt(body_file).T
 
