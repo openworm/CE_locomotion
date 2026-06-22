@@ -625,10 +625,23 @@ def add_cell_muscle_connection(
     return result
 
 
-def add_cell(json_data):
-    """Return a copy with one default cell added, plus the new cell name."""
+def add_cell(json_data, cell_name=None):
+    """Return a copy with one default cell added.
+
+    If cell_name is supplied, the new cell is renamed to that value and only
+    the updated JSON is returned. Without cell_name, return the updated JSON
+    plus the generated default cell name for backward compatibility.
+    """
+    if cell_name is not None:
+        if not isinstance(cell_name, str) or not cell_name.strip():
+            raise ValueError("cell_name must be a non-empty string")
+        cell_name = cell_name.strip()
+
     result, cell_names = add_random_cell_network(json_data, 1, 0.0)
-    return result, cell_names[0]
+    generated_name = cell_names[0]
+    if cell_name is None:
+        return result, generated_name
+    return rename_cell(result, generated_name, cell_name)
 
 
 def get_cell_names_by_stem(json_data, stem):
