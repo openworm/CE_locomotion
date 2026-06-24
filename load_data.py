@@ -805,7 +805,7 @@ def plot_json_structure(
 
     sr = network_json_data.get("stretch_receptor")
     sensors = network_json_data.get("sensors")
-    #environments = network_json_data.get("environments")
+    # environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
     driving_inputs = network_json_data.get("driving_inputs")
@@ -998,9 +998,9 @@ def plot_json_structure(
                 inner_top = y + h - (0.018 if title_position == "bottom" else 0.060)
                 inner_bottom = y + (0.060 if title_position == "bottom" else 0.018)
                 gap = 0.010
-                sub_h = (
-                    inner_top - inner_bottom - gap * (len(sub_boxes) - 1)
-                ) / len(sub_boxes)
+                sub_h = (inner_top - inner_bottom - gap * (len(sub_boxes) - 1)) / len(
+                    sub_boxes
+                )
                 sub_colors = ["#EAF5D8", "#EEF6E8", "#F5F1D8", "#E7F1E4"]
                 for sub_index, sub_box in enumerate(sub_boxes):
                     sy = inner_top - (sub_index + 1) * sub_h - sub_index * gap
