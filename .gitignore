@@ -17,13 +17,11 @@
 /nv2.dat
 /phenotype2.dat
 /w_verb.dat
-/tests
 /test_output/*.dat
 /neuromlLocal/*.dat
 /neuromlLocal/report.txt
 /test_files/test_py_cpp
 /neuromlLocal/__pycache__
-/tests2
 /neuromlLocal/*.mod
 /neuromlLocal/arm64
 *_nrn.py
