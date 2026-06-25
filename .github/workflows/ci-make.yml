@@ -44,7 +44,11 @@ jobs:
     - name: Build and install worm2d package (with C++ binaries)
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 4
-      run: pip install -e .[dev] -v
+      run: |
+      
+        pip install setuptools==80 # needed for Neuron on py >=3.12
+
+        pip install -e .[dev] -v
 
     - name: Run C++ unit tests
       run: |
@@ -65,11 +69,10 @@ jobs:
 
     - name: Test using test_all.sh
       run: |
-        which nrniv
+        pip list
+        
         export NEURON_HOME=$pythonLocation
         env
-
-        pip install setuptools==80 # needed for Neuron on py >=3.12
 
         ./test_all.sh 
 
