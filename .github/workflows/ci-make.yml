@@ -41,19 +41,6 @@ jobs:
       run: brew install nlohmann-json tree cmake
       if: ${{ contains(matrix.runs-on, 'macos') }}
 
-    - name: Install Python requirements
-      run: |
-        pip install setuptools==80 # needed for Neuron on py >=3.12
-        pip install NEURON==8.2.7
-        pip install OSBModelValidation pyNeuroML
-        pip install numpy matplotlib ruff scipy modelspec
-        pip install ipywidgets scikit-build-core
-
-        pip list
-
-        which nrnivmodl
-        nrnivmodl
-
     - name: Build and install worm2d package (with C++ binaries)
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 4
@@ -82,9 +69,8 @@ jobs:
         export NEURON_HOME=$pythonLocation
         env
 
-        cd tests && ./test_all.sh # also generates neuroml
+        ./test_all.sh 
 
-        git diff exampleRun/phenotype.dat
 
 
     - name: list generated files

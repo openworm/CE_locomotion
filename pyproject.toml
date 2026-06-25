@@ -23,6 +23,7 @@ worm2d = "worm2d.run_main:run_main"
 [tool.scikit-build]
 cmake.build-type = "Release"
 wheel.packages = ["src/worm2d"]
+build-dir = "build/{wheel_tag}"
 
 [tool.scikit-build.cmake.define]
 # Force CMake to find the same Python that pip is using

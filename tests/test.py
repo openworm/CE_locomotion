@@ -1,5 +1,7 @@
-from run_main import run
+from worm2d import run
 
+
+#############
 run(
     popSize=96,
     RandSeed=1233,

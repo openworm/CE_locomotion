@@ -10,6 +10,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 # ---------------------------------------------------------------------------
+# Derive a reliable Python library directory for rpath embedding.
+# FindPython3 may leave Python3_LIBRARY_DIRS empty in conda/venv environments;
+# fall back to extracting the directory from the full library path or the
+# interpreter location so that @rpath/libpython resolves at runtime on macOS.
+# ---------------------------------------------------------------------------
+if(Python3_LIBRARY_DIRS)
+    set(PYTHON_LIB_RPATH ${Python3_LIBRARY_DIRS})
+elseif(Python3_LIBRARIES)
+    list(GET Python3_LIBRARIES 0 _py_first_lib)
+    get_filename_component(PYTHON_LIB_RPATH "${_py_first_lib}" DIRECTORY)
+else()
+    get_filename_component(_py_bin_dir "${Python3_EXECUTABLE}" DIRECTORY)
+    get_filename_component(PYTHON_LIB_RPATH "${_py_bin_dir}/../lib" ABSOLUTE)
+endif()
+message(STATUS "[worm2d] Python library rpath: ${PYTHON_LIB_RPATH}")
+
+# ---------------------------------------------------------------------------
 # Find nlohmann_json
 # ---------------------------------------------------------------------------
 find_package(nlohmann_json QUIET)
@@ -73,19 +90,22 @@ macro(add_worm_binary TARGET_NAME SUBDIR)
         Threads::Threads
         ${CMAKE_DL_LIBS}
     )
+    # Use CMake's INSTALL_RPATH so the rpath survives install_name_tool rewriting
+    # at install time (raw -Wl,-rpath linker flags are stripped by CMake on macOS).
     if(APPLE)
-        target_link_options(${TARGET_NAME} PRIVATE
-            -Wl,-rpath,@loader_path
-            -Wl,-rpath,${Python3_LIBRARY_DIRS}
+        set_target_properties(${TARGET_NAME} PROPERTIES
+            INSTALL_RPATH "@loader_path;${PYTHON_LIB_RPATH}"
+            BUILD_WITH_INSTALL_RPATH TRUE
         )
     else()
-        target_link_options(${TARGET_NAME} PRIVATE
-            -Wl,-rpath,${Python3_LIBRARY_DIRS}
+        set_target_properties(${TARGET_NAME} PROPERTIES
+            INSTALL_RPATH "${PYTHON_LIB_RPATH}"
+            BUILD_WITH_INSTALL_RPATH TRUE
         )
     endif()
     target_link_directories(${TARGET_NAME} PRIVATE
         /opt/homebrew/lib
-        ${Python3_LIBRARY_DIRS}
+        ${PYTHON_LIB_RPATH}
     )
     if(nlohmann_json_FOUND)
         target_link_libraries(${TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
