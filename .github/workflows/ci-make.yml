@@ -44,7 +44,7 @@ jobs:
     - name: Build and install worm2d package (with C++ binaries)
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 4
-      run: pip install -e . --no-build-isolation -v
+      run: pip install -e . -v
 
     - name: Run C++ unit tests
       run: |
