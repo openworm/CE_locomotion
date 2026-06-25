@@ -1,9 +1,9 @@
-from run_main import run
-from helper_funcs import get_worm_json, write_worm_json, delete_directory
+from worm2d import run
+from worm2d.helper_funcs import get_worm_json, write_worm_json, delete_directory
 
-outputFolderName = "testruns/exW2DCEanm2"
-outputFolderName_2 = "testruns/exW2DCEanm2_1"
-origFolderName = "testruns/exW2DCEanm"
+outputFolderName = "../testruns/exW2DCEanm2"
+outputFolderName_2 = "../testruns/exW2DCEanm2_1"
+origFolderName = "../testruns/exW2DCEanm"
 
 
 # x = 0.1

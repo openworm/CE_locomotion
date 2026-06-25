@@ -1,19 +1,18 @@
 # Framework for running automated tests on Open Source Brain
 # See https://github.com/OpenSourceBrain/osb-model-validation for more details
  
-target: testW2D18genE.py
+target: testW2DCEa.py
 engine: Brian2  # This installs Brian2, but all we really need is a Python environment to run the script in
-mep: .test.W2DSR18E.mep
+mep: .test.example.mep
 experiments:
   Test:
     observables:
       spike times:
         file: 
-          path: testruns/exW2D18genE/act.dat
-          columns: [0, 1]
+          path: ../testruns/exW2DCEa/act.dat
+          columns: [0,3]
           scaling: [1, 1]
         spike detection: 
           method: threshold
-          threshold: 1
+          threshold: 2
         tolerance: 0
-  

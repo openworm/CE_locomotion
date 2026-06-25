@@ -1,4 +1,4 @@
-from run_main import run
+from worm2d import run
 
 run(
     simduration=20,
@@ -8,7 +8,7 @@ run(
     maxGens=5,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2DCEs",
+    outputFolderName="../testruns/exW2DCEs",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

@@ -1,4 +1,4 @@
-from run_main import run
+from worm2d import run
 
 run(
     simduration=30,
@@ -7,7 +7,7 @@ run(
     RandSeed=1233,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2DCEanm",
+    outputFolderName="../testruns/exW2DCEanm",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

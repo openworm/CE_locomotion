@@ -49,7 +49,7 @@ if(NOT nlohmann_json_FOUND)
     find_path(NLOHMANN_JSON_INCLUDE_DIR nlohmann/json.hpp
         PATHS /opt/homebrew/include /usr/local/include /usr/include)
     if(NOT NLOHMANN_JSON_INCLUDE_DIR)
-        message(FATAL_ERROR "nlohmann/json.hpp not found. Install via: brew install nlohmann-json OR apt-get install nlohmann-json3-dev")
+        message(FATAL_ERROR "*****************\nnlohmann/json.hpp not found! Install this via: brew install nlohmann-json OR apt-get install nlohmann-json3-dev\n************")
     endif()
 else()
     set(NLOHMANN_JSON_INCLUDE_DIR "")  # provided via target
