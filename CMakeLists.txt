@@ -5,6 +5,20 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ---------------------------------------------------------------------------
+# Extract package version from pyproject.toml so W2D_VERSION stays in sync
+# ---------------------------------------------------------------------------
+file(READ "${CMAKE_SOURCE_DIR}/pyproject.toml" _PYPROJECT_CONTENTS)
+string(REGEX MATCH "version = \"([0-9]+\\.[0-9]+\\.[0-9]+)\"" _ "${_PYPROJECT_CONTENTS}")
+if(CMAKE_MATCH_1)
+    set(W2D_VERSION_STR "v${CMAKE_MATCH_1}")
+else()
+    set(W2D_VERSION_STR "v0.0.0")
+    message(WARNING "[worm2d] Could not extract version from pyproject.toml; defaulting to v0.0.0")
+endif()
+message(STATUS "[worm2d] Package version: ${W2D_VERSION_STR}")
+add_compile_definitions(W2D_VERSION_FROM_CMAKE="${W2D_VERSION_STR}")
+
+# ---------------------------------------------------------------------------
 # Find Python (for embedding)
 # ---------------------------------------------------------------------------
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)

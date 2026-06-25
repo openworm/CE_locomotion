@@ -18,8 +18,11 @@
 //Worm2D21m + worm2d -> worm2d21 (cc musc + nn ptr + musc connections)
 //worm2d21 -> worm21 (cc musc + cc nn + musc connections)
 
-
-const string W2D_VERSION = "v0.1.0";
+#ifdef W2D_VERSION_FROM_CMAKE
+const string W2D_VERSION = W2D_VERSION_FROM_CMAKE;
+#else
+const string W2D_VERSION = "-Unknown-";
+#endif
 
 //class SRCE;
 
