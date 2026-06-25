@@ -15,7 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 neuroml = ["pyNeuroML", "NEURON<9.0"]
-dev = ["ruff", "pytest", "ipywidgets", "setuptools==80", "OSBModelValidation", "pyNeuroML", "modelspec"]
+dev = ["ruff", "pytest", "ipywidgets", "OSBModelValidation", "pyNeuroML", "modelspec"]
 all = ["worm2d[neuroml]", "worm2d[dev]"]
 
 [project.scripts]

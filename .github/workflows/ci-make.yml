@@ -69,6 +69,8 @@ jobs:
         export NEURON_HOME=$pythonLocation
         env
 
+        pip install setuptools==80 # needed for Neuron on py >=3.12
+
         ./test_all.sh 
 
 
