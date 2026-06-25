@@ -218,6 +218,7 @@ public:
  void addParsToJson(json & j){
     Evolution::addParsToJson(j); 
     this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+    this->evopar_ptr->addRootParsToJson(j);
 }
 
 
@@ -307,6 +308,7 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
     
     if (json_ptr_->contains("Evolutionary Optimization Parameters"))
     w_ptr1->setParsFromJson((*json_ptr_)["Evolutionary Optimization Parameters"]);
+    w_ptr1->setRootParsFromJson(*json_ptr_);
     w_ptr1->setPars(cmd_);
     return w_ptr1;
 
@@ -1012,7 +1014,9 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
  
 
     int zeroGainsType;
-    w_ptr->getValCJWorm("sr_zero_gains_type", zeroGainsType);
+    w_ptr->getValCJ(
+        "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+    );
     int doReverse;
     w_ptr->getValCJWorm("do_reverse", doReverse);
 

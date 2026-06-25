@@ -743,7 +743,9 @@ void Worm2DCE::setForward()
 
 
   int zeroGainsType;
-  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
+  getValCJ<int>(
+      "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+  );
   if (zeroGainsType == 1) sr_ptr->SR_A_gain = 0.0;
   
   //AVA_output =  0;
@@ -770,7 +772,9 @@ void Worm2DCE::setBackward()
 
   //shared_ptr<SRCEpars> srcepars = dynamic_pointer_cast<SRCEpars>(sr_ptr->srpars);
   int zeroGainsType;
-  getValCJWorm<int>("sr_zero_gains_type", zeroGainsType);
+  getValCJ<int>(
+      "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+  );
   if (zeroGainsType  == 1) sr_ptr->SR_B_gain = 0.0;
   
   //cout << "sragain " << sr_ptr->SR_A_gain << " srbgain " << sr_ptr->SR_B_gain << endl;
@@ -1701,13 +1705,14 @@ void Worm2DCE::writeAct()
     }
     // Muscles
     //ofs << "\nM: ";
-    if (m_ptr){
-    for (int i = 1; i <= par1.N_muscles; i++) {
-      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
-    }}
-    ofs << endl;
-  }
-}
+	    if (m_ptr){
+	    for (int i = 1; i <= par1.N_muscles; i++) {
+	      ofs <<  " " << m_ptr->DorsalMuscleOutput(i) << " " << m_ptr->VentralMuscleOutput(i);
+	    }}
+	    writeExtInp(ofs);
+	    ofs << endl;
+	  }
+	}
 
 
 void Worm2DCE::DumpParams(ofstream &ofs) {

@@ -219,6 +219,13 @@ class baseParameters
 
     }
 
+    template<class T>
+    bool getCmdVal(const string & name_str, T & val) const
+    {
+        return BPitsCmdArgs != nullptr
+            && BPitsCmdArgs->getArgValT<T>("--" + name_str, val);
+    }
+
 
 
     json setDefaultVals()
@@ -244,7 +251,7 @@ class baseParameters
         defaultVals_["sr_type"] = "None";
         defaultVals_["sr_form"] = 0;
         defaultVals_["sr_seg_per_sr"] = 6;
-        defaultVals_["sr_zero_gains_type"] = 0;
+        defaultVals_["sr_zero_gains_type"] = 1;
         defaultVals_["sr_offset"] = 0;
         defaultVals_["nmj_weight"] = 1;
         defaultVals_["do_reverse"] = 0;
@@ -487,6 +494,8 @@ double eFunc(const double & val, const json & j, bool setItsJson = false);
 //double eFunc1(const double & val, const json & j);
 
 void reset(){itsJson = {};}
+void setFunctionCondition(
+    const int function_index, const bool has_condval, const int condval);
 
 baseParameters & bp;
 const bool condf;
@@ -600,6 +609,10 @@ class InputSwitcher
   void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
 
   void setInputOnce(const int & ind, vector<double> & externalInputs);
+  void updateScheduledInput(
+      const double & current_time, vector<double> & externalInputs);
+  void resetScheduledInput();
+  void activateScheduleForSimulation();
   void construct(const json & j);
  
   void setParsFromJson(const json & j){construct(j);}
@@ -610,8 +623,13 @@ class InputSwitcher
       vals.swap(vals_);}
 
   private:
+  vector<int> scheduled_input_indices;
   vector<double> timeperiods;
   double time_offset = 0, total_period = 0;
+  bool doEvolution = false;
+  bool scheduleActive = false;
+  int current_schedule_entry = -1;
+  double previous_schedule_time = -1;
   vector<vector<int> > inds;
   vector<vector<double> > vals;
   //int inputInd = -1;
@@ -692,6 +710,8 @@ virtual void addParsToJson(json & j);
 void writeJsonFile(ofstream & json_out);
 virtual void addEvolvableToJson(json & j) {return;}
 virtual void addFuncableToJson(json & j) {return;}
+virtual void applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval);
 void addParsToJson();
 
 const NSForW2D & itsNS() const {return *n_ptr;}
@@ -710,7 +730,12 @@ virtual ~Worm2Dbase(){
         if (n_ptr) delete n_ptr;
 }
 
-virtual void setTime(double t_){t=t_;datatime=t_;}
+virtual void setTime(double t_){
+    t=t_;
+    datatime=t_;
+    InputSwitcher::resetScheduledInput();
+    resetFuncableSchedules();
+}
 const double & itsStepSize() const {return settedStepSize;}
 void incSimTimes();
 
@@ -744,6 +769,10 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
+void activateInputScheduleForSimulation() {
+    InputSwitcher::activateScheduleForSimulation();
+}
+void activateFuncableSchedulesForSimulation();
 const vector<double> & itsExternalInputs() const {return externalInputs;}
 const vector<toFromWeight> & itsExternalInputConn() const {
     return externalInputConn;
@@ -753,6 +782,22 @@ virtual const vector<string> getDistinctCellNames() {return {"not implemented"};
 Efunctor itsEf;
 
 protected:
+struct FuncableSchedule
+{
+    int function_index = -1;
+    vector<double> time_intervals;
+    vector<int> condvals;
+    double time_offset = 0, total_period = 0;
+    bool doEvolution = false, active = false;
+    int current_entry = -1;
+    double previous_time = -1;
+};
+
+vector<FuncableSchedule> funcableSchedules;
+void constructFuncableSchedules(const json & j);
+void resetFuncableSchedules();
+void updateScheduledFuncables(const double current_time);
+
 //Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_, bool mfwc);
 
 Worm2Dbase(wormIzqParams par1_, NSForW2D * n_ptr_, muscForW2D * m_ptr_,

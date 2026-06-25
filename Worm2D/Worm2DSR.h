@@ -105,6 +105,9 @@ const vector<intDoubDoub> genPhenLims;
 
 void applyFuncables();
 void applyFuncables(json & j1_);
+void applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval) override;
+virtual void resetScheduledFuncableFromJson(const json & j);
 
 void setEvolPars(W2Dparameters & w2par_, string evotype_);
 void setParsFromPheno(const TVector<double> &pheno);
@@ -183,11 +186,12 @@ vector<double> chemConHistory;
 double sensorN, sensorM;
 //double dSensorN, dSensorM;
 int iSensorN, iSensorM;
-//double chemCon, presentAvgCon, pastAvgCon;
-double presentAvgCon, pastAvgCon;
-int extInp1 = -1, extInp2 = -1;
-double HSStepSize = 0.01;
-string environmentName;
+	//double chemCon, presentAvgCon, pastAvgCon;
+	double presentAvgCon, pastAvgCon;
+	int extInp1 = -1, extInp2 = -1;
+	double HSStepSize = 0.01;
+	string name;
+	string environmentName;
 
 void setParsFromJson2(const json & j);
 void setParsFromJson(const json & j);
@@ -263,6 +267,7 @@ WormCO2DSR(const json & j, shared_ptr<const CmdArgs> cmd, bool callInit = false)
 
 void addParsToJson(json & j);
 void applyFuncablesExt();
+void resetScheduledFuncableFromJson(const json & j) override;
 
 
 void setParsFromPheno(const TVector<double> &pheno);

@@ -178,6 +178,14 @@ void SR18::addParsToJson(json & j) const
 
 void SRCE::addParsToJson(json & j) const
 {
+    if (
+        !j.contains("stretch_receptor")
+        || !j.at("stretch_receptor").is_object())
+      j["stretch_receptor"] = json::object();
+    j["stretch_receptor"].erase("sr_zero_gains_type_evo");
+    j["stretch_receptor"].erase("SRZeroGainsTypeEvo");
+    j["stretch_receptor"]["sr_zero_gains_type"]["value"] =
+        zeroGainsType;
     
     if (j.contains("nervous_system")){
     //cout << j["nervous_system"] << endl;
@@ -265,6 +273,32 @@ void SRCE::addParsToJson(json & j) const
 
 void SRCE::setParsFromJson(const json & j) 
 {
+    if (j.contains("stretch_receptor")
+        && j["stretch_receptor"].contains("sr_zero_gains_type"))
+    {
+        zeroGainsType =
+            j["stretch_receptor"]["sr_zero_gains_type"]["value"].get<int>();
+    }
+    else if (j.contains("Stretch receptor")
+        && j["Stretch receptor"].contains("SRZeroGainsType"))
+    {
+        zeroGainsType =
+            j["Stretch receptor"]["SRZeroGainsType"]["value"].get<int>();
+    }
+
+    int commandLineValue;
+    if (basePar1->getCmdVal<int>(
+            "sr_zero_gains_type", commandLineValue
+        )
+        || basePar1->getCmdVal<int>(
+            "SRZeroGainsType", commandLineValue
+        ))
+    {
+        zeroGainsType = commandLineValue;
+    }
+    basePar1->setValCJ<int>(
+        "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+    );
     
 
     //double sSR_A_gain, sSR_B_gain;

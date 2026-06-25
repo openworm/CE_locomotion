@@ -1485,6 +1485,51 @@ void Worm2DSRE::applyFuncables(json & j1_)
 recursive_applyFuncablev2(j1_, itsEf);
 }
 
+void Worm2DSRE::applyScheduledFuncable(
+    const int function_index, const bool has_condval, const int condval)
+{
+    NervousSystem * nervous_system =
+        dynamic_cast<NervousSystem *>(n_ptr);
+    TVector<double> states;
+    TVector<double> past_states;
+    if (nervous_system != nullptr)
+    {
+        states = nervous_system->states;
+        past_states = nervous_system->paststates;
+    }
+    const vector<double> saved_external_inputs = externalInputs;
+
+    Worm2Dbase::applyScheduledFuncable(
+        function_index, has_condval, condval);
+    if (!getCurrentPheno().empty())
+        callEfcond();
+    else
+    {
+        json transformed = BPitsJson;
+        applyFuncables(transformed);
+        resetScheduledFuncableFromJson(transformed);
+    }
+
+    if (nervous_system != nullptr)
+    {
+        for (int i = 1; i <= nervous_system->CircuitSize(); i++)
+            nervous_system->SetNeuronState(i, states[i]);
+        nervous_system->paststates = past_states;
+    }
+    externalInputs = saved_external_inputs;
+}
+
+void Worm2DSRE::resetScheduledFuncableFromJson(const json & j)
+{
+    resetFromJson(j);
+}
+
+void WormCO2DSR::resetScheduledFuncableFromJson(const json & j)
+{
+    resetFromJson(j);
+    Sensor::setParsFromJson(j);
+}
+
 
 
 void Worm2DSRE::setParsFromPheno(const TVector<double> &pheno)
@@ -2305,10 +2350,11 @@ void Sensor::construct(const json & j)
   {
     const json & sensors = j["sensors"];
     int ind = 1;
-    while(sensors.contains("sensor_" + to_string(ind)))
+    for (const auto & item : sensors.items())
     {
-      const json & sensorJson = sensors["sensor_" + to_string(ind)];
+      const json & sensorJson = item.value();
       SensorPars sensor;
+      sensor.name = item.key();
       sensor.setParsFromJson2(sensorJson);
       if (sensor.extInp1 < 0 || sensor.extInp2 < 0)
       {
@@ -2338,6 +2384,7 @@ void Sensor::construct(const json & j)
     {
       const json & sensorJson = sensors["Sensor_" + to_string(ind)];
       SensorPars sensor;
+      sensor.name = "sensor_" + to_string(ind);
       sensor.setParsFromJson(sensorJson);
       if (sensor.environmentName.empty())
       {
@@ -2406,11 +2453,17 @@ void  Sensor::addParsToJson(json & j) const
       : json::array();
 
   set<int> sensorInputNumbers;
+  json oldSensors = j.contains("sensors") ? j.at("sensors") : json::object();
+  j["sensors"] = json::object();
   json & environmentsJson = j["environments"];
   for (int i = 0; i<spvec.size(); i++)
   {
     const SensorPars & sensor = spvec[i];
-    json & sensorJson = j["sensors"]["sensor_" + to_string(i+1)];
+    const string sensorName =
+      sensor.name.empty() ? "sensor_" + to_string(i+1) : sensor.name;
+    json & sensorJson = j["sensors"][sensorName];
+    if (oldSensors.contains(sensorName) && oldSensors.at(sensorName).is_object())
+      sensorJson = oldSensors.at(sensorName);
     const json previousWeights =
       sensorJson.contains("weights")
       && sensorJson.at("weights").contains("value")

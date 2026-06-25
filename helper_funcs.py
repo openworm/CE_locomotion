@@ -321,14 +321,17 @@ def delete_environment(json_data, environment_name):
 def add_sensor(
     json_data,
     environment_name,
+    name=None,
     sensor_n=2.0,
     sensor_m=2.0,
 ):
-    """Return a copy of a worm JSON dictionary with a new sensor."""
+    """Return a copy of a worm JSON dictionary plus the new sensor name."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(environment_name, str) or not environment_name:
         raise ValueError("environment_name must be a non-empty string")
+    if name is not None and (not isinstance(name, str) or not name.strip()):
+        raise ValueError("name must be a non-empty string")
 
     for parameter_name, value in (
         ("sensor_n", sensor_n),
@@ -366,10 +369,15 @@ def add_sensor(
     sensors = result.setdefault("sensors", {})
     if not isinstance(sensors, dict):
         raise TypeError("'sensors' must be a dictionary")
-    sensor_index = 1
-    while "sensor_{}".format(sensor_index) in sensors:
-        sensor_index += 1
-    sensor_name = "sensor_{}".format(sensor_index)
+    if name is None:
+        sensor_index = 1
+        while "sensor_{}".format(sensor_index) in sensors:
+            sensor_index += 1
+        sensor_name = "sensor_{}".format(sensor_index)
+    else:
+        sensor_name = name.strip()
+        if sensor_name in sensors:
+            raise ValueError("Sensor {!r} already exists".format(sensor_name))
 
     sensors[sensor_name] = {
         "environment": {"value": canonical_environment_name},
@@ -399,7 +407,7 @@ def add_sensor(
             "value": [],
         },
     }
-    return result
+    return result, sensor_name
 
 
 def add_sensor_connection(
@@ -497,10 +505,583 @@ def add_sensor_connection(
     return result
 
 
+def add_cell_muscle_connection(
+    json_data,
+    cell_name,
+    muscle_number,
+    muscle_side,
+    weight=1.0,
+    make_evolvable=False,
+    evotag_name=None,
+):
+    """Return a copy with a cell-to-muscle connection added if absent."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+    if isinstance(muscle_number, bool) or not isinstance(muscle_number, int):
+        raise TypeError("muscle_number must be an integer")
+    if muscle_number < 1:
+        raise ValueError("muscle_number must be at least 1")
+    if not isinstance(muscle_side, str):
+        raise TypeError("muscle_side must be a string")
+    muscle_side = muscle_side.lower()
+    if muscle_side not in {"dorsal", "ventral"}:
+        raise ValueError("muscle_side must be 'dorsal' or 'ventral'")
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+    if not isinstance(make_evolvable, bool):
+        raise TypeError("make_evolvable must be a boolean")
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    muscle = result.get("Muscle")
+    if not isinstance(muscle, dict):
+        raise KeyError("JSON does not contain a 'Muscle' object")
+    muscle_count_object = muscle.get("Nmuscles")
+    if (
+        not isinstance(muscle_count_object, dict)
+        or isinstance(muscle_count_object.get("value"), bool)
+        or not isinstance(muscle_count_object.get("value"), int)
+    ):
+        raise TypeError("'Muscle.Nmuscles.value' must be an integer")
+    muscle_count = muscle_count_object["value"]
+    if muscle_number > muscle_count:
+        raise ValueError(
+            "muscle_number must not exceed the muscle count ({})".format(muscle_count)
+        )
+
+    nmj_name = "{}_nmj".format(muscle_side)
+    weights = result.setdefault(
+        nmj_name,
+        {
+            "weights": {
+                "message": "{} NMJ weights in sparse format".format(
+                    muscle_side.capitalize()
+                ),
+                "value": [],
+            }
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("'{}' must be a dictionary".format(nmj_name))
+    weights = weights.setdefault(
+        "weights",
+        {
+            "message": "{} NMJ weights in sparse format".format(
+                muscle_side.capitalize()
+            ),
+            "value": [],
+        },
+    )
+    if not isinstance(weights, dict):
+        raise TypeError("'{}.weights' must be a dictionary".format(nmj_name))
+    if weights.get("value") is None:
+        weights["value"] = []
+    connections = weights.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'{}.weights.value' must be a list".format(nmj_name))
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each cell-to-muscle connection must be a dictionary")
+        if (
+            connection.get("from_cell") == cell_name
+            and connection.get("to_musc") == muscle_number
+        ):
+            return result
+
+    connections.append(
+        {
+            "from_cell": cell_name,
+            "to_musc": muscle_number,
+            "weight": {"value": float(weight)},
+        }
+    )
+    if make_evolvable or evotag_name is not None:
+        result = add_evotag(
+            result,
+            [
+                nmj_name,
+                "weights",
+                "value",
+                len(connections) - 1,
+                "weight",
+            ],
+            evotag_name,
+        )
+    return result
+
+
 def add_cell(json_data):
     """Return a copy with one default cell added, plus the new cell name."""
     result, cell_names = add_random_cell_network(json_data, 1, 0.0)
     return result, cell_names[0]
+
+
+def get_cell_names_by_stem(json_data, stem):
+    """Return cell names whose numeric suffix follows the requested stem."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(stem, str) or not stem:
+        raise ValueError("stem must be a non-empty string")
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    if not isinstance(cell_names, list):
+        raise TypeError("'nervous_system.cell_names.value' must be a list")
+
+    prefix = stem + "_"
+    matches = []
+    for cell_name in cell_names:
+        if not isinstance(cell_name, str):
+            raise TypeError("Each cell name must be a string")
+        if cell_name.startswith(prefix) and cell_name[len(prefix) :].isdigit():
+            matches.append(cell_name)
+    return matches
+
+
+def set_input_switcher_input(
+    json_data,
+    input_index,
+    input_nums,
+    values,
+):
+    """Return a copy with an input-switcher pattern added or replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if isinstance(input_index, bool) or not isinstance(input_index, int):
+        raise TypeError("input_index must be an integer")
+    if input_index < 0:
+        raise ValueError("input_index must be non-negative")
+    if not isinstance(input_nums, (list, tuple)) or not input_nums:
+        raise ValueError("input_nums must be a non-empty list or tuple")
+    if not isinstance(values, (list, tuple)) or not values:
+        raise ValueError("values must be a non-empty list or tuple")
+    if len(input_nums) != len(values):
+        raise ValueError("input_nums and values must have the same length")
+
+    pattern_values = []
+    seen_input_nums = set()
+    for input_num, value in zip(input_nums, values):
+        if isinstance(input_num, bool) or not isinstance(input_num, int):
+            raise TypeError("Each input number must be an integer")
+        if input_num < 1:
+            raise ValueError("Each input number must be at least 1")
+        if input_num in seen_input_nums:
+            raise ValueError("Input number {} occurs more than once".format(input_num))
+        seen_input_nums.add(input_num)
+
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("Each input value must be a number")
+        if not math.isfinite(value):
+            raise ValueError("Each input value must be finite")
+        pattern_values.append({"input_num": input_num, "value": float(value)})
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.setdefault("input_switcher", {})
+    if not isinstance(input_switcher, dict):
+        raise TypeError("'input_switcher' must be a dictionary")
+    inputs_object = input_switcher.setdefault("inputs", {"value": []})
+    if not isinstance(inputs_object, dict):
+        raise TypeError("'input_switcher.inputs' must be a dictionary")
+    if inputs_object.get("value") is None:
+        inputs_object["value"] = []
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'input_switcher.inputs.value' must be a list")
+
+    legacy_zero_based = False
+    for pattern in inputs:
+        if not isinstance(pattern, dict):
+            raise TypeError("Each input-switcher pattern must be a dictionary")
+        pattern_entries = pattern.get("value")
+        if not isinstance(pattern_entries, list):
+            raise TypeError("Each input-switcher pattern value must be a list")
+        for entry in pattern_entries:
+            if not isinstance(entry, dict):
+                raise TypeError(
+                    "Each input-switcher pattern entry must be a dictionary"
+                )
+            existing_input_num = entry.get("input_num")
+            if (
+                isinstance(existing_input_num, bool)
+                or not isinstance(existing_input_num, int)
+                or existing_input_num < 0
+            ):
+                raise TypeError(
+                    "Each existing input number must be a non-negative integer"
+                )
+            if existing_input_num == 0:
+                legacy_zero_based = True
+
+    if legacy_zero_based:
+        for pattern in inputs:
+            for entry in pattern["value"]:
+                entry["input_num"] += 1
+
+    new_pattern = {
+        "input_index": input_index,
+        "value": pattern_values,
+    }
+    matching_positions = []
+    for position, pattern in enumerate(inputs):
+        if pattern.get("input_index") == input_index:
+            matching_positions.append(position)
+
+    if matching_positions:
+        inputs[matching_positions[0]] = new_pattern
+        for position in reversed(matching_positions[1:]):
+            inputs.pop(position)
+    else:
+        inputs.append(new_pattern)
+
+    size_object = input_switcher.setdefault("size", {"value": 0})
+    if not isinstance(size_object, dict):
+        raise TypeError("'input_switcher.size' must be a dictionary")
+    current_size = size_object.get("value", 0)
+    if (
+        isinstance(current_size, bool)
+        or not isinstance(current_size, int)
+        or current_size < 0
+    ):
+        raise TypeError("'input_switcher.size.value' must be a non-negative integer")
+    size_object["value"] = max(current_size, input_index + 1)
+    return result
+
+
+def set_input_switcher_schedule(
+    json_data,
+    time_periods,
+    input_indices,
+    time_offset=0.0,
+    do_evolution=False,
+):
+    """Return a copy with a repeating input-switcher schedule set in seconds."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(time_periods, (list, tuple)) or not time_periods:
+        raise ValueError("time_periods must be a non-empty list or tuple")
+    if not isinstance(input_indices, (list, tuple)) or not input_indices:
+        raise ValueError("input_indices must be a non-empty list or tuple")
+    if len(time_periods) != len(input_indices):
+        raise ValueError("time_periods and input_indices must have the same length")
+    if isinstance(time_offset, bool) or not isinstance(time_offset, (int, float)):
+        raise TypeError("time_offset must be a number")
+    if not math.isfinite(time_offset) or time_offset < 0:
+        raise ValueError("time_offset must be finite and non-negative")
+    if not isinstance(do_evolution, bool):
+        raise TypeError("do_evolution must be a boolean")
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.get("input_switcher")
+    if not isinstance(input_switcher, dict):
+        raise KeyError("JSON does not contain an 'input_switcher' object")
+    size_object = input_switcher.get("size")
+    if not isinstance(size_object, dict):
+        raise KeyError("JSON does not contain 'input_switcher.size'")
+    input_count = size_object.get("value")
+    if (
+        isinstance(input_count, bool)
+        or not isinstance(input_count, int)
+        or input_count < 1
+    ):
+        raise TypeError("'input_switcher.size.value' must be a positive integer")
+
+    periods = []
+    for period in time_periods:
+        if isinstance(period, bool) or not isinstance(period, (int, float)):
+            raise TypeError("Each time period must be a number")
+        if not math.isfinite(period) or period <= 0:
+            raise ValueError("Each time period must be finite and greater than zero")
+        periods.append(float(period))
+
+    indices = []
+    for input_index in input_indices:
+        if isinstance(input_index, bool) or not isinstance(input_index, int):
+            raise TypeError("Each input index must be an integer")
+        if input_index < 0 or input_index >= input_count:
+            raise ValueError(
+                "Input index {} is outside the configured range 0 to {}".format(
+                    input_index, input_count - 1
+                )
+            )
+        indices.append(input_index)
+
+    input_switcher["time_periods"] = {"value": periods}
+    input_switcher["input_indices"] = {"value": indices}
+    input_switcher["time_offset"] = {"value": float(time_offset)}
+    input_switcher["doEvolution"] = {"value": do_evolution}
+    return result
+
+
+def set_funcable_schedule(
+    json_data,
+    function_index,
+    time_intervals,
+    condvals=None,
+    time_offset=0.0,
+    do_evolution=False,
+    schedule_name=None,
+):
+    """Return a copy with a repeating schedule for one Funcable function."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if (
+        isinstance(function_index, bool)
+        or not isinstance(function_index, int)
+        or function_index < 1
+    ):
+        raise ValueError("function_index must be a positive integer")
+    if not isinstance(time_intervals, (list, tuple)) or not time_intervals:
+        raise ValueError("time_intervals must be a non-empty list or tuple")
+    if isinstance(time_offset, bool) or not isinstance(time_offset, (int, float)):
+        raise TypeError("time_offset must be a number")
+    if not math.isfinite(time_offset) or time_offset < 0:
+        raise ValueError("time_offset must be finite and non-negative")
+    if not isinstance(do_evolution, bool):
+        raise TypeError("do_evolution must be a boolean")
+    if schedule_name is not None and (
+        not isinstance(schedule_name, str) or not schedule_name
+    ):
+        raise ValueError("schedule_name must be a non-empty string or None")
+
+    intervals = []
+    for interval in time_intervals:
+        if isinstance(interval, bool) or not isinstance(interval, (int, float)):
+            raise TypeError("Each time interval must be a number")
+        if not math.isfinite(interval) or interval <= 0:
+            raise ValueError("Each time interval must be finite and greater than zero")
+        intervals.append(float(interval))
+
+    condition_values = None
+    if condvals is not None:
+        if not isinstance(condvals, (list, tuple)):
+            raise TypeError("condvals must be a list, tuple or None")
+        if len(condvals) != len(intervals):
+            raise ValueError("condvals and time_intervals must have the same length")
+        condition_values = []
+        for condval in condvals:
+            if isinstance(condval, bool) or not isinstance(condval, int):
+                raise TypeError("Each condval must be an integer")
+            condition_values.append(condval)
+
+    result = copy.deepcopy(json_data)
+    funcable = result.setdefault("Funcable", {})
+    if not isinstance(funcable, dict):
+        raise TypeError("'Funcable' must be a dictionary")
+    schedules = funcable.setdefault("schedules", {})
+    if not isinstance(schedules, dict):
+        raise TypeError("'Funcable.schedules' must be a dictionary")
+
+    if schedule_name is None:
+        schedule_name = "function_{}".format(function_index)
+    schedule = {
+        "function_index": {"value": function_index},
+        "time_intervals": {"value": intervals},
+        "time_offset": {"value": float(time_offset)},
+        "doEvolution": {"value": do_evolution},
+    }
+    if condition_values is not None:
+        schedule["condvals"] = {"value": condition_values}
+    schedules[schedule_name] = schedule
+    return result
+
+
+def delete_all_evotags(json_data):
+    """Return a copy without evotags or their registry fields."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    fields_to_remove = {"evotag", "evolvable_ranges", "evolved_used"}
+
+    def remove_fields(value):
+        if isinstance(value, dict):
+            return {
+                key: remove_fields(child)
+                for key, child in value.items()
+                if key not in fields_to_remove
+            }
+        if isinstance(value, list):
+            return [remove_fields(child) for child in value]
+        return copy.deepcopy(value)
+
+    return remove_fields(json_data)
+
+
+def find_evotag_occurrences(json_data, evotag_name):
+    """Return matching evotag entries indexed by their JSON paths."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    occurrences = {}
+
+    def path_string(path):
+        result = ""
+        for part in path:
+            if isinstance(part, int):
+                result += "[{}]".format(part)
+            else:
+                if result:
+                    result += "."
+                result += str(part)
+        return result
+
+    def find_matches(value, path=()):
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag_name:
+                occurrences[path_string(path)] = copy.deepcopy(value)
+            for key, child in value.items():
+                find_matches(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                find_matches(child, path + (index,))
+
+    find_matches(json_data)
+    return occurrences
+
+
+def find_evotag_objects(json_data, evotag_name):
+    """Return the JSON hierarchy containing objects with a matching evotag."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    no_match = object()
+    connection_context_keys = (
+        "from",
+        "to",
+        "from_cell",
+        "to_cell",
+        "from_input",
+        "input_num",
+        "from_output",
+        "to_output",
+        "from_sr",
+        "to_ns",
+        "from_musc",
+        "to_musc",
+        "to_seg",
+        "cell_ind",
+    )
+
+    def connection_context(value):
+        return {
+            key: copy.deepcopy(value[key])
+            for key in connection_context_keys
+            if key in value
+        }
+
+    def matching_hierarchy(value):
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag_name:
+                return copy.deepcopy(value)
+
+            matches = {}
+            for key, child in value.items():
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches[key] = child_match
+            if matches:
+                matches = {**connection_context(value), **matches}
+            return matches if matches else no_match
+
+        if isinstance(value, list):
+            matches = []
+            for child in value:
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches.append(child_match)
+            return matches if matches else no_match
+
+        return no_match
+
+    result = matching_hierarchy(json_data)
+    return {} if result is no_match else result
+
+
+def rename_cell(json_data, old_name, new_name):
+    """Return a copy with a nervous-system cell renamed everywhere."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("old_name", old_name),
+        ("new_name", new_name),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    if old_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(old_name)
+        )
+    if new_name != old_name and new_name in cells:
+        raise ValueError("Cell {!r} already exists".format(new_name))
+    if new_name == old_name:
+        return copy.deepcopy(json_data)
+
+    cell_names = nervous_system.get("cell_names", {}).get("value")
+    cell_index = None
+    if isinstance(cell_names, list) and old_name in cell_names:
+        cell_index = cell_names.index(old_name)
+
+    def replace_name(value):
+        if isinstance(value, dict):
+            renamed = {}
+            for key, child in value.items():
+                renamed_key = new_name if key == old_name else key
+                if renamed_key in renamed:
+                    raise ValueError(
+                        "Renaming {!r} to {!r} would overwrite a dictionary "
+                        "entry".format(old_name, new_name)
+                    )
+                renamed[renamed_key] = replace_name(child)
+            return renamed
+        if isinstance(value, list):
+            return [replace_name(child) for child in value]
+        if value == old_name:
+            return new_name
+        return copy.deepcopy(value)
+
+    result = replace_name(json_data)
+
+    no_suffix_names = (
+        result.get("nervous_system", {}).get("cell_names_no_suffix", {}).get("value")
+    )
+    if (
+        cell_index is not None
+        and isinstance(no_suffix_names, list)
+        and cell_index < len(no_suffix_names)
+    ):
+        stem, separator, suffix = new_name.rpartition("_")
+        no_suffix_names[cell_index] = (
+            stem if separator and suffix.isdigit() else new_name
+        )
+
+    return result
 
 
 def add_random_cell_network(
@@ -679,6 +1260,76 @@ def add_cell_connection(
         }
     )
     return result
+
+
+def _get_cell_connection(
+    json_data,
+    from_cell,
+    to_cell,
+    connection_key,
+    reciprocal=False,
+):
+    """Return a copy of a matching nervous-system connection, if present."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for parameter_name, cell_name in (
+        ("from_cell", from_cell),
+        ("to_cell", to_cell),
+    ):
+        if not isinstance(cell_name, str) or not cell_name:
+            raise ValueError("{} must be a non-empty string".format(parameter_name))
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        return None
+    connection_object = nervous_system.get(connection_key)
+    if connection_object is None:
+        return None
+    if not isinstance(connection_object, dict):
+        raise TypeError(
+            "'nervous_system.{}' must be a dictionary".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if connections is None:
+        return None
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each connection must be a dictionary")
+        direct_match = (
+            connection.get("from") == from_cell and connection.get("to") == to_cell
+        )
+        reverse_match = reciprocal and (
+            connection.get("from") == to_cell and connection.get("to") == from_cell
+        )
+        if direct_match or reverse_match:
+            return copy.deepcopy(connection)
+    return None
+
+
+def get_chemical_connection(json_data, from_cell, to_cell):
+    """Return the directed chemical connection, or None if it is absent."""
+    return _get_cell_connection(
+        json_data,
+        from_cell,
+        to_cell,
+        "chemical_conns",
+    )
+
+
+def get_electrical_connection(json_data, first_cell, second_cell):
+    """Return the reciprocal electrical connection, or None if absent."""
+    return _get_cell_connection(
+        json_data,
+        first_cell,
+        second_cell,
+        "electrical_conns",
+        reciprocal=True,
+    )
 
 
 def delete_cell_connection(json_data, from_cell, to_cell):
@@ -898,6 +1549,152 @@ def add_chemical_connection_evotag(
     )
 
 
+def add_chemical_connection_stem_evotag(
+    json_data,
+    from_stem,
+    to_stem,
+    evotag_name=None,
+):
+    """Return updated JSON and the evotag assigned to same-index connections."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_stem", from_stem),
+        ("to_stem", to_stem),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+    if evotag_name is not None and (
+        not isinstance(evotag_name, str) or not evotag_name
+    ):
+        raise ValueError("evotag_name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    connection_object = nervous_system.get("chemical_conns")
+    if not isinstance(connection_object, dict):
+        raise KeyError("JSON does not contain 'nervous_system.chemical_conns'")
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'nervous_system.chemical_conns.value' must be a list")
+
+    def matching_suffix(cell_name, stem):
+        if not isinstance(cell_name, str):
+            return None
+        prefix = stem + "_"
+        if not cell_name.startswith(prefix):
+            return None
+        suffix = cell_name[len(prefix) :]
+        return suffix if suffix.isdigit() else None
+
+    matching_connections = []
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        from_suffix = matching_suffix(connection.get("from"), from_stem)
+        to_suffix = matching_suffix(connection.get("to"), to_stem)
+        if from_suffix is None or from_suffix != to_suffix:
+            continue
+        weight = connection.get("weight")
+        if not isinstance(weight, dict) or "value" not in weight:
+            raise TypeError("Connection weight must contain a value")
+        matching_connections.append(connection)
+
+    if not matching_connections:
+        raise KeyError(
+            "No same-index chemical connections exist from stem {!r} "
+            "to stem {!r}".format(from_stem, to_stem)
+        )
+
+    evolvable_ranges = result.setdefault("evolvable_ranges", {})
+    if not isinstance(evolvable_ranges, dict):
+        raise TypeError("'evolvable_ranges' must be a dictionary")
+
+    if evotag_name is None:
+        used_evotags = set(evolvable_ranges)
+
+        def collect_evotags(value):
+            if isinstance(value, dict):
+                evotag = value.get("evotag")
+                if isinstance(evotag, str) and evotag:
+                    used_evotags.add(evotag)
+                for child in value.values():
+                    collect_evotags(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_evotags(child)
+
+        collect_evotags(result)
+        suffix = 0
+        while "ns_chemcons_{}".format(suffix) in used_evotags:
+            suffix += 1
+        evotag_name = "ns_chemcons_{}".format(suffix)
+
+    for connection in matching_connections:
+        connection["weight"]["evotag"] = evotag_name
+
+    if evotag_name not in evolvable_ranges:
+        evolvable_ranges[evotag_name] = {
+            "active": True,
+            "lower_limit": -15.0,
+            "name": "ns_chemcons",
+            "upper_limit": 15.0,
+        }
+    return result, evotag_name
+
+
+def remove_chemical_connection_stem_mfunc(
+    json_data,
+    from_stem,
+    to_stem,
+):
+    """Remove mfunc from same-index chemical connections between two stems."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, value in (
+        ("from_stem", from_stem),
+        ("to_stem", to_stem),
+    ):
+        if not isinstance(value, str) or not value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    connection_object = nervous_system.get("chemical_conns")
+    if not isinstance(connection_object, dict):
+        raise KeyError("JSON does not contain 'nervous_system.chemical_conns'")
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError("'nervous_system.chemical_conns.value' must be a list")
+
+    def matching_suffix(cell_name, stem):
+        if not isinstance(cell_name, str):
+            return None
+        prefix = stem + "_"
+        if not cell_name.startswith(prefix):
+            return None
+        suffix = cell_name[len(prefix) :]
+        return suffix if suffix.isdigit() else None
+
+    for connection in connections:
+        if not isinstance(connection, dict):
+            raise TypeError("Each chemical connection must be a dictionary")
+        from_suffix = matching_suffix(connection.get("from"), from_stem)
+        to_suffix = matching_suffix(connection.get("to"), to_stem)
+        if from_suffix is None or from_suffix != to_suffix:
+            continue
+        weight = connection.get("weight")
+        if not isinstance(weight, dict):
+            raise TypeError("Connection weight must be a dictionary")
+        weight.pop("mfunc", None)
+
+    return result
+
+
 def add_electrical_connection_evotag(
     json_data,
     first_cell,
@@ -1010,6 +1807,75 @@ def add_cell_parameter_evotag(
     return result
 
 
+def set_json_value(json_data, keys, new_value):
+    """Return a copy with the value at an existing JSON path replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys[:-1]):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(key, depth)
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    final_position = len(keys) - 1
+    final_key = keys[-1]
+    if isinstance(current, dict):
+        if final_key not in current:
+            raise KeyError(
+                "JSON path does not contain {!r} at position {}".format(
+                    final_key, final_position
+                )
+            )
+        current[final_key] = copy.deepcopy(new_value)
+    elif isinstance(current, list):
+        if isinstance(final_key, bool) or not isinstance(final_key, int):
+            raise TypeError(
+                "List path component at position {} must be an integer".format(
+                    final_position
+                )
+            )
+        try:
+            current[final_key] = copy.deepcopy(new_value)
+        except IndexError:
+            raise IndexError(
+                "List index {} is out of range at path position {}".format(
+                    final_key, final_position
+                )
+            )
+    else:
+        raise TypeError(
+            "JSON path reaches a non-container at position {}".format(final_position)
+        )
+
+    return result
+
+
 def add_evotag(json_data, keys, evotag_name=None):
     """Return a copy with the numeric value at a JSON path made evolvable."""
     if not isinstance(json_data, dict):
@@ -1091,6 +1957,8 @@ def add_evotag(json_data, keys, evotag_name=None):
             continue
         name_parts.append(part)
         previous_key = key
+    if len(name_parts) >= 3 and name_parts[-1] == "weight" and "weights" in name_parts:
+        name_parts.remove("weights")
     range_name = "_".join(name_parts)
     if not range_name:
         raise ValueError("The JSON path does not produce a valid evotag name")

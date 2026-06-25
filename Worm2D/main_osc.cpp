@@ -344,23 +344,12 @@ int main (int argc, const char* argv[])
     if (true){
     if (w2dsre) w2dsre->applyFuncablesExt();
     if (inputInd>=0) w2->setInputOnce(inputInd);
-    
 
-    //
-    //for (int i=0;i<w2->itsExternalInputs().size(); i++)
-    //cout << i << " " << w2->itsExternalInputs()[i] << endl;
-    //cout << "inputInd " << inputInd << endl;
-    //assert(0);
-
-    
 
 
     }
 
-    //if (w!=nullptr) w->setForward();
 
-    //double simduration = getParameterDouble(argc,argv,"-sd","10");
-    //double simtransient = getParameterDouble(argc,argv,"-st","10");    
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
 
@@ -389,7 +378,9 @@ int main (int argc, const char* argv[])
     EvolvableS* const ew = dynamic_cast<EvolvableS*>(w2);
    
     int zeroGainsType;
-    w2->getValCJWorm("sr_zero_gains_type", zeroGainsType);
+    w2->getValCJ(
+        "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
+    );
     int doReverse;
     w2->getValCJWorm("do_reverse", doReverse);
 
@@ -440,7 +431,7 @@ int main (int argc, const char* argv[])
     bool doforward = forwardfirst;
     for (int mode=0;mode<2;mode++){
     if (mode==1) {doforward = !forwardfirst; 
-        w2->randomizeNS(rs);
+        //w2->randomizeNS(rs);
         s1.sp.Transient = 0;
         }
 

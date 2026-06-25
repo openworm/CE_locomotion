@@ -8,11 +8,11 @@ Pi = 3.1415926
 
 
 # indir = 'COW2DSRE_test_3'
-indir = "example_W2D18L"
+indir = "testW2D18L"
 # indir = 'COW2DSRE_test'
-outdir = indir + "_out2"
-# pfolder = 'testruns'
-pfolder = "notebooks"
+outdir = indir + "_out"
+pfolder = "testruns"
+# pfolder = 'notebooks'
 
 doOrig = True
 doNML = False
@@ -21,46 +21,14 @@ doMuscles = False
 inputFolderName = pfolder + "/" + indir
 outputFolderName = pfolder + "/" + outdir
 
-args = dict(
-    modelFolder="Worm2D",  # folder containing the compiled C++ binary code
-    modelName="W2DSR",  # rerun using the generic json loaded model
-    outputFolderName=outputFolderName,  # output folder
-    overwrite=True,  # allow overwrite of output folder
-    randInitState=False,  # use fixed initial conditions from JSON file
-    doTestRun=True,  # run a single simple simulation
-)
 
-doAddevo = True
-doInputFolder = False
-if doInputFolder is True:
-    hf.delete_subfolder_directory(pfolder, outdir)
-    args["inputFolderName"] = inputFolderName
-    if doAddevo is True:
-        json_data = hf.get_worm_json(inputFolderName)
-        json_data, evotag_name = hf.add_chemical_connection_stem_evotag(
-            json_data, "VBA", "DD"
-        )
-        json_data, evotag_name = hf.add_chemical_connection_stem_evotag(
-            json_data, "VBP", "DD", evotag_name=evotag_name
-        )
-        json_data = hf.remove_chemical_connection_stem_mfunc(json_data, "VBA", "DD")
-        json_data = hf.remove_chemical_connection_stem_mfunc(json_data, "VBP", "DD")
-        hf.write_worm_json(outputFolderName, json_data)
-
-
-args["doEvol"] = True  # perform the optimization before running the simulation
-args["evoAvLen"] = 10  # plot moving average of evolution history figures
-args["maxGens"] = 40  # run the optimization for ten more generations
-args["popSize"] = 66  # population size for optimization
-run(**args)
-
-sys.exit()
-
-
+doInputFolder = True
 doDelete = False
-renewJson = True
+renewJson = doInputFolder
 addSelfConns = False
-doInputFolder = False
+
+
+random_seed = 187566
 
 
 args = dict(
@@ -68,9 +36,8 @@ args = dict(
     transient=10,
     simduration=500,
     simtransient=0,
-    maxGens=10,
-    popSize=16,
-    RandSeed=187857,
+    maxGens=20,
+    RandSeed=random_seed,
     modelName="W2DSR",
     modelFolder="Worm2D",
     outputFolderName=outputFolderName,
@@ -86,8 +53,10 @@ args = dict(
     checkPointInterval=5,
     evo_type="EvoCO2",
     overwrite=True,
-    doCPT=True,
 )
+
+args["popSize"] = 16
+args["doCPT"] = True
 
 if doInputFolder is True:
     args["inputFolderName"] = inputFolderName
@@ -95,19 +64,28 @@ if doInputFolder is True:
 
 
 if renewJson is True:
-    json_data = hf.get_worm_json(outputFolderName)
+    json_data = hf.get_worm_json(inputFolderName)
+    old_names = ["Cell_41_0", "Cell_42_0", "Cell_43_0", "Cell_44_0"]
+
     if doDelete is True:
-        json_data = hf.remove_nervous_system_cell(json_data, "Cell_41_0")
-        json_data = hf.remove_nervous_system_cell(json_data, "Cell_42_0")
-        json_data = hf.remove_nervous_system_cell(json_data, "Cell_43_0")
-        json_data = hf.remove_nervous_system_cell(json_data, "Cell_44_0")
+        for cell_name in old_names:
+            json_data = hf.remove_nervous_system_cell(json_data, cell_name)
         json_data = hf.delete_sensor(json_data, "sensor_1")
         json_data = hf.delete_environment(json_data, "environment_1")
 
-    json_data, cell_names = hf.add_random_cell_network(json_data, 4, 1)
+    json_data = hf.delete_all_evotags(json_data)
+
+    json_data, cell_names = hf.add_random_cell_network(
+        json_data, 4, 1, random_seed=random_seed
+    )
+    for old_cell_name, cell_name in zip(old_names, cell_names):
+        json_data = hf.rename_cell(json_data, cell_name, old_cell_name)
+    cell_names = old_names
     if addSelfConns is True:
         for cell_name in cell_names:
-            json_data = hf.add_cell_connection(json_data, cell_name, cell_name)
+            json_data = hf.add_cell_connection(
+                json_data, cell_name, cell_name, random_seed=random_seed
+            )
             json_data = hf.add_chemical_connection_evotag(
                 json_data, cell_name, cell_name
             )
@@ -136,7 +114,9 @@ if renewJson is True:
                     )
     head_cells = ["SMDD_0", "SMDV_0"]
     for cell_name, head_cell in zip(cell_names[0:2], head_cells):
-        json_data = hf.add_cell_connection(json_data, cell_name, head_cell)
+        json_data = hf.add_cell_connection(
+            json_data, cell_name, head_cell, random_seed=random_seed
+        )
         json_data = hf.add_chemical_connection_evotag(json_data, cell_name, head_cell)
 
     # json_data=hf.delete_sensor(json_data, 'sensor_1')

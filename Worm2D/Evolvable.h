@@ -62,6 +62,8 @@ virtual ~W2Dparameters(){}
 virtual void setParsFromJson(const json & j) = 0;
 virtual void addParsToJson(json & j) const = 0;
 virtual void setPars(shared_ptr<const CmdArgs> cmd) = 0;
+virtual void setRootParsFromJson(const json &) {}
+virtual void addRootParsToJson(json &) const {}
 };
 
 
@@ -262,18 +264,47 @@ void setParsFromJson(const json & j){
   
   getParFromJsonAny<int>(j, {"do_reverse", "doReverse"}, doReverse);
   getParFromJsonAny<int>(j, {"fit_type", "fitType"}, fitType);
-  getParFromJsonAny<int>(j, {"zero_gains_type", "sr_zero_gains_type_evo", "zeroGainsType"}, zeroGainsType);
+  getParFromJsonAny<int>(
+      j, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
   getParFromJsonAny<int>(j, {"do_angle_diff", "doAngleDiff"}, doAngleDiff);
 
   AgarPars::setParsFromJson(j);
 }
+void setRootParsFromJson(const json & j) {
+  if (j.contains("stretch_receptor"))
+    getParFromJsonAny<int>(
+      j.at("stretch_receptor"),
+      {"sr_zero_gains_type", "SRZeroGainsType"},
+      zeroGainsType
+    );
+  else if (j.contains("Stretch receptor"))
+    getParFromJsonAny<int>(
+      j.at("Stretch receptor"),
+      {"sr_zero_gains_type", "SRZeroGainsType"},
+      zeroGainsType
+    );
+}
 void addParsToJson(json & j) const {
+  if (!j.is_object()) j = json::object();
   j.erase("zeroGainsType");
+  j.erase("zero_gains_type");
+  j.erase("sr_zero_gains_type_evo");
+  j.erase("SRZeroGainsTypeEvo");
   j["do_reverse"]["value"] = doReverse;
   j["fit_type"]["value"] = fitType;
-  j["zero_gains_type"]["value"] = zeroGainsType;
    j["do_angle_diff"]["value"] = doAngleDiff;
   AgarPars::addParsToJson(j);
+}
+void addRootParsToJson(json & j) const {
+  if (
+      j.contains("stretch_receptor")
+      && j.at("stretch_receptor").is_object())
+  {
+    j["stretch_receptor"].erase("sr_zero_gains_type_evo");
+    j["stretch_receptor"].erase("SRZeroGainsTypeEvo");
+    j["stretch_receptor"]["sr_zero_gains_type"]["value"] =
+      zeroGainsType;
+  }
 }
 
 void show() const {cout << " eparsCE doReverse " <<  doReverse << endl; AgarPars::show();}
@@ -531,4 +562,3 @@ void addParsToJson(json & j) const {
 
 
 };
-

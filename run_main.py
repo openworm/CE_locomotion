@@ -851,7 +851,6 @@ def run(a=None, **kwargs):
     evol_extra_parameters["sr_evo_top_a"] = 200
     evol_extra_parameters["sr_offset"] = 0
     evol_extra_parameters["sr_seg_per_sr"] = 6
-    evol_extra_parameters["sr_zero_gains_type_evo"] = 1
     evol_extra_parameters["do_orig_musc_input"] = True
     evol_extra_parameters["do_orig_sr_input"] = True
     evol_extra_parameters["do_angle_diff"] = False
@@ -933,7 +932,6 @@ def run(a=None, **kwargs):
         "resetAgentBody": "reset_agent_body",
         "doTestRun": "do_test_run",
         "SRZeroGainsType": "sr_zero_gains_type",
-        "SRZeroGainsTypeEvo": "sr_zero_gains_type_evo",
         "doLegacy": "do_legacy",
         "initNSFromJson": "init_ns_from_json",
         "inputInd": "input_ind",

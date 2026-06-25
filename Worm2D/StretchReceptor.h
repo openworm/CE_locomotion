@@ -220,7 +220,8 @@ public:
 SRCE(int nsegs_, int nstretch_, baseParameters* basePar1_):
 SR(nsegs_,nstretch_, basePar1_, make_shared<SRVarsCE>(nstretch_))
 ,//srcepars(dynamic_pointer_cast<SRCEpars>(srpars)), 
-srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)),sr_type(getSRtype())
+srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)),sr_type(getSRtype()),
+zeroGainsType(getSRZeroGainsType())
 {
     //assert(0);
     SRType = "SRCE";
@@ -260,12 +261,23 @@ SR(nsegs_,nstretch_,basePar1_,make_shared<SRVarsCE>(nstretch_)),
 srvars(dynamic_pointer_cast<SRVarsCE>(srvars_ptr)){} */
 
 const string sr_type;
+int zeroGainsType;
 
 string getSRtype(){
 
     string sr_type;
     basePar1->getValCJ<string>("sr_type",sr_type,"Stretch receptor");
     return sr_type;
+
+}
+
+int getSRZeroGainsType(){
+
+    int zero_gains_type;
+    basePar1->getValCJ<int>(
+        "sr_zero_gains_type", zero_gains_type, "stretch_receptor"
+    );
+    return zero_gains_type;
 
 }
 
