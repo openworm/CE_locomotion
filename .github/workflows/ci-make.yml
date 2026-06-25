@@ -70,7 +70,9 @@ jobs:
     - name: Test using test_all.sh
       run: |
         pip list
-        
+
+        pip install scikit_build_core # Needed for building C++ extensions with scikit-build &  --no-build-isolation
+
         export NEURON_HOME=$pythonLocation
         env
 
