@@ -1,28 +1,42 @@
 import os
 import sys
 from run_main import run
-from neuromlLocal.regenerate import run as regenerate_run
+from .neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("./neuromlLocal")
 
+
 doOrig = True
-doNML = True
-doMuscles = False
+doMuscles = True
+do_nml = True
+
+duration = 10
+transient = 10
+randseed = 4012128
 
 args = dict(
-    simduration=50,
-    simtransient=30,
-    inputFolderName="experiments/demoRun_1",
-    outputFolderName="experiments/demoRun_1_out",
-    reRand=True,
+    simduration=duration,
+    simtransient=transient,
+    duration=40,
+    transient=10,
+    maxGens=10,
+    popSize=22,
+    RandSeed=randseed,
+    modelName="W2Dosc21all",
+    modelFolder="Worm2D",
+    outputFolderName="experiments/exW2Dosc",
+    doEvol=True,
     overwrite=True,
-    randInitState=False,
-    prioritizeCmd=True,
+    checkPointInterval=5,
+    reRand=True,
+    doPlotEvol=True,
+    doNML=False,
+    doOrigMuscInput=False,
 )
 
 if doOrig:
     run(**args)
 
-if doNML:
+if do_nml:
     try:
         os.chdir("./neuromlLocal")
     except Exception:
@@ -35,5 +49,6 @@ if doNML:
     args["inputFolderName"] = args["outputFolderName"]
     args["outputFolderName"] = args["outputFolderName"] + "_nml"
     args["doNML"] = True
+    args["doEvol"] = False
     args["reRand"] = False
     run(**args)

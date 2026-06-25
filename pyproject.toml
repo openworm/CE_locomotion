@@ -1,0 +1,29 @@
+[build-system]
+requires = ["scikit-build-core>=0.9"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "worm2d"
+version = "0.1.0"
+description = "Neuromechanical model of C. elegans locomotion"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "scipy",
+]
+
+[project.optional-dependencies]
+neuroml = ["pyNeuroML", "NEURON<9.0"]
+dev = ["ruff", "pytest", "ipywidgets"]
+
+[project.scripts]
+worm2d = "worm2d.run_main:run_main"
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+wheel.packages = ["src/worm2d"]
+
+[tool.scikit-build.cmake.define]
+# Force CMake to find the same Python that pip is using
+Python3_EXECUTABLE = {env = "PYTHON", default = ""}

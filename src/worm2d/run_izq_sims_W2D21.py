@@ -5,8 +5,8 @@ import os
 # sys.path.append("../neuromlLocal")
 
 from run_main import run
-from helper_funcs import make_directory
-from neuromlLocal.regenerate import run as regenerate_run
+from .helper_funcs import make_directory
+from .neuromlLocal.regenerate import run as regenerate_run
 
 inputFolderBase = "experiments/izq_selected"
 outFolderBase = "experiments/izq_runs_nets_W2D21"

@@ -1,7 +1,7 @@
 import os
 import sys
 from run_main import run
-from neuromlLocal.regenerate import run as regenerate_run
+from .neuromlLocal.regenerate import run as regenerate_run
 
 # sys.path.append("..")
 # sys.path.append("../neuromlLocal")

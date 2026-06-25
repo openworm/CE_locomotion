@@ -1,7 +1,7 @@
 import os
 import sys
-from neuromlLocal.regenerate import run as regenerate_run
-import neuromlLocal.utils as utils
+from .neuromlLocal.regenerate import run as regenerate_run
+from .neuromlLocal import utils
 
 
 def run_main(args=None):

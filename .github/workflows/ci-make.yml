@@ -12,13 +12,13 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
-      matrix:        
+      matrix:
         runs-on: [ubuntu-22.04, ubuntu-latest, macos-latest, macos-14 ]
         python-version: [ "3.10", "3.12" ] # Note: 3.14 causes issues with Neuron 8.2.7
 
     steps:
     - uses: actions/checkout@v6
-    
+
     - name: Set up Python  ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -34,21 +34,12 @@ jobs:
         macos-skip-brew-update: 'true' # default false
 
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev tree graphviz openjdk-11-jdk
+      run: sudo apt-get install -y nlohmann-json3-dev tree graphviz openjdk-11-jdk cmake
       if: ${{ contains(matrix.runs-on, 'ubuntu') }}
 
     - name: Install dependencies (macOS)
-      run: brew install nlohmann-json tree
+      run: brew install nlohmann-json tree cmake
       if: ${{ contains(matrix.runs-on, 'macos') }}
-
-    
-    - name: Run C++ tests 
-      run: |
-          make tests
-          ./tests
-
-    - name: Test makefile
-      run: make
 
     - name: Install Python requirements
       run: |
@@ -56,40 +47,46 @@ jobs:
         pip install NEURON==8.2.7
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib ruff scipy modelspec
-        pip install ipywidgets
-        
+        pip install ipywidgets scikit-build-core
+
         pip list
 
         which nrnivmodl
-        nrnivmodl 
-        
+        nrnivmodl
+
+    - name: Build and install worm2d package (with C++ binaries)
+      env:
+        CMAKE_BUILD_PARALLEL_LEVEL: 4
+      run: pip install -e . --no-build-isolation -v
+
+    - name: Run C++ unit tests
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --target worm2d_tests worm2d_tests2
+        ./build/tests
+
     - name: Test C++/Python interactions
       run: |
-        cd test_files
-        ./test.sh 
+        cd tests/test_files
+        ./test.sh
         cd modelspec_api
         ./test.sh
-        
-    - name: Test directly running main program
-      run: |
-        ./main -p 6  # Note: small population of 6 for quick runtime
-        ls -alth
 
     - name: Test Python command line script
       run: |
-        python run_main.py -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
+        python -m worm2d.run_main -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
 
     - name: Test using test_all.sh
       run: |
         which nrniv
         export NEURON_HOME=$pythonLocation
         env
-        
-        ./test_all.sh # also generated neuroml
 
-        git diff exampleRun/phenotype.dat 
+        cd tests && ./test_all.sh # also generates neuroml
 
-      
+        git diff exampleRun/phenotype.dat
+
+
     - name: list generated files
       run: |
           ls -alth

@@ -1,4 +1,8 @@
 *.o
+/build/
+/dist/
+/src/worm2d/bin/
+*.egg-info/
 /main
 /act.dat
 /best.gen.dat
@@ -118,3 +122,10 @@
 /testruns/*/*.wcon
 /RoyalSociety2018/testRS18_2
 /docs
+/notebooks
+__pycache__
+/src/worm2d/neuromlLocal/testc302SigSim/arm64
+/src/worm2d/neuromlLocal/testc302SigSim/x86_64
+/src/worm2d/neuromlLocal/testc302SigSim/*.dat
+/src/worm2d/neuromlLocal/testc302SigSim/testc302NervousSystem
+/src/worm2d/neuromlLocal/testc302SigSim/report.txt

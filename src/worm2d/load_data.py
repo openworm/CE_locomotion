@@ -11,11 +11,11 @@ from datetime import datetime
 
 # import argparse
 import os
-import neuromlLocal.utils as utils
+from .neuromlLocal import utils
 
 # from matplotlib.ticker import MaxNLocator
 import math
-import helper_funcs as hf
+from . import helper_funcs as hf
 
 # import neuromlLocal.utils as utils
 import matplotlib as mpl
@@ -2635,7 +2635,7 @@ def reload_single_run(a=None, **kwargs):
         plt.show()
     plt.close()
 
-    from F2_fig_behavior import make_fig
+    from worm2d import F2_fig_behavior as f2fig
 
     notF2models = [
         "CO",
@@ -2647,7 +2647,7 @@ def reload_single_run(a=None, **kwargs):
         "RS18_CO18Full",
     ]
     if a.modelName not in notF2models:
-        make_fig(model_name=a.modelName)
+        f2fig.make_fig(model_name=a.modelName)
 
 
 if __name__ == "__main__":

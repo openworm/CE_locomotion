@@ -1,11 +1,11 @@
 import matplotlib.pylab as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
-import helper_funcs as hf
+from . import helper_funcs as hf
 import matplotlib as mpl
 import os
 
-import neuromlLocal.utils as utils
+from .neuromlLocal import utils
 
 
 def make_fig(model_name):

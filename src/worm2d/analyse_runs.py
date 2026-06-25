@@ -1,4 +1,4 @@
-import helper_funcs as hf
+from . import helper_funcs as hf
 import numpy as np
 from matplotlib import pyplot as plt
 

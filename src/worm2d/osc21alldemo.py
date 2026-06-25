@@ -1,32 +1,32 @@
 import os
 import sys
 from run_main import run
-from neuromlLocal.regenerate import run as regenerate_run
+from .neuromlLocal.regenerate import run as regenerate_run
 
 # sys.path.append("..")
 # sys.path.append("../neuromlLocal")
 
 
-output_folder = "experiments/osc_sim_21all"
-output_folder_nml = "experiments/osc_sim_21all_nml"
-output_folder_nml_musc = "experiments/osc_sim_21all_nml_musc"
+output_folder = "experiments/osc21alldemo_p2"
+output_folder_nml = output_folder + "_nml"
+output_folder_nml_musc = output_folder + "_nml_musc"
 
 duration = 10
 transient = 10
 
-do_muscles = True
-do_nml = True
+do_muscles = False
+do_nml = False
 
-randseed = 4012128
+randseed = 40112
 model_name = "W2Dosc21all"
 print(output_folder)
 run(
     simduration=duration,
     simtransient=transient,
-    duration=50,
-    transient=30,
-    maxGens=10,
-    popSize=22,
+    duration=30,
+    transient=0,
+    maxGens=30,
+    popSize=92,
     RandSeed=randseed,
     modelName=model_name,
     modelFolder="Worm2D",
@@ -38,7 +38,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     doOrigMuscInput=False,
-    doTestRun=True,
+    useGenJson=True,
 )
 
 
@@ -67,7 +67,6 @@ if do_nml:
         doNML=True,
         doOrigMuscInput=False,
         doMuscSim=False,
-        doTestRun=True,
     )
 
 
@@ -96,5 +95,4 @@ if do_muscles:
         doNML=True,
         doOrigMuscInput=False,
         doMuscSim=True,
-        doTestRun=True,
     )

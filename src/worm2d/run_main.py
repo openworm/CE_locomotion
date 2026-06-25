@@ -2,8 +2,9 @@ import subprocess
 import argparse
 import os
 import sys
-import neuromlLocal.utils as utils
-import helper_funcs as hf
+import importlib.resources
+from .neuromlLocal import utils
+from . import helper_funcs as hf
 
 # from importlib import import_module
 import shutil
@@ -14,6 +15,28 @@ import pathlib
 import random
 from datetime import datetime
 import json
+
+
+def _resolve_binary(model_folder: str, binary_name: str) -> str:
+    """Return the path to an installed C++ binary inside the worm2d package."""
+    try:
+        pkg_dir = pathlib.Path(str(importlib.resources.files("worm2d")))
+    except AttributeError:
+        import pkg_resources
+        pkg_dir = pathlib.Path(pkg_resources.resource_filename("worm2d", ""))
+    bin_dir = pkg_dir / "bin"
+    # Editable installs (scikit-build-core): Python sources stay in the source
+    # tree but CMake outputs land in site-packages — fall back there if needed.
+    if not bin_dir.is_dir():
+        import sysconfig
+        for scheme in ("platlib", "purelib"):
+            candidate = pathlib.Path(sysconfig.get_path(scheme)) / "worm2d" / "bin"
+            if candidate.is_dir():
+                bin_dir = candidate
+                break
+    if model_folder in ("", "."):
+        return str(bin_dir / binary_name)
+    return str(bin_dir / model_folder / binary_name)
 
 
 defaults_base_CO = {
@@ -877,7 +900,7 @@ def run(a=None, **kwargs):
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False
 
-    main_cmd = model_folder + "/" + mainProcessName
+    main_cmd = _resolve_binary(model_folder, mainProcessName)
     cmd = [main_cmd]
 
     evol_pars = [
@@ -1220,7 +1243,7 @@ def run(a=None, **kwargs):
     rsr(show_plot=False, plot_format = plot_format) """
 
     if model_folder != "CE_orientation":
-        from load_data import reload_single_run
+        from .load_data import reload_single_run
 
         # reload_single_run(show_plot=False, plot_format=plot_format)
         reload_single_run(
@@ -1228,7 +1251,7 @@ def run(a=None, **kwargs):
         )
 
         if doW2D and doPlotEvol:
-            from load_data import plot_evols
+            from .load_data import plot_evols
 
             plot_evols(a, folderName=a.outputFolderName, modelName=model_name)
 
