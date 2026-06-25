@@ -14,7 +14,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     OMV_ARGS=" --exit-zero" # Add this flag to ensure that OMV returns a zero exit code even if some tests fail, allowing the script to continue running all tests.
 fi
 
-CMAKE_BUILD_PARALLEL_LEVEL=$parallel_jobs_for_make pip install -e .[dev] --no-build-isolation -v
+CMAKE_BUILD_PARALLEL_LEVEL=$parallel_jobs_for_make pip install -e .[all] --no-build-isolation -v
 
 cd tests
 
