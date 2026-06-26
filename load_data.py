@@ -256,6 +256,9 @@ def plot_cell_connections(
     symbol_text_scale=1.0,
     node_scale=None,
     text_scale=None,
+    highlight_cell_pairs=None,
+    highlight_cells=None,
+    arrow_thickness_scale=1.0,
 ):
     """Return a figure showing selected cells and connected model objects."""
     from matplotlib.lines import Line2D
@@ -287,6 +290,7 @@ def plot_cell_connections(
     for scale_name, scale_value in (
         ("node_scale", node_scale),
         ("text_scale", text_scale),
+        ("arrow_thickness_scale", arrow_thickness_scale),
     ):
         if (
             isinstance(scale_value, bool)
@@ -310,6 +314,46 @@ def plot_cell_connections(
         raise ValueError("Unknown cell name(s): {}".format(", ".join(missing_cells)))
 
     selected_set = set(selected_cells)
+    cell_name_set = set(json_cell_names)
+
+    highlighted_cells = set()
+    if highlight_cells is not None:
+        if isinstance(highlight_cells, str):
+            highlighted_cells = {highlight_cells}
+        elif isinstance(highlight_cells, (list, tuple, set)):
+            highlighted_cells = {str(cell_name) for cell_name in highlight_cells}
+        else:
+            raise TypeError(
+                "highlight_cells must be a cell name or a list/tuple/set of cell names"
+            )
+        unknown_highlighted_cells = sorted(highlighted_cells - cell_name_set)
+        if unknown_highlighted_cells:
+            raise ValueError(
+                "Unknown highlighted cell name(s): {}".format(
+                    ", ".join(unknown_highlighted_cells)
+                )
+            )
+
+    highlighted_pairs = set()
+    if highlight_cell_pairs is not None:
+        if not isinstance(highlight_cell_pairs, (list, tuple)):
+            raise TypeError("highlight_cell_pairs must be a list or tuple of pairs")
+        for pair in highlight_cell_pairs:
+            if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+                raise ValueError("Each highlighted cell pair must contain two names")
+            from_cell, to_cell = str(pair[0]), str(pair[1])
+            unknown = [
+                cell_name
+                for cell_name in (from_cell, to_cell)
+                if cell_name not in cell_name_set
+            ]
+            if unknown:
+                raise ValueError(
+                    "Unknown highlighted cell name(s): {}".format(
+                        ", ".join(unknown)
+                    )
+                )
+            highlighted_pairs.add((from_cell, to_cell))
 
     def connection_weight(connection):
         weight = _json_value(connection.get("weight"), 1.0)
@@ -340,7 +384,14 @@ def plot_cell_connections(
     def add_node(node_name, node_type):
         nodes.setdefault(str(node_name), {"type": node_type})
 
-    def add_edge(from_node, to_node, weight, edge_type, bidirectional=False):
+    def add_edge(
+        from_node,
+        to_node,
+        weight,
+        edge_type,
+        bidirectional=False,
+        highlighted=False,
+    ):
         if hide_self_connections and str(from_node) == str(to_node):
             return
         edges.append(
@@ -350,10 +401,10 @@ def plot_cell_connections(
                 "weight": float(weight),
                 "type": edge_type,
                 "bidirectional": bidirectional,
+                "highlighted": bool(highlighted),
             }
         )
 
-    cell_name_set = set(json_cell_names)
     secondary_cells = []
 
     def add_secondary_cell(cell_name):
@@ -380,6 +431,7 @@ def plot_cell_connections(
                 connection["to"],
                 connection_weight(connection),
                 "chemical",
+                highlighted=(connection["from"], connection["to"]) in highlighted_pairs,
             )
 
     for connection in connection_list("electrical_conns"):
@@ -509,7 +561,7 @@ def plot_cell_connections(
 
     def connection_width(edge):
         scaled = abs(edge["weight"]) / max_abs_weight
-        return 0.6 + 3.4 * scaled
+        return (0.6 + 3.4 * scaled) * arrow_thickness_scale
 
     fig_size = max(6.0, 0.35 * len(nodes) + 3.5)
     fig, ax = plt.subplots(figsize=(fig_size, fig_size))
@@ -543,6 +595,19 @@ def plot_cell_connections(
         for node_name in nodes
         if nodes[node_name]["type"] not in ("cell", "secondary cell")
     ]
+
+    def external_node_order(node_name):
+        if str(node_name).startswith("D_SR_"):
+            return (1, str(node_name))
+        if str(node_name).startswith("D_musc_"):
+            return (2, str(node_name))
+        if str(node_name).startswith("V_SR_"):
+            return (3, str(node_name))
+        if str(node_name).startswith("V_musc_"):
+            return (4, str(node_name))
+        return (0, str(node_name))
+
+    external_nodes = sorted(external_nodes, key=external_node_order)
     if external_nodes:
         if external_rotation is None:
             external_rotation_rad = primary_rotation_rad
@@ -606,6 +671,8 @@ def plot_cell_connections(
         return marker_diameter * shape_margin + 1.5 * max(1.0, float(node_scale))
 
     def edge_color(edge):
+        if edge.get("highlighted") and edge["type"] == "chemical":
+            return "#00C853" if edge["weight"] >= 0 else "#000000"
         if edge["type"] == "electrical":
             return "#4C78A8" if edge["weight"] >= 0 else "#7570B3"
         return "#D95F02" if edge["weight"] >= 0 else "#7570B3"
@@ -670,7 +737,12 @@ def plot_cell_connections(
             [position[1]],
             s=style["size"] * marker_area_scale,
             marker=style["marker"],
-            facecolors=style["facecolor"],
+            facecolors=(
+                "#00E676"
+                if node_name in highlighted_cells
+                and node_type in ("cell", "secondary cell")
+                else style["facecolor"]
+            ),
             edgecolors=style["edgecolor"],
             linewidths=1.2,
             zorder=3,
@@ -713,6 +785,19 @@ def plot_cell_connections(
         for node_type, style in node_styles.items()
         if any(nodes[node]["type"] == node_type for node in nodes)
     ]
+    if any(node_name in highlighted_cells for node_name in nodes):
+        node_legend.append(
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="none",
+                markerfacecolor="#00E676",
+                markeredgecolor="black",
+                markersize=8 * node_scale,
+                label="Highlighted Cell",
+            )
+        )
     ax.legend(
         handles=edge_legend + node_legend,
         loc="upper left",
