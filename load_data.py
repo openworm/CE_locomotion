@@ -456,7 +456,23 @@ def plot_cell_connections(
 
     stretch_receptor = network_json_data.get("stretch_receptor")
     if isinstance(stretch_receptor, dict):
-        for weights_key, prefix in (("ns_d_weights", "D_SR"), ("ns_v_weights", "V_SR")):
+        receptor_weight_fields = []
+        for weights_key in stretch_receptor:
+            if not weights_key.startswith("ns_") or not weights_key.endswith(
+                "_weights"
+            ):
+                continue
+            field_parts = weights_key[len("ns_") : -len("_weights")].split("_")
+            if not field_parts or field_parts[-1] not in ("d", "v"):
+                continue
+            side = field_parts[-1].upper()
+            receptor_class = "_".join(field_parts[:-1]).upper()
+            prefix = "{}_SR".format(side)
+            if receptor_class:
+                prefix = "{}_{}".format(prefix, receptor_class)
+            receptor_weight_fields.append((weights_key, prefix))
+
+        for weights_key, prefix in receptor_weight_fields:
             weights = stretch_receptor.get(weights_key, {}).get("value", [])
             if weights is None:
                 continue
@@ -861,6 +877,22 @@ def plot_json_structure(
             return 0
         return len(values_list(section.get(key, {})))
 
+    def stretch_receptor_weight_count(section, side, to_nervous_system=False):
+        if not isinstance(section, dict):
+            return 0
+        direct_key = "{}{}_weights".format(
+            "ns_" if to_nervous_system else "", side
+        )
+        keys = {direct_key}
+        suffix = "_{}_weights".format(side)
+        for key in section:
+            if to_nervous_system:
+                if key.startswith("ns_") and key.endswith(suffix):
+                    keys.add(key)
+            elif not key.startswith("ns_") and key.endswith(suffix):
+                keys.add(key)
+        return sum(len(values_list(section.get(key, {}))) for key in keys)
+
     def wrap_cell_names(names, columns=4):
         if not names:
             return "No cell names found"
@@ -893,6 +925,8 @@ def plot_json_structure(
     #environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
+    dorsal_body = network_json_data.get("dorsal_body")
+    ventral_body = network_json_data.get("ventral_body")
     driving_inputs = network_json_data.get("driving_inputs")
 
     chemical_count = len(values_list(nervous_system.get("chemical_conns", {})))
@@ -947,10 +981,12 @@ def plot_json_structure(
             "facecolor": "#F4C7B6",
         }
     if isinstance(sr, dict):
-        ns_d = len(values_list(sr.get("ns_d_weights", {})))
-        ns_v = len(values_list(sr.get("ns_v_weights", {})))
-        d_body = len(values_list(sr.get("d_weights", {})))
-        v_body = len(values_list(sr.get("v_weights", {})))
+        ns_d = stretch_receptor_weight_count(sr, "d", to_nervous_system=True)
+        ns_v = stretch_receptor_weight_count(sr, "v", to_nervous_system=True)
+        d_body = stretch_receptor_weight_count(sr, "d")
+        v_body = stretch_receptor_weight_count(sr, "v")
+        dorsal_muscle_body = weight_count(dorsal_body)
+        ventral_muscle_body = weight_count(ventral_body)
         boxes["stretch_receptor"] = {
             "xy": (0.04, 0.62),
             "wh": (0.18, 0.18),
@@ -963,17 +999,24 @@ def plot_json_structure(
             ),
             "facecolor": "#F1E5A6",
         }
-        if d_body or v_body:
+        if d_body or v_body or dorsal_muscle_body or ventral_muscle_body:
+            body_lines = []
+            if dorsal_muscle_body:
+                body_lines.append(
+                    "{} dorsal muscle weights".format(dorsal_muscle_body)
+                )
+            if ventral_muscle_body:
+                body_lines.append(
+                    "{} ventral muscle weights".format(ventral_muscle_body)
+                )
+            if d_body:
+                body_lines.append("{} dorsal SR weights".format(d_body))
+            if v_body:
+                body_lines.append("{} ventral SR weights".format(v_body))
             boxes["body_segments"] = {
-                "xy": (0.58, 0.69),
-                "wh": (0.16, 0.11),
-                "text": box_text(
-                    "body segments",
-                    [
-                        "{} dorsal SR weights".format(d_body),
-                        "{} ventral SR weights".format(v_body),
-                    ],
-                ),
+                "xy": (0.56, 0.65),
+                "wh": (0.18, 0.16),
+                "text": box_text("body segments", body_lines),
                 "facecolor": "#E7D8B9",
             }
     if isinstance(sensors, dict) and sensors:
