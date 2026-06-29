@@ -1,4 +1,7 @@
 #include "owSignalSimulatorForWorm2D.h"
+#include <stdexcept>
+
+#ifndef WORM2D_NO_PYTHON_EMBEDDING
 
 SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName, 
   const std::string & simClassName, double timeStep):
@@ -259,3 +262,49 @@ SignalSimulatorForWorm2D::~SignalSimulatorForWorm2D()
   //Py_DECREF(pFuncNameSetNeuronInput);
   //Py_DECREF(pFuncNameSetSynapticWeight);
 }
+
+#else // WORM2D_NO_PYTHON_EMBEDDING
+
+static const std::string _no_embed_msg =
+    "[worm2d] Python embedding is not available in this build. "
+    "The doNML/NeuroML mode requires a build with Python embedding support.";
+static std::string _empty_str;
+
+SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName,
+  const std::string & simClassName, double timeStep)
+  : SignalSimulator(simFileName, simClassName, timeStep) {}
+
+SignalSimulatorForWorm2D::SignalSimulatorForWorm2D(const std::string & simFileName,
+  const std::string & simClassName, const std::string &, double timeStep)
+  : SignalSimulator(simFileName, simClassName, timeStep) {}
+
+const std::string & SignalSimulatorForWorm2D::setUpSignalSimulator(const std::string &, const std::string &)
+  { throw std::runtime_error(_no_embed_msg); return _empty_str; }
+
+std::vector<double> SignalSimulatorForWorm2D::vecValFunc(const std::string &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+double SignalSimulatorForWorm2D::getValFunc(const std::string &, const std::string &, const int &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+double SignalSimulatorForWorm2D::getTwoValFunc(const std::string &, const int &, const int &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+void SignalSimulatorForWorm2D::oneValFunc(const std::string &, const int &, const double &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+void SignalSimulatorForWorm2D::oneValFunc(const std::string &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+void SignalSimulatorForWorm2D::strValFunc(const std::string &, const std::string &, const int &, const double &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+void SignalSimulatorForWorm2D::strOneValFunc(const std::string &, const std::string &, const int &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+void SignalSimulatorForWorm2D::twoValFunc(const std::string &, const int &, const int &, const double &)
+  { throw std::runtime_error(_no_embed_msg); }
+
+SignalSimulatorForWorm2D::~SignalSimulatorForWorm2D() {}
+
+#endif // WORM2D_NO_PYTHON_EMBEDDING

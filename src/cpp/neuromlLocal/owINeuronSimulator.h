@@ -27,7 +27,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+ * OTHERWISE FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 /*
@@ -38,7 +38,9 @@
  */
 
 #include <vector>
+#ifndef WORM2D_NO_PYTHON_EMBEDDING
 #include <Python.h>
+#endif
 
 #ifndef INC_OWINEURONSIMULATOR_H_
 #define INC_OWINEURONSIMULATOR_H_
@@ -47,6 +49,7 @@
 
 class owINeuronSimulator {
 protected:
+#ifndef WORM2D_NO_PYTHON_EMBEDDING
 	std::vector<double> unpackPythonList(PyObject* pValue, size_t musclesNum=96){
 		Py_ssize_t size = PyList_Size(pValue);
 		//std::vector<double> test(musclesNum); //needs to change! 96 is hardcoded
@@ -61,11 +64,13 @@ protected:
 		return test;
 	}
 	PyObject *pName, *pModule, *pDict, *pFunc, *pValue, *pClass, *pInstance, * nrn_sim;
+#endif
 public:
 	//virtual std::vector<double> run() = 0;
 	virtual void run() = 0;
 	virtual ~owINeuronSimulator()
 	{
+#ifndef WORM2D_NO_PYTHON_EMBEDDING
 		Py_DECREF(pName);
 		Py_DECREF(pModule);
 		Py_DECREF(pDict);
@@ -75,6 +80,7 @@ public:
 		Py_DECREF(pInstance);
 		Py_DECREF(nrn_sim);
 		Py_FinalizeEx();
+#endif
 	}
 };
 

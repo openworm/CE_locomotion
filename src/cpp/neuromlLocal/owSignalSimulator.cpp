@@ -45,6 +45,8 @@
 
 #include "owSignalSimulator.h"
 
+#ifndef WORM2D_NO_PYTHON_EMBEDDING
+
 SignalSimulator::SignalSimulator(const std::string &simFileName,
                                  const std::string &simClassName,
                                  double timeStep) {
@@ -200,6 +202,18 @@ SignalSimulator::~SignalSimulator() {
   PyObject_CallMethod(pInstance, const_cast<char *>("save_results"), nullptr);
   if (PyErr_Occurred())
     PyErr_Print();
-    if (w_conda_path) free(w_conda_path); 
+    if (w_conda_path) free(w_conda_path);
   // TODO Auto-generated destructor stub
 }
+
+#else // WORM2D_NO_PYTHON_EMBEDDING
+
+SignalSimulator::SignalSimulator(const std::string &, const std::string &, double) {
+    throw std::runtime_error(
+        "[worm2d] Python embedding is not available in this build. "
+        "The doNML/NeuroML mode requires a build with Python embedding support.");
+}
+void SignalSimulator::run() {}
+SignalSimulator::~SignalSimulator() {}
+
+#endif // WORM2D_NO_PYTHON_EMBEDDING
