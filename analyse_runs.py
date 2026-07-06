@@ -45,13 +45,13 @@ def plot_orients(a=None, **kwargs):
     hf.plotHist(ax_orient[2], bearing_mid_all, trajectory_diff_all)
 
     fig_orient.tight_layout()
-    filename = dir_names[0] + "/Orient.png"
+    filename = dir_names[0] + "/Orient_all.png"
     # fig_orient.show()
     fig_orient.savefig(filename, bbox_inches="tight", dpi=300)
     # fig_orient.close()
 
     fig_body.tight_layout()
-    filename = dir_names[0] + "/Motion.png"
+    filename = dir_names[0] + "/Motion_all.png"
     fig_body.savefig(filename, bbox_inches="tight", dpi=300)
     plt.close()
 

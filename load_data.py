@@ -244,6 +244,129 @@ def plot_selected_activity(
     return fig
 
 
+def plot_motion_all(
+    input_folder,
+    save_png=True,
+    filename="motion_all.png",
+    mean_filename="motion_all_mean.png",
+    max_snapshots=60,
+):
+    """Plot body profiles and mean-position paths from simulation subfolders."""
+    if not os.path.isdir(input_folder):
+        raise NotADirectoryError(
+            "Could not find input directory: {}".format(input_folder)
+        )
+    if (
+        isinstance(max_snapshots, bool)
+        or not isinstance(max_snapshots, int)
+        or max_snapshots < 1
+    ):
+        raise ValueError("max_snapshots must be a positive integer")
+
+    input_folder = os.path.abspath(input_folder)
+    simulation_files = []
+    for folder, subfolders, files in os.walk(input_folder):
+        subfolders.sort()
+        if folder == input_folder:
+            continue
+        body_filename = None
+        if "body.dat" in files:
+            body_filename = "body.dat"
+        elif "bodypos.dat" in files:
+            body_filename = "bodypos.dat"
+        if body_filename is not None:
+            simulation_files.append(
+                (os.path.relpath(folder, input_folder), os.path.join(folder, body_filename))
+            )
+
+    if not simulation_files:
+        raise FileNotFoundError(
+            "No body.dat or bodypos.dat files were found in subfolders of {}".format(
+                input_folder
+            )
+        )
+
+    simulation_files.sort(key=lambda item: item[0])
+    profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
+    mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
+    color_map = plt.get_cmap("tab20")
+
+    for run_index, (run_name, body_file) in enumerate(simulation_files):
+        body_data = np.loadtxt(body_file)
+        if body_data.ndim == 1:
+            body_data = body_data.reshape(1, -1)
+        if body_data.ndim != 2 or body_data.shape[1] < 4:
+            raise ValueError(
+                "{} does not contain time and x/y/z body coordinates".format(body_file)
+            )
+        coordinate_columns = body_data.shape[1] - 1
+        if coordinate_columns % 3 != 0:
+            raise ValueError(
+                "{} has {} coordinate columns; expected a multiple of 3".format(
+                    body_file, coordinate_columns
+                )
+            )
+
+        segment_count = coordinate_columns // 3
+        x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+        y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+        color = color_map(run_index % color_map.N)
+
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+        mean_ax.plot(
+            center_x,
+            center_y,
+            color=color,
+            linewidth=1.5,
+            linestyle="-",
+            label=run_name,
+        )
+
+        sample_count = min(max_snapshots, body_data.shape[0])
+        snapshot_indices = np.unique(
+            np.linspace(0, body_data.shape[0] - 1, sample_count).astype(int)
+        )
+        for snapshot_number, snapshot_index in enumerate(snapshot_indices):
+            profile_ax.plot(
+                x_positions[snapshot_index],
+                y_positions[snapshot_index],
+                ".",
+                color=color,
+                markersize=1.2,
+                alpha=0.35,
+                label=run_name if snapshot_number == 0 else "_nolegend_",
+            )
+
+    def finish_figure(fig, ax, title):
+        ax.set_title(title)
+        ax.set_xlabel("X Position (mm)")
+        ax.set_ylabel("Y Position (mm)")
+        ax.set_aspect("equal", adjustable="datalim")
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+        ax.legend(
+            title="Simulation",
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1.0),
+            frameon=False,
+        )
+        fig.tight_layout()
+
+    finish_figure(profile_fig, profile_ax, "Worm body profiles")
+    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories")
+
+    if save_png:
+        for fig, output_file in (
+            (profile_fig, filename),
+            (mean_fig, mean_filename),
+        ):
+            if not os.path.isabs(output_file):
+                output_file = os.path.join(input_folder, output_file)
+            fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return profile_fig, mean_fig
+
+
 def plot_cell_connections(
     output_folder,
     cell_names,
@@ -2252,12 +2375,16 @@ def reload_single_run(a=None, **kwargs):
             return [0, 0, 0, row_count]
         return [t_values[0], t_values[-1], 0, row_count]
 
-    def set_imshow_row_ticks(ax, row_count, max_labels=12):
+    def set_imshow_row_ticks(ax, row_count, max_labels=6):
         if row_count <= 0:
             ax.set_yticks([])
             return
-        step = max(1, int(math.ceil(row_count / max_labels)))
-        rows = np.arange(0, row_count, step)
+        if row_count <= max_labels:
+            rows = np.arange(row_count)
+        else:
+            rows = np.unique(
+                np.rint(np.linspace(0, row_count - 1, max_labels)).astype(int)
+            )
         ax.set_yticks(rows + 0.5)
         ax.set_yticklabels([str(row + 1) for row in rows])
 
