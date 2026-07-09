@@ -813,7 +813,7 @@ def plot_cell_connections(
         if edge.get("highlighted") and edge["type"] == "chemical":
             return "#00C853" if edge["weight"] >= 0 else "#000000"
         if edge["type"] == "electrical":
-            return "#4C78A8" if edge["weight"] >= 0 else "#7570B3"
+            return "#2E8B57"
         return "#D95F02" if edge["weight"] >= 0 else "#7570B3"
 
     def draw_edge(edge, rad, alpha=0.85):
@@ -821,8 +821,8 @@ def plot_cell_connections(
         to_cell = edge["to"]
         linewidth = connection_width(edge)
         color = edge_color(edge)
-        arrowstyle = "<->" if edge["bidirectional"] else "-|>"
         linestyle = "--" if edge["type"] == "electrical" else "-"
+        arrowstyle = "-" if edge["type"] == "electrical" else "-|>"
         if from_cell == to_cell:
             center = positions[from_cell]
             loop_radius = 0.13 * max(1.0, float(node_scale))
@@ -902,7 +902,7 @@ def plot_cell_connections(
         Line2D(
             [0],
             [0],
-            color="#4C78A8",
+            color="#2E8B57",
             linewidth=1.8,
             linestyle="--",
             label="Electrical",
