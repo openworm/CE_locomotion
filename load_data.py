@@ -1110,16 +1110,25 @@ def plot_json_structure(
         v_body = stretch_receptor_weight_count(sr, "v")
         dorsal_muscle_body = weight_count(dorsal_body)
         ventral_muscle_body = weight_count(ventral_body)
+        sr_type = _json_value(sr.get("type"))
+        sr_count = _json_value(sr.get("plot_size"))
+        if not isinstance(sr_count, (int, float)):
+            sr_count = _json_value(sr.get("n_stretch"))
+        sr_lines = []
+        if sr_type in ("SR18", "SRCE"):
+            sr_lines.append("type: {}".format(sr_type))
+        if isinstance(sr_count, (int, float)):
+            sr_lines.append("{} receptors".format(int(sr_count)))
+        sr_lines.extend(
+            [
+                "{} dorsal-to-NS weights".format(ns_d),
+                "{} ventral-to-NS weights".format(ns_v),
+            ]
+        )
         boxes["stretch_receptor"] = {
-            "xy": (0.04, 0.62),
-            "wh": (0.18, 0.18),
-            "text": box_text(
-                "stretch_receptor",
-                [
-                    "{} dorsal-to-NS weights".format(ns_d),
-                    "{} ventral-to-NS weights".format(ns_v),
-                ],
-            ),
+            "xy": (0.04, 0.58),
+            "wh": (0.19, 0.23),
+            "text": box_text("stretch_receptor", sr_lines),
             "facecolor": "#F1E5A6",
         }
         if d_body or v_body or dorsal_muscle_body or ventral_muscle_body:
@@ -1609,16 +1618,17 @@ def signed_log(val):
     return out
 
 
-def safe_ratio_to_initial(evol_data):
+def safe_percent_change_from_initial(evol_data):
     evol_data = np.asarray(evol_data, dtype=float)
     initial = evol_data[0]
     out = np.zeros_like(evol_data, dtype=float)
     np.divide(
-        evol_data,
+        evol_data - initial,
         initial,
         out=out,
         where=np.isfinite(initial) & (initial != 0),
     )
+    out *= 100.0
     out[~np.isfinite(out)] = 0.0
     return out
 
@@ -1638,8 +1648,7 @@ short_phen_names = {
 
 
 def getEvolTrans(evol_data):
-    evol_data_diff_1 = safe_ratio_to_initial(evol_data)
-    # evol_data_diff_1 = (evol_data - evol_data[0]) / evol_data[0]
+    evol_data_diff_1 = safe_percent_change_from_initial(evol_data)
     evol_data_diff_11 = signed_log(evol_data_diff_1)
     evol_data_diff_13 = evol_data - evol_data[0]
     evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
@@ -1715,7 +1724,7 @@ def plot_phenonames(
 
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
-    evol_data_full_diff0 = safe_ratio_to_initial(evol_data)
+    evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
     evol_data_full_diff = signed_log(evol_data_full_diff0)
 
     avlentop = 1
