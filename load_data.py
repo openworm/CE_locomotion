@@ -382,6 +382,7 @@ def plot_cell_connections(
     highlight_cell_pairs=None,
     highlight_cells=None,
     arrow_thickness_scale=1.0,
+    evotag=None,
 ):
     """Return a figure showing selected cells and connected model objects."""
     from matplotlib.lines import Line2D
@@ -423,6 +424,9 @@ def plot_cell_connections(
             raise ValueError("{} must be a positive number".format(scale_name))
 
     network_json_data = utils.getJsonFile(worm_file)
+    if evotag is not None and (not isinstance(evotag, str) or not evotag):
+        raise ValueError("evotag must be a non-empty string")
+
     nervous_system = network_json_data.get("nervous_system")
     if not isinstance(nervous_system, dict):
         raise KeyError("JSON does not contain a 'nervous_system' object")
@@ -501,11 +505,46 @@ def plot_cell_connections(
             )
         return connections
 
-    nodes = {cell_name: {"type": "cell"} for cell_name in selected_cells}
+    def object_has_evotag(value):
+        if evotag is None:
+            return False
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag:
+                return True
+            return any(object_has_evotag(child) for child in value.values())
+        if isinstance(value, list):
+            return any(object_has_evotag(child) for child in value)
+        return False
+
+    def object_without_keys(value, excluded_keys):
+        if not isinstance(value, dict):
+            return value
+        return {key: child for key, child in value.items() if key not in excluded_keys}
+
+    cells_object = nervous_system.get("cells", {})
+    nodes = {
+        cell_name: {
+            "type": "cell",
+            "evotag_highlighted": object_has_evotag(
+                cells_object.get(cell_name, {}) if isinstance(cells_object, dict) else {}
+            ),
+        }
+        for cell_name in selected_cells
+    }
     edges = []
 
-    def add_node(node_name, node_type):
-        nodes.setdefault(str(node_name), {"type": node_type})
+    def add_node(node_name, node_type, evotag_highlighted=False):
+        node_name = str(node_name)
+        if node_name not in nodes:
+            nodes[node_name] = {
+                "type": node_type,
+                "evotag_highlighted": bool(evotag_highlighted),
+            }
+            return
+        nodes[node_name]["evotag_highlighted"] = (
+            nodes[node_name].get("evotag_highlighted", False)
+            or bool(evotag_highlighted)
+        )
 
     def add_edge(
         from_node,
@@ -514,6 +553,7 @@ def plot_cell_connections(
         edge_type,
         bidirectional=False,
         highlighted=False,
+        evotag_highlighted=False,
     ):
         if hide_self_connections and str(from_node) == str(to_node):
             return
@@ -525,6 +565,7 @@ def plot_cell_connections(
                 "type": edge_type,
                 "bidirectional": bidirectional,
                 "highlighted": bool(highlighted),
+                "evotag_highlighted": bool(evotag_highlighted),
             }
         )
 
@@ -534,7 +575,14 @@ def plot_cell_connections(
         if cell_name in selected_set or cell_name not in cell_name_set:
             return
         if cell_name not in nodes:
-            nodes[cell_name] = {"type": "secondary cell"}
+            nodes[cell_name] = {
+                "type": "secondary cell",
+                "evotag_highlighted": object_has_evotag(
+                    cells_object.get(cell_name, {})
+                    if isinstance(cells_object, dict)
+                    else {}
+                ),
+            }
             secondary_cells.append(cell_name)
 
     for connection in connection_list("chemical_conns"):
@@ -555,6 +603,7 @@ def plot_cell_connections(
                 connection_weight(connection),
                 "chemical",
                 highlighted=(connection["from"], connection["to"]) in highlighted_pairs,
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     for connection in connection_list("electrical_conns"):
@@ -575,10 +624,18 @@ def plot_cell_connections(
                 connection_weight(connection),
                 "electrical",
                 bidirectional=True,
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     stretch_receptor = network_json_data.get("stretch_receptor")
     if isinstance(stretch_receptor, dict):
+        stretch_receptor_parameter_highlight = object_has_evotag(
+            {
+                key: value
+                for key, value in stretch_receptor.items()
+                if not key.endswith("_weights") and key not in ("d_weights", "v_weights")
+            }
+        )
         receptor_weight_fields = []
         for weights_key in stretch_receptor:
             if not weights_key.startswith("ns_") or not weights_key.endswith(
@@ -610,12 +667,17 @@ def plot_cell_connections(
                 if to_cell not in selected_set:
                     continue
                 from_node = "{}_{}".format(prefix, connection.get("from_sr"))
-                add_node(from_node, "stretch receptor")
+                add_node(
+                    from_node,
+                    "stretch receptor",
+                    evotag_highlighted=stretch_receptor_parameter_highlight,
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "stretch receptor",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     sensors = network_json_data.get("sensors")
@@ -623,6 +685,9 @@ def plot_cell_connections(
         for sensor_name, sensor in sensors.items():
             if not isinstance(sensor, dict):
                 continue
+            sensor_parameter_highlight = object_has_evotag(
+                object_without_keys(sensor, {"weights"})
+            )
             weights = sensor.get("weights", {}).get("value", [])
             if weights is None:
                 continue
@@ -640,12 +705,17 @@ def plot_cell_connections(
                     "from_output", connection.get("from_input")
                 )
                 from_node = "{}_output_{}".format(sensor_name, from_output)
-                add_node(from_node, "sensor")
+                add_node(
+                    from_node,
+                    "sensor",
+                    evotag_highlighted=sensor_parameter_highlight,
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "sensor",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     driving_inputs = network_json_data.get("driving_inputs")
@@ -661,18 +731,26 @@ def plot_cell_connections(
                 if to_cell not in selected_set:
                     continue
                 from_node = "input_{}".format(connection.get("from_input"))
-                add_node(from_node, "driving input")
+                add_node(
+                    from_node,
+                    "driving input",
+                    evotag_highlighted=object_has_evotag(
+                        object_without_keys(driving_inputs, {"weights"})
+                    ),
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "driving input",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     for nmj_key, prefix in (("dorsal_nmj", "D_musc"), ("ventral_nmj", "V_musc")):
         nmj = network_json_data.get(nmj_key)
         if not isinstance(nmj, dict):
             continue
+        nmj_parameter_highlight = object_has_evotag(object_without_keys(nmj, {"weights"}))
         weights = nmj.get("weights", {}).get("value", [])
         if weights is None:
             continue
@@ -685,12 +763,13 @@ def plot_cell_connections(
             if from_cell not in selected_set:
                 continue
             to_node = "{}_{}".format(prefix, connection.get("to_musc"))
-            add_node(to_node, "muscle")
+            add_node(to_node, "muscle", evotag_highlighted=nmj_parameter_highlight)
             add_edge(
                 from_cell,
                 to_node,
                 connection_weight(connection),
                 "muscle",
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     displayed_weights = [abs(edge["weight"]) for edge in edges]
@@ -810,6 +889,8 @@ def plot_cell_connections(
         return marker_diameter * shape_margin + 1.5 * max(1.0, float(node_scale))
 
     def edge_color(edge):
+        if edge.get("evotag_highlighted"):
+            return "#D000FF"
         if edge.get("highlighted") and edge["type"] == "chemical":
             return "#00C853" if edge["weight"] >= 0 else "#000000"
         if edge["type"] == "electrical":
@@ -871,19 +952,21 @@ def plot_cell_connections(
     for node_name, position in positions.items():
         node_type = nodes[node_name]["type"]
         style = node_styles.get(node_type, node_styles["cell"])
+        evotag_node_highlighted = nodes[node_name].get("evotag_highlighted", False)
         ax.scatter(
             [position[0]],
             [position[1]],
             s=style["size"] * marker_area_scale,
             marker=style["marker"],
             facecolors=(
-                "#00E676"
-                if node_name in highlighted_cells
-                and node_type in ("cell", "secondary cell")
+                "#FFD600"
+                if evotag_node_highlighted
+                else "#00E676"
+                if node_name in highlighted_cells and node_type in ("cell", "secondary cell")
                 else style["facecolor"]
             ),
-            edgecolors=style["edgecolor"],
-            linewidths=1.2,
+            edgecolors="#D000FF" if evotag_node_highlighted else style["edgecolor"],
+            linewidths=2.0 if evotag_node_highlighted else 1.2,
             zorder=3,
         )
         ax.text(
@@ -910,6 +993,10 @@ def plot_cell_connections(
         Line2D([0], [0], color="0.25", linewidth=0.8, label="Weak"),
         Line2D([0], [0], color="0.25", linewidth=4.0, label="Strong"),
     ]
+    if evotag is not None and any(edge.get("evotag_highlighted") for edge in edges):
+        edge_legend.append(
+            Line2D([0], [0], color="#D000FF", linewidth=3.0, label=evotag)
+        )
     node_legend = [
         Line2D(
             [0],
@@ -935,6 +1022,21 @@ def plot_cell_connections(
                 markeredgecolor="black",
                 markersize=8 * node_scale,
                 label="Highlighted Cell",
+            )
+        )
+    if evotag is not None and any(
+        nodes[node].get("evotag_highlighted") for node in nodes
+    ):
+        node_legend.append(
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="none",
+                markerfacecolor="#FFD600",
+                markeredgecolor="#D000FF",
+                markersize=8 * node_scale,
+                label=evotag,
             )
         )
     ax.legend(
