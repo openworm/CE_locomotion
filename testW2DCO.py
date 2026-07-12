@@ -17,4 +17,5 @@ run(
     reRand=True,
     evo_type="EvoCO",
     doTestRun=True,
+    doOrigMuscInput=True,
 )

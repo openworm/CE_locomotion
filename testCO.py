@@ -13,4 +13,5 @@ run(
     outputFolderName="exampleRunCO",
     doEvol=True,
     overwrite=True,
+    doOrigMuscInput=True,
 )

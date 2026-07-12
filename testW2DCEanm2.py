@@ -26,6 +26,7 @@ args = dict(
     # doTestRun=True, #run a single simple simulation
     reRand=True,
     RandSeed=900351,
+    doOrigMuscInput=True,
 )
 
 args["outputFolderName"] = outputFolderName

@@ -6,4 +6,5 @@ run(
     outputFolderName="exampleRun",
     doEvol=True,
     overwrite=True,
+    doOrigMuscInput=True,
 )
