@@ -27,6 +27,7 @@ args = dict(
     reRand=True,
     RandSeed=900351,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
 )
 
 args["outputFolderName"] = outputFolderName

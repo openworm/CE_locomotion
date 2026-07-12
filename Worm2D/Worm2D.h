@@ -233,7 +233,7 @@ class baseParameters
         json defaultVals_;
         defaultVals_["random_initial_state"] = false;
         defaultVals_["do_orig_musc_input"] = false;
-        defaultVals_["do_orig_sr_input"] = true;
+        defaultVals_["do_orig_sr_input"] = false;
 
         defaultVals_["reset_agent_body"] = false;
         defaultVals_["rotation"] = 0.0;

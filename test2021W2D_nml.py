@@ -12,5 +12,6 @@ run(
     overwrite=True,
     doNML=True,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
     # doMuscSim=True,
 )

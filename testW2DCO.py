@@ -18,4 +18,5 @@ run(
     evo_type="EvoCO",
     doTestRun=True,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
 )

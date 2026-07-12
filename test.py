@@ -7,4 +7,5 @@ run(
     doEvol=True,
     overwrite=True,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
 )

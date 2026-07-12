@@ -16,4 +16,5 @@ run(
     checkPointInterval=5,
     reRand=True,
     doOrigMuscInput=True,
+    doOrigSRInput=True,
 )

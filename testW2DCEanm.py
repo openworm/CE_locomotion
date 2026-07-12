@@ -12,6 +12,7 @@ run(
     overwrite=True,
     checkPointInterval=5,
     doOrigMuscInput=False,
+    doOrigSRInput=True,
     evo_type="EvoCE",
     doTestRun=False,
     SRZeroGainsType=1,
