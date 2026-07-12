@@ -2063,6 +2063,74 @@ def add_evotag(json_data, keys, evotag_name=None):
     return result
 
 
+def set_evolvable_range(
+    json_data,
+    evotag_name,
+    active=None,
+    lower_limit=None,
+    upper_limit=None,
+    name=None,
+):
+    """Return a copy with selected fields changed for an evolvable range."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+    if active is not None and not isinstance(active, bool):
+        raise TypeError("active must be a bool or None")
+    for parameter_name, value in (
+        ("lower_limit", lower_limit),
+        ("upper_limit", upper_limit),
+    ):
+        if value is not None and (
+            isinstance(value, bool) or not isinstance(value, (int, float))
+        ):
+            raise TypeError("{} must be a number or None".format(parameter_name))
+    if name is not None and (not isinstance(name, str) or not name):
+        raise ValueError("name must be a non-empty string or None")
+
+    result = copy.deepcopy(json_data)
+    evolvable_ranges = result.get("evolvable_ranges")
+    if not isinstance(evolvable_ranges, dict):
+        raise KeyError("JSON does not contain an 'evolvable_ranges' dictionary")
+
+    range_entry = None
+    if evotag_name in evolvable_ranges and isinstance(
+        evolvable_ranges[evotag_name], dict
+    ):
+        range_entry = evolvable_ranges[evotag_name]
+    else:
+        legacy_entries = evolvable_ranges.get("value")
+        if isinstance(legacy_entries, list):
+            for entry in legacy_entries:
+                if not isinstance(entry, dict):
+                    continue
+                if entry.get("evotag") == evotag_name:
+                    range_entry = entry
+                    break
+                if (
+                    len(entry) == 1
+                    and evotag_name in entry
+                    and isinstance(entry[evotag_name], dict)
+                ):
+                    range_entry = entry[evotag_name]
+                    break
+
+    if range_entry is None:
+        raise KeyError("Evotag {!r} is not in evolvable_ranges".format(evotag_name))
+
+    if active is not None:
+        range_entry["active"] = active
+    if lower_limit is not None:
+        range_entry["lower_limit"] = float(lower_limit)
+    if upper_limit is not None:
+        range_entry["upper_limit"] = float(upper_limit)
+    if name is not None:
+        range_entry["name"] = name
+
+    return result
+
+
 def delete_sensor(json_data, sensor_name):
     """Return a copy with a sensor and its dedicated driving inputs removed."""
     if not isinstance(json_data, dict):
