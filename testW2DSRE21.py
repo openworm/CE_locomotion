@@ -28,6 +28,7 @@ args = dict(
     reRand=False,
     doTestRun=True,
     doOrigMuscInput=False,
+    doOrigSRInput=True,
     modifyJson=False,
     doEvol=True,
     checkPointInterval=5,

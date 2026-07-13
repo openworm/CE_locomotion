@@ -2336,15 +2336,26 @@ def plot_hist(a=None):
     plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
 
     plot_data_4av = getAvData_1(plot_data_1[4], avlentop=avlentop)
-    # gen_index_orig_av = plot_data_4av[:, 0]
     plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
+    plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
+    plot_data_best_percent_av = getAvData_1(plot_data_2[3], avlentop=avlentop)
 
     # plot_data_3 = [plot_data_1[0], plot_data_1[3], plot_data_1[4], plot_data_2[3]]
-    plot_data_3 = [plot_data_3av, plot_data_4av, plot_data_1[0], plot_data_2[3]]
+    plot_data_3 = [
+        plot_data_3av,
+        plot_data_4av,
+        plot_data_0av,
+        plot_data_best_percent_av,
+    ]
 
     # gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
 
-    gen_indices = [gen_index_orig_av, gen_index_orig_av, gen_index_orig, gen_index_orig]
+    gen_indices = [
+        gen_index_orig_av,
+        gen_index_orig_av,
+        gen_index_orig_av,
+        gen_index_orig_av,
+    ]
 
     titles = [
         "Pop percent variation",

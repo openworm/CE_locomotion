@@ -65,6 +65,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         transient=transient,
         RandSeed=853982,
         doOrigMuscInput=False,
+        doOrigSRInput=True,
         doPlotEvol=False,
     )
 
@@ -91,6 +92,7 @@ for input_folder, output_folder, output_folder_nml in zip(
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doOrigSRInput=True,
         doPlotEvol=False,
     )
 
@@ -119,5 +121,6 @@ for output_folder, output_folder_nml_musc in zip(out_path_list, out_path_list_nm
         duration=duration,
         transient=transient,
         RandSeed=853982,
+        doOrigSRInput=True,
         doPlotEvol=False,
     )

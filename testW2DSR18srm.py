@@ -35,6 +35,7 @@ args = dict(
     reRand=True,
     doTestRun=True,
     doOrigMuscInput=False,
+    doOrigSRInput=True,
     modifyJson=False,
     debug=True,
     overwrite=True,

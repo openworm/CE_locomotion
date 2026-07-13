@@ -1282,7 +1282,7 @@ def _get_cell_connection(
     connection_key,
     reciprocal=False,
 ):
-    """Return a copy of a matching nervous-system connection, if present."""
+    """Return a copy of a matching nervous-system connection and its index."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     for parameter_name, cell_name in (
@@ -1294,23 +1294,23 @@ def _get_cell_connection(
 
     nervous_system = json_data.get("nervous_system")
     if not isinstance(nervous_system, dict):
-        return None
+        return None, None
     connection_object = nervous_system.get(connection_key)
     if connection_object is None:
-        return None
+        return None, None
     if not isinstance(connection_object, dict):
         raise TypeError(
             "'nervous_system.{}' must be a dictionary".format(connection_key)
         )
     connections = connection_object.get("value")
     if connections is None:
-        return None
+        return None, None
     if not isinstance(connections, list):
         raise TypeError(
             "'nervous_system.{}.value' must be a list".format(connection_key)
         )
 
-    for connection in connections:
+    for connection_index, connection in enumerate(connections):
         if not isinstance(connection, dict):
             raise TypeError("Each connection must be a dictionary")
         direct_match = (
@@ -1320,12 +1320,48 @@ def _get_cell_connection(
             connection.get("from") == to_cell and connection.get("to") == from_cell
         )
         if direct_match or reverse_match:
-            return copy.deepcopy(connection)
-    return None
+            return copy.deepcopy(connection), connection_index
+    return None, None
+
+
+def _get_cell_connections_for_cell(json_data, cell_name, connection_key):
+    """Return copies and indices of nervous-system connections involving one cell."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        return [], []
+    connection_object = nervous_system.get(connection_key)
+    if connection_object is None:
+        return [], []
+    if not isinstance(connection_object, dict):
+        raise TypeError(
+            "'nervous_system.{}' must be a dictionary".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if connections is None:
+        return [], []
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+
+    matching_connections = []
+    matching_indices = []
+    for connection_index, connection in enumerate(connections):
+        if not isinstance(connection, dict):
+            raise TypeError("Each connection must be a dictionary")
+        if connection.get("from") == cell_name or connection.get("to") == cell_name:
+            matching_connections.append(copy.deepcopy(connection))
+            matching_indices.append(connection_index)
+    return matching_connections, matching_indices
 
 
 def get_chemical_connection(json_data, from_cell, to_cell):
-    """Return the directed chemical connection, or None if it is absent."""
+    """Return (connection, index) for a chemical connection, or (None, None)."""
     return _get_cell_connection(
         json_data,
         from_cell,
@@ -1335,13 +1371,95 @@ def get_chemical_connection(json_data, from_cell, to_cell):
 
 
 def get_electrical_connection(json_data, first_cell, second_cell):
-    """Return the reciprocal electrical connection, or None if absent."""
+    """Return (connection, index) for an electrical connection, or (None, None)."""
     return _get_cell_connection(
         json_data,
         first_cell,
         second_cell,
         "electrical_conns",
         reciprocal=True,
+    )
+
+
+def get_chemical_connections_for_cell(json_data, cell_name):
+    """Return (connections, indices) for chemical connections involving a cell."""
+    return _get_cell_connections_for_cell(json_data, cell_name, "chemical_conns")
+
+
+def get_electrical_connections_for_cell(json_data, cell_name):
+    """Return (connections, indices) for electrical connections involving a cell."""
+    return _get_cell_connections_for_cell(json_data, cell_name, "electrical_conns")
+
+
+def _set_connection_weight(json_data, connection_key, connection_index, weight):
+    """Return a copy with one nervous-system connection weight changed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if isinstance(connection_index, bool) or not isinstance(connection_index, int):
+        raise TypeError("connection_index must be an integer")
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    connection_object = nervous_system.get(connection_key)
+    if not isinstance(connection_object, dict):
+        raise KeyError(
+            "JSON does not contain 'nervous_system.{}'".format(connection_key)
+        )
+    connections = connection_object.get("value")
+    if not isinstance(connections, list):
+        raise TypeError(
+            "'nervous_system.{}.value' must be a list".format(connection_key)
+        )
+    try:
+        connection = connections[connection_index]
+    except IndexError:
+        raise IndexError(
+            "{} connection index {} is out of range".format(
+                connection_key, connection_index
+            )
+        )
+    if not isinstance(connection, dict):
+        raise TypeError("Connection at index {} must be a dictionary".format(connection_index))
+    connection.setdefault("weight", {})
+    if not isinstance(connection["weight"], dict):
+        raise TypeError(
+            "Connection weight at index {} must be a dictionary".format(
+                connection_index
+            )
+        )
+    connection["weight"]["value"] = float(weight)
+    return result
+
+
+def set_chemical_connection_weight(json_data, from_cell, to_cell, weight):
+    """Return a copy with a directed chemical connection weight changed."""
+    _, connection_index = get_chemical_connection(json_data, from_cell, to_cell)
+    if connection_index is None:
+        raise KeyError(
+            "Chemical connection from {!r} to {!r} was not found".format(
+                from_cell, to_cell
+            )
+        )
+    return _set_connection_weight(
+        json_data, "chemical_conns", connection_index, weight
+    )
+
+
+def set_electrical_connection_weight(json_data, first_cell, second_cell, weight):
+    """Return a copy with an electrical connection weight changed."""
+    _, connection_index = get_electrical_connection(json_data, first_cell, second_cell)
+    if connection_index is None:
+        raise KeyError(
+            "Electrical connection between {!r} and {!r} was not found".format(
+                first_cell, second_cell
+            )
+        )
+    return _set_connection_weight(
+        json_data, "electrical_conns", connection_index, weight
     )
 
 
