@@ -1381,6 +1381,95 @@ def get_electrical_connection(json_data, first_cell, second_cell):
     )
 
 
+def get_nmj_connection(json_data, muscle_side, from_cell, to_muscle=None):
+    """Return NMJ connection data for one cell.
+
+    With to_muscle supplied, return (connection, index) for one connection. If
+    to_muscle is omitted, return (connections, indices) for all muscles that
+    from_cell connects to on the selected side.
+    """
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(muscle_side, str):
+        raise TypeError("muscle_side must be a string")
+    muscle_side = muscle_side.lower()
+    if muscle_side not in {"dorsal", "ventral"}:
+        raise ValueError("muscle_side must be 'dorsal' or 'ventral'")
+    if not isinstance(from_cell, str) or not from_cell:
+        raise ValueError("from_cell must be a non-empty string")
+
+    nmj_key = "{}_nmj".format(muscle_side)
+    nmj_object = json_data.get(nmj_key)
+    if nmj_object is None:
+        return ([], []) if to_muscle is None else (None, None)
+    if not isinstance(nmj_object, dict):
+        raise TypeError("'{}' must be a dictionary".format(nmj_key))
+    weights_object = nmj_object.get("weights")
+    if weights_object is None:
+        return ([], []) if to_muscle is None else (None, None)
+    if not isinstance(weights_object, dict):
+        raise TypeError("'{}.weights' must be a dictionary".format(nmj_key))
+    connections = weights_object.get("value")
+    if connections is None:
+        return ([], []) if to_muscle is None else (None, None)
+    if not isinstance(connections, list):
+        raise TypeError("'{}.weights.value' must be a list".format(nmj_key))
+
+    matching_connections = []
+    matching_indices = []
+    for connection_index, connection in enumerate(connections):
+        if not isinstance(connection, dict):
+            raise TypeError("Each NMJ connection must be a dictionary")
+        if connection.get("from_cell") != from_cell:
+            continue
+        if to_muscle is None:
+            matching_connections.append(copy.deepcopy(connection))
+            matching_indices.append(connection_index)
+        elif connection.get("to_musc") == to_muscle:
+            return copy.deepcopy(connection), connection_index
+    if to_muscle is None:
+        return matching_connections, matching_indices
+    return None, None
+
+
+def get_body_connection(json_data, body_side, from_muscle, to_segment):
+    """Return (connection, index) for a dorsal/ventral body connection."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(body_side, str):
+        raise TypeError("body_side must be a string")
+    body_side = body_side.lower()
+    if body_side not in {"dorsal", "ventral"}:
+        raise ValueError("body_side must be 'dorsal' or 'ventral'")
+
+    body_key = "{}_body".format(body_side)
+    body_object = json_data.get(body_key)
+    if body_object is None:
+        return None, None
+    if not isinstance(body_object, dict):
+        raise TypeError("'{}' must be a dictionary".format(body_key))
+    weights_object = body_object.get("weights")
+    if weights_object is None:
+        return None, None
+    if not isinstance(weights_object, dict):
+        raise TypeError("'{}.weights' must be a dictionary".format(body_key))
+    connections = weights_object.get("value")
+    if connections is None:
+        return None, None
+    if not isinstance(connections, list):
+        raise TypeError("'{}.weights.value' must be a list".format(body_key))
+
+    for connection_index, connection in enumerate(connections):
+        if not isinstance(connection, dict):
+            raise TypeError("Each body connection must be a dictionary")
+        if (
+            connection.get("from_musc") == from_muscle
+            and connection.get("to_seg") == to_segment
+        ):
+            return copy.deepcopy(connection), connection_index
+    return None, None
+
+
 def get_chemical_connections_for_cell(json_data, cell_name):
     """Return (connections, indices) for chemical connections involving a cell."""
     return _get_cell_connections_for_cell(json_data, cell_name, "chemical_conns")
@@ -1846,6 +1935,55 @@ def add_electrical_connection_evotag(
     )
 
 
+def set_cell_parameter(json_data, cell_name, parameter_name, value):
+    """Return a copy with one nervous-system cell parameter value changed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    for argument_name, argument_value in (
+        ("cell_name", cell_name),
+        ("parameter_name", parameter_name),
+    ):
+        if not isinstance(argument_value, str) or not argument_value:
+            raise ValueError("{} must be a non-empty string".format(argument_name))
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError("value must be a number")
+
+    result = copy.deepcopy(json_data)
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict) or cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+    cell = cells[cell_name]
+    if not isinstance(cell, dict) or parameter_name not in cell:
+        raise KeyError(
+            "Parameter {!r} was not found for cell {!r}".format(
+                parameter_name, cell_name
+            )
+        )
+    parameter = cell[parameter_name]
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError(
+            "{}.{} must be an object containing 'value'".format(
+                cell_name, parameter_name
+            )
+        )
+    if isinstance(parameter["value"], bool) or not isinstance(
+        parameter["value"], (int, float)
+    ):
+        raise TypeError(
+            "{}.{} must currently have a numeric value".format(
+                cell_name, parameter_name
+            )
+        )
+
+    parameter["value"] = float(value)
+    return result
+
+
 def add_cell_parameter_evotag(
     json_data,
     cell_name,
@@ -1939,7 +2077,12 @@ def add_cell_parameter_evotag(
 
 
 def set_json_value(json_data, keys, new_value):
-    """Return a copy with the value at an existing JSON path replaced."""
+    """Return a copy with the value at an existing JSON path replaced.
+
+    If the path identifies a JSON parameter object with a ``value`` field, the
+    contained value is replaced. For example, ``["nervous_system", "cells",
+    "DA_0", "bias"]`` updates ``["bias"]["value"]``.
+    """
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(keys, (list, tuple)) or not keys:
@@ -1983,7 +2126,11 @@ def set_json_value(json_data, keys, new_value):
                     final_key, final_position
                 )
             )
-        current[final_key] = copy.deepcopy(new_value)
+        target = current[final_key]
+        if final_key != "value" and isinstance(target, dict) and "value" in target:
+            target["value"] = copy.deepcopy(new_value)
+        else:
+            current[final_key] = copy.deepcopy(new_value)
     elif isinstance(current, list):
         if isinstance(final_key, bool) or not isinstance(final_key, int):
             raise TypeError(
@@ -1992,13 +2139,17 @@ def set_json_value(json_data, keys, new_value):
                 )
             )
         try:
-            current[final_key] = copy.deepcopy(new_value)
+            target = current[final_key]
         except IndexError:
             raise IndexError(
                 "List index {} is out of range at path position {}".format(
                     final_key, final_position
                 )
             )
+        if isinstance(target, dict) and "value" in target:
+            target["value"] = copy.deepcopy(new_value)
+        else:
+            current[final_key] = copy.deepcopy(new_value)
     else:
         raise TypeError(
             "JSON path reaches a non-container at position {}".format(final_position)
