@@ -1432,8 +1432,13 @@ def get_nmj_connection(json_data, muscle_side, from_cell, to_muscle=None):
     return None, None
 
 
-def get_body_connection(json_data, body_side, from_muscle, to_segment):
-    """Return (connection, index) for a dorsal/ventral body connection."""
+def get_body_connection(json_data, body_side, from_muscle, to_segment=None):
+    """Return body connection data for one muscle.
+
+    With to_segment supplied, return (connection, index) for one connection. If
+    to_segment is omitted, return (connections, indices) for all body segments
+    that from_muscle connects to on the selected side.
+    """
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(body_side, str):
@@ -1445,28 +1450,34 @@ def get_body_connection(json_data, body_side, from_muscle, to_segment):
     body_key = "{}_body".format(body_side)
     body_object = json_data.get(body_key)
     if body_object is None:
-        return None, None
+        return ([], []) if to_segment is None else (None, None)
     if not isinstance(body_object, dict):
         raise TypeError("'{}' must be a dictionary".format(body_key))
     weights_object = body_object.get("weights")
     if weights_object is None:
-        return None, None
+        return ([], []) if to_segment is None else (None, None)
     if not isinstance(weights_object, dict):
         raise TypeError("'{}.weights' must be a dictionary".format(body_key))
     connections = weights_object.get("value")
     if connections is None:
-        return None, None
+        return ([], []) if to_segment is None else (None, None)
     if not isinstance(connections, list):
         raise TypeError("'{}.weights.value' must be a list".format(body_key))
 
+    matching_connections = []
+    matching_indices = []
     for connection_index, connection in enumerate(connections):
         if not isinstance(connection, dict):
             raise TypeError("Each body connection must be a dictionary")
-        if (
-            connection.get("from_musc") == from_muscle
-            and connection.get("to_seg") == to_segment
-        ):
+        if connection.get("from_musc") != from_muscle:
+            continue
+        if to_segment is None:
+            matching_connections.append(copy.deepcopy(connection))
+            matching_indices.append(connection_index)
+        elif connection.get("to_seg") == to_segment:
             return copy.deepcopy(connection), connection_index
+    if to_segment is None:
+        return matching_connections, matching_indices
     return None, None
 
 
