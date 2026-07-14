@@ -368,8 +368,8 @@ def plot_motion_all(
 
 
 def plot_cell_connections(
-    output_folder,
-    cell_names,
+    output_folder=None,
+    cell_names=None,
     save_png=False,
     filename="CellConnections.png",
     hide_self_connections=True,
@@ -383,16 +383,26 @@ def plot_cell_connections(
     highlight_cells=None,
     arrow_thickness_scale=1.0,
     evotag=None,
+    json_data=None,
 ):
-    """Return a figure showing selected cells and connected model objects."""
+    """Return a figure showing selected cells and connected model objects.
+
+    Model data can be loaded from output_folder/worm_data_worm.json, supplied
+    directly with json_data, or both. If both are supplied, json_data is used
+    for the plot and output_folder is used only as the save location.
+    """
     from matplotlib.lines import Line2D
     from matplotlib.patches import FancyArrowPatch
 
-    worm_file = os.path.join(output_folder, "worm_data_worm.json")
-    if not os.path.isfile(worm_file):
-        raise FileNotFoundError(
-            "Could not find worm_data_worm.json in {}".format(output_folder)
-        )
+    if isinstance(output_folder, dict) and json_data is None:
+        json_data = output_folder
+        output_folder = None
+    if output_folder is not None:
+        output_folder = os.fspath(output_folder)
+    if json_data is None and output_folder is None:
+        raise ValueError("Either output_folder or json_data must be supplied")
+    if save_png and output_folder is None:
+        raise ValueError("output_folder is required when save_png is True")
     if isinstance(cell_names, str):
         raise TypeError("cell_names must be a list or tuple of cell names")
     if not isinstance(cell_names, (list, tuple)) or not cell_names:
@@ -423,7 +433,17 @@ def plot_cell_connections(
         ):
             raise ValueError("{} must be a positive number".format(scale_name))
 
-    network_json_data = utils.getJsonFile(worm_file)
+    if json_data is not None:
+        if not isinstance(json_data, dict):
+            raise TypeError("json_data must be a dictionary")
+        network_json_data = json_data
+    else:
+        worm_file = os.path.join(output_folder, "worm_data_worm.json")
+        if not os.path.isfile(worm_file):
+            raise FileNotFoundError(
+                "Could not find worm_data_worm.json in {}".format(output_folder)
+            )
+        network_json_data = utils.getJsonFile(worm_file)
     if evotag is not None and (not isinstance(evotag, str) or not evotag):
         raise ValueError("evotag must be a non-empty string")
 
@@ -787,14 +807,17 @@ def plot_cell_connections(
     ax.axis("off")
 
     primary_rotation_rad = np.deg2rad(primary_rotation)
-    angles = (
-        np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
-        + primary_rotation_rad
-    )
-    positions = {
-        cell_name: np.array([np.cos(angle), np.sin(angle)])
-        for cell_name, angle in zip(selected_cells, angles)
-    }
+    if len(selected_cells) == 1:
+        positions = {selected_cells[0]: np.array([0.0, 0.0])}
+    else:
+        angles = (
+            np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
+            + primary_rotation_rad
+        )
+        positions = {
+            cell_name: np.array([np.cos(angle), np.sin(angle)])
+            for cell_name, angle in zip(selected_cells, angles)
+        }
     if secondary_cells:
         if secondary_rotation is None:
             secondary_rotation_rad = primary_rotation_rad + np.pi / len(selected_cells)
