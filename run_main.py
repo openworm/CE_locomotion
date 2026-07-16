@@ -113,6 +113,7 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 1,
     "doCPT": True,
+    "doRun": True,
     "evo_type": "Evo21",
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
@@ -698,6 +699,13 @@ def run(a=None, **kwargs):
             # data = np.genfromtxt(file1, dtype=float)
             # data = np.nan_to_num(data, nan=0.0)
             # np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
+
+    if not a.doRun:
+        print(
+            "doRun is False, so the output folder has been prepared but the "
+            "C++ simulation and plotting steps will be skipped."
+        )
+        return
 
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):

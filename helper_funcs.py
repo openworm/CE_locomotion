@@ -1563,6 +1563,85 @@ def set_electrical_connection_weight(json_data, first_cell, second_cell, weight)
     )
 
 
+def set_nmj_connection_weight(json_data, muscle_side, from_cell, to_muscle, weight):
+    """Return a copy with one dorsal/ventral NMJ connection weight changed."""
+    _, connection_index = get_nmj_connection(
+        json_data, muscle_side, from_cell, to_muscle
+    )
+    if connection_index is None:
+        raise KeyError(
+            "{} NMJ connection from {!r} to muscle {!r} was not found".format(
+                str(muscle_side).lower(), from_cell, to_muscle
+            )
+        )
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+
+    muscle_side = muscle_side.lower()
+    nmj_key = "{}_nmj".format(muscle_side)
+    result = copy.deepcopy(json_data)
+    try:
+        connection = result[nmj_key]["weights"]["value"][connection_index]
+    except IndexError:
+        raise IndexError(
+            "{} connection index {} is out of range".format(nmj_key, connection_index)
+        )
+    if not isinstance(connection, dict):
+        raise TypeError("NMJ connection at index {} must be a dictionary".format(connection_index))
+    connection.setdefault("weight", {})
+    if not isinstance(connection["weight"], dict):
+        raise TypeError(
+            "NMJ connection weight at index {} must be a dictionary".format(
+                connection_index
+            )
+        )
+    connection["weight"]["value"] = float(weight)
+    return result
+
+
+def set_body_connection_weight(json_data, body_side, from_musc, to_seg, weight):
+    """Return a copy with one dorsal/ventral body connection weight changed."""
+    _, connection_index = get_body_connection(json_data, body_side, from_musc, to_seg)
+    if connection_index is None:
+        raise KeyError(
+            "{} body connection from muscle {!r} to segment {!r} was not found".format(
+                str(body_side).lower(), from_musc, to_seg
+            )
+        )
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+
+    body_side = body_side.lower()
+    body_key = "{}_body".format(body_side)
+    result = copy.deepcopy(json_data)
+    try:
+        connection = result[body_key]["weights"]["value"][connection_index]
+    except IndexError:
+        raise IndexError(
+            "{} connection index {} is out of range".format(body_key, connection_index)
+        )
+    if not isinstance(connection, dict):
+        raise TypeError(
+            "Body connection at index {} must be a dictionary".format(
+                connection_index
+            )
+        )
+    connection.setdefault("weight", {})
+    if not isinstance(connection["weight"], dict):
+        raise TypeError(
+            "Body connection weight at index {} must be a dictionary".format(
+                connection_index
+            )
+        )
+    connection["weight"]["value"] = float(weight)
+    return result
+
+
+def set_body_connection(json_data, body_side, from_musc, to_seg, weight):
+    """Return a copy with one dorsal/ventral body connection weight changed."""
+    return set_body_connection_weight(json_data, body_side, from_musc, to_seg, weight)
+
+
 def delete_cell_connection(json_data, from_cell, to_cell):
     """Return a copy with one directed chemical connection removed if present."""
     if not isinstance(json_data, dict):
