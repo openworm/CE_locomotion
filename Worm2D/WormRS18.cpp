@@ -49,6 +49,17 @@ rS18Macros(setMacros()),Worm2D({6,24,0.1,6,40},0)
 
 } //for WormCO18Full
 
+Worm18::Worm18(bool doOrigMuscInput_, bool doOrigSRInput_):
+Worm2Dm({6,24,0.1,6,40}, new NervousSystem()), 
+n(dynamic_cast<NervousSystem&>(*n_ptr)),sr_ptr(make_shared<SR18>()),
+rS18Macros(setMacros()),
+Worm2D({6,24,0.1,6,40},0, doOrigMuscInput_, doOrigSRInput_)
+{
+    setRs18output(1);
+    if (true)
+    n.SetCircuitSize((par1.N_units*par1.N_neuronsperunit) + 4, 4, 4);
+}
+
 
 void Worm18::initConst()
 {
@@ -74,6 +85,13 @@ Worm18::Worm18(const TVector<double> & v1, double output, shared_ptr<const CmdAr
      SetParameters(v1);
 }
 
+Worm18::Worm18(const TVector<double> & v1, double output,
+    bool doOrigMuscInput_, bool doOrigSRInput_):
+Worm18(doOrigMuscInput_, doOrigSRInput_)
+{
+     SetParameters(v1);
+}
+
 Worm18::Worm18(const TVector<double> & v1, shared_ptr<const CmdArgs> cmd):Worm18(v1,1,cmd){}
 
 //Worm18(getVector<double>(v1), 0){}
@@ -88,6 +106,15 @@ Worm18::Worm18(vector<double> v1, double output, shared_ptr<const CmdArgs> cmd):
     getTVector<double>(v1, v);
     SetParameters(v);
     
+}
+
+Worm18::Worm18(vector<double> v1, double output,
+    bool doOrigMuscInput_, bool doOrigSRInput_):
+Worm18(doOrigMuscInput_, doOrigSRInput_)
+{
+    TVector<double> v;
+    getTVector<double>(v1, v);
+    SetParameters(v);
 }
 
 Worm18::Worm18(const string & filename_,shared_ptr<const CmdArgs> cmd):Worm18(cmd)

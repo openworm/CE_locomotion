@@ -997,6 +997,8 @@ class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
 
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_,
+        bool doOrigMuscInput_, bool doOrigSRInput_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();

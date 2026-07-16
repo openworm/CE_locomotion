@@ -114,7 +114,7 @@ DEFAULTS = {
     "checkPointInterval": 1,
     "doCPT": True,
     "doRun": True,
-    "evo_type": "Evo21",
+    "evo_type": None,
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
 }

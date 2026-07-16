@@ -14,14 +14,18 @@ class EvolutionRS18 : public Evolution
     :Evolution(argc,argv, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
-    ),speedoutput(getParameterInt(argc,argv,"--speed_output", "0")),
+    ),doOrigMuscInput(getParameterInt(argc,argv,"--do_orig_musc_input", "0")),
+    doOrigSRInput(getParameterInt(argc,argv,"--do_orig_sr_input", "0")),
+    speedoutput(getParameterInt(argc,argv,"--speed_output", "0")),
     evo_seed(getParameterInt(argc,argv,"--evo_seed", "0")){}
 
     EvolutionRS18(shared_ptr<const CmdArgs> cmd_, string modelname_)
     :Evolution(cmd_, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
         1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
-    ),speedoutput(cmd_->getArgValInt("--speed_output", 0)),
+    ),doOrigMuscInput(cmd_->getArgValInt("--do_orig_musc_input", 0)),
+    doOrigSRInput(cmd_->getArgValInt("--do_orig_sr_input", 0)),
+    speedoutput(cmd_->getArgValInt("--speed_output", 0)),
     evo_seed(cmd_->getArgValInt("--evo_seed", 0))
     {
         cout << "const RS18 " << modelname_ << endl;
@@ -45,6 +49,8 @@ class EvolutionRS18 : public Evolution
 
     
     private:
+    const bool doOrigMuscInput;
+    const bool doOrigSRInput;
 
 
     const double fps = 25.0;

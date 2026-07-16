@@ -3,7 +3,11 @@
 #include "WormRS18.h"
 
 
-void EvolutionRS18::writeJson(TVector<double> &v) {Worm18 w(v); writeJson1(w);}
+void EvolutionRS18::writeJson(TVector<double> &v)
+{
+    Worm18 w(v, 1, doOrigMuscInput, doOrigSRInput);
+    writeJson1(w);
+}
 
 void EvolutionRS18::addExtraParsToJson(json & j)
 {
@@ -135,7 +139,7 @@ double EvolutionRS18::EvaluationFunctionNoOut(TVector<double> &v, RandomState &r
     GenPhenMapping(v, phenotype);
    
 
-    Worm18 w(phenotype, 0);
+    Worm18 w(phenotype, 0, doOrigMuscInput, doOrigSRInput);
   
 
     w.InitializeState(rs);
@@ -226,7 +230,7 @@ double EvolutionRS18::EvaluationFunctionOrig(TVector<double> &v, RandomState &rs
     TVector<double> phenotype(1, itsVectSize());
     GenPhenMapping(v, phenotype);
 
-    Worm18 w(phenotype, 0);
+    Worm18 w(phenotype, 0, doOrigMuscInput, doOrigSRInput);
     w.setRs18output(1);
     //w.setBasename(itsEvoPars().directoryName);
     w.setDataskips(itsEvoPars().skip_steps);
