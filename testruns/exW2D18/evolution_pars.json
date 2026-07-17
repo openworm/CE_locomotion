@@ -1,9 +1,9 @@
 {
-    "Duration": 50,
+    "Duration": 50.0,
     "PopulationSize": 36,
     "randomseed": 292,
     "MaxGenerations": 36,
-    "Transient": 10,
+    "Transient": 10.0,
     "CheckpointInterval": 5,
     "evo_type": "Evo18",
     "random_initial_state": false,
