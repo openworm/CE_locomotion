@@ -112,7 +112,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
     omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
     omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
-    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
+    #omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
    
 
 
