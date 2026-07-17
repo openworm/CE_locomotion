@@ -5,6 +5,7 @@
 //#include <stdio.h>
 #include <iostream>
 #include <set>
+#include <algorithm>
 
 
 
@@ -201,8 +202,9 @@ void EvoBase::checkPars()
     } */
 
     if (s->PopulationSize()!= evoPars1.PopulationSize) 
-    {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
-    popsize = s->PopulationSize();}
+    {cout << "checkpoint population size " << s->PopulationSize()
+     << " will be resized to requested population size "
+     << evoPars1.PopulationSize << endl;}
 
 
 }
@@ -398,9 +400,6 @@ void EvoBase::setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles)
         //configure_p1();
 
         cout << "construct from CPT " << s->cptfilename << " with size " << s->VectorSize() << endl;
-        if (s->PopulationSize()!= evoPars1.PopulationSize) 
-        {cout << "setting " <<  " population size to cpt population size: " << s->PopulationSize() << endl;
-        popsize = s->PopulationSize();}
 
         return;
         //assert(0);
@@ -432,6 +431,78 @@ void EvoBase::setFromCPT()
     else doResume = false;
    
 } 
+
+void EvoBase::resizeCheckpointPopulation(int requestedPopSize)
+{
+    if (!s || requestedPopSize <= 0) return;
+
+    const int loadedPopSize = s->PopulationSize();
+    if (loadedPopSize == requestedPopSize)
+    {
+        popsize = requestedPopSize;
+        cptResizeNeedsEvaluation = false;
+        cptResizeEvaluationStart = 0;
+        return;
+    }
+
+    cout << "resizing checkpoint population from " << loadedPopSize
+         << " to " << requestedPopSize << endl;
+
+    TVector<TVector<double> > oldPopulation = s->Population;
+    TVector<double> oldPerf = s->Perf;
+    TVector<RandomState> oldRandomStates = s->RandomStates;
+
+    if (requestedPopSize < loadedPopSize)
+    {
+        vector<int> inds;
+        for (int i = 1; i <= loadedPopSize; i++) inds.push_back(i);
+        sort(inds.begin(), inds.end(), [&](int a, int b) {
+            return oldPerf[a] > oldPerf[b];
+        });
+
+        s->SetPopulationSize(requestedPopSize);
+        for (int i = 1; i <= requestedPopSize; i++)
+        {
+            const int oldIndex = inds[i - 1];
+            s->Population[i] = oldPopulation[oldIndex];
+            s->Perf[i] = oldPerf[oldIndex];
+            s->RandomStates[i] = oldRandomStates[oldIndex];
+        }
+
+        s->BestPerf = s->Perf[1];
+        s->bestVector = s->Population[1];
+        cptResizeNeedsEvaluation = false;
+        cptResizeEvaluationStart = 0;
+    }
+    else
+    {
+        s->SetPopulationSize(requestedPopSize);
+        for (int i = 1; i <= loadedPopSize; i++)
+        {
+            s->Population[i] = oldPopulation[i];
+            s->Perf[i] = oldPerf[i];
+            s->RandomStates[i] = oldRandomStates[i];
+        }
+        for (int i = loadedPopSize + 1; i <= requestedPopSize; i++)
+            s->RandomizeVector(s->Population[i]);
+
+        cptResizeNeedsEvaluation = true;
+        cptResizeEvaluationStart = loadedPopSize + 1;
+    }
+
+    popsize = requestedPopSize;
+}
+
+void EvoBase::evaluateResizedCheckpointPopulation()
+{
+    if (!cptResizeNeedsEvaluation || !s || cptResizeEvaluationStart <= 0) return;
+
+    cout << "evaluating new checkpoint population members from "
+         << cptResizeEvaluationStart << " to " << s->PopulationSize() << endl;
+    s->EvaluatePopulation(cptResizeEvaluationStart);
+    cptResizeNeedsEvaluation = false;
+    cptResizeEvaluationStart = 0;
+}
 
 void EvoBase::setUp()
 {   
@@ -874,7 +945,8 @@ void EvoBase::configure_p11()
 
     s->SetSelectionMode(evoPars1.SelectionMode);             //{FITNESS_PROPORTIONATE,RANK_BASED}
     s->SetReproductionMode(evoPars1.ReproductionMode);	// {HILL_CLIMBING, GENETIC_ALGORITHM}
-    s->SetPopulationSize(popsize); //96
+    if (doResume) resizeCheckpointPopulation(evoPars1.PopulationSize);
+    else s->SetPopulationSize(popsize); //96
     s->SetMaxGenerations(gentot); //1000
     s->SetMutationVariance(evoPars1.MutationVariance);                // For 71 parameters, an estimated avg change of 0.25 for weights (mapped to 15).
     s->SetCrossoverProbability(evoPars1.CrossoverProbability);
@@ -932,7 +1004,11 @@ void Evolution::configure_p2()
     
 
    
-    if (doResume) {cout << "Resuming search" << endl; s->DoSearch(1);}
+    if (doResume) {
+        evaluateResizedCheckpointPopulation();
+        cout << "Resuming search" << endl;
+        s->DoSearch(1);
+    }
     else s->ExecuteSearch();
   
    

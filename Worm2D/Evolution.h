@@ -36,6 +36,8 @@ class EvoBase
 
     bool setFromCPTflag = false, doCPT = true;
     bool configP1Called = false;
+    bool cptResizeNeedsEvaluation = false;
+    int cptResizeEvaluationStart = 0;
     const evoPars evoPars1;
     TSearch* s  =  nullptr;
     const simPars simPars1;
@@ -87,6 +89,8 @@ class EvoBase
     //void setPopFromBestGenoFile2();
     void construct(int vsize_, int offset_);
     bool evolvedUsedMatchesActiveEvotags();
+    void resizeCheckpointPopulation(int requestedPopSize);
+    void evaluateResizedCheckpointPopulation();
     void configure_p11();
     //void constructAll(int vsize_, int offset_);
     
