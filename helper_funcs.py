@@ -2248,6 +2248,66 @@ def set_json_value(json_data, keys, new_value):
     return result
 
 
+def set_evotag_value(json_data, evotag_name, new_value):
+    """Return a copy with all values using an evotag replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    matches = 0
+    missing_value_paths = []
+
+    def normalize_evotag(value):
+        if isinstance(value, bool):
+            return None
+        if isinstance(value, int):
+            return "evotag_{}".format(value)
+        if isinstance(value, str):
+            return value
+        return None
+
+    def path_string(path):
+        result_path = ""
+        for part in path:
+            if isinstance(part, int):
+                result_path += "[{}]".format(part)
+            else:
+                if result_path:
+                    result_path += "."
+                result_path += str(part)
+        return result_path
+
+    def update_matches(value, path=()):
+        nonlocal matches
+        if isinstance(value, dict):
+            if normalize_evotag(value.get("evotag")) == evotag_name:
+                if "value" not in value:
+                    missing_value_paths.append(path_string(path))
+                else:
+                    value["value"] = copy.deepcopy(new_value)
+                    matches += 1
+            for key, child in value.items():
+                update_matches(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                update_matches(child, path + (index,))
+
+    update_matches(result)
+
+    if missing_value_paths:
+        raise TypeError(
+            "Evotag {!r} was found on objects without a 'value' field: {}".format(
+                evotag_name, ", ".join(missing_value_paths)
+            )
+        )
+    if matches == 0:
+        raise KeyError("Evotag {!r} was not found in the JSON data".format(evotag_name))
+
+    return result
+
+
 def add_evotag(json_data, keys, evotag_name=None):
     """Return a copy with the numeric value at a JSON path made evolvable."""
     if not isinstance(json_data, dict):

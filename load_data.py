@@ -246,6 +246,8 @@ def plot_selected_activity(
 
 def plot_motion_all(
     input_folder,
+    subfolders=None,
+    legend_names=None,
     save_png=True,
     filename="motion_all.png",
     mean_filename="motion_all_mean.png",
@@ -262,21 +264,57 @@ def plot_motion_all(
         or max_snapshots < 1
     ):
         raise ValueError("max_snapshots must be a positive integer")
+    if legend_names is not None and (
+        isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
+    ):
+        raise TypeError("legend_names must be a list or tuple of strings")
 
     input_folder = os.path.abspath(input_folder)
     simulation_files = []
-    for folder, subfolders, files in os.walk(input_folder):
-        subfolders.sort()
-        if folder == input_folder:
-            continue
+
+    def body_file_for_folder(folder):
+        if not os.path.isdir(folder):
+            raise NotADirectoryError(
+                "Could not find simulation subfolder: {}".format(folder)
+            )
+        files = set(os.listdir(folder))
         body_filename = None
         if "body.dat" in files:
             body_filename = "body.dat"
         elif "bodypos.dat" in files:
             body_filename = "bodypos.dat"
-        if body_filename is not None:
+        if body_filename is None:
+            return None
+        return os.path.join(folder, body_filename)
+
+    if subfolders is None:
+        for folder, child_subfolders, files in os.walk(input_folder):
+            child_subfolders.sort()
+            if folder == input_folder:
+                continue
+            body_file = body_file_for_folder(folder)
+            if body_file is not None:
+                simulation_files.append(
+                    (os.path.relpath(folder, input_folder), body_file)
+                )
+    else:
+        if isinstance(subfolders, str) or not isinstance(subfolders, (list, tuple)):
+            raise TypeError("subfolders must be a list or tuple of folder names")
+        for subfolder in subfolders:
+            if not isinstance(subfolder, str) or not subfolder:
+                raise ValueError("subfolders must contain non-empty strings")
+            folder = os.path.abspath(os.path.join(input_folder, subfolder))
+            if os.path.commonpath([input_folder, folder]) != input_folder:
+                raise ValueError(
+                    "Subfolder {!r} is outside input_folder".format(subfolder)
+                )
+            body_file = body_file_for_folder(folder)
+            if body_file is None:
+                raise FileNotFoundError(
+                    "No body.dat or bodypos.dat file was found in {}".format(folder)
+                )
             simulation_files.append(
-                (os.path.relpath(folder, input_folder), os.path.join(folder, body_filename))
+                (os.path.relpath(folder, input_folder), body_file)
             )
 
     if not simulation_files:
@@ -286,12 +324,31 @@ def plot_motion_all(
             )
         )
 
-    simulation_files.sort(key=lambda item: item[0])
+    if subfolders is None:
+        simulation_files.sort(key=lambda item: item[0])
+    if legend_names is not None:
+        if len(legend_names) != len(simulation_files):
+            raise ValueError(
+                "legend_names must contain one label for each plotted subfolder"
+            )
+        for legend_name in legend_names:
+            if not isinstance(legend_name, str) or not legend_name:
+                raise ValueError("legend_names must contain non-empty strings")
+        simulation_files = [
+            (run_name, body_file, legend_name)
+            for (run_name, body_file), legend_name in zip(
+                simulation_files, legend_names
+            )
+        ]
+    else:
+        simulation_files = [
+            (run_name, body_file, run_name) for run_name, body_file in simulation_files
+        ]
     profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
     mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
     color_map = plt.get_cmap("tab20")
 
-    for run_index, (run_name, body_file) in enumerate(simulation_files):
+    for run_index, (run_name, body_file, legend_name) in enumerate(simulation_files):
         body_data = np.loadtxt(body_file)
         if body_data.ndim == 1:
             body_data = body_data.reshape(1, -1)
@@ -320,7 +377,7 @@ def plot_motion_all(
             color=color,
             linewidth=1.5,
             linestyle="-",
-            label=run_name,
+            label=legend_name,
         )
 
         sample_count = min(max_snapshots, body_data.shape[0])
@@ -335,7 +392,7 @@ def plot_motion_all(
                 color=color,
                 markersize=1.2,
                 alpha=0.35,
-                label=run_name if snapshot_number == 0 else "_nolegend_",
+                label=legend_name if snapshot_number == 0 else "_nolegend_",
             )
 
     def finish_figure(fig, ax, title):
