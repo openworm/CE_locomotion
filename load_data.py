@@ -424,6 +424,186 @@ def plot_motion_all(
     return profile_fig, mean_fig
 
 
+def plot_trajectory_properties(
+    input_folder,
+    x_values=None,
+    subfolders=None,
+    properties=("speed", "curvature"),
+    save_png=True,
+    filename="trajectory_properties.png",
+):
+    """Extract average trajectory properties from simulation folders and plot them."""
+    if not os.path.isdir(input_folder):
+        raise NotADirectoryError(
+            "Could not find input directory: {}".format(input_folder)
+        )
+    if isinstance(properties, str):
+        properties = [properties]
+    if not isinstance(properties, (list, tuple)) or not properties:
+        raise ValueError("properties must be a non-empty list or tuple")
+
+    valid_properties = {"speed", "curvature"}
+    properties = [str(prop) for prop in properties]
+    unknown_properties = sorted(set(properties) - valid_properties)
+    if unknown_properties:
+        raise ValueError(
+            "Unknown trajectory properties: {}".format(
+                ", ".join(unknown_properties)
+            )
+        )
+
+    input_folder = os.path.abspath(input_folder)
+
+    def body_file_for_folder(folder):
+        if "body.dat" in os.listdir(folder):
+            return os.path.join(folder, "body.dat")
+        if "bodypos.dat" in os.listdir(folder):
+            return os.path.join(folder, "bodypos.dat")
+        return None
+
+    def curv_file_for_folder(folder):
+        if "curv_t.dat" in os.listdir(folder):
+            return os.path.join(folder, "curv_t.dat")
+        if "curv.dat" in os.listdir(folder):
+            return os.path.join(folder, "curv.dat")
+        return None
+
+    simulation_folders = []
+    if subfolders is None:
+        for folder, child_subfolders, files in os.walk(input_folder):
+            child_subfolders.sort()
+            if folder == input_folder:
+                continue
+            if "body.dat" in files or "bodypos.dat" in files:
+                simulation_folders.append(
+                    (os.path.relpath(folder, input_folder), folder)
+                )
+        simulation_folders.sort(key=lambda item: item[0])
+    else:
+        if isinstance(subfolders, str) or not isinstance(subfolders, (list, tuple)):
+            raise TypeError("subfolders must be a list or tuple of folder names")
+        for subfolder in subfolders:
+            if not isinstance(subfolder, str) or not subfolder:
+                raise ValueError("subfolders must contain non-empty strings")
+            folder = os.path.abspath(os.path.join(input_folder, subfolder))
+            if os.path.commonpath([input_folder, folder]) != input_folder:
+                raise ValueError(
+                    "Subfolder {!r} is outside input_folder".format(subfolder)
+                )
+            if not os.path.isdir(folder):
+                raise NotADirectoryError(
+                    "Could not find simulation subfolder: {}".format(folder)
+                )
+            simulation_folders.append((os.path.relpath(folder, input_folder), folder))
+
+    if not simulation_folders:
+        raise FileNotFoundError(
+            "No simulation subfolders with body.dat or bodypos.dat were found in {}".format(
+                input_folder
+            )
+        )
+
+    if x_values is None:
+        x_values = list(range(len(simulation_folders)))
+    if not isinstance(x_values, (list, tuple, np.ndarray)):
+        raise TypeError("x_values must be a list, tuple, or numpy array")
+    if len(x_values) != len(simulation_folders):
+        raise ValueError("x_values must contain one value for each simulation folder")
+    x_values = np.asarray(x_values, dtype=float)
+
+    results = {
+        "subfolders": [run_name for run_name, _ in simulation_folders],
+        "x_values": x_values,
+    }
+    for prop in properties:
+        results[prop] = []
+
+    for run_name, folder in simulation_folders:
+        body_file = body_file_for_folder(folder)
+        if body_file is None:
+            raise FileNotFoundError(
+                "No body.dat or bodypos.dat file was found in {}".format(folder)
+            )
+
+        body_data = np.loadtxt(body_file)
+        if body_data.ndim == 1:
+            body_data = body_data.reshape(1, -1)
+        if body_data.ndim != 2 or body_data.shape[1] < 4:
+            raise ValueError(
+                "{} does not contain time and x/y/z body coordinates".format(body_file)
+            )
+        coordinate_columns = body_data.shape[1] - 1
+        if coordinate_columns % 3 != 0:
+            raise ValueError(
+                "{} has {} coordinate columns; expected a multiple of 3".format(
+                    body_file, coordinate_columns
+                )
+            )
+
+        segment_count = coordinate_columns // 3
+        times = body_data[:, 0]
+        x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+        y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+
+        if "speed" in properties:
+            elapsed_time = times[-1] - times[0] if len(times) > 1 else np.nan
+            if elapsed_time > 0:
+                step_distances = np.sqrt(
+                    np.diff(center_x) ** 2 + np.diff(center_y) ** 2
+                )
+                speed = np.nansum(step_distances) / elapsed_time
+            else:
+                speed = np.nan
+            results["speed"].append(speed)
+
+        if "curvature" in properties:
+            curv_file = curv_file_for_folder(folder)
+            if curv_file is None:
+                curvature = np.nan
+            else:
+                curv_data = np.loadtxt(curv_file)
+                if curv_data.ndim == 1:
+                    curv_data = curv_data.reshape(1, -1)
+                if curv_data.ndim != 2 or curv_data.shape[1] < 2:
+                    raise ValueError(
+                        "{} does not contain time and curvature columns".format(
+                            curv_file
+                        )
+                    )
+                curvature = np.nanmean(np.abs(curv_data[:, 1:]))
+            results["curvature"].append(curvature)
+
+    for prop in properties:
+        results[prop] = np.asarray(results[prop], dtype=float)
+
+    fig, axs = plt.subplots(
+        len(properties),
+        1,
+        figsize=(7, 3.2 * len(properties)),
+        squeeze=False,
+    )
+    y_labels = {
+        "speed": "Average speed (mm/s)",
+        "curvature": "Average |curvature|",
+    }
+    for ax, prop in zip(axs[:, 0], properties):
+        ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
+        ax.set_ylabel(y_labels[prop])
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+    axs[-1, 0].set_xlabel("Condition")
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(input_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig, results
+
+
 def plot_cell_connections(
     output_folder=None,
     cell_names=None,
