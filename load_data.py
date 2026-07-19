@@ -429,6 +429,7 @@ def plot_trajectory_properties(
     x_values=None,
     subfolders=None,
     properties=("speed", "curvature"),
+    panel_columns=1,
     save_png=True,
     filename="trajectory_properties.png",
 ):
@@ -441,8 +442,20 @@ def plot_trajectory_properties(
         properties = [properties]
     if not isinstance(properties, (list, tuple)) or not properties:
         raise ValueError("properties must be a non-empty list or tuple")
+    if (
+        isinstance(panel_columns, bool)
+        or not isinstance(panel_columns, int)
+        or panel_columns not in (1, 2)
+    ):
+        raise ValueError("panel_columns must be 1 or 2")
 
-    valid_properties = {"speed", "curvature"}
+    valid_properties = {
+        "speed",
+        "curvature",
+        "path_curvature",
+        "path_deviation",
+        "displacement",
+    }
     properties = [str(prop) for prop in properties]
     unknown_properties = sorted(set(properties) - valid_properties)
     if unknown_properties:
@@ -558,6 +571,43 @@ def plot_trajectory_properties(
                 speed = np.nan
             results["speed"].append(speed)
 
+        if "displacement" in properties:
+            displacement = np.hypot(
+                center_x[-1] - center_x[0],
+                center_y[-1] - center_y[0],
+            )
+            results["displacement"].append(displacement)
+
+        if "path_curvature" in properties:
+            chord_x = center_x[-1] - center_x[0]
+            chord_y = center_y[-1] - center_y[0]
+            chord_length = np.hypot(chord_x, chord_y)
+            if chord_length > 0:
+                lateral_distances = np.abs(
+                    chord_x * (center_y - center_y[0])
+                    - chord_y * (center_x - center_x[0])
+                ) / chord_length
+                path_curvature = np.nanmax(lateral_distances)
+            else:
+                path_curvature = np.nan
+            results["path_curvature"].append(path_curvature)
+
+        if "path_deviation" in properties:
+            dx = np.diff(center_x)
+            dy = np.diff(center_y)
+            if len(dx) > 1:
+                headings = np.unwrap(np.arctan2(dy, dx))
+                heading_changes = np.abs(np.diff(headings))
+                step_distances = np.sqrt(dx[1:] ** 2 + dy[1:] ** 2)
+                path_length = np.nansum(step_distances)
+                if path_length > 0:
+                    path_deviation = np.nansum(heading_changes) / path_length
+                else:
+                    path_deviation = np.nan
+            else:
+                path_deviation = np.nan
+            results["path_deviation"].append(path_deviation)
+
         if "curvature" in properties:
             curv_file = curv_file_for_folder(folder)
             if curv_file is None:
@@ -578,21 +628,32 @@ def plot_trajectory_properties(
     for prop in properties:
         results[prop] = np.asarray(results[prop], dtype=float)
 
+    panel_columns = min(panel_columns, len(properties))
+    panel_rows = math.ceil(len(properties) / panel_columns)
     fig, axs = plt.subplots(
-        len(properties),
-        1,
-        figsize=(7, 3.2 * len(properties)),
+        panel_rows,
+        panel_columns,
+        figsize=(7 * panel_columns, 3.2 * panel_rows),
         squeeze=False,
     )
     y_labels = {
         "speed": "Average speed (mm/s)",
         "curvature": "Average |curvature|",
+        "path_curvature": "Path curvature (mm)",
+        "path_deviation": "Path deviation (1/mm)",
+        "displacement": "Displacement (mm)",
     }
-    for ax, prop in zip(axs[:, 0], properties):
+    flat_axes = axs.ravel()
+    for ax, prop in zip(flat_axes, properties):
         ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
         ax.set_ylabel(y_labels[prop])
         ax.grid(True, linewidth=0.4, alpha=0.25)
-    axs[-1, 0].set_xlabel("Condition")
+    for ax in flat_axes[len(properties):]:
+        ax.set_visible(False)
+    for axis_index, ax in enumerate(flat_axes[: len(properties)]):
+        row_index = axis_index // panel_columns
+        if row_index == panel_rows - 1:
+            ax.set_xlabel("Condition")
     fig.tight_layout()
 
     if save_png:
