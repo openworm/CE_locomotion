@@ -313,9 +313,7 @@ def plot_motion_all(
                 raise FileNotFoundError(
                     "No body.dat or bodypos.dat file was found in {}".format(folder)
                 )
-            simulation_files.append(
-                (os.path.relpath(folder, input_folder), body_file)
-            )
+            simulation_files.append((os.path.relpath(folder, input_folder), body_file))
 
     if not simulation_files:
         raise FileNotFoundError(
@@ -460,9 +458,7 @@ def plot_trajectory_properties(
     unknown_properties = sorted(set(properties) - valid_properties)
     if unknown_properties:
         raise ValueError(
-            "Unknown trajectory properties: {}".format(
-                ", ".join(unknown_properties)
-            )
+            "Unknown trajectory properties: {}".format(", ".join(unknown_properties))
         )
 
     input_folder = os.path.abspath(input_folder)
@@ -583,10 +579,13 @@ def plot_trajectory_properties(
             chord_y = center_y[-1] - center_y[0]
             chord_length = np.hypot(chord_x, chord_y)
             if chord_length > 0:
-                lateral_distances = np.abs(
-                    chord_x * (center_y - center_y[0])
-                    - chord_y * (center_x - center_x[0])
-                ) / chord_length
+                lateral_distances = (
+                    np.abs(
+                        chord_x * (center_y - center_y[0])
+                        - chord_y * (center_x - center_x[0])
+                    )
+                    / chord_length
+                )
                 path_curvature = np.nanmax(lateral_distances)
             else:
                 path_curvature = np.nan
@@ -648,7 +647,7 @@ def plot_trajectory_properties(
         ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
         ax.set_ylabel(y_labels[prop])
         ax.grid(True, linewidth=0.4, alpha=0.25)
-    for ax in flat_axes[len(properties):]:
+    for ax in flat_axes[len(properties) :]:
         ax.set_visible(False)
     for axis_index, ax in enumerate(flat_axes[: len(properties)]):
         row_index = axis_index // panel_columns
@@ -794,9 +793,7 @@ def plot_cell_connections(
             ]
             if unknown:
                 raise ValueError(
-                    "Unknown highlighted cell name(s): {}".format(
-                        ", ".join(unknown)
-                    )
+                    "Unknown highlighted cell name(s): {}".format(", ".join(unknown))
                 )
             highlighted_pairs.add((from_cell, to_cell))
 
@@ -844,7 +841,9 @@ def plot_cell_connections(
         cell_name: {
             "type": "cell",
             "evotag_highlighted": object_has_evotag(
-                cells_object.get(cell_name, {}) if isinstance(cells_object, dict) else {}
+                cells_object.get(cell_name, {})
+                if isinstance(cells_object, dict)
+                else {}
             ),
         }
         for cell_name in selected_cells
@@ -859,10 +858,9 @@ def plot_cell_connections(
                 "evotag_highlighted": bool(evotag_highlighted),
             }
             return
-        nodes[node_name]["evotag_highlighted"] = (
-            nodes[node_name].get("evotag_highlighted", False)
-            or bool(evotag_highlighted)
-        )
+        nodes[node_name]["evotag_highlighted"] = nodes[node_name].get(
+            "evotag_highlighted", False
+        ) or bool(evotag_highlighted)
 
     def add_edge(
         from_node,
@@ -951,7 +949,8 @@ def plot_cell_connections(
             {
                 key: value
                 for key, value in stretch_receptor.items()
-                if not key.endswith("_weights") and key not in ("d_weights", "v_weights")
+                if not key.endswith("_weights")
+                and key not in ("d_weights", "v_weights")
             }
         )
         receptor_weight_fields = []
@@ -1068,7 +1067,9 @@ def plot_cell_connections(
         nmj = network_json_data.get(nmj_key)
         if not isinstance(nmj, dict):
             continue
-        nmj_parameter_highlight = object_has_evotag(object_without_keys(nmj, {"weights"}))
+        nmj_parameter_highlight = object_has_evotag(
+            object_without_keys(nmj, {"weights"})
+        )
         weights = nmj.get("weights", {}).get("value", [])
         if weights is None:
             continue
@@ -1283,7 +1284,8 @@ def plot_cell_connections(
                 "#FFD600"
                 if evotag_node_highlighted
                 else "#00E676"
-                if node_name in highlighted_cells and node_type in ("cell", "secondary cell")
+                if node_name in highlighted_cells
+                and node_type in ("cell", "secondary cell")
                 else style["facecolor"]
             ),
             edgecolors="#D000FF" if evotag_node_highlighted else style["edgecolor"],
@@ -1426,9 +1428,7 @@ def plot_json_structure(
     def stretch_receptor_weight_count(section, side, to_nervous_system=False):
         if not isinstance(section, dict):
             return 0
-        direct_key = "{}{}_weights".format(
-            "ns_" if to_nervous_system else "", side
-        )
+        direct_key = "{}{}_weights".format("ns_" if to_nervous_system else "", side)
         keys = {direct_key}
         suffix = "_{}_weights".format(side)
         for key in section:
@@ -1468,7 +1468,7 @@ def plot_json_structure(
 
     sr = network_json_data.get("stretch_receptor")
     sensors = network_json_data.get("sensors")
-    #environments = network_json_data.get("environments")
+    # environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
     dorsal_body = network_json_data.get("dorsal_body")
@@ -1557,9 +1557,7 @@ def plot_json_structure(
         if d_body or v_body or dorsal_muscle_body or ventral_muscle_body:
             body_lines = []
             if dorsal_muscle_body:
-                body_lines.append(
-                    "{} dorsal muscle weights".format(dorsal_muscle_body)
-                )
+                body_lines.append("{} dorsal muscle weights".format(dorsal_muscle_body))
             if ventral_muscle_body:
                 body_lines.append(
                     "{} ventral muscle weights".format(ventral_muscle_body)
@@ -1681,9 +1679,9 @@ def plot_json_structure(
                 inner_top = y + h - (0.018 if title_position == "bottom" else 0.060)
                 inner_bottom = y + (0.060 if title_position == "bottom" else 0.018)
                 gap = 0.010
-                sub_h = (
-                    inner_top - inner_bottom - gap * (len(sub_boxes) - 1)
-                ) / len(sub_boxes)
+                sub_h = (inner_top - inner_bottom - gap * (len(sub_boxes) - 1)) / len(
+                    sub_boxes
+                )
                 sub_colors = ["#EAF5D8", "#EEF6E8", "#F5F1D8", "#E7F1E4"]
                 for sub_index, sub_box in enumerate(sub_boxes):
                     sy = inner_top - (sub_index + 1) * sub_h - sub_index * gap

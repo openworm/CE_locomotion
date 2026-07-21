@@ -1523,7 +1523,9 @@ def _set_connection_weight(json_data, connection_key, connection_index, weight):
             )
         )
     if not isinstance(connection, dict):
-        raise TypeError("Connection at index {} must be a dictionary".format(connection_index))
+        raise TypeError(
+            "Connection at index {} must be a dictionary".format(connection_index)
+        )
     connection.setdefault("weight", {})
     if not isinstance(connection["weight"], dict):
         raise TypeError(
@@ -1544,9 +1546,7 @@ def set_chemical_connection_weight(json_data, from_cell, to_cell, weight):
                 from_cell, to_cell
             )
         )
-    return _set_connection_weight(
-        json_data, "chemical_conns", connection_index, weight
-    )
+    return _set_connection_weight(json_data, "chemical_conns", connection_index, weight)
 
 
 def set_electrical_connection_weight(json_data, first_cell, second_cell, weight):
@@ -1587,7 +1587,9 @@ def set_nmj_connection_weight(json_data, muscle_side, from_cell, to_muscle, weig
             "{} connection index {} is out of range".format(nmj_key, connection_index)
         )
     if not isinstance(connection, dict):
-        raise TypeError("NMJ connection at index {} must be a dictionary".format(connection_index))
+        raise TypeError(
+            "NMJ connection at index {} must be a dictionary".format(connection_index)
+        )
     connection.setdefault("weight", {})
     if not isinstance(connection["weight"], dict):
         raise TypeError(
@@ -1622,9 +1624,7 @@ def set_body_connection_weight(json_data, body_side, from_musc, to_seg, weight):
         )
     if not isinstance(connection, dict):
         raise TypeError(
-            "Body connection at index {} must be a dictionary".format(
-                connection_index
-            )
+            "Body connection at index {} must be a dictionary".format(connection_index)
         )
     connection.setdefault("weight", {})
     if not isinstance(connection["weight"], dict):
@@ -2981,7 +2981,9 @@ def delete_subfolder_directory(subfolder_name, subsubfolder_name):
 def delete_notebook_directory(subfolder_name, subsubfolder_name):
     """Delete a direct child directory from a folder below the current directory."""
     if not isinstance(subfolder_name, str) or subfolder_name in ("", ".", ".."):
-        raise ValueError("The first argument must be a folder path below the current directory")
+        raise ValueError(
+            "The first argument must be a folder path below the current directory"
+        )
     if os.path.isabs(subfolder_name):
         parent_path = os.path.abspath(subfolder_name)
     else:
@@ -2994,7 +2996,9 @@ def delete_notebook_directory(subfolder_name, subsubfolder_name):
         parent_realpath == cwd_realpath
         or os.path.commonpath([cwd_realpath, parent_realpath]) != cwd_realpath
     ):
-        raise ValueError("The first argument must be a path below the current directory")
+        raise ValueError(
+            "The first argument must be a path below the current directory"
+        )
 
     name = subsubfolder_name
     if (
@@ -3025,6 +3029,7 @@ def delete_notebook_directory(subfolder_name, subsubfolder_name):
 
     shutil.rmtree(target_path)
     return True
+
 
 def checkDictName(dictval, namelist):
     dictval1 = dictval
