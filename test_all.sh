@@ -162,7 +162,7 @@ if [ "$quick_test" == 0 ]; then
     ruff format *py
     cd ..
 
-    python regenerate_folder.py --folder exampleRunCEW2D
+    #python regenerate_folder.py --folder exampleRunCEW2D
     
     cd neuromlLocal
     omv test -V .test.w2d.nrn.omt
