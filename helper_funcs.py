@@ -2979,25 +2979,43 @@ def delete_subfolder_directory(subfolder_name, subsubfolder_name):
 
 
 def delete_notebook_directory(subfolder_name, subsubfolder_name):
-    """Delete a direct child directory from a subfolder of the current directory."""
-    for name in (subfolder_name, subsubfolder_name):
-        if (
-            not isinstance(name, str)
-            or name in ("", ".", "..")
-            or os.path.isabs(name)
-            or os.path.basename(name) != name
-            or os.sep in name
-            or (os.altsep is not None and os.altsep in name)
-        ):
-            raise ValueError("Arguments must be single folder names, not paths")
+    """Delete a direct child directory from a folder below the current directory."""
+    if not isinstance(subfolder_name, str) or subfolder_name in ("", ".", ".."):
+        raise ValueError("The first argument must be a folder path below the current directory")
+    if os.path.isabs(subfolder_name):
+        parent_path = os.path.abspath(subfolder_name)
+    else:
+        parent_path = os.path.abspath(os.path.join(os.curdir, subfolder_name))
 
-    parent_path = os.path.abspath(os.path.join(os.curdir, subfolder_name))
+    cwd_path = os.path.abspath(os.curdir)
+    parent_realpath = os.path.realpath(parent_path)
+    cwd_realpath = os.path.realpath(cwd_path)
+    if (
+        parent_realpath == cwd_realpath
+        or os.path.commonpath([cwd_realpath, parent_realpath]) != cwd_realpath
+    ):
+        raise ValueError("The first argument must be a path below the current directory")
+
+    name = subsubfolder_name
+    if (
+        not isinstance(name, str)
+        or name in ("", ".", "..")
+        or os.path.isabs(name)
+        or os.path.basename(name) != name
+        or os.sep in name
+        or (os.altsep is not None and os.altsep in name)
+    ):
+        raise ValueError("The second argument must be a single folder name, not a path")
+
     if not os.path.isdir(parent_path):
         return False
     if os.path.islink(parent_path):
         raise ValueError("Refusing to use a symbolic link as the parent folder")
 
     target_path = os.path.abspath(os.path.join(parent_path, subsubfolder_name))
+    target_realpath = os.path.realpath(target_path)
+    if os.path.commonpath([parent_realpath, target_realpath]) != parent_realpath:
+        raise ValueError("Target must be below the parent folder")
     if os.path.dirname(target_path) != parent_path:
         raise ValueError("Target must be a direct child of the parent folder")
     if not os.path.isdir(target_path):
@@ -3007,7 +3025,6 @@ def delete_notebook_directory(subfolder_name, subsubfolder_name):
 
     shutil.rmtree(target_path)
     return True
-
 
 def checkDictName(dictval, namelist):
     dictval1 = dictval
