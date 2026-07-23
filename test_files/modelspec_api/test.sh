@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ex
 
-#ruff format *.py
-#ruff check *.py
+ruff format *.py
+ruff check *.py
 
 python worm2D_modelspec.py 
 
