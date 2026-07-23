@@ -601,6 +601,11 @@ double LinearScaleFactor(double min, double max, double avg, double FMultiple)
 void TSearch::UpdatePopulationFitness(void)
 {
 	int psize = PopulationSize();
+	if (psize < 2 && RepMode == GENETIC_ALGORITHM) {
+		cerr << "Invalid population size for genetic algorithm: " << psize
+		     << " (must be at least 2)" << endl;
+		exit(1);
+	}
 	SortPopulation();
 	switch (SelectMode) {
 		// Calculate normalized fitness based on a fitness proportionate method with linear scaling
@@ -659,13 +664,13 @@ void TSearch::UniformCrossover(TVector<double> &v1, TVector<double> &v2)
 {
 	if (crossPoints.Size() < 2) return;
 	for (int i = 1; i <= crossPoints.Size() - 1; i++)
-		if (ProbabilisticChoice(0.5)) 
+		if (rs.ProbabilisticChoice(0.5))
 			for (int j = crossPoints[i]; j < crossPoints[i+1]; j++) {
 				double temp = v1[j];
 				v1[j] = v2[j];
 				v2[j] = temp;
 			}
-	if (ProbabilisticChoice(0.5)) 	
+	if (rs.ProbabilisticChoice(0.5))
 		for (int j = crossPoints[crossPoints.Size()]; j <= vectorSize; j++) {
 			double temp = v1[j];
 			v1[j] = v2[j];
@@ -793,7 +798,7 @@ void TSearch::ReproducePopulationGeneticAlgorithm(void)
 	TVector<double> Parent1, Parent2;
 	while (i <= psize) {
 		// Perform crossover with probability CrossProb
-		if (ProbabilisticChoice(CrossProb) && (i < psize)) {
+		if (rs.ProbabilisticChoice(CrossProb) && (i < psize)) {
 			Parent1 = Population[i];
 			Parent2 = Population[i+1];
 			switch (CrossMode) {

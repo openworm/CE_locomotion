@@ -355,7 +355,7 @@ void TSearch::DoMicrobialSearch(int ResumeFlag)
 	double AccPerf,perfA,perfB;
 	int indA, indB, winner, loser;
 	int demesize = 10;
-	int bestindex;
+	int bestindex = 1;
 
 	// Initialize search if necessary
 	if (!SearchInitialized) InitializeSearch();
@@ -374,6 +374,11 @@ void TSearch::DoMicrobialSearch(int ResumeFlag)
 	// Repeat until done
 	while (!SearchTerminated())
 	{
+		if (Population.Size() <= 0) {
+			cerr << "Invalid population size for microbial search: "
+			     << Population.Size() << endl;
+			exit(0);
+		}
 		Gen++;
 		// Refresh statistics per 'generation'
 		AccPerf = 0;
@@ -594,6 +599,7 @@ void *EvaluatePopulationRange(void *arg)
 void TSearch::EvaluatePopulation(int start)
 {
 #ifdef THREADED_SEARCH  // Evaluate the population in parallel
+	if (start > PopulationSize()) return;
 	// Create threads
 	if (THREAD_COUNT > 1) {
 		int NumIndividuals = (PopulationSize() - start + 1)/THREAD_COUNT;
@@ -611,9 +617,9 @@ void TSearch::EvaluatePopulation(int start)
 		for (int i = (THREAD_COUNT - 1)*NumIndividuals + start; i <= PopulationSize(); i++)
 			Perf[i] = EvaluateVector(Population[i], RandomStates[i]);
 		// Wait for all other threads to complete
-		int status;
+		void *status;
 		for (int i = 0; i <= THREAD_COUNT-2; i++)
-			pthread_join(threads[i], (void **)&status);
+			pthread_join(threads[i], &status);
 	}
 	else
 		for (int i = start; i <= Population.Size(); i++)
@@ -664,6 +670,11 @@ double LinearScaleFactor(double min, double max, double avg, double FMultiple)
 void TSearch::UpdatePopulationFitness(void)
 {
 	int psize = PopulationSize();
+	if (psize < 2 && RepMode == GENETIC_ALGORITHM) {
+		cerr << "Invalid population size for genetic algorithm: " << psize
+		     << " (must be at least 2)" << endl;
+		exit(0);
+	}
 	SortPopulation();
 	switch (SelectMode) {
 			// Calculate normalized fitness based on a fitness proportionate method with linear scaling
@@ -720,13 +731,13 @@ void TSearch::UniformCrossover(TVector<double> &v1, TVector<double> &v2)
 {
 	if (crossPoints.Size() < 2) return;
 	for (int i = 1; i <= crossPoints.Size() - 1; i++)
-		if (ProbabilisticChoice(0.5))
+		if (rs.ProbabilisticChoice(0.5))
 			for (int j = crossPoints[i]; j < crossPoints[i+1]; j++) {
 				double temp = v1[j];
 				v1[j] = v2[j];
 				v2[j] = temp;
 			}
-	if (ProbabilisticChoice(0.5))
+	if (rs.ProbabilisticChoice(0.5))
 		for (int j = crossPoints[crossPoints.Size()]; j <= vectorSize; j++) {
 			double temp = v1[j];
 			v1[j] = v2[j];
@@ -854,7 +865,7 @@ void TSearch::ReproducePopulationGeneticAlgorithm(void)
 	TVector<double> Parent1, Parent2;
 	while (i <= psize) {
 		// Perform crossover with probability CrossProb
-		if (ProbabilisticChoice(CrossProb) && (i < psize)) {
+		if (rs.ProbabilisticChoice(CrossProb) && (i < psize)) {
 			Parent1 = Population[i];
 			Parent2 = Population[i+1];
 			switch (CrossMode) {

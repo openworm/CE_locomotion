@@ -146,6 +146,7 @@ void TVector<EltType>::SetBounds(int newlb, int newub)
 			for (int i = oldlb, j = lb; i <= oldub && j <= ub; i++,j++)
 				Vector[j] = OldVector[i];
 	}
+	else Vector = nullptr;
 	// Recover the old storage
 	if (oldlen != 0) delete [] (OldVector + oldlb);
 }
@@ -409,7 +410,7 @@ void TMatrix<EltType>::SetBounds(int newlb1, int newub1, int newlb2, int newub2)
 	if (collen != 0) {
 		if (rowlen != 0)
 			for (int i = lb1; i <= ub1; i++)
-				delete (Matrix[i] + lb2);
+				delete [] (Matrix[i] + lb2);
 		delete [] (Matrix + lb1);
 	}
 	// Save the new bounds info
@@ -430,6 +431,7 @@ void TMatrix<EltType>::SetBounds(int newlb1, int newub1, int newlb2, int newub2)
 			for (int i = lb1; i <= ub1; i++)
 				Matrix[i] = NULL;
 	}
+	else Matrix = nullptr;
 }
 
 
