@@ -47,8 +47,8 @@ make ${parallel_jobs_for_make}
 make main_osc
 cd ..
 
-#ruff format *.py */*.py
-#ruff check *.py */*.py
+ruff format *.py */*.py
+ruff check *.py */*.py
 
 if [ "$quick_test" == 0 ]; then
 
