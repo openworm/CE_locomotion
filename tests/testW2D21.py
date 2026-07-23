@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("./neuromlLocal")
 
@@ -9,8 +9,8 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2D21"
+inputFolderName = "../experiments/izq_runs_nets_W2D21/103"
+outputFolderName = "../testruns/exW2D21"
 
 args = dict(
     simduration=60,

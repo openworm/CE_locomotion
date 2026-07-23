@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 
 # sys.path.append("./neuromlLocal")
@@ -9,9 +9,9 @@ from W2Djson_utils import mergeJsons
 Pi = 3.1415926
 
 
-file1 = "testruns/COW2DSREfiles/RS18_worm_data.json"
-file2 = "testruns/COW2DSREfiles/CO18Full_worm_data_evo.json"
-outdir = "testruns/COW2DSREgen"
+file1 = "../testruns/COW2DSREfiles/RS18_worm_data.json"
+file2 = "../testruns/COW2DSREfiles/CO18Full_worm_data_evo.json"
+outdir = "../testruns/COW2DSREgen"
 
 mergeJsons(file1, file2, outdir)
 

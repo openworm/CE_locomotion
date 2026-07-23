@@ -1,4 +1,4 @@
-from run_main import run
+from worm2d import run
 
 run(
     simduration=10,
@@ -10,8 +10,8 @@ run(
     RandSeed=939712,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2DCEFRv2",
-    outputFolderName="testruns/exW2DCEFRv3",
+    inputFolderName="../testruns/exW2DCEFRv2",
+    outputFolderName="../testruns/exW2DCEFRv3",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
     overwrite=True,

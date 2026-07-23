@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 import helper_funcs as hf
 

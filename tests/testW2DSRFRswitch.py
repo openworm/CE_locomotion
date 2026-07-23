@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 
 # sys.path.append("./neuromlLocal")
@@ -14,7 +14,7 @@ doMuscles = False
 indir = "exW2DCEFR"
 # indir = 'COW2DSRE_test'
 outdir = indir + "switch"
-pfolder = "testruns"
+pfolder = "../testruns"
 # pfolder = 'notebooks'
 
 inputFolderName = pfolder + "/" + indir

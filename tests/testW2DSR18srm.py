@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 
 # sys.path.append("./neuromlLocal")
@@ -12,8 +12,8 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DSR18srm"
-inputFolderName = "testruns/exW2D18gen"
+outputFolderName = "../testruns/exW2DSR18srm"
+inputFolderName = "../testruns/exW2D18gen"
 
 hf.make_directory(outputFolderName, True, "Output folder for W2DSR18srm")
 
@@ -82,8 +82,8 @@ if doMuscles:
     simtransient=0,
     modelName="W2DSR",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2D18gen",
-    outputFolderName="testruns/exW2DSR18",
+    inputFolderName="../testruns/exW2D18gen",
+    outputFolderName="../testruns/exW2DSR18",
     reRand=True,
     doTestRun=True,
     doOrigMuscInput=False,

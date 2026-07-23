@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("./neuromlLocal")
 
@@ -9,7 +9,7 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2D18genE"
+outputFolderName = "../testruns/exW2D18genE"
 
 args = dict(
     duration=50,
@@ -20,7 +20,7 @@ args = dict(
     popSize=1,
     modelName="W2D18",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2D18gen",
+    inputFolderName="../testruns/exW2D18gen",
     outputFolderName=outputFolderName,
     doEvol=True,
     reRand=False,
@@ -78,8 +78,8 @@ if doMuscles:
     simtransient=0,
     modelName="W2DSR",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2D18gen",
-    outputFolderName="testruns/exW2DSR18",
+    inputFolderName="../testruns/exW2D18gen",
+    outputFolderName="../testruns/exW2DSR18",
     reRand=True,
     doTestRun=True,
     doOrigMuscInput=False,

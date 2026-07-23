@@ -9,7 +9,7 @@ run(
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2Dosc_t1",
-    outputFolderName="exampleRunW2DCE",
+    outputFolderName="../exampleRunW2DCE",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
     overwrite=True,

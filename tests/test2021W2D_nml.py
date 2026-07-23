@@ -1,4 +1,4 @@
-from run_main import run
+from worm2d import run
 
 run(
     maxGens=30,

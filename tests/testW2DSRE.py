@@ -1,6 +1,6 @@
 import os
 import sys
-from run_main import run
+from worm2d import run
 from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("./neuromlLocal")
 
@@ -9,7 +9,7 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DSRE"
+outputFolderName = "../testruns/exW2DSRE"
 
 args = dict(
     duration=24,
@@ -20,7 +20,7 @@ args = dict(
     popSize=10,
     modelName="W2DSR",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2DCEs",
+    inputFolderName="../testruns/exW2DCEs",
     outputFolderName=outputFolderName,
     reRand=False,
     doTestRun=True,
