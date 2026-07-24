@@ -55,8 +55,9 @@ jobs:
         pip install setuptools==80 # needed for Neuron on py >=3.12
         pip install NEURON==8.2.7
         pip install OSBModelValidation pyNeuroML
-        pip install numpy matplotlib ruff scipy modelspec
+        pip install numpy matplotlib scipy modelspec
         pip install ipywidgets
+        pip install "ruff<0.16"
         
         pip list
 
