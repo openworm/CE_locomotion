@@ -355,7 +355,7 @@ void TSearch::DoMicrobialSearch(int ResumeFlag)
 	double AccPerf,perfA,perfB;
 	int indA, indB, winner, loser;
 	int demesize = 10;
-	int bestindex;
+	int bestindex = 1;
 
 	// Initialize search if necessary
 	if (!SearchInitialized) InitializeSearch();
@@ -593,6 +593,7 @@ void *EvaluatePopulationRange(void *arg)
 
 void TSearch::EvaluatePopulation(int start)
 {
+	if (start > PopulationSize()) return;
 #ifdef THREADED_SEARCH  // Evaluate the population in parallel
 	// Create threads
 	if (THREAD_COUNT > 1) {
@@ -611,9 +612,9 @@ void TSearch::EvaluatePopulation(int start)
 		for (int i = (THREAD_COUNT - 1)*NumIndividuals + start; i <= PopulationSize(); i++)
 			Perf[i] = EvaluateVector(Population[i], RandomStates[i]);
 		// Wait for all other threads to complete
-		int status;
+		void *status;
 		for (int i = 0; i <= THREAD_COUNT-2; i++)
-			pthread_join(threads[i], (void **)&status);
+			pthread_join(threads[i], &status);
 	}
 	else
 		for (int i = start; i <= Population.Size(); i++)
@@ -664,6 +665,10 @@ double LinearScaleFactor(double min, double max, double avg, double FMultiple)
 void TSearch::UpdatePopulationFitness(void)
 {
 	int psize = PopulationSize();
+	if (psize < 2) {
+		cerr << "Error: genetic algorithm population size must be at least 2\n";
+		exit(0);
+	}
 	SortPopulation();
 	switch (SelectMode) {
 			// Calculate normalized fitness based on a fitness proportionate method with linear scaling
