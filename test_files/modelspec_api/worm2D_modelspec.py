@@ -1,7 +1,8 @@
+from typing import Any
+
 import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
-from typing import Any
 
 
 @modelspec.define
@@ -24,15 +25,15 @@ def convert2floatparam(x: Any) -> FloatParameter:
     """
     if isinstance(x, FloatParameter):
         return x
-    print("convert2floatparam {} (type: {})".format(x, type(x)))
+    print(f"convert2floatparam {x} (type: {type(x)})")
     try:
         if x is not None:
             return FloatParameter(value=float(x), message=None)
         else:
             return None
     except Exception as e:
-        print("Error converting: {} to FloatParameter: {}".format(x, e))
-        raise e
+        print(f"Error converting: {x} to FloatParameter: {e}")
+        raise
 
 
 @modelspec.define
