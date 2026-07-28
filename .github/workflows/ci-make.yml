@@ -57,7 +57,7 @@ jobs:
         pip install OSBModelValidation pyNeuroML
         pip install numpy matplotlib scipy modelspec
         pip install ipywidgets
-        pip install "ruff<0.16"
+        pip install ruff
         
         pip list
 
