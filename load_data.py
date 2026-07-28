@@ -2042,14 +2042,14 @@ def signed_log(val):
 def safe_percent_change_from_initial(evol_data):
     evol_data = np.asarray(evol_data, dtype=float)
     initial = evol_data[0]
+    initial_scale = np.abs(initial)
     out = np.zeros_like(evol_data, dtype=float)
     np.divide(
         evol_data - initial,
-        initial,
+        initial_scale,
         out=out,
-        where=np.isfinite(initial) & (initial != 0),
+        where=np.isfinite(initial_scale) & (initial_scale != 0),
     )
-    out *= 100.0
     out[~np.isfinite(out)] = 0.0
     return out
 
@@ -2078,7 +2078,7 @@ def getEvolTrans(evol_data):
 
 
 def plot_phenonames(
-    plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
+    plot_list=[["initial", "final"], ["initial_log", "final_log"], "rel_var", "var"],
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
@@ -2180,13 +2180,13 @@ def plot_phenonames(
     evol_data_dict = {
         "rel_var": {
             "value": evol_data_full_diff0,
-            "title": "Perc variation",
+            "title": "Proportional change",
             "color": "black",
             "linestyle": "-",
         },
         "var": {
             "value": evol_data_full_diff,
-            "title": "Signed log perc var",
+            "title": "Signed log proportional variation",
             "color": "black",
             "linestyle": "-",
         },
@@ -2677,10 +2677,10 @@ def plot_hist(a=None):
     ]
 
     titles = [
-        "Pop percent variation",
-        "Pop signed log perc var",
+        "Pop proportional change",
+        "Pop signed log proportional variation",
         "Pop phenotype value",
-        "Best fit percent variation",
+        "Best fit proportional change",
     ]
 
     # print("phen names ", phen_names)
