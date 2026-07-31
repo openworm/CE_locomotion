@@ -558,6 +558,13 @@ def _can_copy_previous_evolution_files(input_folder, output_folder):
 
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
+    if hasattr(a, "rand_seed"):
+        if "rand_seed" in a._provided_args or a.RandSeed is None:
+            a.RandSeed = a.rand_seed
+        if "rand_seed" in a._provided_args:
+            a._provided_args.remove("rand_seed")
+            a._provided_args.add("RandSeed")
+        delattr(a, "rand_seed")
 
     if a.doEvol:
         do_evol = 1
