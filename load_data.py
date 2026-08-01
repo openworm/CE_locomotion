@@ -132,6 +132,544 @@ def get_activity_cell_names_by_numbers(
     return selected_cells
 
 
+def plot_json_dictionary_summary(
+    output_folder=None,
+    json_data=None,
+    json_filename="worm_data_worm.json",
+    exclude_keys=None,
+    filename="json_dictionary_summary.png",
+    save_png=True,
+    columns=6,
+    max_rows_per_box=18,
+):
+    """Return a figure summarising top-level JSON objects and their subfields."""
+    from matplotlib.patches import FancyBboxPatch
+
+    if json_data is None:
+        if output_folder is None:
+            raise ValueError("Either output_folder or json_data must be supplied")
+        json_path = os.path.join(output_folder, json_filename)
+        if not os.path.isfile(json_path):
+            raise FileNotFoundError("Could not find {}".format(json_path))
+        json_data = utils.getJsonFile(json_path)
+
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    excluded = {
+        "InputNS",
+        "Muscle",
+        "OutputNS",
+        "PhenoNames",
+        "PhenoNamesNums",
+        "evolved_used",
+    }
+    if exclude_keys is not None:
+        excluded.update(exclude_keys)
+
+    sections = [(key, val) for key, val in json_data.items() if key not in excluded]
+    if not sections:
+        raise ValueError("No JSON sections remain after applying exclude_keys")
+
+    columns = max(1, min(int(columns), len(sections)))
+
+    def subfield_rows(section):
+        if not isinstance(section, dict):
+            return ["value"]
+        return [str(subkey) for subkey in section]
+
+    def ellipsize(text, max_len=28):
+        text = str(text)
+        if len(text) <= max_len:
+            return text
+        return text[: max_len - 1] + "..."
+
+    def format_title(text):
+        text = str(text)
+        if text == "Evolutionary Optimization Parameters":
+            return "Evolutionary Optimization\nParameters", 9.5
+        if len(text) > 25:
+            words = text.replace("_", " ").split()
+            if len(words) > 1:
+                split_at = int(math.ceil(len(words) / 2))
+                return (
+                    "{}\n{}".format(
+                        " ".join(words[:split_at]),
+                        " ".join(words[split_at:]),
+                    ),
+                    9.5,
+                )
+            return ellipsize(text, 25), 9.5
+        return text, 11
+
+    box_palette = [
+        ("#F8FAFC", "#DDEBF7"),
+        ("#FFF7E6", "#F6D8A8"),
+        ("#F0F8EE", "#CFE8C6"),
+        ("#F8F1FA", "#E4CCE9"),
+        ("#EEF7F8", "#CBE5E8"),
+    ]
+    edge = "#2F3A45"
+    text_color = "#1F2933"
+
+    box_w = 0.82
+    col_gap = 0.08
+    box_gap = 0.10
+    header_h = 0.14
+    row_h = 0.055
+    top_pad = 0.045
+    bottom_pad = 0.045
+    table_gap = 0.030
+
+    section_specs = []
+    for section_name, section in sections:
+        rows_ = subfield_rows(section)
+        if not rows_:
+            continue
+        shown_rows = rows_[:max_rows_per_box]
+        omitted = len(rows_) - len(shown_rows)
+        if omitted > 0:
+            shown_rows.append("... {} more".format(omitted))
+        box_h = (
+            top_pad
+            + header_h
+            + table_gap
+            + row_h * len(shown_rows)
+            + bottom_pad
+        )
+        section_specs.append(
+            {
+                "name": section_name,
+                "rows": shown_rows,
+                "height": box_h,
+            }
+        )
+
+    if not section_specs:
+        raise ValueError("No non-empty JSON sections remain after applying exclude_keys")
+
+    section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
+
+    col_heights = [0.0] * columns
+    for spec in section_specs:
+        col = min(range(columns), key=lambda idx: col_heights[idx])
+        spec["col"] = col
+        spec["top"] = -col_heights[col]
+        spec["bottom"] = spec["top"] - spec["height"]
+        col_heights[col] += spec["height"] + box_gap
+
+        neighbour_colours = set()
+        for placed in section_specs:
+            if "colour_index" not in placed:
+                continue
+            same_column_neighbour = (
+                placed["col"] == col
+                and abs(spec["top"] - placed["bottom"] + box_gap) < 1e-9
+            )
+            adjacent_column_overlap = (
+                abs(placed["col"] - col) == 1
+                and spec["bottom"] < placed["top"]
+                and spec["top"] > placed["bottom"]
+            )
+            if same_column_neighbour or adjacent_column_overlap:
+                neighbour_colours.add(placed["colour_index"])
+        for colour_index in range(len(box_palette)):
+            if colour_index not in neighbour_colours:
+                spec["colour_index"] = colour_index
+                break
+        if "colour_index" not in spec:
+            spec["colour_index"] = len(neighbour_colours) % len(box_palette)
+
+    max_depth = max(col_heights) - box_gap
+    fig_w = max(11.0, columns * 2.55)
+    fig_h = max(6.0, max_depth * 4.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_xlim(-0.05, columns * (box_w + col_gap) - col_gap + 0.05)
+    ax.set_ylim(-max_depth - 0.05, 0.05)
+    ax.axis("off")
+
+    for spec in section_specs:
+        section_name = spec["name"]
+        shown_rows = spec["rows"]
+        x = spec["col"] * (box_w + col_gap)
+        h = spec["height"]
+        y = spec["top"] - h
+        w = box_w
+        box_face, header_face = box_palette[spec["colour_index"]]
+
+        patch = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012",
+            facecolor=box_face,
+            edgecolor=edge,
+            linewidth=1.2,
+        )
+        ax.add_patch(patch)
+
+        header = FancyBboxPatch(
+            (x, y + h - header_h),
+            w,
+            header_h,
+            boxstyle="round,pad=0.012",
+            facecolor=header_face,
+            edgecolor=edge,
+            linewidth=0.9,
+        )
+        ax.add_patch(header)
+        title_text, title_fontsize = format_title(section_name)
+        ax.text(
+            x + w / 2,
+            y + h - header_h / 2,
+            title_text,
+            ha="center",
+            va="center",
+            fontsize=title_fontsize,
+            fontweight="bold",
+            color=text_color,
+            linespacing=0.95,
+        )
+
+        table_y_top = y + h - header_h - table_gap
+        text_x = x + 0.055
+        for row_index, subkey in enumerate(shown_rows):
+            yy = table_y_top - row_h * (row_index + 0.5)
+            if row_index % 2 == 1:
+                ax.add_patch(
+                    FancyBboxPatch(
+                        (x + 0.025, yy - row_h / 2),
+                        w - 0.05,
+                        row_h,
+                        boxstyle="square,pad=0",
+                        facecolor="#FFFFFF",
+                        edgecolor="none",
+                    )
+                )
+            ax.text(
+                text_x,
+                yy,
+                ellipsize(subkey),
+                ha="left",
+                va="center",
+                fontsize=8.0,
+                color=text_color,
+            )
+
+    fig.tight_layout(pad=0.25)
+
+    if save_png:
+        if output_folder is None:
+            raise ValueError("output_folder is required when save_png=True")
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
+def plot_json_dictionary_summary_2(
+    output_folder=None,
+    json_data=None,
+    json_filename="worm_data_worm.json",
+    exclude_keys=None,
+    filename="json_dictionary_summary_2.png",
+    save_png=True,
+    columns=5,
+    max_rows_per_box=18,
+):
+    """Return a two-column summary of top-level JSON subfield names and values."""
+    from matplotlib.patches import FancyBboxPatch
+
+    if json_data is None:
+        if output_folder is None:
+            raise ValueError("Either output_folder or json_data must be supplied")
+        json_path = os.path.join(output_folder, json_filename)
+        if not os.path.isfile(json_path):
+            raise FileNotFoundError("Could not find {}".format(json_path))
+        json_data = utils.getJsonFile(json_path)
+
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    excluded = {
+        "InputNS",
+        "Muscle",
+        "OutputNS",
+        "PhenoNames",
+        "PhenoNamesNums",
+        "evolved_used",
+    }
+    if exclude_keys is not None:
+        excluded.update(exclude_keys)
+
+    sections = [(key, val) for key, val in json_data.items() if key not in excluded]
+    if not sections:
+        raise ValueError("No JSON sections remain after applying exclude_keys")
+
+    columns = max(1, min(int(columns), len(sections)))
+
+    def display_value(value):
+        if isinstance(value, dict) and "value" in value:
+            value = value["value"]
+        elif isinstance(value, dict):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
+
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if isinstance(value, float):
+            return "{:.4g}".format(value)
+        if isinstance(value, (int, np.integer)):
+            return str(int(value))
+        if isinstance(value, str):
+            return value
+        if value is None:
+            return "null"
+        if isinstance(value, list):
+            return "list"
+        if isinstance(value, dict):
+            return "object"
+        return str(value)
+
+    def subfield_rows(section):
+        if not isinstance(section, dict):
+            return [("value", display_value(section))]
+        return [(str(subkey), display_value(subval)) for subkey, subval in section.items()]
+
+    def ellipsize(text, max_len=23):
+        text = str(text)
+        if len(text) <= max_len:
+            return text
+        return text[: max_len - 1] + "..."
+
+    def format_title(text):
+        text = str(text)
+        if text == "Evolutionary Optimization Parameters":
+            return "Evolutionary Optimization\nParameters", 9.0
+        if len(text) > 25:
+            words = text.replace("_", " ").split()
+            if len(words) > 1:
+                split_at = int(math.ceil(len(words) / 2))
+                return (
+                    "{}\n{}".format(
+                        " ".join(words[:split_at]),
+                        " ".join(words[split_at:]),
+                    ),
+                    9.0,
+                )
+            return ellipsize(text, 25), 9.0
+        return text, 10.5
+
+    box_palette = [
+        ("#F8FAFC", "#DDEBF7"),
+        ("#FFF7E6", "#F6D8A8"),
+        ("#F0F8EE", "#CFE8C6"),
+        ("#F8F1FA", "#E4CCE9"),
+        ("#EEF7F8", "#CBE5E8"),
+    ]
+    edge = "#2F3A45"
+    text_color = "#1F2933"
+
+    box_w = 1.02
+    col_gap = 0.10
+    box_gap = 0.10
+    header_h = 0.14
+    column_header_h = 0.055
+    row_h = 0.055
+    top_pad = 0.045
+    bottom_pad = 0.045
+    table_gap = 0.030
+
+    section_specs = []
+    for section_name, section in sections:
+        rows_ = subfield_rows(section)
+        if not rows_:
+            continue
+        shown_rows = rows_[:max_rows_per_box]
+        omitted = len(rows_) - len(shown_rows)
+        if omitted > 0:
+            shown_rows.append(("... {} more".format(omitted), ""))
+        box_h = (
+            top_pad
+            + header_h
+            + table_gap
+            + column_header_h
+            + row_h * len(shown_rows)
+            + bottom_pad
+        )
+        section_specs.append(
+            {
+                "name": section_name,
+                "rows": shown_rows,
+                "height": box_h,
+            }
+        )
+
+    if not section_specs:
+        raise ValueError("No non-empty JSON sections remain after applying exclude_keys")
+
+    section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
+
+    col_heights = [0.0] * columns
+    for spec in section_specs:
+        col = min(range(columns), key=lambda idx: col_heights[idx])
+        spec["col"] = col
+        spec["top"] = -col_heights[col]
+        spec["bottom"] = spec["top"] - spec["height"]
+        col_heights[col] += spec["height"] + box_gap
+
+        neighbour_colours = set()
+        for placed in section_specs:
+            if "colour_index" not in placed:
+                continue
+            same_column_neighbour = (
+                placed["col"] == col
+                and abs(spec["top"] - placed["bottom"] + box_gap) < 1e-9
+            )
+            adjacent_column_overlap = (
+                abs(placed["col"] - col) == 1
+                and spec["bottom"] < placed["top"]
+                and spec["top"] > placed["bottom"]
+            )
+            if same_column_neighbour or adjacent_column_overlap:
+                neighbour_colours.add(placed["colour_index"])
+        for colour_index in range(len(box_palette)):
+            if colour_index not in neighbour_colours:
+                spec["colour_index"] = colour_index
+                break
+        if "colour_index" not in spec:
+            spec["colour_index"] = len(neighbour_colours) % len(box_palette)
+
+    max_depth = max(col_heights) - box_gap
+    fig_w = max(11.0, columns * 3.25)
+    fig_h = max(6.0, max_depth * 4.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_xlim(-0.05, columns * (box_w + col_gap) - col_gap + 0.05)
+    ax.set_ylim(-max_depth - 0.05, 0.05)
+    ax.axis("off")
+
+    for spec in section_specs:
+        section_name = spec["name"]
+        shown_rows = spec["rows"]
+        x = spec["col"] * (box_w + col_gap)
+        h = spec["height"]
+        y = spec["top"] - h
+        w = box_w
+        box_face, header_face = box_palette[spec["colour_index"]]
+
+        patch = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012",
+            facecolor=box_face,
+            edgecolor=edge,
+            linewidth=1.2,
+        )
+        ax.add_patch(patch)
+
+        header = FancyBboxPatch(
+            (x, y + h - header_h),
+            w,
+            header_h,
+            boxstyle="round,pad=0.012",
+            facecolor=header_face,
+            edgecolor=edge,
+            linewidth=0.9,
+        )
+        ax.add_patch(header)
+        title_text, title_fontsize = format_title(section_name)
+        ax.text(
+            x + w / 2,
+            y + h - header_h / 2,
+            title_text,
+            ha="center",
+            va="center",
+            fontsize=title_fontsize,
+            fontweight="bold",
+            color=text_color,
+            linespacing=0.95,
+        )
+
+        table_y_top = y + h - header_h - table_gap
+        name_x = x + 0.050
+        value_x = x + 0.630
+        ax.add_patch(
+            FancyBboxPatch(
+                (x + 0.025, table_y_top - column_header_h),
+                w - 0.05,
+                column_header_h,
+                boxstyle="square,pad=0",
+                facecolor="#FFFFFF",
+                edgecolor="none",
+                alpha=0.75,
+            )
+        )
+        ax.text(
+            name_x,
+            table_y_top - column_header_h / 2,
+            "name",
+            ha="left",
+            va="center",
+            fontsize=7.8,
+            fontweight="bold",
+            color=text_color,
+        )
+        ax.text(
+            value_x,
+            table_y_top - column_header_h / 2,
+            "value",
+            ha="left",
+            va="center",
+            fontsize=7.8,
+            fontweight="bold",
+            color=text_color,
+        )
+
+        rows_top = table_y_top - column_header_h
+        for row_index, (subkey, subval) in enumerate(shown_rows):
+            yy = rows_top - row_h * (row_index + 0.5)
+            if row_index % 2 == 1:
+                ax.add_patch(
+                    FancyBboxPatch(
+                        (x + 0.025, yy - row_h / 2),
+                        w - 0.05,
+                        row_h,
+                        boxstyle="square,pad=0",
+                        facecolor="#FFFFFF",
+                        edgecolor="none",
+                        alpha=0.65,
+                    )
+                )
+            ax.text(
+                name_x,
+                yy,
+                ellipsize(subkey, 28),
+                ha="left",
+                va="center",
+                fontsize=7.6,
+                color=text_color,
+            )
+            ax.text(
+                value_x,
+                yy,
+                ellipsize(subval, 18),
+                ha="left",
+                va="center",
+                fontsize=7.6,
+                color=text_color,
+            )
+
+    fig.tight_layout(pad=0.25)
+
+    if save_png:
+        if output_folder is None:
+            raise ValueError("output_folder is required when save_png=True")
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def plot_selected_activity(
     output_folder,
     cells_or_class,
