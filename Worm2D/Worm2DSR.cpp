@@ -19,6 +19,26 @@ Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j):
 Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
+namespace {
+
+bool shouldSetW2DSRStates(shared_ptr<const CmdArgs> cmd,
+    baseParameters &bp)
+{
+  bool randomInitialState;
+  bp.getValCJWorm<bool>("random_initial_state", randomInitialState);
+
+  bool explicitDoLegacy = true;
+  if (cmd
+      && (cmd->getArgValT<bool>("--do_legacy", explicitDoLegacy)
+          || cmd->getArgValT<bool>("--doLegacy", explicitDoLegacy))
+      && !explicitDoLegacy)
+      return false;
+
+  return !randomInitialState;
+}
+
+}
+
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j,
   bool forceNoOrigInputs):
@@ -28,13 +48,13 @@ Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_,forceNoOrigInputs),Worm2DSRb(
 
   bool do_nml =  cmd->getArgValInt("--donml",0);
   if (!do_nml){
-    bool doLegacy;
-    getValCJWorm<bool>("do_legacy",doLegacy);
+    const bool setStates = shouldSetW2DSRStates(cmd, *this);
+    setValCJWorm<bool>("do_legacy", false);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
 
-    setNSFromJson(js1,*n, doLegacy);
+    setNSFromJson(js1,*n, setStates);
   }
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(js1);
@@ -62,14 +82,14 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
     
-    bool doLegacy;
-    getValCJWorm<bool>("do_legacy",doLegacy);
+    const bool setStates = shouldSetW2DSRStates(cmd, *this);
+    setValCJWorm<bool>("do_legacy", false);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
     //cout << "doLegacy " << doLegacy << endl;
     
-    setNSFromJson(js1,*n, doLegacy);
+    setNSFromJson(js1,*n, setStates);
     }
 
 
@@ -209,13 +229,13 @@ void Worm2DSRE::resetFromJson(const json & js1)
 
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   if(n){
-  bool doLegacy;
-  getValCJWorm<bool>("do_legacy",doLegacy);
+  const bool setStates = shouldSetW2DSRStates(BPitsCmdArgs, *this);
+  setValCJWorm<bool>("do_legacy", false);
 
   //copy in current states, external inputs here??
     
 
-  setNSFromJsonNZ(js1,*n,doLegacy);
+  setNSFromJsonNZ(js1,*n,setStates);
   }
   
     Worm2DSRb::setParsFromJson(js1);
