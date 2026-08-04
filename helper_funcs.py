@@ -845,6 +845,181 @@ def set_input_switcher_input(
     return result
 
 
+def _get_driving_input_ids(json_data):
+    driving_inputs = json_data.get("driving_inputs")
+    if not isinstance(driving_inputs, dict):
+        raise KeyError("JSON does not contain a 'driving_inputs' object")
+    inputs = driving_inputs.get("inputs", {}).get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'driving_inputs.inputs.value' must be a list")
+
+    input_ids = set()
+    for entry in inputs:
+        if not isinstance(entry, dict):
+            raise TypeError("Each driving input must be a dictionary")
+        input_ids.add(_driving_input_id(entry.get("input_num")))
+    return input_ids
+
+
+def _next_input_switcher_pattern_name(inputs):
+    used_names = set()
+    for pattern in inputs:
+        if not isinstance(pattern, dict):
+            raise TypeError("Each input-switcher pattern must be a dictionary")
+        if "input_index" in pattern:
+            used_names.add(_input_switcher_id(pattern["input_index"]))
+
+    pattern_number = 0
+    while True:
+        pattern_name = "input_pattern_{}".format(pattern_number)
+        if pattern_name not in used_names:
+            return pattern_name
+        pattern_number += 1
+
+
+def add_input_switcher_pattern(
+    json_data,
+    pattern_name=None,
+    input_nums=None,
+    values=None,
+):
+    """Return a copy with an input-switcher pattern added or replaced."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if input_nums is None:
+        raise ValueError("input_nums must be supplied")
+    if values is None:
+        raise ValueError("values must be supplied")
+    if not isinstance(input_nums, (list, tuple)) or not input_nums:
+        raise ValueError("input_nums must be a non-empty list or tuple")
+    if not isinstance(values, (list, tuple)) or not values:
+        raise ValueError("values must be a non-empty list or tuple")
+    if len(input_nums) != len(values):
+        raise ValueError("input_nums and values must have the same length")
+
+    allowed_input_ids = _get_driving_input_ids(json_data)
+    pattern_values = []
+    seen_input_nums = set()
+    for input_num, value in zip(input_nums, values):
+        input_id = _driving_input_id(input_num)
+        if input_id not in allowed_input_ids:
+            raise KeyError(
+                "Driving input {!r} does not exist in driving_inputs".format(input_id)
+            )
+        if input_id in seen_input_nums:
+            raise ValueError(
+                "Input identifier {} occurs more than once".format(input_id)
+            )
+        seen_input_nums.add(input_id)
+
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError("Each input value must be a number")
+        if not math.isfinite(value):
+            raise ValueError("Each input value must be finite")
+        pattern_values.append({"input_num": input_id, "value": float(value)})
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.setdefault("input_switcher", {})
+    if not isinstance(input_switcher, dict):
+        raise TypeError("'input_switcher' must be a dictionary")
+    inputs_object = input_switcher.setdefault("inputs", {"value": []})
+    if not isinstance(inputs_object, dict):
+        raise TypeError("'input_switcher.inputs' must be a dictionary")
+    if inputs_object.get("value") is None:
+        inputs_object["value"] = []
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'input_switcher.inputs.value' must be a list")
+
+    if pattern_name is None:
+        pattern_id = _next_input_switcher_pattern_name(inputs)
+    else:
+        pattern_id = _input_switcher_id(pattern_name)
+
+    new_pattern = {"input_index": pattern_id, "value": pattern_values}
+    replaced = False
+    kept_inputs = []
+    for pattern in inputs:
+        if not isinstance(pattern, dict):
+            raise TypeError("Each input-switcher pattern must be a dictionary")
+        existing_pattern_id = _input_switcher_id(pattern.get("input_index"))
+        pattern["input_index"] = existing_pattern_id
+        if existing_pattern_id == pattern_id:
+            if not replaced:
+                kept_inputs.append(new_pattern)
+                replaced = True
+            continue
+        kept_inputs.append(pattern)
+    if not replaced:
+        kept_inputs.append(new_pattern)
+
+    inputs_object["value"] = kept_inputs
+    input_switcher["size"] = {"value": len(kept_inputs)}
+    return result
+
+
+def delete_input_switcher_pattern(json_data, pattern_name):
+    """Return a copy with one input-switcher pattern and schedule uses removed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    pattern_id = _input_switcher_id(pattern_name)
+
+    result = copy.deepcopy(json_data)
+    input_switcher = result.get("input_switcher")
+    if not isinstance(input_switcher, dict):
+        raise KeyError("JSON does not contain an 'input_switcher' object")
+    inputs_object = input_switcher.get("inputs")
+    if not isinstance(inputs_object, dict):
+        raise KeyError("JSON does not contain 'input_switcher.inputs'")
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'input_switcher.inputs.value' must be a list")
+
+    kept_inputs = []
+    found_pattern = False
+    for pattern in inputs:
+        if not isinstance(pattern, dict):
+            raise TypeError("Each input-switcher pattern must be a dictionary")
+        existing_pattern_id = _input_switcher_id(pattern.get("input_index"))
+        pattern["input_index"] = existing_pattern_id
+        if existing_pattern_id == pattern_id:
+            found_pattern = True
+            continue
+        kept_inputs.append(pattern)
+    if not found_pattern:
+        raise KeyError("Input-switcher pattern {!r} does not exist".format(pattern_id))
+
+    inputs_object["value"] = kept_inputs
+    input_switcher["size"] = {"value": len(kept_inputs)}
+
+    scheduled = input_switcher.get("input_indices", {}).get("value")
+    periods = input_switcher.get("time_periods", {}).get("value")
+    if scheduled is not None or periods is not None:
+        if not isinstance(scheduled, list):
+            raise TypeError("'input_switcher.input_indices.value' must be a list")
+        if not isinstance(periods, list):
+            raise TypeError("'input_switcher.time_periods.value' must be a list")
+        if len(scheduled) != len(periods):
+            raise ValueError(
+                "input_switcher.input_indices and time_periods must have "
+                "the same length"
+            )
+        kept_schedule = []
+        kept_periods = []
+        for scheduled_id, period in zip(scheduled, periods):
+            scheduled_pattern_id = _input_switcher_id(scheduled_id)
+            if scheduled_pattern_id == pattern_id:
+                continue
+            kept_schedule.append(scheduled_pattern_id)
+            kept_periods.append(period)
+        input_switcher["input_indices"]["value"] = kept_schedule
+        input_switcher["time_periods"]["value"] = kept_periods
+
+    if not kept_inputs:
+        result.pop("input_switcher", None)
+    return result
+
+
 def set_input_switcher_schedule(
     json_data,
     time_periods,
@@ -1397,6 +1572,174 @@ def add_cell_connection(
             "weight": {"value": float(weight)},
         }
     )
+    return result
+
+
+def _ensure_driving_input_connection_containers(result, input_id):
+    driving_inputs = result.setdefault(
+        "driving_inputs",
+        {
+            "inputs": {
+                "message": "Driving input strength to Nervous System",
+                "value": [],
+            },
+            "weights": {
+                "message": (
+                    "Weights of driving inputs to Nervous System in sparse format"
+                ),
+                "value": [],
+            },
+        },
+    )
+    if not isinstance(driving_inputs, dict):
+        raise TypeError("'driving_inputs' must be a dictionary")
+
+    inputs_object = driving_inputs.setdefault(
+        "inputs",
+        {
+            "message": "Driving input strength to Nervous System",
+            "value": [],
+        },
+    )
+    if not isinstance(inputs_object, dict):
+        raise TypeError("'driving_inputs.inputs' must be a dictionary")
+    if inputs_object.get("value") is None:
+        inputs_object["value"] = []
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'driving_inputs.inputs.value' must be a list")
+    inputs_object.setdefault("message", "Driving input strength to Nervous System")
+
+    input_exists = False
+    for entry in inputs:
+        if not isinstance(entry, dict):
+            raise TypeError("Each driving input must be a dictionary")
+        entry_id = _driving_input_id(entry.get("input_num"))
+        entry["input_num"] = entry_id
+        if entry_id == input_id:
+            input_exists = True
+    if not input_exists:
+        inputs.append({"input_num": input_id, "strength": {"value": 0.0}})
+
+    weights_object = driving_inputs.setdefault(
+        "weights",
+        {
+            "message": (
+                "Weights of driving inputs to Nervous System in sparse format"
+            ),
+            "value": [],
+        },
+    )
+    if not isinstance(weights_object, dict):
+        raise TypeError("'driving_inputs.weights' must be a dictionary")
+    if weights_object.get("value") is None:
+        weights_object["value"] = []
+    weights = weights_object.get("value")
+    if not isinstance(weights, list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+    weights_object.setdefault(
+        "message", "Weights of driving inputs to Nervous System in sparse format"
+    )
+    return weights
+
+
+def _add_driving_input_connection_inplace(result, input_id, cell_name, weight):
+    nervous_system = result.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain 'nervous_system.cells'")
+    if cell_name not in cells:
+        raise KeyError(
+            "Cell {!r} was not found in nervous_system.cells".format(cell_name)
+        )
+
+    weights = _ensure_driving_input_connection_containers(result, input_id)
+    for connection in weights:
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving-input connection must be a dictionary")
+        from_input = _driving_input_id(connection.get("from_input"))
+        connection["from_input"] = from_input
+        if from_input == input_id and connection.get("to_cell") == cell_name:
+            return
+
+    weights.append(
+        {
+            "from_input": input_id,
+            "to_cell": cell_name,
+            "weight": {"value": float(weight)},
+        }
+    )
+
+
+def add_driving_input_connection(
+    json_data,
+    input_num,
+    cell_name,
+    weight=None,
+    random_seed=None,
+):
+    """Return a copy with a driving-input-to-cell connection added if absent."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    input_id = _driving_input_id(input_num)
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+    if weight is not None and (
+        isinstance(weight, bool) or not isinstance(weight, (int, float))
+    ):
+        raise TypeError("weight must be a number or None")
+    if random_seed is not None and (
+        isinstance(random_seed, bool) or not isinstance(random_seed, int)
+    ):
+        raise TypeError("random_seed must be an integer or None")
+
+    if weight is None:
+        weight = random.Random(random_seed).uniform(-1.0, 1.0)
+
+    result = copy.deepcopy(json_data)
+    _add_driving_input_connection_inplace(result, input_id, cell_name, weight)
+    return result
+
+
+def add_driving_input_connections_by_cell_stem(
+    json_data,
+    input_num,
+    cell_stem,
+    weight=None,
+    random_seed=None,
+):
+    """Return a copy with one driving-input connection to each matching cell."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    input_id = _driving_input_id(input_num)
+    if not isinstance(cell_stem, str) or not cell_stem:
+        raise ValueError("cell_stem must be a non-empty string")
+    if weight is not None and (
+        isinstance(weight, bool) or not isinstance(weight, (int, float))
+    ):
+        raise TypeError("weight must be a number or None")
+    if random_seed is not None and (
+        isinstance(random_seed, bool) or not isinstance(random_seed, int)
+    ):
+        raise TypeError("random_seed must be an integer or None")
+
+    cell_names = get_cell_names_by_stem(json_data, cell_stem)
+    if not cell_names:
+        raise ValueError(
+            "No nervous-system cells were found with stem {!r}".format(cell_stem)
+        )
+
+    rng = random.Random(random_seed)
+    result = copy.deepcopy(json_data)
+    for cell_name in cell_names:
+        connection_weight = weight
+        if connection_weight is None:
+            connection_weight = rng.uniform(-1.0, 1.0)
+        _add_driving_input_connection_inplace(
+            result, input_id, cell_name, connection_weight
+        )
     return result
 
 
@@ -2813,6 +3156,8 @@ def delete_driving_input(json_data, input_num):
                         kept_periods.append(period)
                     input_switcher["input_indices"]["value"] = kept_schedule
                     input_switcher["time_periods"]["value"] = kept_periods
+            if not kept_patterns:
+                result.pop("input_switcher", None)
 
     if not remaining_inputs and not remaining_weights:
         result.pop("driving_inputs", None)
