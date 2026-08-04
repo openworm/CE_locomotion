@@ -2747,11 +2747,15 @@ def delete_driving_input(json_data, input_num):
                 for entry in pattern_values:
                     if isinstance(entry, dict) and entry.get("input_num") == 0:
                         legacy_zero_based = True
+            kept_patterns = []
+            removed_pattern_ids = set()
             for pattern in switcher_inputs:
                 if not isinstance(pattern, dict):
                     raise TypeError("Each input-switcher pattern must be a dictionary")
+                pattern_id = _input_switcher_id(pattern.get("input_index"))
                 pattern_values = pattern.get("value")
                 if pattern_values is None:
+                    kept_patterns.append(pattern)
                     continue
                 if not isinstance(pattern_values, list):
                     raise TypeError(
@@ -2773,7 +2777,42 @@ def delete_driving_input(json_data, input_num):
                         continue
                     entry["input_num"] = entry_id
                     kept_values.append(entry)
-                pattern["value"] = kept_values
+                if kept_values:
+                    pattern["input_index"] = pattern_id
+                    pattern["value"] = kept_values
+                    kept_patterns.append(pattern)
+                else:
+                    _collect_evotags(pattern, removed_evotags)
+                    removed_pattern_ids.add(pattern_id)
+            input_switcher["inputs"]["value"] = kept_patterns
+            size_object = input_switcher.setdefault("size", {"value": 0})
+            if not isinstance(size_object, dict):
+                raise TypeError("'input_switcher.size' must be a dictionary")
+            size_object["value"] = len(kept_patterns)
+
+            if removed_pattern_ids:
+                scheduled = input_switcher.get("input_indices", {}).get("value")
+                periods = input_switcher.get("time_periods", {}).get("value")
+                if scheduled is not None or periods is not None:
+                    if not isinstance(scheduled, list):
+                        raise TypeError("'input_switcher.input_indices.value' must be a list")
+                    if not isinstance(periods, list):
+                        raise TypeError("'input_switcher.time_periods.value' must be a list")
+                    if len(scheduled) != len(periods):
+                        raise ValueError(
+                            "input_switcher.input_indices and time_periods "
+                            "must have the same length"
+                        )
+                    kept_schedule = []
+                    kept_periods = []
+                    for scheduled_id, period in zip(scheduled, periods):
+                        scheduled_pattern_id = _input_switcher_id(scheduled_id)
+                        if scheduled_pattern_id in removed_pattern_ids:
+                            continue
+                        kept_schedule.append(scheduled_pattern_id)
+                        kept_periods.append(period)
+                    input_switcher["input_indices"]["value"] = kept_schedule
+                    input_switcher["time_periods"]["value"] = kept_periods
 
     if not remaining_inputs and not remaining_weights:
         result.pop("driving_inputs", None)
