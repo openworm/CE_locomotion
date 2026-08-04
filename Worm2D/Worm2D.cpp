@@ -123,6 +123,114 @@ vector<string> drivingInputIdsForJson(const json & j, const size_t inputCount)
     return inputIds;
 }
 
+string defaultInputSwitcherId(const int index)
+{
+    return "input_pattern_" + to_string(index);
+}
+
+int parseDefaultInputSwitcherId(const string & id)
+{
+    const string prefix = "input_pattern_";
+    if (id.rfind(prefix, 0) != 0 || id.size() == prefix.size()) return -1;
+    for (size_t i = prefix.size(); i < id.size(); ++i)
+        if (!isdigit(static_cast<unsigned char>(id[i]))) return -1;
+    return stoi(id.substr(prefix.size()));
+}
+
+string inputSwitcherIdFromJson(const json & value)
+{
+    if (value.is_string()) return value.get<string>();
+    if (value.is_number_integer()) return defaultInputSwitcherId(value.get<int>());
+    throw runtime_error("input_switcher.input_index must be a string or legacy integer");
+}
+
+int inputSwitcherIndexFromJson(
+    const json & value,
+    const map<string, int> & switcherIdToIndex)
+{
+    if (value.is_number_integer())
+    {
+        const int index = value.get<int>();
+        if (index < 0)
+            throw runtime_error("input_switcher.input_index must be non-negative");
+        return index;
+    }
+    if (value.is_string())
+    {
+        const string id = value.get<string>();
+        auto found = switcherIdToIndex.find(id);
+        if (found != switcherIdToIndex.end()) return found->second;
+        const int parsedIndex = parseDefaultInputSwitcherId(id);
+        if (parsedIndex >= 0) return parsedIndex;
+        throw runtime_error("Unknown input_switcher input_index '" + id + "'");
+    }
+    throw runtime_error("input_switcher.input_index must be a string or legacy integer");
+}
+
+vector<string> inputSwitcherIdsForJson(const json & j, const size_t patternCount)
+{
+    vector<string> ids(patternCount);
+    for (size_t i = 0; i < patternCount; ++i)
+        ids[i] = defaultInputSwitcherId(static_cast<int>(i));
+
+    if (!j.contains("input_switcher")
+        || !j.at("input_switcher").contains("inputs")
+        || !j.at("input_switcher").at("inputs").contains("value")
+        || !j.at("input_switcher").at("inputs").at("value").is_array())
+        return ids;
+
+    int sequentialIndex = 0;
+    for (const auto & input : j.at("input_switcher").at("inputs").at("value"))
+    {
+        if (!input.contains("input_index")) continue;
+        int patternIndex = sequentialIndex;
+        if (input.at("input_index").is_number_integer())
+            patternIndex = input.at("input_index").get<int>();
+        else if (!input.at("input_index").is_string())
+            throw runtime_error(
+                "input_switcher.input_index must be a string or integer");
+
+        if (patternIndex >= 0 && static_cast<size_t>(patternIndex) < patternCount)
+            ids[patternIndex] = inputSwitcherIdFromJson(input.at("input_index"));
+        sequentialIndex++;
+    }
+    return ids;
+}
+
+map<string, int> inputSwitcherIdMapFromJson(const json & input_switcher)
+{
+    map<string, int> idToIndex;
+    if (!input_switcher.contains("inputs")
+        || !input_switcher.at("inputs").contains("value")
+        || !input_switcher.at("inputs").at("value").is_array())
+        return idToIndex;
+
+    int sequentialIndex = 0;
+    for (const auto & input : input_switcher.at("inputs").at("value"))
+    {
+        if (!input.contains("input_index")) continue;
+        string id;
+        int index = sequentialIndex;
+        if (input.at("input_index").is_string())
+            id = input.at("input_index").get<string>();
+        else if (input.at("input_index").is_number_integer())
+        {
+            index = input.at("input_index").get<int>();
+            if (index < 0)
+                throw runtime_error("input_switcher.input_index must be non-negative");
+            id = defaultInputSwitcherId(index);
+        }
+        else
+            throw runtime_error(
+                "input_switcher.input_index must be a string or integer");
+        if (idToIndex.count(id))
+            throw runtime_error("Duplicate input_switcher input_index '" + id + "'");
+        idToIndex[id] = index;
+        sequentialIndex++;
+    }
+    return idToIndex;
+}
+
 }
 
 
@@ -2878,8 +2986,16 @@ void InputSwitcher::addParsToJson(json & j) const
           : 0;
     const vector<string> inputIds = drivingInputIdsForJson(j, inputCount);
     if (timeperiods.size()>0){
+    const vector<string> switcherIds =
+      inputSwitcherIdsForJson(j, inds.size());
+    json scheduledIds = json::array();
+    for (const int index : scheduled_input_indices)
+      scheduledIds.push_back(
+        index >= 0 && static_cast<size_t>(index) < switcherIds.size()
+          ? switcherIds[index]
+          : defaultInputSwitcherId(index));
     j2["time_offset"]["value"] = time_offset;
-    j2["input_indices"]["value"] = scheduled_input_indices;
+    j2["input_indices"]["value"] = scheduledIds;
     j2["time_periods"]["value"] = timeperiods;
     }
 
@@ -2901,8 +3017,10 @@ void InputSwitcher::addParsToJson(json & j) const
           : defaultDrivingInputId(indvec[j]);
       arr2.push_back({{"input_num", inputId}, {"value", valvec[j]}});
     }
+    const vector<string> switcherIds =
+      inputSwitcherIdsForJson(j, inds.size());
     //arr1.push_back({{"value", arr2},{"ind", i+1}});
-    arr1.push_back({{"value", arr2},{"input_index", i}});
+    arr1.push_back({{"value", arr2},{"input_index", switcherIds[i]}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
@@ -2943,6 +3061,8 @@ void InputSwitcher::construct(const json & j)
 
   int size = input_switcher["size"]["value"].get<int>();
   const map<string, int> inputIdToIndex = drivingInputIdMapFromJson(j);
+  const map<string, int> switcherIdToIndex =
+    inputSwitcherIdMapFromJson(input_switcher);
 
   {
   
@@ -2961,8 +3081,13 @@ void InputSwitcher::construct(const json & j)
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
      // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
 
-    vector<int> & indvec = inds1[it->at("input_index").get<int>()];
-    vector<double> & valvec = vals1[it->at("input_index").get<int>()];
+    const int switcherIndex =
+      inputSwitcherIndexFromJson(it->at("input_index"), switcherIdToIndex);
+    if (switcherIndex < 0 || switcherIndex >= size)
+      throw runtime_error(
+        "input_switcher.input_index is outside the configured input range");
+    vector<int> & indvec = inds1[switcherIndex];
+    vector<double> & valvec = vals1[switcherIndex];
 
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
@@ -3005,8 +3130,11 @@ void InputSwitcher::construct(const json & j)
 
     time_offset =
         input_switcher["time_offset"]["value"].get<double>();
-    scheduled_input_indices =
-        input_switcher["input_indices"]["value"].get<vector<int> >();
+    scheduled_input_indices.clear();
+    for (const auto & input_index :
+         input_switcher["input_indices"]["value"])
+      scheduled_input_indices.push_back(
+        inputSwitcherIndexFromJson(input_index, switcherIdToIndex));
     timeperiods =
         input_switcher["time_periods"]["value"].get<vector<double> >();
 

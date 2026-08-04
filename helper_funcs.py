@@ -79,6 +79,36 @@ def _driving_input_index(input_id):
     )
 
 
+def _input_switcher_id(input_index):
+    if isinstance(input_index, bool):
+        raise TypeError("input_index cannot be a boolean value")
+    if isinstance(input_index, int):
+        if input_index < 0:
+            raise ValueError("input_index must be non-negative")
+        return "input_pattern_{}".format(input_index)
+    if isinstance(input_index, str) and input_index.strip():
+        return input_index.strip()
+    raise TypeError("input_index must be a string or non-negative integer")
+
+
+def _input_switcher_index(input_index):
+    if isinstance(input_index, bool):
+        raise TypeError("input_index cannot be a boolean value")
+    if isinstance(input_index, int):
+        if input_index < 0:
+            raise ValueError("input_index must be non-negative")
+        return input_index
+    if isinstance(input_index, str) and input_index.startswith("input_pattern_"):
+        suffix = input_index[len("input_pattern_") :]
+        if suffix.isdigit():
+            return int(suffix)
+    raise ValueError(
+        "Cannot infer a numeric pattern index from input_index {!r}".format(
+            input_index
+        )
+    )
+
+
 def make_json_tree(obj, title="root"):
     if widgets is None:
         raise ImportError("ipywidgets is required to display JSON trees")
@@ -705,10 +735,11 @@ def set_input_switcher_input(
     """Return a copy with an input-switcher pattern added or replaced."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
-    if isinstance(input_index, bool) or not isinstance(input_index, int):
-        raise TypeError("input_index must be an integer")
-    if input_index < 0:
-        raise ValueError("input_index must be non-negative")
+    input_index_id = _input_switcher_id(input_index)
+    try:
+        input_index_number = _input_switcher_index(input_index_id)
+    except ValueError:
+        input_index_number = None
     if not isinstance(input_nums, (list, tuple)) or not input_nums:
         raise ValueError("input_nums must be a non-empty list or tuple")
     if not isinstance(values, (list, tuple)) or not values:
@@ -781,12 +812,13 @@ def set_input_switcher_input(
                 entry["input_num"] = _driving_input_id(entry["input_num"])
 
     new_pattern = {
-        "input_index": input_index,
+        "input_index": input_index_id,
         "value": pattern_values,
     }
     matching_positions = []
     for position, pattern in enumerate(inputs):
-        if pattern.get("input_index") == input_index:
+        pattern["input_index"] = _input_switcher_id(pattern.get("input_index"))
+        if pattern["input_index"] == input_index_id:
             matching_positions.append(position)
 
     if matching_positions:
@@ -806,7 +838,10 @@ def set_input_switcher_input(
         or current_size < 0
     ):
         raise TypeError("'input_switcher.size.value' must be a non-negative integer")
-    size_object["value"] = max(current_size, input_index + 1)
+    if input_index_number is None:
+        size_object["value"] = max(current_size, len(inputs))
+    else:
+        size_object["value"] = max(current_size, input_index_number + 1, len(inputs))
     return result
 
 
@@ -847,6 +882,16 @@ def set_input_switcher_schedule(
         or input_count < 1
     ):
         raise TypeError("'input_switcher.size.value' must be a positive integer")
+    inputs = input_switcher.get("inputs", {}).get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'input_switcher.inputs.value' must be a list")
+    allowed_indices = set()
+    for pattern in inputs:
+        if not isinstance(pattern, dict) or "input_index" not in pattern:
+            raise TypeError("Each input-switcher pattern must contain input_index")
+        pattern_id = _input_switcher_id(pattern["input_index"])
+        pattern["input_index"] = pattern_id
+        allowed_indices.add(pattern_id)
 
     periods = []
     for period in time_periods:
@@ -858,15 +903,14 @@ def set_input_switcher_schedule(
 
     indices = []
     for input_index in input_indices:
-        if isinstance(input_index, bool) or not isinstance(input_index, int):
-            raise TypeError("Each input index must be an integer")
-        if input_index < 0 or input_index >= input_count:
+        input_index_id = _input_switcher_id(input_index)
+        if input_index_id not in allowed_indices:
             raise ValueError(
-                "Input index {} is outside the configured range 0 to {}".format(
-                    input_index, input_count - 1
+                "Input index {} is not one of the configured input_index values".format(
+                    input_index_id
                 )
             )
-        indices.append(input_index)
+        indices.append(input_index_id)
 
     input_switcher["time_periods"] = {"value": periods}
     input_switcher["input_indices"] = {"value": indices}
@@ -967,6 +1011,54 @@ def delete_all_evotags(json_data):
         return copy.deepcopy(value)
 
     return remove_fields(json_data)
+
+
+def _collect_evotags(value, output=None):
+    if output is None:
+        output = set()
+    if isinstance(value, dict):
+        evotag = value.get("evotag")
+        if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+            output.add(evotag)
+        for child in value.values():
+            _collect_evotags(child, output)
+    elif isinstance(value, list):
+        for child in value:
+            _collect_evotags(child, output)
+    return output
+
+
+def _collect_model_evotags(value, at_root=False, output=None):
+    if output is None:
+        output = set()
+    if isinstance(value, dict):
+        evotag = value.get("evotag")
+        if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
+            output.add(evotag)
+        for key, child in value.items():
+            if at_root and key in {"evolvable_ranges", "evolved_used", "Evolvable"}:
+                continue
+            _collect_model_evotags(child, output=output)
+    elif isinstance(value, list):
+        for child in value:
+            _collect_model_evotags(child, output=output)
+    return output
+
+
+def _remove_unused_evotags(result, candidate_evotags):
+    unused_evotags = set(candidate_evotags) - _collect_model_evotags(
+        result, at_root=True
+    )
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in unused_evotags:
+            ranges.pop(str(evotag), None)
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict) and isinstance(evolved_used.get("value"), list):
+        evolved_used["value"] = [
+            evotag for evotag in evolved_used["value"] if evotag not in unused_evotags
+        ]
 
 
 def find_evotag_occurrences(json_data, evotag_name):
@@ -2580,6 +2672,113 @@ def set_evolvable_range(
     if name is not None:
         range_entry["name"] = name
 
+    return result
+
+
+def delete_driving_input(json_data, input_num):
+    """Return a copy with one driving input and its outgoing weights removed."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    input_id = _driving_input_id(input_num)
+
+    result = copy.deepcopy(json_data)
+    driving_inputs = result.get("driving_inputs")
+    if not isinstance(driving_inputs, dict):
+        raise KeyError("JSON does not contain a 'driving_inputs' object")
+
+    inputs_object = driving_inputs.get("inputs")
+    if not isinstance(inputs_object, dict):
+        raise KeyError("JSON does not contain 'driving_inputs.inputs'")
+    inputs = inputs_object.get("value")
+    if not isinstance(inputs, list):
+        raise TypeError("'driving_inputs.inputs.value' must be a list")
+
+    removed_evotags = set()
+    remaining_inputs = []
+    found_input = False
+    for entry in inputs:
+        if not isinstance(entry, dict):
+            raise TypeError("Each driving input must be a dictionary")
+        entry_id = _driving_input_id(entry.get("input_num"))
+        if entry_id == input_id:
+            found_input = True
+            _collect_evotags(entry, removed_evotags)
+            continue
+        entry["input_num"] = entry_id
+        remaining_inputs.append(entry)
+    if not found_input:
+        raise KeyError("Driving input {!r} does not exist".format(input_id))
+    inputs_object["value"] = remaining_inputs
+
+    weights_object = driving_inputs.setdefault("weights", {"value": []})
+    if not isinstance(weights_object, dict):
+        raise TypeError("'driving_inputs.weights' must be a dictionary")
+    weights = weights_object.get("value")
+    if weights is None:
+        weights = []
+    if not isinstance(weights, list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+
+    remaining_weights = []
+    for connection in weights:
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving input weight must be a dictionary")
+        from_input = _driving_input_id(connection.get("from_input"))
+        if from_input == input_id:
+            _collect_evotags(connection, removed_evotags)
+            continue
+        connection["from_input"] = from_input
+        remaining_weights.append(connection)
+    weights_object["value"] = remaining_weights
+
+    input_switcher = result.get("input_switcher")
+    if isinstance(input_switcher, dict):
+        switcher_inputs = input_switcher.get("inputs", {}).get("value")
+        if switcher_inputs is not None and not isinstance(switcher_inputs, list):
+            raise TypeError("'input_switcher.inputs.value' must be a list")
+        if isinstance(switcher_inputs, list):
+            legacy_zero_based = False
+            for pattern in switcher_inputs:
+                if not isinstance(pattern, dict):
+                    continue
+                pattern_values = pattern.get("value")
+                if not isinstance(pattern_values, list):
+                    continue
+                for entry in pattern_values:
+                    if isinstance(entry, dict) and entry.get("input_num") == 0:
+                        legacy_zero_based = True
+            for pattern in switcher_inputs:
+                if not isinstance(pattern, dict):
+                    raise TypeError("Each input-switcher pattern must be a dictionary")
+                pattern_values = pattern.get("value")
+                if pattern_values is None:
+                    continue
+                if not isinstance(pattern_values, list):
+                    raise TypeError(
+                        "Each input-switcher pattern value must be a list"
+                    )
+                kept_values = []
+                for entry in pattern_values:
+                    if not isinstance(entry, dict):
+                        raise TypeError(
+                            "Each input-switcher pattern entry must be a dictionary"
+                        )
+                    entry_input_num = entry.get("input_num")
+                    if legacy_zero_based and isinstance(entry_input_num, int):
+                        entry_id = _driving_input_id(entry_input_num + 1)
+                    else:
+                        entry_id = _driving_input_id(entry_input_num)
+                    if entry_id == input_id:
+                        _collect_evotags(entry, removed_evotags)
+                        continue
+                    entry["input_num"] = entry_id
+                    kept_values.append(entry)
+                pattern["value"] = kept_values
+
+    if not remaining_inputs and not remaining_weights:
+        result.pop("driving_inputs", None)
+
+    _remove_unused_evotags(result, removed_evotags)
     return result
 
 
