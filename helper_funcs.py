@@ -51,6 +51,34 @@ def short_repr(x, max_len=80):
     return html.escape(text)
 
 
+def _driving_input_id(input_num):
+    if isinstance(input_num, bool):
+        raise TypeError("Driving input identifiers cannot be boolean values")
+    if isinstance(input_num, int):
+        if input_num < 1:
+            raise ValueError("Driving input numbers must be at least 1")
+        return "input_{}".format(input_num)
+    if isinstance(input_num, str) and input_num.strip():
+        return input_num.strip()
+    raise TypeError("Driving input identifiers must be strings or positive integers")
+
+
+def _driving_input_index(input_id):
+    if isinstance(input_id, bool):
+        raise TypeError("Driving input identifiers cannot be boolean values")
+    if isinstance(input_id, int):
+        if input_id < 1:
+            raise ValueError("Driving input numbers must be at least 1")
+        return input_id - 1
+    if isinstance(input_id, str) and input_id.startswith("input_"):
+        suffix = input_id[len("input_") :]
+        if suffix.isdigit() and int(suffix) > 0:
+            return int(suffix) - 1
+    raise ValueError(
+        "Cannot infer a numeric vector index from driving input {!r}".format(input_id)
+    )
+
+
 def make_json_tree(obj, title="root"):
     if widgets is None:
         raise ImportError("ipywidgets is required to display JSON trees")
@@ -691,19 +719,18 @@ def set_input_switcher_input(
     pattern_values = []
     seen_input_nums = set()
     for input_num, value in zip(input_nums, values):
-        if isinstance(input_num, bool) or not isinstance(input_num, int):
-            raise TypeError("Each input number must be an integer")
-        if input_num < 1:
-            raise ValueError("Each input number must be at least 1")
-        if input_num in seen_input_nums:
-            raise ValueError("Input number {} occurs more than once".format(input_num))
-        seen_input_nums.add(input_num)
+        input_id = _driving_input_id(input_num)
+        if input_id in seen_input_nums:
+            raise ValueError(
+                "Input identifier {} occurs more than once".format(input_id)
+            )
+        seen_input_nums.add(input_id)
 
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TypeError("Each input value must be a number")
         if not math.isfinite(value):
             raise ValueError("Each input value must be finite")
-        pattern_values.append({"input_num": input_num, "value": float(value)})
+        pattern_values.append({"input_num": input_id, "value": float(value)})
 
     result = copy.deepcopy(json_data)
     input_switcher = result.setdefault("input_switcher", {})
@@ -731,13 +758,15 @@ def set_input_switcher_input(
                     "Each input-switcher pattern entry must be a dictionary"
                 )
             existing_input_num = entry.get("input_num")
-            if (
-                isinstance(existing_input_num, bool)
-                or not isinstance(existing_input_num, int)
-                or existing_input_num < 0
-            ):
+            if isinstance(existing_input_num, bool):
+                raise TypeError("Each existing input identifier must be valid")
+            if isinstance(existing_input_num, int) and existing_input_num < 0:
                 raise TypeError(
                     "Each existing input number must be a non-negative integer"
+                )
+            if not isinstance(existing_input_num, (int, str)):
+                raise TypeError(
+                    "Each existing input identifier must be a string or integer"
                 )
             if existing_input_num == 0:
                 legacy_zero_based = True
@@ -745,7 +774,11 @@ def set_input_switcher_input(
     if legacy_zero_based:
         for pattern in inputs:
             for entry in pattern["value"]:
-                entry["input_num"] += 1
+                entry["input_num"] = _driving_input_id(entry["input_num"] + 1)
+    else:
+        for pattern in inputs:
+            for entry in pattern["value"]:
+                entry["input_num"] = _driving_input_id(entry["input_num"])
 
     new_pattern = {
         "input_index": input_index,
@@ -2683,23 +2716,16 @@ def delete_sensor(json_data, sensor_name):
     for entry in inputs:
         if not isinstance(entry, dict):
             raise TypeError("Each driving input must be a dictionary")
-        input_number = entry.get("input_num")
-        if (
-            isinstance(input_number, bool)
-            or not isinstance(input_number, int)
-            or input_number < 1
-        ):
-            raise ValueError("Driving input numbers must be positive integers")
+        input_id = _driving_input_id(entry.get("input_num"))
+        input_number = _driving_input_index(input_id) + 1
         if input_number not in removed_input_numbers:
+            entry["input_num"] = input_id
             remaining_inputs.append(entry)
 
-    remaining_inputs.sort(key=lambda entry: entry["input_num"])
-    input_number_map = {
-        entry["input_num"]: new_number
-        for new_number, entry in enumerate(remaining_inputs, start=1)
+    remaining_inputs.sort(key=lambda entry: _driving_input_index(entry["input_num"]))
+    input_id_map = {
+        entry["input_num"]: entry["input_num"] for entry in remaining_inputs
     }
-    for entry in remaining_inputs:
-        entry["input_num"] = input_number_map[entry["input_num"]]
     driving_inputs["inputs"]["value"] = remaining_inputs
 
     weights = driving_inputs.get("weights", {}).get("value")
@@ -2712,15 +2738,16 @@ def delete_sensor(json_data, sensor_name):
     for connection in weights:
         if not isinstance(connection, dict):
             raise TypeError("Each driving input connection must be a dictionary")
-        input_number = connection.get("from_input")
+        input_id = _driving_input_id(connection.get("from_input"))
+        input_number = _driving_input_index(input_id) + 1
         if input_number in removed_input_numbers:
             collect_evotags(connection)
             continue
-        if input_number not in input_number_map:
+        if input_id not in input_id_map:
             raise ValueError(
-                "Connection refers to missing driving input {}".format(input_number)
+                "Connection refers to missing driving input {}".format(input_id)
             )
-        connection["from_input"] = input_number_map[input_number]
+        connection["from_input"] = input_id_map[input_id]
         remaining_weights.append(connection)
     driving_inputs.setdefault("weights", {})["value"] = remaining_weights
 
@@ -2730,11 +2757,14 @@ def delete_sensor(json_data, sensor_name):
         for key in ("ext_inp_1", "ext_inp_2"):
             old_index = remaining_sensor.get(key, {}).get("value")
             old_input_number = old_index + 1
-            if old_input_number not in input_number_map:
+            old_input_id = _driving_input_id(old_input_number)
+            if old_input_id not in input_id_map:
                 raise ValueError(
                     "Sensor refers to missing driving input {}".format(old_input_number)
                 )
-            remaining_sensor[key]["value"] = input_number_map[old_input_number] - 1
+            remaining_sensor[key]["value"] = _driving_input_index(
+                input_id_map[old_input_id]
+            )
 
     def sensor_number(name):
         prefix = "sensor_"
