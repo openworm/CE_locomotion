@@ -10,4 +10,6 @@ run(
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,
+    doOrigMuscInput=True,
+    doOrigSRInput=True,
 )

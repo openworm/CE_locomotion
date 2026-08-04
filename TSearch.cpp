@@ -601,6 +601,10 @@ double LinearScaleFactor(double min, double max, double avg, double FMultiple)
 void TSearch::UpdatePopulationFitness(void)
 {
 	int psize = PopulationSize();
+	if (psize < 2) {
+		cerr << "Error: genetic algorithm population size must be at least 2\n";
+		exit(0);
+	}
 	SortPopulation();
 	switch (SelectMode) {
 		// Calculate normalized fitness based on a fitness proportionate method with linear scaling

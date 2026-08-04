@@ -31,8 +31,13 @@ class Worm18 : public Worm2D , public EvolvableS{
 public:
 
     Worm18(shared_ptr<const CmdArgs> cmd);
+    Worm18(bool doOrigMuscInput_, bool doOrigSRInput_);
     Worm18(vector<double> v, double output, shared_ptr<const CmdArgs> cmd);
+    Worm18(vector<double> v, double output,
+        bool doOrigMuscInput_, bool doOrigSRInput_);
     Worm18(const TVector<double> &v, double output, shared_ptr<const CmdArgs> cmd);
+    Worm18(const TVector<double> &v, double output,
+        bool doOrigMuscInput_, bool doOrigSRInput_);
     //Worm18(bool dummy);
     Worm18(const TVector<double> &v, shared_ptr<const CmdArgs> cmd = nullptr);
     Worm18(const string & filename_,shared_ptr<const CmdArgs> cmd);
@@ -161,5 +166,4 @@ public:
 
      
 };
-
 

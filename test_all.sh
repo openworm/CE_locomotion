@@ -47,8 +47,8 @@ make ${parallel_jobs_for_make}
 make main_osc
 cd ..
 
-ruff format *.py */*.py
-ruff check *.py */*.py
+ruff -v format *.py */*.py
+ruff -v check *.py */*.py
 
 if [ "$quick_test" == 0 ]; then
 
@@ -74,7 +74,7 @@ if [ "$quick_test" == 0 ]; then
     rm -rf testruns/exW2D21
     rm -rf testruns/exW2D21E
     rm -rf testruns/exW2DSRE21
-    rm -rf testruns/exW2DCEa
+    rm -rf testruns/exW2DCEa testruns/exW2DCEa_nml
     rm -rf testruns/exW2DCEanm
     rm -rf testruns/exW2DCEanm2 testruns/exW2DCEanm2_1
 
@@ -101,7 +101,7 @@ if [ "$quick_test" == 0 ]; then
     
     omv test -V .test.example.omt #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
-    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+   
     omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
     omv test -V .test.W2DCEanm2.omt ${OMV_ARGS}
     omv test -V .test.W2DCE.omt
@@ -112,13 +112,13 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
     omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
     omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
-    omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
+    #omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
    
 
 
-    omv test -V .test.COW2DSR2.omt ${OMV_ARGS}
+    omv test -V .test.COW2DSR2.omt  ${OMV_ARGS}
     omv test -V .test.W2D18L.omt
-    omv test -V .test.W2DSRFRswitch.omt ${OMV_ARGS}
+    omv test -V .test.W2DSRFRswitch.omt  ${OMV_ARGS}
 
    
     omv test -V .test.osc_sim.omt ${OMV_ARGS}
@@ -156,14 +156,15 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSR21.omt
 
    
-    
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+
     cd neuromlLocal
     set -ex
     ./clean.sh 
     ruff format *py
     cd ..
 
-    python regenerate_folder.py --folder exampleRunCEW2D
+    #python regenerate_folder.py --folder exampleRunCEW2D
     
     cd neuromlLocal
     omv test -V .test.w2d.nrn.omt

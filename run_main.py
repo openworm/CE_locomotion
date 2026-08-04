@@ -113,7 +113,8 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 1,
     "doCPT": True,
-    "evo_type": "Evo21",
+    "doRun": True,
+    "evo_type": None,
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
 }
@@ -699,6 +700,13 @@ def run(a=None, **kwargs):
             # data = np.nan_to_num(data, nan=0.0)
             # np.savetxt(a.outputFolderName + "/" + filename1, data, fmt="%.6g")
 
+    if not a.doRun:
+        print(
+            "doRun is False, so the output folder has been prepared but the "
+            "C++ simulation and plotting steps will be skipped."
+        )
+        return
+
     sim_par_file = a.outputFolderName + "/simulation_pars.json"
     if os.path.isfile(sim_par_file):
         with open(sim_par_file) as f:
@@ -851,8 +859,8 @@ def run(a=None, **kwargs):
     evol_extra_parameters["sr_evo_top_a"] = 200
     evol_extra_parameters["sr_offset"] = 0
     evol_extra_parameters["sr_seg_per_sr"] = 6
-    evol_extra_parameters["do_orig_musc_input"] = True
-    evol_extra_parameters["do_orig_sr_input"] = True
+    evol_extra_parameters["do_orig_musc_input"] = False
+    evol_extra_parameters["do_orig_sr_input"] = False
     evol_extra_parameters["do_angle_diff"] = False
     evol_extra_parameters["StepSize"] = 0.005
 
@@ -1025,16 +1033,12 @@ def run(a=None, **kwargs):
     if a.reRand and do_evol and ("randomseed" in evol_data):
         del evol_data["randomseed"]
 
-    same_vals = True
-    # if do_evol:
+    # Update evol_data from explicit arguments/defaults, but do not suppress an
+    # explicitly requested evolution just because these values match the
+    # previous output JSON. Resuming an evolution from an existing checkpoint is
+    # still meaningful in that case.
     for par, arg, default in zip(evol_pars, evol_args, evol_defaults):
-        if not setDict(evol_data, par, arg, default):
-            same_vals = False
-    if do_evol and same_vals:
-        print(
-            "Evolution not needed as evolution parameters are the same as the existing ones."
-        )
-        do_evol = 0
+        setDict(evol_data, par, arg, default)
 
     do_nml = None
     if a.doNML is not None:

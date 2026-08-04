@@ -8,4 +8,6 @@ run(
     outputFolderName="exampleRunNet21",
     doEvol=True,
     overwrite=True,
+    # doOrigMuscInput=True,
+    # doOrigSRInput=True,
 )

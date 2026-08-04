@@ -38,6 +38,7 @@ run(
     doPlotEvol=True,
     doNML=False,
     doOrigMuscInput=False,
+    doOrigSRInput=True,
     doTestRun=True,
 )
 
@@ -66,6 +67,7 @@ if do_nml:
         doPlotEvol=False,
         doNML=True,
         doOrigMuscInput=False,
+        doOrigSRInput=True,
         doMuscSim=False,
         doTestRun=True,
     )
@@ -95,6 +97,7 @@ if do_muscles:
         doPlotEvol=False,
         doNML=True,
         doOrigMuscInput=False,
+        doOrigSRInput=True,
         doMuscSim=True,
         doTestRun=True,
     )

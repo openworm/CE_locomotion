@@ -244,9 +244,429 @@ def plot_selected_activity(
     return fig
 
 
+def plot_motion_all(
+    input_folder,
+    subfolders=None,
+    legend_names=None,
+    save_png=True,
+    filename="motion_all.png",
+    mean_filename="motion_all_mean.png",
+    max_snapshots=60,
+):
+    """Plot body profiles and mean-position paths from simulation subfolders."""
+    if not os.path.isdir(input_folder):
+        raise NotADirectoryError(
+            "Could not find input directory: {}".format(input_folder)
+        )
+    if (
+        isinstance(max_snapshots, bool)
+        or not isinstance(max_snapshots, int)
+        or max_snapshots < 1
+    ):
+        raise ValueError("max_snapshots must be a positive integer")
+    if legend_names is not None and (
+        isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
+    ):
+        raise TypeError("legend_names must be a list or tuple of strings")
+
+    input_folder = os.path.abspath(input_folder)
+    simulation_files = []
+
+    def body_file_for_folder(folder):
+        if not os.path.isdir(folder):
+            raise NotADirectoryError(
+                "Could not find simulation subfolder: {}".format(folder)
+            )
+        files = set(os.listdir(folder))
+        body_filename = None
+        if "body.dat" in files:
+            body_filename = "body.dat"
+        elif "bodypos.dat" in files:
+            body_filename = "bodypos.dat"
+        if body_filename is None:
+            return None
+        return os.path.join(folder, body_filename)
+
+    if subfolders is None:
+        for folder, child_subfolders, files in os.walk(input_folder):
+            child_subfolders.sort()
+            if folder == input_folder:
+                continue
+            body_file = body_file_for_folder(folder)
+            if body_file is not None:
+                simulation_files.append(
+                    (os.path.relpath(folder, input_folder), body_file)
+                )
+    else:
+        if isinstance(subfolders, str) or not isinstance(subfolders, (list, tuple)):
+            raise TypeError("subfolders must be a list or tuple of folder names")
+        for subfolder in subfolders:
+            if not isinstance(subfolder, str) or not subfolder:
+                raise ValueError("subfolders must contain non-empty strings")
+            folder = os.path.abspath(os.path.join(input_folder, subfolder))
+            if os.path.commonpath([input_folder, folder]) != input_folder:
+                raise ValueError(
+                    "Subfolder {!r} is outside input_folder".format(subfolder)
+                )
+            body_file = body_file_for_folder(folder)
+            if body_file is None:
+                raise FileNotFoundError(
+                    "No body.dat or bodypos.dat file was found in {}".format(folder)
+                )
+            simulation_files.append((os.path.relpath(folder, input_folder), body_file))
+
+    if not simulation_files:
+        raise FileNotFoundError(
+            "No body.dat or bodypos.dat files were found in subfolders of {}".format(
+                input_folder
+            )
+        )
+
+    if subfolders is None:
+        simulation_files.sort(key=lambda item: item[0])
+    if legend_names is not None:
+        if len(legend_names) != len(simulation_files):
+            raise ValueError(
+                "legend_names must contain one label for each plotted subfolder"
+            )
+        for legend_name in legend_names:
+            if not isinstance(legend_name, str) or not legend_name:
+                raise ValueError("legend_names must contain non-empty strings")
+        simulation_files = [
+            (run_name, body_file, legend_name)
+            for (run_name, body_file), legend_name in zip(
+                simulation_files, legend_names
+            )
+        ]
+    else:
+        simulation_files = [
+            (run_name, body_file, run_name) for run_name, body_file in simulation_files
+        ]
+    profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
+    mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
+    color_map = plt.get_cmap("tab20")
+
+    for run_index, (run_name, body_file, legend_name) in enumerate(simulation_files):
+        body_data = np.loadtxt(body_file)
+        if body_data.ndim == 1:
+            body_data = body_data.reshape(1, -1)
+        if body_data.ndim != 2 or body_data.shape[1] < 4:
+            raise ValueError(
+                "{} does not contain time and x/y/z body coordinates".format(body_file)
+            )
+        coordinate_columns = body_data.shape[1] - 1
+        if coordinate_columns % 3 != 0:
+            raise ValueError(
+                "{} has {} coordinate columns; expected a multiple of 3".format(
+                    body_file, coordinate_columns
+                )
+            )
+
+        segment_count = coordinate_columns // 3
+        x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+        y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+        color = color_map(run_index % color_map.N)
+
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+        mean_ax.plot(
+            center_x,
+            center_y,
+            color=color,
+            linewidth=1.5,
+            linestyle="-",
+            label=legend_name,
+        )
+
+        sample_count = min(max_snapshots, body_data.shape[0])
+        snapshot_indices = np.unique(
+            np.linspace(0, body_data.shape[0] - 1, sample_count).astype(int)
+        )
+        for snapshot_number, snapshot_index in enumerate(snapshot_indices):
+            profile_ax.plot(
+                x_positions[snapshot_index],
+                y_positions[snapshot_index],
+                ".",
+                color=color,
+                markersize=1.2,
+                alpha=0.35,
+                label=legend_name if snapshot_number == 0 else "_nolegend_",
+            )
+
+    def finish_figure(fig, ax, title):
+        ax.set_title(title)
+        ax.set_xlabel("X Position (mm)")
+        ax.set_ylabel("Y Position (mm)")
+        ax.set_aspect("equal", adjustable="datalim")
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+        ax.legend(
+            title="Simulation",
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1.0),
+            frameon=False,
+        )
+        fig.tight_layout()
+
+    finish_figure(profile_fig, profile_ax, "Worm body profiles")
+    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories")
+
+    if save_png:
+        for fig, output_file in (
+            (profile_fig, filename),
+            (mean_fig, mean_filename),
+        ):
+            if not os.path.isabs(output_file):
+                output_file = os.path.join(input_folder, output_file)
+            fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return profile_fig, mean_fig
+
+
+def plot_trajectory_properties(
+    input_folder,
+    x_values=None,
+    subfolders=None,
+    properties=("speed", "curvature"),
+    panel_columns=1,
+    save_png=True,
+    filename="trajectory_properties.png",
+):
+    """Extract average trajectory properties from simulation folders and plot them."""
+    if not os.path.isdir(input_folder):
+        raise NotADirectoryError(
+            "Could not find input directory: {}".format(input_folder)
+        )
+    if isinstance(properties, str):
+        properties = [properties]
+    if not isinstance(properties, (list, tuple)) or not properties:
+        raise ValueError("properties must be a non-empty list or tuple")
+    if (
+        isinstance(panel_columns, bool)
+        or not isinstance(panel_columns, int)
+        or panel_columns not in (1, 2)
+    ):
+        raise ValueError("panel_columns must be 1 or 2")
+
+    valid_properties = {
+        "speed",
+        "curvature",
+        "path_curvature",
+        "path_deviation",
+        "displacement",
+    }
+    properties = [str(prop) for prop in properties]
+    unknown_properties = sorted(set(properties) - valid_properties)
+    if unknown_properties:
+        raise ValueError(
+            "Unknown trajectory properties: {}".format(", ".join(unknown_properties))
+        )
+
+    input_folder = os.path.abspath(input_folder)
+
+    def body_file_for_folder(folder):
+        if "body.dat" in os.listdir(folder):
+            return os.path.join(folder, "body.dat")
+        if "bodypos.dat" in os.listdir(folder):
+            return os.path.join(folder, "bodypos.dat")
+        return None
+
+    def curv_file_for_folder(folder):
+        if "curv_t.dat" in os.listdir(folder):
+            return os.path.join(folder, "curv_t.dat")
+        if "curv.dat" in os.listdir(folder):
+            return os.path.join(folder, "curv.dat")
+        return None
+
+    simulation_folders = []
+    if subfolders is None:
+        for folder, child_subfolders, files in os.walk(input_folder):
+            child_subfolders.sort()
+            if folder == input_folder:
+                continue
+            if "body.dat" in files or "bodypos.dat" in files:
+                simulation_folders.append(
+                    (os.path.relpath(folder, input_folder), folder)
+                )
+        simulation_folders.sort(key=lambda item: item[0])
+    else:
+        if isinstance(subfolders, str) or not isinstance(subfolders, (list, tuple)):
+            raise TypeError("subfolders must be a list or tuple of folder names")
+        for subfolder in subfolders:
+            if not isinstance(subfolder, str) or not subfolder:
+                raise ValueError("subfolders must contain non-empty strings")
+            folder = os.path.abspath(os.path.join(input_folder, subfolder))
+            if os.path.commonpath([input_folder, folder]) != input_folder:
+                raise ValueError(
+                    "Subfolder {!r} is outside input_folder".format(subfolder)
+                )
+            if not os.path.isdir(folder):
+                raise NotADirectoryError(
+                    "Could not find simulation subfolder: {}".format(folder)
+                )
+            simulation_folders.append((os.path.relpath(folder, input_folder), folder))
+
+    if not simulation_folders:
+        raise FileNotFoundError(
+            "No simulation subfolders with body.dat or bodypos.dat were found in {}".format(
+                input_folder
+            )
+        )
+
+    if x_values is None:
+        x_values = list(range(len(simulation_folders)))
+    if not isinstance(x_values, (list, tuple, np.ndarray)):
+        raise TypeError("x_values must be a list, tuple, or numpy array")
+    if len(x_values) != len(simulation_folders):
+        raise ValueError("x_values must contain one value for each simulation folder")
+    x_values = np.asarray(x_values, dtype=float)
+
+    results = {
+        "subfolders": [run_name for run_name, _ in simulation_folders],
+        "x_values": x_values,
+    }
+    for prop in properties:
+        results[prop] = []
+
+    for run_name, folder in simulation_folders:
+        body_file = body_file_for_folder(folder)
+        if body_file is None:
+            raise FileNotFoundError(
+                "No body.dat or bodypos.dat file was found in {}".format(folder)
+            )
+
+        body_data = np.loadtxt(body_file)
+        if body_data.ndim == 1:
+            body_data = body_data.reshape(1, -1)
+        if body_data.ndim != 2 or body_data.shape[1] < 4:
+            raise ValueError(
+                "{} does not contain time and x/y/z body coordinates".format(body_file)
+            )
+        coordinate_columns = body_data.shape[1] - 1
+        if coordinate_columns % 3 != 0:
+            raise ValueError(
+                "{} has {} coordinate columns; expected a multiple of 3".format(
+                    body_file, coordinate_columns
+                )
+            )
+
+        segment_count = coordinate_columns // 3
+        times = body_data[:, 0]
+        x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+        y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+
+        if "speed" in properties:
+            elapsed_time = times[-1] - times[0] if len(times) > 1 else np.nan
+            if elapsed_time > 0:
+                step_distances = np.sqrt(
+                    np.diff(center_x) ** 2 + np.diff(center_y) ** 2
+                )
+                speed = np.nansum(step_distances) / elapsed_time
+            else:
+                speed = np.nan
+            results["speed"].append(speed)
+
+        if "displacement" in properties:
+            displacement = np.hypot(
+                center_x[-1] - center_x[0],
+                center_y[-1] - center_y[0],
+            )
+            results["displacement"].append(displacement)
+
+        if "path_curvature" in properties:
+            chord_x = center_x[-1] - center_x[0]
+            chord_y = center_y[-1] - center_y[0]
+            chord_length = np.hypot(chord_x, chord_y)
+            if chord_length > 0:
+                lateral_distances = (
+                    np.abs(
+                        chord_x * (center_y - center_y[0])
+                        - chord_y * (center_x - center_x[0])
+                    )
+                    / chord_length
+                )
+                path_curvature = np.nanmax(lateral_distances)
+            else:
+                path_curvature = np.nan
+            results["path_curvature"].append(path_curvature)
+
+        if "path_deviation" in properties:
+            dx = np.diff(center_x)
+            dy = np.diff(center_y)
+            if len(dx) > 1:
+                headings = np.unwrap(np.arctan2(dy, dx))
+                heading_changes = np.abs(np.diff(headings))
+                step_distances = np.sqrt(dx[1:] ** 2 + dy[1:] ** 2)
+                path_length = np.nansum(step_distances)
+                if path_length > 0:
+                    path_deviation = np.nansum(heading_changes) / path_length
+                else:
+                    path_deviation = np.nan
+            else:
+                path_deviation = np.nan
+            results["path_deviation"].append(path_deviation)
+
+        if "curvature" in properties:
+            curv_file = curv_file_for_folder(folder)
+            if curv_file is None:
+                curvature = np.nan
+            else:
+                curv_data = np.loadtxt(curv_file)
+                if curv_data.ndim == 1:
+                    curv_data = curv_data.reshape(1, -1)
+                if curv_data.ndim != 2 or curv_data.shape[1] < 2:
+                    raise ValueError(
+                        "{} does not contain time and curvature columns".format(
+                            curv_file
+                        )
+                    )
+                curvature = np.nanmean(np.abs(curv_data[:, 1:]))
+            results["curvature"].append(curvature)
+
+    for prop in properties:
+        results[prop] = np.asarray(results[prop], dtype=float)
+
+    panel_columns = min(panel_columns, len(properties))
+    panel_rows = math.ceil(len(properties) / panel_columns)
+    fig, axs = plt.subplots(
+        panel_rows,
+        panel_columns,
+        figsize=(7 * panel_columns, 3.2 * panel_rows),
+        squeeze=False,
+    )
+    y_labels = {
+        "speed": "Average speed (mm/s)",
+        "curvature": "Average |curvature|",
+        "path_curvature": "Path curvature (mm)",
+        "path_deviation": "Path deviation (1/mm)",
+        "displacement": "Displacement (mm)",
+    }
+    flat_axes = axs.ravel()
+    for ax, prop in zip(flat_axes, properties):
+        ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
+        ax.set_ylabel(y_labels[prop])
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+    for ax in flat_axes[len(properties) :]:
+        ax.set_visible(False)
+    for axis_index, ax in enumerate(flat_axes[: len(properties)]):
+        row_index = axis_index // panel_columns
+        if row_index == panel_rows - 1:
+            ax.set_xlabel("Condition")
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(input_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig, results
+
+
 def plot_cell_connections(
-    output_folder,
-    cell_names,
+    output_folder=None,
+    cell_names=None,
     save_png=False,
     filename="CellConnections.png",
     hide_self_connections=True,
@@ -256,16 +676,30 @@ def plot_cell_connections(
     symbol_text_scale=1.0,
     node_scale=None,
     text_scale=None,
+    highlight_cell_pairs=None,
+    highlight_cells=None,
+    arrow_thickness_scale=1.0,
+    evotag=None,
+    json_data=None,
 ):
-    """Return a figure showing selected cells and connected model objects."""
+    """Return a figure showing selected cells and connected model objects.
+
+    Model data can be loaded from output_folder/worm_data_worm.json, supplied
+    directly with json_data, or both. If both are supplied, json_data is used
+    for the plot and output_folder is used only as the save location.
+    """
     from matplotlib.lines import Line2D
     from matplotlib.patches import FancyArrowPatch
 
-    worm_file = os.path.join(output_folder, "worm_data_worm.json")
-    if not os.path.isfile(worm_file):
-        raise FileNotFoundError(
-            "Could not find worm_data_worm.json in {}".format(output_folder)
-        )
+    if isinstance(output_folder, dict) and json_data is None:
+        json_data = output_folder
+        output_folder = None
+    if output_folder is not None:
+        output_folder = os.fspath(output_folder)
+    if json_data is None and output_folder is None:
+        raise ValueError("Either output_folder or json_data must be supplied")
+    if save_png and output_folder is None:
+        raise ValueError("output_folder is required when save_png is True")
     if isinstance(cell_names, str):
         raise TypeError("cell_names must be a list or tuple of cell names")
     if not isinstance(cell_names, (list, tuple)) or not cell_names:
@@ -287,6 +721,7 @@ def plot_cell_connections(
     for scale_name, scale_value in (
         ("node_scale", node_scale),
         ("text_scale", text_scale),
+        ("arrow_thickness_scale", arrow_thickness_scale),
     ):
         if (
             isinstance(scale_value, bool)
@@ -295,7 +730,20 @@ def plot_cell_connections(
         ):
             raise ValueError("{} must be a positive number".format(scale_name))
 
-    network_json_data = utils.getJsonFile(worm_file)
+    if json_data is not None:
+        if not isinstance(json_data, dict):
+            raise TypeError("json_data must be a dictionary")
+        network_json_data = json_data
+    else:
+        worm_file = os.path.join(output_folder, "worm_data_worm.json")
+        if not os.path.isfile(worm_file):
+            raise FileNotFoundError(
+                "Could not find worm_data_worm.json in {}".format(output_folder)
+            )
+        network_json_data = utils.getJsonFile(worm_file)
+    if evotag is not None and (not isinstance(evotag, str) or not evotag):
+        raise ValueError("evotag must be a non-empty string")
+
     nervous_system = network_json_data.get("nervous_system")
     if not isinstance(nervous_system, dict):
         raise KeyError("JSON does not contain a 'nervous_system' object")
@@ -310,6 +758,44 @@ def plot_cell_connections(
         raise ValueError("Unknown cell name(s): {}".format(", ".join(missing_cells)))
 
     selected_set = set(selected_cells)
+    cell_name_set = set(json_cell_names)
+
+    highlighted_cells = set()
+    if highlight_cells is not None:
+        if isinstance(highlight_cells, str):
+            highlighted_cells = {highlight_cells}
+        elif isinstance(highlight_cells, (list, tuple, set)):
+            highlighted_cells = {str(cell_name) for cell_name in highlight_cells}
+        else:
+            raise TypeError(
+                "highlight_cells must be a cell name or a list/tuple/set of cell names"
+            )
+        unknown_highlighted_cells = sorted(highlighted_cells - cell_name_set)
+        if unknown_highlighted_cells:
+            raise ValueError(
+                "Unknown highlighted cell name(s): {}".format(
+                    ", ".join(unknown_highlighted_cells)
+                )
+            )
+
+    highlighted_pairs = set()
+    if highlight_cell_pairs is not None:
+        if not isinstance(highlight_cell_pairs, (list, tuple)):
+            raise TypeError("highlight_cell_pairs must be a list or tuple of pairs")
+        for pair in highlight_cell_pairs:
+            if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+                raise ValueError("Each highlighted cell pair must contain two names")
+            from_cell, to_cell = str(pair[0]), str(pair[1])
+            unknown = [
+                cell_name
+                for cell_name in (from_cell, to_cell)
+                if cell_name not in cell_name_set
+            ]
+            if unknown:
+                raise ValueError(
+                    "Unknown highlighted cell name(s): {}".format(", ".join(unknown))
+                )
+            highlighted_pairs.add((from_cell, to_cell))
 
     def connection_weight(connection):
         weight = _json_value(connection.get("weight"), 1.0)
@@ -334,13 +820,57 @@ def plot_cell_connections(
             )
         return connections
 
-    nodes = {cell_name: {"type": "cell"} for cell_name in selected_cells}
+    def object_has_evotag(value):
+        if evotag is None:
+            return False
+        if isinstance(value, dict):
+            if value.get("evotag") == evotag:
+                return True
+            return any(object_has_evotag(child) for child in value.values())
+        if isinstance(value, list):
+            return any(object_has_evotag(child) for child in value)
+        return False
+
+    def object_without_keys(value, excluded_keys):
+        if not isinstance(value, dict):
+            return value
+        return {key: child for key, child in value.items() if key not in excluded_keys}
+
+    cells_object = nervous_system.get("cells", {})
+    nodes = {
+        cell_name: {
+            "type": "cell",
+            "evotag_highlighted": object_has_evotag(
+                cells_object.get(cell_name, {})
+                if isinstance(cells_object, dict)
+                else {}
+            ),
+        }
+        for cell_name in selected_cells
+    }
     edges = []
 
-    def add_node(node_name, node_type):
-        nodes.setdefault(str(node_name), {"type": node_type})
+    def add_node(node_name, node_type, evotag_highlighted=False):
+        node_name = str(node_name)
+        if node_name not in nodes:
+            nodes[node_name] = {
+                "type": node_type,
+                "evotag_highlighted": bool(evotag_highlighted),
+            }
+            return
+        nodes[node_name]["evotag_highlighted"] = nodes[node_name].get(
+            "evotag_highlighted", False
+        ) or bool(evotag_highlighted)
 
-    def add_edge(from_node, to_node, weight, edge_type, bidirectional=False):
+    def add_edge(
+        from_node,
+        to_node,
+        weight,
+        edge_type,
+        bidirectional=False,
+        highlighted=False,
+        evotag_highlighted=False,
+    ):
         if hide_self_connections and str(from_node) == str(to_node):
             return
         edges.append(
@@ -350,17 +880,25 @@ def plot_cell_connections(
                 "weight": float(weight),
                 "type": edge_type,
                 "bidirectional": bidirectional,
+                "highlighted": bool(highlighted),
+                "evotag_highlighted": bool(evotag_highlighted),
             }
         )
 
-    cell_name_set = set(json_cell_names)
     secondary_cells = []
 
     def add_secondary_cell(cell_name):
         if cell_name in selected_set or cell_name not in cell_name_set:
             return
         if cell_name not in nodes:
-            nodes[cell_name] = {"type": "secondary cell"}
+            nodes[cell_name] = {
+                "type": "secondary cell",
+                "evotag_highlighted": object_has_evotag(
+                    cells_object.get(cell_name, {})
+                    if isinstance(cells_object, dict)
+                    else {}
+                ),
+            }
             secondary_cells.append(cell_name)
 
     for connection in connection_list("chemical_conns"):
@@ -380,6 +918,8 @@ def plot_cell_connections(
                 connection["to"],
                 connection_weight(connection),
                 "chemical",
+                highlighted=(connection["from"], connection["to"]) in highlighted_pairs,
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     for connection in connection_list("electrical_conns"):
@@ -400,11 +940,36 @@ def plot_cell_connections(
                 connection_weight(connection),
                 "electrical",
                 bidirectional=True,
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     stretch_receptor = network_json_data.get("stretch_receptor")
     if isinstance(stretch_receptor, dict):
-        for weights_key, prefix in (("ns_d_weights", "D_SR"), ("ns_v_weights", "V_SR")):
+        stretch_receptor_parameter_highlight = object_has_evotag(
+            {
+                key: value
+                for key, value in stretch_receptor.items()
+                if not key.endswith("_weights")
+                and key not in ("d_weights", "v_weights")
+            }
+        )
+        receptor_weight_fields = []
+        for weights_key in stretch_receptor:
+            if not weights_key.startswith("ns_") or not weights_key.endswith(
+                "_weights"
+            ):
+                continue
+            field_parts = weights_key[len("ns_") : -len("_weights")].split("_")
+            if not field_parts or field_parts[-1] not in ("d", "v"):
+                continue
+            side = field_parts[-1].upper()
+            receptor_class = "_".join(field_parts[:-1]).upper()
+            prefix = "{}_SR".format(side)
+            if receptor_class:
+                prefix = "{}_{}".format(prefix, receptor_class)
+            receptor_weight_fields.append((weights_key, prefix))
+
+        for weights_key, prefix in receptor_weight_fields:
             weights = stretch_receptor.get(weights_key, {}).get("value", [])
             if weights is None:
                 continue
@@ -419,12 +984,17 @@ def plot_cell_connections(
                 if to_cell not in selected_set:
                     continue
                 from_node = "{}_{}".format(prefix, connection.get("from_sr"))
-                add_node(from_node, "stretch receptor")
+                add_node(
+                    from_node,
+                    "stretch receptor",
+                    evotag_highlighted=stretch_receptor_parameter_highlight,
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "stretch receptor",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     sensors = network_json_data.get("sensors")
@@ -432,6 +1002,9 @@ def plot_cell_connections(
         for sensor_name, sensor in sensors.items():
             if not isinstance(sensor, dict):
                 continue
+            sensor_parameter_highlight = object_has_evotag(
+                object_without_keys(sensor, {"weights"})
+            )
             weights = sensor.get("weights", {}).get("value", [])
             if weights is None:
                 continue
@@ -449,12 +1022,17 @@ def plot_cell_connections(
                     "from_output", connection.get("from_input")
                 )
                 from_node = "{}_output_{}".format(sensor_name, from_output)
-                add_node(from_node, "sensor")
+                add_node(
+                    from_node,
+                    "sensor",
+                    evotag_highlighted=sensor_parameter_highlight,
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "sensor",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     driving_inputs = network_json_data.get("driving_inputs")
@@ -470,18 +1048,28 @@ def plot_cell_connections(
                 if to_cell not in selected_set:
                     continue
                 from_node = "input_{}".format(connection.get("from_input"))
-                add_node(from_node, "driving input")
+                add_node(
+                    from_node,
+                    "driving input",
+                    evotag_highlighted=object_has_evotag(
+                        object_without_keys(driving_inputs, {"weights"})
+                    ),
+                )
                 add_edge(
                     from_node,
                     to_cell,
                     connection_weight(connection),
                     "driving input",
+                    evotag_highlighted=object_has_evotag(connection),
                 )
 
     for nmj_key, prefix in (("dorsal_nmj", "D_musc"), ("ventral_nmj", "V_musc")):
         nmj = network_json_data.get(nmj_key)
         if not isinstance(nmj, dict):
             continue
+        nmj_parameter_highlight = object_has_evotag(
+            object_without_keys(nmj, {"weights"})
+        )
         weights = nmj.get("weights", {}).get("value", [])
         if weights is None:
             continue
@@ -494,12 +1082,13 @@ def plot_cell_connections(
             if from_cell not in selected_set:
                 continue
             to_node = "{}_{}".format(prefix, connection.get("to_musc"))
-            add_node(to_node, "muscle")
+            add_node(to_node, "muscle", evotag_highlighted=nmj_parameter_highlight)
             add_edge(
                 from_cell,
                 to_node,
                 connection_weight(connection),
                 "muscle",
+                evotag_highlighted=object_has_evotag(connection),
             )
 
     displayed_weights = [abs(edge["weight"]) for edge in edges]
@@ -509,7 +1098,7 @@ def plot_cell_connections(
 
     def connection_width(edge):
         scaled = abs(edge["weight"]) / max_abs_weight
-        return 0.6 + 3.4 * scaled
+        return (0.6 + 3.4 * scaled) * arrow_thickness_scale
 
     fig_size = max(6.0, 0.35 * len(nodes) + 3.5)
     fig, ax = plt.subplots(figsize=(fig_size, fig_size))
@@ -517,14 +1106,17 @@ def plot_cell_connections(
     ax.axis("off")
 
     primary_rotation_rad = np.deg2rad(primary_rotation)
-    angles = (
-        np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
-        + primary_rotation_rad
-    )
-    positions = {
-        cell_name: np.array([np.cos(angle), np.sin(angle)])
-        for cell_name, angle in zip(selected_cells, angles)
-    }
+    if len(selected_cells) == 1:
+        positions = {selected_cells[0]: np.array([0.0, 0.0])}
+    else:
+        angles = (
+            np.linspace(0, 2 * np.pi, len(selected_cells), endpoint=False)
+            + primary_rotation_rad
+        )
+        positions = {
+            cell_name: np.array([np.cos(angle), np.sin(angle)])
+            for cell_name, angle in zip(selected_cells, angles)
+        }
     if secondary_cells:
         if secondary_rotation is None:
             secondary_rotation_rad = primary_rotation_rad + np.pi / len(selected_cells)
@@ -543,6 +1135,19 @@ def plot_cell_connections(
         for node_name in nodes
         if nodes[node_name]["type"] not in ("cell", "secondary cell")
     ]
+
+    def external_node_order(node_name):
+        if str(node_name).startswith("D_SR_"):
+            return (1, str(node_name))
+        if str(node_name).startswith("D_musc_"):
+            return (2, str(node_name))
+        if str(node_name).startswith("V_SR_"):
+            return (3, str(node_name))
+        if str(node_name).startswith("V_musc_"):
+            return (4, str(node_name))
+        return (0, str(node_name))
+
+    external_nodes = sorted(external_nodes, key=external_node_order)
     if external_nodes:
         if external_rotation is None:
             external_rotation_rad = primary_rotation_rad
@@ -606,8 +1211,12 @@ def plot_cell_connections(
         return marker_diameter * shape_margin + 1.5 * max(1.0, float(node_scale))
 
     def edge_color(edge):
+        if edge.get("evotag_highlighted"):
+            return "#D000FF"
+        if edge.get("highlighted") and edge["type"] == "chemical":
+            return "#00C853" if edge["weight"] >= 0 else "#000000"
         if edge["type"] == "electrical":
-            return "#4C78A8" if edge["weight"] >= 0 else "#7570B3"
+            return "#2E8B57"
         return "#D95F02" if edge["weight"] >= 0 else "#7570B3"
 
     def draw_edge(edge, rad, alpha=0.85):
@@ -615,8 +1224,8 @@ def plot_cell_connections(
         to_cell = edge["to"]
         linewidth = connection_width(edge)
         color = edge_color(edge)
-        arrowstyle = "<->" if edge["bidirectional"] else "-|>"
         linestyle = "--" if edge["type"] == "electrical" else "-"
+        arrowstyle = "-" if edge["type"] == "electrical" else "-|>"
         if from_cell == to_cell:
             center = positions[from_cell]
             loop_radius = 0.13 * max(1.0, float(node_scale))
@@ -665,14 +1274,22 @@ def plot_cell_connections(
     for node_name, position in positions.items():
         node_type = nodes[node_name]["type"]
         style = node_styles.get(node_type, node_styles["cell"])
+        evotag_node_highlighted = nodes[node_name].get("evotag_highlighted", False)
         ax.scatter(
             [position[0]],
             [position[1]],
             s=style["size"] * marker_area_scale,
             marker=style["marker"],
-            facecolors=style["facecolor"],
-            edgecolors=style["edgecolor"],
-            linewidths=1.2,
+            facecolors=(
+                "#FFD600"
+                if evotag_node_highlighted
+                else "#00E676"
+                if node_name in highlighted_cells
+                and node_type in ("cell", "secondary cell")
+                else style["facecolor"]
+            ),
+            edgecolors="#D000FF" if evotag_node_highlighted else style["edgecolor"],
+            linewidths=2.0 if evotag_node_highlighted else 1.2,
             zorder=3,
         )
         ax.text(
@@ -691,7 +1308,7 @@ def plot_cell_connections(
         Line2D(
             [0],
             [0],
-            color="#4C78A8",
+            color="#2E8B57",
             linewidth=1.8,
             linestyle="--",
             label="Electrical",
@@ -699,6 +1316,10 @@ def plot_cell_connections(
         Line2D([0], [0], color="0.25", linewidth=0.8, label="Weak"),
         Line2D([0], [0], color="0.25", linewidth=4.0, label="Strong"),
     ]
+    if evotag is not None and any(edge.get("evotag_highlighted") for edge in edges):
+        edge_legend.append(
+            Line2D([0], [0], color="#D000FF", linewidth=3.0, label=evotag)
+        )
     node_legend = [
         Line2D(
             [0],
@@ -713,6 +1334,34 @@ def plot_cell_connections(
         for node_type, style in node_styles.items()
         if any(nodes[node]["type"] == node_type for node in nodes)
     ]
+    if any(node_name in highlighted_cells for node_name in nodes):
+        node_legend.append(
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="none",
+                markerfacecolor="#00E676",
+                markeredgecolor="black",
+                markersize=8 * node_scale,
+                label="Highlighted Cell",
+            )
+        )
+    if evotag is not None and any(
+        nodes[node].get("evotag_highlighted") for node in nodes
+    ):
+        node_legend.append(
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="none",
+                markerfacecolor="#FFD600",
+                markeredgecolor="#D000FF",
+                markersize=8 * node_scale,
+                label=evotag,
+            )
+        )
     ax.legend(
         handles=edge_legend + node_legend,
         loc="upper left",
@@ -776,6 +1425,20 @@ def plot_json_structure(
             return 0
         return len(values_list(section.get(key, {})))
 
+    def stretch_receptor_weight_count(section, side, to_nervous_system=False):
+        if not isinstance(section, dict):
+            return 0
+        direct_key = "{}{}_weights".format("ns_" if to_nervous_system else "", side)
+        keys = {direct_key}
+        suffix = "_{}_weights".format(side)
+        for key in section:
+            if to_nervous_system:
+                if key.startswith("ns_") and key.endswith(suffix):
+                    keys.add(key)
+            elif not key.startswith("ns_") and key.endswith(suffix):
+                keys.add(key)
+        return sum(len(values_list(section.get(key, {}))) for key in keys)
+
     def wrap_cell_names(names, columns=4):
         if not names:
             return "No cell names found"
@@ -808,6 +1471,8 @@ def plot_json_structure(
     # environments = network_json_data.get("environments")
     dorsal_nmj = network_json_data.get("dorsal_nmj")
     ventral_nmj = network_json_data.get("ventral_nmj")
+    dorsal_body = network_json_data.get("dorsal_body")
+    ventral_body = network_json_data.get("ventral_body")
     driving_inputs = network_json_data.get("driving_inputs")
 
     chemical_count = len(values_list(nervous_system.get("chemical_conns", {})))
@@ -862,33 +1527,49 @@ def plot_json_structure(
             "facecolor": "#F4C7B6",
         }
     if isinstance(sr, dict):
-        ns_d = len(values_list(sr.get("ns_d_weights", {})))
-        ns_v = len(values_list(sr.get("ns_v_weights", {})))
-        d_body = len(values_list(sr.get("d_weights", {})))
-        v_body = len(values_list(sr.get("v_weights", {})))
+        ns_d = stretch_receptor_weight_count(sr, "d", to_nervous_system=True)
+        ns_v = stretch_receptor_weight_count(sr, "v", to_nervous_system=True)
+        d_body = stretch_receptor_weight_count(sr, "d")
+        v_body = stretch_receptor_weight_count(sr, "v")
+        dorsal_muscle_body = weight_count(dorsal_body)
+        ventral_muscle_body = weight_count(ventral_body)
+        sr_type = _json_value(sr.get("type"))
+        sr_count = _json_value(sr.get("plot_size"))
+        if not isinstance(sr_count, (int, float)):
+            sr_count = _json_value(sr.get("n_stretch"))
+        sr_lines = []
+        if sr_type in ("SR18", "SRCE"):
+            sr_lines.append("type: {}".format(sr_type))
+        if isinstance(sr_count, (int, float)):
+            sr_lines.append("{} receptors".format(int(sr_count)))
+        sr_lines.extend(
+            [
+                "{} dorsal-to-NS weights".format(ns_d),
+                "{} ventral-to-NS weights".format(ns_v),
+            ]
+        )
         boxes["stretch_receptor"] = {
-            "xy": (0.04, 0.62),
-            "wh": (0.18, 0.18),
-            "text": box_text(
-                "stretch_receptor",
-                [
-                    "{} dorsal-to-NS weights".format(ns_d),
-                    "{} ventral-to-NS weights".format(ns_v),
-                ],
-            ),
+            "xy": (0.04, 0.58),
+            "wh": (0.19, 0.23),
+            "text": box_text("stretch_receptor", sr_lines),
             "facecolor": "#F1E5A6",
         }
-        if d_body or v_body:
+        if d_body or v_body or dorsal_muscle_body or ventral_muscle_body:
+            body_lines = []
+            if dorsal_muscle_body:
+                body_lines.append("{} dorsal muscle weights".format(dorsal_muscle_body))
+            if ventral_muscle_body:
+                body_lines.append(
+                    "{} ventral muscle weights".format(ventral_muscle_body)
+                )
+            if d_body:
+                body_lines.append("{} dorsal SR weights".format(d_body))
+            if v_body:
+                body_lines.append("{} ventral SR weights".format(v_body))
             boxes["body_segments"] = {
-                "xy": (0.58, 0.69),
-                "wh": (0.16, 0.11),
-                "text": box_text(
-                    "body segments",
-                    [
-                        "{} dorsal SR weights".format(d_body),
-                        "{} ventral SR weights".format(v_body),
-                    ],
-                ),
+                "xy": (0.56, 0.65),
+                "wh": (0.18, 0.16),
+                "text": box_text("body segments", body_lines),
                 "facecolor": "#E7D8B9",
             }
     if isinstance(sensors, dict) and sensors:
@@ -1358,15 +2039,16 @@ def signed_log(val):
     return out
 
 
-def safe_ratio_to_initial(evol_data):
+def safe_percent_change_from_initial(evol_data):
     evol_data = np.asarray(evol_data, dtype=float)
     initial = evol_data[0]
+    initial_scale = np.abs(initial)
     out = np.zeros_like(evol_data, dtype=float)
     np.divide(
-        evol_data,
-        initial,
+        evol_data - initial,
+        initial_scale,
         out=out,
-        where=np.isfinite(initial) & (initial != 0),
+        where=np.isfinite(initial_scale) & (initial_scale != 0),
     )
     out[~np.isfinite(out)] = 0.0
     return out
@@ -1387,8 +2069,7 @@ short_phen_names = {
 
 
 def getEvolTrans(evol_data):
-    evol_data_diff_1 = safe_ratio_to_initial(evol_data)
-    # evol_data_diff_1 = (evol_data - evol_data[0]) / evol_data[0]
+    evol_data_diff_1 = safe_percent_change_from_initial(evol_data)
     evol_data_diff_11 = signed_log(evol_data_diff_1)
     evol_data_diff_13 = evol_data - evol_data[0]
     evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
@@ -1397,7 +2078,7 @@ def getEvolTrans(evol_data):
 
 
 def plot_phenonames(
-    plot_list=["rel_var", "var", ["initial_log", "final_log"], ["initial", "final"]],
+    plot_list=[["initial", "final"], ["initial_log", "final_log"], "rel_var", "var"],
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
@@ -1464,7 +2145,7 @@ def plot_phenonames(
 
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
-    evol_data_full_diff0 = safe_ratio_to_initial(evol_data)
+    evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
     evol_data_full_diff = signed_log(evol_data_full_diff0)
 
     avlentop = 1
@@ -1499,13 +2180,13 @@ def plot_phenonames(
     evol_data_dict = {
         "rel_var": {
             "value": evol_data_full_diff0,
-            "title": "Perc variation",
+            "title": "Proportional change",
             "color": "black",
             "linestyle": "-",
         },
         "var": {
             "value": evol_data_full_diff,
-            "title": "Signed log perc var",
+            "title": "Signed log proportional variation",
             "color": "black",
             "linestyle": "-",
         },
@@ -1974,21 +2655,32 @@ def plot_hist(a=None):
     plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
 
     plot_data_4av = getAvData_1(plot_data_1[4], avlentop=avlentop)
-    # gen_index_orig_av = plot_data_4av[:, 0]
     plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
+    plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
+    plot_data_best_percent_av = getAvData_1(plot_data_2[3], avlentop=avlentop)
 
     # plot_data_3 = [plot_data_1[0], plot_data_1[3], plot_data_1[4], plot_data_2[3]]
-    plot_data_3 = [plot_data_3av, plot_data_4av, plot_data_1[0], plot_data_2[3]]
+    plot_data_3 = [
+        plot_data_3av,
+        plot_data_4av,
+        plot_data_0av,
+        plot_data_best_percent_av,
+    ]
 
     # gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
 
-    gen_indices = [gen_index_orig_av, gen_index_orig_av, gen_index_orig, gen_index_orig]
+    gen_indices = [
+        gen_index_orig_av,
+        gen_index_orig_av,
+        gen_index_orig_av,
+        gen_index_orig_av,
+    ]
 
     titles = [
-        "Pop percent variation",
-        "Pop signed log perc var",
+        "Pop proportional change",
+        "Pop signed log proportional variation",
         "Pop phenotype value",
-        "Best fit percent variation",
+        "Best fit proportional change",
     ]
 
     # print("phen names ", phen_names)
@@ -2124,12 +2816,16 @@ def reload_single_run(a=None, **kwargs):
             return [0, 0, 0, row_count]
         return [t_values[0], t_values[-1], 0, row_count]
 
-    def set_imshow_row_ticks(ax, row_count, max_labels=12):
+    def set_imshow_row_ticks(ax, row_count, max_labels=6):
         if row_count <= 0:
             ax.set_yticks([])
             return
-        step = max(1, int(math.ceil(row_count / max_labels)))
-        rows = np.arange(0, row_count, step)
+        if row_count <= max_labels:
+            rows = np.arange(row_count)
+        else:
+            rows = np.unique(
+                np.rint(np.linspace(0, row_count - 1, max_labels)).astype(int)
+            )
         ax.set_yticks(rows + 0.5)
         ax.set_yticklabels([str(row + 1) for row in rows])
 

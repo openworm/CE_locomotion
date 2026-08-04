@@ -232,8 +232,8 @@ class baseParameters
     {
         json defaultVals_;
         defaultVals_["random_initial_state"] = false;
-        defaultVals_["do_orig_musc_input"] = true;
-        defaultVals_["do_orig_sr_input"] = true;
+        defaultVals_["do_orig_musc_input"] = false;
+        defaultVals_["do_orig_sr_input"] = false;
 
         defaultVals_["reset_agent_body"] = false;
         defaultVals_["rotation"] = 0.0;
@@ -997,6 +997,8 @@ class Worm2D : virtual public Worm2Dm //Worm2Dm has muscles
 
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_);
     Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, bool forceNoOrigInputs);
+    Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_,
+        bool doOrigMuscInput_, bool doOrigSRInput_);
     //Worm2D(wormIzqParams par1_, NSForW2D * n_ptr_, json & j);
     //void setMuscleInputVent();
     //void setMuscleInputDors();

@@ -11,5 +11,7 @@ run(
     doEvol=False,
     overwrite=True,
     doNML=True,
+    doOrigMuscInput=True,
+    doOrigSRInput=True,
     # doMuscSim=True,
 )
