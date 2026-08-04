@@ -609,6 +609,10 @@ class InputSwitcher
   void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
 
   void setInputOnce(const int & ind, vector<double> & externalInputs);
+  bool hasInputPattern(const int & ind) const
+  {
+      return ind >= 0 && static_cast<size_t>(ind) < inds.size();
+  }
   void updateScheduledInput(
       const double & current_time, vector<double> & externalInputs);
   void resetScheduledInput();
@@ -769,6 +773,7 @@ void zeroAllInputs(){
 template<class T> friend class Evolvable_ptrB;
 
 void setInputOnce(const int & ind) {InputSwitcher::setInputOnce(ind,externalInputs);}
+bool hasInputPattern(const int & ind) const {return InputSwitcher::hasInputPattern(ind);}
 void activateInputScheduleForSimulation() {
     InputSwitcher::activateScheduleForSimulation();
 }
