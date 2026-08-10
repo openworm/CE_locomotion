@@ -1193,6 +1193,8 @@ def _collect_evotags(value, output=None):
         output = set()
     if isinstance(value, dict):
         evotag = value.get("evotag")
+        if isinstance(evotag, dict) and "value" in evotag:
+            evotag = evotag["value"]
         if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
             output.add(evotag)
         for child in value.values():
@@ -1208,6 +1210,8 @@ def _collect_model_evotags(value, at_root=False, output=None):
         output = set()
     if isinstance(value, dict):
         evotag = value.get("evotag")
+        if isinstance(evotag, dict) and "value" in evotag:
+            evotag = evotag["value"]
         if isinstance(evotag, (str, int)) and not isinstance(evotag, bool):
             output.add(evotag)
         for key, child in value.items():
@@ -1234,6 +1238,72 @@ def _remove_unused_evotags(result, candidate_evotags):
         evolved_used["value"] = [
             evotag for evotag in evolved_used["value"] if evotag not in unused_evotags
         ]
+
+
+def _set_evolvable_range_active(evolvable_ranges, evotag_name, active):
+    if not isinstance(evolvable_ranges, dict):
+        raise KeyError("JSON does not contain an 'evolvable_ranges' dictionary")
+
+    if evotag_name in evolvable_ranges and isinstance(
+        evolvable_ranges[evotag_name], dict
+    ):
+        evolvable_ranges[evotag_name]["active"] = active
+        return True
+
+    legacy_entries = evolvable_ranges.get("value")
+    if isinstance(legacy_entries, list):
+        for entry in legacy_entries:
+            if not isinstance(entry, dict):
+                continue
+            if entry.get("evotag") == evotag_name:
+                entry["active"] = active
+                return True
+            if (
+                len(entry) == 1
+                and evotag_name in entry
+                and isinstance(entry[evotag_name], dict)
+            ):
+                entry[evotag_name]["active"] = active
+                return True
+
+    return False
+
+
+def set_vnc_set_from_this(json_data, object_name, set_from_this):
+    """Set vnc_nmj/vnc_18 set_from_this and toggle its evotags active state."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if object_name not in {"vnc_nmj", "vnc_18"}:
+        raise ValueError("object_name must be 'vnc_nmj' or 'vnc_18'")
+    if not isinstance(set_from_this, bool):
+        raise TypeError("set_from_this must be a bool")
+    if object_name not in json_data or not isinstance(json_data[object_name], dict):
+        raise KeyError("JSON does not contain a '{}' object".format(object_name))
+
+    result = copy.deepcopy(json_data)
+    source_object = result[object_name]
+    set_from_this_entry = source_object.get("set_from_this")
+    if isinstance(set_from_this_entry, dict):
+        set_from_this_entry["value"] = set_from_this
+    else:
+        source_object["set_from_this"] = {"value": set_from_this}
+
+    evotags = {str(evotag) for evotag in _collect_evotags(source_object)}
+    evolvable_ranges = result.get("evolvable_ranges")
+    missing_evotags = []
+    for evotag in sorted(evotags):
+        if not _set_evolvable_range_active(
+            evolvable_ranges, evotag, set_from_this
+        ):
+            missing_evotags.append(evotag)
+    if missing_evotags:
+        raise KeyError(
+            "The following evotags from '{}' are not in evolvable_ranges: {}".format(
+                object_name, ", ".join(missing_evotags)
+            )
+        )
+
+    return result
 
 
 def find_evotag_occurrences(json_data, evotag_name):

@@ -960,11 +960,152 @@ def plot_motion_all(
     return profile_fig, mean_fig
 
 
+def _body_file_for_simulation_folder(folder):
+    if not os.path.isdir(folder):
+        raise NotADirectoryError(
+            "Could not find simulation output directory: {}".format(folder)
+        )
+    for body_filename in ("body.dat", "bodypos.dat"):
+        body_file = os.path.join(folder, body_filename)
+        if os.path.isfile(body_file):
+            return body_file
+    raise FileNotFoundError(
+        "No body.dat or bodypos.dat file was found in {}".format(folder)
+    )
+
+
+def _load_body_position_file(body_file):
+    body_data = np.loadtxt(body_file)
+    if body_data.ndim == 1:
+        body_data = body_data.reshape(1, -1)
+    if body_data.ndim != 2 or body_data.shape[1] < 4:
+        raise ValueError(
+            "{} does not contain time and x/y/z body coordinates".format(body_file)
+        )
+    coordinate_columns = body_data.shape[1] - 1
+    if coordinate_columns % 3 != 0:
+        raise ValueError(
+            "{} has {} coordinate columns; expected a multiple of 3".format(
+                body_file, coordinate_columns
+            )
+        )
+    segment_count = coordinate_columns // 3
+    times = body_data[:, 0]
+    x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+    y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+    return times, x_positions, y_positions
+
+
+def plot_head_motion(
+    output_folder,
+    save_png=True,
+    filename="HeadMotion.png",
+    head_index=0,
+    max_snapshots=60,
+    show_path=False,
+    marker_size=8.0,
+    line_width=1.0,
+):
+    """Plot only the worm head trajectory from body.dat/bodypos.dat."""
+    output_folder = os.path.abspath(output_folder)
+    body_file = _body_file_for_simulation_folder(output_folder)
+    times, x_positions, y_positions = _load_body_position_file(body_file)
+
+    if (
+        isinstance(head_index, bool)
+        or not isinstance(head_index, int)
+        or head_index < 0
+        or head_index >= x_positions.shape[1]
+    ):
+        raise ValueError(
+            "head_index must be an integer in the range 0 to {}".format(
+                x_positions.shape[1] - 1
+            )
+        )
+
+    if (
+        isinstance(max_snapshots, bool)
+        or not isinstance(max_snapshots, int)
+        or max_snapshots < 1
+    ):
+        raise ValueError("max_snapshots must be a positive integer")
+
+    head_x = x_positions[:, head_index]
+    head_y = y_positions[:, head_index]
+    sample_count = min(max_snapshots, len(head_x))
+    snapshot_indices = np.unique(
+        np.linspace(0, len(head_x) - 1, sample_count).astype(int)
+    )
+    plot_x = head_x[snapshot_indices]
+    plot_y = head_y[snapshot_indices]
+    plot_times = times[snapshot_indices]
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+    if len(plot_times) > 1 and np.nanmax(plot_times) > np.nanmin(plot_times):
+        colours = plot_times
+        colour_label = "Time (s)"
+    else:
+        colours = snapshot_indices
+        colour_label = "Sample"
+
+    if show_path:
+        ax.plot(
+            head_x,
+            head_y,
+            color="0.75",
+            linewidth=line_width,
+            zorder=1,
+        )
+    scatter = ax.scatter(
+        plot_x,
+        plot_y,
+        c=colours,
+        cmap="viridis",
+        s=marker_size,
+        edgecolors="none",
+        zorder=2,
+    )
+    ax.scatter(
+        plot_x[0],
+        plot_y[0],
+        color="black",
+        s=marker_size * 2.0,
+        label="start",
+        zorder=3,
+    )
+    ax.scatter(
+        plot_x[-1],
+        plot_y[-1],
+        color="red",
+        s=marker_size * 2.0,
+        label="end",
+        zorder=3,
+    )
+    ax.set_title("Head trajectory")
+    ax.set_xlabel("X Position (mm)")
+    ax.set_ylabel("Y Position (mm)")
+    ax.set_aspect("equal", adjustable="datalim")
+    ax.grid(True, linewidth=0.4, alpha=0.25)
+    ax.legend(frameon=False)
+    cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label(colour_label)
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def plot_trajectory_properties(
     input_folder,
     x_values=None,
     subfolders=None,
     properties=("speed", "curvature"),
+    oscillation_cell_name=None,
     panel_columns=1,
     save_png=True,
     filename="trajectory_properties.png",
@@ -991,6 +1132,7 @@ def plot_trajectory_properties(
         "path_curvature",
         "path_deviation",
         "displacement",
+        "oscillation_frequency",
     }
     properties = [str(prop) for prop in properties]
     unknown_properties = sorted(set(properties) - valid_properties)
@@ -1014,6 +1156,74 @@ def plot_trajectory_properties(
         if "curv.dat" in os.listdir(folder):
             return os.path.join(folder, "curv.dat")
         return None
+
+    def act_file_for_folder(folder):
+        act_file = os.path.join(folder, "act.dat")
+        return act_file if os.path.isfile(act_file) else None
+
+    def worm_json_file_for_folder(folder):
+        for filename1 in ("worm_data_worm.json", "worm_data_evo.json", "worm_data.json"):
+            worm_file = os.path.join(folder, filename1)
+            if os.path.isfile(worm_file):
+                return worm_file
+        return None
+
+    def choose_oscillation_cell(network_json_data):
+        nervous_system = network_json_data.get("nervous_system")
+        if not isinstance(nervous_system, dict):
+            raise KeyError("JSON does not contain a 'nervous_system' object")
+        cell_names = _json_value(nervous_system.get("cell_names"), [])
+        if not isinstance(cell_names, list) or not cell_names:
+            raise ValueError(
+                "'nervous_system.cell_names.value' must be a non-empty list"
+            )
+        if oscillation_cell_name is not None:
+            if oscillation_cell_name not in cell_names:
+                raise ValueError(
+                    "Oscillation cell {!r} was not found in {}".format(
+                        oscillation_cell_name, cell_names
+                    )
+                )
+            return oscillation_cell_name
+
+        cells = nervous_system.get("cells", {})
+        if isinstance(cells, dict):
+            for cell_name in cell_names:
+                cell = cells.get(cell_name, {})
+                if (
+                    isinstance(cell, dict)
+                    and _normalise_cell_class_name(
+                        _json_value(cell.get("cell_class"), "")
+                    )
+                    == "vnc"
+                ):
+                    return cell_name
+        return cell_names[0]
+
+    def estimate_oscillation_frequency(times, values):
+        valid = np.isfinite(times) & np.isfinite(values)
+        times = np.asarray(times[valid], dtype=float)
+        values = np.asarray(values[valid], dtype=float)
+        if times.size < 3 or times[-1] <= times[0]:
+            return np.nan
+        centered = values - np.nanmean(values)
+        if not np.any(centered > 0) or not np.any(centered < 0):
+            return np.nan
+
+        crossing_times = []
+        for index in range(len(centered) - 1):
+            y0 = centered[index]
+            y1 = centered[index + 1]
+            if y0 < 0 <= y1 and y1 != y0:
+                t0 = times[index]
+                t1 = times[index + 1]
+                crossing_times.append(t0 - y0 * (t1 - t0) / (y1 - y0))
+        if len(crossing_times) < 2:
+            return np.nan
+        elapsed_time = crossing_times[-1] - crossing_times[0]
+        if elapsed_time <= 0:
+            return np.nan
+        return (len(crossing_times) - 1) / elapsed_time
 
     simulation_folders = []
     if subfolders is None:
@@ -1062,6 +1272,8 @@ def plot_trajectory_properties(
         "subfolders": [run_name for run_name, _ in simulation_folders],
         "x_values": x_values,
     }
+    if "oscillation_frequency" in properties:
+        results["oscillation_cell_name"] = []
     for prop in properties:
         results[prop] = []
 
@@ -1162,6 +1374,39 @@ def plot_trajectory_properties(
                 curvature = np.nanmean(np.abs(curv_data[:, 1:]))
             results["curvature"].append(curvature)
 
+        if "oscillation_frequency" in properties:
+            act_file = act_file_for_folder(folder)
+            if act_file is None:
+                oscillation_frequency = np.nan
+                cell_name = oscillation_cell_name
+            else:
+                worm_file = worm_json_file_for_folder(folder)
+                if worm_file is None:
+                    raise FileNotFoundError(
+                        "No worm JSON file was found in {}".format(folder)
+                    )
+                network_json_data = utils.getJsonFile(worm_file)
+                cell_name = choose_oscillation_cell(network_json_data)
+                cell_names = _json_value(
+                    network_json_data["nervous_system"].get("cell_names"), []
+                )
+                cell_index = cell_names.index(cell_name) + 1
+
+                act_data = np.loadtxt(act_file)
+                if act_data.ndim == 1:
+                    act_data = act_data.reshape(1, -1)
+                if act_data.ndim != 2 or act_data.shape[1] <= cell_index:
+                    raise ValueError(
+                        "{} does not contain activity data for cell {!r}".format(
+                            act_file, cell_name
+                        )
+                    )
+                oscillation_frequency = estimate_oscillation_frequency(
+                    act_data[:, 0], act_data[:, cell_index]
+                )
+            results["oscillation_frequency"].append(oscillation_frequency)
+            results["oscillation_cell_name"].append(cell_name)
+
     for prop in properties:
         results[prop] = np.asarray(results[prop], dtype=float)
 
@@ -1176,6 +1421,288 @@ def plot_trajectory_properties(
     y_labels = {
         "speed": "Average speed (mm/s)",
         "curvature": "Average |curvature|",
+        "path_curvature": "Path curvature (mm)",
+        "path_deviation": "Path deviation (1/mm)",
+        "displacement": "Displacement (mm)",
+        "oscillation_frequency": "Oscillation frequency (Hz)",
+    }
+    flat_axes = axs.ravel()
+    for ax, prop in zip(flat_axes, properties):
+        ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
+        ax.set_ylabel(y_labels[prop])
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+    for ax in flat_axes[len(properties) :]:
+        ax.set_visible(False)
+    for axis_index, ax in enumerate(flat_axes[: len(properties)]):
+        row_index = axis_index // panel_columns
+        if row_index == panel_rows - 1:
+            ax.set_xlabel("Condition")
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(input_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig, results
+
+
+def _compute_center_trajectory_properties(times, center_x, center_y, properties):
+    results = {}
+    if "speed" in properties:
+        elapsed_time = times[-1] - times[0] if len(times) > 1 else np.nan
+        if elapsed_time > 0:
+            step_distances = np.sqrt(np.diff(center_x) ** 2 + np.diff(center_y) ** 2)
+            results["speed"] = np.nansum(step_distances) / elapsed_time
+        else:
+            results["speed"] = np.nan
+
+    if "displacement" in properties:
+        results["displacement"] = np.hypot(
+            center_x[-1] - center_x[0],
+            center_y[-1] - center_y[0],
+        )
+
+    if "path_curvature" in properties:
+        chord_x = center_x[-1] - center_x[0]
+        chord_y = center_y[-1] - center_y[0]
+        chord_length = np.hypot(chord_x, chord_y)
+        if chord_length > 0:
+            lateral_distances = (
+                np.abs(
+                    chord_x * (center_y - center_y[0])
+                    - chord_y * (center_x - center_x[0])
+                )
+                / chord_length
+            )
+            results["path_curvature"] = np.nanmax(lateral_distances)
+        else:
+            results["path_curvature"] = np.nan
+
+    if "path_deviation" in properties:
+        dx = np.diff(center_x)
+        dy = np.diff(center_y)
+        if len(dx) > 1:
+            headings = np.unwrap(np.arctan2(dy, dx))
+            heading_changes = np.abs(np.diff(headings))
+            step_distances = np.sqrt(dx[1:] ** 2 + dy[1:] ** 2)
+            path_length = np.nansum(step_distances)
+            if path_length > 0:
+                results["path_deviation"] = np.nansum(heading_changes) / path_length
+            else:
+                results["path_deviation"] = np.nan
+        else:
+            results["path_deviation"] = np.nan
+    return results
+
+
+def _mean_abs_spine_curvature(x_positions, y_positions):
+    if x_positions.ndim != 2 or y_positions.ndim != 2:
+        raise ValueError("WCON x and y body coordinates must be two-dimensional")
+    if x_positions.shape != y_positions.shape:
+        raise ValueError("WCON x and y body coordinate arrays must have the same shape")
+    if x_positions.shape[1] < 3:
+        return np.nan
+
+    x0 = x_positions[:, :-2]
+    y0 = y_positions[:, :-2]
+    x1 = x_positions[:, 1:-1]
+    y1 = y_positions[:, 1:-1]
+    x2 = x_positions[:, 2:]
+    y2 = y_positions[:, 2:]
+
+    a = np.hypot(x1 - x0, y1 - y0)
+    b = np.hypot(x2 - x1, y2 - y1)
+    c = np.hypot(x2 - x0, y2 - y0)
+    twice_area = np.abs((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0))
+    denom = a * b * c
+    curvature = np.full_like(twice_area, np.nan, dtype=float)
+    valid = denom > 0
+    curvature[valid] = 2.0 * twice_area[valid] / denom[valid]
+    return np.nanmean(curvature)
+
+
+def _wcon_unit_scale_to_mm(units, key):
+    unit = str(units.get(key, "mm")).strip().lower()
+    if unit in {"mm", "millimeter", "millimeters", "millimetre", "millimetres"}:
+        return 1.0
+    if unit in {"cm", "centimeter", "centimeters", "centimetre", "centimetres"}:
+        return 10.0
+    if unit in {"m", "meter", "meters", "metre", "metres"}:
+        return 1000.0
+    if unit in {"um", "micrometer", "micrometers", "micrometre", "micrometres"}:
+        return 0.001
+    return 1.0
+
+
+def _wcon_unit_scale_to_seconds(units, key):
+    unit = str(units.get(key, "s")).strip().lower()
+    if unit in {"s", "sec", "second", "seconds"}:
+        return 1.0
+    if unit in {"ms", "millisecond", "milliseconds"}:
+        return 0.001
+    if unit in {"min", "minute", "minutes"}:
+        return 60.0
+    return 1.0
+
+
+def _as_wcon_spine_array(values, name):
+    array = np.asarray(values, dtype=float)
+    if array.ndim == 1:
+        array = array.reshape(-1, 1)
+    if array.ndim != 2:
+        raise ValueError("WCON {} values must be one- or two-dimensional".format(name))
+    return array
+
+
+def _wcon_records_for_file(wcon_file, worm_id=None):
+    import json
+
+    with open(wcon_file, "r") as file_obj:
+        wcon = json.load(file_obj)
+
+    units = wcon.get("units", {})
+    data = wcon.get("data")
+    if isinstance(data, dict):
+        records = [data]
+    elif isinstance(data, list):
+        records = data
+    else:
+        raise ValueError("{} does not contain WCON data records".format(wcon_file))
+    if not records:
+        raise ValueError("{} contains no WCON data records".format(wcon_file))
+
+    if worm_id is None:
+        selected_id = records[0].get("id")
+        selected_records = [record for record in records if record.get("id") == selected_id]
+    else:
+        selected_id = str(worm_id)
+        selected_records = [record for record in records if str(record.get("id")) == selected_id]
+    if not selected_records:
+        raise ValueError(
+            "WCON worm id {!r} was not found in {}".format(selected_id, wcon_file)
+        )
+
+    t_scale = _wcon_unit_scale_to_seconds(units, "t")
+    x_scale = _wcon_unit_scale_to_mm(units, "x")
+    y_scale = _wcon_unit_scale_to_mm(units, "y")
+
+    times = []
+    x_rows = []
+    y_rows = []
+    for record in selected_records:
+        if not all(key in record for key in ("t", "x", "y")):
+            raise ValueError("Each WCON record must contain t, x, and y")
+        record_times = np.asarray(record["t"], dtype=float).reshape(-1) * t_scale
+        record_x = _as_wcon_spine_array(record["x"], "x") * x_scale
+        record_y = _as_wcon_spine_array(record["y"], "y") * y_scale
+        if len(record_times) != record_x.shape[0] or len(record_times) != record_y.shape[0]:
+            raise ValueError("WCON t, x, and y lengths do not match")
+        times.extend(record_times.tolist())
+        x_rows.extend(record_x.tolist())
+        y_rows.extend(record_y.tolist())
+
+    times = np.asarray(times, dtype=float)
+    x_positions = np.asarray(x_rows, dtype=float)
+    y_positions = np.asarray(y_rows, dtype=float)
+    order = np.argsort(times)
+    return selected_id, times[order], x_positions[order], y_positions[order]
+
+
+def plot_wcon_trajectory_properties(
+    wcon_files,
+    x_values=None,
+    worm_id=None,
+    properties=("speed", "curvature"),
+    panel_columns=1,
+    save_png=True,
+    filename="wcon_trajectory_properties.png",
+):
+    """Extract trajectory properties from one or more WCON files and plot them."""
+    if isinstance(wcon_files, (str, os.PathLike)):
+        wcon_files = [wcon_files]
+    if not isinstance(wcon_files, (list, tuple)) or not wcon_files:
+        raise ValueError("wcon_files must be a path or a non-empty list of paths")
+
+    wcon_files = [os.fspath(wcon_file) for wcon_file in wcon_files]
+    for wcon_file in wcon_files:
+        if not os.path.isfile(wcon_file):
+            raise FileNotFoundError("Could not find WCON file: {}".format(wcon_file))
+
+    if isinstance(properties, str):
+        properties = [properties]
+    if not isinstance(properties, (list, tuple)) or not properties:
+        raise ValueError("properties must be a non-empty list or tuple")
+    valid_properties = {
+        "speed",
+        "curvature",
+        "path_curvature",
+        "path_deviation",
+        "displacement",
+    }
+    properties = [str(prop) for prop in properties]
+    unknown_properties = sorted(set(properties) - valid_properties)
+    if unknown_properties:
+        raise ValueError(
+            "Unknown WCON trajectory properties: {}".format(
+                ", ".join(unknown_properties)
+            )
+        )
+    if (
+        isinstance(panel_columns, bool)
+        or not isinstance(panel_columns, int)
+        or panel_columns not in (1, 2)
+    ):
+        raise ValueError("panel_columns must be 1 or 2")
+
+    if x_values is None:
+        x_values = list(range(len(wcon_files)))
+    if not isinstance(x_values, (list, tuple, np.ndarray)):
+        raise TypeError("x_values must be a list, tuple, or numpy array")
+    if len(x_values) != len(wcon_files):
+        raise ValueError("x_values must contain one value for each WCON file")
+    x_values = np.asarray(x_values, dtype=float)
+
+    results = {
+        "wcon_files": wcon_files,
+        "worm_ids": [],
+        "x_values": x_values,
+    }
+    for prop in properties:
+        results[prop] = []
+
+    for wcon_file in wcon_files:
+        selected_id, times, x_positions, y_positions = _wcon_records_for_file(
+            wcon_file, worm_id
+        )
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+        computed = _compute_center_trajectory_properties(
+            times, center_x, center_y, properties
+        )
+        if "curvature" in properties:
+            computed["curvature"] = _mean_abs_spine_curvature(
+                x_positions, y_positions
+            )
+        for prop in properties:
+            results[prop].append(computed.get(prop, np.nan))
+        results["worm_ids"].append(selected_id)
+
+    for prop in properties:
+        results[prop] = np.asarray(results[prop], dtype=float)
+
+    panel_columns = min(panel_columns, len(properties))
+    panel_rows = math.ceil(len(properties) / panel_columns)
+    fig, axs = plt.subplots(
+        panel_rows,
+        panel_columns,
+        figsize=(7 * panel_columns, 3.2 * panel_rows),
+        squeeze=False,
+    )
+    y_labels = {
+        "speed": "Average speed (mm/s)",
+        "curvature": "Average |body curvature| (1/mm)",
         "path_curvature": "Path curvature (mm)",
         "path_deviation": "Path deviation (1/mm)",
         "displacement": "Displacement (mm)",
@@ -1196,7 +1723,7 @@ def plot_trajectory_properties(
     if save_png:
         output_file = filename
         if not os.path.isabs(output_file):
-            output_file = os.path.join(input_folder, output_file)
+            output_file = os.path.join(os.path.dirname(wcon_files[0]), output_file)
         fig.savefig(output_file, bbox_inches="tight", dpi=300)
 
     return fig, results
