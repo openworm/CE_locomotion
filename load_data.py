@@ -1200,31 +1200,6 @@ def plot_trajectory_properties(
                     return cell_name
         return cell_names[0]
 
-    def estimate_oscillation_frequency(times, values):
-        valid = np.isfinite(times) & np.isfinite(values)
-        times = np.asarray(times[valid], dtype=float)
-        values = np.asarray(values[valid], dtype=float)
-        if times.size < 3 or times[-1] <= times[0]:
-            return np.nan
-        centered = values - np.nanmean(values)
-        if not np.any(centered > 0) or not np.any(centered < 0):
-            return np.nan
-
-        crossing_times = []
-        for index in range(len(centered) - 1):
-            y0 = centered[index]
-            y1 = centered[index + 1]
-            if y0 < 0 <= y1 and y1 != y0:
-                t0 = times[index]
-                t1 = times[index + 1]
-                crossing_times.append(t0 - y0 * (t1 - t0) / (y1 - y0))
-        if len(crossing_times) < 2:
-            return np.nan
-        elapsed_time = crossing_times[-1] - crossing_times[0]
-        if elapsed_time <= 0:
-            return np.nan
-        return (len(crossing_times) - 1) / elapsed_time
-
     simulation_folders = []
     if subfolders is None:
         for folder, child_subfolders, files in os.walk(input_folder):
@@ -1401,7 +1376,7 @@ def plot_trajectory_properties(
                             act_file, cell_name
                         )
                     )
-                oscillation_frequency = estimate_oscillation_frequency(
+                oscillation_frequency = _estimate_zero_crossing_frequency(
                     act_data[:, 0], act_data[:, cell_index]
                 )
             results["oscillation_frequency"].append(oscillation_frequency)
@@ -1495,6 +1470,55 @@ def _compute_center_trajectory_properties(times, center_x, center_y, properties)
         else:
             results["path_deviation"] = np.nan
     return results
+
+
+def _estimate_zero_crossing_frequency(times, values):
+    valid = np.isfinite(times) & np.isfinite(values)
+    times = np.asarray(times[valid], dtype=float)
+    values = np.asarray(values[valid], dtype=float)
+    if times.size < 3 or times[-1] <= times[0]:
+        return np.nan
+    centered = values - np.nanmean(values)
+    if not np.any(centered > 0) or not np.any(centered < 0):
+        return np.nan
+
+    crossing_times = []
+    for index in range(len(centered) - 1):
+        y0 = centered[index]
+        y1 = centered[index + 1]
+        if y0 < 0 <= y1 and y1 != y0:
+            t0 = times[index]
+            t1 = times[index + 1]
+            crossing_times.append(t0 - y0 * (t1 - t0) / (y1 - y0))
+    if len(crossing_times) < 2:
+        return np.nan
+    elapsed_time = crossing_times[-1] - crossing_times[0]
+    if elapsed_time <= 0:
+        return np.nan
+    return (len(crossing_times) - 1) / elapsed_time
+
+
+def _head_position_oscillation_frequency(times, x_positions, y_positions):
+    if x_positions.ndim != 2 or y_positions.ndim != 2:
+        raise ValueError("WCON x and y body coordinates must be two-dimensional")
+    if x_positions.shape != y_positions.shape:
+        raise ValueError("WCON x and y body coordinate arrays must have the same shape")
+    if x_positions.shape[1] == 0:
+        return np.nan
+
+    head_x = x_positions[:, -1]
+    head_y = y_positions[:, -1]
+    center_x = np.nanmean(x_positions, axis=1)
+    center_y = np.nanmean(y_positions, axis=1)
+    travel_x = center_x[-1] - center_x[0]
+    travel_y = center_y[-1] - center_y[0]
+    travel_length = np.hypot(travel_x, travel_y)
+    if travel_length > 0:
+        # Use lateral head displacement so translational movement is removed.
+        values = (-travel_y * head_x + travel_x * head_y) / travel_length
+    else:
+        values = head_y
+    return _estimate_zero_crossing_frequency(times, values)
 
 
 def _mean_abs_spine_curvature(x_positions, y_positions):
@@ -1640,6 +1664,7 @@ def plot_wcon_trajectory_properties(
         "path_curvature",
         "path_deviation",
         "displacement",
+        "oscillation_frequency",
     }
     properties = [str(prop) for prop in properties]
     unknown_properties = sorted(set(properties) - valid_properties)
@@ -1685,6 +1710,10 @@ def plot_wcon_trajectory_properties(
             computed["curvature"] = _mean_abs_spine_curvature(
                 x_positions, y_positions
             )
+        if "oscillation_frequency" in properties:
+            computed["oscillation_frequency"] = _head_position_oscillation_frequency(
+                times, x_positions, y_positions
+            )
         for prop in properties:
             results[prop].append(computed.get(prop, np.nan))
         results["worm_ids"].append(selected_id)
@@ -1706,6 +1735,7 @@ def plot_wcon_trajectory_properties(
         "path_curvature": "Path curvature (mm)",
         "path_deviation": "Path deviation (1/mm)",
         "displacement": "Displacement (mm)",
+        "oscillation_frequency": "Head oscillation frequency (Hz)",
     }
     flat_axes = axs.ravel()
     for ax, prop in zip(flat_axes, properties):
