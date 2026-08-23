@@ -249,6 +249,8 @@ def process_args():
     parser.add_argument(
         "-cpti",
         "--checkPointInterval",
+        "--checkpoint_interval",
+        dest="checkPointInterval",
         type=int,
         metavar="<checkPointInterval>",
         default=DEFAULTS["checkPointInterval"],
@@ -353,6 +355,8 @@ def process_args():
     parser.add_argument(
         "-p",
         "--popSize",
+        "--population_size",
+        dest="popSize",
         type=int,
         metavar="<pop size>",
         default=DEFAULTS["popSize"],
@@ -362,6 +366,8 @@ def process_args():
     parser.add_argument(
         "-G",
         "--maxGens",
+        "--max_generations",
+        dest="maxGens",
         type=int,
         metavar="<max generations>",
         default=DEFAULTS["maxGens"],
@@ -434,6 +440,25 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
             setattr(a, key, value)
 
     a._provided_args = provided_args
+    return a
+
+
+def normalize_run_argument_aliases(a):
+    """Normalize newer snake_case run() keywords onto internal legacy names."""
+    aliases = {
+        "population_size": "popSize",
+        "max_generations": "maxGens",
+        "checkpoint_interval": "checkPointInterval",
+    }
+    for alias, canonical in aliases.items():
+        if not hasattr(a, alias):
+            continue
+        if alias in a._provided_args or getattr(a, canonical, None) is None:
+            setattr(a, canonical, getattr(a, alias))
+        if alias in a._provided_args:
+            a._provided_args.remove(alias)
+            a._provided_args.add(canonical)
+        delattr(a, alias)
     return a
 
 
@@ -558,6 +583,7 @@ def _can_copy_previous_evolution_files(input_folder, output_folder):
 
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
+    a = normalize_run_argument_aliases(a)
     if hasattr(a, "rand_seed"):
         if "rand_seed" in a._provided_args or a.RandSeed is None:
             a.RandSeed = a.rand_seed
