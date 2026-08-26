@@ -3149,6 +3149,11 @@ def safe_percent_change_from_initial(evol_data):
     return out
 
 
+def signed_log_variation_from_initial(evol_data):
+    evol_data_log = signed_log(evol_data)
+    return evol_data_log - evol_data_log[0]
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -3165,7 +3170,7 @@ short_phen_names = {
 
 def getEvolTrans(evol_data):
     evol_data_diff_1 = safe_percent_change_from_initial(evol_data)
-    evol_data_diff_11 = signed_log(evol_data_diff_1)
+    evol_data_diff_11 = signed_log_variation_from_initial(evol_data)
     evol_data_diff_13 = evol_data - evol_data[0]
     evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
 
@@ -3241,16 +3246,15 @@ def plot_phenonames(
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
     evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
-    evol_data_full_diff = signed_log(evol_data_full_diff0)
+    evol_data_full_diff = signed_log_variation_from_initial(evol_data)
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
 
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
-    evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
-    evol_data_full_diff = evol_data_full_diff[-1] - evol_data_full_diff[0]
+    evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)[-1]
 
     # evol_data_full_diff20 = evol_data - evol_data[0]
 
@@ -3281,7 +3285,7 @@ def plot_phenonames(
         },
         "var": {
             "value": evol_data_full_diff,
-            "title": "Signed log proportional variation",
+            "title": "Signed log variation",
             "color": "black",
             "linestyle": "-",
         },

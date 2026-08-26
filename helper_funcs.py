@@ -1205,6 +1205,42 @@ def _collect_evotags(value, output=None):
     return output
 
 
+def collect_evotags(value, output=None):
+    """Return the set of evotags contained recursively within value."""
+    return _collect_evotags(value, output)
+
+
+def strip_unretained_evotags(json_data, retained_evotags):
+    """Return a copy with evotag fields removed unless they are retained."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if retained_evotags is None:
+        raise TypeError("retained_evotags must be an iterable of evotag names")
+
+    retained = {str(evotag) for evotag in retained_evotags}
+    result = copy.deepcopy(json_data)
+
+    def strip(value):
+        if isinstance(value, dict):
+            evotag = value.get("evotag")
+            if isinstance(evotag, dict) and "value" in evotag:
+                evotag = evotag["value"]
+            if (
+                isinstance(evotag, (str, int))
+                and not isinstance(evotag, bool)
+                and str(evotag) not in retained
+            ):
+                value.pop("evotag", None)
+            for child in value.values():
+                strip(child)
+        elif isinstance(value, list):
+            for child in value:
+                strip(child)
+
+    strip(result)
+    return result
+
+
 def _collect_model_evotags(value, at_root=False, output=None):
     if output is None:
         output = set()
