@@ -3149,7 +3149,7 @@ def safe_percent_change_from_initial(evol_data):
     return out
 
 
-def signed_log_variation_from_initial(evol_data):
+def signed_log_change_from_initial(evol_data):
     evol_data_log = signed_log(evol_data)
     return evol_data_log - evol_data_log[0]
 
@@ -3170,7 +3170,7 @@ short_phen_names = {
 
 def getEvolTrans(evol_data):
     evol_data_diff_1 = safe_percent_change_from_initial(evol_data)
-    evol_data_diff_11 = signed_log_variation_from_initial(evol_data)
+    evol_data_diff_11 = signed_log_change_from_initial(evol_data)
     evol_data_diff_13 = evol_data - evol_data[0]
     evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
 
@@ -3246,7 +3246,7 @@ def plot_phenonames(
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
     evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
-    evol_data_full_diff = signed_log_variation_from_initial(evol_data)
+    evol_data_full_diff = signed_log_change_from_initial(evol_data)
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
@@ -3285,7 +3285,7 @@ def plot_phenonames(
         },
         "var": {
             "value": evol_data_full_diff,
-            "title": "Signed log variation",
+            "title": "Signed log change",
             "color": "black",
             "linestyle": "-",
         },
@@ -3753,17 +3753,18 @@ def plot_hist(a=None):
     evol_data_1 = evol_data[:, 1 + phen_size :]  # here is the best genotype
     plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
 
-    plot_data_4av = getAvData_1(plot_data_1[4], avlentop=avlentop)
-    plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
     plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
-    plot_data_best_percent_av = getAvData_1(plot_data_2[3], avlentop=avlentop)
+    plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
+    pop_signed_log_change_av = getAvData_1(plot_data_1[4], avlentop=avlentop)
+    best_signed_log_change_av = getAvData_1(
+        plot_data_2[4], avlentop=avlentop
+    )
 
-    # plot_data_3 = [plot_data_1[0], plot_data_1[3], plot_data_1[4], plot_data_2[3]]
     plot_data_3 = [
-        plot_data_3av,
-        plot_data_4av,
         plot_data_0av,
-        plot_data_best_percent_av,
+        pop_signed_log_change_av,
+        plot_data_3av,
+        best_signed_log_change_av,
     ]
 
     # gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
@@ -3776,10 +3777,10 @@ def plot_hist(a=None):
     ]
 
     titles = [
+        "Pop actual value",
+        "Pop signed log change",
         "Pop proportional change",
-        "Pop signed log proportional variation",
-        "Pop phenotype value",
-        "Best fit proportional change",
+        "Best fit signed log change",
     ]
 
     # print("phen names ", phen_names)
