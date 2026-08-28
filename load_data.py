@@ -3204,7 +3204,8 @@ def plot_phenonames(
         phen_names = []
         phen_tags = []
         phen_nums = []
-        for val in evolvables:
+        active_phen_indices = []
+        for ind, val in enumerate(evolvables):
             if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
@@ -3212,11 +3213,13 @@ def plot_phenonames(
                 phen_names.append(name)
                 phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
+                active_phen_indices.append(ind)
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
         phen_tags = phen_names
         phen_nums = network_json_data["PhenoNamesNums"]["value"]
+        active_phen_indices = None
     else:
         print("PhenoNames needed for pheno plot")
         return
@@ -3242,6 +3245,8 @@ def plot_phenonames(
     # generation number, phenotype number (first is gen index)
 
     evol_data = evol_data[:, 1 + phen_offset :]
+    if active_phen_indices is not None:
+        evol_data = evol_data[:, active_phen_indices]
 
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
@@ -3716,7 +3721,8 @@ def plot_hist(a=None):
         phen_names = []
         phen_tags = []
         phen_nums = []
-        for val in evolvables:
+        active_phen_indices = []
+        for ind, val in enumerate(evolvables):
             if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
@@ -3724,6 +3730,7 @@ def plot_hist(a=None):
                 phen_names.append(name)
                 phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
+                active_phen_indices.append(ind)
     else:
         print("evolvable_ranges names not found for plot_hist")
         return
@@ -3745,13 +3752,17 @@ def plot_hist(a=None):
 
     # generation number, phenotype number (first is gen index)
 
-    evol_data_1 = evol_data[
-        :, 1 + phen_offset :
+    evol_data_pop = evol_data[
+        :, 1 + phen_offset : 1 + phen_offset + phen_size
     ]  # here is the average values across the population
-    plot_data_1 = [evol_data_1] + getEvolTrans(evol_data_1)
-
-    evol_data_1 = evol_data[:, 1 + phen_size :]  # here is the best genotype
-    plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
+    evol_data_best = evol_data[
+        :, 1 + phen_size : 1 + phen_size + phen_size
+    ]  # here is the best genotype
+    if active_phen_indices is not None:
+        evol_data_pop = evol_data_pop[:, active_phen_indices]
+        evol_data_best = evol_data_best[:, active_phen_indices]
+    plot_data_1 = [evol_data_pop] + getEvolTrans(evol_data_pop)
+    plot_data_2 = [evol_data_best] + getEvolTrans(evol_data_best)
 
     plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
     plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
