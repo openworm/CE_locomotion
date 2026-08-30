@@ -3154,6 +3154,39 @@ def signed_log_change_from_initial(evol_data):
     return evol_data_log - evol_data_log[0]
 
 
+def signed_log_one_plus(val):
+    val = np.asarray(val)
+    out = np.zeros_like(val, dtype=float)
+    mask = np.isfinite(val)
+    out[mask] = np.sign(val[mask]) * np.log(np.abs(val[mask]) + 1.0)
+    return out
+
+
+def signed_log_one_plus_change_from_initial(evol_data):
+    evol_data = np.asarray(evol_data, dtype=float)
+    return signed_log_one_plus(evol_data - evol_data[0])
+
+
+def signed_log_one_plus_proportional_change_from_initial(evol_data):
+    evol_data = np.asarray(evol_data, dtype=float)
+    initial = evol_data[0]
+    raw_change = evol_data - initial
+    proportional_change = np.zeros_like(evol_data, dtype=float)
+    np.divide(
+        raw_change,
+        initial,
+        out=proportional_change,
+        where=np.isfinite(initial) & (initial != 0),
+    )
+    proportional_change[~np.isfinite(proportional_change)] = 0.0
+    out = np.zeros_like(proportional_change, dtype=float)
+    mask = np.isfinite(raw_change) & np.isfinite(proportional_change)
+    out[mask] = np.sign(raw_change[mask]) * np.log(
+        np.abs(proportional_change[mask]) + 1.0
+    )
+    return out
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -3178,7 +3211,12 @@ def getEvolTrans(evol_data):
 
 
 def plot_phenonames(
-    plot_list=[["initial", "final"], ["initial_log", "final_log"], "rel_var", "var"],
+    plot_list=[
+        ["initial", "final"],
+        ["initial_log", "final_log"],
+        "rel_var",
+        "signed_log_prop_change",
+    ],
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
@@ -3227,7 +3265,8 @@ def plot_phenonames(
     # print("checkDict")
     # print(phen_names)
 
-    if a.modelName == "CO18" or a.modelName == "CO18Full":
+    model_name = getattr(a, "modelName", None)
+    if model_name == "CO18" or model_name == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
         phen_names += network_json_data_RS18["PhenoNames"]["value"]
         phen_tags += network_json_data_RS18["PhenoNames"]["value"]
@@ -3252,6 +3291,12 @@ def plot_phenonames(
 
     evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
     evol_data_full_diff = signed_log_change_from_initial(evol_data)
+    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(
+        evol_data
+    )
+    evol_data_signed_log_prop_change = (
+        signed_log_one_plus_proportional_change_from_initial(evol_data)
+    )
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
@@ -3260,6 +3305,12 @@ def plot_phenonames(
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
     evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)[-1]
+    evol_data_signed_log_abs_change = getAvData_1(
+        evol_data_signed_log_abs_change, avlentop=avlentop
+    )[-1]
+    evol_data_signed_log_prop_change = getAvData_1(
+        evol_data_signed_log_prop_change, avlentop=avlentop
+    )[-1]
 
     # evol_data_full_diff20 = evol_data - evol_data[0]
 
@@ -3269,7 +3320,7 @@ def plot_phenonames(
 
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
 
-    evol_data_log = signed_log(evol_data)
+    evol_data_log = signed_log_one_plus(evol_data)
     evol_data_log = getAvData_1(evol_data_log, avlentop=avlentop)
 
     evol_data_init = evol_data_log[0]
@@ -3291,6 +3342,18 @@ def plot_phenonames(
         "var": {
             "value": evol_data_full_diff,
             "title": "Signed log change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_abs_change": {
+            "value": evol_data_signed_log_abs_change,
+            "title": "Signed log absolute change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_prop_change": {
+            "value": evol_data_signed_log_prop_change,
+            "title": "Signed log proportional change",
             "color": "black",
             "linestyle": "-",
         },
@@ -3340,7 +3403,7 @@ def plot_phenonames(
 
     # print(phen_name_list)
 
-    fsize_cols, fsize_rows = 10, 10
+    fsize_cols, fsize_rows = 10, max(10, 2.5 * len(plot_list))
     fsize_cols_2 = 10 * len(phen_names) / 30
     plot_cols = 1
     plot_rows = len(plot_list)
@@ -3439,6 +3502,49 @@ def plot_phenonames(
     fig2.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig2)
+
+
+def _make_plot_args(output_folder, evo_av_len=1, model_name=None):
+    class PlotArgs:
+        pass
+
+    a = PlotArgs()
+    a.folderName = output_folder
+    a.modelName = model_name
+    a.evoAvLen = evo_av_len
+    return a
+
+
+def plot_evolution_averages(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+    """Generate the four-panel Evolution_averages figures for an output folder."""
+    old_dir_name = hf.dir_name
+    old_file_prefix = hf.file_prefix
+
+    a = _make_plot_args(output_folder, evo_av_len=evo_av_len, model_name=model_name)
+
+    try:
+        hf.dir_name = output_folder
+        hf.file_prefix = file_prefix
+        plot_phenonames(a=a)
+    finally:
+        hf.dir_name = old_dir_name
+        hf.file_prefix = old_file_prefix
+
+
+def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+    """Generate the four-panel EvoHist figures for an output folder."""
+    old_dir_name = hf.dir_name
+    old_file_prefix = hf.file_prefix
+
+    a = _make_plot_args(output_folder, evo_av_len=evo_av_len, model_name=model_name)
+
+    try:
+        hf.dir_name = output_folder
+        hf.file_prefix = file_prefix
+        plot_hist(a=a)
+    finally:
+        hf.dir_name = old_dir_name
+        hf.file_prefix = old_file_prefix
 
 
 def plot_cols_fig_2(axslist, plot_data, titles, gen_indices, phen_names):
@@ -3762,20 +3868,23 @@ def plot_hist(a=None):
         evol_data_pop = evol_data_pop[:, active_phen_indices]
         evol_data_best = evol_data_best[:, active_phen_indices]
     plot_data_1 = [evol_data_pop] + getEvolTrans(evol_data_pop)
-    plot_data_2 = [evol_data_best] + getEvolTrans(evol_data_best)
 
     plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
     plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
-    pop_signed_log_change_av = getAvData_1(plot_data_1[4], avlentop=avlentop)
-    best_signed_log_change_av = getAvData_1(
-        plot_data_2[4], avlentop=avlentop
+    pop_signed_log_prop_change_av = getAvData_1(
+        signed_log_one_plus_proportional_change_from_initial(evol_data_pop),
+        avlentop=avlentop,
+    )
+    best_signed_log_prop_change_av = getAvData_1(
+        signed_log_one_plus_proportional_change_from_initial(evol_data_best),
+        avlentop=avlentop,
     )
 
     plot_data_3 = [
         plot_data_0av,
-        pop_signed_log_change_av,
+        pop_signed_log_prop_change_av,
         plot_data_3av,
-        best_signed_log_change_av,
+        best_signed_log_prop_change_av,
     ]
 
     # gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
@@ -3789,9 +3898,9 @@ def plot_hist(a=None):
 
     titles = [
         "Pop actual value",
-        "Pop signed log change",
+        "Pop signed log proportional change",
         "Pop proportional change",
-        "Best fit signed log change",
+        "Best fit signed log proportional change",
     ]
 
     # print("phen names ", phen_names)
