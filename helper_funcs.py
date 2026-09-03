@@ -1849,6 +1849,57 @@ def add_driving_input_connections_by_cell_stem(
     return result
 
 
+def add_driving_input_connection_evotag(
+    json_data,
+    input_num,
+    cell_name,
+    evotag_name,
+):
+    """Return a copy with an evotag added to a driving-input connection weight."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    input_id = _driving_input_id(input_num)
+    if not isinstance(cell_name, str) or not cell_name:
+        raise ValueError("cell_name must be a non-empty string")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+    driving_inputs = result.get("driving_inputs")
+    if not isinstance(driving_inputs, dict):
+        raise KeyError("JSON does not contain a 'driving_inputs' object")
+    weights_object = driving_inputs.get("weights")
+    if not isinstance(weights_object, dict):
+        raise KeyError("JSON does not contain 'driving_inputs.weights'")
+    weights = weights_object.get("value")
+    if not isinstance(weights, list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+
+    for connection_index, connection in enumerate(weights):
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving-input connection must be a dictionary")
+        from_input = _driving_input_id(connection.get("from_input"))
+        connection["from_input"] = from_input
+        if from_input == input_id and connection.get("to_cell") == cell_name:
+            return add_evotag(
+                result,
+                [
+                    "driving_inputs",
+                    "weights",
+                    "value",
+                    connection_index,
+                    "weight",
+                ],
+                evotag_name=evotag_name,
+            )
+
+    raise KeyError(
+        "No driving-input connection from {!r} to cell {!r} was found".format(
+            input_id, cell_name
+        )
+    )
+
+
 def _get_cell_connection(
     json_data,
     from_cell,
