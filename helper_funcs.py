@@ -270,6 +270,330 @@ def write_worm_json(folder_name, json_data):
         json.dump(json_data, f)
 
 
+def _json_path_string(path):
+    parts = []
+    for item in path:
+        if isinstance(item, int):
+            parts.append("[{}]".format(item))
+        else:
+            if parts:
+                parts.append(".")
+            parts.append(str(item))
+    return "".join(parts)
+
+
+def _is_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _collect_evotag_uses(value, path=()):
+    uses = []
+    if isinstance(value, dict):
+        evotag = value.get("evotag")
+        if isinstance(evotag, str) and evotag:
+            uses.append((evotag, path))
+        for key, child in value.items():
+            if key in {"evolvable_ranges", "evolved_used"}:
+                continue
+            uses.extend(_collect_evotag_uses(child, path + (key,)))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            uses.extend(_collect_evotag_uses(child, path + (index,)))
+    return uses
+
+
+def validate_w2dsr_json(json_data, source_name=None):
+    """Validate a W2DSR JSON dictionary before it is sent to the C++ model."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    errors = []
+    location = " in {}".format(source_name) if source_name else ""
+
+    nervous_system = json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        if isinstance(json_data.get("Nervous system"), dict):
+            return True
+        errors.append("Missing required 'nervous_system' object")
+        nervous_system = {}
+
+    cells = nervous_system.get("cells")
+    if not isinstance(cells, dict):
+        errors.append("Missing required 'nervous_system.cells' object")
+        cells = {}
+
+    cell_names_object = nervous_system.get("cell_names")
+    cell_names = None
+    if not isinstance(cell_names_object, dict):
+        errors.append("Missing required 'nervous_system.cell_names' object")
+    else:
+        cell_names = cell_names_object.get("value")
+        if not isinstance(cell_names, list):
+            errors.append("'nervous_system.cell_names.value' must be a list")
+
+    if isinstance(cell_names, list):
+        seen_cell_names = set()
+        duplicate_cell_names = []
+        for cell_name in cell_names:
+            if not isinstance(cell_name, str) or not cell_name:
+                errors.append(
+                    "'nervous_system.cell_names.value' contains a non-string or empty name"
+                )
+                continue
+            if cell_name in seen_cell_names:
+                duplicate_cell_names.append(cell_name)
+            seen_cell_names.add(cell_name)
+        if duplicate_cell_names:
+            errors.append(
+                "Duplicate cell names in 'nervous_system.cell_names.value': {}".format(
+                    ", ".join(sorted(set(duplicate_cell_names)))
+                )
+            )
+
+        cell_key_names = set(cells)
+        cell_list_names = set(
+            cell_name for cell_name in cell_names if isinstance(cell_name, str)
+        )
+        missing_cell_objects = sorted(cell_list_names - cell_key_names)
+        extra_cell_objects = sorted(cell_key_names - cell_list_names)
+        if missing_cell_objects:
+            errors.append(
+                "Cells listed in 'cell_names' but missing from 'cells': {}".format(
+                    ", ".join(missing_cell_objects)
+                )
+            )
+        if extra_cell_objects:
+            errors.append(
+                "Cells present in 'cells' but missing from 'cell_names': {}".format(
+                    ", ".join(extra_cell_objects)
+                )
+            )
+
+    required_numeric_cell_parameters = ("bias", "tau", "gain", "state")
+    for cell_name, cell_data in cells.items():
+        if not isinstance(cell_name, str) or not cell_name:
+            errors.append("'nervous_system.cells' contains a non-string or empty key")
+            continue
+        if not isinstance(cell_data, dict):
+            errors.append(
+                "'nervous_system.cells.{}' must be an object".format(cell_name)
+            )
+            continue
+        for parameter_name in required_numeric_cell_parameters:
+            parameter = cell_data.get(parameter_name)
+            parameter_path = "nervous_system.cells.{}.{}".format(
+                cell_name, parameter_name
+            )
+            if not isinstance(parameter, dict):
+                errors.append("'{}' must be an object".format(parameter_path))
+            elif "value" not in parameter:
+                errors.append("'{}' must contain a 'value' field".format(parameter_path))
+            elif not _is_number(parameter["value"]):
+                errors.append("'{}.value' must be numeric".format(parameter_path))
+        cell_class = cell_data.get("cell_class")
+        if cell_class is not None:
+            if not isinstance(cell_class, dict) or not isinstance(
+                cell_class.get("value"), str
+            ):
+                errors.append(
+                    "'nervous_system.cells.{}.cell_class.value' must be a string".format(
+                        cell_name
+                    )
+                )
+
+    valid_cells = set(cells)
+
+    def check_connection_list(container, object_path, required_keys):
+        if container is None:
+            return
+        if not isinstance(container, dict):
+            errors.append("'{}' must be an object".format(object_path))
+            return
+        connections = container.get("value")
+        if connections is None:
+            return
+        if not isinstance(connections, list):
+            errors.append("'{}.value' must be a list".format(object_path))
+            return
+        for index, connection in enumerate(connections):
+            connection_path = "{}.value[{}]".format(object_path, index)
+            if not isinstance(connection, dict):
+                errors.append("'{}' must be an object".format(connection_path))
+                continue
+            for key in required_keys:
+                if key not in connection:
+                    errors.append("'{}' is missing key '{}'".format(connection_path, key))
+            weight = connection.get("weight")
+            if not isinstance(weight, dict):
+                errors.append("'{}.weight' must be an object".format(connection_path))
+            elif "value" not in weight:
+                errors.append(
+                    "'{}.weight' must contain a 'value' field".format(connection_path)
+                )
+            elif not _is_number(weight["value"]):
+                errors.append("'{}.weight.value' must be numeric".format(connection_path))
+
+    for connection_key in ("chemical_conns", "electrical_conns"):
+        check_connection_list(
+            nervous_system.get(connection_key),
+            "nervous_system.{}".format(connection_key),
+            ("from", "to", "weight"),
+        )
+        connections_object = nervous_system.get(connection_key)
+        connections = (
+            connections_object.get("value")
+            if isinstance(connections_object, dict)
+            else None
+        )
+        if isinstance(connections, list):
+            for index, connection in enumerate(connections):
+                if not isinstance(connection, dict):
+                    continue
+                for key in ("from", "to"):
+                    cell_name = connection.get(key)
+                    if isinstance(cell_name, str) and cell_name not in valid_cells:
+                        errors.append(
+                            "'nervous_system.{}.value[{}].{}' refers to unknown cell '{}'".format(
+                                connection_key, index, key, cell_name
+                            )
+                        )
+
+    driving_weights = (
+        json_data.get("driving_inputs", {}).get("weights", {}).get("value")
+        if isinstance(json_data.get("driving_inputs"), dict)
+        and isinstance(json_data.get("driving_inputs", {}).get("weights"), dict)
+        else None
+    )
+    if driving_weights is not None:
+        if not isinstance(driving_weights, list):
+            errors.append("'driving_inputs.weights.value' must be a list")
+        else:
+            for index, connection in enumerate(driving_weights):
+                if not isinstance(connection, dict):
+                    errors.append(
+                        "'driving_inputs.weights.value[{}]' must be an object".format(
+                            index
+                        )
+                    )
+                    continue
+                to_cell = connection.get("to_cell")
+                if isinstance(to_cell, str) and to_cell not in valid_cells:
+                    errors.append(
+                        "'driving_inputs.weights.value[{}].to_cell' refers to unknown cell '{}'".format(
+                            index, to_cell
+                        )
+                    )
+                weight = connection.get("weight")
+                if not isinstance(weight, dict):
+                    errors.append(
+                        "'driving_inputs.weights.value[{}].weight' must be an object".format(
+                            index
+                        )
+                    )
+                elif "value" not in weight:
+                    errors.append(
+                        "'driving_inputs.weights.value[{}].weight' must contain a 'value' field".format(
+                            index
+                        )
+                    )
+                elif not _is_number(weight["value"]):
+                    errors.append(
+                        "'driving_inputs.weights.value[{}].weight.value' must be numeric".format(
+                            index
+                        )
+                    )
+
+    evolvable_ranges = json_data.get("evolvable_ranges")
+    if evolvable_ranges is None:
+        evolvable_ranges = {}
+    if not isinstance(evolvable_ranges, dict):
+        errors.append("'evolvable_ranges' must be an object")
+        evolvable_ranges = {}
+
+    range_evotags = set()
+    range_entries = {}
+    legacy_ranges = evolvable_ranges.get("value")
+    if isinstance(legacy_ranges, list):
+        for index, range_entry in enumerate(legacy_ranges):
+            if not isinstance(range_entry, dict) or len(range_entry) != 1:
+                errors.append(
+                    "'evolvable_ranges.value[{}]' must contain one evotag object".format(
+                        index
+                    )
+                )
+                continue
+            evotag_name, evotag_range = next(iter(range_entry.items()))
+            range_evotags.add(evotag_name)
+            range_entries[evotag_name] = evotag_range
+    else:
+        range_evotags = set(evolvable_ranges)
+        range_entries = dict(evolvable_ranges)
+
+    if "value" in range_evotags:
+        range_evotags.remove("value")
+
+    evotag_uses = _collect_evotag_uses(json_data)
+    used_evotags = set(evotag for evotag, _ in evotag_uses)
+    missing_from_ranges = sorted(used_evotags - range_evotags)
+    unused_ranges = sorted(range_evotags - used_evotags)
+    if missing_from_ranges:
+        errors.append(
+            "Evotags used in the JSON but missing from 'evolvable_ranges': {}".format(
+                ", ".join(missing_from_ranges)
+            )
+        )
+    if unused_ranges:
+        errors.append(
+            "Evotags in 'evolvable_ranges' but not used elsewhere in the JSON: {}".format(
+                ", ".join(unused_ranges)
+            )
+        )
+
+    for evotag_name, range_entry in range_entries.items():
+        if evotag_name == "value":
+            continue
+        range_path = "evolvable_ranges.{}".format(evotag_name)
+        if not isinstance(range_entry, dict):
+            errors.append("'{}' must be an object".format(range_path))
+            continue
+        for key in ("active", "lower_limit", "upper_limit", "name"):
+            if key not in range_entry:
+                errors.append("'{}' is missing key '{}'".format(range_path, key))
+        if "active" in range_entry and not isinstance(range_entry["active"], bool):
+            errors.append("'{}.active' must be boolean".format(range_path))
+        for key in ("lower_limit", "upper_limit"):
+            if key in range_entry and not _is_number(range_entry[key]):
+                errors.append("'{}.{}' must be numeric".format(range_path, key))
+        if "name" in range_entry and not isinstance(range_entry["name"], str):
+            errors.append("'{}.name' must be a string".format(range_path))
+        if (
+            _is_number(range_entry.get("lower_limit"))
+            and _is_number(range_entry.get("upper_limit"))
+            and range_entry["lower_limit"] > range_entry["upper_limit"]
+        ):
+            errors.append(
+                "'{}.lower_limit' must not be greater than 'upper_limit'".format(
+                    range_path
+                )
+            )
+
+    if errors:
+        message_lines = [
+            "W2DSR JSON validation failed{}:".format(location),
+        ]
+        message_lines.extend("  - {}".format(error) for error in errors)
+        raise ValueError("\n".join(message_lines))
+
+    return True
+
+
+def validate_w2dsr_json_file(filename):
+    """Validate a W2DSR JSON file before it is sent to the C++ model."""
+    with open(filename, "r") as f:
+        json_data = json.load(f)
+    return validate_w2dsr_json(json_data, source_name=filename)
+
+
 def add_environment(
     json_data,
     name=None,

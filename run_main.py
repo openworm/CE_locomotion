@@ -818,6 +818,21 @@ def run(a=None, **kwargs):
             "calling run()."
         )
         sys.exit(1)
+    if model_name == "W2DSR":
+        json_config_file = next(
+            (
+                os.path.join(a.outputFolderName, filename)
+                for filename in json_config_files
+                if os.path.isfile(os.path.join(a.outputFolderName, filename))
+            ),
+            None,
+        )
+        if json_config_file is not None:
+            try:
+                hf.validate_w2dsr_json_file(json_config_file)
+            except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+                print(exc)
+                sys.exit(1)
 
     if a.modelFolder in model_names:
         if model_name is None:
