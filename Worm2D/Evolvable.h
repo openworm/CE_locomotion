@@ -519,8 +519,21 @@ virtual ~SRCEpars(){}
 virtual void setPars(shared_ptr<const CmdArgs> cmd);
 
 void setParsFromJson(const json & j){
-  getParFromJsonAny<string>(j, {"sr_type", "SRType"}, sr_type);
-  getParFromJsonAny<int>(j, {"sr_form", "SRForm"}, SRForm);
+  bool found_sr_form = false;
+  if (j.contains("stretch_receptor") && j.at("stretch_receptor").is_object())
+    found_sr_form = getParFromJsonAny<string>(
+      j.at("stretch_receptor"), {"sr_form", "sr_type", "SRType"}, sr_type);
+  if (!found_sr_form && j.contains("Stretch Receptor")
+      && j.at("Stretch Receptor").is_object())
+    found_sr_form = getParFromJsonAny<string>(
+      j.at("Stretch Receptor"), {"sr_form", "sr_type", "SRType"}, sr_type);
+  if (!found_sr_form && j.contains("Stretch receptor")
+      && j.at("Stretch receptor").is_object())
+    found_sr_form = getParFromJsonAny<string>(
+      j.at("Stretch receptor"), {"sr_form", "sr_type", "SRType"}, sr_type);
+  if (!found_sr_form)
+    getParFromJsonAny<string>(j, {"sr_type", "SRType"}, sr_type);
+  getParFromJsonAny<int>(j, {"sr_connection_form", "SRForm"}, SRForm);
   //sr_type = j["SRType"]["value"]; 
   //SRForm = j["SRForm"]["value"];
   getParFromJsonAny<int>(j, {"sr_seg_per_sr", "SRSegPerSR"}, nsegperstr);
@@ -530,8 +543,8 @@ void setParsFromJson(const json & j){
   //assert(0);
 }
 void addParsToJson(json & j) const {
-  j["sr_type"]["value"] = sr_type;
-  j["sr_form"]["value"] = SRForm;
+  j["stretch_receptor"]["sr_form"]["value"] = sr_type;
+  j["sr_connection_form"]["value"] = SRForm;
   j["sr_seg_per_sr"]["value"] = nsegperstr;
   j["sr_zero_gains_type"]["value"] = zeroGainsType;
 

@@ -122,6 +122,7 @@ int main (int argc, const char* argv[])
         j_evo.erase("Dorsal body");
         j_evo.erase("Ventral body");
         j_evo.erase("Stretch receptor");
+        j_evo.erase("Stretch Receptor");
         j_evo.erase("VNC NMJ");
         j_evo.erase("VNC 18");
         j_evo.erase("Driving input");
@@ -503,6 +504,7 @@ int main (int argc, const char* argv[])
     j.erase("Dorsal body");
     j.erase("Ventral body");
     j.erase("Stretch receptor");
+    j.erase("Stretch Receptor");
     j.erase("VNC NMJ");
     j.erase("VNC 18");
     j.erase("Driving input");

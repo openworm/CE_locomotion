@@ -230,13 +230,7 @@ def plot_json_dictionary_summary(
         omitted = len(rows_) - len(shown_rows)
         if omitted > 0:
             shown_rows.append("... {} more".format(omitted))
-        box_h = (
-            top_pad
-            + header_h
-            + table_gap
-            + row_h * len(shown_rows)
-            + bottom_pad
-        )
+        box_h = top_pad + header_h + table_gap + row_h * len(shown_rows) + bottom_pad
         section_specs.append(
             {
                 "name": section_name,
@@ -246,7 +240,9 @@ def plot_json_dictionary_summary(
         )
 
     if not section_specs:
-        raise ValueError("No non-empty JSON sections remain after applying exclude_keys")
+        raise ValueError(
+            "No non-empty JSON sections remain after applying exclude_keys"
+        )
 
     section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
 
@@ -434,7 +430,9 @@ def plot_json_dictionary_summary_2(
     def subfield_rows(section):
         if not isinstance(section, dict):
             return [("value", display_value(section))]
-        return [(str(subkey), display_value(subval)) for subkey, subval in section.items()]
+        return [
+            (str(subkey), display_value(subval)) for subkey, subval in section.items()
+        ]
 
     def ellipsize(text, max_len=23):
         text = str(text)
@@ -506,7 +504,9 @@ def plot_json_dictionary_summary_2(
         )
 
     if not section_specs:
-        raise ValueError("No non-empty JSON sections remain after applying exclude_keys")
+        raise ValueError(
+            "No non-empty JSON sections remain after applying exclude_keys"
+        )
 
     section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
 
@@ -1162,7 +1162,11 @@ def plot_trajectory_properties(
         return act_file if os.path.isfile(act_file) else None
 
     def worm_json_file_for_folder(folder):
-        for filename1 in ("worm_data_worm.json", "worm_data_evo.json", "worm_data.json"):
+        for filename1 in (
+            "worm_data_worm.json",
+            "worm_data_evo.json",
+            "worm_data.json",
+        ):
             worm_file = os.path.join(folder, filename1)
             if os.path.isfile(worm_file):
                 return worm_file
@@ -1599,10 +1603,14 @@ def _wcon_records_for_file(wcon_file, worm_id=None):
 
     if worm_id is None:
         selected_id = records[0].get("id")
-        selected_records = [record for record in records if record.get("id") == selected_id]
+        selected_records = [
+            record for record in records if record.get("id") == selected_id
+        ]
     else:
         selected_id = str(worm_id)
-        selected_records = [record for record in records if str(record.get("id")) == selected_id]
+        selected_records = [
+            record for record in records if str(record.get("id")) == selected_id
+        ]
     if not selected_records:
         raise ValueError(
             "WCON worm id {!r} was not found in {}".format(selected_id, wcon_file)
@@ -1621,7 +1629,10 @@ def _wcon_records_for_file(wcon_file, worm_id=None):
         record_times = np.asarray(record["t"], dtype=float).reshape(-1) * t_scale
         record_x = _as_wcon_spine_array(record["x"], "x") * x_scale
         record_y = _as_wcon_spine_array(record["y"], "y") * y_scale
-        if len(record_times) != record_x.shape[0] or len(record_times) != record_y.shape[0]:
+        if (
+            len(record_times) != record_x.shape[0]
+            or len(record_times) != record_y.shape[0]
+        ):
             raise ValueError("WCON t, x, and y lengths do not match")
         times.extend(record_times.tolist())
         x_rows.extend(record_x.tolist())
@@ -1707,9 +1718,7 @@ def plot_wcon_trajectory_properties(
             times, center_x, center_y, properties
         )
         if "curvature" in properties:
-            computed["curvature"] = _mean_abs_spine_curvature(
-                x_positions, y_positions
-            )
+            computed["curvature"] = _mean_abs_spine_curvature(x_positions, y_positions)
         if "oscillation_frequency" in properties:
             computed["oscillation_frequency"] = _head_position_oscillation_frequency(
                 times, x_positions, y_positions
@@ -3291,9 +3300,7 @@ def plot_phenonames(
 
     evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
     evol_data_full_diff = signed_log_change_from_initial(evol_data)
-    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(
-        evol_data
-    )
+    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(evol_data)
     evol_data_signed_log_prop_change = (
         signed_log_one_plus_proportional_change_from_initial(evol_data)
     )
@@ -3515,7 +3522,9 @@ def _make_plot_args(output_folder, evo_av_len=1, model_name=None):
     return a
 
 
-def plot_evolution_averages(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+def plot_evolution_averages(
+    output_folder, evo_av_len=1, model_name=None, file_prefix=None
+):
     """Generate the four-panel Evolution_averages figures for an output folder."""
     old_dir_name = hf.dir_name
     old_file_prefix = hf.file_prefix

@@ -152,10 +152,23 @@ class baseParameters
 
         if (!BPitsJson.empty() && legacy_section_str != section_str && BPitsJson.contains(legacy_section_str)) 
         {
+            if (key_str == "sr_form" && !legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at(legacy_section_str), legacy_key_str, val, true)) return true;
             if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), key_str, val, true)) return true;
             if (getJsonValTF<T>(BPitsJson.at(legacy_section_str), name_str, val, true)) return true;
             if (!legacy_key_str.empty() &&
                 getJsonValTF<T>(BPitsJson.at(legacy_section_str), legacy_key_str, val, true)) return true;
+        }
+
+        if (!BPitsJson.empty() && section_str == "stretch_receptor"
+            && BPitsJson.contains("Stretch receptor"))
+        {
+            if (key_str == "sr_form" && !legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at("Stretch receptor"), legacy_key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at("Stretch receptor"), key_str, val, true)) return true;
+            if (getJsonValTF<T>(BPitsJson.at("Stretch receptor"), name_str, val, true)) return true;
+            if (!legacy_key_str.empty() &&
+                getJsonValTF<T>(BPitsJson.at("Stretch receptor"), legacy_key_str, val, true)) return true;
         }
 
        
@@ -248,8 +261,8 @@ class baseParameters
         defaultVals_["sr_evo_bot_a"]=0;
         defaultVals_["sr_evo_top_a"]=200;
         defaultVals_["ab_output_level"] = 1.0;
-        defaultVals_["sr_type"] = "None";
-        defaultVals_["sr_form"] = 0;
+        defaultVals_["sr_form"] = "None";
+        defaultVals_["sr_connection_form"] = 0;
         defaultVals_["sr_seg_per_sr"] = 6;
         defaultVals_["sr_zero_gains_type"] = 1;
         defaultVals_["sr_offset"] = 0;
@@ -326,6 +339,9 @@ class baseParameters
     {
         if (!j.is_object()) return;
         mergeLegacySection(j, "worm", "Worm");
+        mergeLegacySection(j, "stretch_receptor", "Stretch Receptor");
+        mergeLegacySection(j, "stretch_receptor", "Stretch receptor");
+        cleanLegacyStretchReceptorKeys(j);
         for (auto section = j.begin(); section != j.end(); ++section)
         {
             if (!section.value().is_object()) continue;
@@ -353,12 +369,15 @@ class baseParameters
     static string canonicalSectionKey(const string & section)
     {
         if (section == "Worm") return "worm";
+        if (section == "Stretch receptor" || section == "Stretch Receptor")
+            return "stretch_receptor";
         return section;
     }
 
     static string legacySectionKey(const string & section)
     {
         if (section == "worm") return "Worm";
+        if (section == "stretch_receptor") return "Stretch Receptor";
         return section;
     }
 
@@ -394,6 +413,42 @@ class baseParameters
             j[section] = merged;
         }
         j.erase(legacy_section);
+    }
+
+    static void copyLegacyKey(json & section, const string & key_str,
+        const string & legacy_key_str)
+    {
+        if (section.contains(legacy_key_str))
+        {
+            if (!section.contains(key_str)) section[key_str] = section[legacy_key_str];
+            section.erase(legacy_key_str);
+        }
+    }
+
+    static void cleanLegacyStretchReceptorKeys(json & j)
+    {
+        if (!j.contains("stretch_receptor") || !j.at("stretch_receptor").is_object())
+            return;
+        json & sr = j["stretch_receptor"];
+        copyLegacyKey(sr, "type", "Type");
+        if (sr.contains("SRType") &&
+            (!sr.contains("sr_form") || !sr.at("sr_form").contains("value")
+             || !sr.at("sr_form").at("value").is_string()))
+            sr["sr_form"] = sr["SRType"];
+        copyLegacyKey(sr, "sr_form", "SRType");
+        copyLegacyKey(sr, "sr_connection_form", "SRForm");
+        copyLegacyKey(sr, "sr_seg_per_sr", "SRSegPerSR");
+        copyLegacyKey(sr, "sr_zero_gains_type", "SRZeroGainsType");
+        copyLegacyKey(sr, "sr_offset", "SROffset");
+        copyLegacyKey(sr, "n_segs", "NSegs");
+        copyLegacyKey(sr, "n_stretch", "NStretch");
+        copyLegacyKey(sr, "sr_vnc_gain", "SRvncgain");
+        copyLegacyKey(sr, "sr_head_gain", "SRheadgain");
+        copyLegacyKey(sr, "sr_vnc_sr", "SRvncsr");
+        copyLegacyKey(sr, "sr_head_sr", "SRheadsr");
+        copyLegacyKey(sr, "sr_a_gain", "SR_A_gain");
+        copyLegacyKey(sr, "sr_b_gain", "SR_B_gain");
+        copyLegacyKey(sr, "plot_size", "plot size");
     }
 
     static string snakeCaseKey(const string & name)
@@ -451,8 +506,8 @@ class baseParameters
         if (key == "sr_evo_bot_a") return "SREvoBotA";
         if (key == "sr_evo_top_a") return "SREvoTopA";
         if (key == "ab_output_level") return "AB_output_level";
-        if (key == "sr_type") return "SRType";
-        if (key == "sr_form") return "SRForm";
+        if (key == "sr_form") return "SRType";
+        if (key == "sr_connection_form") return "SRForm";
         if (key == "sr_seg_per_sr") return "SRSegPerSR";
         if (key == "sr_zero_gains_type") return "SRZeroGainsType";
         if (key == "sr_offset") return "SROffset";

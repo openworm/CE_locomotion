@@ -572,6 +572,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         j.erase("Dorsal body");
         j.erase("Ventral body");
         j.erase("Stretch receptor");
+        j.erase("Stretch Receptor");
         j.erase("VNC NMJ");
         j.erase("VNC 18");
         j.erase("Driving input");

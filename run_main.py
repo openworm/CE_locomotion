@@ -891,7 +891,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["network_size"] = 6
     evol_extra_parameters["do_reverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
-    evol_extra_parameters["sr_type"] = "None"
+    evol_extra_parameters["sr_form"] = "None"
     # evol_extra_parameters["ab_level"] = 1
     evol_extra_parameters["ab_output_level"] = 1
     # evol_extra_parameters["random_initial_state"] = False
@@ -900,7 +900,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["CrossProb"] = 0.5
     evol_extra_parameters["avg_speed"] = 0.00022
     evol_extra_parameters["fit_type"] = 0
-    evol_extra_parameters["sr_form"] = 0
+    evol_extra_parameters["sr_connection_form"] = 0
     evol_extra_parameters["sr_evo_bot"] = 0
     evol_extra_parameters["sr_evo_top"] = 200
     evol_extra_parameters["sr_evo_bot_a"] = 0
@@ -972,10 +972,10 @@ def run(a=None, **kwargs):
         "ABLevel": "ab_output_level",
         "AB_output_level": "ab_output_level",
         "doReverse": "do_reverse",
-        "SRType": "sr_type",
+        "SRType": "sr_form",
         "AvgSpeed": "avg_speed",
         "fitType": "fit_type",
-        "SRForm": "sr_form",
+        "SRForm": "sr_connection_form",
         "SREvoBot": "sr_evo_bot",
         "SREvoTop": "sr_evo_top",
         "SREvoBotA": "sr_evo_bot_a",

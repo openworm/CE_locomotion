@@ -103,9 +103,7 @@ def _input_switcher_index(input_index):
         if suffix.isdigit():
             return int(suffix)
     raise ValueError(
-        "Cannot infer a numeric pattern index from input_index {!r}".format(
-            input_index
-        )
+        "Cannot infer a numeric pattern index from input_index {!r}".format(input_index)
     )
 
 
@@ -387,7 +385,9 @@ def validate_w2dsr_json(json_data, source_name=None):
             if not isinstance(parameter, dict):
                 errors.append("'{}' must be an object".format(parameter_path))
             elif "value" not in parameter:
-                errors.append("'{}' must contain a 'value' field".format(parameter_path))
+                errors.append(
+                    "'{}' must contain a 'value' field".format(parameter_path)
+                )
             elif not _is_number(parameter["value"]):
                 errors.append("'{}.value' must be numeric".format(parameter_path))
         cell_class = cell_data.get("cell_class")
@@ -422,7 +422,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                 continue
             for key in required_keys:
                 if key not in connection:
-                    errors.append("'{}' is missing key '{}'".format(connection_path, key))
+                    errors.append(
+                        "'{}' is missing key '{}'".format(connection_path, key)
+                    )
             weight = connection.get("weight")
             if not isinstance(weight, dict):
                 errors.append("'{}.weight' must be an object".format(connection_path))
@@ -431,7 +433,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                     "'{}.weight' must contain a 'value' field".format(connection_path)
                 )
             elif not _is_number(weight["value"]):
-                errors.append("'{}.weight.value' must be numeric".format(connection_path))
+                errors.append(
+                    "'{}.weight.value' must be numeric".format(connection_path)
+                )
 
     for connection_key in ("chemical_conns", "electrical_conns"):
         check_connection_list(
@@ -1512,6 +1516,64 @@ def delete_all_evotags(json_data):
     return remove_fields(json_data)
 
 
+def delete_evotag(json_data, evotag_name):
+    """Return a copy with one evotag removed from all model values."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(evotag_name, str) or not evotag_name:
+        raise ValueError("evotag_name must be a non-empty string")
+
+    result = copy.deepcopy(json_data)
+
+    def normalize_evotag(value):
+        if isinstance(value, dict) and "value" in value:
+            value = value["value"]
+        if isinstance(value, bool):
+            return None
+        if isinstance(value, int):
+            return "evotag_{}".format(value)
+        if isinstance(value, str):
+            return value
+        return None
+
+    def remove_from_values(value):
+        if isinstance(value, dict):
+            if normalize_evotag(value.get("evotag")) == evotag_name:
+                value.pop("evotag", None)
+            for child in value.values():
+                remove_from_values(child)
+        elif isinstance(value, list):
+            for child in value:
+                remove_from_values(child)
+
+    remove_from_values(result)
+
+    evolvable_ranges = result.get("evolvable_ranges")
+    if isinstance(evolvable_ranges, dict):
+        evolvable_ranges.pop(evotag_name, None)
+        legacy_entries = evolvable_ranges.get("value")
+        if isinstance(legacy_entries, list):
+            evolvable_ranges["value"] = [
+                entry
+                for entry in legacy_entries
+                if not (
+                    isinstance(entry, dict)
+                    and (
+                        entry.get("evotag") == evotag_name
+                        or (len(entry) == 1 and evotag_name in entry)
+                    )
+                )
+            ]
+
+    evolved_used = result.get("evolved_used")
+    if isinstance(evolved_used, dict) and isinstance(evolved_used.get("value"), list):
+        evolved_used["value"] = [
+            evotag for evotag in evolved_used["value"] if evotag != evotag_name
+        ]
+
+    return result
+
+
 def _collect_evotags(value, output=None):
     if output is None:
         output = set()
@@ -1652,9 +1714,7 @@ def set_vnc_set_from_this(json_data, object_name, set_from_this):
     evolvable_ranges = result.get("evolvable_ranges")
     missing_evotags = []
     for evotag in sorted(evotags):
-        if not _set_evolvable_range_active(
-            evolvable_ranges, evotag, set_from_this
-        ):
+        if not _set_evolvable_range_active(evolvable_ranges, evotag, set_from_this):
             missing_evotags.append(evotag)
     if missing_evotags:
         raise KeyError(
@@ -2054,9 +2114,7 @@ def _ensure_driving_input_connection_containers(result, input_id):
     weights_object = driving_inputs.setdefault(
         "weights",
         {
-            "message": (
-                "Weights of driving inputs to Nervous System in sparse format"
-            ),
+            "message": ("Weights of driving inputs to Nervous System in sparse format"),
             "value": [],
         },
     )
@@ -2222,6 +2280,43 @@ def add_driving_input_connection_evotag(
             input_id, cell_name
         )
     )
+
+
+def set_all_driving_input_connection_weights(json_data, weight):
+    """Return a copy with all driving-input-to-cell weights set to one value."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+        raise TypeError("weight must be a number")
+
+    result = copy.deepcopy(json_data)
+    driving_inputs = result.get("driving_inputs")
+    if driving_inputs is None:
+        return result
+    if not isinstance(driving_inputs, dict):
+        raise TypeError("'driving_inputs' must be a dictionary")
+
+    weights_object = driving_inputs.get("weights")
+    if weights_object is None:
+        return result
+    if not isinstance(weights_object, dict):
+        raise TypeError("'driving_inputs.weights' must be a dictionary")
+
+    weights = weights_object.get("value")
+    if weights is None:
+        return result
+    if not isinstance(weights, list):
+        raise TypeError("'driving_inputs.weights.value' must be a list")
+
+    for connection in weights:
+        if not isinstance(connection, dict):
+            raise TypeError("Each driving-input connection must be a dictionary")
+        weight_object = connection.get("weight")
+        if not isinstance(weight_object, dict):
+            raise TypeError("Each driving-input connection weight must be a dictionary")
+        weight_object["value"] = float(weight)
+
+    return result
 
 
 def _get_cell_connection(
@@ -3582,9 +3677,7 @@ def delete_driving_input(json_data, input_num):
                     kept_patterns.append(pattern)
                     continue
                 if not isinstance(pattern_values, list):
-                    raise TypeError(
-                        "Each input-switcher pattern value must be a list"
-                    )
+                    raise TypeError("Each input-switcher pattern value must be a list")
                 kept_values = []
                 for entry in pattern_values:
                     if not isinstance(entry, dict):
@@ -3619,9 +3712,13 @@ def delete_driving_input(json_data, input_num):
                 periods = input_switcher.get("time_periods", {}).get("value")
                 if scheduled is not None or periods is not None:
                     if not isinstance(scheduled, list):
-                        raise TypeError("'input_switcher.input_indices.value' must be a list")
+                        raise TypeError(
+                            "'input_switcher.input_indices.value' must be a list"
+                        )
                     if not isinstance(periods, list):
-                        raise TypeError("'input_switcher.time_periods.value' must be a list")
+                        raise TypeError(
+                            "'input_switcher.time_periods.value' must be a list"
+                        )
                     if len(scheduled) != len(periods):
                         raise ValueError(
                             "input_switcher.input_indices and time_periods "
