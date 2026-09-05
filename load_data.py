@@ -3497,7 +3497,7 @@ def plot_phenonames(
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages.png")
+    filename = _plot_output_file("Evolution_averages.png", a)
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig)
@@ -3505,13 +3505,13 @@ def plot_phenonames(
     fig2.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages_2.png")
+    filename = _plot_output_file("Evolution_averages_2.png", a)
     fig2.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig2)
 
 
-def _make_plot_args(output_folder, evo_av_len=1, model_name=None):
+def _make_plot_args(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
     class PlotArgs:
         pass
 
@@ -3519,7 +3519,17 @@ def _make_plot_args(output_folder, evo_av_len=1, model_name=None):
     a.folderName = output_folder
     a.modelName = model_name
     a.evoAvLen = evo_av_len
+    a.filePrefix = file_prefix
     return a
+
+
+def _plot_output_file(file_name, a=None):
+    prefix = getattr(a, "filePrefix", None)
+    if prefix is None:
+        return hf.rename_file(file_name)
+    if hf.dir_name is None:
+        return prefix + file_name
+    return os.path.join(hf.dir_name, prefix + file_name)
 
 
 def plot_evolution_averages(
@@ -3529,11 +3539,16 @@ def plot_evolution_averages(
     old_dir_name = hf.dir_name
     old_file_prefix = hf.file_prefix
 
-    a = _make_plot_args(output_folder, evo_av_len=evo_av_len, model_name=model_name)
+    a = _make_plot_args(
+        output_folder,
+        evo_av_len=evo_av_len,
+        model_name=model_name,
+        file_prefix=file_prefix,
+    )
 
     try:
         hf.dir_name = output_folder
-        hf.file_prefix = file_prefix
+        hf.file_prefix = None
         plot_phenonames(a=a)
     finally:
         hf.dir_name = old_dir_name
@@ -3545,11 +3560,16 @@ def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None)
     old_dir_name = hf.dir_name
     old_file_prefix = hf.file_prefix
 
-    a = _make_plot_args(output_folder, evo_av_len=evo_av_len, model_name=model_name)
+    a = _make_plot_args(
+        output_folder,
+        evo_av_len=evo_av_len,
+        model_name=model_name,
+        file_prefix=file_prefix,
+    )
 
     try:
         hf.dir_name = output_folder
-        hf.file_prefix = file_prefix
+        hf.file_prefix = None
         plot_hist(a=a)
     finally:
         hf.dir_name = old_dir_name
@@ -3726,7 +3746,7 @@ def plot_fit():
     plt.close()
 
 
-def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1):
+def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1, a=None):
     fig_g, axs = plt.subplots(2, 2, figsize=(12, 10), squeeze=False)
     plot_axes = list(axs.flat)
 
@@ -3762,8 +3782,8 @@ def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1):
     print("Saved plot image to: %s" % filename1)
     plt.close(fig_g)
 
-    if os.path.basename(filename1) == "EvoHist.png":
-        save_evohist_legend_figures(handles, labels, legend_fontsize)
+    if os.path.basename(filename1).endswith("EvoHist.png"):
+        save_evohist_legend_figures(handles, labels, legend_fontsize, a=a)
 
 
 def plot_evohist_fitness(fit_data, filename):
@@ -3792,7 +3812,7 @@ def plot_evohist_fitness(fit_data, filename):
     plt.close(fig)
 
 
-def save_evohist_legend_figures(handles, labels, legend_fontsize):
+def save_evohist_legend_figures(handles, labels, legend_fontsize, a=None):
     for ncols in [3, 4]:
         fig_leg = plt.figure(figsize=(8, 2.5))
         ax_leg = fig_leg.add_subplot(111)
@@ -3805,7 +3825,7 @@ def save_evohist_legend_figures(handles, labels, legend_fontsize):
             frameon=True,
             fontsize=legend_fontsize,
         )
-        filename = hf.rename_file("EvoHist_legend_%dcol.png" % ncols)
+        filename = _plot_output_file("EvoHist_legend_%dcol.png" % ncols, a)
         fig_leg.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
         plt.close(fig_leg)
@@ -3817,7 +3837,7 @@ def plot_hist(a=None):
         return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
-    plot_evohist_fitness(fit_data, hf.rename_file("EvoHist_fitness.png"))
+    plot_evohist_fitness(fit_data, _plot_output_file("EvoHist_fitness.png", a))
 
     # evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
     # evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
@@ -3922,7 +3942,8 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_tags,
-        hf.rename_file("EvoHist.png"),
+        _plot_output_file("EvoHist.png", a),
+        a,
     )
 
     phen_names_set = sorted(set(phen_names))
@@ -3944,7 +3965,8 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_names_set,
-        hf.rename_file("EvoHist_av.png"),
+        _plot_output_file("EvoHist_av.png", a),
+        a,
     )
 
     if False:
