@@ -790,6 +790,7 @@ def plot_motion_all(
     filename="motion_all.png",
     mean_filename="motion_all_mean.png",
     max_snapshots=60,
+    axis_padding=0.03,
 ):
     """Plot body profiles and mean-position paths from simulation subfolders."""
     if not os.path.isdir(input_folder):
@@ -802,6 +803,8 @@ def plot_motion_all(
         or max_snapshots < 1
     ):
         raise ValueError("max_snapshots must be a positive integer")
+    if axis_padding < 0:
+        raise ValueError("axis_padding must be non-negative")
     if legend_names is not None and (
         isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
     ):
@@ -883,6 +886,8 @@ def plot_motion_all(
     profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
     mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
     color_map = plt.get_cmap("tab20")
+    profile_bounds = []
+    mean_bounds = []
 
     for run_index, (run_name, body_file, legend_name) in enumerate(simulation_files):
         body_data = np.loadtxt(body_file)
@@ -915,6 +920,7 @@ def plot_motion_all(
             linestyle="-",
             label=legend_name,
         )
+        mean_bounds.append((center_x, center_y))
 
         sample_count = min(max_snapshots, body_data.shape[0])
         snapshot_indices = np.unique(
@@ -930,12 +936,41 @@ def plot_motion_all(
                 alpha=0.35,
                 label=legend_name if snapshot_number == 0 else "_nolegend_",
             )
+            profile_bounds.append(
+                (x_positions[snapshot_index], y_positions[snapshot_index])
+            )
 
-    def finish_figure(fig, ax, title):
+    def apply_tight_equal_limits(ax, bounds):
+        x_values = np.concatenate([np.ravel(x) for x, _ in bounds])
+        y_values = np.concatenate([np.ravel(y) for _, y in bounds])
+        valid = np.isfinite(x_values) & np.isfinite(y_values)
+        if not np.any(valid):
+            return
+
+        x_min = float(np.min(x_values[valid]))
+        x_max = float(np.max(x_values[valid]))
+        y_min = float(np.min(y_values[valid]))
+        y_max = float(np.max(y_values[valid]))
+        x_range = x_max - x_min
+        y_range = y_max - y_min
+        if x_range == 0:
+            x_range = 1.0
+        if y_range == 0:
+            y_range = 1.0
+
+        span = max(x_range, y_range)
+        x_center = 0.5 * (x_min + x_max)
+        y_center = 0.5 * (y_min + y_max)
+        half_span = 0.5 * span * (1.0 + 2.0 * axis_padding)
+        ax.set_xlim(x_center - half_span, x_center + half_span)
+        ax.set_ylim(y_center - half_span, y_center + half_span)
+
+    def finish_figure(fig, ax, title, bounds):
         ax.set_title(title)
         ax.set_xlabel("X Position (mm)")
         ax.set_ylabel("Y Position (mm)")
-        ax.set_aspect("equal", adjustable="datalim")
+        apply_tight_equal_limits(ax, bounds)
+        ax.set_aspect("equal", adjustable="box")
         ax.grid(True, linewidth=0.4, alpha=0.25)
         ax.legend(
             title="Simulation",
@@ -945,8 +980,8 @@ def plot_motion_all(
         )
         fig.tight_layout()
 
-    finish_figure(profile_fig, profile_ax, "Worm body profiles")
-    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories")
+    finish_figure(profile_fig, profile_ax, "Worm body profiles", profile_bounds)
+    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories", mean_bounds)
 
     if save_png:
         for fig, output_file in (
