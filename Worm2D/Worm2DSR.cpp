@@ -1,5 +1,6 @@
 #include "Worm2DSR.h"
 #include <algorithm>
+#include <cctype>
 #include <map>
 #include <set>
 //#include "../neuromlLocal/c302ForW2D.h"
@@ -19,6 +20,107 @@ Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j):
 Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_),Worm2DSRb(sr_ptr_){} 
 
+namespace {
+
+string defaultDrivingInputId(const int zeroBasedIndex)
+{
+  return "input_" + to_string(zeroBasedIndex + 1);
+}
+
+int parseDefaultDrivingInputId(const string & id)
+{
+  const string prefix = "input_";
+  if (id.rfind(prefix, 0) != 0 || id.size() == prefix.size()) return -1;
+  for (size_t i = prefix.size(); i < id.size(); ++i)
+    if (!isdigit(static_cast<unsigned char>(id[i]))) return -1;
+  const int inputNumber = stoi(id.substr(prefix.size()));
+  return inputNumber > 0 ? inputNumber - 1 : -1;
+}
+
+string drivingInputIdFromJson(const json & value)
+{
+  if (value.is_string()) return value.get<string>();
+  if (value.is_number_integer()) return defaultDrivingInputId(value.get<int>() - 1);
+  throw runtime_error("Driving input identifier must be a string or legacy integer");
+}
+
+int drivingInputIndexFromJson(
+    const json & value,
+    const map<string, int> & inputIdToIndex)
+{
+  if (value.is_number_integer())
+  {
+    const int inputNumber = value.get<int>();
+    if (inputNumber > 0) return inputNumber - 1;
+    throw runtime_error("Driving input integer identifiers must be positive");
+  }
+  if (value.is_string())
+  {
+    const string inputId = value.get<string>();
+    auto found = inputIdToIndex.find(inputId);
+    if (found != inputIdToIndex.end()) return found->second;
+    const int parsedIndex = parseDefaultDrivingInputId(inputId);
+    if (parsedIndex >= 0) return parsedIndex;
+    throw runtime_error(
+      "Unknown driving input identifier '" + inputId + "'");
+  }
+  throw runtime_error("Driving input identifier must be a string or legacy integer");
+}
+
+map<string, int> drivingInputIdMapFromJson(const json & j)
+{
+  map<string, int> inputIdToIndex;
+  if (!j.contains("driving_inputs")
+      || !j.at("driving_inputs").contains("inputs")
+      || !j.at("driving_inputs").at("inputs").contains("value")
+      || !j.at("driving_inputs").at("inputs").at("value").is_array())
+    return inputIdToIndex;
+
+  int sequentialIndex = 0;
+  for (const auto & input : j.at("driving_inputs").at("inputs").at("value"))
+  {
+    if (!input.contains("input_num")) continue;
+    string inputId;
+    int inputIndex = sequentialIndex;
+    if (input.at("input_num").is_string())
+      inputId = input.at("input_num").get<string>();
+    else if (input.at("input_num").is_number_integer())
+    {
+      const int legacyNumber = input.at("input_num").get<int>();
+      if (legacyNumber < 1)
+        throw runtime_error("driving_inputs.input_num must be positive");
+      inputIndex = legacyNumber - 1;
+      inputId = defaultDrivingInputId(inputIndex);
+    }
+    else
+      throw runtime_error("driving_inputs.input_num must be a string or integer");
+
+    if (inputIdToIndex.count(inputId))
+      throw runtime_error("Duplicate driving input identifier '" + inputId + "'");
+    inputIdToIndex[inputId] = inputIndex;
+    sequentialIndex++;
+  }
+  return inputIdToIndex;
+}
+
+bool shouldSetW2DSRStates(shared_ptr<const CmdArgs> cmd,
+    baseParameters &bp)
+{
+  bool randomInitialState;
+  bp.getValCJWorm<bool>("random_initial_state", randomInitialState);
+
+  bool explicitDoLegacy = true;
+  if (cmd
+      && (cmd->getArgValT<bool>("--do_legacy", explicitDoLegacy)
+          || cmd->getArgValT<bool>("--doLegacy", explicitDoLegacy))
+      && !explicitDoLegacy)
+      return false;
+
+  return !randomInitialState;
+}
+
+}
+
 Worm2DSR::Worm2DSR(wormIzqParams par1_, NSForW2D * n_ptr_,
   shared_ptr<SR> sr_ptr_, shared_ptr<const CmdArgs> cmd, const json & j,
   bool forceNoOrigInputs):
@@ -28,13 +130,13 @@ Worm2Dm(par1_, n_ptr_, cmd, j),Worm2D(par1_,n_ptr_,forceNoOrigInputs),Worm2DSRb(
 
   bool do_nml =  cmd->getArgValInt("--donml",0);
   if (!do_nml){
-    bool doLegacy;
-    getValCJWorm<bool>("do_legacy",doLegacy);
+    const bool setStates = shouldSetW2DSRStates(cmd, *this);
+    setValCJWorm<bool>("do_legacy", false);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
 
-    setNSFromJson(js1,*n, doLegacy);
+    setNSFromJson(js1,*n, setStates);
   }
 
   if (w2dsr_ptr!=nullptr) w2dsr_ptr->setParsFromJson(js1);
@@ -62,14 +164,14 @@ Worm2Dm(getIzqPars(j), getNS(cmd, j), cmd, j), Worm2D(getIzqPars(j) ,nullptr), W
     bool do_nml =  cmd->getArgValInt("--donml",0);
     if (!do_nml){
     
-    bool doLegacy;
-    getValCJWorm<bool>("do_legacy",doLegacy);
+    const bool setStates = shouldSetW2DSRStates(cmd, *this);
+    setValCJWorm<bool>("do_legacy", false);
 
     NervousSystem * n = dynamic_cast<NervousSystem*>(n_ptr);
     assert(n);
     //cout << "doLegacy " << doLegacy << endl;
     
-    setNSFromJson(js1,*n, doLegacy);
+    setNSFromJson(js1,*n, setStates);
     }
 
 
@@ -209,13 +311,13 @@ void Worm2DSRE::resetFromJson(const json & js1)
 
   NervousSystem * const n = dynamic_cast<NervousSystem*>(n_ptr);
   if(n){
-  bool doLegacy;
-  getValCJWorm<bool>("do_legacy",doLegacy);
+  const bool setStates = shouldSetW2DSRStates(BPitsCmdArgs, *this);
+  setValCJWorm<bool>("do_legacy", false);
 
   //copy in current states, external inputs here??
     
 
-  setNSFromJsonNZ(js1,*n,doLegacy);
+  setNSFromJsonNZ(js1,*n,setStates);
   }
   
     Worm2DSRb::setParsFromJson(js1);
@@ -2320,10 +2422,17 @@ void Sensor::construct(const json & j)
       && j.at("driving_inputs").contains("inputs")
       && j.at("driving_inputs").at("inputs").contains("value"))
   {
+    int sequentialCount = 0;
     for (const auto & input :
          j.at("driving_inputs").at("inputs").at("value"))
-      nextHiddenInput = max(
-        nextHiddenInput, input.at("input_num").get<int>());
+    {
+      if (input.at("input_num").is_number_integer())
+        nextHiddenInput = max(
+          nextHiddenInput, input.at("input_num").get<int>());
+      else
+        nextHiddenInput = max(nextHiddenInput, sequentialCount + 1);
+      sequentialCount++;
+    }
   }
   else if (j.contains("Driving input")
            && j.at("Driving input").contains("strengths")
@@ -2451,6 +2560,7 @@ void  Sensor::addParsToJson(json & j) const
     && j.at("driving_inputs").at("weights").contains("value")
       ? j.at("driving_inputs").at("weights").at("value")
       : json::array();
+  const map<string, int> inputIdToIndex = drivingInputIdMapFromJson(j);
 
   set<int> sensorInputNumbers;
   json oldSensors = j.contains("sensors") ? j.at("sensors") : json::object();
@@ -2502,13 +2612,18 @@ void  Sensor::addParsToJson(json & j) const
         }
       if (entry.is_null())
         for (const auto & oldEntry : drivingWeights)
-          if (oldEntry.value("from_input", 0) == connection.w.from
+        {
+          if (!oldEntry.contains("from_input")) continue;
+          if (drivingInputIndexFromJson(
+                  oldEntry.at("from_input"), inputIdToIndex) + 1
+              == connection.w.from
               && oldEntry.value("to_cell", string()) == cellName)
           {
             entry = oldEntry;
             entry.erase("from_input");
             break;
           }
+        }
 
       if (entry.is_null()) entry = json::object();
       entry["from_output"] = output;
@@ -2527,28 +2642,31 @@ void  Sensor::addParsToJson(json & j) const
   if (j.contains("driving_inputs"))
   {
     json remainingInputs = json::array();
-    map<int, int> inputNumberMap;
+    map<string, string> inputIdMap;
     if (j.at("driving_inputs").contains("inputs")
         && j.at("driving_inputs").at("inputs").contains("value"))
       for (const auto & input :
            j.at("driving_inputs").at("inputs").at("value"))
       {
-        const int oldNumber = input.at("input_num").get<int>();
+        const string oldId = drivingInputIdFromJson(input.at("input_num"));
+        const int oldNumber =
+          drivingInputIndexFromJson(input.at("input_num"), inputIdToIndex) + 1;
         if (sensorInputNumbers.count(oldNumber)) continue;
         json newInput = input;
-        const int newNumber = static_cast<int>(remainingInputs.size()) + 1;
-        newInput["input_num"] = newNumber;
-        inputNumberMap[oldNumber] = newNumber;
+        newInput["input_num"] = oldId;
+        inputIdMap[oldId] = oldId;
         remainingInputs.push_back(newInput);
       }
 
     json remainingWeights = json::array();
     for (const auto & connection : drivingWeights)
     {
-      const int oldNumber = connection.at("from_input").get<int>();
+      const string oldId = drivingInputIdFromJson(connection.at("from_input"));
+      const int oldNumber =
+        drivingInputIndexFromJson(connection.at("from_input"), inputIdToIndex) + 1;
       if (sensorInputNumbers.count(oldNumber)) continue;
-      auto mapped = inputNumberMap.find(oldNumber);
-      if (mapped == inputNumberMap.end()) continue;
+      auto mapped = inputIdMap.find(oldId);
+      if (mapped == inputIdMap.end()) continue;
       json newConnection = connection;
       newConnection["from_input"] = mapped->second;
       remainingWeights.push_back(newConnection);

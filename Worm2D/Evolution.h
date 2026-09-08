@@ -572,6 +572,7 @@ void Evolvable_ptrB<T>::writeJson(TVector<double> & pheno)
         j.erase("Dorsal body");
         j.erase("Ventral body");
         j.erase("Stretch receptor");
+        j.erase("Stretch Receptor");
         j.erase("VNC NMJ");
         j.erase("VNC 18");
         j.erase("Driving input");
@@ -693,7 +694,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     {
     if (Epars1->zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
     w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(0);
+    if (w_ptr->hasInputPattern(0)) w_ptr->setInputOnce(0);
     fitness += Evaluation21Rp1(genotype, rs, 1, w_ptr);
     count++;
     }
@@ -702,7 +703,7 @@ double Evolvable_ptrB<T>::Evaluation21R(TVector<double> &genotype, RandomState &
     {
     if (Epars1->zeroGainsType == 1)  w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(1);
+    if (w_ptr->hasInputPattern(1)) w_ptr->setInputOnce(1);
     fitness += Evaluation21Rp1(genotype, rs, -1, w_ptr);
     count++;
     }
@@ -1074,7 +1075,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     {
     if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 0;
     w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(0);
+    if (w_ptr->hasInputPattern(0)) w_ptr->setInputOnce(0);
     fitness += EvaluationCEp1(rs, 1, w_ptr);
     count++;
     }
@@ -1083,7 +1084,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
     {
     if (zeroGainsType == 1) w_ptr->itsEf.itsJson["condval"] = 1;  
     w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(1);
+    if (w_ptr->hasInputPattern(1)) w_ptr->setInputOnce(1);
     fitness += EvaluationCEp1(rs, -1, w_ptr);
     count++;
     }
@@ -1145,7 +1146,7 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
     //genotype(SR_A)= -1.0;
     //genotype(SR_B)= srb;
       w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(0);
+    if (w_ptr->hasInputPattern(0)) w_ptr->setInputOnce(0);
     fitness += EvaluationCEp1(rs, 1, w_ptr);
     count++;
     }
@@ -1154,7 +1155,7 @@ double Evolvable_ptrB<T>::EvaluationCENZ(TVector<double> &genotype, RandomState 
     //genotype(SR_A)= sra;
     //genotype(SR_B)= -1.0;
       w_ptr->setParsFromGeno(genotype);
-    w_ptr->setInputOnce(1);
+    if (w_ptr->hasInputPattern(1)) w_ptr->setInputOnce(1);
     fitness += EvaluationCEp1(rs, -1, w_ptr);
     count++;
     }

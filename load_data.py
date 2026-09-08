@@ -132,6 +132,544 @@ def get_activity_cell_names_by_numbers(
     return selected_cells
 
 
+def plot_json_dictionary_summary(
+    output_folder=None,
+    json_data=None,
+    json_filename="worm_data_worm.json",
+    exclude_keys=None,
+    filename="json_dictionary_summary.png",
+    save_png=True,
+    columns=6,
+    max_rows_per_box=18,
+):
+    """Return a figure summarising top-level JSON objects and their subfields."""
+    from matplotlib.patches import FancyBboxPatch
+
+    if json_data is None:
+        if output_folder is None:
+            raise ValueError("Either output_folder or json_data must be supplied")
+        json_path = os.path.join(output_folder, json_filename)
+        if not os.path.isfile(json_path):
+            raise FileNotFoundError("Could not find {}".format(json_path))
+        json_data = utils.getJsonFile(json_path)
+
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    excluded = {
+        "InputNS",
+        "Muscle",
+        "OutputNS",
+        "PhenoNames",
+        "PhenoNamesNums",
+        "evolved_used",
+    }
+    if exclude_keys is not None:
+        excluded.update(exclude_keys)
+
+    sections = [(key, val) for key, val in json_data.items() if key not in excluded]
+    if not sections:
+        raise ValueError("No JSON sections remain after applying exclude_keys")
+
+    columns = max(1, min(int(columns), len(sections)))
+
+    def subfield_rows(section):
+        if not isinstance(section, dict):
+            return ["value"]
+        return [str(subkey) for subkey in section]
+
+    def ellipsize(text, max_len=28):
+        text = str(text)
+        if len(text) <= max_len:
+            return text
+        return text[: max_len - 1] + "..."
+
+    def format_title(text):
+        text = str(text)
+        if text == "Evolutionary Optimization Parameters":
+            return "Evolutionary Optimization\nParameters", 9.5
+        if len(text) > 25:
+            words = text.replace("_", " ").split()
+            if len(words) > 1:
+                split_at = int(math.ceil(len(words) / 2))
+                return (
+                    "{}\n{}".format(
+                        " ".join(words[:split_at]),
+                        " ".join(words[split_at:]),
+                    ),
+                    9.5,
+                )
+            return ellipsize(text, 25), 9.5
+        return text, 11
+
+    box_palette = [
+        ("#F8FAFC", "#DDEBF7"),
+        ("#FFF7E6", "#F6D8A8"),
+        ("#F0F8EE", "#CFE8C6"),
+        ("#F8F1FA", "#E4CCE9"),
+        ("#EEF7F8", "#CBE5E8"),
+    ]
+    edge = "#2F3A45"
+    text_color = "#1F2933"
+
+    box_w = 0.82
+    col_gap = 0.08
+    box_gap = 0.10
+    header_h = 0.14
+    row_h = 0.055
+    top_pad = 0.045
+    bottom_pad = 0.045
+    table_gap = 0.030
+
+    section_specs = []
+    for section_name, section in sections:
+        rows_ = subfield_rows(section)
+        if not rows_:
+            continue
+        shown_rows = rows_[:max_rows_per_box]
+        omitted = len(rows_) - len(shown_rows)
+        if omitted > 0:
+            shown_rows.append("... {} more".format(omitted))
+        box_h = top_pad + header_h + table_gap + row_h * len(shown_rows) + bottom_pad
+        section_specs.append(
+            {
+                "name": section_name,
+                "rows": shown_rows,
+                "height": box_h,
+            }
+        )
+
+    if not section_specs:
+        raise ValueError(
+            "No non-empty JSON sections remain after applying exclude_keys"
+        )
+
+    section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
+
+    col_heights = [0.0] * columns
+    for spec in section_specs:
+        col = min(range(columns), key=lambda idx: col_heights[idx])
+        spec["col"] = col
+        spec["top"] = -col_heights[col]
+        spec["bottom"] = spec["top"] - spec["height"]
+        col_heights[col] += spec["height"] + box_gap
+
+        neighbour_colours = set()
+        for placed in section_specs:
+            if "colour_index" not in placed:
+                continue
+            same_column_neighbour = (
+                placed["col"] == col
+                and abs(spec["top"] - placed["bottom"] + box_gap) < 1e-9
+            )
+            adjacent_column_overlap = (
+                abs(placed["col"] - col) == 1
+                and spec["bottom"] < placed["top"]
+                and spec["top"] > placed["bottom"]
+            )
+            if same_column_neighbour or adjacent_column_overlap:
+                neighbour_colours.add(placed["colour_index"])
+        for colour_index in range(len(box_palette)):
+            if colour_index not in neighbour_colours:
+                spec["colour_index"] = colour_index
+                break
+        if "colour_index" not in spec:
+            spec["colour_index"] = len(neighbour_colours) % len(box_palette)
+
+    max_depth = max(col_heights) - box_gap
+    fig_w = max(11.0, columns * 2.55)
+    fig_h = max(6.0, max_depth * 4.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_xlim(-0.05, columns * (box_w + col_gap) - col_gap + 0.05)
+    ax.set_ylim(-max_depth - 0.05, 0.05)
+    ax.axis("off")
+
+    for spec in section_specs:
+        section_name = spec["name"]
+        shown_rows = spec["rows"]
+        x = spec["col"] * (box_w + col_gap)
+        h = spec["height"]
+        y = spec["top"] - h
+        w = box_w
+        box_face, header_face = box_palette[spec["colour_index"]]
+
+        patch = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012",
+            facecolor=box_face,
+            edgecolor=edge,
+            linewidth=1.2,
+        )
+        ax.add_patch(patch)
+
+        header = FancyBboxPatch(
+            (x, y + h - header_h),
+            w,
+            header_h,
+            boxstyle="round,pad=0.012",
+            facecolor=header_face,
+            edgecolor=edge,
+            linewidth=0.9,
+        )
+        ax.add_patch(header)
+        title_text, title_fontsize = format_title(section_name)
+        ax.text(
+            x + w / 2,
+            y + h - header_h / 2,
+            title_text,
+            ha="center",
+            va="center",
+            fontsize=title_fontsize,
+            fontweight="bold",
+            color=text_color,
+            linespacing=0.95,
+        )
+
+        table_y_top = y + h - header_h - table_gap
+        text_x = x + 0.055
+        for row_index, subkey in enumerate(shown_rows):
+            yy = table_y_top - row_h * (row_index + 0.5)
+            if row_index % 2 == 1:
+                ax.add_patch(
+                    FancyBboxPatch(
+                        (x + 0.025, yy - row_h / 2),
+                        w - 0.05,
+                        row_h,
+                        boxstyle="square,pad=0",
+                        facecolor="#FFFFFF",
+                        edgecolor="none",
+                    )
+                )
+            ax.text(
+                text_x,
+                yy,
+                ellipsize(subkey),
+                ha="left",
+                va="center",
+                fontsize=8.0,
+                color=text_color,
+            )
+
+    fig.tight_layout(pad=0.25)
+
+    if save_png:
+        if output_folder is None:
+            raise ValueError("output_folder is required when save_png=True")
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
+def plot_json_dictionary_summary_2(
+    output_folder=None,
+    json_data=None,
+    json_filename="worm_data_worm.json",
+    exclude_keys=None,
+    filename="json_dictionary_summary_2.png",
+    save_png=True,
+    columns=5,
+    max_rows_per_box=18,
+):
+    """Return a two-column summary of top-level JSON subfield names and values."""
+    from matplotlib.patches import FancyBboxPatch
+
+    if json_data is None:
+        if output_folder is None:
+            raise ValueError("Either output_folder or json_data must be supplied")
+        json_path = os.path.join(output_folder, json_filename)
+        if not os.path.isfile(json_path):
+            raise FileNotFoundError("Could not find {}".format(json_path))
+        json_data = utils.getJsonFile(json_path)
+
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    excluded = {
+        "InputNS",
+        "Muscle",
+        "OutputNS",
+        "PhenoNames",
+        "PhenoNamesNums",
+        "evolved_used",
+    }
+    if exclude_keys is not None:
+        excluded.update(exclude_keys)
+
+    sections = [(key, val) for key, val in json_data.items() if key not in excluded]
+    if not sections:
+        raise ValueError("No JSON sections remain after applying exclude_keys")
+
+    columns = max(1, min(int(columns), len(sections)))
+
+    def display_value(value):
+        if isinstance(value, dict) and "value" in value:
+            value = value["value"]
+        elif isinstance(value, dict):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
+
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if isinstance(value, float):
+            return "{:.4g}".format(value)
+        if isinstance(value, (int, np.integer)):
+            return str(int(value))
+        if isinstance(value, str):
+            return value
+        if value is None:
+            return "null"
+        if isinstance(value, list):
+            return "list"
+        if isinstance(value, dict):
+            return "object"
+        return str(value)
+
+    def subfield_rows(section):
+        if not isinstance(section, dict):
+            return [("value", display_value(section))]
+        return [
+            (str(subkey), display_value(subval)) for subkey, subval in section.items()
+        ]
+
+    def ellipsize(text, max_len=23):
+        text = str(text)
+        if len(text) <= max_len:
+            return text
+        return text[: max_len - 1] + "..."
+
+    def format_title(text):
+        text = str(text)
+        if text == "Evolutionary Optimization Parameters":
+            return "Evolutionary Optimization\nParameters", 9.0
+        if len(text) > 25:
+            words = text.replace("_", " ").split()
+            if len(words) > 1:
+                split_at = int(math.ceil(len(words) / 2))
+                return (
+                    "{}\n{}".format(
+                        " ".join(words[:split_at]),
+                        " ".join(words[split_at:]),
+                    ),
+                    9.0,
+                )
+            return ellipsize(text, 25), 9.0
+        return text, 10.5
+
+    box_palette = [
+        ("#F8FAFC", "#DDEBF7"),
+        ("#FFF7E6", "#F6D8A8"),
+        ("#F0F8EE", "#CFE8C6"),
+        ("#F8F1FA", "#E4CCE9"),
+        ("#EEF7F8", "#CBE5E8"),
+    ]
+    edge = "#2F3A45"
+    text_color = "#1F2933"
+
+    box_w = 1.02
+    col_gap = 0.10
+    box_gap = 0.10
+    header_h = 0.14
+    column_header_h = 0.055
+    row_h = 0.055
+    top_pad = 0.045
+    bottom_pad = 0.045
+    table_gap = 0.030
+
+    section_specs = []
+    for section_name, section in sections:
+        rows_ = subfield_rows(section)
+        if not rows_:
+            continue
+        shown_rows = rows_[:max_rows_per_box]
+        omitted = len(rows_) - len(shown_rows)
+        if omitted > 0:
+            shown_rows.append(("... {} more".format(omitted), ""))
+        box_h = (
+            top_pad
+            + header_h
+            + table_gap
+            + column_header_h
+            + row_h * len(shown_rows)
+            + bottom_pad
+        )
+        section_specs.append(
+            {
+                "name": section_name,
+                "rows": shown_rows,
+                "height": box_h,
+            }
+        )
+
+    if not section_specs:
+        raise ValueError(
+            "No non-empty JSON sections remain after applying exclude_keys"
+        )
+
+    section_specs.sort(key=lambda spec: (-spec["height"], spec["name"].lower()))
+
+    col_heights = [0.0] * columns
+    for spec in section_specs:
+        col = min(range(columns), key=lambda idx: col_heights[idx])
+        spec["col"] = col
+        spec["top"] = -col_heights[col]
+        spec["bottom"] = spec["top"] - spec["height"]
+        col_heights[col] += spec["height"] + box_gap
+
+        neighbour_colours = set()
+        for placed in section_specs:
+            if "colour_index" not in placed:
+                continue
+            same_column_neighbour = (
+                placed["col"] == col
+                and abs(spec["top"] - placed["bottom"] + box_gap) < 1e-9
+            )
+            adjacent_column_overlap = (
+                abs(placed["col"] - col) == 1
+                and spec["bottom"] < placed["top"]
+                and spec["top"] > placed["bottom"]
+            )
+            if same_column_neighbour or adjacent_column_overlap:
+                neighbour_colours.add(placed["colour_index"])
+        for colour_index in range(len(box_palette)):
+            if colour_index not in neighbour_colours:
+                spec["colour_index"] = colour_index
+                break
+        if "colour_index" not in spec:
+            spec["colour_index"] = len(neighbour_colours) % len(box_palette)
+
+    max_depth = max(col_heights) - box_gap
+    fig_w = max(11.0, columns * 3.25)
+    fig_h = max(6.0, max_depth * 4.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_xlim(-0.05, columns * (box_w + col_gap) - col_gap + 0.05)
+    ax.set_ylim(-max_depth - 0.05, 0.05)
+    ax.axis("off")
+
+    for spec in section_specs:
+        section_name = spec["name"]
+        shown_rows = spec["rows"]
+        x = spec["col"] * (box_w + col_gap)
+        h = spec["height"]
+        y = spec["top"] - h
+        w = box_w
+        box_face, header_face = box_palette[spec["colour_index"]]
+
+        patch = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012",
+            facecolor=box_face,
+            edgecolor=edge,
+            linewidth=1.2,
+        )
+        ax.add_patch(patch)
+
+        header = FancyBboxPatch(
+            (x, y + h - header_h),
+            w,
+            header_h,
+            boxstyle="round,pad=0.012",
+            facecolor=header_face,
+            edgecolor=edge,
+            linewidth=0.9,
+        )
+        ax.add_patch(header)
+        title_text, title_fontsize = format_title(section_name)
+        ax.text(
+            x + w / 2,
+            y + h - header_h / 2,
+            title_text,
+            ha="center",
+            va="center",
+            fontsize=title_fontsize,
+            fontweight="bold",
+            color=text_color,
+            linespacing=0.95,
+        )
+
+        table_y_top = y + h - header_h - table_gap
+        name_x = x + 0.050
+        value_x = x + 0.630
+        ax.add_patch(
+            FancyBboxPatch(
+                (x + 0.025, table_y_top - column_header_h),
+                w - 0.05,
+                column_header_h,
+                boxstyle="square,pad=0",
+                facecolor="#FFFFFF",
+                edgecolor="none",
+                alpha=0.75,
+            )
+        )
+        ax.text(
+            name_x,
+            table_y_top - column_header_h / 2,
+            "name",
+            ha="left",
+            va="center",
+            fontsize=7.8,
+            fontweight="bold",
+            color=text_color,
+        )
+        ax.text(
+            value_x,
+            table_y_top - column_header_h / 2,
+            "value",
+            ha="left",
+            va="center",
+            fontsize=7.8,
+            fontweight="bold",
+            color=text_color,
+        )
+
+        rows_top = table_y_top - column_header_h
+        for row_index, (subkey, subval) in enumerate(shown_rows):
+            yy = rows_top - row_h * (row_index + 0.5)
+            if row_index % 2 == 1:
+                ax.add_patch(
+                    FancyBboxPatch(
+                        (x + 0.025, yy - row_h / 2),
+                        w - 0.05,
+                        row_h,
+                        boxstyle="square,pad=0",
+                        facecolor="#FFFFFF",
+                        edgecolor="none",
+                        alpha=0.65,
+                    )
+                )
+            ax.text(
+                name_x,
+                yy,
+                ellipsize(subkey, 28),
+                ha="left",
+                va="center",
+                fontsize=7.6,
+                color=text_color,
+            )
+            ax.text(
+                value_x,
+                yy,
+                ellipsize(subval, 18),
+                ha="left",
+                va="center",
+                fontsize=7.6,
+                color=text_color,
+            )
+
+    fig.tight_layout(pad=0.25)
+
+    if save_png:
+        if output_folder is None:
+            raise ValueError("output_folder is required when save_png=True")
+        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def plot_selected_activity(
     output_folder,
     cells_or_class,
@@ -183,6 +721,42 @@ def plot_selected_activity(
     if act_data.ndim != 2 or act_data.shape[0] < len(cell_names) + 1:
         raise ValueError("act.dat does not contain the expected activity columns")
 
+    next_column = 1
+    sr_count = 0
+    stretch_receptor = network_json_data.get("stretch_receptor")
+    if isinstance(stretch_receptor, dict):
+        sr_count = _json_value(stretch_receptor.get("plot_size"), 0)
+    elif "Stretch receptor" in network_json_data:
+        sr_count = _json_value(
+            network_json_data["Stretch receptor"].get("plot size"), 0
+        )
+    if isinstance(sr_count, (int, float)) and sr_count > 0:
+        next_column += min(int(sr_count), act_data.shape[0] - next_column)
+
+    def get_int_value(section, key, default=0):
+        value = network_json_data.get(section, {}).get(key)
+        value = _json_value(value, default)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return default
+        return int(value)
+
+    vnc_cell_count = get_int_value("worm", "N_units") * get_int_value(
+        "worm", "N_neuronsperunit"
+    )
+    if vnc_cell_count > 0 and vnc_cell_count < len(cell_names):
+        act_cell_names = cell_names[vnc_cell_count:] + cell_names[:vnc_cell_count]
+    else:
+        act_cell_names = list(cell_names)
+
+    act_cell_count = min(len(act_cell_names), act_data.shape[0] - next_column)
+    act_cell_names = act_cell_names[:act_cell_count]
+    missing_act_cells = [cell for cell in selected_cells if cell not in act_cell_names]
+    if missing_act_cells:
+        raise ValueError(
+            "Selected cell(s) were not found in the nervous-system columns of "
+            "act.dat: {}".format(", ".join(missing_act_cells))
+        )
+
     t_data = act_data[0]
     if time_interval is None:
         t_start = t_data[0]
@@ -202,7 +776,9 @@ def plot_selected_activity(
     if not np.any(data_seg):
         raise ValueError("time_interval does not overlap the act.dat time range")
 
-    selected_indices = [cell_names.index(cell) + 1 for cell in selected_cells]
+    selected_indices = [
+        next_column + act_cell_names.index(cell) for cell in selected_cells
+    ]
     selected_data = act_data[selected_indices][:, data_seg]
     t_plot = t_data[data_seg]
 
@@ -212,10 +788,13 @@ def plot_selected_activity(
     for cell_name, row in zip(selected_cells, selected_data):
         axs[0].plot(t_plot, row, linewidth=0.8, label=cell_name)
     axs[0].set_ylabel("Activity")
+    legend_ncols = max(1, min(6, len(selected_cells)))
     axs[0].legend(
-        loc="upper right",
+        loc="lower right",
+        bbox_to_anchor=(1.0, 1.01),
         fontsize="small",
-        ncol=max(1, min(4, len(selected_cells))),
+        ncol=legend_ncols,
+        frameon=True,
     )
 
     extent = [t_plot[0], t_plot[-1], 0, len(selected_cells)]
@@ -224,24 +803,66 @@ def plot_selected_activity(
         aspect="auto",
         interpolation="nearest",
         extent=extent,
+        origin="lower",
     )
     axs[1].set_yticks(np.arange(len(selected_cells)) + 0.5)
     axs[1].set_yticklabels(selected_cells)
+    heatmap_axis_height_points = fig_height * 72.0 * 0.38
+    heatmap_label_fontsize = min(
+        10.0,
+        max(4.0, 0.8 * heatmap_axis_height_points / len(selected_cells)),
+    )
+    axs[1].tick_params(axis="y", labelsize=heatmap_label_fontsize)
     axs[1].set_xlabel("Time (s)")
     axs[1].set_ylabel("Cell")
 
-    title = (
-        cells_or_class
-        if isinstance(cells_or_class, str)
-        else "{} selected cells".format(len(selected_cells))
-    )
-    axs[0].set_title("Activity: {}".format(title))
     fig.tight_layout()
 
     if save_png:
         fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
 
     return fig
+
+
+def plot_nervous_system_activity(
+    output_folder,
+    cell_names=None,
+    time_interval=None,
+    save_png=False,
+    filename="NervousSystemActivity.png",
+):
+    """Return a two-panel ExampleActivity-style plot for nervous-system cells."""
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+
+    network_json_data = utils.getJsonFile(worm_file)
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    all_cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(all_cell_names, list) or not all_cell_names:
+        raise ValueError("'nervous_system.cell_names.value' must be a non-empty list")
+
+    if cell_names is None:
+        selected_cells = all_cell_names
+    else:
+        if isinstance(cell_names, str) or not isinstance(cell_names, (list, tuple)):
+            raise TypeError("cell_names must be None or a list/tuple of cell names")
+        selected_cells = list(cell_names)
+        if not selected_cells:
+            raise ValueError("cell_names must contain at least one cell name")
+
+    return plot_selected_activity(
+        output_folder,
+        selected_cells,
+        time_interval=time_interval,
+        save_png=save_png,
+        filename=filename,
+    )
 
 
 def plot_motion_all(
@@ -252,6 +873,7 @@ def plot_motion_all(
     filename="motion_all.png",
     mean_filename="motion_all_mean.png",
     max_snapshots=60,
+    axis_padding=0.03,
 ):
     """Plot body profiles and mean-position paths from simulation subfolders."""
     if not os.path.isdir(input_folder):
@@ -264,6 +886,8 @@ def plot_motion_all(
         or max_snapshots < 1
     ):
         raise ValueError("max_snapshots must be a positive integer")
+    if axis_padding < 0:
+        raise ValueError("axis_padding must be non-negative")
     if legend_names is not None and (
         isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
     ):
@@ -345,6 +969,8 @@ def plot_motion_all(
     profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
     mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
     color_map = plt.get_cmap("tab20")
+    profile_bounds = []
+    mean_bounds = []
 
     for run_index, (run_name, body_file, legend_name) in enumerate(simulation_files):
         body_data = np.loadtxt(body_file)
@@ -377,6 +1003,7 @@ def plot_motion_all(
             linestyle="-",
             label=legend_name,
         )
+        mean_bounds.append((center_x, center_y))
 
         sample_count = min(max_snapshots, body_data.shape[0])
         snapshot_indices = np.unique(
@@ -392,12 +1019,41 @@ def plot_motion_all(
                 alpha=0.35,
                 label=legend_name if snapshot_number == 0 else "_nolegend_",
             )
+            profile_bounds.append(
+                (x_positions[snapshot_index], y_positions[snapshot_index])
+            )
 
-    def finish_figure(fig, ax, title):
+    def apply_tight_equal_limits(ax, bounds):
+        x_values = np.concatenate([np.ravel(x) for x, _ in bounds])
+        y_values = np.concatenate([np.ravel(y) for _, y in bounds])
+        valid = np.isfinite(x_values) & np.isfinite(y_values)
+        if not np.any(valid):
+            return
+
+        x_min = float(np.min(x_values[valid]))
+        x_max = float(np.max(x_values[valid]))
+        y_min = float(np.min(y_values[valid]))
+        y_max = float(np.max(y_values[valid]))
+        x_range = x_max - x_min
+        y_range = y_max - y_min
+        if x_range == 0:
+            x_range = 1.0
+        if y_range == 0:
+            y_range = 1.0
+
+        span = max(x_range, y_range)
+        x_center = 0.5 * (x_min + x_max)
+        y_center = 0.5 * (y_min + y_max)
+        half_span = 0.5 * span * (1.0 + 2.0 * axis_padding)
+        ax.set_xlim(x_center - half_span, x_center + half_span)
+        ax.set_ylim(y_center - half_span, y_center + half_span)
+
+    def finish_figure(fig, ax, title, bounds):
         ax.set_title(title)
         ax.set_xlabel("X Position (mm)")
         ax.set_ylabel("Y Position (mm)")
-        ax.set_aspect("equal", adjustable="datalim")
+        apply_tight_equal_limits(ax, bounds)
+        ax.set_aspect("equal", adjustable="box")
         ax.grid(True, linewidth=0.4, alpha=0.25)
         ax.legend(
             title="Simulation",
@@ -407,8 +1063,8 @@ def plot_motion_all(
         )
         fig.tight_layout()
 
-    finish_figure(profile_fig, profile_ax, "Worm body profiles")
-    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories")
+    finish_figure(profile_fig, profile_ax, "Worm body profiles", profile_bounds)
+    finish_figure(mean_fig, mean_ax, "Mean body-position trajectories", mean_bounds)
 
     if save_png:
         for fig, output_file in (
@@ -422,11 +1078,152 @@ def plot_motion_all(
     return profile_fig, mean_fig
 
 
+def _body_file_for_simulation_folder(folder):
+    if not os.path.isdir(folder):
+        raise NotADirectoryError(
+            "Could not find simulation output directory: {}".format(folder)
+        )
+    for body_filename in ("body.dat", "bodypos.dat"):
+        body_file = os.path.join(folder, body_filename)
+        if os.path.isfile(body_file):
+            return body_file
+    raise FileNotFoundError(
+        "No body.dat or bodypos.dat file was found in {}".format(folder)
+    )
+
+
+def _load_body_position_file(body_file):
+    body_data = np.loadtxt(body_file)
+    if body_data.ndim == 1:
+        body_data = body_data.reshape(1, -1)
+    if body_data.ndim != 2 or body_data.shape[1] < 4:
+        raise ValueError(
+            "{} does not contain time and x/y/z body coordinates".format(body_file)
+        )
+    coordinate_columns = body_data.shape[1] - 1
+    if coordinate_columns % 3 != 0:
+        raise ValueError(
+            "{} has {} coordinate columns; expected a multiple of 3".format(
+                body_file, coordinate_columns
+            )
+        )
+    segment_count = coordinate_columns // 3
+    times = body_data[:, 0]
+    x_positions = body_data[:, 1 : 1 + 3 * segment_count : 3] * 1000.0
+    y_positions = body_data[:, 2 : 2 + 3 * segment_count : 3] * 1000.0
+    return times, x_positions, y_positions
+
+
+def plot_head_motion(
+    output_folder,
+    save_png=True,
+    filename="HeadMotion.png",
+    head_index=0,
+    max_snapshots=60,
+    show_path=False,
+    marker_size=8.0,
+    line_width=1.0,
+):
+    """Plot only the worm head trajectory from body.dat/bodypos.dat."""
+    output_folder = os.path.abspath(output_folder)
+    body_file = _body_file_for_simulation_folder(output_folder)
+    times, x_positions, y_positions = _load_body_position_file(body_file)
+
+    if (
+        isinstance(head_index, bool)
+        or not isinstance(head_index, int)
+        or head_index < 0
+        or head_index >= x_positions.shape[1]
+    ):
+        raise ValueError(
+            "head_index must be an integer in the range 0 to {}".format(
+                x_positions.shape[1] - 1
+            )
+        )
+
+    if (
+        isinstance(max_snapshots, bool)
+        or not isinstance(max_snapshots, int)
+        or max_snapshots < 1
+    ):
+        raise ValueError("max_snapshots must be a positive integer")
+
+    head_x = x_positions[:, head_index]
+    head_y = y_positions[:, head_index]
+    sample_count = min(max_snapshots, len(head_x))
+    snapshot_indices = np.unique(
+        np.linspace(0, len(head_x) - 1, sample_count).astype(int)
+    )
+    plot_x = head_x[snapshot_indices]
+    plot_y = head_y[snapshot_indices]
+    plot_times = times[snapshot_indices]
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+    if len(plot_times) > 1 and np.nanmax(plot_times) > np.nanmin(plot_times):
+        colours = plot_times
+        colour_label = "Time (s)"
+    else:
+        colours = snapshot_indices
+        colour_label = "Sample"
+
+    if show_path:
+        ax.plot(
+            head_x,
+            head_y,
+            color="0.75",
+            linewidth=line_width,
+            zorder=1,
+        )
+    scatter = ax.scatter(
+        plot_x,
+        plot_y,
+        c=colours,
+        cmap="viridis",
+        s=marker_size,
+        edgecolors="none",
+        zorder=2,
+    )
+    ax.scatter(
+        plot_x[0],
+        plot_y[0],
+        color="black",
+        s=marker_size * 2.0,
+        label="start",
+        zorder=3,
+    )
+    ax.scatter(
+        plot_x[-1],
+        plot_y[-1],
+        color="red",
+        s=marker_size * 2.0,
+        label="end",
+        zorder=3,
+    )
+    ax.set_title("Head trajectory")
+    ax.set_xlabel("X Position (mm)")
+    ax.set_ylabel("Y Position (mm)")
+    ax.set_aspect("equal", adjustable="datalim")
+    ax.grid(True, linewidth=0.4, alpha=0.25)
+    ax.legend(frameon=False)
+    cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label(colour_label)
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def plot_trajectory_properties(
     input_folder,
     x_values=None,
     subfolders=None,
     properties=("speed", "curvature"),
+    oscillation_cell_name=None,
     panel_columns=1,
     save_png=True,
     filename="trajectory_properties.png",
@@ -453,6 +1250,7 @@ def plot_trajectory_properties(
         "path_curvature",
         "path_deviation",
         "displacement",
+        "oscillation_frequency",
     }
     properties = [str(prop) for prop in properties]
     unknown_properties = sorted(set(properties) - valid_properties)
@@ -476,6 +1274,53 @@ def plot_trajectory_properties(
         if "curv.dat" in os.listdir(folder):
             return os.path.join(folder, "curv.dat")
         return None
+
+    def act_file_for_folder(folder):
+        act_file = os.path.join(folder, "act.dat")
+        return act_file if os.path.isfile(act_file) else None
+
+    def worm_json_file_for_folder(folder):
+        for filename1 in (
+            "worm_data_worm.json",
+            "worm_data_evo.json",
+            "worm_data.json",
+        ):
+            worm_file = os.path.join(folder, filename1)
+            if os.path.isfile(worm_file):
+                return worm_file
+        return None
+
+    def choose_oscillation_cell(network_json_data):
+        nervous_system = network_json_data.get("nervous_system")
+        if not isinstance(nervous_system, dict):
+            raise KeyError("JSON does not contain a 'nervous_system' object")
+        cell_names = _json_value(nervous_system.get("cell_names"), [])
+        if not isinstance(cell_names, list) or not cell_names:
+            raise ValueError(
+                "'nervous_system.cell_names.value' must be a non-empty list"
+            )
+        if oscillation_cell_name is not None:
+            if oscillation_cell_name not in cell_names:
+                raise ValueError(
+                    "Oscillation cell {!r} was not found in {}".format(
+                        oscillation_cell_name, cell_names
+                    )
+                )
+            return oscillation_cell_name
+
+        cells = nervous_system.get("cells", {})
+        if isinstance(cells, dict):
+            for cell_name in cell_names:
+                cell = cells.get(cell_name, {})
+                if (
+                    isinstance(cell, dict)
+                    and _normalise_cell_class_name(
+                        _json_value(cell.get("cell_class"), "")
+                    )
+                    == "vnc"
+                ):
+                    return cell_name
+        return cell_names[0]
 
     simulation_folders = []
     if subfolders is None:
@@ -524,6 +1369,8 @@ def plot_trajectory_properties(
         "subfolders": [run_name for run_name, _ in simulation_folders],
         "x_values": x_values,
     }
+    if "oscillation_frequency" in properties:
+        results["oscillation_cell_name"] = []
     for prop in properties:
         results[prop] = []
 
@@ -624,6 +1471,39 @@ def plot_trajectory_properties(
                 curvature = np.nanmean(np.abs(curv_data[:, 1:]))
             results["curvature"].append(curvature)
 
+        if "oscillation_frequency" in properties:
+            act_file = act_file_for_folder(folder)
+            if act_file is None:
+                oscillation_frequency = np.nan
+                cell_name = oscillation_cell_name
+            else:
+                worm_file = worm_json_file_for_folder(folder)
+                if worm_file is None:
+                    raise FileNotFoundError(
+                        "No worm JSON file was found in {}".format(folder)
+                    )
+                network_json_data = utils.getJsonFile(worm_file)
+                cell_name = choose_oscillation_cell(network_json_data)
+                cell_names = _json_value(
+                    network_json_data["nervous_system"].get("cell_names"), []
+                )
+                cell_index = cell_names.index(cell_name) + 1
+
+                act_data = np.loadtxt(act_file)
+                if act_data.ndim == 1:
+                    act_data = act_data.reshape(1, -1)
+                if act_data.ndim != 2 or act_data.shape[1] <= cell_index:
+                    raise ValueError(
+                        "{} does not contain activity data for cell {!r}".format(
+                            act_file, cell_name
+                        )
+                    )
+                oscillation_frequency = _estimate_zero_crossing_frequency(
+                    act_data[:, 0], act_data[:, cell_index]
+                )
+            results["oscillation_frequency"].append(oscillation_frequency)
+            results["oscillation_cell_name"].append(cell_name)
+
     for prop in properties:
         results[prop] = np.asarray(results[prop], dtype=float)
 
@@ -641,6 +1521,7 @@ def plot_trajectory_properties(
         "path_curvature": "Path curvature (mm)",
         "path_deviation": "Path deviation (1/mm)",
         "displacement": "Displacement (mm)",
+        "oscillation_frequency": "Oscillation frequency (Hz)",
     }
     flat_axes = axs.ravel()
     for ax, prop in zip(flat_axes, properties):
@@ -659,6 +1540,347 @@ def plot_trajectory_properties(
         output_file = filename
         if not os.path.isabs(output_file):
             output_file = os.path.join(input_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig, results
+
+
+def _compute_center_trajectory_properties(times, center_x, center_y, properties):
+    results = {}
+    if "speed" in properties:
+        elapsed_time = times[-1] - times[0] if len(times) > 1 else np.nan
+        if elapsed_time > 0:
+            step_distances = np.sqrt(np.diff(center_x) ** 2 + np.diff(center_y) ** 2)
+            results["speed"] = np.nansum(step_distances) / elapsed_time
+        else:
+            results["speed"] = np.nan
+
+    if "displacement" in properties:
+        results["displacement"] = np.hypot(
+            center_x[-1] - center_x[0],
+            center_y[-1] - center_y[0],
+        )
+
+    if "path_curvature" in properties:
+        chord_x = center_x[-1] - center_x[0]
+        chord_y = center_y[-1] - center_y[0]
+        chord_length = np.hypot(chord_x, chord_y)
+        if chord_length > 0:
+            lateral_distances = (
+                np.abs(
+                    chord_x * (center_y - center_y[0])
+                    - chord_y * (center_x - center_x[0])
+                )
+                / chord_length
+            )
+            results["path_curvature"] = np.nanmax(lateral_distances)
+        else:
+            results["path_curvature"] = np.nan
+
+    if "path_deviation" in properties:
+        dx = np.diff(center_x)
+        dy = np.diff(center_y)
+        if len(dx) > 1:
+            headings = np.unwrap(np.arctan2(dy, dx))
+            heading_changes = np.abs(np.diff(headings))
+            step_distances = np.sqrt(dx[1:] ** 2 + dy[1:] ** 2)
+            path_length = np.nansum(step_distances)
+            if path_length > 0:
+                results["path_deviation"] = np.nansum(heading_changes) / path_length
+            else:
+                results["path_deviation"] = np.nan
+        else:
+            results["path_deviation"] = np.nan
+    return results
+
+
+def _estimate_zero_crossing_frequency(times, values):
+    valid = np.isfinite(times) & np.isfinite(values)
+    times = np.asarray(times[valid], dtype=float)
+    values = np.asarray(values[valid], dtype=float)
+    if times.size < 3 or times[-1] <= times[0]:
+        return np.nan
+    centered = values - np.nanmean(values)
+    if not np.any(centered > 0) or not np.any(centered < 0):
+        return np.nan
+
+    crossing_times = []
+    for index in range(len(centered) - 1):
+        y0 = centered[index]
+        y1 = centered[index + 1]
+        if y0 < 0 <= y1 and y1 != y0:
+            t0 = times[index]
+            t1 = times[index + 1]
+            crossing_times.append(t0 - y0 * (t1 - t0) / (y1 - y0))
+    if len(crossing_times) < 2:
+        return np.nan
+    elapsed_time = crossing_times[-1] - crossing_times[0]
+    if elapsed_time <= 0:
+        return np.nan
+    return (len(crossing_times) - 1) / elapsed_time
+
+
+def _head_position_oscillation_frequency(times, x_positions, y_positions):
+    if x_positions.ndim != 2 or y_positions.ndim != 2:
+        raise ValueError("WCON x and y body coordinates must be two-dimensional")
+    if x_positions.shape != y_positions.shape:
+        raise ValueError("WCON x and y body coordinate arrays must have the same shape")
+    if x_positions.shape[1] == 0:
+        return np.nan
+
+    head_x = x_positions[:, -1]
+    head_y = y_positions[:, -1]
+    center_x = np.nanmean(x_positions, axis=1)
+    center_y = np.nanmean(y_positions, axis=1)
+    travel_x = center_x[-1] - center_x[0]
+    travel_y = center_y[-1] - center_y[0]
+    travel_length = np.hypot(travel_x, travel_y)
+    if travel_length > 0:
+        # Use lateral head displacement so translational movement is removed.
+        values = (-travel_y * head_x + travel_x * head_y) / travel_length
+    else:
+        values = head_y
+    return _estimate_zero_crossing_frequency(times, values)
+
+
+def _mean_abs_spine_curvature(x_positions, y_positions):
+    if x_positions.ndim != 2 or y_positions.ndim != 2:
+        raise ValueError("WCON x and y body coordinates must be two-dimensional")
+    if x_positions.shape != y_positions.shape:
+        raise ValueError("WCON x and y body coordinate arrays must have the same shape")
+    if x_positions.shape[1] < 3:
+        return np.nan
+
+    x0 = x_positions[:, :-2]
+    y0 = y_positions[:, :-2]
+    x1 = x_positions[:, 1:-1]
+    y1 = y_positions[:, 1:-1]
+    x2 = x_positions[:, 2:]
+    y2 = y_positions[:, 2:]
+
+    a = np.hypot(x1 - x0, y1 - y0)
+    b = np.hypot(x2 - x1, y2 - y1)
+    c = np.hypot(x2 - x0, y2 - y0)
+    twice_area = np.abs((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0))
+    denom = a * b * c
+    curvature = np.full_like(twice_area, np.nan, dtype=float)
+    valid = denom > 0
+    curvature[valid] = 2.0 * twice_area[valid] / denom[valid]
+    return np.nanmean(curvature)
+
+
+def _wcon_unit_scale_to_mm(units, key):
+    unit = str(units.get(key, "mm")).strip().lower()
+    if unit in {"mm", "millimeter", "millimeters", "millimetre", "millimetres"}:
+        return 1.0
+    if unit in {"cm", "centimeter", "centimeters", "centimetre", "centimetres"}:
+        return 10.0
+    if unit in {"m", "meter", "meters", "metre", "metres"}:
+        return 1000.0
+    if unit in {"um", "micrometer", "micrometers", "micrometre", "micrometres"}:
+        return 0.001
+    return 1.0
+
+
+def _wcon_unit_scale_to_seconds(units, key):
+    unit = str(units.get(key, "s")).strip().lower()
+    if unit in {"s", "sec", "second", "seconds"}:
+        return 1.0
+    if unit in {"ms", "millisecond", "milliseconds"}:
+        return 0.001
+    if unit in {"min", "minute", "minutes"}:
+        return 60.0
+    return 1.0
+
+
+def _as_wcon_spine_array(values, name):
+    array = np.asarray(values, dtype=float)
+    if array.ndim == 1:
+        array = array.reshape(-1, 1)
+    if array.ndim != 2:
+        raise ValueError("WCON {} values must be one- or two-dimensional".format(name))
+    return array
+
+
+def _wcon_records_for_file(wcon_file, worm_id=None):
+    import json
+
+    with open(wcon_file, "r") as file_obj:
+        wcon = json.load(file_obj)
+
+    units = wcon.get("units", {})
+    data = wcon.get("data")
+    if isinstance(data, dict):
+        records = [data]
+    elif isinstance(data, list):
+        records = data
+    else:
+        raise ValueError("{} does not contain WCON data records".format(wcon_file))
+    if not records:
+        raise ValueError("{} contains no WCON data records".format(wcon_file))
+
+    if worm_id is None:
+        selected_id = records[0].get("id")
+        selected_records = [
+            record for record in records if record.get("id") == selected_id
+        ]
+    else:
+        selected_id = str(worm_id)
+        selected_records = [
+            record for record in records if str(record.get("id")) == selected_id
+        ]
+    if not selected_records:
+        raise ValueError(
+            "WCON worm id {!r} was not found in {}".format(selected_id, wcon_file)
+        )
+
+    t_scale = _wcon_unit_scale_to_seconds(units, "t")
+    x_scale = _wcon_unit_scale_to_mm(units, "x")
+    y_scale = _wcon_unit_scale_to_mm(units, "y")
+
+    times = []
+    x_rows = []
+    y_rows = []
+    for record in selected_records:
+        if not all(key in record for key in ("t", "x", "y")):
+            raise ValueError("Each WCON record must contain t, x, and y")
+        record_times = np.asarray(record["t"], dtype=float).reshape(-1) * t_scale
+        record_x = _as_wcon_spine_array(record["x"], "x") * x_scale
+        record_y = _as_wcon_spine_array(record["y"], "y") * y_scale
+        if (
+            len(record_times) != record_x.shape[0]
+            or len(record_times) != record_y.shape[0]
+        ):
+            raise ValueError("WCON t, x, and y lengths do not match")
+        times.extend(record_times.tolist())
+        x_rows.extend(record_x.tolist())
+        y_rows.extend(record_y.tolist())
+
+    times = np.asarray(times, dtype=float)
+    x_positions = np.asarray(x_rows, dtype=float)
+    y_positions = np.asarray(y_rows, dtype=float)
+    order = np.argsort(times)
+    return selected_id, times[order], x_positions[order], y_positions[order]
+
+
+def plot_wcon_trajectory_properties(
+    wcon_files,
+    x_values=None,
+    worm_id=None,
+    properties=("speed", "curvature"),
+    panel_columns=1,
+    save_png=True,
+    filename="wcon_trajectory_properties.png",
+):
+    """Extract trajectory properties from one or more WCON files and plot them."""
+    if isinstance(wcon_files, (str, os.PathLike)):
+        wcon_files = [wcon_files]
+    if not isinstance(wcon_files, (list, tuple)) or not wcon_files:
+        raise ValueError("wcon_files must be a path or a non-empty list of paths")
+
+    wcon_files = [os.fspath(wcon_file) for wcon_file in wcon_files]
+    for wcon_file in wcon_files:
+        if not os.path.isfile(wcon_file):
+            raise FileNotFoundError("Could not find WCON file: {}".format(wcon_file))
+
+    if isinstance(properties, str):
+        properties = [properties]
+    if not isinstance(properties, (list, tuple)) or not properties:
+        raise ValueError("properties must be a non-empty list or tuple")
+    valid_properties = {
+        "speed",
+        "curvature",
+        "path_curvature",
+        "path_deviation",
+        "displacement",
+        "oscillation_frequency",
+    }
+    properties = [str(prop) for prop in properties]
+    unknown_properties = sorted(set(properties) - valid_properties)
+    if unknown_properties:
+        raise ValueError(
+            "Unknown WCON trajectory properties: {}".format(
+                ", ".join(unknown_properties)
+            )
+        )
+    if (
+        isinstance(panel_columns, bool)
+        or not isinstance(panel_columns, int)
+        or panel_columns not in (1, 2)
+    ):
+        raise ValueError("panel_columns must be 1 or 2")
+
+    if x_values is None:
+        x_values = list(range(len(wcon_files)))
+    if not isinstance(x_values, (list, tuple, np.ndarray)):
+        raise TypeError("x_values must be a list, tuple, or numpy array")
+    if len(x_values) != len(wcon_files):
+        raise ValueError("x_values must contain one value for each WCON file")
+    x_values = np.asarray(x_values, dtype=float)
+
+    results = {
+        "wcon_files": wcon_files,
+        "worm_ids": [],
+        "x_values": x_values,
+    }
+    for prop in properties:
+        results[prop] = []
+
+    for wcon_file in wcon_files:
+        selected_id, times, x_positions, y_positions = _wcon_records_for_file(
+            wcon_file, worm_id
+        )
+        center_x = np.nanmean(x_positions, axis=1)
+        center_y = np.nanmean(y_positions, axis=1)
+        computed = _compute_center_trajectory_properties(
+            times, center_x, center_y, properties
+        )
+        if "curvature" in properties:
+            computed["curvature"] = _mean_abs_spine_curvature(x_positions, y_positions)
+        if "oscillation_frequency" in properties:
+            computed["oscillation_frequency"] = _head_position_oscillation_frequency(
+                times, x_positions, y_positions
+            )
+        for prop in properties:
+            results[prop].append(computed.get(prop, np.nan))
+        results["worm_ids"].append(selected_id)
+
+    for prop in properties:
+        results[prop] = np.asarray(results[prop], dtype=float)
+
+    panel_columns = min(panel_columns, len(properties))
+    panel_rows = math.ceil(len(properties) / panel_columns)
+    fig, axs = plt.subplots(
+        panel_rows,
+        panel_columns,
+        figsize=(7 * panel_columns, 3.2 * panel_rows),
+        squeeze=False,
+    )
+    y_labels = {
+        "speed": "Average speed (mm/s)",
+        "curvature": "Average |body curvature| (1/mm)",
+        "path_curvature": "Path curvature (mm)",
+        "path_deviation": "Path deviation (1/mm)",
+        "displacement": "Displacement (mm)",
+        "oscillation_frequency": "Head oscillation frequency (Hz)",
+    }
+    flat_axes = axs.ravel()
+    for ax, prop in zip(flat_axes, properties):
+        ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
+        ax.set_ylabel(y_labels[prop])
+        ax.grid(True, linewidth=0.4, alpha=0.25)
+    for ax in flat_axes[len(properties) :]:
+        ax.set_visible(False)
+    for axis_index, ax in enumerate(flat_axes[: len(properties)]):
+        row_index = axis_index // panel_columns
+        if row_index == panel_rows - 1:
+            ax.set_xlabel("Condition")
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(os.path.dirname(wcon_files[0]), output_file)
         fig.savefig(output_file, bbox_inches="tight", dpi=300)
 
     return fig, results
@@ -2007,6 +3229,44 @@ colors = colors30 * 3
 # colors = [colors30[i % len(colors30)] for i in range(N)]
 linestyles = [random.choice(linestyles) for _ in range(N)]
 
+
+def _repair_duplicate_line_styles(colors, linestyles, available_linestyles):
+    repaired_colors = list(colors)
+    repaired_linestyles = list(linestyles)
+    used_styles = set()
+    for ind, (color, linestyle) in enumerate(zip(repaired_colors, repaired_linestyles)):
+        color_key = mcolors.to_hex(color)
+        style_key = (color_key, linestyle)
+        if style_key in used_styles:
+            for candidate in available_linestyles:
+                candidate_key = (color_key, candidate)
+                if candidate_key not in used_styles:
+                    repaired_linestyles[ind] = candidate
+                    style_key = candidate_key
+                    break
+        if style_key in used_styles:
+            rgb = np.array(mcolors.to_rgb(color))
+            hsv = mcolors.rgb_to_hsv(rgb.reshape(1, 1, 3))[0, 0]
+            for shift_ind in range(1, 25):
+                hsv2 = hsv.copy()
+                hsv2[0] = (hsv2[0] + 0.035 * shift_ind) % 1.0
+                hsv2[1] = min(1.0, max(0.45, hsv2[1] * (0.92 + 0.02 * shift_ind)))
+                hsv2[2] = min(0.95, max(0.45, hsv2[2] * (1.03 - 0.01 * shift_ind)))
+                new_color = mcolors.hsv_to_rgb(hsv2)
+                new_color_key = mcolors.to_hex(new_color)
+                candidate_key = (new_color_key, repaired_linestyles[ind])
+                if candidate_key not in used_styles:
+                    repaired_colors[ind] = new_color
+                    style_key = candidate_key
+                    break
+        used_styles.add(style_key)
+    return repaired_colors, repaired_linestyles
+
+
+colors, linestyles = _repair_duplicate_line_styles(
+    colors, linestyles, ["-", "--", "-.", ":"]
+)
+
 # ax.set_prop_cycle(cycler(color=colors) + cycler(linestyle=linestyles))
 style_cycle = cycler(color=colors) + cycler(linestyle=linestyles)
 
@@ -2054,6 +3314,44 @@ def safe_percent_change_from_initial(evol_data):
     return out
 
 
+def signed_log_change_from_initial(evol_data):
+    evol_data_log = signed_log(evol_data)
+    return evol_data_log - evol_data_log[0]
+
+
+def signed_log_one_plus(val):
+    val = np.asarray(val)
+    out = np.zeros_like(val, dtype=float)
+    mask = np.isfinite(val)
+    out[mask] = np.sign(val[mask]) * np.log(np.abs(val[mask]) + 1.0)
+    return out
+
+
+def signed_log_one_plus_change_from_initial(evol_data):
+    evol_data = np.asarray(evol_data, dtype=float)
+    return signed_log_one_plus(evol_data - evol_data[0])
+
+
+def signed_log_one_plus_proportional_change_from_initial(evol_data):
+    evol_data = np.asarray(evol_data, dtype=float)
+    initial = evol_data[0]
+    raw_change = evol_data - initial
+    proportional_change = np.zeros_like(evol_data, dtype=float)
+    np.divide(
+        raw_change,
+        initial,
+        out=proportional_change,
+        where=np.isfinite(initial) & (initial != 0),
+    )
+    proportional_change[~np.isfinite(proportional_change)] = 0.0
+    out = np.zeros_like(proportional_change, dtype=float)
+    mask = np.isfinite(raw_change) & np.isfinite(proportional_change)
+    out[mask] = np.sign(raw_change[mask]) * np.log(
+        np.abs(proportional_change[mask]) + 1.0
+    )
+    return out
+
+
 short_phen_names = {
     "Nervous system": "NS",
     "Chemical weights": "ChemWei",
@@ -2070,7 +3368,7 @@ short_phen_names = {
 
 def getEvolTrans(evol_data):
     evol_data_diff_1 = safe_percent_change_from_initial(evol_data)
-    evol_data_diff_11 = signed_log(evol_data_diff_1)
+    evol_data_diff_11 = signed_log_change_from_initial(evol_data)
     evol_data_diff_13 = evol_data - evol_data[0]
     evol_data_diff_131 = signed_log(evol_data_diff_13[1:])
 
@@ -2078,7 +3376,12 @@ def getEvolTrans(evol_data):
 
 
 def plot_phenonames(
-    plot_list=[["initial", "final"], ["initial_log", "final_log"], "rel_var", "var"],
+    plot_list=[
+        ["initial", "final"],
+        ["initial_log", "final_log"],
+        "rel_var",
+        "signed_log_prop_change",
+    ],
     a=None,
 ):
     file = hf.rename_file("genhistory.dat")
@@ -2104,7 +3407,8 @@ def plot_phenonames(
         phen_names = []
         phen_tags = []
         phen_nums = []
-        for val in evolvables:
+        active_phen_indices = []
+        for ind, val in enumerate(evolvables):
             if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
@@ -2112,11 +3416,13 @@ def plot_phenonames(
                 phen_names.append(name)
                 phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
+                active_phen_indices.append(ind)
 
     elif "PhenoNames" in network_json_data:
         phen_names = network_json_data["PhenoNames"]["value"]
         phen_tags = phen_names
         phen_nums = network_json_data["PhenoNamesNums"]["value"]
+        active_phen_indices = None
     else:
         print("PhenoNames needed for pheno plot")
         return
@@ -2124,7 +3430,8 @@ def plot_phenonames(
     # print("checkDict")
     # print(phen_names)
 
-    if a.modelName == "CO18" or a.modelName == "CO18Full":
+    model_name = getattr(a, "modelName", None)
+    if model_name == "CO18" or model_name == "CO18Full":
         network_json_data_RS18 = utils.getJsonFile(hf.dir_name + "/RS18_worm_data.json")
         phen_names += network_json_data_RS18["PhenoNames"]["value"]
         phen_tags += network_json_data_RS18["PhenoNames"]["value"]
@@ -2142,20 +3449,31 @@ def plot_phenonames(
     # generation number, phenotype number (first is gen index)
 
     evol_data = evol_data[:, 1 + phen_offset :]
+    if active_phen_indices is not None:
+        evol_data = evol_data[:, active_phen_indices]
 
     # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
 
     evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
-    evol_data_full_diff = signed_log(evol_data_full_diff0)
+    evol_data_full_diff = signed_log_change_from_initial(evol_data)
+    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(evol_data)
+    evol_data_signed_log_prop_change = (
+        signed_log_one_plus_proportional_change_from_initial(evol_data)
+    )
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
 
     evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
-    evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)
     evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
-    evol_data_full_diff = evol_data_full_diff[-1] - evol_data_full_diff[0]
+    evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)[-1]
+    evol_data_signed_log_abs_change = getAvData_1(
+        evol_data_signed_log_abs_change, avlentop=avlentop
+    )[-1]
+    evol_data_signed_log_prop_change = getAvData_1(
+        evol_data_signed_log_prop_change, avlentop=avlentop
+    )[-1]
 
     # evol_data_full_diff20 = evol_data - evol_data[0]
 
@@ -2165,7 +3483,7 @@ def plot_phenonames(
 
     # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
 
-    evol_data_log = signed_log(evol_data)
+    evol_data_log = signed_log_one_plus(evol_data)
     evol_data_log = getAvData_1(evol_data_log, avlentop=avlentop)
 
     evol_data_init = evol_data_log[0]
@@ -2186,7 +3504,19 @@ def plot_phenonames(
         },
         "var": {
             "value": evol_data_full_diff,
-            "title": "Signed log proportional variation",
+            "title": "Signed log change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_abs_change": {
+            "value": evol_data_signed_log_abs_change,
+            "title": "Signed log absolute change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_prop_change": {
+            "value": evol_data_signed_log_prop_change,
+            "title": "Signed log proportional change",
             "color": "black",
             "linestyle": "-",
         },
@@ -2236,7 +3566,7 @@ def plot_phenonames(
 
     # print(phen_name_list)
 
-    fsize_cols, fsize_rows = 10, 10
+    fsize_cols, fsize_rows = 10, max(10, 2.5 * len(plot_list))
     fsize_cols_2 = 10 * len(phen_names) / 30
     plot_cols = 1
     plot_rows = len(plot_list)
@@ -2323,7 +3653,7 @@ def plot_phenonames(
     fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages.png")
+    filename = _plot_output_file("Evolution_averages.png", a)
     fig.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig)
@@ -2331,10 +3661,75 @@ def plot_phenonames(
     fig2.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
-    filename = hf.rename_file("Evolution_averages_2.png")
+    filename = _plot_output_file("Evolution_averages_2.png", a)
     fig2.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig2)
+
+
+def _make_plot_args(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+    class PlotArgs:
+        pass
+
+    a = PlotArgs()
+    a.folderName = output_folder
+    a.modelName = model_name
+    a.evoAvLen = evo_av_len
+    a.filePrefix = file_prefix
+    return a
+
+
+def _plot_output_file(file_name, a=None):
+    prefix = getattr(a, "filePrefix", None)
+    if prefix is None:
+        return hf.rename_file(file_name)
+    if hf.dir_name is None:
+        return prefix + file_name
+    return os.path.join(hf.dir_name, prefix + file_name)
+
+
+def plot_evolution_averages(
+    output_folder, evo_av_len=1, model_name=None, file_prefix=None
+):
+    """Generate the four-panel Evolution_averages figures for an output folder."""
+    old_dir_name = hf.dir_name
+    old_file_prefix = hf.file_prefix
+
+    a = _make_plot_args(
+        output_folder,
+        evo_av_len=evo_av_len,
+        model_name=model_name,
+        file_prefix=file_prefix,
+    )
+
+    try:
+        hf.dir_name = output_folder
+        hf.file_prefix = None
+        plot_phenonames(a=a)
+    finally:
+        hf.dir_name = old_dir_name
+        hf.file_prefix = old_file_prefix
+
+
+def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+    """Generate the four-panel EvoHist figures for an output folder."""
+    old_dir_name = hf.dir_name
+    old_file_prefix = hf.file_prefix
+
+    a = _make_plot_args(
+        output_folder,
+        evo_av_len=evo_av_len,
+        model_name=model_name,
+        file_prefix=file_prefix,
+    )
+
+    try:
+        hf.dir_name = output_folder
+        hf.file_prefix = None
+        plot_hist(a=a)
+    finally:
+        hf.dir_name = old_dir_name
+        hf.file_prefix = old_file_prefix
 
 
 def plot_cols_fig_2(axslist, plot_data, titles, gen_indices, phen_names):
@@ -2507,7 +3902,7 @@ def plot_fit():
     plt.close()
 
 
-def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1):
+def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1, a=None):
     fig_g, axs = plt.subplots(2, 2, figsize=(12, 10), squeeze=False)
     plot_axes = list(axs.flat)
 
@@ -2543,8 +3938,8 @@ def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1):
     print("Saved plot image to: %s" % filename1)
     plt.close(fig_g)
 
-    if os.path.basename(filename1) == "EvoHist.png":
-        save_evohist_legend_figures(handles, labels, legend_fontsize)
+    if os.path.basename(filename1).endswith("EvoHist.png"):
+        save_evohist_legend_figures(handles, labels, legend_fontsize, a=a)
 
 
 def plot_evohist_fitness(fit_data, filename):
@@ -2573,7 +3968,7 @@ def plot_evohist_fitness(fit_data, filename):
     plt.close(fig)
 
 
-def save_evohist_legend_figures(handles, labels, legend_fontsize):
+def save_evohist_legend_figures(handles, labels, legend_fontsize, a=None):
     for ncols in [3, 4]:
         fig_leg = plt.figure(figsize=(8, 2.5))
         ax_leg = fig_leg.add_subplot(111)
@@ -2586,7 +3981,7 @@ def save_evohist_legend_figures(handles, labels, legend_fontsize):
             frameon=True,
             fontsize=legend_fontsize,
         )
-        filename = hf.rename_file("EvoHist_legend_%dcol.png" % ncols)
+        filename = _plot_output_file("EvoHist_legend_%dcol.png" % ncols, a)
         fig_leg.savefig(filename, bbox_inches="tight", dpi=300)
         print("Saved plot image to: %s" % filename)
         plt.close(fig_leg)
@@ -2598,7 +3993,7 @@ def plot_hist(a=None):
         return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
-    plot_evohist_fitness(fit_data, hf.rename_file("EvoHist_fitness.png"))
+    plot_evohist_fitness(fit_data, _plot_output_file("EvoHist_fitness.png", a))
 
     # evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
     # evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
@@ -2617,7 +4012,8 @@ def plot_hist(a=None):
         phen_names = []
         phen_tags = []
         phen_nums = []
-        for val in evolvables:
+        active_phen_indices = []
+        for ind, val in enumerate(evolvables):
             if not (("active" in val) & (not val["active"])):
                 name = val["name"]
                 for key, val2 in short_phen_names.items():
@@ -2625,6 +4021,7 @@ def plot_hist(a=None):
                 phen_names.append(name)
                 phen_tags.append(val.get("evotag_key", str(val["evotag"])))
                 phen_nums.append(val["evotag"])
+                active_phen_indices.append(ind)
     else:
         print("evolvable_ranges names not found for plot_hist")
         return
@@ -2646,25 +4043,33 @@ def plot_hist(a=None):
 
     # generation number, phenotype number (first is gen index)
 
-    evol_data_1 = evol_data[
-        :, 1 + phen_offset :
+    evol_data_pop = evol_data[
+        :, 1 + phen_offset : 1 + phen_offset + phen_size
     ]  # here is the average values across the population
-    plot_data_1 = [evol_data_1] + getEvolTrans(evol_data_1)
+    evol_data_best = evol_data[
+        :, 1 + phen_size : 1 + phen_size + phen_size
+    ]  # here is the best genotype
+    if active_phen_indices is not None:
+        evol_data_pop = evol_data_pop[:, active_phen_indices]
+        evol_data_best = evol_data_best[:, active_phen_indices]
+    plot_data_1 = [evol_data_pop] + getEvolTrans(evol_data_pop)
 
-    evol_data_1 = evol_data[:, 1 + phen_size :]  # here is the best genotype
-    plot_data_2 = [evol_data_1] + getEvolTrans(evol_data_1)
-
-    plot_data_4av = getAvData_1(plot_data_1[4], avlentop=avlentop)
-    plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
     plot_data_0av = getAvData_1(plot_data_1[0], avlentop=avlentop)
-    plot_data_best_percent_av = getAvData_1(plot_data_2[3], avlentop=avlentop)
+    plot_data_3av = getAvData_1(plot_data_1[3], avlentop=avlentop)
+    pop_signed_log_prop_change_av = getAvData_1(
+        signed_log_one_plus_proportional_change_from_initial(evol_data_pop),
+        avlentop=avlentop,
+    )
+    best_signed_log_prop_change_av = getAvData_1(
+        signed_log_one_plus_proportional_change_from_initial(evol_data_best),
+        avlentop=avlentop,
+    )
 
-    # plot_data_3 = [plot_data_1[0], plot_data_1[3], plot_data_1[4], plot_data_2[3]]
     plot_data_3 = [
-        plot_data_3av,
-        plot_data_4av,
         plot_data_0av,
-        plot_data_best_percent_av,
+        pop_signed_log_prop_change_av,
+        plot_data_3av,
+        best_signed_log_prop_change_av,
     ]
 
     # gen_indices = [gen_index_orig, gen_index_orig, gen_index_orig, gen_index_orig]
@@ -2677,10 +4082,10 @@ def plot_hist(a=None):
     ]
 
     titles = [
+        "Pop actual value",
+        "Pop signed log proportional change",
         "Pop proportional change",
-        "Pop signed log proportional variation",
-        "Pop phenotype value",
-        "Best fit proportional change",
+        "Best fit signed log proportional change",
     ]
 
     # print("phen names ", phen_names)
@@ -2693,7 +4098,8 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_tags,
-        hf.rename_file("EvoHist.png"),
+        _plot_output_file("EvoHist.png", a),
+        a,
     )
 
     phen_names_set = sorted(set(phen_names))
@@ -2715,7 +4121,8 @@ def plot_hist(a=None):
         titles,
         gen_indices,
         phen_names_set,
-        hf.rename_file("EvoHist_av.png"),
+        _plot_output_file("EvoHist_av.png", a),
+        a,
     )
 
     if False:

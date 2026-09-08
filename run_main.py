@@ -249,6 +249,8 @@ def process_args():
     parser.add_argument(
         "-cpti",
         "--checkPointInterval",
+        "--checkpoint_interval",
+        dest="checkPointInterval",
         type=int,
         metavar="<checkPointInterval>",
         default=DEFAULTS["checkPointInterval"],
@@ -353,6 +355,8 @@ def process_args():
     parser.add_argument(
         "-p",
         "--popSize",
+        "--population_size",
+        dest="popSize",
         type=int,
         metavar="<pop size>",
         default=DEFAULTS["popSize"],
@@ -362,6 +366,8 @@ def process_args():
     parser.add_argument(
         "-G",
         "--maxGens",
+        "--max_generations",
+        dest="maxGens",
         type=int,
         metavar="<max generations>",
         default=DEFAULTS["maxGens"],
@@ -434,6 +440,25 @@ def build_namespace(DEFAULTS={}, a=None, **kwargs):
             setattr(a, key, value)
 
     a._provided_args = provided_args
+    return a
+
+
+def normalize_run_argument_aliases(a):
+    """Normalize newer snake_case run() keywords onto internal legacy names."""
+    aliases = {
+        "population_size": "popSize",
+        "max_generations": "maxGens",
+        "checkpoint_interval": "checkPointInterval",
+    }
+    for alias, canonical in aliases.items():
+        if not hasattr(a, alias):
+            continue
+        if alias in a._provided_args or getattr(a, canonical, None) is None:
+            setattr(a, canonical, getattr(a, alias))
+        if alias in a._provided_args:
+            a._provided_args.remove(alias)
+            a._provided_args.add(canonical)
+        delattr(a, alias)
     return a
 
 
@@ -558,6 +583,14 @@ def _can_copy_previous_evolution_files(input_folder, output_folder):
 
 def run(a=None, **kwargs):
     a = build_namespace(DEFAULTS, a, **kwargs)
+    a = normalize_run_argument_aliases(a)
+    if hasattr(a, "rand_seed"):
+        if "rand_seed" in a._provided_args or a.RandSeed is None:
+            a.RandSeed = a.rand_seed
+        if "rand_seed" in a._provided_args:
+            a._provided_args.remove("rand_seed")
+            a._provided_args.add("RandSeed")
+        delattr(a, "rand_seed")
 
     if a.doEvol:
         do_evol = 1
@@ -785,6 +818,21 @@ def run(a=None, **kwargs):
             "calling run()."
         )
         sys.exit(1)
+    if model_name == "W2DSR":
+        json_config_file = next(
+            (
+                os.path.join(a.outputFolderName, filename)
+                for filename in json_config_files
+                if os.path.isfile(os.path.join(a.outputFolderName, filename))
+            ),
+            None,
+        )
+        if json_config_file is not None:
+            try:
+                hf.validate_w2dsr_json_file(json_config_file)
+            except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+                print(exc)
+                sys.exit(1)
 
     if a.modelFolder in model_names:
         if model_name is None:
@@ -843,7 +891,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["network_size"] = 6
     evol_extra_parameters["do_reverse"] = 0
     evol_extra_parameters["doAlternateEvo"] = 0
-    evol_extra_parameters["sr_type"] = "None"
+    evol_extra_parameters["sr_form"] = "None"
     # evol_extra_parameters["ab_level"] = 1
     evol_extra_parameters["ab_output_level"] = 1
     # evol_extra_parameters["random_initial_state"] = False
@@ -852,7 +900,7 @@ def run(a=None, **kwargs):
     evol_extra_parameters["CrossProb"] = 0.5
     evol_extra_parameters["avg_speed"] = 0.00022
     evol_extra_parameters["fit_type"] = 0
-    evol_extra_parameters["sr_form"] = 0
+    evol_extra_parameters["sr_connection_form"] = 0
     evol_extra_parameters["sr_evo_bot"] = 0
     evol_extra_parameters["sr_evo_top"] = 200
     evol_extra_parameters["sr_evo_bot_a"] = 0
@@ -924,10 +972,10 @@ def run(a=None, **kwargs):
         "ABLevel": "ab_output_level",
         "AB_output_level": "ab_output_level",
         "doReverse": "do_reverse",
-        "SRType": "sr_type",
+        "SRType": "sr_form",
         "AvgSpeed": "avg_speed",
         "fitType": "fit_type",
-        "SRForm": "sr_form",
+        "SRForm": "sr_connection_form",
         "SREvoBot": "sr_evo_bot",
         "SREvoTop": "sr_evo_top",
         "SREvoBotA": "sr_evo_bot_a",

@@ -266,7 +266,7 @@ int zeroGainsType;
 string getSRtype(){
 
     string sr_type;
-    basePar1->getValCJ<string>("sr_type",sr_type,"Stretch receptor");
+    basePar1->getValCJ<string>("sr_form",sr_type,"stretch_receptor");
     return sr_type;
 
 }

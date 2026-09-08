@@ -152,9 +152,8 @@ SRRegpars::SRRegpars(shared_ptr<const CmdArgs> cmd):SRCEpars(cmd){}
 void SRCEpars::setPars(shared_ptr<const CmdArgs> cmd)
 {
 
-sr_type = cmd->getArgVal("--SRType",sr_type);
-getParFromCmdAny<string>(cmd, {"sr_type", "SRType"}, sr_type);
-getParFromCmdAny<int>(cmd, {"sr_form", "SRForm"}, SRForm);
+getParFromCmdAny<string>(cmd, {"sr_form", "SRType", "sr_type"}, sr_type);
+getParFromCmdAny<int>(cmd, {"sr_connection_form", "SRForm"}, SRForm);
 //nsegperstr = cmd->getArgValInt("--SRSegPerSR",nsegperstr);
 getParFromCmdAny<int>(cmd, {"sr_zero_gains_type", "SRZeroGainsType"}, zeroGainsType);
 
