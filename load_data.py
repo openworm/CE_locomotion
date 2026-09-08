@@ -721,6 +721,42 @@ def plot_selected_activity(
     if act_data.ndim != 2 or act_data.shape[0] < len(cell_names) + 1:
         raise ValueError("act.dat does not contain the expected activity columns")
 
+    next_column = 1
+    sr_count = 0
+    stretch_receptor = network_json_data.get("stretch_receptor")
+    if isinstance(stretch_receptor, dict):
+        sr_count = _json_value(stretch_receptor.get("plot_size"), 0)
+    elif "Stretch receptor" in network_json_data:
+        sr_count = _json_value(
+            network_json_data["Stretch receptor"].get("plot size"), 0
+        )
+    if isinstance(sr_count, (int, float)) and sr_count > 0:
+        next_column += min(int(sr_count), act_data.shape[0] - next_column)
+
+    def get_int_value(section, key, default=0):
+        value = network_json_data.get(section, {}).get(key)
+        value = _json_value(value, default)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return default
+        return int(value)
+
+    vnc_cell_count = get_int_value("worm", "N_units") * get_int_value(
+        "worm", "N_neuronsperunit"
+    )
+    if vnc_cell_count > 0 and vnc_cell_count < len(cell_names):
+        act_cell_names = cell_names[vnc_cell_count:] + cell_names[:vnc_cell_count]
+    else:
+        act_cell_names = list(cell_names)
+
+    act_cell_count = min(len(act_cell_names), act_data.shape[0] - next_column)
+    act_cell_names = act_cell_names[:act_cell_count]
+    missing_act_cells = [cell for cell in selected_cells if cell not in act_cell_names]
+    if missing_act_cells:
+        raise ValueError(
+            "Selected cell(s) were not found in the nervous-system columns of "
+            "act.dat: {}".format(", ".join(missing_act_cells))
+        )
+
     t_data = act_data[0]
     if time_interval is None:
         t_start = t_data[0]
@@ -740,7 +776,9 @@ def plot_selected_activity(
     if not np.any(data_seg):
         raise ValueError("time_interval does not overlap the act.dat time range")
 
-    selected_indices = [cell_names.index(cell) + 1 for cell in selected_cells]
+    selected_indices = [
+        next_column + act_cell_names.index(cell) for cell in selected_cells
+    ]
     selected_data = act_data[selected_indices][:, data_seg]
     t_plot = t_data[data_seg]
 
@@ -750,10 +788,13 @@ def plot_selected_activity(
     for cell_name, row in zip(selected_cells, selected_data):
         axs[0].plot(t_plot, row, linewidth=0.8, label=cell_name)
     axs[0].set_ylabel("Activity")
+    legend_ncols = max(1, min(6, len(selected_cells)))
     axs[0].legend(
-        loc="upper right",
+        loc="lower right",
+        bbox_to_anchor=(1.0, 1.01),
         fontsize="small",
-        ncol=max(1, min(4, len(selected_cells))),
+        ncol=legend_ncols,
+        frameon=True,
     )
 
     extent = [t_plot[0], t_plot[-1], 0, len(selected_cells)]
@@ -762,24 +803,66 @@ def plot_selected_activity(
         aspect="auto",
         interpolation="nearest",
         extent=extent,
+        origin="lower",
     )
     axs[1].set_yticks(np.arange(len(selected_cells)) + 0.5)
     axs[1].set_yticklabels(selected_cells)
+    heatmap_axis_height_points = fig_height * 72.0 * 0.38
+    heatmap_label_fontsize = min(
+        10.0,
+        max(4.0, 0.8 * heatmap_axis_height_points / len(selected_cells)),
+    )
+    axs[1].tick_params(axis="y", labelsize=heatmap_label_fontsize)
     axs[1].set_xlabel("Time (s)")
     axs[1].set_ylabel("Cell")
 
-    title = (
-        cells_or_class
-        if isinstance(cells_or_class, str)
-        else "{} selected cells".format(len(selected_cells))
-    )
-    axs[0].set_title("Activity: {}".format(title))
     fig.tight_layout()
 
     if save_png:
         fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
 
     return fig
+
+
+def plot_nervous_system_activity(
+    output_folder,
+    cell_names=None,
+    time_interval=None,
+    save_png=False,
+    filename="NervousSystemActivity.png",
+):
+    """Return a two-panel ExampleActivity-style plot for nervous-system cells."""
+    worm_file = os.path.join(output_folder, "worm_data_worm.json")
+    if not os.path.isfile(worm_file):
+        raise FileNotFoundError(
+            "Could not find worm_data_worm.json in {}".format(output_folder)
+        )
+
+    network_json_data = utils.getJsonFile(worm_file)
+    nervous_system = network_json_data.get("nervous_system")
+    if not isinstance(nervous_system, dict):
+        raise KeyError("JSON does not contain a 'nervous_system' object")
+
+    all_cell_names = _json_value(nervous_system.get("cell_names"), [])
+    if not isinstance(all_cell_names, list) or not all_cell_names:
+        raise ValueError("'nervous_system.cell_names.value' must be a non-empty list")
+
+    if cell_names is None:
+        selected_cells = all_cell_names
+    else:
+        if isinstance(cell_names, str) or not isinstance(cell_names, (list, tuple)):
+            raise TypeError("cell_names must be None or a list/tuple of cell names")
+        selected_cells = list(cell_names)
+        if not selected_cells:
+            raise ValueError("cell_names must contain at least one cell name")
+
+    return plot_selected_activity(
+        output_folder,
+        selected_cells,
+        time_interval=time_interval,
+        save_png=save_png,
+        filename=filename,
+    )
 
 
 def plot_motion_all(
@@ -3145,6 +3228,44 @@ N = 120
 colors = colors30 * 3
 # colors = [colors30[i % len(colors30)] for i in range(N)]
 linestyles = [random.choice(linestyles) for _ in range(N)]
+
+
+def _repair_duplicate_line_styles(colors, linestyles, available_linestyles):
+    repaired_colors = list(colors)
+    repaired_linestyles = list(linestyles)
+    used_styles = set()
+    for ind, (color, linestyle) in enumerate(zip(repaired_colors, repaired_linestyles)):
+        color_key = mcolors.to_hex(color)
+        style_key = (color_key, linestyle)
+        if style_key in used_styles:
+            for candidate in available_linestyles:
+                candidate_key = (color_key, candidate)
+                if candidate_key not in used_styles:
+                    repaired_linestyles[ind] = candidate
+                    style_key = candidate_key
+                    break
+        if style_key in used_styles:
+            rgb = np.array(mcolors.to_rgb(color))
+            hsv = mcolors.rgb_to_hsv(rgb.reshape(1, 1, 3))[0, 0]
+            for shift_ind in range(1, 25):
+                hsv2 = hsv.copy()
+                hsv2[0] = (hsv2[0] + 0.035 * shift_ind) % 1.0
+                hsv2[1] = min(1.0, max(0.45, hsv2[1] * (0.92 + 0.02 * shift_ind)))
+                hsv2[2] = min(0.95, max(0.45, hsv2[2] * (1.03 - 0.01 * shift_ind)))
+                new_color = mcolors.hsv_to_rgb(hsv2)
+                new_color_key = mcolors.to_hex(new_color)
+                candidate_key = (new_color_key, repaired_linestyles[ind])
+                if candidate_key not in used_styles:
+                    repaired_colors[ind] = new_color
+                    style_key = candidate_key
+                    break
+        used_styles.add(style_key)
+    return repaired_colors, repaired_linestyles
+
+
+colors, linestyles = _repair_duplicate_line_styles(
+    colors, linestyles, ["-", "--", "-.", ":"]
+)
 
 # ax.set_prop_cycle(cycler(color=colors) + cycler(linestyle=linestyles))
 style_cycle = cycler(color=colors) + cycler(linestyle=linestyles)
