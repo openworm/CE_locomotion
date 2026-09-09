@@ -670,6 +670,252 @@ def plot_json_dictionary_summary_2(
     return fig
 
 
+def plot_json_table(
+    output_folder=None,
+    json_data=None,
+    section=None,
+    json_filename="worm_data_worm.json",
+    filename="json_table.png",
+    save_png=True,
+    max_text_len=36,
+    max_lines=30,
+    row_height=0.28,
+    column_width=1.45,
+):
+    """Return a tabular flattened view of one section of a JSON configuration."""
+    from matplotlib.patches import Rectangle
+
+    if json_data is None:
+        if output_folder is None:
+            raise ValueError("Either output_folder or json_data must be supplied")
+        json_path = os.path.join(output_folder, json_filename)
+        if not os.path.isfile(json_path):
+            raise FileNotFoundError("Could not find {}".format(json_path))
+        json_data = utils.getJsonFile(json_path)
+
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if max_lines is not None and (
+        not isinstance(max_lines, (int, np.integer)) or max_lines <= 0
+    ):
+        raise ValueError("max_lines must be a positive integer or None")
+
+    def section_path_from_arg(section_arg):
+        if section_arg is None:
+            return []
+        if isinstance(section_arg, str):
+            return [part for part in section_arg.split(".") if part]
+        if isinstance(section_arg, (list, tuple)):
+            if not all(isinstance(part, str) and part for part in section_arg):
+                raise ValueError("section path entries must be non-empty strings")
+            return list(section_arg)
+        raise TypeError("section must be None, a key string, or a list/tuple of keys")
+
+    section_path = section_path_from_arg(section)
+    root_obj = json_data
+    for key in section_path:
+        if not isinstance(root_obj, dict) or key not in root_obj:
+            raise KeyError("Could not find JSON section path: {}".format(section))
+        root_obj = root_obj[key]
+
+    def display_value(value):
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if isinstance(value, float):
+            return "{:.6g}".format(value)
+        if isinstance(value, (int, np.integer)):
+            return str(int(value))
+        if value is None:
+            return "null"
+        return str(value)
+
+    def shorten(text):
+        text = str(text)
+        if len(text) <= max_text_len:
+            return text
+        return text[: max_text_len - 1] + "..."
+
+    def flatten(value, path, rows):
+        if isinstance(value, dict):
+            if set(value.keys()) == {"value"}:
+                flatten(value["value"], path, rows)
+                return
+            if "value" in value and not isinstance(value["value"], (dict, list)):
+                rows.append((path, display_value(value["value"])))
+            for key, child in value.items():
+                if key == "value" and not isinstance(child, (dict, list)):
+                    continue
+                else:
+                    flatten(child, path + [str(key)], rows)
+            return
+        if isinstance(value, list):
+            if not value:
+                rows.append((path, "[]"))
+                return
+            for index, child in enumerate(value):
+                flatten(child, path + [str(index)], rows)
+            return
+        rows.append((path, display_value(value)))
+
+    rows = []
+    flatten(root_obj, [], rows)
+    if not rows:
+        raise ValueError("No JSON values were found for the selected section")
+
+    display_rows = []
+    previous_path = None
+    for path, value in rows:
+        if previous_path is None:
+            shared_prefix = 0
+        else:
+            shared_prefix = 0
+            for prev_key, key in zip(previous_path, path):
+                if prev_key != key:
+                    break
+                shared_prefix += 1
+        display_rows.append(([""] * shared_prefix + path[shared_prefix:], value))
+        previous_path = path
+
+    if max_lines is not None:
+        display_rows = display_rows[:max_lines]
+
+    max_depth = max(len(path_cells) for path_cells, _value in display_rows)
+    font_size = 8.5
+    left_margin = 0.18
+    right_margin = 0.18
+    top_margin = 0.18
+    bottom_margin = 0.18
+
+    def fitted_width(texts, min_width=0.55, max_width=4.5):
+        if not texts:
+            return min_width
+        longest = max(len(shorten(text)) for text in texts if text is not None)
+        char_width = font_size / 120.0
+        return max(min_width, min(max_width, longest * char_width + 0.18))
+
+    column_widths = []
+    for col_index in range(max_depth):
+        col_texts = [
+            path_cells[col_index]
+            for path_cells, _value in display_rows
+            if col_index < len(path_cells) and path_cells[col_index]
+        ]
+        column_widths.append(fitted_width(col_texts, max_width=column_width * 2.8))
+    value_width = fitted_width(
+        [value for _path_cells, value in display_rows],
+        min_width=0.8,
+        max_width=column_width * 3.2,
+    )
+    column_xs = [left_margin]
+    for width in column_widths[:-1]:
+        column_xs.append(column_xs[-1] + width)
+    value_x = left_margin + sum(column_widths)
+    table_width = sum(column_widths) + value_width
+    section_label = " / ".join(section_path)
+    if section_label:
+        table_width = max(
+            table_width,
+            fitted_width([section_label], min_width=table_width, max_width=26.0),
+        )
+    table_height = len(display_rows) * row_height
+    header_height = row_height * 1.15 if section_label else 0.0
+    total_table_height = table_height + header_height
+    fig_width = max(3.5, min(28.0, left_margin + table_width + right_margin))
+    fig_height = max(2.0, min(40.0, top_margin + total_table_height + bottom_margin))
+
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+    ax.set_xlim(0, left_margin + table_width + right_margin)
+    ax.set_ylim(0, top_margin + total_table_height + bottom_margin)
+    ax.axis("off")
+
+    key_colours = ("#E6E9EF", "#D8EAF7")
+    value_colour = "#F8D7DA"
+    section_colour = "#CDECCF"
+    edge_colour = "#FFFFFF"
+    text_colour = "#20242A"
+
+    if section_label:
+        y = bottom_margin + table_height
+        ax.add_patch(
+            Rectangle(
+                (left_margin, y),
+                table_width,
+                header_height,
+                facecolor=section_colour,
+                edgecolor=edge_colour,
+                linewidth=0.8,
+            )
+        )
+        ax.text(
+            left_margin + 0.04,
+            y + header_height / 2.0,
+            shorten(section_label),
+            ha="left",
+            va="center",
+            fontsize=font_size,
+            color=text_colour,
+        )
+
+    for row_index, (path_cells, value) in enumerate(display_rows):
+        y = bottom_margin + table_height - (row_index + 1) * row_height
+        key_colour = key_colours[row_index % len(key_colours)]
+        for col_index in range(max_depth):
+            x = column_xs[col_index]
+            width = column_widths[col_index]
+            ax.add_patch(
+                Rectangle(
+                    (x, y),
+                    width,
+                    row_height,
+                    facecolor=key_colour,
+                    edgecolor=edge_colour,
+                    linewidth=0.8,
+                )
+            )
+            text = path_cells[col_index] if col_index < len(path_cells) else ""
+            if text:
+                ax.text(
+                    x + 0.04,
+                    y + row_height / 2.0,
+                    shorten(text),
+                    ha="left",
+                    va="center",
+                    fontsize=font_size,
+                    color=text_colour,
+                )
+
+        x = value_x
+        ax.add_patch(
+            Rectangle(
+                (x, y),
+                value_width,
+                row_height,
+                facecolor=value_colour,
+                edgecolor=edge_colour,
+                linewidth=0.8,
+            )
+        )
+        ax.text(
+            x + 0.04,
+            y + row_height / 2.0,
+            shorten(value),
+            ha="left",
+            va="center",
+            fontsize=font_size,
+            color=text_colour,
+        )
+
+    fig.tight_layout(pad=0.1)
+
+    if save_png and (output_folder is not None or os.path.isabs(filename)):
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig
+
+
 def plot_selected_activity(
     output_folder,
     cells_or_class,
