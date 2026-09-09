@@ -676,6 +676,7 @@ def plot_selected_activity(
     time_interval=None,
     save_png=False,
     filename="SelectedActivity.png",
+    moving_average_window=1,
 ):
     """Return a two-panel activity figure for selected cells or one cell class."""
     act_file = os.path.join(output_folder, "act.dat")
@@ -695,6 +696,12 @@ def plot_selected_activity(
     cell_names = _json_value(nervous_system.get("cell_names"), [])
     if not isinstance(cell_names, list) or not cell_names:
         raise ValueError("'nervous_system.cell_names.value' must be a non-empty list")
+    if (
+        isinstance(moving_average_window, bool)
+        or not isinstance(moving_average_window, int)
+        or moving_average_window < 1
+    ):
+        raise ValueError("moving_average_window must be a positive integer")
 
     cells = nervous_system.get("cells", {})
     if not isinstance(cells, dict):
@@ -781,6 +788,14 @@ def plot_selected_activity(
     ]
     selected_data = act_data[selected_indices][:, data_seg]
     t_plot = t_data[data_seg]
+    if moving_average_window > selected_data.shape[1]:
+        raise ValueError(
+            "moving_average_window must not be longer than the selected time series"
+        )
+    if moving_average_window > 1:
+        selected_data = np.array(
+            [hf.movingaverage(row, moving_average_window) for row in selected_data]
+        )
 
     fig_height = max(4.0, 1.1 + 0.22 * len(selected_cells))
     fig, axs = plt.subplots(2, 1, figsize=(10, fig_height), sharex=True)
@@ -830,6 +845,7 @@ def plot_nervous_system_activity(
     time_interval=None,
     save_png=False,
     filename="NervousSystemActivity.png",
+    moving_average_window=1,
 ):
     """Return a two-panel ExampleActivity-style plot for nervous-system cells."""
     worm_file = os.path.join(output_folder, "worm_data_worm.json")
@@ -862,6 +878,7 @@ def plot_nervous_system_activity(
         time_interval=time_interval,
         save_png=save_png,
         filename=filename,
+        moving_average_window=moving_average_window,
     )
 
 
@@ -1114,6 +1131,338 @@ def _load_body_position_file(body_file):
     return times, x_positions, y_positions
 
 
+def _set_tight_equal_xy_limits(ax, x_values, y_values, axis_padding=0.015):
+    x_values = np.ravel(x_values)
+    y_values = np.ravel(y_values)
+    valid = np.isfinite(x_values) & np.isfinite(y_values)
+    if not np.any(valid):
+        return
+
+    x_min = float(np.min(x_values[valid]))
+    x_max = float(np.max(x_values[valid]))
+    y_min = float(np.min(y_values[valid]))
+    y_max = float(np.max(y_values[valid]))
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    if x_range == 0:
+        x_range = 1.0
+    if y_range == 0:
+        y_range = 1.0
+
+    x_center = 0.5 * (x_min + x_max)
+    y_center = 0.5 * (y_min + y_max)
+    x_half_span = 0.5 * x_range * (1.0 + 2.0 * axis_padding)
+    y_half_span = 0.5 * y_range * (1.0 + 2.0 * axis_padding)
+    ax.set_xlim(x_center - x_half_span, x_center + x_half_span)
+    ax.set_ylim(y_center - y_half_span, y_center + y_half_span)
+
+
+def plot_motion(
+    output_folder,
+    save_png=True,
+    filename="Motion.png",
+    max_snapshots=60,
+    point_start=0,
+    point_end=None,
+    marker_size=3.0,
+    marker_size_small=0.4,
+    time_interval=None,
+    axis_padding=0.015,
+):
+    """Plot worm body profiles from body.dat/bodypos.dat in one simulation folder."""
+    output_folder = os.path.abspath(output_folder)
+    body_file = _body_file_for_simulation_folder(output_folder)
+    times, x_positions, y_positions = _load_body_position_file(body_file)
+    segment_count = x_positions.shape[1]
+
+    if (
+        isinstance(max_snapshots, bool)
+        or not isinstance(max_snapshots, int)
+        or max_snapshots < 1
+    ):
+        raise ValueError("max_snapshots must be a positive integer")
+    if (
+        isinstance(point_start, bool)
+        or not isinstance(point_start, int)
+        or point_start < 0
+        or point_start >= segment_count
+    ):
+        raise ValueError(
+            "point_start must be an integer in the range 0 to {}".format(
+                segment_count - 1
+            )
+        )
+    if point_end is None:
+        point_end = min(50, segment_count)
+    if (
+        isinstance(point_end, bool)
+        or not isinstance(point_end, int)
+        or point_end <= point_start
+        or point_end > segment_count
+    ):
+        raise ValueError(
+            "point_end must be an integer greater than point_start and <= {}".format(
+                segment_count
+            )
+        )
+    if axis_padding < 0:
+        raise ValueError("axis_padding must be non-negative")
+
+    if time_interval is not None:
+        if (
+            not isinstance(time_interval, (list, tuple))
+            or len(time_interval) != 2
+        ):
+            raise ValueError("time_interval must be a (start_time, end_time) pair")
+        start_time, end_time = time_interval
+        if start_time > end_time:
+            raise ValueError("time_interval start_time must be <= end_time")
+        time_mask = (times >= start_time) & (times <= end_time)
+        if not np.any(time_mask):
+            raise ValueError("time_interval does not overlap the body position time range")
+        times = times[time_mask]
+        x_positions = x_positions[time_mask]
+        y_positions = y_positions[time_mask]
+
+    sample_count = min(max_snapshots, len(times))
+    snapshot_indices = np.unique(
+        np.linspace(0, len(times) - 1, sample_count).astype(int)
+    )
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+    plotted_x = []
+    plotted_y = []
+    for snapshot_number, snapshot_index in enumerate(snapshot_indices):
+        f = snapshot_number / max(1, len(snapshot_indices) - 1)
+        color = "#%02x%02x00" % (int(0xFF * f), int(0xFF * (1 - f) * 0.8))
+        xs = x_positions[snapshot_index, point_start:point_end]
+        ys = y_positions[snapshot_index, point_start:point_end]
+        ax.plot(
+            xs,
+            ys,
+            ".",
+            color=color,
+            markersize=marker_size if snapshot_number == 0 else marker_size_small,
+        )
+        plotted_x.append(xs)
+        plotted_y.append(ys)
+
+    _set_tight_equal_xy_limits(
+        ax,
+        np.concatenate([np.ravel(x) for x in plotted_x]),
+        np.concatenate([np.ravel(y) for y in plotted_y]),
+        axis_padding=axis_padding,
+    )
+
+    ax.set_xlabel("X Position (mm)")
+    ax.set_ylabel("Y Position (mm)")
+    ax.set_aspect("equal", adjustable="box")
+    fig.tight_layout()
+
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        fig.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig
+
+
+def plot_orient(
+    output_folder,
+    save_png=True,
+    filename="Orient.png",
+    time_interval=None,
+    plot_list=None,
+    head_index=0,
+    tail_index=None,
+    marker_size=0.2,
+    moving_average_window=1,
+):
+    """Plot orientation diagnostics from body.dat/bodypos.dat in one simulation folder."""
+    if plot_list is None:
+        plot_list = [
+            "body orientation",
+            "direction to peak",
+            "distance to peak",
+            "bearing from peak direction",
+        ]
+
+    output_folder = os.path.abspath(output_folder)
+    body_file = _body_file_for_simulation_folder(output_folder)
+    body_data = np.loadtxt(body_file).T
+    if body_data.ndim != 2 or body_data.shape[0] < 4:
+        raise ValueError(
+            "{} does not contain time and x/y/z body coordinates".format(body_file)
+        )
+    coordinate_rows = body_data.shape[0] - 1
+    if coordinate_rows % 3 != 0:
+        raise ValueError(
+            "{} has {} coordinate rows; expected a multiple of 3".format(
+                body_file, coordinate_rows
+            )
+        )
+    segment_count = coordinate_rows // 3
+
+    if (
+        isinstance(head_index, bool)
+        or not isinstance(head_index, int)
+        or head_index < 0
+        or head_index >= segment_count
+    ):
+        raise ValueError(
+            "head_index must be an integer in the range 0 to {}".format(
+                segment_count - 1
+            )
+        )
+    if tail_index is None:
+        tail_index = min(50, segment_count - 1)
+    if (
+        isinstance(tail_index, bool)
+        or not isinstance(tail_index, int)
+        or tail_index < 0
+        or tail_index >= segment_count
+    ):
+        raise ValueError(
+            "tail_index must be an integer in the range 0 to {}".format(
+                segment_count - 1
+            )
+        )
+    if (
+        isinstance(moving_average_window, bool)
+        or not isinstance(moving_average_window, int)
+        or moving_average_window < 1
+    ):
+        raise ValueError("moving_average_window must be a positive integer")
+
+    times = body_data[0, :]
+    if time_interval is not None:
+        if (
+            not isinstance(time_interval, (list, tuple))
+            or len(time_interval) != 2
+        ):
+            raise ValueError("time_interval must be a (start_time, end_time) pair")
+        start_time, end_time = time_interval
+        if start_time > end_time:
+            raise ValueError("time_interval start_time must be <= end_time")
+        time_mask = (times >= start_time) & (times <= end_time)
+        if not np.any(time_mask):
+            raise ValueError("time_interval does not overlap the body position time range")
+        body_data = body_data[:, time_mask]
+        times = body_data[0, :]
+
+    if body_data.shape[1] < 3:
+        raise ValueError("At least three body-position samples are required")
+
+    body_diff = np.diff(body_data, axis=1)
+    head_x_row = head_index * 3 + 1
+    head_y_row = head_index * 3 + 2
+    tail_x_row = tail_index * 3 + 1
+    tail_y_row = tail_index * 3 + 2
+
+    trajectory = np.arctan2(body_diff[head_y_row], body_diff[head_x_row])
+    body_data_mid = (body_data[:, 1:] + body_data[:, :-1]) / 2.0
+    dir_to_origin_mid = np.arctan2(
+        body_data_mid[head_y_row] * -1,
+        body_data_mid[head_x_row] * -1,
+    )
+    dir_to_origin = np.arctan2(
+        body_data[head_y_row] * -1,
+        body_data[head_x_row] * -1,
+    )
+    trajectory_diff = hf.angle_diff(trajectory[1:], trajectory[:-1])
+    bearing_mid = hf.angle_diff(trajectory, dir_to_origin_mid)
+    orientation = np.arctan2(
+        body_data[head_y_row] - body_data[tail_y_row],
+        body_data[head_x_row] - body_data[tail_x_row],
+    )
+    orientation_diff = hf.angle_diff(orientation[1:], orientation[:-1])
+    dist_to_origin = np.sqrt(
+        np.multiply(body_data[head_y_row], body_data[head_y_row])
+        + np.multiply(body_data[head_x_row], body_data[head_x_row])
+    )
+
+    plottables = {
+        "bearing from peak direction": {
+            "value": bearing_mid,
+            "y_label": "angle (rad)",
+        },
+        "distance to peak": {
+            "value": dist_to_origin,
+            "y_label": "distance (cm)",
+        },
+        "orientation variation": {
+            "value": orientation_diff,
+            "y_label": "angle (rad)",
+        },
+        "body orientation": {
+            "value": orientation,
+            "y_label": "angle (rad)",
+        },
+        "direction to peak": {
+            "value": dir_to_origin,
+            "y_label": "angle (rad)",
+        },
+        "head trajectory variation": {
+            "value": trajectory_diff,
+            "y_label": "angle (rad)",
+        },
+        "head trajectory": {
+            "value": trajectory,
+            "y_label": "angle (rad)",
+        },
+    }
+    missing_plots = [plot_name for plot_name in plot_list if plot_name not in plottables]
+    if missing_plots:
+        raise ValueError(
+            "Unknown orient plot name(s): {}".format(", ".join(missing_plots))
+        )
+
+    num_cols = 2
+    num_rows = math.ceil(len(plot_list) / num_cols)
+    fig_orient, ax_orient = plt.subplots(
+        num_rows,
+        num_cols,
+        figsize=(num_cols * 4, num_rows * 4),
+        squeeze=False,
+    )
+    axes = ax_orient.flat
+
+    for ind, plot_name in enumerate(plot_list):
+        ax = axes[ind]
+        values = plottables[plot_name]["value"]
+        row_diff = len(times) - len(values)
+        t_start_ind = 0
+        t_end_ind = len(times)
+        if row_diff > 0:
+            t_end_ind = -1
+        if row_diff > 1:
+            t_start_ind = 1
+        t_plot = times[t_start_ind:t_end_ind]
+        ax.plot(
+            hf.movingaverage(t_plot, moving_average_window),
+            hf.movingaverage(values, moving_average_window),
+            "o",
+            markersize=marker_size,
+        )
+        ax.set_title(plot_name, fontsize=hf.title_font_size)
+        ax.set_ylabel(plottables[plot_name]["y_label"], fontsize=hf.label_font_size)
+        if ind // num_cols == num_rows - 1:
+            ax.set_xlabel("Time (s)", fontsize=hf.label_font_size)
+
+    for ax in list(axes)[len(plot_list):]:
+        ax.axis("off")
+
+    fig_orient.tight_layout()
+    if save_png:
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        fig_orient.savefig(output_file, bbox_inches="tight", dpi=300)
+
+    return fig_orient
+
+
 def plot_head_motion(
     output_folder,
     save_png=True,
@@ -1123,6 +1472,8 @@ def plot_head_motion(
     show_path=False,
     marker_size=8.0,
     line_width=1.0,
+    time_interval=None,
+    axis_padding=0.015,
 ):
     """Plot only the worm head trajectory from body.dat/bodypos.dat."""
     output_folder = os.path.abspath(output_folder)
@@ -1147,9 +1498,27 @@ def plot_head_motion(
         or max_snapshots < 1
     ):
         raise ValueError("max_snapshots must be a positive integer")
+    if axis_padding < 0:
+        raise ValueError("axis_padding must be non-negative")
 
     head_x = x_positions[:, head_index]
     head_y = y_positions[:, head_index]
+    if time_interval is not None:
+        if (
+            not isinstance(time_interval, (list, tuple))
+            or len(time_interval) != 2
+        ):
+            raise ValueError("time_interval must be a (start_time, end_time) pair")
+        start_time, end_time = time_interval
+        if start_time > end_time:
+            raise ValueError("time_interval start_time must be <= end_time")
+        time_mask = (times >= start_time) & (times <= end_time)
+        if not np.any(time_mask):
+            raise ValueError("time_interval does not overlap the body position time range")
+        times = times[time_mask]
+        head_x = head_x[time_mask]
+        head_y = head_y[time_mask]
+
     sample_count = min(max_snapshots, len(head_x))
     snapshot_indices = np.unique(
         np.linspace(0, len(head_x) - 1, sample_count).astype(int)
@@ -1202,7 +1571,11 @@ def plot_head_motion(
     ax.set_title("Head trajectory")
     ax.set_xlabel("X Position (mm)")
     ax.set_ylabel("Y Position (mm)")
-    ax.set_aspect("equal", adjustable="datalim")
+    if show_path:
+        _set_tight_equal_xy_limits(ax, head_x, head_y, axis_padding=axis_padding)
+    else:
+        _set_tight_equal_xy_limits(ax, plot_x, plot_y, axis_padding=axis_padding)
+    ax.set_aspect("equal", adjustable="box")
     ax.grid(True, linewidth=0.4, alpha=0.25)
     ax.legend(frameon=False)
     cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
