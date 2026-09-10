@@ -702,21 +702,51 @@ def plot_json_table(
 
     def section_path_from_arg(section_arg):
         if section_arg is None:
-            return []
+            return [], None
         if isinstance(section_arg, str):
-            return [part for part in section_arg.split(".") if part]
+            return [part for part in section_arg.split(".") if part], None
         if isinstance(section_arg, (list, tuple)):
-            if not all(isinstance(part, str) and part for part in section_arg):
+            section_list = list(section_arg)
+            if section_list and isinstance(section_list[-1], (list, tuple)):
+                selected_keys = list(section_list[-1])
+                section_list = section_list[:-1]
+                if not selected_keys or not all(
+                    isinstance(part, str) and part for part in selected_keys
+                ):
+                    raise ValueError(
+                        "nested section entries must be non-empty strings"
+                    )
+            else:
+                selected_keys = None
+            if any(isinstance(part, (list, tuple)) for part in section_list):
+                raise ValueError(
+                    "a nested section list is only supported as the final entry"
+                )
+            if not all(isinstance(part, str) and part for part in section_list):
                 raise ValueError("section path entries must be non-empty strings")
-            return list(section_arg)
-        raise TypeError("section must be None, a key string, or a list/tuple of keys")
+            return section_list, selected_keys
+        raise TypeError(
+            "section must be None, a key string, or a list/tuple of keys"
+        )
 
-    section_path = section_path_from_arg(section)
+    section_path, selected_section_keys = section_path_from_arg(section)
     root_obj = json_data
     for key in section_path:
         if not isinstance(root_obj, dict) or key not in root_obj:
             raise KeyError("Could not find JSON section path: {}".format(section))
         root_obj = root_obj[key]
+    if selected_section_keys is not None:
+        if not isinstance(root_obj, dict):
+            raise TypeError(
+                "nested section selection requires the parent section to be an object"
+            )
+        missing_keys = [key for key in selected_section_keys if key not in root_obj]
+        if missing_keys:
+            raise KeyError(
+                "Could not find JSON section key(s): {}".format(
+                    ", ".join(missing_keys)
+                )
+            )
 
     def display_value(value):
         if isinstance(value, bool):
@@ -758,7 +788,11 @@ def plot_json_table(
         rows.append((path, display_value(value)))
 
     rows = []
-    flatten(root_obj, [], rows)
+    if selected_section_keys is None:
+        flatten(root_obj, [], rows)
+    else:
+        for key in selected_section_keys:
+            flatten(root_obj[key], [key], rows)
     if not rows:
         raise ValueError("No JSON values were found for the selected section")
 
@@ -781,6 +815,10 @@ def plot_json_table(
 
     max_depth = max(len(path_cells) for path_cells, _value in display_rows)
     font_size = 8.5
+    from matplotlib.font_manager import FontProperties
+    from matplotlib.textpath import TextPath
+
+    font_properties = FontProperties(size=font_size)
     left_margin = 0.18
     right_margin = 0.18
     top_margin = 0.18
@@ -789,9 +827,17 @@ def plot_json_table(
     def fitted_width(texts, min_width=0.55, max_width=4.5):
         if not texts:
             return min_width
-        longest = max(len(shorten(text)) for text in texts if text is not None)
-        char_width = font_size / 120.0
-        return max(min_width, min(max_width, longest * char_width + 0.18))
+        text_widths = [
+            TextPath((0, 0), shorten(text), prop=font_properties)
+            .get_extents()
+            .width
+            / 72.0
+            for text in texts
+            if text is not None and shorten(text)
+        ]
+        if not text_widths:
+            return min_width
+        return max(min_width, min(max_width, max(text_widths) + 0.18))
 
     column_widths = []
     for col_index in range(max_depth):
@@ -813,10 +859,10 @@ def plot_json_table(
     table_width = sum(column_widths) + value_width
     section_label = " / ".join(section_path)
     if section_label:
-        table_width = max(
-            table_width,
-            fitted_width([section_label], min_width=table_width, max_width=26.0),
-        )
+        title_width = fitted_width([section_label], min_width=0.0, max_width=26.0)
+        if title_width > table_width:
+            value_width += title_width - table_width
+            table_width = title_width
     table_height = len(display_rows) * row_height
     header_height = row_height * 1.15 if section_label else 0.0
     total_table_height = table_height + header_height
