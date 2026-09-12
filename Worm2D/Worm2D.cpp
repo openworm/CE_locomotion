@@ -1212,12 +1212,18 @@ void Worm2Dbody::addParsToJson(json & j)
 void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
 {
 
-    if (j.contains("InputNS")){
+    if (j.contains("InputNS")
+        && j["InputNS"].contains("weights")
+        && j["InputNS"]["weights"].contains("value")
+        && j["InputNS"]["weights"]["value"].is_array()){
         vector<toFromWeight> vec1 = j["InputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
         NSInputConn.swap(vec1);
     }
 
-    if (j.contains("OutputNS")){
+    if (j.contains("OutputNS")
+        && j["OutputNS"].contains("weights")
+        && j["OutputNS"]["weights"].contains("value")
+        && j["OutputNS"]["weights"]["value"].is_array()){
         vector<toFromWeight> vec1 = j["OutputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
         NSOutputConn.swap(vec1);
     }
@@ -1473,11 +1479,19 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
 
-    appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
-    j["InputNS"]["weights"]["message"] = "Weights of driving inputs to NS from another NS";
+    if (!NSInputConn.empty())
+    {
+        appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
+        j["InputNS"]["weights"]["message"] = "Weights of driving inputs to NS from another NS";
+    }
+    else j.erase("InputNS");
 
-    appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
-    j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
+    if (!NSOutputConn.empty())
+    {
+        appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
+        j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
+    }
+    else j.erase("OutputNS");
 
     //basePar1->addParsToJson(j);
 
