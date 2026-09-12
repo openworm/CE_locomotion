@@ -2178,7 +2178,10 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
   bool do_nml =  cmd->getArgValInt("--donml",0);
   if (do_nml) {
     double StepSize = 0;
-    if (j.contains("Simulation")){
+    if (j.contains("simulation")){
+    StepSize = j["simulation"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    else if (j.contains("Simulation")){
     StepSize = j["Simulation"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
     else if (j.contains("evolution")){

@@ -1027,7 +1027,9 @@ def makeCellXmlReq(
         if cell_vals is not None:
             vals[key] = getVals(pop_names, cell_names, cell_vals)
         elif key == "timestep":
-            sim = network_json_data.get("Simulation", {})
+            sim = network_json_data.get(
+                "simulation", network_json_data.get("Simulation", {})
+            )
             step_size = _value(sim.get("StepSize"), par_name_default[key])
             vals[key] = [step_size] * len(cell_names)
         else:

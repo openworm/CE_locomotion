@@ -67,9 +67,12 @@ def make_fig(model_name):
     # cell_names = utils.getCellNames(network_json_data)
     cell_names = utils.default_cells[model_name]["names"]
 
-    if hf.checkDictName(network_json_data, ["Simulation"]):
-        step_size = network_json_data["Simulation"]["StepSize"]["value"]
-        skip_steps = network_json_data["Simulation"]["skip_steps"]["value"]
+    sim_pars = network_json_data.get(
+        "simulation", network_json_data.get("Simulation", {})
+    )
+    if sim_pars:
+        step_size = sim_pars["StepSize"]["value"]
+        skip_steps = sim_pars["skip_steps"]["value"]
     else:
         evo_pars = network_json_data.get(
             "evolution",

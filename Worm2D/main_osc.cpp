@@ -64,7 +64,10 @@ int main (int argc, const char* argv[])
     }
     if (model_name == "") model_name = "W2DSR";
 
-    if (!j_orig.is_null()) j_orig.erase("Simulation");
+    if (!j_orig.is_null()) {
+        j_orig.erase("Simulation");
+        j_orig.erase("simulation");
+    }
 
     
     if (model_name == "CE") model_name = "W2DCE";
@@ -252,7 +255,8 @@ int main (int argc, const char* argv[])
 
     if (!j_evo.empty()){
     string jloc;
-    if (j_evo.contains("Simulation")) jloc = "Simulation";
+    if (j_evo.contains("simulation")) jloc = "simulation";
+    else if (j_evo.contains("Simulation")) jloc = "Simulation";
     else if (j_evo.contains("evolution")) jloc = "evolution";
     else if (j_evo.contains("Evolutionary Optimization Parameters")) 
     jloc = "Evolutionary Optimization Parameters";
@@ -320,8 +324,10 @@ int main (int argc, const char* argv[])
     double simduration = 10;
     double simtransient = 10;
     if (!j_evo.empty()){
-        if (j_evo.contains("Simulation")){
-            const json& j_sim = j_evo["Simulation"];
+        if (j_evo.contains("simulation") || j_evo.contains("Simulation")){
+            const json& j_sim = j_evo.contains("simulation")
+                ? j_evo["simulation"]
+                : j_evo["Simulation"];
             if (j_sim.contains("duration")) simduration = j_sim["duration"]["value"];
             else if (j_sim.contains("Duration")) simduration = j_sim["Duration"]["value"];
             if (j_sim.contains("transient")) simtransient = j_sim["transient"]["value"];
@@ -373,8 +379,8 @@ int main (int argc, const char* argv[])
     
 
     //if (do_nml) assert(0);
-    j["Simulation"]["transient"]["value"] = simtransient;
-    j["Simulation"]["duration"]["value"] = simduration;
+    j["simulation"]["transient"]["value"] = simtransient;
+    j["simulation"]["duration"]["value"] = simduration;
     }
     
     else{
@@ -392,8 +398,8 @@ int main (int argc, const char* argv[])
     if (doReverse == 0 || doReverse == 1)
     {
 
-    j["Simulation"]["transient"]["value"] = simtransient;
-    j["Simulation"]["duration"]["value"] = simduration;
+    j["simulation"]["transient"]["value"] = simtransient;
+    j["simulation"]["duration"]["value"] = simduration;
     simPars sp1 = {directoryName, simduration, simtransient, StepSize};
     Simulation s1(sp1);
 
@@ -422,8 +428,8 @@ int main (int argc, const char* argv[])
     
     else if (doReverse == 2 || doReverse == 3){
 
-    j["Simulation"]["transient"]["value"] = simtransient;
-    j["Simulation"]["duration"]["value"] = simduration*2;
+    j["simulation"]["transient"]["value"] = simtransient;
+    j["simulation"]["duration"]["value"] = simduration*2;
 
     bool forwardfirst = cmd->getArgValInt("--doForwardFirst",1);
     //forwardfirst = getParameterInt(argc,argv,"--doForwardFirst","0");
@@ -473,9 +479,9 @@ int main (int argc, const char* argv[])
 
     //w2->addParsToJson(j);
 
-    j["Simulation"]["StepSize"]["value"] = StepSize;
-    j["Simulation"]["skip_steps"]["value"] = skip_steps;
-    j["Simulation"]["randomseed"]["value"] = simrandseed;
+    j["simulation"]["StepSize"]["value"] = StepSize;
+    j["simulation"]["skip_steps"]["value"] = skip_steps;
+    j["simulation"]["randomseed"]["value"] = simrandseed;
 
     //cout << "const 1" << endl;
     j["worm"]["main_model_name"]["value"] = model_name;

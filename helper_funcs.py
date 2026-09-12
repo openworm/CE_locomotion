@@ -304,9 +304,17 @@ def get_worm_json(folder_name):
         return json.load(f)
 
 
+def _normalize_json_section_names(json_data):
+    if isinstance(json_data, dict) and "Simulation" in json_data:
+        if "simulation" not in json_data:
+            json_data["simulation"] = json_data["Simulation"]
+        del json_data["Simulation"]
+
+
 def write_worm_json(folder_name, json_data):
     """Write worm_data_worm.json to a run directory."""
     os.makedirs(folder_name, exist_ok=True)
+    _normalize_json_section_names(json_data)
     filename = os.path.join(folder_name, "worm_data_worm.json")
     with open(filename, "w") as f:
         json.dump(json_data, f)

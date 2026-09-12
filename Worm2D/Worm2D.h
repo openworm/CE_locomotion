@@ -339,6 +339,7 @@ class baseParameters
     {
         if (!j.is_object()) return;
         mergeLegacySection(j, "worm", "Worm");
+        mergeLegacySection(j, "simulation", "Simulation");
         mergeLegacySection(j, "evolution", "Evolutionary Optimization Parameters");
         mergeLegacySection(j, "stretch_receptor", "Stretch Receptor");
         mergeLegacySection(j, "stretch_receptor", "Stretch receptor");
@@ -369,11 +370,16 @@ class baseParameters
         {
             j.erase("Evolutionary Optimization Parameters");
         }
+        if (j.contains("Simulation"))
+        {
+            j.erase("Simulation");
+        }
     }
 
     static string canonicalSectionKey(const string & section)
     {
         if (section == "Worm") return "worm";
+        if (section == "Simulation") return "simulation";
         if (section == "Evolutionary Optimization Parameters") return "evolution";
         if (section == "Stretch receptor" || section == "Stretch Receptor")
             return "stretch_receptor";
@@ -383,6 +389,7 @@ class baseParameters
     static string legacySectionKey(const string & section)
     {
         if (section == "worm") return "Worm";
+        if (section == "simulation") return "Simulation";
         if (section == "evolution") return "Evolutionary Optimization Parameters";
         if (section == "stretch_receptor") return "Stretch Receptor";
         return section;
