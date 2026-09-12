@@ -1760,6 +1760,100 @@ def find_evotag_occurrences(json_data, evotag_name):
     return occurrences
 
 
+def find_mfunc_paths(json_data):
+    """Return all mfunc entries indexed by their JSON paths."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    mfuncs = {}
+
+    def path_string(path):
+        result = ""
+        for part in path:
+            if isinstance(part, int):
+                result += "[{}]".format(part)
+            else:
+                if result:
+                    result += "."
+                result += str(part)
+        return result
+
+    def find_matches(value, path=()):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_path = path + (key,)
+                if key in ("mfunc", "m_func"):
+                    mfuncs[path_string(child_path)] = {
+                        "path": list(child_path),
+                        "mfunc": copy.deepcopy(child),
+                    }
+                find_matches(child, child_path)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                find_matches(child, path + (index,))
+
+    find_matches(json_data)
+    return mfuncs
+
+
+def find_mfunc_objects(json_data):
+    """Return the JSON hierarchy containing objects with an mfunc field."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+
+    no_match = object()
+    context_keys = (
+        "from",
+        "to",
+        "from_cell",
+        "to_cell",
+        "from_input",
+        "input_num",
+        "from_output",
+        "to_output",
+        "from_sr",
+        "to_ns",
+        "from_musc",
+        "to_musc",
+        "to_seg",
+        "cell_ind",
+    )
+
+    def object_context(value):
+        return {
+            key: copy.deepcopy(value[key])
+            for key in context_keys
+            if key in value
+        }
+
+    def matching_hierarchy(value):
+        if isinstance(value, dict):
+            matches = {}
+            for key, child in value.items():
+                if key in ("mfunc", "m_func"):
+                    matches[key] = copy.deepcopy(child)
+                    continue
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches[key] = child_match
+            if matches:
+                matches = {**object_context(value), **matches}
+            return matches if matches else no_match
+
+        if isinstance(value, list):
+            matches = []
+            for child in value:
+                child_match = matching_hierarchy(child)
+                if child_match is not no_match:
+                    matches.append(child_match)
+            return matches if matches else no_match
+
+        return no_match
+
+    result = matching_hierarchy(json_data)
+    return {} if result is no_match else result
+
+
 def find_evotag_objects(json_data, evotag_name):
     """Return the JSON hierarchy containing objects with a matching evotag."""
     if not isinstance(json_data, dict):
@@ -3349,6 +3443,71 @@ def set_evotag_value(json_data, evotag_name, new_value):
     if matches == 0:
         raise KeyError("Evotag {!r} was not found in the JSON data".format(evotag_name))
 
+    return result
+
+
+def add_mfunc(json_data, keys, f_ind, args=None, **kwargs):
+    """Return a copy with an mfunc added to an object containing 'value'."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+    if isinstance(f_ind, bool) or not isinstance(f_ind, int):
+        raise TypeError("f_ind must be an integer")
+    if args is not None and not isinstance(args, dict):
+        raise TypeError("args must be a dictionary or None")
+
+    mfunc_args = {}
+    if args is not None:
+        mfunc_args.update(args)
+    for key, value in kwargs.items():
+        if key in mfunc_args:
+            raise ValueError("mfunc argument {!r} was supplied twice".format(key))
+        mfunc_args[key] = value
+    for key in mfunc_args:
+        if not isinstance(key, str) or not key:
+            raise ValueError("All mfunc argument keys must be non-empty strings")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(key, depth)
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    if keys[-1] == "value":
+        parameter = result
+        for key in keys[:-1]:
+            parameter = parameter[key]
+    else:
+        parameter = current
+
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError("The JSON path must identify an object containing 'value'")
+
+    parameter["mfunc"] = {"f_ind": f_ind, **copy.deepcopy(mfunc_args)}
     return result
 
 
