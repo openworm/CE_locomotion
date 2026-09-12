@@ -313,7 +313,7 @@ void EvolutionCO::addExtraParsToJson(json & j)
     
 
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = "evolution";
        //var1.parInt.head = "Evolutionary Optimization Parameters";
        var1.parDoub.names = {"TransientDuration", "RunDuration", "EvalDuration", "HST", "BiasRange", "SensorWeightRange", 
 	"InterneuronWeightRange", "StretchReceptorRange", "MinDifSensor", 

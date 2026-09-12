@@ -40,6 +40,12 @@ def get_evolved_used_order(network_json_data):
     return []
 
 
+def get_evolution_parameters(network_json_data):
+    if "evolution" in network_json_data:
+        return network_json_data["evolution"]
+    return network_json_data.get("Evolutionary Optimization Parameters", {})
+
+
 def _json_value(obj, default=None):
     if isinstance(obj, dict) and "value" in obj:
         return obj["value"]
@@ -178,6 +184,8 @@ def plot_json_dictionary_summary(
         "OutputNS",
         "PhenoNames",
         "PhenoNamesNums",
+        "evolution",
+        "Evolutionary Optimization Parameters",
         "evolved_used",
     }
     if exclude_keys is not None:
@@ -202,8 +210,10 @@ def plot_json_dictionary_summary(
 
     def format_title(text):
         text = str(text)
+        if text == "evolution":
+            return "evolution", 13
         if text == "Evolutionary Optimization Parameters":
-            return "Evolutionary Optimization\nParameters", 9.5
+            return "evolution", 13
         if len(text) > 25:
             words = text.replace("_", " ").split()
             if len(words) > 1:
@@ -408,6 +418,8 @@ def plot_json_dictionary_summary_2(
         "OutputNS",
         "PhenoNames",
         "PhenoNamesNums",
+        "evolution",
+        "Evolutionary Optimization Parameters",
         "evolved_used",
     }
     if exclude_keys is not None:
@@ -458,8 +470,10 @@ def plot_json_dictionary_summary_2(
 
     def format_title(text):
         text = str(text)
+        if text == "evolution":
+            return "evolution", 13
         if text == "Evolutionary Optimization Parameters":
-            return "Evolutionary Optimization\nParameters", 9.0
+            return "evolution", 13
         if len(text) > 25:
             words = text.replace("_", " ").split()
             if len(words) > 1:
@@ -4421,9 +4435,7 @@ def plot_phenonames(
     worm_file = hf.get_worm_file()
 
     network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
+    vectsize = get_evolution_parameters(network_json_data)["VectSize"]["value"]
 
     evolvables = normalize_evolvable_range_entries(
         get_evolvable_ranges(network_json_data),
@@ -5026,9 +5038,7 @@ def plot_hist(a=None):
 
     worm_file = hf.get_worm_file()
     network_json_data = utils.getJsonFile(worm_file)
-    vectsize = network_json_data["Evolutionary Optimization Parameters"]["VectSize"][
-        "value"
-    ]
+    vectsize = get_evolution_parameters(network_json_data)["VectSize"]["value"]
 
     evolvables = normalize_evolvable_range_entries(
         get_evolvable_ranges(network_json_data),

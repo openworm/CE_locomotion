@@ -221,7 +221,7 @@ public:
 
  void addParsToJson(json & j){
     Evolution::addParsToJson(j); 
-    this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+    this->evopar_ptr->addParsToJson(j["evolution"]);
     this->evopar_ptr->addRootParsToJson(j);
 }
 
@@ -310,7 +310,9 @@ shared_ptr<const W2Dparameters> Evolvable_ptr<T>::getParameters(shared_ptr<const
 
     assert(w_ptr1!=nullptr);
     
-    if (json_ptr_->contains("Evolutionary Optimization Parameters"))
+    if (json_ptr_->contains("evolution"))
+    w_ptr1->setParsFromJson((*json_ptr_)["evolution"]);
+    else if (json_ptr_->contains("Evolutionary Optimization Parameters"))
     w_ptr1->setParsFromJson((*json_ptr_)["Evolutionary Optimization Parameters"]);
     w_ptr1->setRootParsFromJson(*json_ptr_);
     w_ptr1->setPars(cmd_);
@@ -382,9 +384,11 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
     evol1->template getValCJEvo<string>("evo_type", evotype_);
     evoPars ep1 = getDefaultEvoPars(evotype_,evol1);
     const json & j = evol1->itsBPjson();
-    if (j.contains("Evolutionary Optimization Parameters"))
+    if (j.contains("evolution") || j.contains("Evolutionary Optimization Parameters"))
     {
-        const json & j_evo = j.at("Evolutionary Optimization Parameters");
+        const json & j_evo = j.contains("evolution")
+            ? j.at("evolution")
+            : j.at("Evolutionary Optimization Parameters");
         int int_val;
         getJsonValTF<long>(j_evo, "randomseed", ep1.randomseed, true);
         if (getJsonValTF<int>(j_evo, "selection_mode", int_val, true) ||
@@ -596,7 +600,7 @@ void EvolutionFullWC<T>::writeJson(TVector<double> & pheno){
         //w.setWormPars(cmd);
         w.setParsFromPheno(pheno);
         json j;
-        this->evopar_ptr->addParsToJson(j["Evolutionary Optimization Parameters"]);
+        this->evopar_ptr->addParsToJson(j["evolution"]);
         //wormpar_ptr->addParsToJson(j["Worm"]["Initial parameters"]);
         writeJson1(w,j);
     }

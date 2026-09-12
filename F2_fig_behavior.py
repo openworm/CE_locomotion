@@ -71,19 +71,25 @@ def make_fig(model_name):
         step_size = network_json_data["Simulation"]["StepSize"]["value"]
         skip_steps = network_json_data["Simulation"]["skip_steps"]["value"]
     else:
-        step_size = network_json_data["Evolutionary Optimization Parameters"][
-            "StepSize"
-        ]["value"]
-        skip_steps = network_json_data["Evolutionary Optimization Parameters"][
-            "skip_steps"
-        ]["value"]
+        evo_pars = network_json_data.get(
+            "evolution",
+            network_json_data.get("Evolutionary Optimization Parameters", {}),
+        )
+        step_size = evo_pars["StepSize"]["value"]
+        skip_steps = evo_pars["skip_steps"]["value"]
 
     plot_transient = act_data[0, 0]
     plot_end = min(act_data[0, -1], body[-1, 0], curv[-1, 0])
     plot_time = min(10.0, max(0.0, plot_end - plot_transient))
 
-    if "Evolutionary Optimization Parameters" in network_json_data:
-        evo_pars = network_json_data["Evolutionary Optimization Parameters"]
+    if (
+        "evolution" in network_json_data
+        or "Evolutionary Optimization Parameters" in network_json_data
+    ):
+        evo_pars = network_json_data.get(
+            "evolution",
+            network_json_data.get("Evolutionary Optimization Parameters", {}),
+        )
         avg_speed_key = "avg_speed" if "avg_speed" in evo_pars else "AvgSpeed"
         AvgSpeed = evo_pars[avg_speed_key]["value"] * 1000.0
     elif "AvgSpeed" in plot_format:

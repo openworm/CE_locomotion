@@ -253,6 +253,7 @@ int main (int argc, const char* argv[])
     if (!j_evo.empty()){
     string jloc;
     if (j_evo.contains("Simulation")) jloc = "Simulation";
+    else if (j_evo.contains("evolution")) jloc = "evolution";
     else if (j_evo.contains("Evolutionary Optimization Parameters")) 
     jloc = "Evolutionary Optimization Parameters";
 
@@ -326,8 +327,11 @@ int main (int argc, const char* argv[])
             if (j_sim.contains("transient")) simtransient = j_sim["transient"]["value"];
             else if (j_sim.contains("Transient")) simtransient = j_sim["Transient"]["value"];
         }
-        else if (j_evo.contains("Evolutionary Optimization Parameters")){
-            const json& j_sim = j_evo["Evolutionary Optimization Parameters"];
+        else if (j_evo.contains("evolution")
+            || j_evo.contains("Evolutionary Optimization Parameters")){
+            const json& j_sim = j_evo.contains("evolution")
+                ? j_evo["evolution"]
+                : j_evo["Evolutionary Optimization Parameters"];
             if (j_sim.contains("Duration")) simduration = j_sim["Duration"]["value"];
             if (j_sim.contains("Transient")) simtransient = j_sim["Transient"]["value"];
         }
@@ -476,9 +480,12 @@ int main (int argc, const char* argv[])
     //cout << "const 1" << endl;
     j["worm"]["main_model_name"]["value"] = model_name;
 
-    if (!j_evo.empty() && j_evo.contains("Evolutionary Optimization Parameters")){
-    j["Evolutionary Optimization Parameters"] = j_evo["Evolutionary Optimization Parameters"];
-    json& evo_json = j["Evolutionary Optimization Parameters"];
+    if (!j_evo.empty() && (j_evo.contains("evolution")
+        || j_evo.contains("Evolutionary Optimization Parameters"))){
+    j["evolution"] = j_evo.contains("evolution")
+        ? j_evo["evolution"]
+        : j_evo["Evolutionary Optimization Parameters"];
+    json& evo_json = j["evolution"];
     if (evo_json.contains("evoType")){
         if (!evo_json.contains("evo_type")) evo_json["evo_type"] = evo_json["evoType"];
         evo_json.erase("evoType");
@@ -492,10 +499,17 @@ int main (int argc, const char* argv[])
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);
     if (j.contains("worm")) j["worm"].erase("hs_step_size");
+    if (j.contains("evolution"))
+    {
+        j["evolution"].erase("hs_step_size");
+        j["evolution"].erase("HSStepSize");
+    }
     if (j.contains("Evolutionary Optimization Parameters"))
     {
         j["Evolutionary Optimization Parameters"].erase("hs_step_size");
         j["Evolutionary Optimization Parameters"].erase("HSStepSize");
+        if (j["Evolutionary Optimization Parameters"].empty())
+            j.erase("Evolutionary Optimization Parameters");
     }
     j.erase("Worm");
     j.erase("Nervous system");

@@ -8,8 +8,8 @@ void EvolutionCE::addExtraParsToJson(json & j)
 {
 
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = "evolution";
+       var1.parInt.head = "evolution";
        var1.parDoub.names = {"AvgSpeed", "BBCfit", "BiasRange", "SCRange",
         "CSRange", "ESRange", "SRmax", "NMJmax", "NMJmin"
       };
@@ -341,4 +341,3 @@ void EvolutionCE::RunSimulation(Worm2Dbase & w1, RandomState &rs){
   //curvfile.close();
   //actfile.close();
 }
-

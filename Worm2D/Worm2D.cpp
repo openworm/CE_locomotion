@@ -2181,6 +2181,9 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
     if (j.contains("Simulation")){
     StepSize = j["Simulation"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
+    else if (j.contains("evolution")){
+    StepSize = j["evolution"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
     else if (j.contains("Evolutionary Optimization Parameters")){
     StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}

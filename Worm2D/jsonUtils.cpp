@@ -1656,8 +1656,8 @@ void evoPars::addParsToJson(json &j) const
 const doubIntParamsHead evoPars::getParams() const
    {
        doubIntParamsHead var1;
-       var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
+       var1.parDoub.head = "evolution";
+       var1.parInt.head = "evolution";
        var1.parDoub.names = 
        {"MutationVariance", "CrossoverProbability", 
          "MaxExpectedOffspring", "ElitistFraction",

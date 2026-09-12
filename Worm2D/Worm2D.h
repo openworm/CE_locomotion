@@ -339,6 +339,7 @@ class baseParameters
     {
         if (!j.is_object()) return;
         mergeLegacySection(j, "worm", "Worm");
+        mergeLegacySection(j, "evolution", "Evolutionary Optimization Parameters");
         mergeLegacySection(j, "stretch_receptor", "Stretch Receptor");
         mergeLegacySection(j, "stretch_receptor", "Stretch receptor");
         cleanLegacyStretchReceptorKeys(j);
@@ -359,16 +360,21 @@ class baseParameters
             }
         }
         if (j.contains("worm")) j["worm"].erase("hs_step_size");
+        if (j.contains("evolution"))
+        {
+            j["evolution"].erase("hs_step_size");
+            j["evolution"].erase("HSStepSize");
+        }
         if (j.contains("Evolutionary Optimization Parameters"))
         {
-            j["Evolutionary Optimization Parameters"].erase("hs_step_size");
-            j["Evolutionary Optimization Parameters"].erase("HSStepSize");
+            j.erase("Evolutionary Optimization Parameters");
         }
     }
 
     static string canonicalSectionKey(const string & section)
     {
         if (section == "Worm") return "worm";
+        if (section == "Evolutionary Optimization Parameters") return "evolution";
         if (section == "Stretch receptor" || section == "Stretch Receptor")
             return "stretch_receptor";
         return section;
@@ -377,6 +383,7 @@ class baseParameters
     static string legacySectionKey(const string & section)
     {
         if (section == "worm") return "Worm";
+        if (section == "evolution") return "Evolutionary Optimization Parameters";
         if (section == "stretch_receptor") return "Stretch Receptor";
         return section;
     }

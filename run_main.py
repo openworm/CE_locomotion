@@ -1032,34 +1032,19 @@ def run(a=None, **kwargs):
     if os.path.isfile(evol_par_file):
         with open(evol_par_file) as f:
             worm_data = json.load(f)
+            evo_json = worm_data.get(
+                "evolution",
+                worm_data.get("Evolutionary Optimization Parameters", {}),
+            )
             for key in evol_pars:
-                if key in worm_data["Evolutionary Optimization Parameters"]:
-                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
-                        key
-                    ]["value"]
-                elif (
-                    key == "evo_type"
-                    and "evoType" in worm_data["Evolutionary Optimization Parameters"]
-                ):
-                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
-                        "evoType"
-                    ]["value"]
-                elif (
-                    key == "evo_type"
-                    and "EvolutionType"
-                    in worm_data["Evolutionary Optimization Parameters"]
-                ):
-                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
-                        "EvolutionType"
-                    ]["value"]
-                elif (
-                    key in legacy_parameter_names
-                    and legacy_parameter_names[key]
-                    in worm_data["Evolutionary Optimization Parameters"]
-                ):
-                    evol_data[key] = worm_data["Evolutionary Optimization Parameters"][
-                        legacy_parameter_names[key]
-                    ]["value"]
+                if key in evo_json:
+                    evol_data[key] = evo_json[key]["value"]
+                elif key == "evo_type" and "evoType" in evo_json:
+                    evol_data[key] = evo_json["evoType"]["value"]
+                elif key == "evo_type" and "EvolutionType" in evo_json:
+                    evol_data[key] = evo_json["EvolutionType"]["value"]
+                elif key in legacy_parameter_names and legacy_parameter_names[key] in evo_json:
+                    evol_data[key] = evo_json[legacy_parameter_names[key]]["value"]
                 else:
                     print(f"Parameter {key} not found in worm_data.json")
     elif os.path.isfile(evol_par_file_base):
