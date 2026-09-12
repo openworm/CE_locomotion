@@ -231,6 +231,39 @@ map<string, int> inputSwitcherIdMapFromJson(const json & input_switcher)
     return idToIndex;
 }
 
+int functionIndexFromJson(const json & value)
+{
+    if (value.is_number_integer()) return value.get<int>();
+    if (value.is_string())
+    {
+        const string functionName = value.get<string>();
+        if (functionName == "mult_func") return 1;
+        if (functionName == "zero_func") return 2;
+        throw runtime_error("Unknown mfunc function name '" + functionName + "'");
+    }
+    throw runtime_error("mfunc function identifier must be a string or integer");
+}
+
+string functionNameForIndex(const int functionIndex)
+{
+    if (functionIndex == 1) return "mult_func";
+    if (functionIndex == 2) return "zero_func";
+    return to_string(functionIndex);
+}
+
+bool funcableContainsFunction(const json & funcable, const int functionIndex)
+{
+    return funcable.contains(to_string(functionIndex))
+        || funcable.contains(functionNameForIndex(functionIndex));
+}
+
+json & funcableFunctionJson(json & funcable, const int functionIndex)
+{
+    const string functionName = functionNameForIndex(functionIndex);
+    if (funcable.contains(functionName)) return funcable.at(functionName);
+    return funcable.at(to_string(functionIndex));
+}
+
 }
 
 
@@ -332,18 +365,19 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
   //cout << j << endl;
 
 
-  //if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
+  const int functionIndex = functionIndexFromJson(j.at("f_ind"));
+  //if (setItsJson) itsJson["f_ind"] =  functionIndex;
 
-  if (j.at("f_ind").get<int>() == 1) 
+  if (functionIndex == 1) 
   {
     const bool scheduled =
       itsJson.contains("functions")
       && itsJson.at("functions").contains(to_string(1));
     const bool cond1 =
       scheduled
-      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1)
+      || (itsJson.contains("f_ind") && functionIndexFromJson(itsJson.at("f_ind")) == 1)
       || setItsJson;
-    const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(1));
+    const bool cond2 = condf && funcableContainsFunction(bp.BPitsJson.at("Funcable"), 1);
 
     if (!(cond1 || cond2)) return val;
     if (j.contains("doInverse") && j.at("doInverse") == true) 
@@ -354,7 +388,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
     return val * j.at("fact").get<double>();
   }
 
-  if (j.at("f_ind").get<int>() == 2) {
+  if (functionIndex == 2) {
    
     if (j.contains("doInverse") && j.at("doInverse") == true) return val;
 
@@ -365,7 +399,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
       && itsJson.at("functions").contains(to_string(2));
     const bool cond1 =
       scheduled
-      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2)
+      || (itsJson.contains("f_ind") && functionIndexFromJson(itsJson.at("f_ind")) == 2)
       || setItsJson;
     if (scheduled)
     {
@@ -382,11 +416,11 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
         && cond == itsJson.at("condval").get<int>())
       return 0;
  
-    const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(2));
+    const bool cond2 = condf && funcableContainsFunction(bp.BPitsJson.at("Funcable"), 2);
 
     if (cond2) 
     {
-    json & bpj = bp.BPitsJson.at("Funcable").at(to_string(2));
+    json & bpj = funcableFunctionJson(bp.BPitsJson.at("Funcable"), 2);
     if (bpj.contains("condval") && cond == bpj.at("condval").get<int>()) return 0;
     }
       //return val;
@@ -879,7 +913,7 @@ void Worm2Dbase::constructFuncableSchedules(const json & j)
               "Funcable schedule " + item.key()
               + " requires function_index.value");
         schedule.function_index =
-            value.at("function_index").at("value").get<int>();
+            functionIndexFromJson(value.at("function_index").at("value"));
         if (schedule.function_index < 1)
           throw runtime_error(
               "Funcable schedule function_index must be positive");

@@ -718,9 +718,7 @@ def plot_json_table(
                 if not selected_keys or not all(
                     isinstance(part, str) and part for part in selected_keys
                 ):
-                    raise ValueError(
-                        "nested section entries must be non-empty strings"
-                    )
+                    raise ValueError("nested section entries must be non-empty strings")
             else:
                 selected_keys = None
             if any(isinstance(part, (list, tuple)) for part in section_list):
@@ -730,9 +728,7 @@ def plot_json_table(
             if not all(isinstance(part, str) and part for part in section_list):
                 raise ValueError("section path entries must be non-empty strings")
             return section_list, selected_keys
-        raise TypeError(
-            "section must be None, a key string, or a list/tuple of keys"
-        )
+        raise TypeError("section must be None, a key string, or a list/tuple of keys")
 
     section_path, selected_section_keys = section_path_from_arg(section)
     root_obj = json_data
@@ -748,9 +744,7 @@ def plot_json_table(
         missing_keys = [key for key in selected_section_keys if key not in root_obj]
         if missing_keys:
             raise KeyError(
-                "Could not find JSON section key(s): {}".format(
-                    ", ".join(missing_keys)
-                )
+                "Could not find JSON section key(s): {}".format(", ".join(missing_keys))
             )
 
     def display_value(value):
@@ -822,9 +816,7 @@ def plot_json_table(
         display_rows = display_rows[:max_lines] + [(None, None)]
 
     max_depth = max(
-        len(path_cells)
-        for path_cells, _value in display_rows
-        if path_cells is not None
+        len(path_cells) for path_cells, _value in display_rows if path_cells is not None
     )
     font_size = 8.5
     from matplotlib.font_manager import FontProperties
@@ -840,9 +832,7 @@ def plot_json_table(
         if not texts:
             return min_width
         text_widths = [
-            TextPath((0, 0), shorten(text), prop=font_properties)
-            .get_extents()
-            .width
+            TextPath((0, 0), shorten(text), prop=font_properties).get_extents().width
             / 72.0
             for text in texts
             if text is not None and shorten(text)
@@ -1066,9 +1056,7 @@ def plot_json_table_columns(
                 if not selected_keys or not all(
                     isinstance(part, str) and part for part in selected_keys
                 ):
-                    raise ValueError(
-                        "nested section entries must be non-empty strings"
-                    )
+                    raise ValueError("nested section entries must be non-empty strings")
             else:
                 selected_keys = None
             if any(isinstance(part, (list, tuple)) for part in section_list):
@@ -1078,9 +1066,7 @@ def plot_json_table_columns(
             if not all(isinstance(part, str) and part for part in section_list):
                 raise ValueError("section path entries must be non-empty strings")
             return section_list, selected_keys
-        raise TypeError(
-            "section must be None, a key string, or a list/tuple of keys"
-        )
+        raise TypeError("section must be None, a key string, or a list/tuple of keys")
 
     section_path, selected_section_keys = section_path_from_arg(section)
     root_obj = json_data
@@ -1096,9 +1082,7 @@ def plot_json_table_columns(
         missing_keys = [key for key in selected_section_keys if key not in root_obj]
         if missing_keys:
             raise KeyError(
-                "Could not find JSON section key(s): {}".format(
-                    ", ".join(missing_keys)
-                )
+                "Could not find JSON section key(s): {}".format(", ".join(missing_keys))
             )
 
     def shorten(text):
@@ -1182,9 +1166,7 @@ def plot_json_table_columns(
         if not texts:
             return min_width
         text_widths = [
-            TextPath((0, 0), shorten(text), prop=font_properties)
-            .get_extents()
-            .width
+            TextPath((0, 0), shorten(text), prop=font_properties).get_extents().width
             / 72.0
             for text in texts
             if text is not None and shorten(text)
@@ -1865,17 +1847,16 @@ def plot_motion(
         raise ValueError("axis_padding must be non-negative")
 
     if time_interval is not None:
-        if (
-            not isinstance(time_interval, (list, tuple))
-            or len(time_interval) != 2
-        ):
+        if not isinstance(time_interval, (list, tuple)) or len(time_interval) != 2:
             raise ValueError("time_interval must be a (start_time, end_time) pair")
         start_time, end_time = time_interval
         if start_time > end_time:
             raise ValueError("time_interval start_time must be <= end_time")
         time_mask = (times >= start_time) & (times <= end_time)
         if not np.any(time_mask):
-            raise ValueError("time_interval does not overlap the body position time range")
+            raise ValueError(
+                "time_interval does not overlap the body position time range"
+            )
         times = times[time_mask]
         x_positions = x_positions[time_mask]
         y_positions = y_positions[time_mask]
@@ -1993,17 +1974,16 @@ def plot_orient(
 
     times = body_data[0, :]
     if time_interval is not None:
-        if (
-            not isinstance(time_interval, (list, tuple))
-            or len(time_interval) != 2
-        ):
+        if not isinstance(time_interval, (list, tuple)) or len(time_interval) != 2:
             raise ValueError("time_interval must be a (start_time, end_time) pair")
         start_time, end_time = time_interval
         if start_time > end_time:
             raise ValueError("time_interval start_time must be <= end_time")
         time_mask = (times >= start_time) & (times <= end_time)
         if not np.any(time_mask):
-            raise ValueError("time_interval does not overlap the body position time range")
+            raise ValueError(
+                "time_interval does not overlap the body position time range"
+            )
         body_data = body_data[:, time_mask]
         times = body_data[0, :]
 
@@ -2068,7 +2048,9 @@ def plot_orient(
             "y_label": "angle (rad)",
         },
     }
-    missing_plots = [plot_name for plot_name in plot_list if plot_name not in plottables]
+    missing_plots = [
+        plot_name for plot_name in plot_list if plot_name not in plottables
+    ]
     if missing_plots:
         raise ValueError(
             "Unknown orient plot name(s): {}".format(", ".join(missing_plots))
@@ -2106,7 +2088,7 @@ def plot_orient(
         if ind // num_cols == num_rows - 1:
             ax.set_xlabel("Time (s)", fontsize=hf.label_font_size)
 
-    for ax in list(axes)[len(plot_list):]:
+    for ax in list(axes)[len(plot_list) :]:
         ax.axis("off")
 
     fig_orient.tight_layout()
@@ -2160,17 +2142,16 @@ def plot_head_motion(
     head_x = x_positions[:, head_index]
     head_y = y_positions[:, head_index]
     if time_interval is not None:
-        if (
-            not isinstance(time_interval, (list, tuple))
-            or len(time_interval) != 2
-        ):
+        if not isinstance(time_interval, (list, tuple)) or len(time_interval) != 2:
             raise ValueError("time_interval must be a (start_time, end_time) pair")
         start_time, end_time = time_interval
         if start_time > end_time:
             raise ValueError("time_interval start_time must be <= end_time")
         time_mask = (times >= start_time) & (times <= end_time)
         if not np.any(time_mask):
-            raise ValueError("time_interval does not overlap the body position time range")
+            raise ValueError(
+                "time_interval does not overlap the body position time range"
+            )
         times = times[time_mask]
         head_x = head_x[time_mask]
         head_y = head_y[time_mask]

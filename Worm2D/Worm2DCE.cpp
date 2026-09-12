@@ -360,7 +360,7 @@ void Worm2DCE::setInputSwitcher(const json & j)
 void WormCE::addFuncableToJson(json & j)
 {
   if (!j.contains("Funcable")) j["Funcable"] = json::object();
-  j["Funcable"]["2"] = {{"doInverse", false}, {"condval", -1}};
+  j["Funcable"]["zero_func"] = {{"doInverse", false}, {"condval", -1}};
   //j["Funcable"].push_back({{"f_ind", 2}, {"doInverse", false}, {"condval", 0}});
   //j["Stretch receptor"]["SR_A_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   //j["Stretch receptor"]["SR_B_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
@@ -371,12 +371,12 @@ void WormCE::addFuncableToJson(json & j)
 
   {
     json j2;
-    j2["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
+    j2["mfunc"] = {{"f_ind", "zero_func"}, {"cond", 0}};
     j["Stretch receptor"]["SR_A_gain"]["funcable"] = j2;
   }
   {
     json j2;
-    j2["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
+    j2["mfunc"] = {{"f_ind", "zero_func"}, {"cond", 1}};
     j["Stretch receptor"]["SR_B_gain"]["funcable"] = j2;
   }
 
@@ -429,14 +429,14 @@ void WormCE::addEvolvableToJson(json & j)
   }
  
  // if (false){
-  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag", "evotag_1"}, {"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
-  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag", "evotag_2"}, {"mfunc", {{"f_ind", 2}, {"cond", 1}}}};
+  j["Stretch receptor"]["SR_A_gain"]["evolvable"] = {{"evotag", "evotag_1"}, {"mfunc", {{"f_ind", "zero_func"}, {"cond", 0}}}};
+  j["Stretch receptor"]["SR_B_gain"]["evolvable"] = {{"evotag", "evotag_2"}, {"mfunc", {{"f_ind", "zero_func"}, {"cond", 1}}}};
  // }
 
   j["stretch_receptor"]["sr_a_gain"]["evotag"] = "evotag_1";
-  j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 0}};
+  j["stretch_receptor"]["sr_a_gain"]["mfunc"] = {{"f_ind", "zero_func"}, {"cond", 0}};
   j["stretch_receptor"]["sr_b_gain"]["evotag"] = "evotag_2";
-  j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", 2}, {"cond", 1}};
+  j["stretch_receptor"]["sr_b_gain"]["mfunc"] = {{"f_ind", "zero_func"}, {"cond", 1}};
 
 
   //j["Stretch receptor"]["SR_A_gain"]["evolvable"] = 1;
@@ -602,13 +602,13 @@ void WormCE::setParsFromPheno(const TVector<double> &pheno)
   if (itsEf.itsJson.contains("condval")){
    
   {json jevol;
-  jevol["f_ind"] = 2;
+  jevol["f_ind"] = "zero_func";
   jevol["cond"] = 0;
   sr_ptr->SR_A_gain = itsEf.eFunc(pheno(1), jevol, true); 
   //sr_ptr->SR_B_gain = pheno(2);
   }
   {json jevol;
-  jevol["f_ind"] = 2;
+  jevol["f_ind"] = "zero_func";
   jevol["cond"] = 1;
   sr_ptr->SR_B_gain = itsEf.eFunc(pheno(2), jevol, true); 
   //sr_ptr->SR_A_gain = pheno(1);

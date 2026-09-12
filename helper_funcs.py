@@ -33,6 +33,26 @@ label_font_size = 14
 
 DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
 
+MFUNC_NAMES = {
+    1: "mult_func",
+    2: "zero_func",
+}
+MFUNC_INDICES = {value: key for key, value in MFUNC_NAMES.items()}
+
+
+def _mfunc_name(function_id):
+    if isinstance(function_id, bool):
+        raise TypeError("mfunc function identifier must be an integer or string")
+    if isinstance(function_id, int):
+        if function_id not in MFUNC_NAMES:
+            raise ValueError("Unknown mfunc function index {}".format(function_id))
+        return MFUNC_NAMES[function_id]
+    if isinstance(function_id, str) and function_id:
+        if function_id not in MFUNC_INDICES:
+            raise ValueError("Unknown mfunc function name {!r}".format(function_id))
+        return function_id
+    raise TypeError("mfunc function identifier must be an integer or string")
+
 
 def get_worm2d_version():
     # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
@@ -1434,12 +1454,7 @@ def set_funcable_schedule(
     """Return a copy with a repeating schedule for one Funcable function."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
-    if (
-        isinstance(function_index, bool)
-        or not isinstance(function_index, int)
-        or function_index < 1
-    ):
-        raise ValueError("function_index must be a positive integer")
+    function_name = _mfunc_name(function_index)
     if not isinstance(time_intervals, (list, tuple)) or not time_intervals:
         raise ValueError("time_intervals must be a non-empty list or tuple")
     if isinstance(time_offset, bool) or not isinstance(time_offset, (int, float)):
@@ -1482,9 +1497,9 @@ def set_funcable_schedule(
         raise TypeError("'Funcable.schedules' must be a dictionary")
 
     if schedule_name is None:
-        schedule_name = "function_{}".format(function_index)
+        schedule_name = "function_{}".format(function_name)
     schedule = {
-        "function_index": {"value": function_index},
+        "function_index": {"value": function_name},
         "time_intervals": {"value": intervals},
         "time_offset": {"value": float(time_offset)},
         "doEvolution": {"value": do_evolution},
@@ -1820,11 +1835,7 @@ def find_mfunc_objects(json_data):
     )
 
     def object_context(value):
-        return {
-            key: copy.deepcopy(value[key])
-            for key in context_keys
-            if key in value
-        }
+        return {key: copy.deepcopy(value[key]) for key in context_keys if key in value}
 
     def matching_hierarchy(value):
         if isinstance(value, dict):
@@ -3452,8 +3463,7 @@ def add_mfunc(json_data, keys, f_ind, args=None, **kwargs):
         raise TypeError("json_data must be a dictionary")
     if not isinstance(keys, (list, tuple)) or not keys:
         raise ValueError("keys must be a non-empty list or tuple")
-    if isinstance(f_ind, bool) or not isinstance(f_ind, int):
-        raise TypeError("f_ind must be an integer")
+    function_name = _mfunc_name(f_ind)
     if args is not None and not isinstance(args, dict):
         raise TypeError("args must be a dictionary or None")
 
@@ -3507,7 +3517,58 @@ def add_mfunc(json_data, keys, f_ind, args=None, **kwargs):
     if not isinstance(parameter, dict) or "value" not in parameter:
         raise TypeError("The JSON path must identify an object containing 'value'")
 
-    parameter["mfunc"] = {"f_ind": f_ind, **copy.deepcopy(mfunc_args)}
+    parameter["mfunc"] = {"f_ind": function_name, **copy.deepcopy(mfunc_args)}
+    return result
+
+
+def delete_mfunc(json_data, keys):
+    """Return a copy with an mfunc removed from a JSON value object."""
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(keys, (list, tuple)) or not keys:
+        raise ValueError("keys must be a non-empty list or tuple")
+
+    result = copy.deepcopy(json_data)
+    current = result
+    for depth, key in enumerate(keys):
+        if isinstance(current, dict):
+            if key not in current:
+                raise KeyError(
+                    "JSON path does not contain {!r} at position {}".format(key, depth)
+                )
+            current = current[key]
+        elif isinstance(current, list):
+            if isinstance(key, bool) or not isinstance(key, int):
+                raise TypeError(
+                    "List path component at position {} must be an integer".format(
+                        depth
+                    )
+                )
+            try:
+                current = current[key]
+            except IndexError:
+                raise IndexError(
+                    "List index {} is out of range at path position {}".format(
+                        key, depth
+                    )
+                )
+        else:
+            raise TypeError(
+                "JSON path reaches a non-container at position {}".format(depth)
+            )
+
+    if keys[-1] == "value":
+        parameter = result
+        for key in keys[:-1]:
+            parameter = parameter[key]
+    else:
+        parameter = current
+
+    if not isinstance(parameter, dict) or "value" not in parameter:
+        raise TypeError("The JSON path must identify an object containing 'value'")
+
+    parameter.pop("mfunc", None)
+    parameter.pop("m_func", None)
     return result
 
 

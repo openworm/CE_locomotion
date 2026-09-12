@@ -397,7 +397,7 @@ int main (int argc, const char* argv[])
         {
         
         json efconds = json::object();
-        efconds["f_ind"] = 2;
+        efconds["f_ind"] = "zero_func";
         if (doReverse == 0) efconds["condval"] = 0;
         else efconds["condval"] = 1;
         w2->itsEf.itsJson = efconds;
@@ -443,7 +443,7 @@ int main (int argc, const char* argv[])
         {
         
         json efconds = json::object();
-        efconds["f_ind"] = 2;
+        efconds["f_ind"] = "zero_func";
         if (doforward) efconds["condval"] = 0;
         else efconds["condval"] = 1;
         w2->itsEf.itsJson = efconds;

@@ -962,7 +962,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 3,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 2
@@ -971,7 +971,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 5,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 2
@@ -1040,7 +1040,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 9,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 8
@@ -1049,7 +1049,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 11,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 8
@@ -1118,7 +1118,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 15,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 14
@@ -1127,7 +1127,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 17,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 14
@@ -1196,7 +1196,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 21,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 20
@@ -1205,7 +1205,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 23,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 20
@@ -1274,7 +1274,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 27,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 26
@@ -1283,7 +1283,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 29,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 26
@@ -1352,7 +1352,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 33,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 32
@@ -1361,7 +1361,7 @@
                     "evotag": "ns_chemcons_3",
                     "from": 35,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 32
@@ -1426,7 +1426,7 @@
                 {
                     "from": 3,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 2
@@ -1434,7 +1434,7 @@
                 {
                     "from": 5,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 2
@@ -1442,7 +1442,7 @@
                 {
                     "from": 9,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 8
@@ -1450,7 +1450,7 @@
                 {
                     "from": 11,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 8
@@ -1458,7 +1458,7 @@
                 {
                     "from": 15,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 14
@@ -1466,7 +1466,7 @@
                 {
                     "from": 17,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 14
@@ -1474,7 +1474,7 @@
                 {
                     "from": 21,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 20
@@ -1482,7 +1482,7 @@
                 {
                     "from": 23,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 20
@@ -1490,7 +1490,7 @@
                 {
                     "from": 27,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 26
@@ -1498,7 +1498,7 @@
                 {
                     "from": 29,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 26
@@ -1506,7 +1506,7 @@
                 {
                     "from": 33,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 32
@@ -1514,7 +1514,7 @@
                 {
                     "from": 35,
                     "mfunc": {
-                        "f_ind": 1,
+                        "f_ind": "mult_func",
                         "fact": 0.5
                     },
                     "to": 32
@@ -2483,834 +2483,14 @@
             "message": "Number of stretch receptor",
             "value": 6.0
         },
-        "NSegs": {
-            "value": 50
-        },
-        "NStretch": {
-            "value": 6
-        },
-        "SR D NS weights": {
-            "message": "Weights from dorsal SR to Nervous System",
-            "value": [
-                {
-                    "from": 2,
-                    "to": 1,
-                    "weight": 1.0
-                },
-                {
-                    "from": 3,
-                    "to": 7,
-                    "weight": 1.0
-                },
-                {
-                    "from": 4,
-                    "to": 13,
-                    "weight": 1.0
-                },
-                {
-                    "from": 5,
-                    "to": 19,
-                    "weight": 1.0
-                },
-                {
-                    "from": 6,
-                    "to": 25,
-                    "weight": 1.0
-                },
-                {
-                    "from": 7,
-                    "to": 31,
-                    "weight": 1.0
-                },
-                {
-                    "from": 1,
-                    "to": 37,
-                    "weight": 1.0
-                }
-            ]
-        },
-        "SR D weights": {
-            "message": "Weights from body segments to dorsal SR",
-            "value": [
-                {
-                    "from": 7,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 8,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 9,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 10,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 11,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 12,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 13,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 14,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 15,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 16,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 17,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 18,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 19,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 20,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 7,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 8,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 9,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 10,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 11,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 12,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 13,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 14,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 15,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 16,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 17,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 18,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 19,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 20,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 21,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 22,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 23,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 24,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 25,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 26,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 27,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 28,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 29,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 30,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 31,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 32,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 33,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 34,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 35,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 36,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 37,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 38,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 39,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 40,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 41,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 42,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                }
-            ]
-        },
-        "SR V NS weights": {
-            "message": "Weights from ventral SR to Nervous System",
-            "value": [
-                {
-                    "from": 2,
-                    "to": 3,
-                    "weight": 1.0
-                },
-                {
-                    "from": 8,
-                    "to": 5,
-                    "weight": 1.0
-                },
-                {
-                    "from": 3,
-                    "to": 9,
-                    "weight": 1.0
-                },
-                {
-                    "from": 9,
-                    "to": 11,
-                    "weight": 1.0
-                },
-                {
-                    "from": 4,
-                    "to": 15,
-                    "weight": 1.0
-                },
-                {
-                    "from": 10,
-                    "to": 17,
-                    "weight": 1.0
-                },
-                {
-                    "from": 5,
-                    "to": 21,
-                    "weight": 1.0
-                },
-                {
-                    "from": 11,
-                    "to": 23,
-                    "weight": 1.0
-                },
-                {
-                    "from": 6,
-                    "to": 27,
-                    "weight": 1.0
-                },
-                {
-                    "from": 12,
-                    "to": 29,
-                    "weight": 1.0
-                },
-                {
-                    "from": 7,
-                    "to": 33,
-                    "weight": 1.0
-                },
-                {
-                    "from": 13,
-                    "to": 35,
-                    "weight": 1.0
-                },
-                {
-                    "from": 1,
-                    "to": 39,
-                    "weight": 1.0
-                }
-            ]
-        },
-        "SR V weights": {
-            "message": "Weights from body segments to ventral SR",
-            "value": [
-                {
-                    "from": 7,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 8,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 9,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 10,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 11,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 12,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 13,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 14,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 15,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 16,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 17,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 18,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 19,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 20,
-                    "to": 1,
-                    "weight": -9.871788329135537
-                },
-                {
-                    "from": 7,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 9,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 8,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 10,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 9,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 11,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 10,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 12,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 11,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 13,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 12,
-                    "to": 2,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 14,
-                    "to": 8,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 13,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 15,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 14,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 16,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 15,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 17,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 16,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 18,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 17,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 19,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 18,
-                    "to": 3,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 20,
-                    "to": 9,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 19,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 21,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 20,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 22,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 21,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 23,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 22,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 24,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 23,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 25,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 24,
-                    "to": 4,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 26,
-                    "to": 10,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 25,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 27,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 26,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 28,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 27,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 29,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 28,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 30,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 29,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 31,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 30,
-                    "to": 5,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 32,
-                    "to": 11,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 31,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 33,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 32,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 34,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 33,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 35,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 34,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 36,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 35,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 37,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 36,
-                    "to": 6,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 38,
-                    "to": 12,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 37,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 39,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 38,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 40,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 39,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 41,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 40,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 42,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 41,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 43,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 42,
-                    "to": 7,
-                    "weight": -26.38772163340656
-                },
-                {
-                    "from": 44,
-                    "to": 13,
-                    "weight": -26.38772163340656
-                }
-            ]
-        },
         "SRheadgain": {
-            "evolvable": 28,
-            "value": -138.2050366078975
-        },
-        "SRheadsr": {
-            "value": true
+            "evolvable": 28
         },
         "SRvncgain": {
-            "evolvable": 14,
-            "value": -158.32632980043937
-        },
-        "SRvncsr": {
-            "value": true
-        },
-        "Type": {
-            "value": "SR18"
+            "evolvable": 14
         },
         "VNC_gain": {
             "value": -158.32632980043937
-        },
-        "plot size": {
-            "value": 20
         }
     },
     "VNC 18": {
@@ -6435,7 +5615,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6447,7 +5627,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6555,7 +5735,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6567,7 +5747,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6675,7 +5855,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6687,7 +5867,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6795,7 +5975,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6807,7 +5987,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6915,7 +6095,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -6927,7 +6107,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -7035,7 +6215,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -7047,7 +6227,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -8149,6 +7329,9 @@
         },
         "set_direct": {
             "value": false
+        },
+        "sr_form": {
+            "value": "None"
         },
         "sr_head_gain": {
             "evotag": "sr_head_gain",

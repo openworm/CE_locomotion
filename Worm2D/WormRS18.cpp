@@ -275,7 +275,7 @@ void Worm18::setParsFromPheno(const TVector<double> &v)
         //n.SetChemicalSynapseWeight(vbp, dd, v(8)/2);
  
         {json jfunc;
-        jfunc["f_ind"] = 1;
+        jfunc["f_ind"] = "mult_func";
         jfunc["fact"] = 0.5;
         n.SetChemicalSynapseWeight(vba, dd, itsEf.eFunc(v(8), jfunc, true));
         n.SetChemicalSynapseWeight(vbp, dd, itsEf.eFunc(v(8), jfunc, true));        
@@ -1051,8 +1051,8 @@ void Worm18::addFuncableToJson(json & j)
         vdaNext = nn(VDA,u+1);
         vbaNext = nn(VBA,u+1);
 
-    chemvecj.push_back({{"from", vba}, {"to", dd}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-    chemvecj.push_back({{"from", vbp}, {"to", dd}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+    chemvecj.push_back({{"from", vba}, {"to", dd}, {"mfunc", {{"f_ind", "mult_func"}, {"fact", 0.5}}}});
+    chemvecj.push_back({{"from", vbp}, {"to", dd}, {"mfunc", {{"f_ind", "mult_func"}, {"fact", 0.5}}}});
 
   }
 
@@ -1201,14 +1201,14 @@ j["evolved_used"]["value"] = toEvolvedUsedJson(vec);
         chemvecj.push_back({{"from", vbp}, {"to", vdp}, {"evotag", "evotag_7"}});
         chemvecj.push_back({{"from", db}, {"to", vda}, {"evotag", "evotag_8"}});
         chemvecj.push_back({{"from", db}, {"to", vdp}, {"evotag", "evotag_8"}});
-        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
-        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", 1}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vba}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", "mult_func"}, {"fact", 0.5}}}});
+        chemvecj.push_back({{"from", vbp}, {"to", dd}, {"evotag", "evotag_8"}, {"mfunc", {{"f_ind", "mult_func"}, {"fact", 0.5}}}});
         chemvecj.push_back({{"from", dd}, {"to", vda}, {"evotag", "evotag_9"}});
 
         addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
-        {vba, dd,8}, cell_names_full, {{"f_ind", 1}, {"fact", 0.5}});
+        {vba, dd,8}, cell_names_full, {{"f_ind", "mult_func"}, {"fact", 0.5}});
         addMfuncTFI(j["nervous_system"]["chemical_conns"]["value"], 
-        {vbp, dd,8}, cell_names_full , {{"f_ind", 1}, {"fact", 0.5}});
+        {vbp, dd,8}, cell_names_full , {{"f_ind", "mult_func"}, {"fact", 0.5}});
 
 //if (false)
         {

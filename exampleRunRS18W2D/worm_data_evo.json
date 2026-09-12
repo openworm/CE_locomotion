@@ -2384,7 +2384,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2396,7 +2396,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2504,7 +2504,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2516,7 +2516,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2624,7 +2624,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2636,7 +2636,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2744,7 +2744,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2756,7 +2756,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2864,7 +2864,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2876,7 +2876,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2984,7 +2984,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -2996,7 +2996,7 @@
                     "weight": {
                         "evotag": "ns_chemcons_3",
                         "mfunc": {
-                            "f_ind": 1,
+                            "f_ind": "mult_func",
                             "fact": 0.5
                         },
                         "value": 5.607163879809375
@@ -3582,6 +3582,33 @@
         }
     },
     "stretch_receptor": {
+        "Head_gain": {
+            "value": -138.2050366078975
+        },
+        "NSEGS": {
+            "message": "Number of segments in the body",
+            "value": 50.0
+        },
+        "NSEGSHEAD": {
+            "value": 14.0
+        },
+        "NSEGSHEADSTART": {
+            "value": 7.0
+        },
+        "NSEGSSR": {
+            "message": "Number of segments sensed by each stretch receptor",
+            "value": 6.0
+        },
+        "NSEGSVNCSTART": {
+            "value": 7.0
+        },
+        "NSR": {
+            "message": "Number of stretch receptor",
+            "value": 6.0
+        },
+        "VNC_gain": {
+            "value": -158.32632980043937
+        },
         "d_weights": {
             "message": "Weights from body segments to dorsal SR",
             "value": [
@@ -4098,6 +4125,9 @@
         },
         "set_direct": {
             "value": false
+        },
+        "sr_form": {
+            "value": "None"
         },
         "sr_head_gain": {
             "evotag": "sr_head_gain",
