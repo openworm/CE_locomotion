@@ -34,6 +34,12 @@ from neuroml.hdf5.NeuroMLXMLParser import NeuroMLXMLParser
 import random
 
 
+def get_evolution_parameters(network_json_data):
+    if "evolution" in network_json_data:
+        return network_json_data["evolution"]
+    return network_json_data.get("Evolutionary Optimization Parameters", {})
+
+
 def getRandColor():
     col_str = ""
     for _ in range(3):
@@ -271,16 +277,15 @@ def run(a=None, **kwargs):
         cells_filename = default_dict["XML cells file"]
         cells_filepath = this_file_dir + "/" + cells_filename
         if "timestep" in default_dict["default parameters"]:
+            evolution_parameters = get_evolution_parameters(network_json_data)
             if isinstance(default_dict["default parameters"]["timestep"], dict):
                 default_dict["default parameters"]["timestep"]["value"] = (
-                    network_json_data["Evolutionary Optimization Parameters"][
-                        "StepSize"
-                    ]["value"]
+                    evolution_parameters["StepSize"]["value"]
                 )
             else:
-                default_dict["default parameters"]["timestep"] = network_json_data[
-                    "Evolutionary Optimization Parameters"
-                ]["StepSize"]["value"]
+                default_dict["default parameters"]["timestep"] = evolution_parameters[
+                    "StepSize"
+                ]["value"]
 
         utils.makeCellXmlReq(
             network_json_data,

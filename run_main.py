@@ -1043,7 +1043,10 @@ def run(a=None, **kwargs):
                     evol_data[key] = evo_json["evoType"]["value"]
                 elif key == "evo_type" and "EvolutionType" in evo_json:
                     evol_data[key] = evo_json["EvolutionType"]["value"]
-                elif key in legacy_parameter_names and legacy_parameter_names[key] in evo_json:
+                elif (
+                    key in legacy_parameter_names
+                    and legacy_parameter_names[key] in evo_json
+                ):
                     evol_data[key] = evo_json[legacy_parameter_names[key]]["value"]
                 else:
                     print(f"Parameter {key} not found in worm_data.json")

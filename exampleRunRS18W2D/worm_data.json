@@ -772,134 +772,6 @@
             ]
         }
     },
-    "Evolutionary Optimization Parameters": {
-        "AvgSpeed": {
-            "value": 0.00022
-        },
-        "BBCfit": {
-            "value": 0.011000000000000001
-        },
-        "BiasRange": {
-            "value": 15.0
-        },
-        "CSRange": {
-            "value": 15.0
-        },
-        "CheckpointInterval": {
-            "value": 5
-        },
-        "CrossoverMode": {
-            "value": 0
-        },
-        "CrossoverProbability": {
-            "value": 0.5
-        },
-        "Duration": {
-            "value": 50.0
-        },
-        "ESRange": {
-            "value": 2.0
-        },
-        "ElitistFraction": {
-            "value": 0.04
-        },
-        "HCSRange": {
-            "value": 15.0
-        },
-        "MaxExpectedOffspring": {
-            "value": 1.1
-        },
-        "MaxGenerations": {
-            "value": 36
-        },
-        "MutationVariance": {
-            "value": 0.1
-        },
-        "NMJmax": {
-            "value": 1.0
-        },
-        "N_curvs": {
-            "value": 23
-        },
-        "PopulationSize": {
-            "value": 36
-        },
-        "ReEvaluationFlag": {
-            "value": 1
-        },
-        "ReproductionMode": {
-            "value": 1
-        },
-        "SCRange": {
-            "value": 15.0
-        },
-        "SRmax": {
-            "value": 200.0
-        },
-        "SearchConstraint": {
-            "value": 1
-        },
-        "SelectionMode": {
-            "value": 1
-        },
-        "StepSize": {
-            "value": 0.01
-        },
-        "TauMax": {
-            "value": 2.0
-        },
-        "TauMin": {
-            "value": 0.5
-        },
-        "Transient": {
-            "value": 10.0
-        },
-        "VectSize": {
-            "value": 30
-        },
-        "VectSize_temo": {
-            "value": 30
-        },
-        "evo_seed": {
-            "value": 0
-        },
-        "evo_type": {
-            "value": "Evo18"
-        },
-        "fileprefix": {
-            "value": ""
-        },
-        "fps": {
-            "value": 25.0
-        },
-        "randomseed": {
-            "value": 292
-        },
-        "skip": {
-            "value": 4
-        },
-        "skip_steps": {
-            "value": 4
-        },
-        "speedoutput": {
-            "value": 0
-        }
-    },
-    "Funcable": {},
-    "InputNS": {
-        "weights": {
-            "message": "Weights of driving inputs to NS from another NS",
-            "value": []
-        }
-    },
-    "Muscle": {
-        "Nmuscles": {
-            "value": 24
-        },
-        "T_muscle": {
-            "value": 0.1
-        }
-    },
     "Nervous system": {
         "Chemical weights": {
             "evolvable": [
@@ -2383,80 +2255,6 @@
                 }
             ]
         }
-    },
-    "OutputNS": {
-        "weights": {
-            "message": "Weights of driving inputs from NS to another NS",
-            "value": []
-        }
-    },
-    "PhenoNames": {
-        "value": [
-            "RS18_b_bias",
-            "RS18_d_bias",
-            "RS18_b_tau",
-            "RS18_d_tau",
-            "RS18_b_selfcons",
-            "RS18_d_selfcons",
-            "RS18_chemcons",
-            "RS18_chemcons",
-            "RS18_chemcons",
-            "RS18_electcons",
-            "RS18_electcons",
-            "RS18_electcons",
-            "RS18_electcons",
-            "RS18_stretch_recep",
-            "RS18_stretch_recep",
-            "RS18_b_NMJ",
-            "RS18_d_NMJ",
-            "RS18_SMD_bias",
-            "RS18_RMD_bias",
-            "RS18_SMD_tau",
-            "RS18_RMD_tau",
-            "RS18_SMD_self_chem",
-            "RS18_RMD_self_chem",
-            "RS18_SMD_DV_chem",
-            "RS18_SR_chem",
-            "RS18_RMD_DV_chem",
-            "RS18_SR_elec",
-            "RS18_RR_elec",
-            "RS18_NMJ_SMD",
-            "RS18_NMJ_RMD"
-        ]
-    },
-    "PhenoNamesNums": {
-        "value": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            28,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            29,
-            30
-        ]
     },
     "Stretch receptor": {
         "Head_gain": {
@@ -4516,6 +4314,119 @@
             ]
         }
     },
+    "evolution": {
+        "AvgSpeed": {
+            "value": 0.00022
+        },
+        "BBCfit": {
+            "value": 0.011000000000000001
+        },
+        "BiasRange": {
+            "value": 15.0
+        },
+        "CSRange": {
+            "value": 15.0
+        },
+        "CheckpointInterval": {
+            "value": 5
+        },
+        "CrossoverMode": {
+            "value": 0
+        },
+        "CrossoverProbability": {
+            "value": 0.5
+        },
+        "Duration": {
+            "value": 50.0
+        },
+        "ESRange": {
+            "value": 2.0
+        },
+        "ElitistFraction": {
+            "value": 0.04
+        },
+        "HCSRange": {
+            "value": 15.0
+        },
+        "MaxExpectedOffspring": {
+            "value": 1.1
+        },
+        "MaxGenerations": {
+            "value": 36
+        },
+        "MutationVariance": {
+            "value": 0.1
+        },
+        "NMJmax": {
+            "value": 1.0
+        },
+        "N_curvs": {
+            "value": 23
+        },
+        "PopulationSize": {
+            "value": 36
+        },
+        "ReEvaluationFlag": {
+            "value": 1
+        },
+        "ReproductionMode": {
+            "value": 1
+        },
+        "SCRange": {
+            "value": 15.0
+        },
+        "SRmax": {
+            "value": 200.0
+        },
+        "SearchConstraint": {
+            "value": 1
+        },
+        "SelectionMode": {
+            "value": 1
+        },
+        "StepSize": {
+            "value": 0.01
+        },
+        "TauMax": {
+            "value": 2.0
+        },
+        "TauMin": {
+            "value": 0.5
+        },
+        "Transient": {
+            "value": 10.0
+        },
+        "VectSize": {
+            "value": 30
+        },
+        "VectSize_temo": {
+            "value": 30
+        },
+        "evo_seed": {
+            "value": 0
+        },
+        "evo_type": {
+            "value": "Evo18"
+        },
+        "fileprefix": {
+            "value": ""
+        },
+        "fps": {
+            "value": 25.0
+        },
+        "randomseed": {
+            "value": 292
+        },
+        "skip": {
+            "value": 4
+        },
+        "skip_steps": {
+            "value": 4
+        },
+        "speedoutput": {
+            "value": 0
+        }
+    },
     "evolvable_ranges": {
         "ns_cells_bias_0": {
             "active": true,
@@ -4732,6 +4643,7 @@
             "vnc_18_RMDD_RMDV"
         ]
     },
+    "funcable": {},
     "nervous_system": {
         "cell_names": {
             "value": [
