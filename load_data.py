@@ -48,6 +48,22 @@ def _json_value(obj, default=None):
     return obj
 
 
+def _get_muscle_count(network_json_data):
+    worm = network_json_data.get("worm")
+    if isinstance(worm, dict):
+        muscle_count = _json_value(worm.get("N_muscles"), 0)
+        if isinstance(muscle_count, (int, float)) and not isinstance(muscle_count, bool):
+            return int(muscle_count)
+
+    muscle = network_json_data.get("Muscle")
+    if isinstance(muscle, dict):
+        muscle_count = _json_value(muscle.get("Nmuscles"), 0)
+        if isinstance(muscle_count, (int, float)) and not isinstance(muscle_count, bool):
+            return int(muscle_count)
+
+    return 0
+
+
 def _normalise_cell_class_name(name):
     cleaned = str(name).strip().lower().replace("_", " ")
     for suffix in (" neurons", " neuron", " cells", " cell", " class"):
@@ -5352,11 +5368,7 @@ def reload_single_run(a=None, **kwargs):
                 )
                 next_column += group_size
 
-        muscle_count = 0
-        if "Muscle" in network_json_data:
-            muscle_count = _json_value(network_json_data["Muscle"].get("Nmuscles"), 0)
-            if isinstance(muscle_count, (int, float)):
-                muscle_count = int(muscle_count) * 2
+        muscle_count = _get_muscle_count(network_json_data) * 2
         muscle_count = min(muscle_count, act_column_count - (next_column - 1))
         if muscle_count > 0:
             panels.append(

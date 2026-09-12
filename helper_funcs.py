@@ -54,6 +54,30 @@ def _mfunc_name(function_id):
     raise TypeError("mfunc function identifier must be an integer or string")
 
 
+def _wrapped_json_value(obj, default=None):
+    if isinstance(obj, dict) and "value" in obj:
+        return obj["value"]
+    if obj is None:
+        return default
+    return obj
+
+
+def _get_muscle_count(json_data):
+    worm = json_data.get("worm")
+    if isinstance(worm, dict):
+        muscle_count = _wrapped_json_value(worm.get("N_muscles"))
+        if isinstance(muscle_count, int) and not isinstance(muscle_count, bool):
+            return muscle_count
+
+    muscle = json_data.get("Muscle")
+    if isinstance(muscle, dict):
+        muscle_count = _wrapped_json_value(muscle.get("Nmuscles"))
+        if isinstance(muscle_count, int) and not isinstance(muscle_count, bool):
+            return muscle_count
+
+    raise TypeError("'worm.N_muscles.value' must be an integer")
+
+
 def get_worm2d_version():
     # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
     worm2d_h_file = os.path.join(os.path.dirname(__file__), "Worm2D", "Worm2D.h")
@@ -953,17 +977,7 @@ def add_cell_muscle_connection(
             "Cell {!r} was not found in nervous_system.cells".format(cell_name)
         )
 
-    muscle = result.get("Muscle")
-    if not isinstance(muscle, dict):
-        raise KeyError("JSON does not contain a 'Muscle' object")
-    muscle_count_object = muscle.get("Nmuscles")
-    if (
-        not isinstance(muscle_count_object, dict)
-        or isinstance(muscle_count_object.get("value"), bool)
-        or not isinstance(muscle_count_object.get("value"), int)
-    ):
-        raise TypeError("'Muscle.Nmuscles.value' must be an integer")
-    muscle_count = muscle_count_object["value"]
+    muscle_count = _get_muscle_count(result)
     if muscle_number > muscle_count:
         raise ValueError(
             "muscle_number must not exceed the muscle count ({})".format(muscle_count)

@@ -1618,9 +1618,6 @@ void Worm2D::addParsToJson(json & j)
     appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
 
-   
-    appendMuscleToJson(j,m);
-
     NSToMuscles vMuscConn(par1.N_muscles);
     NSToMuscles dMuscConn(par1.N_muscles);
     vMuscConn.setWeights(vMuscConnvec);
