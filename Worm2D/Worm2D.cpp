@@ -1361,16 +1361,10 @@ void Worm2Dbase::addParsToJson(json & j)
         }
 
     removeLegacyParameterKeys(j);
+    j.erase("PhenoNames");
+    j.erase("PhenoNamesNums");
 
     //cout << "worm2dbase add pars to json" << endl;
-
-    setPhenoNames();
-    if (phenoNames.size()>0) 
-    {
-        for (int i=0; i<phenoNames.size();i++) phenoNames[i] = getModelName() + "_" + phenoNames[i];
-        appendVectorToJson<string>(j["PhenoNames"], phenoNames);
-        appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
-    }
 
     vector<string> names;
     if (j.contains("nervous_system")
