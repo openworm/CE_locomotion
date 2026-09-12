@@ -1028,7 +1028,7 @@ void Worm18::addFuncableToJson(json & j)
 {
  
     if (true){
-    if (!j.contains("Funcable")) j["Funcable"] = json::object();
+    if (!j.contains("funcable")) j["funcable"] = json::object();
     //j["Funcable"]["1"] = {{"doInverse", false}, {"fact", 1}};
     }
 

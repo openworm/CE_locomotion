@@ -542,7 +542,9 @@ class Efunctor
 {
 public:
 
-Efunctor(baseParameters & bp_):bp(bp_),condf(bp_.BPitsJson.contains("Funcable")){}
+Efunctor(baseParameters & bp_):
+    bp(bp_),
+    condf(bp_.BPitsJson.contains("funcable") || bp_.BPitsJson.contains("Funcable")){}
 
 double eFunc(const double & val, const json & j, bool setItsJson = false);
 //double eFunc(const double & val, const json & j);

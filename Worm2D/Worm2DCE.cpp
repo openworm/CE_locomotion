@@ -359,8 +359,8 @@ void Worm2DCE::setInputSwitcher(const json & j)
 
 void WormCE::addFuncableToJson(json & j)
 {
-  if (!j.contains("Funcable")) j["Funcable"] = json::object();
-  j["Funcable"]["zero_func"] = {{"doInverse", false}, {"condval", -1}};
+  if (!j.contains("funcable")) j["funcable"] = json::object();
+  j["funcable"]["zero_func"] = {{"doInverse", false}, {"condval", -1}};
   //j["Funcable"].push_back({{"f_ind", 2}, {"doInverse", false}, {"condval", 0}});
   //j["Stretch receptor"]["SR_A_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 0}}}};
   //j["Stretch receptor"]["SR_B_gain"]["funcable"] = {{"mfunc", {{"f_ind", 2}, {"cond", 1}}}};

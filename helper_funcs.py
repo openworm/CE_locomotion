@@ -1451,7 +1451,7 @@ def set_funcable_schedule(
     do_evolution=False,
     schedule_name=None,
 ):
-    """Return a copy with a repeating schedule for one Funcable function."""
+    """Return a copy with a repeating schedule for one funcable function."""
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     function_name = _mfunc_name(function_index)
@@ -1489,12 +1489,14 @@ def set_funcable_schedule(
             condition_values.append(condval)
 
     result = copy.deepcopy(json_data)
-    funcable = result.setdefault("Funcable", {})
+    if "funcable" not in result and "Funcable" in result:
+        result["funcable"] = result.pop("Funcable")
+    funcable = result.setdefault("funcable", {})
     if not isinstance(funcable, dict):
-        raise TypeError("'Funcable' must be a dictionary")
+        raise TypeError("'funcable' must be a dictionary")
     schedules = funcable.setdefault("schedules", {})
     if not isinstance(schedules, dict):
-        raise TypeError("'Funcable.schedules' must be a dictionary")
+        raise TypeError("'funcable.schedules' must be a dictionary")
 
     if schedule_name is None:
         schedule_name = "function_{}".format(function_name)

@@ -264,6 +264,24 @@ json & funcableFunctionJson(json & funcable, const int functionIndex)
     return funcable.at(to_string(functionIndex));
 }
 
+const json * findFuncableJson(const json & j)
+{
+    if (j.contains("funcable") && j.at("funcable").is_object())
+        return &j.at("funcable");
+    if (j.contains("Funcable") && j.at("Funcable").is_object())
+        return &j.at("Funcable");
+    return nullptr;
+}
+
+json * findFuncableJson(json & j)
+{
+    if (j.contains("funcable") && j.at("funcable").is_object())
+        return &j.at("funcable");
+    if (j.contains("Funcable") && j.at("Funcable").is_object())
+        return &j.at("Funcable");
+    return nullptr;
+}
+
 }
 
 
@@ -377,7 +395,9 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
       scheduled
       || (itsJson.contains("f_ind") && functionIndexFromJson(itsJson.at("f_ind")) == 1)
       || setItsJson;
-    const bool cond2 = condf && funcableContainsFunction(bp.BPitsJson.at("Funcable"), 1);
+    const json * funcable = findFuncableJson(bp.BPitsJson);
+    const bool cond2 =
+      condf && funcable != nullptr && funcableContainsFunction(*funcable, 1);
 
     if (!(cond1 || cond2)) return val;
     if (j.contains("doInverse") && j.at("doInverse") == true) 
@@ -416,11 +436,13 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
         && cond == itsJson.at("condval").get<int>())
       return 0;
  
-    const bool cond2 = condf && funcableContainsFunction(bp.BPitsJson.at("Funcable"), 2);
+    json * funcable = findFuncableJson(bp.BPitsJson);
+    const bool cond2 =
+      condf && funcable != nullptr && funcableContainsFunction(*funcable, 2);
 
     if (cond2) 
     {
-    json & bpj = funcableFunctionJson(bp.BPitsJson.at("Funcable"), 2);
+    json & bpj = funcableFunctionJson(*funcable, 2);
     if (bpj.contains("condval") && cond == bpj.at("condval").get<int>()) return 0;
     }
       //return val;
@@ -889,51 +911,49 @@ void Worm2Dbase::updateScheduledFuncables(const double current_time)
 void Worm2Dbase::constructFuncableSchedules(const json & j)
 {
     funcableSchedules.clear();
-    if (
-        !j.contains("Funcable")
-        || !j.at("Funcable").is_object()
-        || !j.at("Funcable").contains("schedules"))
+    const json * funcable = findFuncableJson(j);
+    if (funcable == nullptr || !funcable->contains("schedules"))
       return;
 
-    const json & schedules = j.at("Funcable").at("schedules");
+    const json & schedules = funcable->at("schedules");
     if (!schedules.is_object())
-      throw runtime_error("Funcable.schedules must be an object");
+      throw runtime_error("funcable.schedules must be an object");
 
     for (const auto & item : schedules.items())
     {
         const json & value = item.value();
         if (!value.is_object())
-          throw runtime_error("Each Funcable schedule must be an object");
+          throw runtime_error("Each funcable schedule must be an object");
 
         FuncableSchedule schedule;
         if (
             !value.contains("function_index")
             || !value.at("function_index").contains("value"))
           throw runtime_error(
-              "Funcable schedule " + item.key()
+              "funcable schedule " + item.key()
               + " requires function_index.value");
         schedule.function_index =
             functionIndexFromJson(value.at("function_index").at("value"));
         if (schedule.function_index < 1)
           throw runtime_error(
-              "Funcable schedule function_index must be positive");
+              "funcable schedule function_index must be positive");
 
         if (
             !value.contains("time_intervals")
             || !value.at("time_intervals").contains("value"))
           throw runtime_error(
-              "Funcable schedule " + item.key()
+              "funcable schedule " + item.key()
               + " requires time_intervals.value");
         schedule.time_intervals =
             value.at("time_intervals").at("value").get<vector<double> >();
         if (schedule.time_intervals.empty())
           throw runtime_error(
-              "Funcable schedule time_intervals must not be empty");
+              "funcable schedule time_intervals must not be empty");
         for (const double interval : schedule.time_intervals)
         {
             if (!isfinite(interval) || interval <= 0)
               throw runtime_error(
-                  "Funcable schedule intervals must be finite and positive");
+                  "funcable schedule intervals must be finite and positive");
             schedule.total_period += interval;
         }
 
@@ -945,7 +965,7 @@ void Worm2Dbase::constructFuncableSchedules(const json & j)
                 schedule.condvals.size()
                 != schedule.time_intervals.size())
               throw runtime_error(
-                  "Funcable schedule condvals and time_intervals must "
+                  "funcable schedule condvals and time_intervals must "
                   "have the same length");
         }
 
@@ -954,7 +974,7 @@ void Worm2Dbase::constructFuncableSchedules(const json & j)
               value.at("time_offset").at("value").get<double>();
         if (!isfinite(schedule.time_offset) || schedule.time_offset < 0)
           throw runtime_error(
-              "Funcable schedule time_offset must be finite and non-negative");
+              "funcable schedule time_offset must be finite and non-negative");
 
         if (value.contains("doEvolution"))
           schedule.doEvolution =
