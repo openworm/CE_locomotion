@@ -309,6 +309,11 @@ def _normalize_json_section_names(json_data):
         if "simulation" not in json_data:
             json_data["simulation"] = json_data["Simulation"]
         del json_data["Simulation"]
+    nervous_system = (
+        json_data.get("nervous_system") if isinstance(json_data, dict) else None
+    )
+    if isinstance(nervous_system, dict):
+        nervous_system.pop("cell_names_no_suffix", None)
 
 
 def write_worm_json(folder_name, json_data):
@@ -1975,11 +1980,6 @@ def rename_cell(json_data, old_name, new_name):
     if new_name == old_name:
         return copy.deepcopy(json_data)
 
-    cell_names = nervous_system.get("cell_names", {}).get("value")
-    cell_index = None
-    if isinstance(cell_names, list) and old_name in cell_names:
-        cell_index = cell_names.index(old_name)
-
     def replace_name(value):
         if isinstance(value, dict):
             renamed = {}
@@ -1999,19 +1999,6 @@ def rename_cell(json_data, old_name, new_name):
         return copy.deepcopy(value)
 
     result = replace_name(json_data)
-
-    no_suffix_names = (
-        result.get("nervous_system", {}).get("cell_names_no_suffix", {}).get("value")
-    )
-    if (
-        cell_index is not None
-        and isinstance(no_suffix_names, list)
-        and cell_index < len(no_suffix_names)
-    ):
-        stem, separator, suffix = new_name.rpartition("_")
-        no_suffix_names[cell_index] = (
-            stem if separator and suffix.isdigit() else new_name
-        )
 
     return result
 
@@ -2060,15 +2047,6 @@ def add_random_cell_network(
     if not isinstance(cell_names, list):
         raise TypeError("'nervous_system.cell_names.value' must be a list")
 
-    no_suffix_object = nervous_system.setdefault("cell_names_no_suffix", {"value": []})
-    if not isinstance(no_suffix_object, dict):
-        raise TypeError("'nervous_system.cell_names_no_suffix' must be a dictionary")
-    if no_suffix_object.get("value") is None:
-        no_suffix_object["value"] = []
-    no_suffix_names = no_suffix_object.get("value")
-    if not isinstance(no_suffix_names, list):
-        raise TypeError("'nervous_system.cell_names_no_suffix.value' must be a list")
-
     chemical_conns = nervous_system.setdefault("chemical_conns", {"value": []})
     if not isinstance(chemical_conns, dict):
         raise TypeError("'nervous_system.chemical_conns' must be a dictionary")
@@ -2095,7 +2073,6 @@ def add_random_cell_network(
             "tau": {"value": 1.0},
         }
         cell_names.append(full_name)
-        no_suffix_names.append(full_name)
         existing_names.add(full_name)
         new_names.append(full_name)
 
@@ -4288,18 +4265,6 @@ def remove_nervous_system_cell(json_data, cell_name):
     if isinstance(cell_names, list) and cell_name in cell_names:
         removed_index = cell_names.index(cell_name)
         cell_names.pop(removed_index)
-
-    no_suffix = nervous_system.get("cell_names_no_suffix", {}).get("value")
-    if (
-        removed_index is not None
-        and isinstance(no_suffix, list)
-        and removed_index < len(no_suffix)
-    ):
-        no_suffix.pop(removed_index)
-    elif isinstance(no_suffix, list):
-        base_name = cell_name.rsplit("_", 1)[0]
-        if base_name in no_suffix:
-            no_suffix.remove(base_name)
 
     evotag_registry_keys = {"evolvable_ranges", "evolved_used", "Evolvable"}
 

@@ -1349,8 +1349,13 @@ def plot_selected_activity(
     save_png=False,
     filename="SelectedActivity.png",
     moving_average_window=1,
+    show_legend=True,
+    show_traces=True,
+    show_heatmap=True,
+    trace_linewidth=0.8,
+    label_scale=1.0,
 ):
-    """Return a two-panel activity figure for selected cells or one cell class."""
+    """Return an activity figure for selected cells or one cell class."""
     act_file = os.path.join(output_folder, "act.dat")
     worm_file = os.path.join(output_folder, "worm_data_worm.json")
     if not os.path.isfile(act_file):
@@ -1374,6 +1379,20 @@ def plot_selected_activity(
         or moving_average_window < 1
     ):
         raise ValueError("moving_average_window must be a positive integer")
+    if not show_traces and not show_heatmap:
+        raise ValueError("At least one of show_traces or show_heatmap must be True")
+    if (
+        isinstance(trace_linewidth, bool)
+        or not isinstance(trace_linewidth, (int, float))
+        or trace_linewidth <= 0
+    ):
+        raise ValueError("trace_linewidth must be a positive number")
+    if (
+        isinstance(label_scale, bool)
+        or not isinstance(label_scale, (int, float))
+        or label_scale <= 0
+    ):
+        raise ValueError("label_scale must be a positive number")
 
     cells = nervous_system.get("cells", {})
     if not isinstance(cells, dict):
@@ -1469,39 +1488,60 @@ def plot_selected_activity(
             [hf.movingaverage(row, moving_average_window) for row in selected_data]
         )
 
-    fig_height = max(4.0, 1.1 + 0.22 * len(selected_cells))
-    fig, axs = plt.subplots(2, 1, figsize=(10, fig_height), sharex=True)
+    n_panels = int(show_traces) + int(show_heatmap)
+    fig_height = max(3.0 * n_panels, 0.7 + 0.22 * len(selected_cells) * n_panels)
+    fig, axs = plt.subplots(n_panels, 1, figsize=(10, fig_height), sharex=True)
+    if n_panels == 1:
+        axs = [axs]
 
-    for cell_name, row in zip(selected_cells, selected_data):
-        axs[0].plot(t_plot, row, linewidth=0.8, label=cell_name)
-    axs[0].set_ylabel("Activity")
-    legend_ncols = max(1, min(6, len(selected_cells)))
-    axs[0].legend(
-        loc="lower right",
-        bbox_to_anchor=(1.0, 1.01),
-        fontsize="small",
-        ncol=legend_ncols,
-        frameon=True,
-    )
+    axis_label_fontsize = 10.0 * label_scale
+    tick_label_fontsize = 10.0 * label_scale
+    legend_fontsize = 8.0 * label_scale
 
-    extent = [t_plot[0], t_plot[-1], 0, len(selected_cells)]
-    axs[1].imshow(
-        selected_data,
-        aspect="auto",
-        interpolation="nearest",
-        extent=extent,
-        origin="lower",
-    )
-    axs[1].set_yticks(np.arange(len(selected_cells)) + 0.5)
-    axs[1].set_yticklabels(selected_cells)
-    heatmap_axis_height_points = fig_height * 72.0 * 0.38
-    heatmap_label_fontsize = min(
-        10.0,
-        max(4.0, 0.8 * heatmap_axis_height_points / len(selected_cells)),
-    )
-    axs[1].tick_params(axis="y", labelsize=heatmap_label_fontsize)
-    axs[1].set_xlabel("Time (s)")
-    axs[1].set_ylabel("Cell")
+    axis_index = 0
+    if show_traces:
+        trace_ax = axs[axis_index]
+        axis_index += 1
+        for cell_name, row in zip(selected_cells, selected_data):
+            trace_ax.plot(t_plot, row, linewidth=trace_linewidth, label=cell_name)
+        trace_ax.set_ylabel("Activity", fontsize=axis_label_fontsize)
+        trace_ax.tick_params(axis="both", labelsize=tick_label_fontsize)
+        if show_legend:
+            legend_ncols = max(1, min(6, len(selected_cells)))
+            trace_ax.legend(
+                loc="lower right",
+                bbox_to_anchor=(1.0, 1.01),
+                fontsize=legend_fontsize,
+                ncol=legend_ncols,
+                frameon=True,
+            )
+
+    if show_heatmap:
+        heatmap_ax = axs[axis_index]
+        extent = [t_plot[0], t_plot[-1], 0, len(selected_cells)]
+        heatmap_ax.imshow(
+            selected_data,
+            aspect="auto",
+            interpolation="nearest",
+            extent=extent,
+            origin="lower",
+        )
+        heatmap_ax.set_yticks(np.arange(len(selected_cells)) + 0.5)
+        heatmap_ax.set_yticklabels(selected_cells)
+        heatmap_axis_height_points = fig_height * 72.0 / n_panels
+        heatmap_label_fontsize = min(
+            10.0 * label_scale,
+            max(
+                4.0 * label_scale,
+                0.45 * heatmap_axis_height_points / len(selected_cells),
+            ),
+        )
+        heatmap_ax.tick_params(axis="y", labelsize=heatmap_label_fontsize)
+        heatmap_ax.tick_params(axis="x", labelsize=tick_label_fontsize)
+        heatmap_ax.set_ylabel("Cell", fontsize=axis_label_fontsize)
+
+    axs[-1].set_xlabel("Time (s)", fontsize=axis_label_fontsize)
+    axs[-1].tick_params(axis="x", labelsize=tick_label_fontsize)
 
     fig.tight_layout()
 
@@ -1518,8 +1558,13 @@ def plot_nervous_system_activity(
     save_png=False,
     filename="NervousSystemActivity.png",
     moving_average_window=1,
+    show_legend=True,
+    show_traces=True,
+    show_heatmap=True,
+    trace_linewidth=0.8,
+    label_scale=1.0,
 ):
-    """Return a two-panel ExampleActivity-style plot for nervous-system cells."""
+    """Return an ExampleActivity-style plot for nervous-system cells."""
     worm_file = os.path.join(output_folder, "worm_data_worm.json")
     if not os.path.isfile(worm_file):
         raise FileNotFoundError(
@@ -1551,6 +1596,11 @@ def plot_nervous_system_activity(
         save_png=save_png,
         filename=filename,
         moving_average_window=moving_average_window,
+        show_legend=show_legend,
+        show_traces=show_traces,
+        show_heatmap=show_heatmap,
+        trace_linewidth=trace_linewidth,
+        label_scale=label_scale,
     )
 
 
@@ -1563,6 +1613,8 @@ def plot_motion_all(
     mean_filename="motion_all_mean.png",
     max_snapshots=60,
     axis_padding=0.03,
+    show_titles=False,
+    label_scale=1.0,
 ):
     """Plot body profiles and mean-position paths from simulation subfolders."""
     if not os.path.isdir(input_folder):
@@ -1577,6 +1629,8 @@ def plot_motion_all(
         raise ValueError("max_snapshots must be a positive integer")
     if axis_padding < 0:
         raise ValueError("axis_padding must be non-negative")
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
     if legend_names is not None and (
         isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
     ):
@@ -1738,9 +1792,11 @@ def plot_motion_all(
         ax.set_ylim(y_center - half_span, y_center + half_span)
 
     def finish_figure(fig, ax, title, bounds):
-        ax.set_title(title)
-        ax.set_xlabel("X Position (mm)")
-        ax.set_ylabel("Y Position (mm)")
+        if show_titles:
+            ax.set_title(title, fontsize=12 * label_scale)
+        ax.set_xlabel("X Position (mm)", fontsize=10 * label_scale)
+        ax.set_ylabel("Y Position (mm)", fontsize=10 * label_scale)
+        ax.tick_params(axis="both", labelsize=10 * label_scale)
         apply_tight_equal_limits(ax, bounds)
         ax.set_aspect("equal", adjustable="box")
         ax.grid(True, linewidth=0.4, alpha=0.25)
@@ -2271,6 +2327,15 @@ def plot_trajectory_properties(
     panel_columns=1,
     save_png=True,
     filename="trajectory_properties.png",
+    label_scale=1.0,
+    line_width=1.8,
+    marker_size=6.0,
+    x_label="Condition",
+    axis_aspect=None,
+    panel_width=None,
+    panel_height=3.2,
+    panel_wspace=0.35,
+    panel_hspace=0.35,
 ):
     """Extract average trajectory properties from simulation folders and plot them."""
     if not os.path.isdir(input_folder):
@@ -2284,9 +2349,23 @@ def plot_trajectory_properties(
     if (
         isinstance(panel_columns, bool)
         or not isinstance(panel_columns, int)
-        or panel_columns not in (1, 2)
+        or panel_columns < 1
     ):
-        raise ValueError("panel_columns must be 1 or 2")
+        raise ValueError("panel_columns must be a positive integer")
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
+    if line_width < 0:
+        raise ValueError("line_width must be non-negative")
+    if marker_size < 0:
+        raise ValueError("marker_size must be non-negative")
+    if panel_width is not None and panel_width <= 0:
+        raise ValueError("panel_width must be positive")
+    if panel_height <= 0:
+        raise ValueError("panel_height must be positive")
+    if panel_wspace < 0:
+        raise ValueError("panel_wspace must be non-negative")
+    if panel_hspace < 0:
+        raise ValueError("panel_hspace must be non-negative")
 
     valid_properties = {
         "speed",
@@ -2553,10 +2632,15 @@ def plot_trajectory_properties(
 
     panel_columns = min(panel_columns, len(properties))
     panel_rows = math.ceil(len(properties) / panel_columns)
+    if panel_width is None:
+        if axis_aspect is not None and not isinstance(axis_aspect, str):
+            panel_width = max(4.2, panel_height * float(axis_aspect) + 1.0)
+        else:
+            panel_width = 7.0
     fig, axs = plt.subplots(
         panel_rows,
         panel_columns,
-        figsize=(7 * panel_columns, 3.2 * panel_rows),
+        figsize=(panel_width * panel_columns, panel_height * panel_rows),
         squeeze=False,
     )
     y_labels = {
@@ -2569,15 +2653,28 @@ def plot_trajectory_properties(
     }
     flat_axes = axs.ravel()
     for ax, prop in zip(flat_axes, properties):
-        ax.plot(x_values, results[prop], marker="o", linewidth=1.8)
-        ax.set_ylabel(y_labels[prop])
+        ax.plot(
+            x_values,
+            results[prop],
+            marker="o",
+            linewidth=line_width,
+            markersize=marker_size,
+        )
+        ax.set_ylabel(y_labels[prop], fontsize=10 * label_scale)
+        ax.tick_params(axis="both", labelsize=10 * label_scale)
+        if axis_aspect is not None:
+            if isinstance(axis_aspect, str):
+                ax.set_aspect(axis_aspect)
+            else:
+                ax.set_box_aspect(axis_aspect)
         ax.grid(True, linewidth=0.4, alpha=0.25)
     for ax in flat_axes[len(properties) :]:
         ax.set_visible(False)
     for axis_index, ax in enumerate(flat_axes[: len(properties)]):
         row_index = axis_index // panel_columns
         if row_index == panel_rows - 1:
-            ax.set_xlabel("Condition")
+            ax.set_xlabel(x_label, fontsize=10 * label_scale)
+    fig.subplots_adjust(wspace=panel_wspace, hspace=panel_hspace)
     fig.tight_layout()
 
     if save_png:

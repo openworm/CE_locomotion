@@ -1189,7 +1189,6 @@ if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 
 json & j2 = j["nervous_system"];
 j2["cell_names"]["value"] = cell_names_full;
-//j2["cell_names_no_suffix"]["value"] = removeSuffixIndices(cell_names_full);
 
 //cout << j2["cell_names"]["value"] << endl;
 

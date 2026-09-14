@@ -684,8 +684,6 @@ def getIndOfNthVal(val, vals_list, n=0):
 def getCellNames(network_json_data):
     ns = getNervousSystem(network_json_data)
     if NS_NEW in network_json_data:
-        if "cell_names_no_suffix" in ns:
-            return _value(ns["cell_names_no_suffix"])
         return [
             _strip_cell_suffix(name) for name in getCellNamesFull(network_json_data)
         ]

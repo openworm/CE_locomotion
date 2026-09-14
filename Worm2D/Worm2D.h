@@ -374,6 +374,11 @@ class baseParameters
         {
             j.erase("Simulation");
         }
+        if (j.contains("nervous_system")
+            && j.at("nervous_system").is_object())
+        {
+            j["nervous_system"].erase("cell_names_no_suffix");
+        }
     }
 
     static string canonicalSectionKey(const string & section)
