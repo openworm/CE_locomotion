@@ -1354,6 +1354,7 @@ def plot_selected_activity(
     show_heatmap=True,
     trace_linewidth=0.8,
     label_scale=1.0,
+    show_y_tick_labels=True,
 ):
     """Return an activity figure for selected cells or one cell class."""
     act_file = os.path.join(output_folder, "act.dat")
@@ -1506,6 +1507,8 @@ def plot_selected_activity(
             trace_ax.plot(t_plot, row, linewidth=trace_linewidth, label=cell_name)
         trace_ax.set_ylabel("Activity", fontsize=axis_label_fontsize)
         trace_ax.tick_params(axis="both", labelsize=tick_label_fontsize)
+        if not show_y_tick_labels:
+            trace_ax.tick_params(axis="y", labelleft=False)
         if show_legend:
             legend_ncols = max(1, min(6, len(selected_cells)))
             trace_ax.legend(
@@ -1527,7 +1530,10 @@ def plot_selected_activity(
             origin="lower",
         )
         heatmap_ax.set_yticks(np.arange(len(selected_cells)) + 0.5)
-        heatmap_ax.set_yticklabels(selected_cells)
+        if show_y_tick_labels:
+            heatmap_ax.set_yticklabels(selected_cells)
+        else:
+            heatmap_ax.set_yticklabels([])
         heatmap_axis_height_points = fig_height * 72.0 / n_panels
         heatmap_label_fontsize = min(
             10.0 * label_scale,
@@ -1563,6 +1569,7 @@ def plot_nervous_system_activity(
     show_heatmap=True,
     trace_linewidth=0.8,
     label_scale=1.0,
+    show_y_tick_labels=True,
 ):
     """Return an ExampleActivity-style plot for nervous-system cells."""
     worm_file = os.path.join(output_folder, "worm_data_worm.json")
@@ -1601,6 +1608,7 @@ def plot_nervous_system_activity(
         show_heatmap=show_heatmap,
         trace_linewidth=trace_linewidth,
         label_scale=label_scale,
+        show_y_tick_labels=show_y_tick_labels,
     )
 
 
@@ -1634,10 +1642,22 @@ def plot_motion_all(
     if legend_names is not None and (
         isinstance(legend_names, str) or not isinstance(legend_names, (list, tuple))
     ):
-        raise TypeError("legend_names must be a list or tuple of strings")
+        raise TypeError("legend_names must be a list or tuple of labels")
 
     input_folder = os.path.abspath(input_folder)
     simulation_files = []
+
+    def format_legend_label(label):
+        if isinstance(label, bool):
+            return str(label)
+        if isinstance(label, (int, float, np.integer, np.floating)):
+            return "{:.3g}".format(float(label))
+        if isinstance(label, str):
+            try:
+                return "{:.3g}".format(float(label))
+            except ValueError:
+                return label
+        return str(label)
 
     def body_file_for_folder(folder):
         if not os.path.isdir(folder):
@@ -1697,17 +1717,18 @@ def plot_motion_all(
                 "legend_names must contain one label for each plotted subfolder"
             )
         for legend_name in legend_names:
-            if not isinstance(legend_name, str) or not legend_name:
-                raise ValueError("legend_names must contain non-empty strings")
+            if isinstance(legend_name, str) and not legend_name:
+                raise ValueError("legend_names must not contain empty strings")
         simulation_files = [
-            (run_name, body_file, legend_name)
+            (run_name, body_file, format_legend_label(legend_name))
             for (run_name, body_file), legend_name in zip(
                 simulation_files, legend_names
             )
         ]
     else:
         simulation_files = [
-            (run_name, body_file, run_name) for run_name, body_file in simulation_files
+            (run_name, body_file, format_legend_label(run_name))
+            for run_name, body_file in simulation_files
         ]
     profile_fig, profile_ax = plt.subplots(figsize=(8, 8))
     mean_fig, mean_ax = plt.subplots(figsize=(8, 8))
