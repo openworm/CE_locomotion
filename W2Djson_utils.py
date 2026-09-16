@@ -15,7 +15,7 @@ def incNSvals(j1):
 
 
 NSname = "Nervous system"
-EOP = "Evolutionary Optimization Parameters"
+EOP = "evolution"
 
 
 def normalize_evolvable_range_entries(evolvable_ranges):

@@ -684,8 +684,6 @@ def getIndOfNthVal(val, vals_list, n=0):
 def getCellNames(network_json_data):
     ns = getNervousSystem(network_json_data)
     if NS_NEW in network_json_data:
-        if "cell_names_no_suffix" in ns:
-            return _value(ns["cell_names_no_suffix"])
         return [
             _strip_cell_suffix(name) for name in getCellNamesFull(network_json_data)
         ]
@@ -1027,7 +1025,9 @@ def makeCellXmlReq(
         if cell_vals is not None:
             vals[key] = getVals(pop_names, cell_names, cell_vals)
         elif key == "timestep":
-            sim = network_json_data.get("Simulation", {})
+            sim = network_json_data.get(
+                "simulation", network_json_data.get("Simulation", {})
+            )
             step_size = _value(sim.get("StepSize"), par_name_default[key])
             vals[key] = [step_size] * len(cell_names)
         else:
