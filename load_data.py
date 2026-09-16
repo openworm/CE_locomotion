@@ -4892,6 +4892,79 @@ def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None)
         hf.file_prefix = old_file_prefix
 
 
+def plot_behavior(
+    output_folder,
+    model_name=None,
+    filename="behavior.png",
+    show_panel_labels=True,
+    show_worm_snapshots=True,
+    label_scale=1.0,
+):
+    """Generate the standard behavior.png figure for a simulation output folder."""
+    from F2_fig_behavior import make_fig
+
+    if not os.path.isdir(output_folder):
+        raise NotADirectoryError(
+            "Could not find output directory: {}".format(output_folder)
+        )
+    if not filename:
+        raise ValueError("filename must be a non-empty string")
+
+    if model_name is None:
+        worm_file = None
+        for candidate in (
+            "worm_data_worm.json",
+            "worm_data_evo.json",
+            "worm_data.json",
+        ):
+            candidate_path = os.path.join(output_folder, candidate)
+            if os.path.isfile(candidate_path):
+                worm_file = candidate_path
+                break
+        if worm_file is None:
+            raise FileNotFoundError(
+                "Could not find a worm JSON file in {}".format(output_folder)
+            )
+        model_name = utils.getModelName(utils.getJsonFile(worm_file))
+
+    if model_name == "W2DSR":
+        model_name = "W2D21"
+    if model_name not in utils.plot_formats:
+        raise ValueError(
+            "No behavior plot format is defined for model {!r}".format(model_name)
+        )
+
+    old_dir_name = hf.dir_name
+    old_file_prefix = hf.file_prefix
+    try:
+        hf.dir_name = output_folder
+        hf.file_prefix = None
+        make_fig(
+            model_name=model_name,
+            show_panel_labels=show_panel_labels,
+            show_worm_snapshots=show_worm_snapshots,
+            label_scale=label_scale,
+        )
+    finally:
+        hf.dir_name = old_dir_name
+        hf.file_prefix = old_file_prefix
+
+    behavior_file = os.path.join(output_folder, "behavior.png")
+    if filename != "behavior.png":
+        output_file = filename
+        if not os.path.isabs(output_file):
+            output_file = os.path.join(output_folder, output_file)
+        if not os.path.isfile(behavior_file):
+            raise FileNotFoundError(
+                "Behavior figure was not generated: {}".format(behavior_file)
+            )
+        import shutil
+
+        shutil.copyfile(behavior_file, output_file)
+        return output_file
+    return behavior_file
+
+
 def plot_cols_fig_2(axslist, plot_data, titles, gen_indices, phen_names):
     initial_gen = 0
     final_gen = 1000
