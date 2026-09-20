@@ -1917,6 +1917,7 @@ def plot_motion(
     marker_size_small=0.4,
     time_interval=None,
     axis_padding=0.015,
+    label_scale=1.0,
 ):
     """Plot worm body profiles from body.dat/bodypos.dat in one simulation folder."""
     output_folder = os.path.abspath(output_folder)
@@ -1956,6 +1957,8 @@ def plot_motion(
         )
     if axis_padding < 0:
         raise ValueError("axis_padding must be non-negative")
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
 
     if time_interval is not None:
         if not isinstance(time_interval, (list, tuple)) or len(time_interval) != 2:
@@ -2002,8 +2005,9 @@ def plot_motion(
         axis_padding=axis_padding,
     )
 
-    ax.set_xlabel("X Position (mm)")
-    ax.set_ylabel("Y Position (mm)")
+    ax.set_xlabel("X Position (mm)", fontsize=10 * label_scale)
+    ax.set_ylabel("Y Position (mm)", fontsize=10 * label_scale)
+    ax.tick_params(axis="both", labelsize=10 * label_scale)
     ax.set_aspect("equal", adjustable="box")
     fig.tight_layout()
 
@@ -2026,6 +2030,8 @@ def plot_orient(
     tail_index=None,
     marker_size=0.2,
     moving_average_window=1,
+    label_scale=1.0,
+    show_titles=True,
 ):
     """Plot orientation diagnostics from body.dat/bodypos.dat in one simulation folder."""
     if plot_list is None:
@@ -2082,6 +2088,8 @@ def plot_orient(
         or moving_average_window < 1
     ):
         raise ValueError("moving_average_window must be a positive integer")
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
 
     times = body_data[0, :]
     if time_interval is not None:
@@ -2194,10 +2202,14 @@ def plot_orient(
             "o",
             markersize=marker_size,
         )
-        ax.set_title(plot_name, fontsize=hf.title_font_size)
-        ax.set_ylabel(plottables[plot_name]["y_label"], fontsize=hf.label_font_size)
-        if ind // num_cols == num_rows - 1:
-            ax.set_xlabel("Time (s)", fontsize=hf.label_font_size)
+        if show_titles:
+            ax.set_title(plot_name, fontsize=hf.title_font_size * label_scale)
+        ax.set_ylabel(
+            plottables[plot_name]["y_label"],
+            fontsize=hf.label_font_size * label_scale,
+        )
+        ax.tick_params(axis="both", labelsize=hf.label_font_size * label_scale)
+        ax.set_xlabel("Time (s)", fontsize=hf.label_font_size * label_scale)
 
     for ax in list(axes)[len(plot_list) :]:
         ax.axis("off")
@@ -2223,6 +2235,7 @@ def plot_head_motion(
     line_width=1.0,
     time_interval=None,
     axis_padding=0.015,
+    label_scale=1.0,
 ):
     """Plot only the worm head trajectory from body.dat/bodypos.dat."""
     output_folder = os.path.abspath(output_folder)
@@ -2249,6 +2262,8 @@ def plot_head_motion(
         raise ValueError("max_snapshots must be a positive integer")
     if axis_padding < 0:
         raise ValueError("axis_padding must be non-negative")
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
 
     head_x = x_positions[:, head_index]
     head_y = y_positions[:, head_index]
@@ -2316,18 +2331,20 @@ def plot_head_motion(
         label="end",
         zorder=3,
     )
-    ax.set_title("Head trajectory")
-    ax.set_xlabel("X Position (mm)")
-    ax.set_ylabel("Y Position (mm)")
+    ax.set_title("Head trajectory", fontsize=12 * label_scale)
+    ax.set_xlabel("X Position (mm)", fontsize=10 * label_scale)
+    ax.set_ylabel("Y Position (mm)", fontsize=10 * label_scale)
+    ax.tick_params(axis="both", labelsize=10 * label_scale)
     if show_path:
         _set_tight_equal_xy_limits(ax, head_x, head_y, axis_padding=axis_padding)
     else:
         _set_tight_equal_xy_limits(ax, plot_x, plot_y, axis_padding=axis_padding)
     ax.set_aspect("equal", adjustable="box")
     ax.grid(True, linewidth=0.4, alpha=0.25)
-    ax.legend(frameon=False)
+    ax.legend(frameon=False, fontsize=10 * label_scale)
     cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label(colour_label)
+    cbar.set_label(colour_label, fontsize=10 * label_scale)
+    cbar.ax.tick_params(labelsize=10 * label_scale)
     fig.tight_layout()
 
     if save_png:
@@ -3775,9 +3792,16 @@ def plot_json_structure(
     output_folder,
     save_png=False,
     filename="JsonStructure.png",
+    text_scale=1.0,
 ):
-    """Return a schematic figure of the main connected JSON model objects."""
+    """Return a schematic figure of the main connected JSON model objects.
+
+    text_scale multiplies the automatically fitted in-box text size.
+    """
     from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+
+    if text_scale <= 0:
+        raise ValueError("text_scale must be positive")
 
     worm_file = os.path.join(output_folder, "worm_data_worm.json")
     if not os.path.isfile(worm_file):
@@ -4023,6 +4047,134 @@ def plot_json_structure(
     ax.set_ylim(min_y - pad, max_y + pad)
     ax.axis("off")
 
+    def text_pixel_size(text, fontsize, fontweight="normal"):
+        text_artist = ax.text(
+            0,
+            0,
+            text,
+            fontsize=fontsize,
+            fontweight=fontweight,
+            ha="center",
+            va="center",
+            alpha=0.0,
+        )
+        fig.canvas.draw()
+        bbox = text_artist.get_window_extent(renderer=fig.canvas.get_renderer())
+        text_artist.remove()
+        return bbox.width, bbox.height
+
+    def data_size_to_pixels(width, height):
+        origin = ax.transData.transform((0, 0))
+        corner = ax.transData.transform((width, height))
+        return abs(corner[0] - origin[0]), abs(corner[1] - origin[1])
+
+    def add_fit_requirement(requirements, text, width, height, fontweight="normal"):
+        if not text:
+            return
+        requirements.append(
+            {
+                "text": str(text),
+                "width": max(width, 1e-6),
+                "height": max(height, 1e-6),
+                "fontweight": fontweight,
+            }
+        )
+
+    def collect_text_fit_requirements():
+        requirements = []
+        for name, spec in boxes.items():
+            x, y = spec["xy"]
+            w, h = spec["wh"]
+            if name == "nervous_system":
+                add_fit_requirement(
+                    requirements,
+                    spec["text"],
+                    w * 0.86,
+                    0.08,
+                    fontweight="bold",
+                )
+                groups = spec.get("cell_class_groups", [])
+                if groups:
+                    inner_w = w - 0.05
+                    inner_top = y + h - 0.105
+                    inner_bottom = y + 0.025
+                    gap = 0.012
+                    class_h = (
+                        inner_top - inner_bottom - gap * (len(groups) - 1)
+                    ) / len(groups)
+                    for group in groups:
+                        group_cells = group["cells"]
+                        columns = 6 if len(group_cells) > 12 else 3
+                        text = "{} ({})\n{}".format(
+                            class_label(group["class"]),
+                            len(group_cells),
+                            wrap_cell_names(group_cells, columns=columns),
+                        )
+                        add_fit_requirement(
+                            requirements,
+                            text,
+                            inner_w * 0.92,
+                            class_h * 0.78,
+                        )
+                continue
+
+            sub_boxes = spec.get("sub_boxes", [])
+            if sub_boxes:
+                title_position = spec.get("sub_box_title_position", "top")
+                add_fit_requirement(
+                    requirements,
+                    spec["text"],
+                    w * 0.86,
+                    0.040,
+                    fontweight="bold",
+                )
+                inner_w = w - 0.03
+                inner_top = y + h - (0.018 if title_position == "bottom" else 0.060)
+                inner_bottom = y + (0.060 if title_position == "bottom" else 0.018)
+                gap = 0.010
+                sub_h = (inner_top - inner_bottom - gap * (len(sub_boxes) - 1)) / len(
+                    sub_boxes
+                )
+                for sub_box in sub_boxes:
+                    lines = sub_box.get("lines", [])
+                    text = str(sub_box.get("title", ""))
+                    if lines:
+                        text += "\n" + "\n".join(str(line) for line in lines)
+                    add_fit_requirement(requirements, text, inner_w * 0.90, sub_h * 0.78)
+                continue
+
+            add_fit_requirement(requirements, spec["text"], w * 0.86, h * 0.72)
+        return requirements
+
+    def fitted_fontsize():
+        requirements = collect_text_fit_requirements()
+        if not requirements:
+            return 12.0
+        low = 4.0
+        high = 18.0
+        for _ in range(12):
+            mid = (low + high) / 2.0
+            fits = True
+            for requirement in requirements:
+                text_w, text_h = text_pixel_size(
+                    requirement["text"],
+                    mid,
+                    fontweight=requirement["fontweight"],
+                )
+                avail_w, avail_h = data_size_to_pixels(
+                    requirement["width"], requirement["height"]
+                )
+                if text_w > avail_w or text_h > avail_h:
+                    fits = False
+                    break
+            if fits:
+                low = mid
+            else:
+                high = mid
+        return low
+
+    structure_fontsize = fitted_fontsize() * text_scale
+
     def center(name):
         x, y = boxes[name]["xy"]
         w, h = boxes[name]["wh"]
@@ -4055,7 +4207,7 @@ def plot_json_structure(
                     spec["text"],
                     ha="center",
                     va="bottom" if title_position == "bottom" else "top",
-                    fontsize=12,
+                    fontsize=structure_fontsize,
                     fontweight="bold",
                 )
                 inner_x = x + 0.015
@@ -4111,7 +4263,7 @@ def plot_json_structure(
                         text,
                         ha="center",
                         va="center",
-                        fontsize=9.5 if len(lines) > 2 else 11,
+                        fontsize=structure_fontsize,
                     )
                 return
             ax.text(
@@ -4120,7 +4272,7 @@ def plot_json_structure(
                 spec["text"],
                 ha="center",
                 va="center",
-                fontsize=13,
+                fontsize=structure_fontsize,
             )
             return
 
@@ -4130,7 +4282,7 @@ def plot_json_structure(
             spec["text"],
             ha="center",
             va="top",
-            fontsize=12,
+            fontsize=structure_fontsize,
             fontweight="bold",
         )
         groups = spec.get("cell_class_groups", [])
@@ -4169,7 +4321,7 @@ def plot_json_structure(
                 text,
                 ha="center",
                 va="center",
-                fontsize=10.5 if len(group_cells) > 16 else 12,
+                fontsize=structure_fontsize,
             )
 
     def add_arrow_between_points(
@@ -4205,7 +4357,7 @@ def plot_json_structure(
                 label,
                 ha="center",
                 va="center",
-                fontsize=10.5,
+                fontsize=structure_fontsize,
                 bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.75},
             )
 

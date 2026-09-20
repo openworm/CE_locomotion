@@ -212,7 +212,8 @@ def make_fig(
         fontsize=fzl,
         transform=ax1.get_yaxis_transform(),
     )
-    plt.colorbar(imcurv, location="top", shrink=0.4)
+    cbar = plt.colorbar(imcurv, location="top", shrink=0.4)
+    cbar.ax.tick_params(labelsize=tick_label_size)
 
     ############ Velocity #######
     ###############################
@@ -231,11 +232,11 @@ def make_fig(
         # ax2.set_xlim(0, plot_time)
         # ax2.set_yticks([0.1, 0.2, 0.3])
         ax2.set_yticks(np.linspace(AvgSpeed * 0.5, AvgSpeed * 1.5, 3))
-        ax2.set_ylabel("Velocity (mm/s)", fontsize=fzl, labelpad=24)
+        ax2.set_ylabel("Velocity", fontsize=fzl, labelpad=24)
         # ax2.set_xlabel('Time (s)', fontsize = fzl, labelpad = 22)
     ###############################
 
-    fz = 26
+    fz = axis_label_size
     cols = ["k", "r", "b", "g", "c", "m", "y", "tab:orange", "tab:brown", "tab:gray"]
     # cell_list = ["AS", "DA", "DB", "DD"]
 
