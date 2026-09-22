@@ -1189,7 +1189,6 @@ if (!j.contains("nervous_system")) j["nervous_system"] = json::object();
 
 json & j2 = j["nervous_system"];
 j2["cell_names"]["value"] = cell_names_full;
-//j2["cell_names_no_suffix"]["value"] = removeSuffixIndices(cell_names_full);
 
 //cout << j2["cell_names"]["value"] << endl;
 
@@ -1656,8 +1655,8 @@ void evoPars::addParsToJson(json &j) const
 const doubIntParamsHead evoPars::getParams() const
    {
        doubIntParamsHead var1;
-       var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
+       var1.parDoub.head = "evolution";
+       var1.parInt.head = "evolution";
        var1.parDoub.names = 
        {"MutationVariance", "CrossoverProbability", 
          "MaxExpectedOffspring", "ElitistFraction",
@@ -1700,7 +1699,9 @@ if (stat(directoryName.c_str(), &sb) != 0)
 {cout << "Directory doesn't exist." << endl;exit(1);}
 
 PopulationSize = cmd->getArgValInt("-p",PopulationSize);
+PopulationSize = cmd->getArgValInt("--popSize", PopulationSize);
 CheckpointInterval = cmd->getArgValInt("-cpt", CheckpointInterval);
+CheckpointInterval = cmd->getArgValInt("--checkPointInterval", CheckpointInterval);
 Duration = cmd->getArgValDoub("-d", Duration);
 Transient = cmd->getArgValDoub("-t", Transient);
 evoType = cmd->getArgVal("--evoType", evoType);
@@ -1709,6 +1710,7 @@ evoType = cmd->getArgVal("--evo_type", evoType);
 SelectionMode = static_cast<TSelectionMode>(cmd->getArgValInt("--selection_mode", SelectionMode));
 ReproductionMode = static_cast<TReproductionMode>(cmd->getArgValInt("--reproduction_mode", ReproductionMode));
 PopulationSize = cmd->getArgValInt("--population_size", PopulationSize);
+MaxGenerations = cmd->getArgValInt("--maxGens", MaxGenerations);
 MaxGenerations = cmd->getArgValInt("--max_generations", MaxGenerations);
 MutationVariance = cmd->getArgValDoub("--mutation_variance", MutationVariance);
 CrossoverProbability = cmd->getArgValDoub("--crossover_probability", CrossoverProbability);

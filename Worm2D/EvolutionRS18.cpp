@@ -13,8 +13,8 @@ void EvolutionRS18::addExtraParsToJson(json & j)
 {
   
     doubIntParamsHead var1;
-    var1.parDoub.head = "Evolutionary Optimization Parameters";
-       var1.parInt.head = "Evolutionary Optimization Parameters";
+    var1.parDoub.head = "evolution";
+       var1.parInt.head = "evolution";
        var1.parDoub.names = {"fps", "BiasRange", "SCRange", "CSRange", "TauMin",
         "TauMax", "ESRange", "SRmax", "NMJmax", "HCSRange", "AvgSpeed", "BBCfit", 
     };

@@ -1,11 +1,288 @@
 //#include "Worm2D.h"
 #include "Worm2DSR.h"
+#include <cctype>
 #include <iomanip>
 
 //using json = nlohmann::json;
 
 string main_directoryname, main_modelname;
 
+namespace {
+
+string defaultDrivingInputId(const int zeroBasedIndex)
+{
+    return "input_" + to_string(zeroBasedIndex + 1);
+}
+
+int parseDefaultDrivingInputId(const string & id)
+{
+    const string prefix = "input_";
+    if (id.rfind(prefix, 0) != 0 || id.size() == prefix.size()) return -1;
+    for (size_t i = prefix.size(); i < id.size(); ++i)
+        if (!isdigit(static_cast<unsigned char>(id[i]))) return -1;
+    const int inputNumber = stoi(id.substr(prefix.size()));
+    return inputNumber > 0 ? inputNumber - 1 : -1;
+}
+
+string drivingInputIdFromJson(const json & value)
+{
+    if (value.is_string()) return value.get<string>();
+    if (value.is_number_integer()) return defaultDrivingInputId(value.get<int>() - 1);
+    throw runtime_error("Driving input identifier must be a string or legacy integer");
+}
+
+int drivingInputIndexFromJson(
+    const json & value,
+    const map<string, int> & inputIdToIndex,
+    const bool legacyZeroBased = false)
+{
+    if (value.is_number_integer())
+    {
+        const int inputNumber = value.get<int>();
+        if (legacyZeroBased && inputNumber >= 0) return inputNumber;
+        if (!legacyZeroBased && inputNumber > 0) return inputNumber - 1;
+        throw runtime_error("Driving input integer identifiers must be positive");
+    }
+    if (value.is_string())
+    {
+        const string inputId = value.get<string>();
+        auto found = inputIdToIndex.find(inputId);
+        if (found != inputIdToIndex.end()) return found->second;
+        const int parsedIndex = parseDefaultDrivingInputId(inputId);
+        if (parsedIndex >= 0) return parsedIndex;
+        throw runtime_error(
+            "Unknown driving input identifier '" + inputId + "'");
+    }
+    throw runtime_error("Driving input identifier must be a string or legacy integer");
+}
+
+map<string, int> drivingInputIdMapFromJson(const json & j)
+{
+    map<string, int> inputIdToIndex;
+    if (!j.contains("driving_inputs")
+        || !j.at("driving_inputs").contains("inputs")
+        || !j.at("driving_inputs").at("inputs").contains("value")
+        || !j.at("driving_inputs").at("inputs").at("value").is_array())
+        return inputIdToIndex;
+
+    int sequentialIndex = 0;
+    for (const auto & input : j.at("driving_inputs").at("inputs").at("value"))
+    {
+        if (!input.contains("input_num")) continue;
+        string inputId;
+        int inputIndex = sequentialIndex;
+        if (input.at("input_num").is_string())
+        {
+            inputId = input.at("input_num").get<string>();
+        }
+        else if (input.at("input_num").is_number_integer())
+        {
+            const int legacyNumber = input.at("input_num").get<int>();
+            if (legacyNumber < 1)
+              throw runtime_error("driving_inputs.input_num must be positive");
+            inputIndex = legacyNumber - 1;
+            inputId = defaultDrivingInputId(inputIndex);
+        }
+        else
+            throw runtime_error("driving_inputs.input_num must be a string or integer");
+
+        if (inputIdToIndex.count(inputId))
+            throw runtime_error("Duplicate driving input identifier '" + inputId + "'");
+        inputIdToIndex[inputId] = inputIndex;
+        sequentialIndex++;
+    }
+    return inputIdToIndex;
+}
+
+vector<string> drivingInputIdsForJson(const json & j, const size_t inputCount)
+{
+    vector<string> inputIds(inputCount);
+    for (size_t i = 0; i < inputCount; ++i)
+        inputIds[i] = defaultDrivingInputId(static_cast<int>(i));
+
+    if (!j.contains("driving_inputs")
+        || !j.at("driving_inputs").contains("inputs")
+        || !j.at("driving_inputs").at("inputs").contains("value")
+        || !j.at("driving_inputs").at("inputs").at("value").is_array())
+        return inputIds;
+
+    int sequentialIndex = 0;
+    for (const auto & input : j.at("driving_inputs").at("inputs").at("value"))
+    {
+        if (!input.contains("input_num")) continue;
+        int inputIndex = sequentialIndex;
+        if (input.at("input_num").is_number_integer())
+            inputIndex = input.at("input_num").get<int>() - 1;
+        else if (!input.at("input_num").is_string())
+            throw runtime_error("driving_inputs.input_num must be a string or integer");
+
+        if (inputIndex >= 0 && static_cast<size_t>(inputIndex) < inputCount)
+            inputIds[inputIndex] = drivingInputIdFromJson(input.at("input_num"));
+        sequentialIndex++;
+    }
+    return inputIds;
+}
+
+string defaultInputSwitcherId(const int index)
+{
+    return "input_pattern_" + to_string(index);
+}
+
+int parseDefaultInputSwitcherId(const string & id)
+{
+    const string prefix = "input_pattern_";
+    if (id.rfind(prefix, 0) != 0 || id.size() == prefix.size()) return -1;
+    for (size_t i = prefix.size(); i < id.size(); ++i)
+        if (!isdigit(static_cast<unsigned char>(id[i]))) return -1;
+    return stoi(id.substr(prefix.size()));
+}
+
+string inputSwitcherIdFromJson(const json & value)
+{
+    if (value.is_string()) return value.get<string>();
+    if (value.is_number_integer()) return defaultInputSwitcherId(value.get<int>());
+    throw runtime_error("input_switcher.input_index must be a string or legacy integer");
+}
+
+int inputSwitcherIndexFromJson(
+    const json & value,
+    const map<string, int> & switcherIdToIndex)
+{
+    if (value.is_number_integer())
+    {
+        const int index = value.get<int>();
+        if (index < 0)
+            throw runtime_error("input_switcher.input_index must be non-negative");
+        return index;
+    }
+    if (value.is_string())
+    {
+        const string id = value.get<string>();
+        auto found = switcherIdToIndex.find(id);
+        if (found != switcherIdToIndex.end()) return found->second;
+        const int parsedIndex = parseDefaultInputSwitcherId(id);
+        if (parsedIndex >= 0) return parsedIndex;
+        throw runtime_error("Unknown input_switcher input_index '" + id + "'");
+    }
+    throw runtime_error("input_switcher.input_index must be a string or legacy integer");
+}
+
+vector<string> inputSwitcherIdsForJson(const json & j, const size_t patternCount)
+{
+    vector<string> ids(patternCount);
+    for (size_t i = 0; i < patternCount; ++i)
+        ids[i] = defaultInputSwitcherId(static_cast<int>(i));
+
+    if (!j.contains("input_switcher")
+        || !j.at("input_switcher").contains("inputs")
+        || !j.at("input_switcher").at("inputs").contains("value")
+        || !j.at("input_switcher").at("inputs").at("value").is_array())
+        return ids;
+
+    int sequentialIndex = 0;
+    for (const auto & input : j.at("input_switcher").at("inputs").at("value"))
+    {
+        if (!input.contains("input_index")) continue;
+        int patternIndex = sequentialIndex;
+        if (input.at("input_index").is_number_integer())
+            patternIndex = input.at("input_index").get<int>();
+        else if (!input.at("input_index").is_string())
+            throw runtime_error(
+                "input_switcher.input_index must be a string or integer");
+
+        if (patternIndex >= 0 && static_cast<size_t>(patternIndex) < patternCount)
+            ids[patternIndex] = inputSwitcherIdFromJson(input.at("input_index"));
+        sequentialIndex++;
+    }
+    return ids;
+}
+
+map<string, int> inputSwitcherIdMapFromJson(const json & input_switcher)
+{
+    map<string, int> idToIndex;
+    if (!input_switcher.contains("inputs")
+        || !input_switcher.at("inputs").contains("value")
+        || !input_switcher.at("inputs").at("value").is_array())
+        return idToIndex;
+
+    int sequentialIndex = 0;
+    for (const auto & input : input_switcher.at("inputs").at("value"))
+    {
+        if (!input.contains("input_index")) continue;
+        string id;
+        int index = sequentialIndex;
+        if (input.at("input_index").is_string())
+            id = input.at("input_index").get<string>();
+        else if (input.at("input_index").is_number_integer())
+        {
+            index = input.at("input_index").get<int>();
+            if (index < 0)
+                throw runtime_error("input_switcher.input_index must be non-negative");
+            id = defaultInputSwitcherId(index);
+        }
+        else
+            throw runtime_error(
+                "input_switcher.input_index must be a string or integer");
+        if (idToIndex.count(id))
+            throw runtime_error("Duplicate input_switcher input_index '" + id + "'");
+        idToIndex[id] = index;
+        sequentialIndex++;
+    }
+    return idToIndex;
+}
+
+int functionIndexFromJson(const json & value)
+{
+    if (value.is_number_integer()) return value.get<int>();
+    if (value.is_string())
+    {
+        const string functionName = value.get<string>();
+        if (functionName == "mult_func") return 1;
+        if (functionName == "zero_func") return 2;
+        throw runtime_error("Unknown mfunc function name '" + functionName + "'");
+    }
+    throw runtime_error("mfunc function identifier must be a string or integer");
+}
+
+string functionNameForIndex(const int functionIndex)
+{
+    if (functionIndex == 1) return "mult_func";
+    if (functionIndex == 2) return "zero_func";
+    return to_string(functionIndex);
+}
+
+bool funcableContainsFunction(const json & funcable, const int functionIndex)
+{
+    return funcable.contains(to_string(functionIndex))
+        || funcable.contains(functionNameForIndex(functionIndex));
+}
+
+json & funcableFunctionJson(json & funcable, const int functionIndex)
+{
+    const string functionName = functionNameForIndex(functionIndex);
+    if (funcable.contains(functionName)) return funcable.at(functionName);
+    return funcable.at(to_string(functionIndex));
+}
+
+const json * findFuncableJson(const json & j)
+{
+    if (j.contains("funcable") && j.at("funcable").is_object())
+        return &j.at("funcable");
+    if (j.contains("Funcable") && j.at("Funcable").is_object())
+        return &j.at("Funcable");
+    return nullptr;
+}
+
+json * findFuncableJson(json & j)
+{
+    if (j.contains("funcable") && j.at("funcable").is_object())
+        return &j.at("funcable");
+    if (j.contains("Funcable") && j.at("Funcable").is_object())
+        return &j.at("Funcable");
+    return nullptr;
+}
+
+}
 
 
 
@@ -106,18 +383,21 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
   //cout << j << endl;
 
 
-  //if (setItsJson) itsJson["f_ind"] =  j.at("f_ind").get<int>();
+  const int functionIndex = functionIndexFromJson(j.at("f_ind"));
+  //if (setItsJson) itsJson["f_ind"] =  functionIndex;
 
-  if (j.at("f_ind").get<int>() == 1) 
+  if (functionIndex == 1) 
   {
     const bool scheduled =
       itsJson.contains("functions")
       && itsJson.at("functions").contains(to_string(1));
     const bool cond1 =
       scheduled
-      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 1)
+      || (itsJson.contains("f_ind") && functionIndexFromJson(itsJson.at("f_ind")) == 1)
       || setItsJson;
-    const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(1));
+    const json * funcable = findFuncableJson(bp.BPitsJson);
+    const bool cond2 =
+      condf && funcable != nullptr && funcableContainsFunction(*funcable, 1);
 
     if (!(cond1 || cond2)) return val;
     if (j.contains("doInverse") && j.at("doInverse") == true) 
@@ -128,7 +408,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
     return val * j.at("fact").get<double>();
   }
 
-  if (j.at("f_ind").get<int>() == 2) {
+  if (functionIndex == 2) {
    
     if (j.contains("doInverse") && j.at("doInverse") == true) return val;
 
@@ -139,7 +419,7 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
       && itsJson.at("functions").contains(to_string(2));
     const bool cond1 =
       scheduled
-      || (itsJson.contains("f_ind") && itsJson.at("f_ind").get<int>() == 2)
+      || (itsJson.contains("f_ind") && functionIndexFromJson(itsJson.at("f_ind")) == 2)
       || setItsJson;
     if (scheduled)
     {
@@ -156,11 +436,13 @@ double Efunctor::eFunc(const double & val, const json & j, bool setItsJson)
         && cond == itsJson.at("condval").get<int>())
       return 0;
  
-    const bool cond2 = condf && bp.BPitsJson.at("Funcable").contains(to_string(2));
+    json * funcable = findFuncableJson(bp.BPitsJson);
+    const bool cond2 =
+      condf && funcable != nullptr && funcableContainsFunction(*funcable, 2);
 
     if (cond2) 
     {
-    json & bpj = bp.BPitsJson.at("Funcable").at(to_string(2));
+    json & bpj = funcableFunctionJson(*funcable, 2);
     if (bpj.contains("condval") && cond == bpj.at("condval").get<int>()) return 0;
     }
       //return val;
@@ -629,51 +911,49 @@ void Worm2Dbase::updateScheduledFuncables(const double current_time)
 void Worm2Dbase::constructFuncableSchedules(const json & j)
 {
     funcableSchedules.clear();
-    if (
-        !j.contains("Funcable")
-        || !j.at("Funcable").is_object()
-        || !j.at("Funcable").contains("schedules"))
+    const json * funcable = findFuncableJson(j);
+    if (funcable == nullptr || !funcable->contains("schedules"))
       return;
 
-    const json & schedules = j.at("Funcable").at("schedules");
+    const json & schedules = funcable->at("schedules");
     if (!schedules.is_object())
-      throw runtime_error("Funcable.schedules must be an object");
+      throw runtime_error("funcable.schedules must be an object");
 
     for (const auto & item : schedules.items())
     {
         const json & value = item.value();
         if (!value.is_object())
-          throw runtime_error("Each Funcable schedule must be an object");
+          throw runtime_error("Each funcable schedule must be an object");
 
         FuncableSchedule schedule;
         if (
             !value.contains("function_index")
             || !value.at("function_index").contains("value"))
           throw runtime_error(
-              "Funcable schedule " + item.key()
+              "funcable schedule " + item.key()
               + " requires function_index.value");
         schedule.function_index =
-            value.at("function_index").at("value").get<int>();
+            functionIndexFromJson(value.at("function_index").at("value"));
         if (schedule.function_index < 1)
           throw runtime_error(
-              "Funcable schedule function_index must be positive");
+              "funcable schedule function_index must be positive");
 
         if (
             !value.contains("time_intervals")
             || !value.at("time_intervals").contains("value"))
           throw runtime_error(
-              "Funcable schedule " + item.key()
+              "funcable schedule " + item.key()
               + " requires time_intervals.value");
         schedule.time_intervals =
             value.at("time_intervals").at("value").get<vector<double> >();
         if (schedule.time_intervals.empty())
           throw runtime_error(
-              "Funcable schedule time_intervals must not be empty");
+              "funcable schedule time_intervals must not be empty");
         for (const double interval : schedule.time_intervals)
         {
             if (!isfinite(interval) || interval <= 0)
               throw runtime_error(
-                  "Funcable schedule intervals must be finite and positive");
+                  "funcable schedule intervals must be finite and positive");
             schedule.total_period += interval;
         }
 
@@ -685,7 +965,7 @@ void Worm2Dbase::constructFuncableSchedules(const json & j)
                 schedule.condvals.size()
                 != schedule.time_intervals.size())
               throw runtime_error(
-                  "Funcable schedule condvals and time_intervals must "
+                  "funcable schedule condvals and time_intervals must "
                   "have the same length");
         }
 
@@ -694,7 +974,7 @@ void Worm2Dbase::constructFuncableSchedules(const json & j)
               value.at("time_offset").at("value").get<double>();
         if (!isfinite(schedule.time_offset) || schedule.time_offset < 0)
           throw runtime_error(
-              "Funcable schedule time_offset must be finite and non-negative");
+              "funcable schedule time_offset must be finite and non-negative");
 
         if (value.contains("doEvolution"))
           schedule.doEvolution =
@@ -932,12 +1212,18 @@ void Worm2Dbody::addParsToJson(json & j)
 void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
 {
 
-    if (j.contains("InputNS")){
+    if (j.contains("InputNS")
+        && j["InputNS"].contains("weights")
+        && j["InputNS"]["weights"].contains("value")
+        && j["InputNS"]["weights"]["value"].is_array()){
         vector<toFromWeight> vec1 = j["InputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
         NSInputConn.swap(vec1);
     }
 
-    if (j.contains("OutputNS")){
+    if (j.contains("OutputNS")
+        && j["OutputNS"].contains("weights")
+        && j["OutputNS"]["weights"].contains("value")
+        && j["OutputNS"]["weights"]["value"].is_array()){
         vector<toFromWeight> vec1 = j["OutputNS"]["weights"]["value"].template get< vector<toFromWeight> >();
         NSOutputConn.swap(vec1);
     }
@@ -976,17 +1262,28 @@ void Worm2Dbase::makeExternalInputConnFromJson(const json & j)
     vector<toFromWeight> vec1;
 
     if (j.contains("driving_inputs")){
+        const map<string, int> inputIdToIndex = drivingInputIdMapFromJson(j);
+        int sequentialIndex = 0;
         for (const auto& input : j.at("driving_inputs").at("inputs").at("value"))
         {
-            int input_num = input.at("input_num").get<int>();
-            if (input_num > static_cast<int>(exvec.size())) exvec.resize(input_num, 0.0);
-            exvec[input_num-1] = input.at("strength").at("value").get<double>();
+            int inputIndex;
+            if (input.at("input_num").is_string())
+                inputIndex = sequentialIndex;
+            else
+                inputIndex = drivingInputIndexFromJson(input.at("input_num"), inputIdToIndex);
+            if (inputIndex < 0)
+                throw runtime_error("Driving input indices must be non-negative");
+            if (inputIndex >= static_cast<int>(exvec.size()))
+                exvec.resize(inputIndex + 1, 0.0);
+            exvec[inputIndex] = input.at("strength").at("value").get<double>();
+            sequentialIndex++;
         }
 
         for (const auto& conn : j.at("driving_inputs").at("weights").at("value"))
         {
             toFromWeight val;
-            val.w.from = conn.at("from_input").get<int>();
+            val.w.from = drivingInputIndexFromJson(
+                conn.at("from_input"), inputIdToIndex) + 1;
             val.to = name_index.at(conn.at("to_cell").get<string>());
             val.w.weight = conn.at("weight").at("value").get<double>();
             vec1.push_back(val);
@@ -1070,16 +1367,10 @@ void Worm2Dbase::addParsToJson(json & j)
         }
 
     removeLegacyParameterKeys(j);
+    j.erase("PhenoNames");
+    j.erase("PhenoNamesNums");
 
     //cout << "worm2dbase add pars to json" << endl;
-
-    setPhenoNames();
-    if (phenoNames.size()>0) 
-    {
-        for (int i=0; i<phenoNames.size();i++) phenoNames[i] = getModelName() + "_" + phenoNames[i];
-        appendVectorToJson<string>(j["PhenoNames"], phenoNames);
-        appendVectorToJson<int>(j["PhenoNamesNums"], phenoNamesNums);
-    }
 
     vector<string> names;
     if (j.contains("nervous_system")
@@ -1113,6 +1404,8 @@ void Worm2Dbase::addParsToJson(json & j)
 
     if (!externalInputs.empty() || !externalInputConn.empty())
     {
+        const vector<string> inputIds =
+            drivingInputIdsForJson(j, externalInputs.size());
         {
             json & j22 = j["driving_inputs"]["weights"]["value"];
             j["driving_inputs"]["weights"]["message"] =
@@ -1120,19 +1413,25 @@ void Worm2Dbase::addParsToJson(json & j)
             for (const toFromWeight & val : externalInputConn)
             {
                 assert(val.to-1<names.size() && val.to-1>=0);
+                if (val.w.from < 1
+                    || static_cast<size_t>(val.w.from) > inputIds.size())
+                    throw runtime_error(
+                        "Driving input connection refers to an unknown input");
+                const string & inputId = inputIds[val.w.from - 1];
                 bool found = false;
                 for (auto it = j22.begin(); it != j22.end(); ++it)
                     if (it->at("to_cell")==names[val.to-1]
-                        && it->at("from_input")==val.w.from)
+                        && drivingInputIdFromJson(it->at("from_input"))==inputId)
                     {
                         it->at("weight").at("value")=val.w.weight;
+                        it->at("from_input")=inputId;
                         found = true;
                         break;
                     }
                 if (found) continue;
 
                 json j2 = json::object();
-                j2["from_input"] = val.w.from;
+                j2["from_input"] = inputId;
                 j2["to_cell"] = names[val.to-1];
                 j2["weight"]["value"] = val.w.weight;
                 j22.push_back(j2);
@@ -1147,16 +1446,17 @@ void Worm2Dbase::addParsToJson(json & j)
             {
                 bool found = false;
                 for (auto it = j22.begin(); it != j22.end(); ++it)
-                    if (it->at("input_num")==i+1)
+                    if (drivingInputIdFromJson(it->at("input_num"))==inputIds[i])
                     {
                         it->at("strength").at("value")=externalInputs[i];
+                        it->at("input_num")=inputIds[i];
                         found = true;
                         break;
                     }
                 if (found) continue;
 
                 json j2 = json::object();
-                j2["input_num"] = i+1;
+                j2["input_num"] = inputIds[i];
                 j2["strength"]["value"] = externalInputs[i];
                 j22.push_back(j2);
             }
@@ -1179,11 +1479,19 @@ void Worm2Dbase::addParsToJson(json & j)
     }
 
 
-    appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
-    j["InputNS"]["weights"]["message"] = "Weights of driving inputs to NS from another NS";
+    if (!NSInputConn.empty())
+    {
+        appendVectorToJson<toFromWeight>(j["InputNS"]["weights"], NSInputConn);
+        j["InputNS"]["weights"]["message"] = "Weights of driving inputs to NS from another NS";
+    }
+    else j.erase("InputNS");
 
-    appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
-    j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
+    if (!NSOutputConn.empty())
+    {
+        appendVectorToJson<toFromWeight>(j["OutputNS"]["weights"], NSOutputConn);
+        j["OutputNS"]["weights"]["message"] = "Weights of driving inputs from NS to another NS";
+    }
+    else j.erase("OutputNS");
 
     //basePar1->addParsToJson(j);
 
@@ -1301,7 +1609,6 @@ void Worm2D::addParsToJson(json & j)
 
     vector<string> names_no_suffix = removeSuffixIndices(names);
     j["nervous_system"]["cell_names"]["value"] = names;
-    j["nervous_system"]["cell_names_no_suffix"]["value"] = names_no_suffix;
 
     NervousSystem * n_ptr1 = dynamic_cast<NervousSystem*>(n_ptr);
     if (n_ptr1){
@@ -1309,9 +1616,6 @@ void Worm2D::addParsToJson(json & j)
     appendAllNSJson(j[nsHead], *n_ptr1);
     appendNSToJsonByCell(j, *n_ptr1, names, getSectionNames());
     }
-
-   
-    appendMuscleToJson(j,m);
 
     NSToMuscles vMuscConn(par1.N_muscles);
     NSToMuscles dMuscConn(par1.N_muscles);
@@ -1873,8 +2177,14 @@ NSForW2D * Worm2Dbase::getNS(shared_ptr<const CmdArgs> cmd, const json & j)
   bool do_nml =  cmd->getArgValInt("--donml",0);
   if (do_nml) {
     double StepSize = 0;
-    if (j.contains("Simulation")){
+    if (j.contains("simulation")){
+    StepSize = j["simulation"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    else if (j.contains("Simulation")){
     StepSize = j["Simulation"]["StepSize"]["value"]; 
+    cout << "stepsize " << StepSize << endl;}
+    else if (j.contains("evolution")){
+    StepSize = j["evolution"]["StepSize"]["value"]; 
     cout << "stepsize " << StepSize << endl;}
     else if (j.contains("Evolutionary Optimization Parameters")){
     StepSize = j["Evolutionary Optimization Parameters"]["StepSize"]["value"]; 
@@ -2731,9 +3041,25 @@ void InputSwitcher::addParsToJson(json & j) const
     j2.erase("input_index");
     j2["doEvolution"]["value"] = doEvolution;
     j2["size"]["value"] = inds.size();
+    const size_t inputCount =
+        j.contains("driving_inputs")
+        && j.at("driving_inputs").contains("inputs")
+        && j.at("driving_inputs").at("inputs").contains("value")
+        && j.at("driving_inputs").at("inputs").at("value").is_array()
+          ? j.at("driving_inputs").at("inputs").at("value").size()
+          : 0;
+    const vector<string> inputIds = drivingInputIdsForJson(j, inputCount);
     if (timeperiods.size()>0){
+    const vector<string> switcherIds =
+      inputSwitcherIdsForJson(j, inds.size());
+    json scheduledIds = json::array();
+    for (const int index : scheduled_input_indices)
+      scheduledIds.push_back(
+        index >= 0 && static_cast<size_t>(index) < switcherIds.size()
+          ? switcherIds[index]
+          : defaultInputSwitcherId(index));
     j2["time_offset"]["value"] = time_offset;
-    j2["input_indices"]["value"] = scheduled_input_indices;
+    j2["input_indices"]["value"] = scheduledIds;
     j2["time_periods"]["value"] = timeperiods;
     }
 
@@ -2748,9 +3074,17 @@ void InputSwitcher::addParsToJson(json & j) const
     const vector<double> & valvec = vals[i];
     json arr2 = json::array();
     for (int j=0;j<indvec.size();j++)
-    arr2.push_back({{"input_num", indvec[j] + 1}, {"value", valvec[j]}});
+    {
+      const string inputId =
+        indvec[j] >= 0 && static_cast<size_t>(indvec[j]) < inputIds.size()
+          ? inputIds[indvec[j]]
+          : defaultDrivingInputId(indvec[j]);
+      arr2.push_back({{"input_num", inputId}, {"value", valvec[j]}});
+    }
+    const vector<string> switcherIds =
+      inputSwitcherIdsForJson(j, inds.size());
     //arr1.push_back({{"value", arr2},{"ind", i+1}});
-    arr1.push_back({{"value", arr2},{"input_index", i}});
+    arr1.push_back({{"value", arr2},{"input_index", switcherIds[i]}});
     }
     j["input_switcher"]["inputs"]["value"] = arr1;
 
@@ -2790,6 +3124,9 @@ void InputSwitcher::construct(const json & j)
   scheduleActive = doEvolution;
 
   int size = input_switcher["size"]["value"].get<int>();
+  const map<string, int> inputIdToIndex = drivingInputIdMapFromJson(j);
+  const map<string, int> switcherIdToIndex =
+    inputSwitcherIdMapFromJson(input_switcher);
 
   {
   
@@ -2799,7 +3136,8 @@ void InputSwitcher::construct(const json & j)
     bool legacy_zero_based = false;
     for (auto it = j2.begin(); it != j2.end(); ++it)
       for (const auto & input : it->at("value"))
-        if (input.at("input_num").get<int>() == 0)
+        if (input.at("input_num").is_number_integer()
+            && input.at("input_num").get<int>() == 0)
           legacy_zero_based = true;
 
     for (auto it = j2.begin(); it != j2.end(); ++it)
@@ -2807,20 +3145,22 @@ void InputSwitcher::construct(const json & j)
      // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
      // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
 
-    vector<int> & indvec = inds1[it->at("input_index").get<int>()];
-    vector<double> & valvec = vals1[it->at("input_index").get<int>()];
+    const int switcherIndex =
+      inputSwitcherIndexFromJson(it->at("input_index"), switcherIdToIndex);
+    if (switcherIndex < 0 || switcherIndex >= size)
+      throw runtime_error(
+        "input_switcher.input_index is outside the configured input range");
+    vector<int> & indvec = inds1[switcherIndex];
+    vector<double> & valvec = vals1[switcherIndex];
 
       const json & j3 = it->at("value");
       for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
       {
-        const int input_num = it2->at("input_num").get<int>();
-        if (
-            (!legacy_zero_based && input_num < 1)
-            || (legacy_zero_based && input_num < 0))
-          throw runtime_error(
-              "input_switcher input_num values must be positive integers");
-        indvec.push_back(
-            legacy_zero_based ? input_num : input_num - 1);
+        const int inputIndex = drivingInputIndexFromJson(
+            it2->at("input_num"), inputIdToIndex, legacy_zero_based);
+        if (inputIndex < 0)
+          throw runtime_error("input_switcher input_num values are invalid");
+        indvec.push_back(inputIndex);
         valvec.push_back(it2->at("value").get<double>());
       } 
 
@@ -2854,8 +3194,11 @@ void InputSwitcher::construct(const json & j)
 
     time_offset =
         input_switcher["time_offset"]["value"].get<double>();
-    scheduled_input_indices =
-        input_switcher["input_indices"]["value"].get<vector<int> >();
+    scheduled_input_indices.clear();
+    for (const auto & input_index :
+         input_switcher["input_indices"]["value"])
+      scheduled_input_indices.push_back(
+        inputSwitcherIndexFromJson(input_index, switcherIdToIndex));
     timeperiods =
         input_switcher["time_periods"]["value"].get<vector<double> >();
 

@@ -699,6 +699,7 @@ void EvoBase::writeJson1(Worm2Dbase & w, json & j)
     j.erase("Dorsal body");
     j.erase("Ventral body");
     j.erase("Stretch receptor");
+    j.erase("Stretch Receptor");
     j.erase("VNC NMJ");
     j.erase("VNC 18");
     j.erase("Driving input");
@@ -715,10 +716,10 @@ void EvoBase::addParsToJson(json & j)
     //doubIntParamsHead par1pars = evoPars1.getParams();
     //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
-    getEffectiveEvoParsForJson().addParsToJson(j["Evolutionary Optimization Parameters"]);
+    getEffectiveEvoParsForJson().addParsToJson(j["evolution"]);
     
  
-    j["Evolutionary Optimization Parameters"]["VectSize"]["value"] = itsVectSize();
+    j["evolution"]["VectSize"]["value"] = itsVectSize();
 
     addExtraParsToJson(j);
 }

@@ -8,7 +8,15 @@ import os
 import neuromlLocal.utils as utils
 
 
-def make_fig(model_name):
+def make_fig(
+    model_name,
+    show_panel_labels=True,
+    show_worm_snapshots=True,
+    label_scale=1.0,
+):
+    if label_scale <= 0:
+        raise ValueError("label_scale must be positive")
+
     plot_format = utils.plot_formats[model_name]
 
     file_prefix = "sim_"
@@ -18,27 +26,31 @@ def make_fig(model_name):
             return
 
     nrods = 51
-    mpl.rcParams["xtick.labelsize"] = 24
-    mpl.rcParams["ytick.labelsize"] = 24
+    tick_label_size = 24 * label_scale
+    axis_label_size = 26 * label_scale
+    panel_label_size = 36 * label_scale
     # sel = [4, 5, 9, 21, 23, 30, 37, 42, 45, 53, 63, 66, 68, 101, 103]
     #################     PLOT   ################
     ############## neural activity  ################
-    plt.close("all")
-    fig = plt.figure(figsize=[34, 12])
-    gm = gridspec.GridSpec(68, 150)
-    ax0 = [
-        plt.subplot(
-            gm[
-                5 + (i % 3) * 20 : 20 + (i % 3) * 20,
-                65 + (i % 2) * 43 : 105 + (i % 2) * 43,
-            ]
-        )
-        for i in [0, 4, 2, 3, 1, 5]
-    ]  # body posture
-    ax1 = plt.subplot(gm[4:17, :58])  # curvature
-    ax2 = plt.subplot(gm[19:32, :58])  # velocity
-    ax3 = plt.subplot(gm[34:47, :58])  # curvature
-    ax4 = plt.subplot(gm[49:62, :58])  # velocity
+    with mpl.rc_context(
+        {"xtick.labelsize": tick_label_size, "ytick.labelsize": tick_label_size}
+    ):
+        plt.close("all")
+        fig = plt.figure(figsize=[34, 12])
+        gm = gridspec.GridSpec(68, 150)
+        ax0 = [
+            plt.subplot(
+                gm[
+                    5 + (i % 3) * 20 : 20 + (i % 3) * 20,
+                    65 + (i % 2) * 43 : 105 + (i % 2) * 43,
+                ]
+            )
+            for i in [0, 4, 2, 3, 1, 5]
+        ]  # body posture
+        ax1 = plt.subplot(gm[4:17, :58])  # curvature
+        ax2 = plt.subplot(gm[19:32, :58])  # velocity
+        ax3 = plt.subplot(gm[34:47, :58])  # curvature
+        ax4 = plt.subplot(gm[49:62, :58])  # velocity
     ################################################
     ################################################
     ###################### CURVATURE  ################
@@ -67,23 +79,32 @@ def make_fig(model_name):
     # cell_names = utils.getCellNames(network_json_data)
     cell_names = utils.default_cells[model_name]["names"]
 
-    if hf.checkDictName(network_json_data, ["Simulation"]):
-        step_size = network_json_data["Simulation"]["StepSize"]["value"]
-        skip_steps = network_json_data["Simulation"]["skip_steps"]["value"]
+    sim_pars = network_json_data.get(
+        "simulation", network_json_data.get("Simulation", {})
+    )
+    if sim_pars:
+        step_size = sim_pars["StepSize"]["value"]
+        skip_steps = sim_pars["skip_steps"]["value"]
     else:
-        step_size = network_json_data["Evolutionary Optimization Parameters"][
-            "StepSize"
-        ]["value"]
-        skip_steps = network_json_data["Evolutionary Optimization Parameters"][
-            "skip_steps"
-        ]["value"]
+        evo_pars = network_json_data.get(
+            "evolution",
+            network_json_data.get("Evolutionary Optimization Parameters", {}),
+        )
+        step_size = evo_pars["StepSize"]["value"]
+        skip_steps = evo_pars["skip_steps"]["value"]
 
     plot_transient = act_data[0, 0]
     plot_end = min(act_data[0, -1], body[-1, 0], curv[-1, 0])
     plot_time = min(10.0, max(0.0, plot_end - plot_transient))
 
-    if "Evolutionary Optimization Parameters" in network_json_data:
-        evo_pars = network_json_data["Evolutionary Optimization Parameters"]
+    if (
+        "evolution" in network_json_data
+        or "Evolutionary Optimization Parameters" in network_json_data
+    ):
+        evo_pars = network_json_data.get(
+            "evolution",
+            network_json_data.get("Evolutionary Optimization Parameters", {}),
+        )
         avg_speed_key = "avg_speed" if "avg_speed" in evo_pars else "AvgSpeed"
         AvgSpeed = evo_pars[avg_speed_key]["value"] * 1000.0
     elif "AvgSpeed" in plot_format:
@@ -124,7 +145,7 @@ def make_fig(model_name):
             "t = %.2f" % snapshot_time,
             ha="center",
             va="center",
-            fontsize=26,
+            fontsize=axis_label_size,
         )
         ax.set_xticks([])
         ax.set_yticks([])
@@ -136,11 +157,15 @@ def make_fig(model_name):
     dt = step_size * skip_steps
     available_snapshot_time = max(0.0, (len(body) - 1) * dt)
     snapshot_times = np.linspace(0.0, min(2.0, available_snapshot_time), 6)
-    for k, t in enumerate(snapshot_times):
-        plot_worm(ax0[k], min(int(round(t / dt)), len(body) - 1), t)
+    if show_worm_snapshots:
+        for k, t in enumerate(snapshot_times):
+            plot_worm(ax0[k], min(int(round(t / dt)), len(body) - 1), t)
+    else:
+        for ax in ax0:
+            ax.set_visible(False)
 
     ################################################
-    fzl = 26
+    fzl = axis_label_size
     ############ Curvature  ######
     ###############################
     curv_times = curv[:, 0]
@@ -169,9 +194,26 @@ def make_fig(model_name):
     ax1.set_xticklabels([])
     ax1.set_yticks([1, 21])
     ax1.set_yticklabels(["", ""])
-    ax1.text(-1, 1, "Head", va="center", ha="right", fontsize=fzl)
-    ax1.text(-1, 21, "Tail", va="center", ha="right", fontsize=fzl)
-    plt.colorbar(imcurv, location="top", shrink=0.4)
+    ax1.text(
+        -0.02,
+        1,
+        "Head",
+        va="center",
+        ha="right",
+        fontsize=fzl,
+        transform=ax1.get_yaxis_transform(),
+    )
+    ax1.text(
+        -0.02,
+        21,
+        "Tail",
+        va="center",
+        ha="right",
+        fontsize=fzl,
+        transform=ax1.get_yaxis_transform(),
+    )
+    cbar = plt.colorbar(imcurv, location="top", shrink=0.4)
+    cbar.ax.tick_params(labelsize=tick_label_size)
 
     ############ Velocity #######
     ###############################
@@ -190,11 +232,11 @@ def make_fig(model_name):
         # ax2.set_xlim(0, plot_time)
         # ax2.set_yticks([0.1, 0.2, 0.3])
         ax2.set_yticks(np.linspace(AvgSpeed * 0.5, AvgSpeed * 1.5, 3))
-        ax2.set_ylabel("Velocity (mm/s)", fontsize=fzl, labelpad=24)
+        ax2.set_ylabel("Velocity", fontsize=fzl, labelpad=24)
         # ax2.set_xlabel('Time (s)', fontsize = fzl, labelpad = 22)
     ###############################
 
-    fz = 26
+    fz = axis_label_size
     cols = ["k", "r", "b", "g", "c", "m", "y", "tab:orange", "tab:brown", "tab:gray"]
     # cell_list = ["AS", "DA", "DB", "DD"]
 
@@ -260,16 +302,22 @@ def make_fig(model_name):
             color=col,
         )
 
-    fz = 36
+    fz = panel_label_size
     # plt.figtext(0.047, 0.45, 'AS', fontsize = fz, ha = 'center', va = 'center', color = )
     # plt.figtext(0.047, 0.4, 'DA', fontsize = fz, ha = 'center', va = 'center')
     # plt.figtext(0.047, 0.35, 'DB', fontsize = fz, ha = 'center', va = 'center')
     # plt.figtext(0.047, 0.3, 'DD', fontsize = fz, ha = 'center', va = 'center')
-    plt.figtext(0.018, 0.95, "A", fontsize=fz, ha="center", va="center")
-    plt.figtext(0.018, 0.46, "B", fontsize=fz, ha="center", va="center")
-    plt.figtext(0.460, 0.95, "C", fontsize=fz, ha="center", va="center")
+    if show_panel_labels:
+        plt.figtext(0.018, 0.95, "A", fontsize=fz, ha="center", va="center")
+        plt.figtext(0.018, 0.46, "B", fontsize=fz, ha="center", va="center")
+        plt.figtext(0.460, 0.95, "C", fontsize=fz, ha="center", va="center")
     ###############################
+    for ax in [ax1, ax2, ax3, ax4]:
+        ax.tick_params(axis="both", labelsize=tick_label_size)
     fig.subplots_adjust(left=0.08, bottom=0.02, right=1.0, top=0.98)
-    plt.savefig(hf.rename_file("behavior.png"), dpi=100)
-    plt.savefig(hf.rename_file("behavior.pdf"))
+    save_kwargs = {}
+    if not show_worm_snapshots:
+        save_kwargs = {"bbox_inches": "tight", "pad_inches": 0.05}
+    plt.savefig(hf.rename_file("behavior.png"), dpi=100, **save_kwargs)
+    plt.savefig(hf.rename_file("behavior.pdf"), **save_kwargs)
     plt.close()
