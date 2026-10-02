@@ -774,6 +774,8 @@ double Worm2Dbody::headDistanceToLocation(const double & x, const double & y) co
 
 wormIzqParams Worm2Dbase::getIzqPars(const json & j)
 {
+    setBodyParamsFromJson(j);
+
     json worm = getSectionCopyWithLegacy(j, "worm");
     int n_size = 0;
     if (j.contains("nervous_system")

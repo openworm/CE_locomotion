@@ -1422,50 +1422,6 @@
                 "RMDV_0"
             ]
         },
-        "cell_names_no_suffix": {
-            "value": [
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "DB",
-                "DD",
-                "VBA",
-                "VDA",
-                "VBP",
-                "VDP",
-                "SMDD",
-                "RMDD",
-                "SMDV",
-                "RMDV"
-            ]
-        },
         "cells": {
             "DB_0": {
                 "bias": {

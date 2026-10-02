@@ -73,6 +73,54 @@ static Params<T> normaliseParamNames(Params<T> par)
   return par;
 }
 
+static bool getBodyParamDouble(const json & body, const string & key, double & value)
+{
+  const string normalisedKey = normaliseJsonFieldName(key);
+  vector<string> keys = {normalisedKey};
+  if (normalisedKey != key) keys.push_back(key);
+
+  for (const string & candidate : keys)
+  {
+    auto found = body.find(candidate);
+    if (found == body.end()) continue;
+    if (found->is_object() && found->contains("value"))
+    {
+      found->at("value").get_to(value);
+      return true;
+    }
+    if (found->is_number())
+    {
+      found->get_to(value);
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool getBodyParamInt(const json & body, const string & key, int & value)
+{
+  const string normalisedKey = normaliseJsonFieldName(key);
+  vector<string> keys = {normalisedKey};
+  if (normalisedKey != key) keys.push_back(key);
+
+  for (const string & candidate : keys)
+  {
+    auto found = body.find(candidate);
+    if (found == body.end()) continue;
+    if (found->is_object() && found->contains("value"))
+    {
+      found->at("value").get_to(value);
+      return true;
+    }
+    if (found->is_number_integer())
+    {
+      found->get_to(value);
+      return true;
+    }
+  }
+  return false;
+}
+
 
 
 
@@ -884,6 +932,38 @@ par.vals = {N_segments};
 par.messages = {"Number of body segments on each side, dorsal and ventral"};
 par.messages_inds  = {0};
 return par;
+}
+
+void setBodyParamsFromJson(const json & j)
+{
+  if (!j.contains("body") || !j.at("body").is_object()) return;
+
+  const json & body = j.at("body");
+  getBodyParamDouble(body, "Medium", Medium);
+  getBodyParamDouble(body, "L_worm", L_worm);
+  getBodyParamDouble(body, "R_min", R_min);
+  getBodyParamDouble(body, "C_agar_par_total", C_agar_par_total);
+  getBodyParamDouble(body, "C_agar_perp_total", C_agar_perp_total);
+  getBodyParamDouble(body, "C_water_par_total", C_water_par_total);
+  getBodyParamDouble(body, "C_water_perp_total", C_water_perp_total);
+  getBodyParamDouble(body, "kappa_L", kappa_L);
+  getBodyParamDouble(body, "kappa_D", kappa_D);
+  getBodyParamDouble(body, "kappa_M0", kappa_M0);
+  getBodyParamDouble(body, "beta_L", beta_L);
+  getBodyParamDouble(body, "beta_D", beta_D);
+  getBodyParamDouble(body, "beta_M0", beta_M0);
+  getBodyParamDouble(body, "delta_M", delta_M);
+
+  int requestedSegments = N_segments;
+  if (getBodyParamInt(body, "N_segments", requestedSegments)
+      && requestedSegments != N_segments)
+  {
+    cerr << "Warning: body.n_segments is " << requestedSegments
+         << " but this build uses fixed N_segments=" << N_segments
+         << "; ignoring body.n_segments from JSON." << endl;
+  }
+
+  InitializeBodyConstants();
 }
 
 void appendBodyToJson(json & j, WormBody& b)
