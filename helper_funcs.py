@@ -348,6 +348,10 @@ def _is_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+def _is_finite_number(value):
+    return _is_number(value) and math.isfinite(value)
+
+
 def _collect_evotag_uses(value, path=()):
     uses = []
     if isinstance(value, dict):
@@ -365,12 +369,111 @@ def _collect_evotag_uses(value, path=()):
 
 
 def validate_w2dsr_json(json_data, source_name=None):
-    """Validate a W2DSR JSON dictionary before it is sent to the C++ model."""
+    """Validate a W2DSR JSON dictionary before it is sent to the C++ model.
+
+    Validation covers the nervous system, optional external inputs and sensors,
+    muscle/body and stretch-receptor connections, schedules, mfunc objects, and
+    evolvable-range consistency. All detected problems are reported together.
+    """
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
 
     errors = []
     location = " in {}".format(source_name) if source_name else ""
+
+    def check_finite_numbers(value, path=()):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                check_finite_numbers(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                check_finite_numbers(child, path + (index,))
+        elif _is_number(value) and not math.isfinite(value):
+            errors.append("'{}' must be finite".format(_json_path_string(path)))
+
+    def check_mfuncs(value, path=()):
+        if isinstance(value, dict):
+            for field_name in ("mfunc", "m_func"):
+                if field_name not in value:
+                    continue
+                mfunc_path = path + (field_name,)
+                mfunc = value[field_name]
+                if field_name == "m_func":
+                    errors.append(
+                        "'{}' must be named 'mfunc'".format(
+                            _json_path_string(mfunc_path)
+                        )
+                    )
+                if "value" not in value:
+                    errors.append(
+                        "'{}' must belong to an object containing 'value'".format(
+                            _json_path_string(mfunc_path)
+                        )
+                    )
+                if not isinstance(mfunc, dict):
+                    errors.append(
+                        "'{}' must be an object".format(
+                            _json_path_string(mfunc_path)
+                        )
+                    )
+                    continue
+                if "f_ind" not in mfunc:
+                    errors.append(
+                        "'{}' is missing key 'f_ind'".format(
+                            _json_path_string(mfunc_path)
+                        )
+                    )
+                    continue
+                try:
+                    function_name = _mfunc_name(mfunc["f_ind"])
+                except (TypeError, ValueError) as exc:
+                    errors.append(
+                        "'{}.f_ind' is invalid: {}".format(
+                            _json_path_string(mfunc_path), exc
+                        )
+                    )
+                    continue
+                if function_name == "mult_func":
+                    factor = mfunc.get("fact")
+                    if not _is_finite_number(factor):
+                        errors.append(
+                            "'{}.fact' must be a finite number".format(
+                                _json_path_string(mfunc_path)
+                            )
+                        )
+                    elif factor == 0:
+                        errors.append(
+                            "'{}.fact' must be non-zero".format(
+                                _json_path_string(mfunc_path)
+                            )
+                        )
+                elif function_name == "zero_func":
+                    condition = mfunc.get("cond")
+                    if isinstance(condition, bool) or not isinstance(condition, int):
+                        errors.append(
+                            "'{}.cond' must be an integer".format(
+                                _json_path_string(mfunc_path)
+                            )
+                        )
+            legacy_sections = {
+                "Evolutionary Optimization Parameters",
+                "InputNS",
+                "Muscle",
+                "Nervous system",
+                "OutputNS",
+                "Simulation",
+                "Stretch receptor",
+            }
+            for key, child in value.items():
+                if not path and key in legacy_sections:
+                    continue
+                check_mfuncs(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                check_mfuncs(child, path + (index,))
+
+    check_finite_numbers(json_data)
+    check_mfuncs(json_data)
 
     nervous_system = json_data.get("nervous_system")
     if not isinstance(nervous_system, dict):
@@ -452,8 +555,14 @@ def validate_w2dsr_json(json_data, source_name=None):
                 errors.append(
                     "'{}' must contain a 'value' field".format(parameter_path)
                 )
-            elif not _is_number(parameter["value"]):
-                errors.append("'{}.value' must be numeric".format(parameter_path))
+            elif not _is_finite_number(parameter["value"]):
+                errors.append(
+                    "'{}.value' must be a finite number".format(parameter_path)
+                )
+            elif parameter_name == "tau" and parameter["value"] <= 0:
+                errors.append(
+                    "'{}.value' must be greater than zero".format(parameter_path)
+                )
         cell_class = cell_data.get("cell_class")
         if cell_class is not None:
             if not isinstance(cell_class, dict) or not isinstance(
@@ -466,6 +575,30 @@ def validate_w2dsr_json(json_data, source_name=None):
                 )
 
     valid_cells = set(cells)
+
+    def wrapped_value(container, key, default=None):
+        if not isinstance(container, dict):
+            return default
+        field = container.get(key)
+        if key == "value":
+            return field if "value" in container else default
+        if isinstance(field, dict) and "value" in field:
+            return field["value"]
+        return default
+
+    def check_weight_object(weight, path):
+        if not isinstance(weight, dict):
+            errors.append("'{}' must be an object".format(path))
+        elif "value" not in weight:
+            errors.append("'{}' must contain a 'value' field".format(path))
+        elif not _is_finite_number(weight["value"]):
+            errors.append("'{}.value' must be a finite number".format(path))
+
+    def check_positive_integer(value, path):
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            errors.append("'{}' must be a positive integer".format(path))
+            return False
+        return True
 
     def check_connection_list(container, object_path, required_keys):
         if container is None:
@@ -496,9 +629,11 @@ def validate_w2dsr_json(json_data, source_name=None):
                 errors.append(
                     "'{}.weight' must contain a 'value' field".format(connection_path)
                 )
-            elif not _is_number(weight["value"]):
+            elif not _is_finite_number(weight["value"]):
                 errors.append(
-                    "'{}.weight.value' must be numeric".format(connection_path)
+                    "'{}.weight.value' must be a finite number".format(
+                        connection_path
+                    )
                 )
 
     for connection_key in ("chemical_conns", "electrical_conns"):
@@ -564,12 +699,656 @@ def validate_w2dsr_json(json_data, source_name=None):
                             index
                         )
                     )
-                elif not _is_number(weight["value"]):
+                elif not _is_finite_number(weight["value"]):
                     errors.append(
-                        "'driving_inputs.weights.value[{}].weight.value' must be numeric".format(
-                            index
+                        "'driving_inputs.weights.value[{}].weight.value' must be a finite number".format(index)
+                    )
+
+    for connection_key in ("chemical_conns", "electrical_conns"):
+        connection_object = nervous_system.get(connection_key)
+        connections = wrapped_value(connection_object, "value")
+        if not isinstance(connections, list):
+            continue
+        for index, connection in enumerate(connections):
+            if not isinstance(connection, dict):
+                continue
+            for endpoint in ("from", "to"):
+                cell_name = connection.get(endpoint)
+                path = "nervous_system.{}.value[{}].{}".format(
+                    connection_key, index, endpoint
+                )
+                if not isinstance(cell_name, str) or not cell_name:
+                    errors.append("'{}' must be a non-empty string".format(path))
+
+    environments = json_data.get("environments", {})
+    environment_names = set()
+    if not isinstance(environments, dict):
+        errors.append("'environments' must be an object")
+        environments = {}
+    for environment_key, environment in environments.items():
+        path = "environments.{}".format(environment_key)
+        if not isinstance(environment_key, str) or not environment_key:
+            errors.append("'environments' contains a non-string or empty key")
+            continue
+        environment_names.add(environment_key)
+        if not isinstance(environment, dict):
+            errors.append("'{}' must be an object".format(path))
+            continue
+        stored_name = wrapped_value(environment, "name")
+        if not isinstance(stored_name, str) or not stored_name:
+            errors.append("'{}.name.value' must be a non-empty string".format(path))
+        elif stored_name in environment_names and stored_name != environment_key:
+            errors.append("Environment identifier {!r} is duplicated".format(stored_name))
+        else:
+            environment_names.add(stored_name)
+        for parameter_name in ("x_center", "y_center", "grad_steep"):
+            parameter = environment.get(parameter_name)
+            parameter_path = "{}.{}.value".format(path, parameter_name)
+            if not isinstance(parameter, dict) or "value" not in parameter:
+                errors.append("'{}' is required".format(parameter_path))
+            elif not _is_finite_number(parameter["value"]):
+                errors.append("'{}' must be a finite number".format(parameter_path))
+
+    sensors = json_data.get("sensors", {})
+    if not isinstance(sensors, dict):
+        errors.append("'sensors' must be an object")
+        sensors = {}
+    for sensor_name, sensor in sensors.items():
+        sensor_path = "sensors.{}".format(sensor_name)
+        if not isinstance(sensor_name, str) or not sensor_name:
+            errors.append("'sensors' contains a non-string or empty key")
+            continue
+        if not isinstance(sensor, dict):
+            errors.append("'{}' must be an object".format(sensor_path))
+            continue
+        environment_name = wrapped_value(sensor, "environment")
+        if not isinstance(environment_name, str) or not environment_name:
+            errors.append(
+                "'{}.environment.value' must be a non-empty string".format(
+                    sensor_path
+                )
+            )
+        elif environment_name not in environment_names:
+            errors.append(
+                "'{}.environment.value' refers to unknown environment '{}'".format(
+                    sensor_path, environment_name
+                )
+            )
+        for parameter_name in ("sensor_m", "sensor_n"):
+            parameter = sensor.get(parameter_name)
+            parameter_path = "{}.{}.value".format(sensor_path, parameter_name)
+            if not isinstance(parameter, dict) or "value" not in parameter:
+                errors.append("'{}' is required".format(parameter_path))
+            elif not _is_finite_number(parameter["value"]):
+                errors.append("'{}' must be a finite number".format(parameter_path))
+            elif parameter["value"] <= 0:
+                errors.append("'{}' must be greater than zero".format(parameter_path))
+
+        outputs_object = sensor.get("outputs")
+        outputs = wrapped_value(outputs_object, "value")
+        output_names = set()
+        if outputs_object is None:
+            # Older sensor files predate the descriptive outputs list. Those
+            # sensors still have the two outputs understood by the C++ model.
+            outputs = [{"name": "output_1"}, {"name": "output_2"}]
+        elif not isinstance(outputs, list) or not outputs:
+            errors.append("'{}.outputs.value' must be a non-empty list".format(sensor_path))
+            outputs = []
+        for output_index, output in enumerate(outputs):
+            output_path = "{}.outputs.value[{}]".format(sensor_path, output_index)
+            if not isinstance(output, dict):
+                errors.append("'{}' must be an object".format(output_path))
+                continue
+            output_name = output.get("name")
+            if not isinstance(output_name, str) or not output_name:
+                errors.append("'{}.name' must be a non-empty string".format(output_path))
+            elif output_name in output_names:
+                errors.append(
+                    "Duplicate sensor output name {!r} in '{}'".format(
+                        output_name, sensor_path
+                    )
+                )
+            else:
+                output_names.add(output_name)
+
+        sensor_weights = wrapped_value(sensor.get("weights"), "value", [])
+        if not isinstance(sensor_weights, list):
+            errors.append("'{}.weights.value' must be a list".format(sensor_path))
+            sensor_weights = []
+        for weight_index, connection in enumerate(sensor_weights):
+            connection_path = "{}.weights.value[{}]".format(
+                sensor_path, weight_index
+            )
+            if not isinstance(connection, dict):
+                errors.append("'{}' must be an object".format(connection_path))
+                continue
+            from_output = connection.get("from_output")
+            if (
+                isinstance(from_output, bool)
+                or not isinstance(from_output, int)
+                or not 1 <= from_output <= len(outputs)
+            ):
+                errors.append(
+                    "'{}.from_output' must identify an existing sensor output".format(
+                        connection_path
+                    )
+                )
+            to_cell = connection.get("to_cell")
+            if not isinstance(to_cell, str) or not to_cell:
+                errors.append(
+                    "'{}.to_cell' must be a non-empty string".format(connection_path)
+                )
+            elif to_cell not in valid_cells:
+                errors.append(
+                    "'{}.to_cell' refers to unknown cell '{}'".format(
+                        connection_path, to_cell
+                    )
+                )
+            check_weight_object(connection.get("weight"), connection_path + ".weight")
+
+    driving_inputs = json_data.get("driving_inputs")
+    driving_input_ids = set()
+    if driving_inputs is not None and not isinstance(driving_inputs, dict):
+        errors.append("'driving_inputs' must be an object")
+        driving_inputs = None
+    if isinstance(driving_inputs, dict):
+        input_entries = wrapped_value(driving_inputs.get("inputs"), "value")
+        if input_entries is None:
+            input_entries = []
+        elif not isinstance(input_entries, list):
+            errors.append("'driving_inputs.inputs.value' must be a list")
+            input_entries = []
+        for input_index, input_entry in enumerate(input_entries):
+            input_path = "driving_inputs.inputs.value[{}]".format(input_index)
+            if not isinstance(input_entry, dict):
+                errors.append("'{}' must be an object".format(input_path))
+                continue
+            input_id = input_entry.get("input_num")
+            if not isinstance(input_id, str) or not input_id:
+                errors.append("'{}.input_num' must be a non-empty string".format(input_path))
+            elif input_id in driving_input_ids:
+                errors.append("Duplicate driving input identifier {!r}".format(input_id))
+            else:
+                driving_input_ids.add(input_id)
+            strength = input_entry.get("strength")
+            if not isinstance(strength, dict) or "value" not in strength:
+                errors.append("'{}.strength.value' is required".format(input_path))
+            elif not _is_finite_number(strength["value"]):
+                errors.append(
+                    "'{}.strength.value' must be a finite number".format(input_path)
+                )
+
+        if isinstance(driving_weights, list):
+            for weight_index, connection in enumerate(driving_weights):
+                if not isinstance(connection, dict):
+                    continue
+                connection_path = "driving_inputs.weights.value[{}]".format(
+                    weight_index
+                )
+                from_input = connection.get("from_input")
+                if not isinstance(from_input, str) or not from_input:
+                    errors.append(
+                        "'{}.from_input' must be a non-empty string".format(
+                            connection_path
                         )
                     )
+                elif from_input not in driving_input_ids:
+                    errors.append(
+                        "'{}.from_input' refers to unknown driving input '{}'".format(
+                            connection_path, from_input
+                        )
+                    )
+
+    input_switcher = json_data.get("input_switcher")
+    if input_switcher is not None and not isinstance(input_switcher, dict):
+        errors.append("'input_switcher' must be an object")
+        input_switcher = None
+    if isinstance(input_switcher, dict) and "inputs" in input_switcher:
+        patterns = wrapped_value(input_switcher.get("inputs"), "value")
+        if not isinstance(patterns, list):
+            errors.append("'input_switcher.inputs.value' must be a list")
+            patterns = []
+        pattern_ids = set()
+        for pattern_index, pattern in enumerate(patterns):
+            pattern_path = "input_switcher.inputs.value[{}]".format(pattern_index)
+            if not isinstance(pattern, dict):
+                errors.append("'{}' must be an object".format(pattern_path))
+                continue
+            pattern_id = pattern.get("input_index")
+            if not isinstance(pattern_id, str) or not pattern_id:
+                errors.append(
+                    "'{}.input_index' must be a non-empty string".format(pattern_path)
+                )
+            elif pattern_id in pattern_ids:
+                errors.append("Duplicate input pattern identifier {!r}".format(pattern_id))
+            else:
+                pattern_ids.add(pattern_id)
+            values = pattern.get("value")
+            if not isinstance(values, list):
+                errors.append("'{}.value' must be a list".format(pattern_path))
+                continue
+            pattern_inputs = set()
+            for value_index, input_value in enumerate(values):
+                value_path = "{}.value[{}]".format(pattern_path, value_index)
+                if not isinstance(input_value, dict):
+                    errors.append("'{}' must be an object".format(value_path))
+                    continue
+                input_id = input_value.get("input_num")
+                if not isinstance(input_id, str) or not input_id:
+                    errors.append(
+                        "'{}.input_num' must be a non-empty string".format(value_path)
+                    )
+                elif input_id not in driving_input_ids:
+                    errors.append(
+                        "'{}.input_num' refers to unknown driving input '{}'".format(
+                            value_path, input_id
+                        )
+                    )
+                elif input_id in pattern_inputs:
+                    errors.append(
+                        "Input pattern {!r} contains driving input {!r} more than once".format(
+                            pattern_id, input_id
+                        )
+                    )
+                else:
+                    pattern_inputs.add(input_id)
+                if not _is_finite_number(input_value.get("value")):
+                    errors.append("'{}.value' must be a finite number".format(value_path))
+
+        configured_size = wrapped_value(input_switcher, "size")
+        if (
+            isinstance(configured_size, bool)
+            or not isinstance(configured_size, int)
+            or configured_size != len(patterns)
+        ):
+            errors.append(
+                "'input_switcher.size.value' must equal the number of input patterns"
+            )
+
+        periods_present = "time_periods" in input_switcher
+        indices_present = "input_indices" in input_switcher
+        if periods_present != indices_present:
+            errors.append(
+                "'input_switcher.time_periods' and 'input_switcher.input_indices' "
+                "must either both be present or both be absent"
+            )
+        if periods_present and indices_present:
+            periods = wrapped_value(input_switcher, "time_periods")
+            indices = wrapped_value(input_switcher, "input_indices")
+            if not isinstance(periods, list):
+                errors.append("'input_switcher.time_periods.value' must be a list")
+                periods = []
+            if not isinstance(indices, list):
+                errors.append("'input_switcher.input_indices.value' must be a list")
+                indices = []
+            if len(periods) != len(indices):
+                errors.append(
+                    "Input-switcher time periods and input indices must have equal length"
+                )
+            for period_index, period in enumerate(periods):
+                if not _is_finite_number(period) or period <= 0:
+                    errors.append(
+                        "'input_switcher.time_periods.value[{}]' must be finite and greater than zero".format(
+                            period_index
+                        )
+                    )
+            for index, pattern_id in enumerate(indices):
+                if not isinstance(pattern_id, str) or pattern_id not in pattern_ids:
+                    errors.append(
+                        "'input_switcher.input_indices.value[{}]' refers to unknown input pattern {!r}".format(
+                            index, pattern_id
+                        )
+                    )
+
+        time_offset = wrapped_value(input_switcher, "time_offset", 0.0)
+        if not _is_finite_number(time_offset) or time_offset < 0:
+            errors.append(
+                "'input_switcher.time_offset.value' must be finite and non-negative"
+            )
+        do_evolution = wrapped_value(input_switcher, "doEvolution", False)
+        if not isinstance(do_evolution, bool):
+            errors.append("'input_switcher.doEvolution.value' must be boolean")
+
+    funcable = json_data.get("funcable", json_data.get("Funcable"))
+    if funcable is not None and not isinstance(funcable, dict):
+        errors.append("'funcable' must be an object")
+        funcable = None
+    if isinstance(funcable, dict):
+        for function_name, settings in funcable.items():
+            if function_name == "schedules":
+                continue
+            try:
+                _mfunc_name(function_name)
+            except (TypeError, ValueError):
+                errors.append("Unknown funcable function {!r}".format(function_name))
+                continue
+            if not isinstance(settings, dict):
+                errors.append("'funcable.{}' must be an object".format(function_name))
+                continue
+            if "doInverse" in settings and not isinstance(
+                settings["doInverse"], bool
+            ):
+                errors.append(
+                    "'funcable.{}.doInverse' must be boolean".format(function_name)
+                )
+            if "condval" in settings and (
+                isinstance(settings["condval"], bool)
+                or not isinstance(settings["condval"], int)
+            ):
+                errors.append(
+                    "'funcable.{}.condval' must be an integer".format(function_name)
+                )
+        schedules = funcable.get("schedules", {})
+        if not isinstance(schedules, dict):
+            errors.append("'funcable.schedules' must be an object")
+            schedules = {}
+        for schedule_name, schedule in schedules.items():
+            schedule_path = "funcable.schedules.{}".format(schedule_name)
+            if not isinstance(schedule, dict):
+                errors.append("'{}' must be an object".format(schedule_path))
+                continue
+            function_name = wrapped_value(schedule, "function_index")
+            try:
+                _mfunc_name(function_name)
+            except (TypeError, ValueError) as exc:
+                errors.append("'{}.function_index.value' is invalid: {}".format(schedule_path, exc))
+            intervals = wrapped_value(schedule, "time_intervals")
+            if not isinstance(intervals, list) or not intervals:
+                errors.append(
+                    "'{}.time_intervals.value' must be a non-empty list".format(
+                        schedule_path
+                    )
+                )
+                intervals = []
+            for interval_index, interval in enumerate(intervals):
+                if not _is_finite_number(interval) or interval <= 0:
+                    errors.append(
+                        "'{}.time_intervals.value[{}]' must be finite and greater than zero".format(
+                            schedule_path, interval_index
+                        )
+                    )
+            condvals = wrapped_value(schedule, "condvals")
+            if condvals is not None:
+                if not isinstance(condvals, list) or len(condvals) != len(intervals):
+                    errors.append(
+                        "'{}.condvals.value' must be a list matching time_intervals".format(
+                            schedule_path
+                        )
+                    )
+                elif any(
+                    isinstance(value, bool) or not isinstance(value, int)
+                    for value in condvals
+                ):
+                    errors.append(
+                        "'{}.condvals.value' must contain only integers".format(
+                            schedule_path
+                        )
+                    )
+            offset = wrapped_value(schedule, "time_offset", 0.0)
+            if not _is_finite_number(offset) or offset < 0:
+                errors.append(
+                    "'{}.time_offset.value' must be finite and non-negative".format(
+                        schedule_path
+                    )
+                )
+            schedule_evolution = wrapped_value(schedule, "doEvolution", False)
+            if not isinstance(schedule_evolution, bool):
+                errors.append(
+                    "'{}.doEvolution.value' must be boolean".format(schedule_path)
+                )
+
+    worm = json_data.get("worm", {})
+    muscle_count = wrapped_value(worm, "N_muscles")
+    if muscle_count is not None:
+        check_positive_integer(muscle_count, "worm.N_muscles.value")
+    body = json_data.get("body", {})
+    segment_count = wrapped_value(body, "n_segments")
+    if segment_count is not None:
+        check_positive_integer(segment_count, "body.n_segments.value")
+
+    for side in ("dorsal", "ventral"):
+        nmj_name = side + "_nmj"
+        nmj = json_data.get(nmj_name)
+        if nmj is not None:
+            if not isinstance(nmj, dict):
+                errors.append("'{}' must be an object".format(nmj_name))
+            else:
+                weights = wrapped_value(nmj.get("weights"), "value")
+                if not isinstance(weights, list):
+                    errors.append("'{}.weights.value' must be a list".format(nmj_name))
+                    weights = []
+                for index, connection in enumerate(weights):
+                    path = "{}.weights.value[{}]".format(nmj_name, index)
+                    if not isinstance(connection, dict):
+                        errors.append("'{}' must be an object".format(path))
+                        continue
+                    from_cell = connection.get("from_cell")
+                    if not isinstance(from_cell, str) or from_cell not in valid_cells:
+                        errors.append(
+                            "'{}.from_cell' refers to unknown cell {!r}".format(
+                                path, from_cell
+                            )
+                        )
+                    to_muscle = connection.get("to_musc")
+                    if check_positive_integer(to_muscle, path + ".to_musc"):
+                        if muscle_count is not None and to_muscle > muscle_count:
+                            errors.append(
+                                "'{}.to_musc' exceeds the configured muscle count".format(
+                                    path
+                                )
+                            )
+                    check_weight_object(connection.get("weight"), path + ".weight")
+
+        body_name = side + "_body"
+        body_connections = json_data.get(body_name)
+        if body_connections is not None:
+            if not isinstance(body_connections, dict):
+                errors.append("'{}' must be an object".format(body_name))
+            else:
+                weights = wrapped_value(body_connections.get("weights"), "value")
+                if not isinstance(weights, list):
+                    errors.append("'{}.weights.value' must be a list".format(body_name))
+                    weights = []
+                for index, connection in enumerate(weights):
+                    path = "{}.weights.value[{}]".format(body_name, index)
+                    if not isinstance(connection, dict):
+                        errors.append("'{}' must be an object".format(path))
+                        continue
+                    from_muscle = connection.get("from_musc")
+                    if check_positive_integer(from_muscle, path + ".from_musc"):
+                        if muscle_count is not None and from_muscle > muscle_count:
+                            errors.append(
+                                "'{}.from_musc' exceeds the configured muscle count".format(
+                                    path
+                                )
+                            )
+                    to_segment = connection.get("to_seg")
+                    if check_positive_integer(to_segment, path + ".to_seg"):
+                        if segment_count is not None and to_segment > segment_count:
+                            errors.append(
+                                "'{}.to_seg' exceeds the configured segment count".format(
+                                    path
+                                )
+                            )
+                    check_weight_object(connection.get("weight"), path + ".weight")
+
+    stretch_receptor = json_data.get("stretch_receptor")
+    if stretch_receptor is not None and not isinstance(stretch_receptor, dict):
+        errors.append("'stretch_receptor' must be an object")
+        stretch_receptor = None
+    if isinstance(stretch_receptor, dict):
+        receptor_type = wrapped_value(stretch_receptor, "type")
+        if receptor_type not in ("SR18", "SRCE"):
+            errors.append("'stretch_receptor.type.value' must be 'SR18' or 'SRCE'")
+        receptor_segments = wrapped_value(stretch_receptor, "n_segs")
+        if receptor_segments is not None:
+            check_positive_integer(
+                receptor_segments, "stretch_receptor.n_segs.value"
+            )
+            if segment_count is not None and receptor_segments != segment_count:
+                errors.append(
+                    "'stretch_receptor.n_segs.value' must match "
+                    "'body.n_segments.value'"
+                )
+        receptor_count = wrapped_value(stretch_receptor, "n_stretch")
+        if receptor_count is not None:
+            check_positive_integer(
+                receptor_count, "stretch_receptor.n_stretch.value"
+            )
+        set_direct = wrapped_value(stretch_receptor, "set_direct", False)
+        if not isinstance(set_direct, bool):
+            errors.append("'stretch_receptor.set_direct.value' must be boolean")
+
+        if receptor_type == "SR18":
+            body_weight_names = ("d_weights", "v_weights")
+            neural_weight_names = ("ns_d_weights", "ns_v_weights")
+        elif receptor_type == "SRCE":
+            body_weight_names = (
+                "a_d_weights",
+                "a_v_weights",
+                "b_d_weights",
+                "b_v_weights",
+            )
+            neural_weight_names = (
+                "ns_a_d_weights",
+                "ns_a_v_weights",
+                "ns_b_d_weights",
+                "ns_b_v_weights",
+            )
+        else:
+            body_weight_names = ()
+            neural_weight_names = ()
+        if set_direct:
+            for weight_name in body_weight_names + neural_weight_names:
+                if weight_name not in stretch_receptor:
+                    errors.append(
+                        "'stretch_receptor.{}' is required when set_direct is true".format(
+                            weight_name
+                        )
+                    )
+        for weight_name in body_weight_names:
+            if weight_name not in stretch_receptor:
+                continue
+            weights = wrapped_value(stretch_receptor.get(weight_name), "value")
+            path_base = "stretch_receptor.{}.value".format(weight_name)
+            if not isinstance(weights, list):
+                errors.append("'{}' must be a list".format(path_base))
+                continue
+            for index, connection in enumerate(weights):
+                path = "{}[{}]".format(path_base, index)
+                if not isinstance(connection, dict):
+                    errors.append("'{}' must be an object".format(path))
+                    continue
+                from_segment = connection.get("from_seg")
+                if check_positive_integer(from_segment, path + ".from_seg"):
+                    if receptor_segments is not None and from_segment > receptor_segments:
+                        errors.append(
+                            "'{}.from_seg' exceeds the stretch-receptor segment count".format(
+                                path
+                            )
+                        )
+                check_positive_integer(connection.get("to_sr"), path + ".to_sr")
+                check_weight_object(connection.get("weight"), path + ".weight")
+        for weight_name in neural_weight_names:
+            if weight_name not in stretch_receptor:
+                continue
+            weights = wrapped_value(stretch_receptor.get(weight_name), "value")
+            path_base = "stretch_receptor.{}.value".format(weight_name)
+            if not isinstance(weights, list):
+                errors.append("'{}' must be a list".format(path_base))
+                continue
+            for index, connection in enumerate(weights):
+                path = "{}[{}]".format(path_base, index)
+                if not isinstance(connection, dict):
+                    errors.append("'{}' must be an object".format(path))
+                    continue
+                check_positive_integer(connection.get("from_sr"), path + ".from_sr")
+                to_cell = connection.get("to_ns")
+                if not isinstance(to_cell, str) or to_cell not in valid_cells:
+                    errors.append(
+                        "'{}.to_ns' refers to unknown cell {!r}".format(path, to_cell)
+                    )
+                check_weight_object(connection.get("weight"), path + ".weight")
+
+    for connectivity_name in ("vnc_18", "vnc_nmj"):
+        connectivity = json_data.get(connectivity_name)
+        if connectivity is None:
+            continue
+        if not isinstance(connectivity, dict):
+            errors.append("'{}' must be an object".format(connectivity_name))
+            continue
+        set_from_this = wrapped_value(connectivity, "set_from_this", False)
+        if not isinstance(set_from_this, bool):
+            errors.append(
+                "'{}.set_from_this.value' must be boolean".format(connectivity_name)
+            )
+        for connection_group in ("dorsal_conns", "ventral_conns"):
+            connections = connectivity.get(connection_group)
+            path_base = "{}.{}".format(connectivity_name, connection_group)
+            if connections is None:
+                if set_from_this:
+                    errors.append(
+                        "'{}' is required when set_from_this is true".format(path_base)
+                    )
+                continue
+            if not isinstance(connections, dict):
+                errors.append("'{}' must be an object".format(path_base))
+                continue
+            if set_from_this and not connections:
+                errors.append(
+                    "'{}' must not be empty when set_from_this is true".format(
+                        path_base
+                    )
+                )
+            for cell_stem, connection in connections.items():
+                path = "{}.{}".format(path_base, cell_stem)
+                if not isinstance(cell_stem, str) or not cell_stem:
+                    errors.append("'{}' contains an invalid cell stem".format(path_base))
+                elif not any(
+                    cell_name == cell_stem
+                    or cell_name.startswith(cell_stem + "_")
+                    for cell_name in valid_cells
+                ):
+                    errors.append(
+                        "'{}' refers to unknown cell stem '{}'".format(path, cell_stem)
+                    )
+                if not isinstance(connection, dict):
+                    errors.append("'{}' must be an object".format(path))
+                    continue
+                check_positive_integer(connection.get("cell_ind"), path + ".cell_ind")
+                check_weight_object(connection.get("weight"), path + ".weight")
+
+    active_connectivity_objects = [
+        name
+        for name in ("vnc_18", "vnc_nmj")
+        if wrapped_value(json_data.get(name), "set_from_this", False) is True
+    ]
+    if len(active_connectivity_objects) > 1:
+        errors.append(
+            "Only one prescribed VNC-to-muscle connectivity object may have "
+            "set_from_this enabled: {}".format(
+                ", ".join(active_connectivity_objects)
+            )
+        )
+
+    def check_evotag_fields(value, path=()):
+        if isinstance(value, dict):
+            if "evotag" in value and (
+                not isinstance(value["evotag"], str) or not value["evotag"]
+            ):
+                errors.append(
+                    "'{}.evotag' must be a non-empty string".format(
+                        _json_path_string(path)
+                    )
+                )
+            for key, child in value.items():
+                if key not in {"evolvable_ranges", "evolved_used"}:
+                    check_evotag_fields(child, path + (key,))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                check_evotag_fields(child, path + (index,))
+
+    check_evotag_fields(json_data)
 
     evolvable_ranges = json_data.get("evolvable_ranges")
     if evolvable_ranges is None:
@@ -599,6 +1378,17 @@ def validate_w2dsr_json(json_data, source_name=None):
 
     if "value" in range_evotags:
         range_evotags.remove("value")
+    invalid_range_evotags = [
+        evotag
+        for evotag in range_evotags
+        if not isinstance(evotag, str) or not evotag
+    ]
+    for evotag in invalid_range_evotags:
+        errors.append(
+            "Evolvable-range key {!r} must be a non-empty string".format(evotag)
+        )
+        range_evotags.discard(evotag)
+        range_entries.pop(evotag, None)
 
     evotag_uses = _collect_evotag_uses(json_data)
     used_evotags = set(evotag for evotag, _ in evotag_uses)
@@ -630,13 +1420,17 @@ def validate_w2dsr_json(json_data, source_name=None):
         if "active" in range_entry and not isinstance(range_entry["active"], bool):
             errors.append("'{}.active' must be boolean".format(range_path))
         for key in ("lower_limit", "upper_limit"):
-            if key in range_entry and not _is_number(range_entry[key]):
-                errors.append("'{}.{}' must be numeric".format(range_path, key))
-        if "name" in range_entry and not isinstance(range_entry["name"], str):
-            errors.append("'{}.name' must be a string".format(range_path))
+            if key in range_entry and not _is_finite_number(range_entry[key]):
+                errors.append(
+                    "'{}.{}' must be a finite number".format(range_path, key)
+                )
+        if "name" in range_entry and (
+            not isinstance(range_entry["name"], str) or not range_entry["name"]
+        ):
+            errors.append("'{}.name' must be a non-empty string".format(range_path))
         if (
-            _is_number(range_entry.get("lower_limit"))
-            and _is_number(range_entry.get("upper_limit"))
+            _is_finite_number(range_entry.get("lower_limit"))
+            and _is_finite_number(range_entry.get("upper_limit"))
             and range_entry["lower_limit"] > range_entry["upper_limit"]
         ):
             errors.append(
