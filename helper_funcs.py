@@ -294,6 +294,261 @@ def json_widget_2(obj, name="root"):
         return widgets.HTML(value=f"<pre>{repr(obj)}</pre>")
 
 
+def _json_tree_contains(value, query, key=None):
+    if key is not None and query in str(key).lower():
+        return True
+    if isinstance(value, dict):
+        return any(
+            _json_tree_contains(child, query, child_key)
+            for child_key, child in value.items()
+        )
+    if isinstance(value, list):
+        return any(_json_tree_contains(child, query) for child in value)
+    return query in json.dumps(value, ensure_ascii=False).lower()
+
+
+def _json_tree_scalar_html(value):
+    if value is None:
+        css_class = "json-null"
+    elif isinstance(value, bool):
+        css_class = "json-boolean"
+    elif isinstance(value, (int, float)):
+        css_class = "json-number"
+    else:
+        css_class = "json-string"
+    text = html.escape(json.dumps(value, ensure_ascii=False))
+    return '<span class="{}">{}</span>'.format(css_class, text)
+
+
+def _json_tree_preview(value, preview_items):
+    if isinstance(value, dict):
+        if not value:
+            return '<span class="json-bracket">{}</span>'
+        items = list(value.items())
+        visible_items = items if preview_items is None else items[:preview_items]
+        parts = []
+        for key, child in visible_items:
+            parts.append(
+                '<span class="json-key">{}</span><span class="json-punctuation">:'
+                '</span> {}'.format(
+                    html.escape(str(key)), _json_tree_preview(child, 0)
+                )
+            )
+        if len(visible_items) < len(items):
+            parts.append('<span class="json-ellipsis">...</span>')
+        return (
+            '<span class="json-bracket">{{</span> {} '
+            '<span class="json-bracket">}}</span>'
+        ).format(", ".join(parts))
+    if isinstance(value, list):
+        if not value:
+            return '<span class="json-bracket">[]</span>'
+        return (
+            '<span class="json-count">({})</span> '
+            '<span class="json-bracket">[</span><span class="json-ellipsis">'
+            '...</span><span class="json-bracket">]</span>'
+        ).format(len(value))
+    return _json_tree_scalar_html(value)
+
+
+def _json_tree_html(value, expanded_depth, list_preview, query, depth=0):
+    force_open = bool(query) or depth < expanded_depth
+    open_attribute = " open" if force_open else ""
+
+    if isinstance(value, dict):
+        if not value:
+            return '<span class="json-empty">{}</span>'
+        rows = []
+        for key, child in value.items():
+            key_matches = bool(query) and query in str(key).lower()
+            if query and not _json_tree_contains(child, query, key):
+                continue
+            child_query = "" if key_matches else query
+            key_html = html.escape(str(key))
+            if isinstance(child, (dict, list)):
+                child_html = _json_tree_html(
+                    child,
+                    expanded_depth,
+                    list_preview,
+                    child_query,
+                    depth + 1,
+                )
+                rows.append(
+                    '<details class="json-node"{}><summary><span '
+                    'class="json-key">{}</span><span class="json-punctuation">:'
+                    '</span> <span class="json-preview">{}</span></summary>'
+                    '<div class="json-children">'
+                    "{}</div></details>".format(
+                        open_attribute,
+                        key_html,
+                        _json_tree_preview(child, list_preview),
+                        child_html,
+                    )
+                )
+            else:
+                rows.append(
+                    '<div class="json-leaf"><span class="json-key">{}</span>'
+                    ': {}</div>'.format(key_html, _json_tree_scalar_html(child))
+                )
+        return "".join(rows) or '<div class="json-no-match">No matches</div>'
+
+    if isinstance(value, list):
+        if not value:
+            return '<span class="json-empty">[]</span>'
+        matching_items = [
+            (index, child)
+            for index, child in enumerate(value)
+            if not query or _json_tree_contains(child, query)
+        ]
+        if not matching_items:
+            return '<div class="json-no-match">No matches</div>'
+
+        def render_items(items):
+            rendered = []
+            for index, child in items:
+                index_html = "[{}]".format(index)
+                if isinstance(child, (dict, list)):
+                    child_html = _json_tree_html(
+                        child,
+                        expanded_depth,
+                        list_preview,
+                        query,
+                        depth + 1,
+                    )
+                    rendered.append(
+                        '<details class="json-node"{}><summary><span '
+                        'class="json-index">{}</span><span '
+                        'class="json-punctuation">:</span> <span '
+                        'class="json-preview">{}</span></summary>'
+                        '<div class="json-children">'
+                        "{}</div></details>".format(
+                            open_attribute,
+                            index_html,
+                            _json_tree_preview(child, list_preview),
+                            child_html,
+                        )
+                    )
+                else:
+                    rendered.append(
+                        '<div class="json-leaf"><span class="json-index">{}</span>'
+                        " {}</div>".format(
+                            index_html, _json_tree_scalar_html(child)
+                        )
+                    )
+            return "".join(rendered)
+
+        return render_items(matching_items)
+
+    return _json_tree_scalar_html(value)
+
+
+def display_json_tree(
+    json_data,
+    expanded_depth=0,
+    list_preview=3,
+    searchable=True,
+):
+    """Return a searchable, partially expanded JSON tree for a notebook.
+
+    Parameters
+    ----------
+    json_data : dict or list
+        JSON-compatible data to display.
+    expanded_depth : int, default 0
+        Deepest hierarchy level initially opened. Searching temporarily opens
+        all branches containing matches.
+    list_preview : int or None, default 3
+        Maximum number of fields included in each collapsed inline preview.
+        ``None`` includes every field. Opening a branch always shows all of its
+        children.
+    searchable : bool, default True
+        Include a live search field that matches keys and scalar values.
+
+    Returns
+    -------
+    ipywidgets.Widget
+        Display it as the final expression in a notebook cell, or pass it to
+        ``IPython.display.display``.
+    """
+    if widgets is None:
+        raise ImportError("ipywidgets is required to display JSON trees")
+    if not isinstance(json_data, (dict, list)):
+        raise TypeError("json_data must be a dictionary or list")
+    if isinstance(expanded_depth, bool) or not isinstance(expanded_depth, int):
+        raise TypeError("expanded_depth must be a non-negative integer")
+    if expanded_depth < 0:
+        raise ValueError("expanded_depth must be non-negative")
+    if list_preview is not None:
+        if isinstance(list_preview, bool) or not isinstance(list_preview, int):
+            raise TypeError("list_preview must be a non-negative integer or None")
+        if list_preview < 0:
+            raise ValueError("list_preview must be non-negative")
+    if not isinstance(searchable, bool):
+        raise TypeError("searchable must be a boolean")
+
+    styles = """
+    <style>
+    .worm2d-json-tree {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+        Consolas, monospace; font-size: 15px; line-height: 1.55;
+        border-top: 1px solid #d7d7d7; border-bottom: 1px solid #d7d7d7;
+        padding: 6px 0; max-height: 680px; overflow: auto; background: #fff;
+        color: #006fe6;}
+    .worm2d-json-tree details {margin: 0;}
+    .worm2d-json-tree summary {cursor: pointer; white-space: nowrap;
+        padding: 1px 8px;}
+    .worm2d-json-tree summary:hover {background: #eef6ff;}
+    .worm2d-json-tree summary:focus {background: #087fe5; color: #fff;
+        outline: none;}
+    .worm2d-json-tree summary:focus span {color: #fff;}
+    .worm2d-json-tree details[open] > summary > .json-preview {display: none;}
+    .worm2d-json-tree .json-children {margin-left: 18px; padding-left: 7px;}
+    .worm2d-json-tree .json-leaf {min-height: 22px; padding-left: 8px;
+        white-space: pre-wrap;}
+    .worm2d-json-tree .json-key, .worm2d-json-tree .json-index,
+    .worm2d-json-tree .json-bracket, .worm2d-json-tree .json-punctuation {
+        color: #006fe6;}
+    .worm2d-json-tree .json-count, .worm2d-json-tree .json-empty,
+    .worm2d-json-tree .json-ellipsis {color: #6f7780;}
+    .worm2d-json-tree .json-string {color: #ec008c;}
+    .worm2d-json-tree .json-number {color: #006fe6;}
+    .worm2d-json-tree .json-boolean {color: #7b3fc6; font-weight: 600;}
+    .worm2d-json-tree .json-null {color: #cf222e;}
+    .worm2d-json-tree .json-no-match {color: #6e7781; font-style: italic;}
+    </style>
+    """
+    tree = widgets.HTML()
+
+    def update_tree(query=""):
+        normalized_query = query.strip().lower()
+        body = _json_tree_html(
+            json_data,
+            expanded_depth,
+            list_preview,
+            normalized_query,
+        )
+        tree.value = '{}<div class="worm2d-json-tree">{}</div>'.format(
+            styles, body
+        )
+
+    update_tree()
+    if not searchable:
+        return tree
+
+    search = widgets.Text(
+        placeholder="Search keys and values",
+        description="Search:",
+        continuous_update=True,
+        layout=widgets.Layout(width="100%"),
+    )
+
+    def on_search(change):
+        if change.get("name") == "value":
+            update_tree(change.get("new", ""))
+
+    search.observe(on_search, names="value")
+    return widgets.VBox([search, tree], layout=widgets.Layout(width="100%"))
+
+
 def get_worm_file():
     worm_file = rename_file("worm_data_worm.json")
     if not os.path.isfile(worm_file):
