@@ -717,6 +717,9 @@ void EvoBase::addParsToJson(json & j)
     //appendToJson<double>(j[par1pars.parDoub.head],par1pars.parDoub);
     //appendToJson<long>(j[par1pars.parInt.head],par1pars.parInt);
     getEffectiveEvoParsForJson().addParsToJson(j["evolution"]);
+    j["evolution"].erase("MaxGenerations");
+    j["evolution"].erase("max_generations");
+    if (s) j["evolution"]["TotalGenerations"]["value"] = s->MaxGenerations();
     
  
     j["evolution"]["VectSize"]["value"] = itsVectSize();
@@ -732,7 +735,6 @@ evoPars EvoBase::getEffectiveEvoParsForJson() const
         ep1.SelectionMode = s->SelectionMode();
         ep1.ReproductionMode = s->ReproductionMode();
         ep1.PopulationSize = s->PopulationSize();
-        ep1.MaxGenerations = s->MaxGenerations();
         ep1.MutationVariance = s->MutationVariance();
         ep1.CrossoverProbability = s->CrossoverProbability();
         ep1.CrossoverMode = s->CrossoverMode();

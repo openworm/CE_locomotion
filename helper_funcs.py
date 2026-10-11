@@ -2472,6 +2472,114 @@ def strip_unretained_evotags(json_data, retained_evotags):
     return result
 
 
+def retain_cell_related_evotags(json_data, cell_names):
+    """Keep only evotags associated with the supplied nervous-system cells.
+
+    Related tags include cell parameters, chemical and electrical connections
+    touching a selected cell, neuromuscular connections originating at one,
+    stretch-receptor connections targeting one, and prescribed VNC-to-muscle
+    entries for the corresponding cell stems.  Head stretch-receptor gain is
+    retained when one of the standard SMD/RMD head cells is selected.
+    """
+    if not isinstance(json_data, dict):
+        raise TypeError("json_data must be a dictionary")
+    if not isinstance(cell_names, (list, tuple, set)) or not cell_names:
+        raise ValueError("cell_names must be a non-empty list, tuple, or set")
+    if any(not isinstance(name, str) or not name for name in cell_names):
+        raise ValueError("Every cell name must be a non-empty string")
+
+    selected = set(cell_names)
+    nervous_system = json_data.get("nervous_system", {})
+    cells = nervous_system.get("cells", {})
+    if not isinstance(cells, dict):
+        raise KeyError("JSON does not contain nervous_system.cells")
+    missing = sorted(selected.difference(cells))
+    if missing:
+        raise KeyError("Unknown nervous-system cells: {}".format(", ".join(missing)))
+
+    retained = set()
+    for cell_name in selected:
+        _collect_evotags(cells[cell_name], retained)
+
+    for connection_type in ("chemical_conns", "electrical_conns"):
+        connections = nervous_system.get(connection_type, {}).get("value", [])
+        if isinstance(connections, list):
+            for connection in connections:
+                if not isinstance(connection, dict):
+                    continue
+                if (
+                    connection.get("from") in selected
+                    or connection.get("to") in selected
+                ):
+                    _collect_evotags(connection, retained)
+
+    for section_name in ("dorsal_nmj", "ventral_nmj"):
+        connections = (
+            json_data.get(section_name, {}).get("weights", {}).get("value", [])
+        )
+        if isinstance(connections, list):
+            for connection in connections:
+                if (
+                    isinstance(connection, dict)
+                    and connection.get("from_cell") in selected
+                ):
+                    _collect_evotags(connection, retained)
+
+    stretch_receptor = json_data.get("stretch_receptor", {})
+    if isinstance(stretch_receptor, dict):
+        for section_name in ("ns_d_weights", "ns_v_weights"):
+            connections = stretch_receptor.get(section_name, {}).get("value", [])
+            if isinstance(connections, list):
+                for connection in connections:
+                    if (
+                        isinstance(connection, dict)
+                        and connection.get("to_ns") in selected
+                    ):
+                        _collect_evotags(connection, retained)
+
+    stems = {name.rsplit("_", 1)[0] for name in selected}
+    for prescribed_name in ("vnc_18", "vnc_nmj"):
+        prescribed = json_data.get(prescribed_name, {})
+        if not isinstance(prescribed, dict):
+            continue
+        for section_name in ("dorsal_conns", "ventral_conns"):
+            section = prescribed.get(section_name, {})
+            if not isinstance(section, dict):
+                continue
+            for stem in stems:
+                if stem in section:
+                    _collect_evotags(section[stem], retained)
+
+    head_stems = {"RMDD", "RMDV", "SMDD", "SMDV"}
+    if stems.intersection(head_stems) and isinstance(stretch_receptor, dict):
+        if "sr_head_gain" in stretch_receptor:
+            _collect_evotags(stretch_receptor["sr_head_gain"], retained)
+
+    result = strip_unretained_evotags(json_data, retained)
+    ranges = result.get("evolvable_ranges")
+    if isinstance(ranges, dict):
+        for evotag in list(ranges):
+            if evotag != "value" and str(evotag) not in retained:
+                ranges.pop(evotag, None)
+        legacy_entries = ranges.get("value")
+        if isinstance(legacy_entries, list):
+            ranges["value"] = [
+                entry
+                for entry in legacy_entries
+                if isinstance(entry, dict)
+                and (
+                    str(entry.get("evotag")) in retained
+                    or any(str(name) in retained for name in entry)
+                )
+            ]
+
+    evolved_used = result.get("evolved_used")
+    used = evolved_used.get("value") if isinstance(evolved_used, dict) else evolved_used
+    if isinstance(used, list):
+        used[:] = [evotag for evotag in used if str(evotag) in retained]
+    return result
+
+
 def _collect_model_evotags(value, at_root=False, output=None):
     if output is None:
         output = set()

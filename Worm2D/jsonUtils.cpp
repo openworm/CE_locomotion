@@ -1717,7 +1717,7 @@ void evoPars::addParsToJson(json &j) const
     for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
     {vector<string> names = {"randomseed", "SelectionMode", "ReproductionMode", 
-         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
+         "PopulationSize", "maxGens", "CrossoverMode", "SearchConstraint",
          "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
     vector<int> vals = {(int) randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 
@@ -1746,7 +1746,7 @@ const doubIntParamsHead evoPars::getParams() const
          Duration, Transient, StepSize};
 
        var1.parInt.names = {"randomseed", "SelectionMode", "ReproductionMode", 
-         "PopulationSize", "MaxGenerations", "CrossoverMode", "SearchConstraint", 
+         "PopulationSize", "maxGens", "CrossoverMode", "SearchConstraint",
          "CheckpointInterval", "ReEvaluationFlag", "skip_steps", "N_curvs", "VectSize_temo"};
        var1.parInt.vals = {randomseed, SelectionMode, ReproductionMode, 
          PopulationSize, MaxGenerations, CrossoverMode, SearchConstraint, CheckpointInterval, 

@@ -399,6 +399,7 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
             ep1.ReproductionMode = static_cast<TReproductionMode>(int_val);
         getJsonValTF<int>(j_evo, "population_size", ep1.PopulationSize, true) ||
         getJsonValTF<int>(j_evo, "PopulationSize", ep1.PopulationSize, true);
+        getJsonValTF<int>(j_evo, "maxGens", ep1.MaxGenerations, true) ||
         getJsonValTF<int>(j_evo, "max_generations", ep1.MaxGenerations, true) ||
         getJsonValTF<int>(j_evo, "MaxGenerations", ep1.MaxGenerations, true);
         getJsonValTF<double>(j_evo, "mutation_variance", ep1.MutationVariance, true) ||

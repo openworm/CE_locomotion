@@ -1102,9 +1102,6 @@
         "MaxExpectedOffspring": {
             "value": 1.1
         },
-        "MaxGenerations": {
-            "value": 36
-        },
         "MutationVariance": {
             "value": 0.1
         },
@@ -1129,6 +1126,9 @@
         "StepSize": {
             "value": 0.01
         },
+        "TotalGenerations": {
+            "value": 36
+        },
         "Transient": {
             "value": 10.0
         },
@@ -1149,6 +1149,9 @@
         },
         "fileprefix": {
             "value": ""
+        },
+        "maxGens": {
+            "value": 36
         },
         "osc_tbase": {
             "value": 0.25

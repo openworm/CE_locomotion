@@ -122,6 +122,23 @@ DEFAULTS = {
 }
 
 
+EVOLUTION_PARAMETER_ALIASES = {
+    "maxGens": ("max_generations", "MaxGenerations"),
+}
+
+
+def normalize_evolution_generation_fields(evolution_data):
+    """Use maxGens for a run limit while accepting legacy input names."""
+    if "maxGens" not in evolution_data:
+        for legacy_name in EVOLUTION_PARAMETER_ALIASES["maxGens"]:
+            if legacy_name in evolution_data:
+                evolution_data["maxGens"] = evolution_data[legacy_name]
+                break
+    for legacy_name in EVOLUTION_PARAMETER_ALIASES["maxGens"]:
+        evolution_data.pop(legacy_name, None)
+    return evolution_data
+
+
 def process_args():
     """Parse command-line arguments.
 
@@ -944,7 +961,7 @@ def run(a=None, **kwargs):
         "Duration",
         "PopulationSize",
         "randomseed",
-        "MaxGenerations",
+        "maxGens",
         "Transient",
         "CheckpointInterval",
         "evo_type",
@@ -1043,6 +1060,11 @@ def run(a=None, **kwargs):
             for key in evol_pars:
                 if key in evo_json:
                     evol_data[key] = evo_json[key]["value"]
+                elif key in EVOLUTION_PARAMETER_ALIASES:
+                    for alias in EVOLUTION_PARAMETER_ALIASES[key]:
+                        if alias in evo_json:
+                            evol_data[key] = evo_json[alias]["value"]
+                            break
                 elif key == "evo_type" and "evoType" in evo_json:
                     evol_data[key] = evo_json["evoType"]["value"]
                 elif key == "evo_type" and "EvolutionType" in evo_json:
@@ -1057,6 +1079,8 @@ def run(a=None, **kwargs):
     elif os.path.isfile(evol_par_file_base):
         with open(evol_par_file_base) as f:
             evol_data = json.load(f)
+
+    normalize_evolution_generation_fields(evol_data)
 
     for new_key, old_key in legacy_parameter_names.items():
         if old_key in evol_data:
@@ -1174,7 +1198,7 @@ def run(a=None, **kwargs):
         if "transient" in provided:
             cmd += ["--transient", str(evol_data["Transient"])]
         if "maxGens" in provided:
-            cmd += ["--max_generations", str(evol_data["MaxGenerations"])]
+            cmd += ["--max_generations", str(evol_data["maxGens"])]
         if "simduration" in provided:
             cmd += ["-sd", str(sim_data["Duration"])]
         if "simtransient" in provided:
@@ -1211,7 +1235,7 @@ def run(a=None, **kwargs):
         cmd += ["-p", str(evol_data["PopulationSize"])]
         cmd += ["-d", str(evol_data["Duration"])]
         cmd += ["-t", str(evol_data["Transient"])]
-        cmd += ["--maxgens", str(evol_data["MaxGenerations"])]
+        cmd += ["--maxgens", str(evol_data["maxGens"])]
         cmd += ["-sd", str(sim_data["Duration"])]
         cmd += ["-st", str(sim_data["Transient"])]
         cmd += ["--doevol", str(do_evol)]
