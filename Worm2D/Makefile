@@ -51,6 +51,7 @@ LDFLAGS += "-L/opt/homebrew/lib"
 CXXFLAGS += "-I/opt/homebrew/include"
 
 EXTRA_FLAGS := -fPIE -O3 -Iinc
+DEPFLAGS := -MMD -MP
 SANFLAG :=
 
 # ---------------------------
@@ -73,6 +74,7 @@ SRC_MAIN_OSC := main_osc.cpp $(SRC_COMMON)
 # Object files
 OBJS_MAIN := $(notdir $(SRC_MAIN:.cpp=.o))
 OBJS_MAIN_OSC := $(notdir $(SRC_MAIN_OSC:.cpp=.o))
+DEPS := $(sort $(OBJS_MAIN:.o=.d) $(OBJS_MAIN_OSC:.o=.d))
 
 # ---------------------------
 # Search paths for sources
@@ -97,7 +99,7 @@ info:
 
 # Generic compilation rule
 %.o: %.cpp
-	$(CC) -c $(CXXFLAGS) $(EXTRA_FLAGS) $(SANFLAG) -std=c++11 $< -o $@
+	$(CC) -c $(CXXFLAGS) $(EXTRA_FLAGS) $(DEPFLAGS) $(SANFLAG) -std=c++11 $< -o $@
 
 # Main binary
 main: $(OBJS_MAIN)
@@ -109,4 +111,6 @@ main_osc: $(OBJS_MAIN_OSC)
 
 # Clean
 clean:
-	rm -f *.o main main_osc
+	rm -f *.o *.d main main_osc
+
+-include $(DEPS)

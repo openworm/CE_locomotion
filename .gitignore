@@ -1,4 +1,5 @@
 *.o
+*.d
 /main
 /act.dat
 /best.gen.dat
