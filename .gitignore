@@ -70,6 +70,7 @@
 /RoyalSociety2018/testRS18/speed.dat
 /RoyalSociety2018/testRS18/worm_data.json
 /experiments/izq_runs*
+/LLM
 
 /ex*/Orient.png
 /ex*/*.dat
