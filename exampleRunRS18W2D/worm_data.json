@@ -4351,9 +4351,6 @@
         "MaxExpectedOffspring": {
             "value": 1.1
         },
-        "MaxGenerations": {
-            "value": 36
-        },
         "MutationVariance": {
             "value": 0.1
         },
@@ -4393,6 +4390,9 @@
         "TauMin": {
             "value": 0.5
         },
+        "TotalGenerations": {
+            "value": 36
+        },
         "Transient": {
             "value": 10.0
         },
@@ -4413,6 +4413,9 @@
         },
         "fps": {
             "value": 25.0
+        },
+        "maxGens": {
+            "value": 36
         },
         "randomseed": {
             "value": 292

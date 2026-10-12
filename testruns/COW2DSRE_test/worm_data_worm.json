@@ -220,13 +220,13 @@
             "message": "Driving input strength to Nervous System",
             "value": [
                 {
-                    "input_num": 1,
+                    "input_num": "input_1",
                     "strength": {
                         "value": 0.0
                     }
                 },
                 {
-                    "input_num": 2,
+                    "input_num": "input_2",
                     "strength": {
                         "value": 0.0
                     }
@@ -237,7 +237,7 @@
             "message": "Weights of driving inputs to Nervous System in sparse format",
             "value": [
                 {
-                    "from_input": 1,
+                    "from_input": "input_1",
                     "to_cell": "Cell_41_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_0",
@@ -245,7 +245,7 @@
                     }
                 },
                 {
-                    "from_input": 2,
+                    "from_input": "input_2",
                     "to_cell": "Cell_41_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_1",
@@ -253,7 +253,7 @@
                     }
                 },
                 {
-                    "from_input": 1,
+                    "from_input": "input_1",
                     "to_cell": "Cell_42_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_2",
@@ -261,7 +261,7 @@
                     }
                 },
                 {
-                    "from_input": 2,
+                    "from_input": "input_2",
                     "to_cell": "Cell_42_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_3",
@@ -269,7 +269,7 @@
                     }
                 },
                 {
-                    "from_input": 1,
+                    "from_input": "input_1",
                     "to_cell": "Cell_43_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_4",
@@ -277,7 +277,7 @@
                     }
                 },
                 {
-                    "from_input": 2,
+                    "from_input": "input_2",
                     "to_cell": "Cell_43_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_5",
@@ -285,7 +285,7 @@
                     }
                 },
                 {
-                    "from_input": 1,
+                    "from_input": "input_1",
                     "to_cell": "Cell_44_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_6",
@@ -293,7 +293,7 @@
                     }
                 },
                 {
-                    "from_input": 2,
+                    "from_input": "input_2",
                     "to_cell": "Cell_44_0",
                     "weight": {
                         "evotag": "driving_inputs_weights_weight_7",

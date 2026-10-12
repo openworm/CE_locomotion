@@ -73,11 +73,7 @@ class ConfigurationValidationTests(unittest.TestCase):
     def test_unknown_scheduled_input_pattern_is_rejected(self):
         config = minimal_config()
         config["driving_inputs"] = {
-            "inputs": {
-                "value": [
-                    {"input_num": "drive", "strength": {"value": 0.0}}
-                ]
-            },
+            "inputs": {"value": [{"input_num": "drive", "strength": {"value": 0.0}}]},
             "weights": {"value": []},
         }
         config["input_switcher"] = {

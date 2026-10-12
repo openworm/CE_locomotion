@@ -2,7 +2,7 @@
     "Duration": 50,
     "PopulationSize": 62,
     "randomseed": 4077,
-    "MaxGenerations": 10,
+    "maxGens": 10,
     "Transient": 0,
     "CheckpointInterval": 5,
     "evo_type": "Evo21",

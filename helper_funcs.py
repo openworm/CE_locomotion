@@ -330,9 +330,7 @@ def _json_tree_preview(value, preview_items):
         for key, child in visible_items:
             parts.append(
                 '<span class="json-key">{}</span><span class="json-punctuation">:'
-                '</span> {}'.format(
-                    html.escape(str(key)), _json_tree_preview(child, 0)
-                )
+                "</span> {}".format(html.escape(str(key)), _json_tree_preview(child, 0))
             )
         if len(visible_items) < len(items):
             parts.append('<span class="json-ellipsis">...</span>')
@@ -388,7 +386,7 @@ def _json_tree_html(value, expanded_depth, list_preview, query, depth=0):
             else:
                 rows.append(
                     '<div class="json-leaf"><span class="json-key">{}</span>'
-                    ': {}</div>'.format(key_html, _json_tree_scalar_html(child))
+                    ": {}</div>".format(key_html, _json_tree_scalar_html(child))
                 )
         return "".join(rows) or '<div class="json-no-match">No matches</div>'
 
@@ -431,9 +429,7 @@ def _json_tree_html(value, expanded_depth, list_preview, query, depth=0):
                 else:
                     rendered.append(
                         '<div class="json-leaf"><span class="json-index">{}</span>'
-                        " {}</div>".format(
-                            index_html, _json_tree_scalar_html(child)
-                        )
+                        " {}</div>".format(index_html, _json_tree_scalar_html(child))
                     )
             return "".join(rendered)
 
@@ -526,9 +522,7 @@ def display_json_tree(
             list_preview,
             normalized_query,
         )
-        tree.value = '{}<div class="worm2d-json-tree">{}</div>'.format(
-            styles, body
-        )
+        tree.value = '{}<div class="worm2d-json-tree">{}</div>'.format(styles, body)
 
     update_tree()
     if not searchable:
@@ -667,9 +661,7 @@ def validate_w2dsr_json(json_data, source_name=None):
                     )
                 if not isinstance(mfunc, dict):
                     errors.append(
-                        "'{}' must be an object".format(
-                            _json_path_string(mfunc_path)
-                        )
+                        "'{}' must be an object".format(_json_path_string(mfunc_path))
                     )
                     continue
                 if "f_ind" not in mfunc:
@@ -886,9 +878,7 @@ def validate_w2dsr_json(json_data, source_name=None):
                 )
             elif not _is_finite_number(weight["value"]):
                 errors.append(
-                    "'{}.weight.value' must be a finite number".format(
-                        connection_path
-                    )
+                    "'{}.weight.value' must be a finite number".format(connection_path)
                 )
 
     for connection_key in ("chemical_conns", "electrical_conns"):
@@ -956,7 +946,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                     )
                 elif not _is_finite_number(weight["value"]):
                     errors.append(
-                        "'driving_inputs.weights.value[{}].weight.value' must be a finite number".format(index)
+                        "'driving_inputs.weights.value[{}].weight.value' must be a finite number".format(
+                            index
+                        )
                     )
 
     for connection_key in ("chemical_conns", "electrical_conns"):
@@ -993,7 +985,9 @@ def validate_w2dsr_json(json_data, source_name=None):
         if not isinstance(stored_name, str) or not stored_name:
             errors.append("'{}.name.value' must be a non-empty string".format(path))
         elif stored_name in environment_names and stored_name != environment_key:
-            errors.append("Environment identifier {!r} is duplicated".format(stored_name))
+            errors.append(
+                "Environment identifier {!r} is duplicated".format(stored_name)
+            )
         else:
             environment_names.add(stored_name)
         for parameter_name in ("x_center", "y_center", "grad_steep"):
@@ -1019,9 +1013,7 @@ def validate_w2dsr_json(json_data, source_name=None):
         environment_name = wrapped_value(sensor, "environment")
         if not isinstance(environment_name, str) or not environment_name:
             errors.append(
-                "'{}.environment.value' must be a non-empty string".format(
-                    sensor_path
-                )
+                "'{}.environment.value' must be a non-empty string".format(sensor_path)
             )
         elif environment_name not in environment_names:
             errors.append(
@@ -1047,7 +1039,9 @@ def validate_w2dsr_json(json_data, source_name=None):
             # sensors still have the two outputs understood by the C++ model.
             outputs = [{"name": "output_1"}, {"name": "output_2"}]
         elif not isinstance(outputs, list) or not outputs:
-            errors.append("'{}.outputs.value' must be a non-empty list".format(sensor_path))
+            errors.append(
+                "'{}.outputs.value' must be a non-empty list".format(sensor_path)
+            )
             outputs = []
         for output_index, output in enumerate(outputs):
             output_path = "{}.outputs.value[{}]".format(sensor_path, output_index)
@@ -1056,7 +1050,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                 continue
             output_name = output.get("name")
             if not isinstance(output_name, str) or not output_name:
-                errors.append("'{}.name' must be a non-empty string".format(output_path))
+                errors.append(
+                    "'{}.name' must be a non-empty string".format(output_path)
+                )
             elif output_name in output_names:
                 errors.append(
                     "Duplicate sensor output name {!r} in '{}'".format(
@@ -1071,9 +1067,7 @@ def validate_w2dsr_json(json_data, source_name=None):
             errors.append("'{}.weights.value' must be a list".format(sensor_path))
             sensor_weights = []
         for weight_index, connection in enumerate(sensor_weights):
-            connection_path = "{}.weights.value[{}]".format(
-                sensor_path, weight_index
-            )
+            connection_path = "{}.weights.value[{}]".format(sensor_path, weight_index)
             if not isinstance(connection, dict):
                 errors.append("'{}' must be an object".format(connection_path))
                 continue
@@ -1120,9 +1114,13 @@ def validate_w2dsr_json(json_data, source_name=None):
                 continue
             input_id = input_entry.get("input_num")
             if not isinstance(input_id, str) or not input_id:
-                errors.append("'{}.input_num' must be a non-empty string".format(input_path))
+                errors.append(
+                    "'{}.input_num' must be a non-empty string".format(input_path)
+                )
             elif input_id in driving_input_ids:
-                errors.append("Duplicate driving input identifier {!r}".format(input_id))
+                errors.append(
+                    "Duplicate driving input identifier {!r}".format(input_id)
+                )
             else:
                 driving_input_ids.add(input_id)
             strength = input_entry.get("strength")
@@ -1175,7 +1173,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                     "'{}.input_index' must be a non-empty string".format(pattern_path)
                 )
             elif pattern_id in pattern_ids:
-                errors.append("Duplicate input pattern identifier {!r}".format(pattern_id))
+                errors.append(
+                    "Duplicate input pattern identifier {!r}".format(pattern_id)
+                )
             else:
                 pattern_ids.add(pattern_id)
             values = pattern.get("value")
@@ -1208,7 +1208,9 @@ def validate_w2dsr_json(json_data, source_name=None):
                 else:
                     pattern_inputs.add(input_id)
                 if not _is_finite_number(input_value.get("value")):
-                    errors.append("'{}.value' must be a finite number".format(value_path))
+                    errors.append(
+                        "'{}.value' must be a finite number".format(value_path)
+                    )
 
         configured_size = wrapped_value(input_switcher, "size")
         if (
@@ -1280,9 +1282,7 @@ def validate_w2dsr_json(json_data, source_name=None):
             if not isinstance(settings, dict):
                 errors.append("'funcable.{}' must be an object".format(function_name))
                 continue
-            if "doInverse" in settings and not isinstance(
-                settings["doInverse"], bool
-            ):
+            if "doInverse" in settings and not isinstance(settings["doInverse"], bool):
                 errors.append(
                     "'funcable.{}.doInverse' must be boolean".format(function_name)
                 )
@@ -1306,7 +1306,11 @@ def validate_w2dsr_json(json_data, source_name=None):
             try:
                 _mfunc_name(function_name)
             except (TypeError, ValueError) as exc:
-                errors.append("'{}.function_index.value' is invalid: {}".format(schedule_path, exc))
+                errors.append(
+                    "'{}.function_index.value' is invalid: {}".format(
+                        schedule_path, exc
+                    )
+                )
             intervals = wrapped_value(schedule, "time_intervals")
             if not isinstance(intervals, list) or not intervals:
                 errors.append(
@@ -1437,19 +1441,14 @@ def validate_w2dsr_json(json_data, source_name=None):
             errors.append("'stretch_receptor.type.value' must be 'SR18' or 'SRCE'")
         receptor_segments = wrapped_value(stretch_receptor, "n_segs")
         if receptor_segments is not None:
-            check_positive_integer(
-                receptor_segments, "stretch_receptor.n_segs.value"
-            )
+            check_positive_integer(receptor_segments, "stretch_receptor.n_segs.value")
             if segment_count is not None and receptor_segments != segment_count:
                 errors.append(
-                    "'stretch_receptor.n_segs.value' must match "
-                    "'body.n_segments.value'"
+                    "'stretch_receptor.n_segs.value' must match 'body.n_segments.value'"
                 )
         receptor_count = wrapped_value(stretch_receptor, "n_stretch")
         if receptor_count is not None:
-            check_positive_integer(
-                receptor_count, "stretch_receptor.n_stretch.value"
-            )
+            check_positive_integer(receptor_count, "stretch_receptor.n_stretch.value")
         set_direct = wrapped_value(stretch_receptor, "set_direct", False)
         if not isinstance(set_direct, bool):
             errors.append("'stretch_receptor.set_direct.value' must be boolean")
@@ -1496,7 +1495,10 @@ def validate_w2dsr_json(json_data, source_name=None):
                     continue
                 from_segment = connection.get("from_seg")
                 if check_positive_integer(from_segment, path + ".from_seg"):
-                    if receptor_segments is not None and from_segment > receptor_segments:
+                    if (
+                        receptor_segments is not None
+                        and from_segment > receptor_segments
+                    ):
                         errors.append(
                             "'{}.from_seg' exceeds the stretch-receptor segment count".format(
                                 path
@@ -1558,10 +1560,11 @@ def validate_w2dsr_json(json_data, source_name=None):
             for cell_stem, connection in connections.items():
                 path = "{}.{}".format(path_base, cell_stem)
                 if not isinstance(cell_stem, str) or not cell_stem:
-                    errors.append("'{}' contains an invalid cell stem".format(path_base))
+                    errors.append(
+                        "'{}' contains an invalid cell stem".format(path_base)
+                    )
                 elif not any(
-                    cell_name == cell_stem
-                    or cell_name.startswith(cell_stem + "_")
+                    cell_name == cell_stem or cell_name.startswith(cell_stem + "_")
                     for cell_name in valid_cells
                 ):
                     errors.append(
@@ -1581,9 +1584,7 @@ def validate_w2dsr_json(json_data, source_name=None):
     if len(active_connectivity_objects) > 1:
         errors.append(
             "Only one prescribed VNC-to-muscle connectivity object may have "
-            "set_from_this enabled: {}".format(
-                ", ".join(active_connectivity_objects)
-            )
+            "set_from_this enabled: {}".format(", ".join(active_connectivity_objects))
         )
 
     def check_evotag_fields(value, path=()):
@@ -1634,9 +1635,7 @@ def validate_w2dsr_json(json_data, source_name=None):
     if "value" in range_evotags:
         range_evotags.remove("value")
     invalid_range_evotags = [
-        evotag
-        for evotag in range_evotags
-        if not isinstance(evotag, str) or not evotag
+        evotag for evotag in range_evotags if not isinstance(evotag, str) or not evotag
     ]
     for evotag in invalid_range_evotags:
         errors.append(
@@ -1676,9 +1675,7 @@ def validate_w2dsr_json(json_data, source_name=None):
             errors.append("'{}.active' must be boolean".format(range_path))
         for key in ("lower_limit", "upper_limit"):
             if key in range_entry and not _is_finite_number(range_entry[key]):
-                errors.append(
-                    "'{}.{}' must be a finite number".format(range_path, key)
-                )
+                errors.append("'{}.{}' must be a finite number".format(range_path, key))
         if "name" in range_entry and (
             not isinstance(range_entry["name"], str) or not range_entry["name"]
         ):
