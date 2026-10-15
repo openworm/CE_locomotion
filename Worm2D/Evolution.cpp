@@ -798,6 +798,9 @@ evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string pref
 {
 ep1.setFromArgs(cmd);
 doCPT = (bool) cmd->getArgValInt("-docpt",1);
+contEvol = (bool) cmd->getArgValInt(
+    "--contEvol",
+    cmd->getArgValInt("--cont_evol", cmd->getArgValInt("-contevol", 0)));
 
 //cout << "docpt " << doCPT << endl;
 //assert(0);
@@ -814,11 +817,16 @@ evoPars EvoBase::setPars(int argc, const char* argv[], evoPars ep1, string prefi
 
     
     doCPT = true;
+    contEvol = false;
 
     for (int arg = 1; arg<argc; arg+=2)
     { 
     
     if (strcmp(argv[arg],"-docpt")==0) doCPT = stoi(argv[arg+1]);
+    if (strcmp(argv[arg],"--contEvol")==0 ||
+        strcmp(argv[arg],"--cont_evol")==0 ||
+        strcmp(argv[arg],"-contevol")==0)
+        contEvol = stoi(argv[arg+1]);
 
     }
 
@@ -965,8 +973,10 @@ void EvoBase::configure_p11()
 
 void Evolution::configure_p1()
 {
-    
-    s->SetRandomSeed(evoPars1.randomseed);
+
+    // A checkpoint contains the search RNG state. Preserve it when continuing
+    // so the next population is the one an uninterrupted run would generate.
+    if (!(doResume && contEvol)) s->SetRandomSeed(evoPars1.randomseed);
     //cout << "tad " << evoPars1.randomseed << endl;
     //assert(0);
 
@@ -1009,8 +1019,9 @@ void Evolution::configure_p2()
    
     if (doResume) {
         evaluateResizedCheckpointPopulation();
-        cout << "Resuming search" << endl;
-        s->DoSearch(1);
+        if (contEvol) cout << "Continuing search from checkpoint fitnesses" << endl;
+        else cout << "Resuming search" << endl;
+        s->DoSearch(1, contEvol);
     }
     else s->ExecuteSearch();
   

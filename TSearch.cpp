@@ -311,7 +311,7 @@ void TSearch::SetCheckpointInterval(int NewInterval)
 
 // The top-level search loop
 
-void TSearch::DoSearch(int ResumeFlag)
+void TSearch::DoSearch(int ResumeFlag, bool ContinueEvolution)
 {
 
 	// Initialize search if necessary
@@ -335,14 +335,19 @@ void TSearch::DoSearch(int ResumeFlag)
 
 	//assert(0);
 	
-	// Update and display statistics of the initial population
+	// Statistics are needed for selection even when a continued evolution skips
+	// redisplaying the population restored from the checkpoint.
 	UpdatePopulationStatistics();
-	DisplayPopulationStatistics();
+	if (!(ResumeFlag && ContinueEvolution)) {
+		DisplayPopulationStatistics();
 
-	
-	// If the best changed and there is a BestActionFunction, invoke it
-	if (UpdateBestFlag && BestActionFunction != NULL)
-		(*BestActionFunction)(Gen,bestVector);
+		// If the best changed and there is a BestActionFunction, invoke it
+		if (UpdateBestFlag && BestActionFunction != NULL)
+			(*BestActionFunction)(Gen,bestVector);
+	}
+	else {
+		UpdateBestFlag = 0;
+	}
 	// Repeat until done
 	while (!SearchTerminated())
 	{
@@ -884,6 +889,9 @@ void TSearch::SortPopulation(void)
 //  <RandomState 1>
 //  ...
 //  <RandomState N>
+//  <Global random state marker> <Global random state>
+
+const unsigned int GlobalRandomStateMarker = 0x47525331;
 
 void TSearch::WriteCheckpointFile()
 {
@@ -950,6 +958,13 @@ void TSearch::WriteCheckpointFile()
   // Write out the random state for each individual in the population
   for (int i = 1; i <= PopulationSize(); i++)
     RandomStates[i].BinaryWriteRandomState(bofs);
+
+  // The crossover choice functions use the backward-compatible global RNG.
+  // Append its state so a restarted evolution can follow the uninterrupted
+  // random sequence. Keeping this at the end preserves old checkpoint layout.
+  bofs.write((const char*) &(GlobalRandomStateMarker),
+             sizeof(GlobalRandomStateMarker));
+  BinaryWriteRandomState(bofs);
 
 }
 
@@ -1028,4 +1043,11 @@ void TSearch::ReadCheckpointFile()
   // Read in the random state for each individual in the populaton
   for (int i = 1; i <= PopulationSize(); i++)
     RandomStates[i].BinaryReadRandomState(bifs);
+
+  // Older checkpoints end after the individual random states. Newer ones
+  // append the global RNG state used for crossover decisions.
+  unsigned int marker = 0;
+  if (bifs.read((char*) &(marker), sizeof(marker)) &&
+      marker == GlobalRandomStateMarker)
+    BinaryReadRandomState(bifs);
 }

@@ -113,6 +113,7 @@ DEFAULTS = {
     "reRand": False,
     "checkPointInterval": 1,
     "doCPT": True,
+    "contEvol": False,
     "doRun": True,
     "compactActivityTimeLabels": False,
     "showExampleActivityBottomLeftPanel": True,
@@ -276,6 +277,18 @@ def process_args():
         help=(
             "Store evolution checkpoint file to resume search later at this interval."
             "If a checkpoint file is found search will be started from that."
+        ),
+    )
+
+    parser.add_argument(
+        "--contEvol",
+        "--cont_evol",
+        dest="contEvol",
+        action="store_true",
+        default=DEFAULTS["contEvol"],
+        help=(
+            "When resuming from search.cpt, generate the next population "
+            "immediately from the stored fitness values."
         ),
     )
 
@@ -1220,6 +1233,8 @@ def run(a=None, **kwargs):
             cmd += ["--domusc", str(sim_data["doMuscSim"])]
         if "doCPT" in provided:
             cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        if "contEvol" in provided:
+            cmd += ["--contEvol", str(TFtoInt(a.contEvol))]
         if "evo_type" in provided:
             cmd += ["--evo_type", str(a.evo_type)]
     else:
@@ -1247,6 +1262,7 @@ def run(a=None, **kwargs):
         cmd += ["--modelname", str(model_name)]
         cmd += ["--domusc", str(sim_data["doMuscSim"])]
         cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        cmd += ["--contEvol", str(TFtoInt(a.contEvol))]
         cmd += ["--evo_type", str(evol_data["evo_type"])]
 
     print(

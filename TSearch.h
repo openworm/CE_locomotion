@@ -154,7 +154,7 @@ class TSearch {
 	friend class Evolution;
 	friend class EvoBase;
 
-	void DoSearch(int ResumeFlag); //make accessible
+	void DoSearch(int ResumeFlag, bool ContinueEvolution = false); //make accessible
 	private:
 		// Helper Methods
 		//void DoSearch(int ResumeFlag);

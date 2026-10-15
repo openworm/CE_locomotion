@@ -34,7 +34,7 @@ class EvoBase
     protected:
 
 
-    bool setFromCPTflag = false, doCPT = true;
+    bool setFromCPTflag = false, doCPT = true, contEvol = false;
     bool configP1Called = false;
     bool cptResizeNeedsEvaluation = false;
     int cptResizeEvaluationStart = 0;
