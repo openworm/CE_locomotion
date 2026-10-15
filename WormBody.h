@@ -32,22 +32,22 @@ using namespace std;
 
 // Settable constants
 
-const double Medium             = 1.0;                           // Normalized medium drag coefficient (0 = water, 1 = agar)
-const double L_worm             = 1.0e-3;                      // Length of worm in m
 const int    N_segments         = 50;                          //YYY      // Number of segments
-const double R_min              = 40.0e-6;                     // Minor radius of prolate ellipse body in m
-const double C_agar_par_total   = 3.2e-3;                      // Total tangential drag coefficient for agar in kg/s
-const double C_agar_perp_total  = 128e-3;                      // Total rod normal drag coefficient in agar in kg/s
-const double C_water_par_total  = 3.3e-6;                      // Total rod tangential drag coefficient for water in kg/s
-const double C_water_perp_total = 5.2e-6;                      // Total rod normal drag coefficient for water in kg/s
+extern double Medium;                           // Normalized medium drag coefficient (0 = water, 1 = agar)
+extern double L_worm;                           // Length of worm in m
+extern double R_min;                            // Minor radius of prolate ellipse body in m
+extern double C_agar_par_total;                 // Total tangential drag coefficient for agar in kg/s
+extern double C_agar_perp_total;                // Total rod normal drag coefficient in agar in kg/s
+extern double C_water_par_total;                // Total rod tangential drag coefficient for water in kg/s
+extern double C_water_perp_total;               // Total rod normal drag coefficient for water in kg/s
 
-const double kappa_L            = (10.0e-3*N_segments)/24;     // Lateral spring constant in kg/s
-const double kappa_D            = 350*kappa_L;                 // Diagonal spring constant in kg/s
-const double kappa_M0           = 20*kappa_L;                  // Baseline active muscle spring constant in kg/s
-const double beta_L             = 0.025*kappa_L;               // Lateral passive damping constant in s
-const double beta_D             = 0.01*kappa_D;                // Diagonal passive damping constant in s
-const double beta_M0            = 100*beta_L;                  // Baseline active damping constant in s
-const double delta_M            = 0.65;                        // Rest muscle length scaling constant 
+extern double kappa_L;                          // Lateral spring constant in kg/s
+extern double kappa_D;                          // Diagonal spring constant in kg/s
+extern double kappa_M0;                         // Baseline active muscle spring constant in kg/s
+extern double beta_L;                           // Lateral passive damping constant in s
+extern double beta_D;                           // Diagonal passive damping constant in s
+extern double beta_M0;                          // Baseline active damping constant in s
+extern double delta_M;                          // Rest muscle length scaling constant 
 
 
 
@@ -55,21 +55,21 @@ const double delta_M            = 0.65;                        // Rest muscle le
 
 const int    N_rods       = N_segments+1;                            // Number of rods
 const int    N_states     = 3*N_rods;                                // Total number of states in the body
-const double L_seg        = L_worm/N_segments;                       // Length of an individual segment in m
-const double D_min        = 2*R_min;                                 // Minor diameter of prolate ellipse body in m
+extern double L_seg;                                                  // Length of an individual segment in m
+extern double D_min;                                                  // Minor diameter of prolate ellipse body in m
 #ifdef BBC_STRICT
-const double C_agar_par   = C_agar_par_total/(2*N_segments + 1);     // Per rod tangential drag coefficient for agar in kg/s;  **** NOTE 1 ****
-const double C_agar_perp  = C_agar_perp_total/(2*N_segments + 1);    // Per rod normal drag coefficient in agar in kg/s;       **** NOTE 1 ****
-const double C_water_par  = C_water_par_total/(2*N_segments + 1);    // Per rod tangential drag coefficient for water in kg/s; **** NOTE 1 ****
-const double C_water_perp = C_water_perp_total/(2*N_segments + 1);   // Per rod normal drag coefficient for water in kg/s;     **** NOTE 1 ****
+extern double C_agar_par;                                             // Per rod tangential drag coefficient for agar in kg/s;  **** NOTE 1 ****
+extern double C_agar_perp;                                            // Per rod normal drag coefficient in agar in kg/s;       **** NOTE 1 ****
+extern double C_water_par;                                            // Per rod tangential drag coefficient for water in kg/s; **** NOTE 1 ****
+extern double C_water_perp;                                           // Per rod normal drag coefficient for water in kg/s;     **** NOTE 1 ****
 #else
-const double C_agar_par   = C_agar_par_total/(2*(N_segments + 1));   // Per rod tangential drag coefficient for agar in kg/s;  **** NOTE 1 ****
-const double C_agar_perp  = C_agar_perp_total/(2*(N_segments + 1));  // Per rod normal drag coefficient in agar in kg/s;       **** NOTE 1 ****
-const double C_water_par  = C_water_par_total/(2*(N_segments + 1));  // Per rod tangential drag coefficient for water in kg/s; **** NOTE 1 ****
-const double C_water_perp = C_water_perp_total/(2*(N_segments + 1)); // Per rod normal drag coefficient for water in kg/s;     **** NOTE 1 ****
+extern double C_agar_par;                                             // Per rod tangential drag coefficient for agar in kg/s;  **** NOTE 1 ****
+extern double C_agar_perp;                                            // Per rod normal drag coefficient in agar in kg/s;       **** NOTE 1 ****
+extern double C_water_par;                                            // Per rod tangential drag coefficient for water in kg/s; **** NOTE 1 ****
+extern double C_water_perp;                                           // Per rod normal drag coefficient for water in kg/s;     **** NOTE 1 ****
 #endif
-const double C_par        = (C_agar_par - C_water_par)*Medium + C_water_par;    // Per rod tangential drag coefficient in kg/s
-const double C_perp       = (C_agar_perp - C_water_perp)*Medium + C_water_perp; // Per rod normal drag coefficient in kg/s
+extern double C_par;                                                  // Per rod tangential drag coefficient in kg/s
+extern double C_perp;                                                 // Per rod normal drag coefficient in kg/s
 
 
 const int Head = 1;
@@ -167,4 +167,3 @@ private:
     double uL_D_x[N_segments],uL_D_y[N_segments],uL_V_x[N_segments],uL_V_y[N_segments];
     double f_D_x[N_rods],f_D_y[N_rods],f_V_x[N_rods],f_V_y[N_rods];    
 };
-

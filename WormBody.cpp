@@ -33,6 +33,36 @@
 using namespace std;
 
 
+// Settable body parameters
+
+double Medium             = 1.0;
+double L_worm             = 1.0e-3;
+double R_min              = 40.0e-6;
+double C_agar_par_total   = 3.2e-3;
+double C_agar_perp_total  = 128e-3;
+double C_water_par_total  = 3.3e-6;
+double C_water_perp_total = 5.2e-6;
+
+double kappa_L            = (10.0e-3*N_segments)/24;
+double kappa_D            = 350*kappa_L;
+double kappa_M0           = 20*kappa_L;
+double beta_L             = 0.025*kappa_L;
+double beta_D             = 0.01*kappa_D;
+double beta_M0            = 100*beta_L;
+double delta_M            = 0.65;
+
+// Derived body parameters
+
+double L_seg;
+double D_min;
+double C_agar_par;
+double C_agar_perp;
+double C_water_par;
+double C_water_perp;
+double C_par;
+double C_perp;
+
+
 // Global constants
 
 double R[N_rods];                     // Rod radii in m
@@ -47,6 +77,22 @@ double L_L0_minus_L_min[N_rods];      // Precomputed difference between the abov
 
 void InitializeBodyConstants(void)
 {
+    L_seg = L_worm/N_segments;
+    D_min = 2*R_min;
+#ifdef BBC_STRICT
+    C_agar_par = C_agar_par_total/(2*N_segments + 1);
+    C_agar_perp = C_agar_perp_total/(2*N_segments + 1);
+    C_water_par = C_water_par_total/(2*N_segments + 1);
+    C_water_perp = C_water_perp_total/(2*N_segments + 1);
+#else
+    C_agar_par = C_agar_par_total/(2*(N_segments + 1));
+    C_agar_perp = C_agar_perp_total/(2*(N_segments + 1));
+    C_water_par = C_water_par_total/(2*(N_segments + 1));
+    C_water_perp = C_water_perp_total/(2*(N_segments + 1));
+#endif
+    C_par = (C_agar_par - C_water_par)*Medium + C_water_par;
+    C_perp = (C_agar_perp - C_water_perp)*Medium + C_water_perp;
+
     double NS2 = N_segments/2.0, LS2 = L_seg*L_seg, r;
     for (int i = 0; i < N_rods; i++)
         R[i] = R_min * fabs(sin(acos((i - NS2)/(NS2 + 0.2))));
@@ -368,4 +414,3 @@ void WormBody::LinearSolve(double M[N_states][N_states], double B[], double Z[])
         Z[i] = sum/M[i][i];
     }
 }
-

@@ -1623,8 +1623,12 @@ def plot_motion_all(
     axis_padding=0.03,
     show_titles=False,
     label_scale=1.0,
+    show_legend=True,
 ):
-    """Plot body profiles and mean-position paths from simulation subfolders."""
+    """Plot body profiles and mean-position paths from simulation subfolders.
+
+    Set show_legend=False to hide the simulation legend in both figures.
+    """
     if not os.path.isdir(input_folder):
         raise NotADirectoryError(
             "Could not find input directory: {}".format(input_folder)
@@ -1821,12 +1825,13 @@ def plot_motion_all(
         apply_tight_equal_limits(ax, bounds)
         ax.set_aspect("equal", adjustable="box")
         ax.grid(True, linewidth=0.4, alpha=0.25)
-        ax.legend(
-            title="Simulation",
-            loc="upper left",
-            bbox_to_anchor=(1.02, 1.0),
-            frameon=False,
-        )
+        if show_legend:
+            ax.legend(
+                title="Simulation",
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1.0),
+                frameon=False,
+            )
         fig.tight_layout()
 
     finish_figure(profile_fig, profile_ax, "Worm body profiles", profile_bounds)
@@ -3082,12 +3087,21 @@ def plot_cell_connections(
     arrow_thickness_scale=1.0,
     evotag=None,
     json_data=None,
+    show_title=True,
+    show_legend=True,
+    tight_crop=False,
+    crop_pad_inches=0.02,
 ):
     """Return a figure showing selected cells and connected model objects.
 
     Model data can be loaded from output_folder/worm_data_worm.json, supplied
     directly with json_data, or both. If both are supplied, json_data is used
     for the plot and output_folder is used only as the save location.
+
+    show_title and show_legend control whether the title and legend are drawn.
+    tight_crop reduces the axis limits to the displayed objects instead of using
+    the default fixed circular frame. crop_pad_inches controls saved-image
+    padding when tight_crop is enabled.
     """
     from matplotlib.lines import Line2D
     from matplotlib.patches import FancyArrowPatch
@@ -3130,6 +3144,18 @@ def plot_cell_connections(
             or scale_value <= 0
         ):
             raise ValueError("{} must be a positive number".format(scale_name))
+    if not isinstance(show_title, bool):
+        raise TypeError("show_title must be a boolean")
+    if not isinstance(show_legend, bool):
+        raise TypeError("show_legend must be a boolean")
+    if not isinstance(tight_crop, bool):
+        raise TypeError("tight_crop must be a boolean")
+    if (
+        isinstance(crop_pad_inches, bool)
+        or not isinstance(crop_pad_inches, (int, float))
+        or crop_pad_inches < 0
+    ):
+        raise ValueError("crop_pad_inches must be a non-negative number")
 
     if json_data is not None:
         if not isinstance(json_data, dict):
@@ -3763,27 +3789,57 @@ def plot_cell_connections(
                 label=evotag,
             )
         )
-    ax.legend(
-        handles=edge_legend + node_legend,
-        loc="upper left",
-        bbox_to_anchor=(1.02, 1.0),
-        frameon=False,
-        fontsize=8 * text_scale,
-        ncol=2 if len(nodes) > 12 else 1,
-    )
-    ax.set_title(
-        "{} selected cells, {} displayed connections".format(
-            len(selected_cells),
-            len(edges),
-        ),
-        fontsize=12 * text_scale,
-    )
-    ax.set_xlim(-2.2, 2.2)
-    ax.set_ylim(-2.2, 2.2)
-    fig.tight_layout()
+    if show_legend:
+        ax.legend(
+            handles=edge_legend + node_legend,
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1.0),
+            frameon=False,
+            fontsize=8 * text_scale,
+            ncol=2 if len(nodes) > 12 else 1,
+        )
+    if show_title:
+        ax.set_title(
+            "{} selected cells, {} displayed connections".format(
+                len(selected_cells),
+                len(edges),
+            ),
+            fontsize=12 * text_scale,
+        )
+    if tight_crop:
+        position_values = np.array(list(positions.values()))
+        if len(position_values):
+            x_min, y_min = position_values.min(axis=0)
+            x_max, y_max = position_values.max(axis=0)
+            node_margin = 0.28 * max(1.0, float(node_scale))
+            arrow_margin = 0.18 * max(1.0, float(arrow_thickness_scale))
+            margin = node_margin + arrow_margin
+            if x_min == x_max:
+                x_min -= margin
+                x_max += margin
+            else:
+                x_min -= margin
+                x_max += margin
+            if y_min == y_max:
+                y_min -= margin
+                y_max += margin
+            else:
+                y_min -= margin
+                y_max += margin
+            ax.set_xlim(x_min, x_max)
+            ax.set_ylim(y_min, y_max)
+    else:
+        ax.set_xlim(-2.2, 2.2)
+        ax.set_ylim(-2.2, 2.2)
+    fig.tight_layout(pad=0.1 if tight_crop else 1.08)
 
     if save_png:
-        fig.savefig(os.path.join(output_folder, filename), bbox_inches="tight", dpi=300)
+        fig.savefig(
+            os.path.join(output_folder, filename),
+            bbox_inches="tight",
+            pad_inches=crop_pad_inches if tight_crop else 0.1,
+            dpi=300,
+        )
 
     return fig
 
@@ -4140,7 +4196,9 @@ def plot_json_structure(
                     text = str(sub_box.get("title", ""))
                     if lines:
                         text += "\n" + "\n".join(str(line) for line in lines)
-                    add_fit_requirement(requirements, text, inner_w * 0.90, sub_h * 0.78)
+                    add_fit_requirement(
+                        requirements, text, inner_w * 0.90, sub_h * 0.78
+                    )
                 continue
 
             add_fit_requirement(requirements, spec["text"], w * 0.86, h * 0.72)
@@ -5571,6 +5629,33 @@ def plot_evols(a=None, **kwargs):
     return
 
 
+def plot_example_activity(
+    output_folder,
+    model_name="W2DSR",
+    show_plot=False,
+    compact_time_labels=False,
+    show_bottom_left_panel=True,
+):
+    """Generate the standard ExampleActivity.png figure for an output folder.
+
+    When compact_time_labels is True, repeated Time (s) x-axis labels are
+    suppressed on intermediate activity rows and retained on the lowest
+    activity row. This reduces the vertical space used by the figure while
+    keeping the time axis labelled where it is most useful.
+
+    When show_bottom_left_panel is False, the 2D worm-motion panel in the
+    bottom-left of ExampleActivity.png is hidden. The separate Motion.png file
+    is still generated from the same body data.
+    """
+    return reload_single_run(
+        showPlot=show_plot,
+        folderName=output_folder,
+        modelName=model_name,
+        compactActivityTimeLabels=compact_time_labels,
+        showExampleActivityBottomLeftPanel=show_bottom_left_panel,
+    )
+
+
 # def reload_single_run(show_plot=True, verbose=False, plot_format_name=None):
 def reload_single_run(a=None, **kwargs):
     a = hf.build_namespace(hf.DEFAULTS, a, **kwargs)
@@ -5915,6 +6000,33 @@ def reload_single_run(a=None, **kwargs):
     else:
         fig, axs = plt.subplots(plot_rows, 2, figsize=(10, 5), squeeze=False)
 
+    compact_time_labels = bool(
+        getattr(
+            a,
+            "compactActivityTimeLabels",
+            getattr(a, "compact_activity_time_labels", False),
+        )
+    )
+    activity_row_count = (
+        len(activity_panels)
+        if use_new_activity_panels
+        else len(plot_format["fig_titles"])
+    )
+    last_activity_row = activity_row_count - 1
+    show_bottom_left_panel = bool(
+        getattr(
+            a,
+            "showExampleActivityBottomLeftPanel",
+            getattr(a, "show_example_activity_bottom_left_panel", True),
+        )
+    )
+
+    def set_time_xlabel(ax, row_index):
+        if not compact_time_labels or row_index == last_activity_row:
+            ax.set_xlabel("Time (s)", fontsize=label_font_size)
+        else:
+            ax.set_xlabel("")
+
     ###  Worm neuron/muscle activation
 
     t_start = 0
@@ -5931,8 +6043,8 @@ def reload_single_run(a=None, **kwargs):
                 panel["labels"],
                 count_num,
             )
-            axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
-            axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
+            set_time_xlabel(axs[count_num, 0], count_num)
+            set_time_xlabel(axs[count_num, 1], count_num)
             count_num += 1
     else:
         for val in zip(
@@ -5946,8 +6058,8 @@ def reload_single_run(a=None, **kwargs):
                     axs[count_num, 0].xaxis.set_ticklabels([])
                 else:
                     axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
-            axs[count_num, 0].set_xlabel("Time (s)", fontsize=label_font_size)
-            axs[count_num, 1].set_xlabel("Time (s)", fontsize=label_font_size)
+            set_time_xlabel(axs[count_num, 0], count_num)
+            set_time_xlabel(axs[count_num, 1], count_num)
             count_num += 1
             offset += val[0]
 
@@ -5991,15 +6103,18 @@ def reload_single_run(a=None, **kwargs):
             hf.plot_orients(body_data)
 
         # title = axs[count_num, 0].set_title("2D worm motion", fontsize=title_font_size, loc='right')
-        axs[count_num, 0].set_title(
-            "2D worm motion (mm)",
-            fontsize=title_font_size,  # y=0.5, x=1.1
-        )
+        if show_bottom_left_panel:
+            axs[count_num, 0].set_title(
+                "2D worm motion (mm)",
+                fontsize=title_font_size,  # y=0.5, x=1.1
+            )
 
-        box = axs[count_num, 0].get_position()
-        box.x0 = box.x0 - 0.1
-        box.x1 = box.x1 - 0.1
-        axs[count_num, 0].set_position(box)
+            box = axs[count_num, 0].get_position()
+            box.x0 = box.x0 - 0.1
+            box.x1 = box.x1 - 0.1
+            axs[count_num, 0].set_position(box)
+        else:
+            axs[count_num, 0].set_visible(False)
         # offset = np.array([-0.15, 0.0])
         # title.set_position(axs[count_num, 0].get_position() + offset)
 
@@ -6067,13 +6182,14 @@ def reload_single_run(a=None, **kwargs):
                         % ("\n" if i == point_start else "", i, t, x, y, color)
                     )
 
-                axs[count_num, 0].plot(
-                    x,
-                    y,
-                    ".",
-                    color=color,
-                    markersize=markersize if t == 1 else markersize_small,
-                )
+                if show_bottom_left_panel:
+                    axs[count_num, 0].plot(
+                        x,
+                        y,
+                        ".",
+                        color=color,
+                        markersize=markersize if t == 1 else markersize_small,
+                    )
                 ax_body.plot(
                     x,
                     y,
@@ -6105,7 +6221,10 @@ def reload_single_run(a=None, **kwargs):
         # fig_body.close()
         plt.close(fig_body)
 
-    fig.tight_layout()
+    if compact_time_labels:
+        fig.tight_layout(h_pad=0.2)
+    else:
+        fig.tight_layout()
     # fig.subplots_adjust(hspace=0.5)
 
     filename = hf.rename_file("ExampleActivity.png")

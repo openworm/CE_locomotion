@@ -114,6 +114,8 @@ DEFAULTS = {
     "checkPointInterval": 1,
     "doCPT": True,
     "doRun": True,
+    "compactActivityTimeLabels": False,
+    "showExampleActivityBottomLeftPanel": True,
     "evo_type": None,
     # "MutVar" : 0.1,
     # "CrossProb" : 0.5
@@ -449,6 +451,8 @@ def normalize_run_argument_aliases(a):
         "population_size": "popSize",
         "max_generations": "maxGens",
         "checkpoint_interval": "checkPointInterval",
+        "compact_activity_time_labels": "compactActivityTimeLabels",
+        "show_example_activity_bottom_left_panel": "showExampleActivityBottomLeftPanel",
     }
     for alias, canonical in aliases.items():
         if not hasattr(a, alias):
@@ -1264,7 +1268,11 @@ def run(a=None, **kwargs):
 
         # reload_single_run(show_plot=False, plot_format=plot_format)
         reload_single_run(
-            showPlot=False, folderName=a.outputFolderName, modelName=model_name
+            showPlot=False,
+            folderName=a.outputFolderName,
+            modelName=model_name,
+            compactActivityTimeLabels=a.compactActivityTimeLabels,
+            showExampleActivityBottomLeftPanel=a.showExampleActivityBottomLeftPanel,
         )
 
         if doW2D and doPlotEvol:

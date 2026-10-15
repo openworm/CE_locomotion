@@ -31,7 +31,14 @@ title_font_size = 16
 label_font_size = 14
 
 
-DEFAULTS = {"modelName": None, "showPlot": True, "folderName": None, "verbose": False}
+DEFAULTS = {
+    "modelName": None,
+    "showPlot": True,
+    "folderName": None,
+    "verbose": False,
+    "compactActivityTimeLabels": False,
+    "showExampleActivityBottomLeftPanel": True,
+}
 
 MFUNC_NAMES = {
     1: "mult_func",
