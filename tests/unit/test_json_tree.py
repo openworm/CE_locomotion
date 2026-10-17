@@ -1,6 +1,6 @@
 import unittest
 
-import helper_funcs as hf
+from worm2d import helper_funcs as hf
 
 
 class JSONTreeTests(unittest.TestCase):

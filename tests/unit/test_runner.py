@@ -1,11 +1,11 @@
 import unittest
 
-import run_main
+from worm2d import runner
 
 
 class EvolutionGenerationFieldTests(unittest.TestCase):
     def test_cont_evol_defaults_to_false(self):
-        self.assertFalse(run_main.DEFAULTS["contEvol"])
+        self.assertFalse(runner.DEFAULTS["contEvol"])
 
     def test_canonical_max_gens_is_preserved(self):
         evolution = {
@@ -13,7 +13,7 @@ class EvolutionGenerationFieldTests(unittest.TestCase):
             "TotalGenerations": 160,
         }
 
-        result = run_main.normalize_evolution_generation_fields(evolution)
+        result = runner.normalize_evolution_generation_fields(evolution)
 
         self.assertEqual(result["maxGens"], 20)
         self.assertEqual(result["TotalGenerations"], 160)
@@ -21,14 +21,14 @@ class EvolutionGenerationFieldTests(unittest.TestCase):
     def test_legacy_max_generations_is_accepted_but_not_rewritten(self):
         evolution = {"MaxGenerations": 20}
 
-        result = run_main.normalize_evolution_generation_fields(evolution)
+        result = runner.normalize_evolution_generation_fields(evolution)
 
         self.assertEqual(result, {"maxGens": 20})
 
     def test_snake_case_alias_is_accepted_but_not_rewritten(self):
         evolution = {"max_generations": 30}
 
-        result = run_main.normalize_evolution_generation_fields(evolution)
+        result = runner.normalize_evolution_generation_fields(evolution)
 
         self.assertEqual(result, {"maxGens": 30})
 

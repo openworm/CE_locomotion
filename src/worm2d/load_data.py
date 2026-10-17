@@ -15,7 +15,7 @@ import neuromlLocal.utils as utils
 
 # from matplotlib.ticker import MaxNLocator
 import math
-import helper_funcs as hf
+from . import helper_funcs as hf
 
 # import neuromlLocal.utils as utils
 import matplotlib as mpl

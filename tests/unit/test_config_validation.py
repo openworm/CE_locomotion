@@ -2,7 +2,7 @@ import copy
 import math
 import unittest
 
-import helper_funcs as hf
+from worm2d import helper_funcs as hf
 
 
 def minimal_config():

@@ -86,13 +86,15 @@ def _get_muscle_count(json_data):
 
 
 def get_worm2d_version():
-    # Find the version in variable W2D_VERSION in Worm2D/Worm2D.h
-    worm2d_h_file = os.path.join(os.path.dirname(__file__), "Worm2D", "Worm2D.h")
-    with open(worm2d_h_file, "r") as f:
-        for line in f:
-            if "W2D_VERSION" in line:
-                return line.split('"')[1]
-    return "Unknown"
+    """Return the installed Worm2D package version."""
+    try:
+        from importlib.metadata import version
+
+        return "v" + version("worm2d")
+    except Exception:
+        from . import __version__
+
+        return "v" + __version__
 
 
 def short_repr(x, max_len=80):

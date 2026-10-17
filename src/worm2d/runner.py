@@ -3,7 +3,9 @@ import argparse
 import os
 import sys
 import neuromlLocal.utils as utils
-import helper_funcs as hf
+
+from . import helper_funcs as hf
+from .native import resolve_main_osc
 
 # from importlib import import_module
 import shutil
@@ -106,8 +108,8 @@ DEFAULTS = {
     "crandSeed": None,
     "inputFolderName": None,
     "nervousSystemFileName": "main_sim",
-    "mainProcessName": "main",
-    "modelFolder": ".",
+    "mainProcessName": "main_osc",
+    "modelFolder": None,
     "maxGens": None,
     "modelName": None,
     "reRand": False,
@@ -200,8 +202,8 @@ def process_args():
         metavar="<model folder name>",
         default=DEFAULTS["modelFolder"],
         help=(
-            "Name of model code folder. Default is the current folder.\n"
-            "Other options include `RoyalSociety2018', 'network2021' and 'Worm2D'\n"
+            "Optional directory containing a development main_osc executable.\n"
+            "By default, the executable installed with the package is used.\n"
         ),
     )
 
@@ -967,7 +969,11 @@ def run(a=None, **kwargs):
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False
 
-    main_cmd = model_folder + "/" + mainProcessName
+    if mainProcessName != "main_osc":
+        raise ValueError(
+            "The installable Worm2D package supports only the main_osc executable"
+        )
+    main_cmd = str(resolve_main_osc(model_folder))
     cmd = [main_cmd]
 
     evol_pars = [
@@ -1304,7 +1310,7 @@ def run(a=None, **kwargs):
     rsr(show_plot=False, plot_format = plot_format) """
 
     if model_folder != "CE_orientation":
-        from load_data import reload_single_run
+        from .load_data import reload_single_run
 
         # reload_single_run(show_plot=False, plot_format=plot_format)
         reload_single_run(
@@ -1316,7 +1322,7 @@ def run(a=None, **kwargs):
         )
 
         if doW2D and doPlotEvol:
-            from load_data import plot_evols
+            from .load_data import plot_evols
 
             plot_evols(a, folderName=a.outputFolderName, modelName=model_name)
 

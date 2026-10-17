@@ -1,6 +1,85 @@
+[build-system]
+requires = ["scikit-build-core>=0.10"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "worm2d"
+version = "0.1.0"
+description = "Configurable neuromechanical models of C. elegans locomotion"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Adam Ponzi"}]
+dependencies = [
+    "matplotlib>=3.6",
+    "numpy>=1.23",
+    "scipy>=1.9",
+]
+
+[project.optional-dependencies]
+notebooks = ["ipython", "ipywidgets", "jupyter"]
+neuroml = ["modelspec", "pyneuroml"]
+test = ["pytest>=7", "ruff==0.16.0"]
+build = ["build", "scikit-build-core>=0.10"]
+
+[project.scripts]
+worm2d = "worm2d.cli:main"
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+minimum-version = "build-system.requires"
+build.tool-args = ["-j2"]
+wheel.packages = ["src/worm2d", "neuromlLocal"]
+wheel.exclude = [
+    "neuromlLocal/.test*",
+    "neuromlLocal/testc302SigSim/**",
+]
+sdist.include = ["native/**", "CMakeLists.txt"]
+sdist.exclude = [
+    ".github/**",
+    ".vscode/**",
+    ".test*",
+    "CE_orientation/**",
+    "LLM/**",
+    "RoyalSociety2018/**",
+    "Worm2D/**",
+    "docs/**",
+    "exampleRun*/**",
+    "experiments/**",
+    "network2021/**",
+    "neuromlLocal/.test*",
+    "neuromlLocal/testc302SigSim/**",
+    "neuromlLocal_bak/**",
+    "notebooks_bak/**",
+    "test_files/**",
+    "test_output/**",
+    "testruns/**",
+    "/*.cpp",
+    "/*.h",
+    "/*.py",
+    "/*.png",
+    "/*.nb",
+    "/*.gv",
+    "/*.dat",
+    "/*.o",
+    "/Makefile",
+    "/HISTORY.md",
+    "/JSON_config_figure.md",
+    "/main",
+    "/nt.txt",
+    "/pyproject_1.toml",
+    "/search.cpt",
+    "/worm_data.json",
+    "test*.py",
+    "test*.sh",
+]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 88
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

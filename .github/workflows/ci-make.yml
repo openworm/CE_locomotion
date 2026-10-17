@@ -1,98 +1,65 @@
-name: C/C++ CI
+name: Worm2D package CI
 
 on:
   push:
-    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
+    branches: ["main", "test*", "package/**"]
   pull_request:
-    branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
+    branches: ["main", "test*", "package/**"]
 
 jobs:
-  build:
-
-    runs-on: ${{ matrix.runs-on }}
+  package:
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
-      matrix:        
-        runs-on: [ubuntu-22.04, ubuntu-latest, macos-latest, macos-14 ]
-        python-version: [ "3.10", "3.12" ] # Note: 3.14 causes issues with Neuron 8.2.7
+      matrix:
+        python-version: ["3.10", "3.12"]
 
     steps:
-    - uses: actions/checkout@v6
-    
-    - name: Set up Python  ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
-      with:
-        python-version:  ${{ matrix.python-version }}
+      - uses: actions/checkout@v6
 
-    - name: C++ info
-      run: g++ -v
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install graphviz
-      uses: ts-graphviz/setup-graphviz@v2
-      with:
-        # Skip to run brew update command on macOS.
-        macos-skip-brew-update: 'true' # default false
+      - name: Install native build dependency
+        run: sudo apt-get update && sudo apt-get install -y nlohmann-json3-dev
 
-    - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install -y nlohmann-json3-dev tree graphviz openjdk-11-jdk
-      if: ${{ contains(matrix.runs-on, 'ubuntu') }}
+      - name: Install build and test tools
+        run: python -m pip install build pytest ruff==0.16.0
 
-    - name: Install dependencies (macOS)
-      run: brew install nlohmann-json tree
-      if: ${{ contains(matrix.runs-on, 'macos') }}
+      - name: Lint Python package
+        run: ruff check src/worm2d tests run_main.py helper_funcs.py load_data.py W2Djson_utils.py
 
-    
-    - name: Run C++ tests 
-      run: |
-          make tests
-          ./tests
+      - name: Run unit tests
+        run: pytest -q
 
-    - name: Test makefile
-      run: make
+      - name: Build source distribution and wheel
+        run: python -m build
 
-    - name: Install Python requirements
-      run: |
-        pip install setuptools==80 # needed for Neuron on py >=3.12
-        pip install NEURON==8.2.7
-        pip install OSBModelValidation pyNeuroML
-        pip install numpy matplotlib scipy modelspec
-        pip install ipywidgets
-        pip install ruff
-        
-        pip list
+      - name: Inspect wheel contents
+        run: |
+          python -m zipfile -l dist/*.whl | grep 'worm2d/bin/main_osc'
+          ! python -m zipfile -l dist/*.whl | grep -E 'worm2d/bin/main$|main.cpp'
 
-        which nrnivmodl
-        nrnivmodl 
-        
-    - name: Test C++/Python interactions
-      run: |
-        cd test_files
-        ./test.sh 
-        cd modelspec_api
-        ./test.sh
-        
-    - name: Test directly running main program
-      run: |
-        ./main -p 6  # Note: small population of 6 for quick runtime
-        ls -alth
+      - name: Test installed wheel outside source tree
+        run: |
+          python -m pip install --force-reinstall dist/*.whl
+          cd /tmp
+          python -c "import worm2d; from worm2d.native import resolve_main_osc; print(worm2d.__version__, resolve_main_osc())"
 
-    - name: Test Python command line script
-      run: |
-        python run_main.py -R 1233 -p 6 --doEvol --outputFolderName exampleRun2  # Note: small population of 6 for quick runtime
+  main-osc-regression:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
 
-    - name: Test using test_all.sh
-      run: |
-        which nrniv
-        export NEURON_HOME=$pythonLocation
-        env
-        
-        ./test_all.sh # also generated neuroml
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
 
-        git diff exampleRun/phenotype.dat 
+      - name: Install regression dependencies and package
+        run: |
+          sudo apt-get update && sudo apt-get install -y nlohmann-json3-dev
+          python -m pip install . OSBModelValidation
 
-      
-    - name: list generated files
-      run: |
-          ls -alth
-          tree
-          pip list
+      - name: Run main_osc regression
+        run: omv test -V test.W2D18.omt
