@@ -1,4 +1,4 @@
-find_package(Python3 REQUIRED COMPONENTS Development.Embed)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development.Embed)
 find_package(Threads REQUIRED)
 find_path(NLOHMANN_JSON_INCLUDE_DIR nlohmann/json.hpp REQUIRED)
 

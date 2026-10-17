@@ -99,6 +99,7 @@ sdist.include = [
     ".test.2018.mep",
     ".test.2018gen.mep",
     ".test.W2DSR18E.mep",
+    ".test.W2DSR18E_sr.mep",
     ".test.izq_sim_W2D21.mep",
     ".test.W2DSR21E.mep",
     ".test.W2DCE.mep",

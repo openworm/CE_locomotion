@@ -6,7 +6,7 @@
 all: main_osc
 
 main_osc:
-	cmake -S .. -B ../build
+	cmake -S .. -B ../build -DPython3_EXECUTABLE="$(shell command -v python)"
 	cmake --build ../build --target main_osc
 	cp ../build/main_osc ./main_osc
 
