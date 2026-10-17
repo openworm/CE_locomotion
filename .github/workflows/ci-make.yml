@@ -62,4 +62,4 @@ jobs:
           python -m pip install . OSBModelValidation
 
       - name: Run main_osc regression
-        run: omv test -V test.W2D18.omt
+        run: omv test -V .test.W2D18.omt
