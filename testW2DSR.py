@@ -9,7 +9,7 @@ doOrig = True
 doNML = True
 doMuscles = True
 
-outputFolderName = "testruns/exW2DSR"
+outputFolderName = "testruns/W2DSR/run"
 
 args = dict(
     simduration=20,
@@ -17,7 +17,7 @@ args = dict(
     RandSeed=655117,
     modelName="W2DSR",
     modelFolder="Worm2D",
-    inputFolderName="exampleRunW2DCE",
+    inputFolderName="testruns/W2DCE/run",
     outputFolderName=outputFolderName,
     reRand=False,
     doTestRun=True,
@@ -40,7 +40,7 @@ if doNML:
     os.chdir("../")
 
     args["inputFolderName"] = outputFolderName
-    args["outputFolderName"] = outputFolderName + "_nml"
+    args["outputFolderName"] = "testruns/W2DSR/nml"
     args["doNML"] = True
     args["reRand"] = False
     run(**args)
@@ -56,7 +56,7 @@ if doMuscles:
     os.chdir("../")
 
     args["inputFolderName"] = outputFolderName
-    args["outputFolderName"] = outputFolderName + "_nml_musc"
+    args["outputFolderName"] = "testruns/W2DSR/nml_musc"
     args["doNML"] = True
     args["reRand"] = False
     args["doMuscSim"] = True

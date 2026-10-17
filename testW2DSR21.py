@@ -9,8 +9,8 @@ doOrig = True
 doNML = True
 doMuscles = True
 
-inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2DSR21"
+inputFolderName = "testruns/izq_sim_W2D21/run/103"
+outputFolderName = "testruns/W2DSR21/run"
 
 args = dict(
     simduration=60,
@@ -41,7 +41,7 @@ if doNML:
     os.chdir("../")
 
     args["inputFolderName"] = outputFolderName
-    args["outputFolderName"] = outputFolderName + "_nml"
+    args["outputFolderName"] = "testruns/W2DSR21/nml"
     args["doNML"] = True
     args["reRand"] = False
     run(**args)
@@ -57,7 +57,7 @@ if doMuscles:
     os.chdir("../")
 
     args["inputFolderName"] = outputFolderName
-    args["outputFolderName"] = outputFolderName + "_nml_musc"
+    args["outputFolderName"] = "testruns/W2DSR21/nml_musc"
     args["doNML"] = True
     args["reRand"] = False
     args["doMuscSim"] = True

@@ -9,7 +9,7 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DSRFR"
+outputFolderName = "testruns/W2DSRFR/run"
 
 args = dict(
     simduration=10,
@@ -21,7 +21,7 @@ args = dict(
     RandSeed=987,
     modelName="W2DSR",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2DCEFR",
+    inputFolderName="testruns/W2DCEFR/run",
     outputFolderName=outputFolderName,
     doEvol=True,
     overwrite=True,

@@ -9,11 +9,10 @@ experiments:
     observables:
       spike times:
         file: 
-          path: testruns/exW2DSR18E/act.dat
+          path: testruns/W2DSR18E/run/act.dat
           columns: [0, 1]
           scaling: [1, 1]
         spike detection: 
           method: threshold
           threshold: 1
         tolerance: 0
-  

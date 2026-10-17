@@ -9,8 +9,8 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2D21E"
+inputFolderName = "testruns/izq_sim_W2D21/run/103"
+outputFolderName = "testruns/W2D21E/run"
 
 # sre - states minus bias before and after init.
 # sre - states become minus bias on first gen, on later gens they stay the same although bias changes

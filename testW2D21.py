@@ -9,8 +9,8 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-inputFolderName = "experiments/izq_runs_nets_W2D21/103"
-outputFolderName = "testruns/exW2D21"
+inputFolderName = "testruns/izq_sim_W2D21/run/103"
+outputFolderName = "testruns/W2D21/run"
 
 args = dict(
     simduration=60,

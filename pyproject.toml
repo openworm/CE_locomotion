@@ -1,3 +1,118 @@
+[build-system]
+requires = ["scikit-build-core>=0.10"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "worm2d"
+version = "0.1.0"
+description = "Configurable neuromechanical models of C. elegans locomotion"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Adam Ponzi"}]
+dependencies = [
+    "matplotlib>=3.6",
+    "numpy>=1.23",
+    "scipy>=1.9",
+]
+
+[project.optional-dependencies]
+notebooks = ["ipython", "ipywidgets", "jupyter"]
+neuroml = ["modelspec", "pyneuroml", "neuron>=8.2"]
+test = ["pytest>=7", "ruff==0.16.0"]
+build = ["build", "scikit-build-core>=0.10"]
+
+[project.scripts]
+worm2d = "worm2d.cli:main"
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+minimum-version = "build-system.requires"
+build.tool-args = ["-j2"]
+wheel.packages = ["src/worm2d"]
+sdist.include = [
+    "native/**",
+    "neuromlLocal/__init__.py",
+    "neuromlLocal/build_network.py",
+    "neuromlLocal/create_new_lems_file.py",
+    "neuromlLocal/main_sim.py",
+    "neuromlLocal/regenerate.py",
+    "neuromlLocal/utils.py",
+    "neuromlLocal/cell_W2Dosc.xml",
+    "neuromlLocal/cell_syn_W2D.xml",
+    "neuromlLocal/musc_W2D.xml",
+    "neuromlLocal/musc_X.xml",
+    "neuromlLocal/musc_X_cells.xml",
+    "neuromlLocal/syn_W2D.xml",
+    "src/worm2d/__init__.py",
+    "src/worm2d/cli.py",
+    "src/worm2d/helper_funcs.py",
+    "src/worm2d/json_utils.py",
+    "src/worm2d/load_data.py",
+    "src/worm2d/native.py",
+    "src/worm2d/runner.py",
+    "CMakeLists.txt",
+    "PACKAGING.md",
+    "/run_main.py",
+    "/helper_funcs.py",
+    "/load_data.py",
+    "/W2Djson_utils.py",
+    "/F2_fig_behavior.py",
+    "/test_all.sh",
+    "testW2D18.py",
+    "testW2D18gen.py",
+    "testW2DSR18.py",
+    "testW2DSR18E.py",
+    "testW2D18genE.py",
+    "testW2DSR18srm.py",
+    "run_izq_sims_W2D21.py",
+    "testW2D21.py",
+    "testW2D21E.py",
+    "testW2DSRE21.py",
+    "testW2DSR21.py",
+    "testW2DCE.py",
+    "testW2DCEs.py",
+    "testW2DSR.py",
+    "testW2DSRE.py",
+    "testW2DCEE.py",
+    "testW2DCEFR.py",
+    "testW2DCEFRv2.py",
+    "testW2DSRFR.py",
+    ".test.W2D18.omt",
+    ".test.W2D18gen.omt",
+    ".test.W2DSR18.omt",
+    ".test.W2DSR18E.omt",
+    ".test.W2D18genE.omt",
+    ".test.W2DSR18srm.omt",
+    ".test.izq_sim_W2D21.omt",
+    ".test.W2D21.omt",
+    ".test.W2D21E.omt",
+    ".test.W2DSRE21.omt",
+    ".test.W2DSR21.omt",
+    ".test.W2DCE.omt",
+    ".test.W2DCEs.omt",
+    ".test.W2DSR.omt",
+    ".test.W2DSRE.omt",
+    ".test.W2DCEE.omt",
+    ".test.W2DCEFR.omt",
+    ".test.W2DCEFRv2.omt",
+    ".test.W2DSRFR.omt",
+    ".test.2018.mep",
+    ".test.2018gen.mep",
+    ".test.W2DSR18E.mep",
+    ".test.izq_sim_W2D21.mep",
+    ".test.W2DSR21E.mep",
+    ".test.W2DCE.mep",
+    ".test.W2DCEs.mep",
+    ".test.W2DCEE.mep",
+    ".test.W2DCEFR.mep",
+    ".test.W2DCEFRv2.mep",
+    "experiments/izq_selected/23/best.gen.dat",
+    "experiments/izq_selected/103/best.gen.dat",
+]
+sdist.exclude = [
+    "**",
+]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 88

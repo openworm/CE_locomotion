@@ -9,18 +9,18 @@ from helper_funcs import make_directory
 from neuromlLocal.regenerate import run as regenerate_run
 
 inputFolderBase = "experiments/izq_selected"
-outFolderBase = "experiments/izq_runs_nets_W2D21"
+outFolderBase = "testruns/izq_sim_W2D21/run"
 # inputFolderBase = "../experiments/test_selected"
 # outFolderBase = "../experiments/test_nets"
 
 # popSize = 10
 if not make_directory(outFolderBase, True):
     sys.exit(1)
-outFolderBase_nml = "experiments/izq_runs_nets_nml_W2D21"
+outFolderBase_nml = "testruns/izq_sim_W2D21/nml"
 # outFolderBase_nml = "../experiments/test_nets_nml"
 if not make_directory(outFolderBase_nml, True):
     sys.exit(1)
-outFolderBase_nml_musc = "experiments/izq_runs_nets_nml_musc_W2D21"
+outFolderBase_nml_musc = "testruns/izq_sim_W2D21/nml_musc"
 if not make_directory(outFolderBase_nml_musc, True):
     sys.exit(1)
 

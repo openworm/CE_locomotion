@@ -1,4 +1,4 @@
-import helper_funcs as hf
+from . import helper_funcs as hf
 import neuromlLocal.utils as utils
 import json
 import pathlib

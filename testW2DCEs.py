@@ -8,7 +8,7 @@ run(
     maxGens=5,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2DCEs",
+    outputFolderName="testruns/W2DCEs/run",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

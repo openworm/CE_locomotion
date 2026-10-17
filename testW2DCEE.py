@@ -9,7 +9,7 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DCEE"
+outputFolderName = "testruns/W2DCEE/run"
 
 args = dict(
     duration=24,
@@ -20,7 +20,7 @@ args = dict(
     popSize=10,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    inputFolderName="testruns/exW2DCEs",
+    inputFolderName="testruns/W2DCEs/run",
     outputFolderName=outputFolderName,
     reRand=False,
     doTestRun=True,

@@ -8,7 +8,7 @@ run(
     RandSeed=929921,
     modelName="W2D18",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2D18gen",
+    outputFolderName="testruns/W2D18gen/run",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

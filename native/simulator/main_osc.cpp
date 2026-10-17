@@ -1,8 +1,6 @@
-#include "Worm2Dmods.h"
 #include "Worm21.h"
 #include "WormRS18.h"
 #include "Worm2DCE.h"
-#include "WormAgent.h"
 #include "Evolution.h"
 
 
@@ -79,29 +77,23 @@ int main (int argc, const char* argv[])
     if (do_evol) 
     {
         
-        Evolution * evo = 0;
+        Evolution * evo = nullptr;
     
         if (sup_model_name == "W2DSR" || model_name == "W2DSR") 
         //evo = new EvolutionFullWJ<Worm2DSRE>(j_orig,cmd); 
         evo = new EvolutionFullWJ<WormCO2DSR>(j_orig,cmd);
 
 
-        else{
-        if (model_name == "W2DCE") evo = new EvolutionFullWC<WormCE>(cmd); 
-        if (model_name == "W2DCESR") evo = new EvolutionFullWC<WormCESR>(cmd);
+        else if (model_name == "W2DCE")
+            evo = new EvolutionFullWC<WormCE>(cmd);
+        else if (model_name == "W2D21")
+            evo = new EvolutionFullWC<Worm21>(cmd);
+        else if (model_name == "W2D18")
+            evo = new EvolutionFullWC<Worm18>(cmd);
 
-        if (model_name == "W2Dosc") evo = new EvolutionFullWC<Worm2Dosc>(cmd);
-        if (model_name == "W2DoscH") evo = new EvolutionFullW<Worm2DoscHalf>(cmd);
-        if (model_name == "W2Dosc21") evo = new EvolutionFullWC<Worm2Dosc21>(cmd);
-        if (model_name == "W2Dosc21S") evo = new EvolutionFullW<Worm2Dosc21S>(cmd);
-        if (model_name == "W2Dosc21all") evo = new EvolutionFullWC<Worm2Dosc21all>(cmd);
-        if (model_name == "W2Dosc21Coup") evo = new EvolutionFullW<Worm2Dosc21Coup>(cmd);
-        if (model_name == "W2Dosc21CF") evo = new EvolutionFullW<Worm2Dosc21CF>(cmd);
-        if (model_name == "W2D21") evo = new EvolutionFullWC<Worm21>(cmd); 
-        if (model_name == "W2D21R") evo = new EvolutionFullWC<Worm21R>(cmd); 
-
-        if (model_name == "W2D18") evo = new EvolutionFullWC<Worm18>(cmd);
-        if (model_name == "W2DCO") evo = new EvolutionFullWC<WormAgent>(cmd);
+        if (evo == nullptr) {
+            cerr << "Unsupported model for evolution: " << model_name << endl;
+            return 1;
         }
         //assert(0);
         StepSize = evo->itsEvoPars().StepSize;
@@ -157,15 +149,12 @@ int main (int argc, const char* argv[])
     
     bool do_nml =  cmd->getArgValInt("--donml",0);
 
-    Worm2Dbase * w2;
+    Worm2Dbase * w2 = nullptr;
    
 
     //const string json_filename = ep1.rename_file("worm_data_evo.json");
 
     bool do_musclesim = getParameterInt(argc,argv,"--domusc","0");
-    bool useGenJson = getParameterInt(argc,argv,"--useGenJson","1");
- 
-   
     if (sup_model_name == "W2DSR") {
     
     if (do_musclesim){w2 = new Worm2DSRm(json_filename, cmd);}
@@ -182,46 +171,15 @@ int main (int argc, const char* argv[])
 
     const string gen_filename =  rename_file("best.gen.dat", directoryName);
 
-    if (model_name == "W2Dosc") w2 = new Worm2Dosc(gen_filename, cmd);
-    if (model_name == "W2DoscH") w2 = new Worm2DoscHalf(gen_filename);
-    if (model_name == "W2Dosc21") w2 = new Worm2Dosc21(gen_filename, cmd);
-    if (model_name == "W2Dosc21S") w2 = new Worm2Dosc21S(gen_filename);
-    if (model_name == "W2Dosc21all") w2 = new Worm2Dosc21all(gen_filename, useGenJson, cmd);
-    if (model_name == "W2Dosc21Coup") w2 = new Worm2Dosc21Coup(gen_filename);
-    if (model_name == "W2Dosc21CF") w2 = new Worm2Dosc21CF(gen_filename);
     if (model_name == "W2D21") w2 = new Worm21(gen_filename, cmd);
     //if (model_name == "W2DCE") w2 = new WormCE(json_filename, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(json_filename, cmd);
 
     if (model_name == "W2DCE") w2 = new WormCE(cmd, gen_filename);
     //if (model_name == "W2DCE") w2 = new WormCE(gen_filename);
-    if (model_name == "W2D21R") w2 = new Worm21R(gen_filename, cmd);
-    //if (model_name == "W2DCESR") w2 = new WormCESR(cmd, gen_filename);
-    if (model_name == "W2DCESR") w2 = new WormCESR(json_filename, gen_filename, cmd);
     if (model_name == "W2D18") w2 = new Worm18(gen_filename, cmd);
-    if (model_name == "W2DCO") w2 = new WormAgent(gen_filename, cmd);
 
     }else{
-
-        
-    if (model_name == "W2Dosc") 
-    {
-        if (do_musclesim) w2 = new Worm2DoscNMLm(json_filename, cmd);
-        else w2 = new Worm2DoscNML(json_filename, cmd);
-        
-    }
-
-    if (model_name == "W2Dosc21") 
-    {
-        if (do_musclesim) w2 = new Worm2Dosc21NMLm(json_filename, cmd);
-        else w2 = new Worm2Dosc21NML(json_filename, cmd);
-    }
-
-    if (model_name == "W2Dosc21all") 
-    {
-        if (do_musclesim) w2 = new Worm2Dosc21allNMLm(json_filename, cmd);
-        else w2 = new Worm2Dosc21allNML(json_filename, cmd);
-    }
 
     if (model_name == "W2DCE") w2 = new Worm2DCE(json_filename, cmd);
 
@@ -239,6 +197,13 @@ int main (int argc, const char* argv[])
     }
 
 }   
+
+    if (w2 == nullptr) {
+        cerr << "Unsupported model configuration: " << model_name;
+        if (do_nml) cerr << " (NeuroML)";
+        cerr << endl;
+        return 1;
+    }
 
     if (false){ 
     json_filename = rename_file("worm_data_evo.json", directoryName);

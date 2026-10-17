@@ -12,8 +12,8 @@ doOrig = True
 doNML = False
 doMuscles = False
 
-outputFolderName = "testruns/exW2DSR18srm"
-inputFolderName = "testruns/exW2D18gen"
+outputFolderName = "testruns/W2DSR18srm/run"
+inputFolderName = "testruns/W2D18gen/run"
 
 hf.make_directory(outputFolderName, True, "Output folder for W2DSR18srm")
 

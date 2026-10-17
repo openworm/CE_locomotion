@@ -11,7 +11,7 @@ run(
     modelName="W2DCE",
     modelFolder="Worm2D",
     # inputFolderName="exampleRunW2DCE_reverse",
-    outputFolderName="testruns/exW2DCEFR",
+    outputFolderName="testruns/W2DCEFR/run",
     # outputFolderName="exampleRunW2Dosc_t1_nml",
     doEvol=True,
     overwrite=True,

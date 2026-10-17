@@ -1,39 +1,42 @@
-# Neuromechanical model of forward and backward locomotion in _C. elegans_ 
+# Worm2D
 
-This repository contains all the classes necessary to evolve a neuromechanical model of _C. elegans_ to produce forward and backward locomotion. 
+Worm2D constructs and optimizes configurable neuromechanical models of
+_C. elegans_ locomotion. The installable package contains the Python API,
+configuration and plotting helpers, and the JSON-configurable `main_osc` C++
+simulator. The legacy `main` executable is not part of the package.
 
-We are using this to better understand how the same neural circuit can produce multiple behaviors (i.e., forward and backward) and modulate between them through command neurons.
+## Installation
 
-Work in collaboration with Dr. Erick Olivares and Prof. Randall Beer.
+Worm2D requires a C++ compiler, CMake, Python development headers, and the
+`nlohmann-json` headers. From a source checkout, install it with:
 
-## Instructions for use
-
-1. Compile using the Makefile: 
-```
-$ make
-```
-2. Perform an evolutionary run (takes aprox. 2 minutes): 
-```
-$ ./main
-```
-3. Visualize the evolutionary progress: 
-```
-$ python viz.py
-```
-4. Visualize the movement of the body using Mathematica: 
-```
-$ Mathematica viz.nb
+```bash
+python -m pip install .
 ```
 
-![Screenshot of the animation of the simulated worm's body in Mathematica](https://github.com/openworm/CE_locomotion/blob/main/viz.png?raw=true)
+For editable Python development:
 
-
-
-5. Visualize the dynamic neural and muscle activity:
+```bash
+python -m pip install --editable .
 ```
-$ python load_data.py
+
+## Python API
+
+```python
+from worm2d import run
+
+run(
+    modelName="W2DSR",
+    inputFolderName="input_model",
+    outputFolderName="output_model",
+    overwrite=True,
+)
 ```
-![Activity in neurons, muscles and stretch receptors](https://github.com/openworm/CE_locomotion/blob/main/ExampleActivity.png?raw=true)
 
+The installed package locates its bundled `main_osc` executable automatically.
+The `modelFolder` argument remains available as an explicit development
+override. In a source checkout, existing root-level imports such as
+`from run_main import run` remain supported by compatibility modules.
 
-
+See `PACKAGING.md` for the source layout, native build commands, testing, and
+migration notes.

@@ -9,7 +9,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: testruns/exW2DCEs/act.dat
+          path: testruns/W2DCEs/run/act.dat
           columns: [0,3]
           scaling: [1, 1]
         spike detection: 
