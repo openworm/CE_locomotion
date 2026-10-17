@@ -1,7 +1,10 @@
 import matplotlib.pylab as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
-from worm2d import helper_funcs as hf
+try:
+    from worm2d import helper_funcs as hf
+except ModuleNotFoundError:
+    from src.worm2d import helper_funcs as hf
 import matplotlib as mpl
 import os
 
