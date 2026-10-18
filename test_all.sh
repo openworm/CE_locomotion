@@ -102,28 +102,29 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.example.omt #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
    
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
     omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
-    omv test -V .test.W2DCEanm2.omt ${OMV_ARGS}
-    omv test -V .test.W2DCE.omt
-    omv test -V .test.W2DCEs.omt
-    omv test -V .test.W2DSR.omt
-    omv test -V .test.W2DSRE.omt
-    omv test -V .test.W2DCEE.omt
-    omv test -V .test.W2DCEFR.omt ${OMV_ARGS}
-    omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS}
-    omv test -V .test.W2DSRFR.omt ${OMV_ARGS}
+    omv test -V .test.W2DCEanm2.omt ${OMV_ARGS} #.test.W2DCEanm2.mep
+    omv test -V .test.W2DCE.omt  #.test.W2DCE.mep
+    omv test -V .test.W2DCEs.omt #.test.W2DCEs.mep
+    omv test -V .test.W2DSR.omt #.test.W2DCE.mep
+    omv test -V .test.W2DSRE.omt #.test.W2DCEE.mep
+    omv test -V .test.W2DCEE.omt #.test.W2DCEE.mep
+    omv test -V .test.W2DCEFR.omt ${OMV_ARGS} # .test.W2DCEFR.mep
+    omv test -V .test.W2DCEFRv2.omt ${OMV_ARGS} #.test.W2DCEFRv2.mep
+    omv test -V .test.W2DSRFR.omt ${OMV_ARGS} #.test.W2DCEFRv2.mep
     #omv test -V .test.CEW2D_all.omt #main.cpp test.example.mep
    
 
 
-    omv test -V .test.COW2DSR2.omt  ${OMV_ARGS}
-    omv test -V .test.W2D18L.omt
-    omv test -V .test.W2DSRFRswitch.omt  ${OMV_ARGS}
+    omv test -V .test.COW2DSR2.omt  ${OMV_ARGS} #.test.COW2DSR2.mep
+    omv test -V .test.W2D18L.omt #.test.W2D18L.mep
+    omv test -V .test.W2DSRFRswitch.omt  ${OMV_ARGS} #.test.W2DCEFRv2.mep
 
    
-    omv test -V .test.osc_sim.omt ${OMV_ARGS}
-    omv test -V .test.osc_sim_21.omt 
-    omv test -V .test.osc_sim_21all.omt 
+    omv test -V .test.osc_sim.omt ${OMV_ARGS} #.test.osc_sim.mep
+    omv test -V .test.osc_sim_21.omt #
+    omv test -V .test.osc_sim_21all.omt #
 
 
     omv test -V .test.2018.omt ${OMV_ARGS}  #Izq original .test.2018.mep
@@ -134,29 +135,28 @@ if [ "$quick_test" == 0 ]; then
 
     omv test -V .test.W2D18gen.omt ${OMV_ARGS} #origMusc=False .test.2018gen.mep
     omv test -V .test.W2DSR18.omt ${OMV_ARGS} #.test.2018gen.mep inputFolderName="testruns/exW2D18gen",
-    omv test -V .test.W2DSR18E.omt ${OMV_ARGS} #inputFolderName="testruns/exW2D18gen",
-    omv test -V .test.W2D18genE.omt ${OMV_ARGS}
-    omv test -V .test.W2DSR18srm.omt ${OMV_ARGS}
+    omv test -V .test.W2DSR18E.omt ${OMV_ARGS} #inputFolderName="testruns/exW2D18gen",.test.W2DSR18E.mep
+    omv test -V .test.W2D18genE.omt ${OMV_ARGS} #.test.W2DSR18E.mep
+    omv test -V .test.W2DSR18srm.omt ${OMV_ARGS} #.test.2018gen.mep
 
     
 
-    omv test -V .test.CO.omt 
-    omv test -V .test.COW2D.omt 
-    omv test -V .test.W2DCO.omt
+    omv test -V .test.CO.omt  # .test.COW2D.mep Izq orignal
+    omv test -V .test.COW2D.omt # .test.COW2D.mep main
+    omv test -V .test.W2DCO.omt #.test.COW2D.mep main_osc
     #omv test -V .test.COW2DSR.omt
     
-    omv test -V .test.2021.omt 
-    omv test -V .test.2021W2D.omt 
-    omv test -V .test.izq_sim.omt 
+    omv test -V .test.2021.omt  #  .test.2021.mep Izq original
+    omv test -V .test.2021W2D.omt # .test.2021.mep main
+    omv test -V .test.izq_sim.omt # .test.izq_sim.mep
     
-    omv test -V .test.izq_sim_W2D21.omt
-    omv test -V .test.W2D21.omt 
-    omv test -V .test.W2D21E.omt 
-    omv test -V .test.W2DSRE21.omt 
-    omv test -V .test.W2DSR21.omt
+    omv test -V .test.izq_sim_W2D21.omt #.test.izq_sim_W2D21.mep
+    omv test -V .test.W2D21.omt  # .test.izq_sim_W2D21.mep
+    omv test -V .test.W2D21E.omt #.test.W2DSR21E.mep
+    omv test -V .test.W2DSRE21.omt #.test.W2DSR21E.mep
+    omv test -V .test.W2DSR21.omt #.test.izq_sim_W2D21.mep
 
    
-    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
 
     cd neuromlLocal
     set -ex
