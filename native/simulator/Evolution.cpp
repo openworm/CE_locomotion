@@ -384,7 +384,7 @@ void EvoBase::setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles)
       //  cout << "set from cpt " << filename_ << endl; 
         {TSearch * stest = new TSearch(1);
         stest->cptfilename = filename_;
-        stest->ReadCheckpointFile();
+        stest->ReadCheckpointFile(contEvol);
         const int testVsize = stest->VectorSize();
         delete stest;
         if (vsize_ > 0 && testVsize!=vsize_) return;
@@ -392,7 +392,7 @@ void EvoBase::setFromCPT2(int vsize_, bool allowPreviousEvolutionFiles)
 
         s = new TSearch(1);
         s->cptfilename = filename_;
-        s->ReadCheckpointFile();
+        s->ReadCheckpointFile(contEvol);
         
         doResume = true;
         //ResultsDisplay(*s);
@@ -422,7 +422,7 @@ void EvoBase::setFromCPT()
     struct stat buffer;   
     if (doCPT && evoPars1.CheckpointInterval>0 && (stat (s->cptfilename.c_str(), &buffer) == 0)) {
     
-        s->ReadCheckpointFile();
+        s->ReadCheckpointFile(contEvol);
         cout << "setFromCPT " << s->cptfilename << endl;
         doResume = true;
         //ResultsDisplay(*s);
