@@ -8,10 +8,10 @@ Pi = 3.1415926
 
 
 # indir = 'COW2DSRE_test_3'
-indir = "testW2D18L"
+indir = "input"
 # indir = 'COW2DSRE_test'
-outdir = indir + "_out"
-pfolder = "testruns"
+outdir = "run"
+pfolder = "testruns/W2D18L"
 # pfolder = 'notebooks'
 
 doOrig = True

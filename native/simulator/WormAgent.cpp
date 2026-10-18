@@ -1,5 +1,4 @@
 #include "WormAgent.h"
-#include "TSearchCO.h"
 //#include "CTRNN.h"
 //#include "random.h"
 

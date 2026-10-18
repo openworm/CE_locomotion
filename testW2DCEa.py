@@ -3,8 +3,8 @@ from neuromlLocal.regenerate import run as regenerate_run
 import os
 import sys
 
-output_folder = "testruns/exW2DCEa"
-output_folder_nml = "testruns/exW2DCEa_nml"
+output_folder = "testruns/W2DCEa/run"
+output_folder_nml = "testruns/W2DCEa/nml"
 
 run(
     simduration=30,

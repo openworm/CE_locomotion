@@ -7,7 +7,7 @@ run(
     RandSeed=1233,
     modelName="W2DCE",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2DCEanm",
+    outputFolderName="testruns/W2DCEanm/run",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

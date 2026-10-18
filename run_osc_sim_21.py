@@ -7,9 +7,9 @@ from neuromlLocal.regenerate import run as regenerate_run
 # sys.path.append("../neuromlLocal")
 
 
-output_folder = "experiments/osc_sim_21"
-output_folder_nml = "experiments/osc_sim_21_nml"
-output_folder_nml_musc = "experiments/osc_sim_21_nml_musc"
+output_folder = "testruns/osc_sim_21/run"
+output_folder_nml = "testruns/osc_sim_21/nml"
+output_folder_nml_musc = "testruns/osc_sim_21/nml_musc"
 
 duration = 10
 transient = 10

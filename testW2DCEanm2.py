@@ -1,9 +1,9 @@
 from run_main import run
 from helper_funcs import get_worm_json, write_worm_json, delete_directory
 
-outputFolderName = "testruns/exW2DCEanm2"
-outputFolderName_2 = "testruns/exW2DCEanm2_1"
-origFolderName = "testruns/exW2DCEanm"
+outputFolderName = "testruns/W2DCEanm2/run"
+outputFolderName_2 = "testruns/W2DCEanm2/run_modified"
+origFolderName = "testruns/W2DCEanm/run"
 
 
 # x = 0.1

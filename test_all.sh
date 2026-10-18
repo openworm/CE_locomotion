@@ -23,7 +23,10 @@ ruff check \
     testW2D18genE.py testW2DSR18srm.py run_izq_sims_W2D21.py \
     testW2D21.py testW2D21E.py testW2DSRE21.py testW2DSR21.py \
     testW2DCE.py testW2DCEs.py testW2DSR.py testW2DSRE.py testW2DCEE.py \
-    testW2DCEFR.py testW2DCEFRv2.py testW2DSRFR.py
+    testW2DCEFR.py testW2DCEFRv2.py testW2DSRFR.py \
+    testW2DCEanm.py testW2DCEanm2.py testCOW2DSR2.py testW2D18L.py \
+    testW2DSRFRswitch.py run_osc_sim.py run_osc_sim_21.py \
+    run_osc_sim_21all.py testW2DCO.py testW2DCEa.py
 
 if [[ $quick_test -eq 1 ]]; then
     exit 0
@@ -36,7 +39,10 @@ rm -rf \
     testruns/W2DSRE21 testruns/W2DSR21 testruns/W2DCE \
     testruns/W2DCEs testruns/W2DSR testruns/W2DSRE \
     testruns/W2DCEE testruns/W2DCEFR testruns/W2DCEFRv2 \
-    testruns/W2DSRFR
+    testruns/W2DSRFR testruns/W2DCEanm testruns/W2DCEanm2 \
+    testruns/COW2DSR2/run testruns/W2D18L/run \
+    testruns/W2DSRFRswitch testruns/osc_sim testruns/osc_sim_21 \
+    testruns/osc_sim_21all testruns/W2DCO testruns/W2DCEa
 
 # CE-derived models.
 omv test -V .test.W2DCE.omt "${omv_args[@]}"
@@ -47,6 +53,10 @@ omv test -V .test.W2DCEE.omt "${omv_args[@]}"
 omv test -V .test.W2DCEFR.omt "${omv_args[@]}"
 omv test -V .test.W2DCEFRv2.omt "${omv_args[@]}"
 omv test -V .test.W2DSRFR.omt "${omv_args[@]}"
+omv test -V .test.W2DCEanm.omt "${omv_args[@]}"
+omv test -V .test.W2DCEanm2.omt "${omv_args[@]}"
+omv test -V .test.W2DCEa.omt "${omv_args[@]}"
+omv test -V .test.W2DSRFRswitch.omt "${omv_args[@]}"
 
 # 2018-derived models.
 omv test -V .test.W2D18.omt "${omv_args[@]}"
@@ -62,3 +72,11 @@ omv test -V .test.W2D21.omt "${omv_args[@]}"
 omv test -V .test.W2D21E.omt "${omv_args[@]}"
 omv test -V .test.W2DSRE21.omt "${omv_args[@]}"
 omv test -V .test.W2DSR21.omt "${omv_args[@]}"
+
+# Additional model and oscillator regressions.
+omv test -V .test.COW2DSR2.omt "${omv_args[@]}"
+omv test -V .test.W2D18L.omt "${omv_args[@]}"
+omv test -V .test.osc_sim.omt "${omv_args[@]}"
+omv test -V .test.osc_sim_21.omt "${omv_args[@]}"
+omv test -V .test.osc_sim_21all.omt "${omv_args[@]}"
+omv test -V .test.W2DCO.omt "${omv_args[@]}"

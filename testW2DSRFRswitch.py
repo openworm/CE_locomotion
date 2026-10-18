@@ -11,13 +11,13 @@ doNML = False
 doMuscles = False
 
 # indir = 'COW2DSRE_test_3'
-indir = "exW2DCEFR"
+indir = "run"
 # indir = 'COW2DSRE_test'
-outdir = indir + "switch"
-pfolder = "testruns"
+outdir = "run"
+pfolder = "testruns/W2DSRFRswitch"
 # pfolder = 'notebooks'
 
-inputFolderName = pfolder + "/" + indir
+inputFolderName = "testruns/W2DCEFR/run"
 outputFolderName = pfolder + "/" + outdir
 
 doInputFolder = True

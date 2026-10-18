@@ -5,14 +5,14 @@ from neuromlLocal.regenerate import run as regenerate_run
 
 Pi = 3.1415926
 
-indir = "testruns/COW2DSRE_test"
+indir = "testruns/COW2DSR2/input"
 
 doOrig = True
 doNML = False
 doMuscles = False
 
 inputFolderName = indir
-outputFolderName = indir + "_out"
+outputFolderName = "testruns/COW2DSR2/run"
 doInputFolder = True
 
 args = dict(

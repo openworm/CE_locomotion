@@ -10,7 +10,7 @@ run(
     RandSeed=1749493257,
     modelName="W2DCO",
     modelFolder="Worm2D",
-    outputFolderName="testruns/exW2DCO",
+    outputFolderName="testruns/W2DCO/run",
     doEvol=True,
     overwrite=True,
     checkPointInterval=5,

@@ -9,7 +9,7 @@ experiments:
         observables:
             spike times:
                 file: 
-                    path: experiments/osc_sim_nml/act.dat
+                    path: testruns/osc_sim/nml/act.dat
                     columns: [0, 3]
                     scaling: [1, 1]
                 spike detection: 
@@ -21,7 +21,7 @@ experiments:
         observables:
             spike times:
                 file: 
-                    path: experiments/osc_sim_nml_musc/act.dat
+                    path: testruns/osc_sim/nml_musc/act.dat
                     columns: [0, 3]
                     scaling: [1, 1]
                 spike detection: 
@@ -32,7 +32,7 @@ experiments:
         observables:
             spike times:
                 file: 
-                    path: experiments/osc_sim/act.dat
+                    path: testruns/osc_sim/run/act.dat
                     columns: [0, 3]
                     scaling: [1, 1]
                 spike detection: 

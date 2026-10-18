@@ -21,6 +21,8 @@ set(WORM2D_SOURCES
     simulator/StretchReceptor18.cpp
     simulator/StretchReceptorCE.cpp
     simulator/Worm21.cpp
+    simulator/Worm2Dmods.cpp
+    simulator/WormAgent.cpp
     simulator/Worm2D.cpp
     simulator/Worm2D21.cpp
     simulator/Worm2DCE.cpp
