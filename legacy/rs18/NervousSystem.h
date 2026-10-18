@@ -9,7 +9,7 @@
 #include "random.h"
 #include <iostream>
 #include <math.h>
-#include "../utils.h"
+#include "utils.h"
 
 #pragma once
 

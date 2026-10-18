@@ -9,7 +9,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: exampleRunCO/behavior_taxis.dat
+          path: testruns/CO/run/behavior_taxis.dat
           columns: [0, 17]
           scaling: [1, 1]
         spike detection: 

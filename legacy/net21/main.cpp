@@ -11,7 +11,7 @@
 #include "VectorMatrix.h"
 #include "Worm.h"
 #include "Segment.h"
-#include "../argUtils.h"
+#include "argUtils.h"
 
 
 #define EVOLVE

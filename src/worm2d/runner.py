@@ -6,7 +6,7 @@ import sysconfig
 import neuromlLocal.utils as utils
 
 from . import helper_funcs as hf
-from .native import resolve_main_osc
+from .native import resolve_legacy_main, resolve_main_osc
 
 # from importlib import import_module
 import shutil
@@ -800,9 +800,13 @@ def run(a=None, **kwargs):
 
     model_names = {
         ".": "CE",
+        "legacy/example": "CE",
         "RoyalSociety2018": "RS18",
+        "legacy/rs18": "RS18",
         "network2021": "Net21",
+        "legacy/net21": "Net21",
         "CE_orientation": "CO",
+        "legacy/co": "CO",
         # "Worm2D/CO18": "CO18",
     }
 
@@ -970,11 +974,10 @@ def run(a=None, **kwargs):
     run_extra_parameters = {}
     run_extra_parameters["showPlot"] = False
 
-    if mainProcessName != "main_osc":
-        raise ValueError(
-            "The installable Worm2D package supports only the main_osc executable"
-        )
-    main_cmd = str(resolve_main_osc(model_folder))
+    if mainProcessName == "main_osc":
+        main_cmd = str(resolve_main_osc(model_folder))
+    else:
+        main_cmd = str(resolve_legacy_main(model_folder))
     cmd = [main_cmd]
 
     evol_pars = [
@@ -1323,7 +1326,7 @@ def run(a=None, **kwargs):
     rsr = import_module(module_name).reload_single_run
     rsr(show_plot=False, plot_format = plot_format) """
 
-    if model_folder != "CE_orientation":
+    if model_name != "CO":
         from .load_data import reload_single_run
 
         # reload_single_run(show_plot=False, plot_format=plot_format)

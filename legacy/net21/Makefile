@@ -2,8 +2,8 @@ main: main.o Worm.o WormBody.o Segment.o NervousSystem.o Muscles.o TSearch.o ran
 	g++ -pthread -o main main.o Worm.o WormBody.o argUtils.o Segment.o NervousSystem.o Muscles.o TSearch.o random.o
 random.o: random.cpp random.h VectorMatrix.h
 	g++ -c -O3 -flto random.cpp
-argUtils.o: ../argUtils.cpp ../argUtils.h
-	g++ -c -O3 -std=c++11 -flto ../argUtils.cpp	
+argUtils.o: argUtils.cpp argUtils.h
+	g++ -c -O3 -std=c++11 -flto argUtils.cpp
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
 Worm.o: Worm.cpp Worm.h

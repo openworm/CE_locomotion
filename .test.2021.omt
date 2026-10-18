@@ -9,7 +9,7 @@ experiments:
     observables:
       spike times:
         file: 
-          path: exampleRunNet21/act.dat
+          path: testruns/2021/run/act.dat
           columns: [0, 1]
           scaling: [1, 1]
         spike detection: 

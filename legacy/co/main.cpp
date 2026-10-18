@@ -2,7 +2,7 @@
 #include "WormAgent.h"
 #include "TSearch.h"
 #include <sstream>
-#include "../argUtils.h"
+#include "argUtils.h"
 
 #define EVOLVE
 #define PRINTTOFILE

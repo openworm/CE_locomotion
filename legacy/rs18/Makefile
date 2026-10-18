@@ -6,8 +6,8 @@ jsonUtils.o: jsonUtils.cpp jsonUtils.h
 	g++ -c -O3 -std=c++11 -I/opt/homebrew/include -flto jsonUtils.cpp	
 TSearch.o: TSearch.cpp TSearch.h
 	g++ -c -O3 -flto TSearch.cpp
-argUtils.o: ../argUtils.cpp ../argUtils.h
-	g++ -c -O3 -std=c++11 -flto ../argUtils.cpp	
+argUtils.o: argUtils.cpp argUtils.h
+	g++ -c -O3 -std=c++11 -flto argUtils.cpp
 Worm.o: Worm.cpp Worm.h
 	g++ -c -O3 -flto Worm.cpp
 WormBody.o: WormBody.cpp WormBody.h

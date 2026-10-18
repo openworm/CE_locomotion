@@ -11,7 +11,7 @@
 #include "TSearch.h"
 #include "VectorMatrix.h"
 #include "Worm.h"
-#include "../argUtils.h"
+#include "argUtils.h"
 #include "jsonUtils.h"
 
 #define EVOLVE

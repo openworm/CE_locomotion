@@ -1,8 +1,8 @@
 # Worm2D package layout
 
-The installable distribution contains the Python API and the `main_osc`
-simulator. It intentionally excludes the legacy `main` executable and tests
-which exercise that executable.
+The installable distribution contains the Python API, the `main_osc`
+simulator, and four isolated legacy-model executables retained for regression
+and reproducibility tests.
 
 ## Source layout
 
@@ -11,13 +11,18 @@ which exercise that executable.
   W2D18, W2D21, W2DCE, and W2DSR.
 - `native/`: shared body, nervous-system, muscle, search, and utility classes.
 - `native/neuromlLocal/`: C++ bridge classes required by `main_osc`.
+- `legacy/example/`: original example model and its own `main` executable.
+- `legacy/rs18/`: 2018 model and its own `main` executable.
+- `legacy/co/`: chemotaxis/orientation model and its own `main` executable.
+- `legacy/net21/`: 2021 network model and its own `main` executable.
 - `neuromlLocal/`: optional Python NeuroML integration.
 - `F2_fig_behavior.py`: behavior plotting used by retained simulation runs.
-- `test_all.sh`: the selected `main_osc` regression suite.
+- `test_all.sh`: the selected `main_osc` and legacy regression suite.
 
-The source distribution includes only the selected OMV tests and their input
-fixtures. Legacy `main`, unrelated model families, generated results, papers,
-notebooks, and historical experiment directories are not packaged.
+The source distribution includes only the selected OMV tests, these four
+legacy model families, and their input fixtures. Other model families,
+generated results, papers, notebooks, and historical experiment directories
+are not packaged.
 
 The root-level `run_main.py`, `helper_funcs.py`, `load_data.py`, and
 `W2Djson_utils.py` modules are compatibility shims for existing notebooks.
@@ -29,7 +34,8 @@ Build the native executable directly:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --target main_osc
+cmake --build build --target main_osc legacy_example_main legacy_rs18_main \
+    legacy_co_main legacy_net21_main
 ```
 
 Build an installable wheel:

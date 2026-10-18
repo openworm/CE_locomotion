@@ -11,10 +11,17 @@ if [[ ${OSTYPE:-} == darwin* ]]; then
     omv_args+=(--exit-zero)
 fi
 
-# The package and this regression suite use only the JSON-configurable
-# main_osc executable.
+# Build the JSON-configurable simulator and the four isolated legacy models.
 make -C Worm2D clean
 make -C Worm2D -j4 main_osc
+make -C legacy/example clean
+make -C legacy/example -j4 main
+make -C legacy/rs18 clean
+make -C legacy/rs18 -j4 main
+make -C legacy/co clean
+make -C legacy/co -j4 main
+make -C legacy/net21 clean
+make -C legacy/net21 -j4 main
 
 ruff check \
     src/worm2d \
@@ -26,7 +33,8 @@ ruff check \
     testW2DCEFR.py testW2DCEFRv2.py testW2DSRFR.py \
     testW2DCEanm.py testW2DCEanm2.py testCOW2DSR2.py testW2D18L.py \
     testW2DSRFRswitch.py run_osc_sim.py run_osc_sim_21.py \
-    run_osc_sim_21all.py testW2DCO.py testW2DCEa.py
+    run_osc_sim_21all.py testW2DCO.py testW2DCEa.py \
+    test.py test2018.py testCO.py test2021.py
 
 if [[ $quick_test -eq 1 ]]; then
     exit 0
@@ -42,7 +50,14 @@ rm -rf \
     testruns/W2DSRFR testruns/W2DCEanm testruns/W2DCEanm2 \
     testruns/COW2DSR2/run testruns/W2D18L/run \
     testruns/W2DSRFRswitch testruns/osc_sim testruns/osc_sim_21 \
-    testruns/osc_sim_21all testruns/W2DCO testruns/W2DCEa
+    testruns/osc_sim_21all testruns/W2DCO testruns/W2DCEa \
+    testruns/example testruns/2018 testruns/CO testruns/2021
+
+# Isolated legacy-model regressions.
+omv test -V .test.example.omt "${omv_args[@]}"
+omv test -V .test.2018.omt "${omv_args[@]}"
+omv test -V .test.CO.omt "${omv_args[@]}"
+omv test -V .test.2021.omt "${omv_args[@]}"
 
 # CE-derived models.
 omv test -V .test.W2DCE.omt "${omv_args[@]}"
