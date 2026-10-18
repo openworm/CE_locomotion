@@ -102,7 +102,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.example.omt #Izq original test.example.mep
     #omv test -V .test.CEW2D.omt #main.cpp test.example.mep
    
-    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
+    
     omv test -V .test.W2DCEanm.omt #main_osc.cpp test.W2DCEanm.mep, as W2DCEa but origMusc=False
     omv test -V .test.W2DCEanm2.omt ${OMV_ARGS} #.test.W2DCEanm2.mep
     omv test -V .test.W2DCE.omt  #.test.W2DCE.mep
@@ -156,7 +156,7 @@ if [ "$quick_test" == 0 ]; then
     omv test -V .test.W2DSRE21.omt #.test.W2DSR21E.mep
     omv test -V .test.W2DSR21.omt #.test.izq_sim_W2D21.mep
 
-   
+    omv test -V .test.W2DCEa.omt #main_osc.cpp test.example.mep
 
     cd neuromlLocal
     set -ex
