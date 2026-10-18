@@ -1,0 +1,93 @@
+// ************************************************************
+// A nervous system class (based on the CTRNN class)
+//
+// RDB 
+//  1/15 Created
+// ************************************************************
+
+#include "VectorMatrix.h"
+#include "random.h"
+#include <iostream>
+#include <math.h>
+#include "neuromlLocal/NervousSystemBase.h"
+#include "utils.h"
+
+#pragma once
+
+
+
+
+
+// The sigmoid function
+
+namespace NS{
+
+inline double sigmoid(double x)
+{
+  return 1/(1 + exp(-x));
+}
+
+
+// The inverse sigmoid function
+
+inline double InverseSigmoid(double y)
+{
+  return log(y/(1-y));
+}
+}
+
+// The NervousSystem class declaration
+
+
+
+class NervousSystem : public NervousSystemBase {
+//class NervousSystem : public NervousSystemInt<NervousSystem> {
+    public:
+        // The constructor
+        NervousSystem(int size = 0, int maxchemconns = -1, int maxelecconns = -1);
+        //NervousSystem(int size = 0, int maxchemconns = -1, int maxelecconns = -1);
+        // The destructor
+        ~NervousSystem();
+        
+        // Accessors
+        const int & CircuitSize(void) {return size;};
+        void SetCircuitSize(int newsize, int maxchemconns, int maxelecconns);
+        const double & NeuronState(int i) {return states[i];};
+        void SetNeuronState(int i, double value) {states[i] = value;outputs[i] = NS::sigmoid(gains[i]*(states[i] + biases[i]));};
+        const double & NeuronOutput(int i) {return outputs[i];};
+        void SetNeuronOutput(int i, double value) {outputs[i] = value; states[i] = NS::InverseSigmoid(value)/gains[i] - biases[i];};
+        const double & NeuronBias(int i) {return biases[i];};
+        void SetNeuronBias(int i, double value) {biases[i] = value;};
+        const double & NeuronGain(int i) {return gains[i];};
+        void SetNeuronGain(int i, double value) {gains[i] = value;};
+        const double & NeuronTimeConstant(int i) {return taus[i];};
+        void SetNeuronTimeConstant(int i, double value) {taus[i] = value; Rtaus[i] = 1/value;};
+        const double & NeuronExternalInput(int i) {return externalinputs[i];};
+        void SetNeuronExternalInput(int i, double value) {externalinputs[i] = value;};
+        void IncNeuronExternalInput(int i, double value) {externalinputs[i] += value;};
+        const double & ChemicalSynapseWeight(int from, int to);
+        void SetChemicalSynapseWeight(int from, int to, double value);
+        const double & ElectricalSynapseWeight(int from, int to);
+        void InternalSetElectricalSynapseWeight(int from, int to, double value);
+        void SetElectricalSynapseWeight(int n1, int n2, double value);
+
+        // Input and output
+        friend ostream& operator<<(ostream& os, NervousSystem& c);
+        friend istream& operator>>(istream& is, NervousSystem& c);
+                            
+        // Control
+        void RandomizeCircuitState(double lb, double ub);
+        void RandomizeCircuitState(double lb, double ub, RandomState &rs);
+        void RandomizeCircuitOutput(double lb, double ub);
+        void RandomizeCircuitOutput(double lb, double ub, RandomState &rs);
+        void EulerStep(double stepsize);
+        //void RK4Step(double stepsize);
+		
+        int size, maxchemconns, maxelecconns;
+        const double zero_weight = 0.0;
+        TVector<double> states, outputs, biases, gains, taus, Rtaus, externalinputs;
+        TVector<double> paststates;  
+        TVector<int> NumChemicalConns, NumElectricalConns;
+        TMatrix<weightentry> chemicalweights, electricalweights;
+        TVector<double> TempStates,TempOutputs,k1,k2,k3,k4;
+};

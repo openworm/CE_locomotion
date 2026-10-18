@@ -1,0 +1,29 @@
+#include "owSignalSimulator.h"
+
+class SignalSimulatorForWorm2D: public SignalSimulator{
+public:
+  SignalSimulatorForWorm2D(const std::string & simFileName, 
+  const std::string & simClassName, double timeStep);
+  SignalSimulatorForWorm2D(const std::string & simFileName, 
+  const std::string & simClassName, const std::string & simDirName, double timeStep);
+  const std::string & setUpSignalSimulator(const std::string & simDirName,
+  const std::string & simFileName);
+
+  void strValFunc(const std::string & funcName, const std::string & parName,
+  const int & i, const double & value);
+
+  void strOneValFunc(const std::string & funcName, const std::string & parName, const int & i);
+
+  std::vector<double> vecValFunc(const std::string & funcName);
+  
+  virtual ~SignalSimulatorForWorm2D();
+
+  double getTwoValFunc(const std::string & funcName, const int & i, const int & j);
+
+  double getValFunc(const std::string & funcName, const std::string & parName, const int & i);
+
+  void oneValFunc(const std::string & simFileName, const int & i, const double & value);
+  void oneValFunc(const std::string & funcName);
+  void twoValFunc(const std::string & simFileName, const int & i, const int & j, const double & value);
+  //PyObject *pFuncNameSetNeuronInput, *pFuncNameSetSynapticWeight;
+};
