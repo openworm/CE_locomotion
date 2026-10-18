@@ -969,7 +969,7 @@ void TSearch::WriteCheckpointFile()
 }
 
 
-void TSearch::ReadCheckpointFile()
+void TSearch::ReadCheckpointFile(bool RestoreGlobalRandomState)
 {
   ifstream bifs(cptfilename, ios::binary);
   if (!bifs) {cout << "File not opened " << endl; exit(1);}
@@ -1048,6 +1048,6 @@ void TSearch::ReadCheckpointFile()
   // append the global RNG state used for crossover decisions.
   unsigned int marker = 0;
   if (bifs.read((char*) &(marker), sizeof(marker)) &&
-      marker == GlobalRandomStateMarker)
+      marker == GlobalRandomStateMarker && RestoreGlobalRandomState)
     BinaryReadRandomState(bifs);
 }
