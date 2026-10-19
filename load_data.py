@@ -4747,6 +4747,93 @@ def getEvolTrans(evol_data):
     return [evol_data_diff_13, evol_data_diff_131, evol_data_diff_1, evol_data_diff_11]
 
 
+def _get_evolution_summary_data(evol_data, avlentop):
+    evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
+    evol_data_full_diff = signed_log_change_from_initial(evol_data)
+    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(
+        evol_data
+    )
+    evol_data_signed_log_prop_change = (
+        signed_log_one_plus_proportional_change_from_initial(evol_data)
+    )
+
+    evol_data_full_diff0 = getAvData_1(
+        evol_data_full_diff0, avlentop=avlentop
+    )
+    evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
+    evol_data_full_diff = getAvData_1(
+        evol_data_full_diff, avlentop=avlentop
+    )[-1]
+    evol_data_signed_log_abs_change = getAvData_1(
+        evol_data_signed_log_abs_change, avlentop=avlentop
+    )[-1]
+    evol_data_signed_log_prop_change = getAvData_1(
+        evol_data_signed_log_prop_change, avlentop=avlentop
+    )[-1]
+
+    evol_data_log = getAvData_1(
+        signed_log_one_plus(evol_data), avlentop=avlentop
+    )
+    evol_data_av = getAvData_1(evol_data, avlentop=avlentop)
+
+    evol_data_dict = {
+        "rel_var": {
+            "value": evol_data_full_diff0,
+            "title": "Proportional change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "var": {
+            "value": evol_data_full_diff,
+            "title": "Signed log change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_abs_change": {
+            "value": evol_data_signed_log_abs_change,
+            "title": "Signed log absolute change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "signed_log_prop_change": {
+            "value": evol_data_signed_log_prop_change,
+            "title": "Signed log proportional change",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "final_log": {
+            "value": evol_data_log[-1],
+            "title": "Signed log final value",
+            "color": "red",
+            "linestyle": "--",
+        },
+        "initial_log": {
+            "value": evol_data_log[0],
+            "title": "Signed log initial value",
+            "color": "black",
+            "linestyle": "-",
+        },
+        "final": {
+            "value": evol_data_av[-1],
+            "title": "Final value",
+            "color": "red",
+            "linestyle": "--",
+        },
+        "initial": {
+            "value": evol_data_av[0],
+            "title": "Initial value",
+            "color": "black",
+            "linestyle": "-",
+        },
+    }
+
+    for data_val in evol_data_dict.values():
+        data_val["value"][np.isnan(data_val["value"])] = 0
+        data_val["value"][np.isinf(data_val["value"])] = 0
+
+    return evol_data_dict
+
+
 def plot_phenonames(
     plot_list=[
         ["initial", "final"],
@@ -4807,118 +4894,20 @@ def plot_phenonames(
         phen_tags += network_json_data_RS18["PhenoNames"]["value"]
         phen_nums += network_json_data_RS18["PhenoNamesNums"]["value"]
 
-    phen_offset = vectsize * 2
-    # phen_size = vectsize
-
-    # avlentop = 1
-    # evol_data = getAvData_1(evol_data_1, avlentop=avlentop)
-    evol_data = evol_data_1
-
-    # gen_index_orig = evol_data[:, 0]
-
-    # generation number, phenotype number (first is gen index)
-
-    evol_data = evol_data[:, 1 + phen_offset :]
+    # genhistory columns are generation, best genotype, best phenotype, and
+    # population-average phenotype, with vectsize columns in each data block.
+    evol_data = evol_data_1[:, 1 + (vectsize * 2) :]
+    best_evol_data = evol_data_1[:, 1 + vectsize : 1 + (vectsize * 2)]
     if active_phen_indices is not None:
         evol_data = evol_data[:, active_phen_indices]
-
-    # evol_data_full_diff = (evol_data[-1] - evol_data[0]) / evol_data[0]
-
-    evol_data_full_diff0 = safe_percent_change_from_initial(evol_data)
-    evol_data_full_diff = signed_log_change_from_initial(evol_data)
-    evol_data_signed_log_abs_change = signed_log_one_plus_change_from_initial(evol_data)
-    evol_data_signed_log_prop_change = (
-        signed_log_one_plus_proportional_change_from_initial(evol_data)
-    )
+        best_evol_data = best_evol_data[:, active_phen_indices]
 
     avlentop = 1
     if hasattr(a, "evoAvLen"):
         avlentop = a.evoAvLen
 
-    evol_data_full_diff0 = getAvData_1(evol_data_full_diff0, avlentop=avlentop)
-    evol_data_full_diff0 = evol_data_full_diff0[-1] - evol_data_full_diff0[0]
-    evol_data_full_diff = getAvData_1(evol_data_full_diff, avlentop=avlentop)[-1]
-    evol_data_signed_log_abs_change = getAvData_1(
-        evol_data_signed_log_abs_change, avlentop=avlentop
-    )[-1]
-    evol_data_signed_log_prop_change = getAvData_1(
-        evol_data_signed_log_prop_change, avlentop=avlentop
-    )[-1]
-
-    # evol_data_full_diff20 = evol_data - evol_data[0]
-
-    # evol_data_full_diff2 = sign(evol_data_full_diff20) * np.log(
-    #    np.abs(evol_data_full_diff20)
-    # )
-
-    # evol_data_full_diff_abs = (evol_data[-1] - evol_data[0]) / np.abs(evol_data[0])
-
-    evol_data_log = signed_log_one_plus(evol_data)
-    evol_data_log = getAvData_1(evol_data_log, avlentop=avlentop)
-
-    evol_data_init = evol_data_log[0]
-
-    evol_data_fin = evol_data_log[-1]
-
-    evol_data_av = getAvData_1(evol_data, avlentop=avlentop)
-    evol_data_fin_actual = evol_data_av[-1]
-
-    evol_data_init_actual = evol_data_av[0]
-
-    evol_data_dict = {
-        "rel_var": {
-            "value": evol_data_full_diff0,
-            "title": "Proportional change",
-            "color": "black",
-            "linestyle": "-",
-        },
-        "var": {
-            "value": evol_data_full_diff,
-            "title": "Signed log change",
-            "color": "black",
-            "linestyle": "-",
-        },
-        "signed_log_abs_change": {
-            "value": evol_data_signed_log_abs_change,
-            "title": "Signed log absolute change",
-            "color": "black",
-            "linestyle": "-",
-        },
-        "signed_log_prop_change": {
-            "value": evol_data_signed_log_prop_change,
-            "title": "Signed log proportional change",
-            "color": "black",
-            "linestyle": "-",
-        },
-        "final_log": {
-            "value": evol_data_fin,
-            "title": "Signed log final value",
-            "color": "red",
-            "linestyle": "--",
-        },
-        "initial_log": {
-            "value": evol_data_init,
-            "title": "Signed log initial value",
-            "color": "black",
-            "linestyle": "-",
-        },
-        "final": {
-            "value": evol_data_fin_actual,
-            "title": "Final value",
-            "color": "red",
-            "linestyle": "--",
-        },
-        "initial": {
-            "value": evol_data_init_actual,
-            "title": "Initial value",
-            "color": "black",
-            "linestyle": "-",
-        },
-    }
-
-    for data_val in evol_data_dict.values():
-        data_val["value"][np.isnan(data_val["value"])] = 0
-        data_val["value"][np.isinf(data_val["value"])] = 0
+    evol_data_dict = _get_evolution_summary_data(evol_data, avlentop)
+    best_evol_data_dict = _get_evolution_summary_data(best_evol_data, avlentop)
 
     phen_names_set = sorted(set(phen_names))
     phen_name_list = []
@@ -4946,6 +4935,9 @@ def plot_phenonames(
     fig2, axs2 = plt.subplots(
         plot_rows, plot_cols, figsize=(fsize_cols_2, fsize_rows), squeeze=False
     )
+    fig3, axs3 = plt.subplots(
+        plot_rows, plot_cols, figsize=(fsize_cols_2, fsize_rows), squeeze=False
+    )
 
     for ind, val in enumerate(plot_list):
         row_num, col_num = getRowsCols(ind, plot_cols)
@@ -4967,6 +4959,14 @@ def plot_phenonames(
                     color=evol_data_dict[val2]["color"],
                     linestyle=evol_data_dict[val2]["linestyle"],
                 )
+                best_val = best_evol_data_dict[val2]["value"]
+                axs3[row_num, col_num].plot(
+                    range(len(best_val)),
+                    best_val,
+                    label=best_evol_data_dict[val2]["title"],
+                    color=best_evol_data_dict[val2]["color"],
+                    linestyle=best_evol_data_dict[val2]["linestyle"],
+                )
         else:
             val3 = evol_data_dict[val]["pheno_avs"]
             axs[row_num, col_num].plot(
@@ -4984,21 +4984,32 @@ def plot_phenonames(
                 color=evol_data_dict[val]["color"],
                 linestyle=evol_data_dict[val]["linestyle"],
             )
+            best_val = best_evol_data_dict[val]["value"]
+            axs3[row_num, col_num].plot(
+                range(len(best_val)),
+                best_val,
+                label=best_evol_data_dict[val]["title"],
+                color=best_evol_data_dict[val]["color"],
+                linestyle=best_evol_data_dict[val]["linestyle"],
+            )
 
         axs2[row_num, col_num].set_xticks(range(len(val3)))
+        axs3[row_num, col_num].set_xticks(range(len(val3)))
         axs[row_num, col_num].set_xticks(range(len(phen_name_list)))
         axs[row_num, col_num].set_xticklabels([""] * len(phen_name_list))
         axs2[row_num, col_num].set_xticklabels([""] * len(val3))
+        axs3[row_num, col_num].set_xticklabels([""] * len(val3))
 
         # axs2[row_num, col_num].tick_params(axis='x', labelbottom=False)
         # axs[row_num, col_num].tick_params(axis='x', labelbottom=False)
         axs[row_num, col_num].legend()
         axs2[row_num, col_num].legend()
+        axs3[row_num, col_num].legend()
 
     # axs2[row_num, col_num].set_xticks(range(len(val3)))
     # axs[row_num, col_num].set_xticks(range(len(phen_name_list)))
 
-    for axval in [axs, axs2]:
+    for axval in [axs, axs2, axs3]:
         for ind, val in enumerate(plot_list):
             row_num, col_num = getRowsCols(ind, plot_cols)
             for gridline, color in zip(
@@ -5015,9 +5026,13 @@ def plot_phenonames(
     axs[row_num, col_num].set_xticklabels(phen_name_list, rotation="vertical")
     axs2[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
     axs2[row_num, col_num].set_xticklabels(phen_tags, rotation="vertical")
+    axs3[row_num, col_num].set_xlabel("Phenotype #", fontsize=label_font_size)
+    axs3[row_num, col_num].set_xticklabels(phen_tags, rotation="vertical")
     for tick, color in zip(axs[row_num, col_num].get_xticklabels(), cycle(colors30)):
         tick.set_color(color)
     for tick, color in zip(axs2[row_num, col_num].get_xticklabels(), cycle(colors30)):
+        tick.set_color(color)
+    for tick, color in zip(axs3[row_num, col_num].get_xticklabels(), cycle(colors30)):
         tick.set_color(color)
 
     fig.tight_layout()
@@ -5035,6 +5050,12 @@ def plot_phenonames(
     fig2.savefig(filename, bbox_inches="tight", dpi=300)
     print("Saved plot image to: %s" % filename)
     plt.close(fig2)
+
+    fig3.tight_layout()
+    filename = _plot_output_file("Evolution_averages_best.png", a)
+    fig3.savefig(filename, bbox_inches="tight", dpi=300)
+    print("Saved plot image to: %s" % filename)
+    plt.close(fig3)
 
 
 def _make_plot_args(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
@@ -5061,7 +5082,7 @@ def _plot_output_file(file_name, a=None):
 def plot_evolution_averages(
     output_folder, evo_av_len=1, model_name=None, file_prefix=None
 ):
-    """Generate the four-panel Evolution_averages figures for an output folder."""
+    """Generate population-average and best-worm evolution summary figures."""
     old_dir_name = hf.dir_name
     old_file_prefix = hf.file_prefix
 
