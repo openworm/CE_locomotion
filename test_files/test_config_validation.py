@@ -91,6 +91,35 @@ class ConfigurationValidationTests(unittest.TestCase):
         }
         self.assert_validation_error(config, "unknown input pattern")
 
+    def test_named_input_switcher_patterns_are_valid(self):
+        config = minimal_config()
+        config["driving_inputs"] = {
+            "inputs": {
+                "value": [
+                    {"input_num": "drive", "strength": {"value": 0.0}}
+                ]
+            },
+            "weights": {"value": []},
+        }
+        config["input_switcher"] = {
+            "patterns": {"active": {"drive": 1.0}},
+            "pattern_order": {"value": ["active"]},
+            "time_periods": {"value": [1.0]},
+            "input_indices": {"value": ["active"]},
+            "time_offset": {"value": 0.0},
+            "doEvolution": {"value": False},
+        }
+        self.assertTrue(hf.validate_w2dsr_json(config))
+
+    def test_named_input_switcher_pattern_rejects_unknown_input(self):
+        config = minimal_config()
+        config["driving_inputs"] = {"inputs": {"value": []}, "weights": {"value": []}}
+        config["input_switcher"] = {
+            "patterns": {"active": {"missing": 1.0}},
+            "pattern_order": {"value": ["active"]},
+        }
+        self.assert_validation_error(config, "unknown driving input 'missing'")
+
     def test_out_of_range_muscle_index_is_rejected(self):
         config = minimal_config()
         config["worm"] = {"N_muscles": {"value": 1}}

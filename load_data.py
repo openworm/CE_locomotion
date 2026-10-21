@@ -5860,11 +5860,22 @@ def reload_single_run(a=None, **kwargs):
                 if isinstance(driving_values, list):
                     driving_count = len(driving_values)
             if driving_count == 0 and has_scheduled_driving_inputs:
-                driving_count = _json_value(input_switcher.get("size"), 0)
-                if isinstance(driving_count, bool) or not isinstance(
-                    driving_count, (int, float)
-                ):
-                    driving_count = 0
+                patterns = input_switcher.get("patterns", {})
+                if isinstance(patterns, dict):
+                    driving_count = len(
+                        {
+                            input_name
+                            for pattern in patterns.values()
+                            if isinstance(pattern, dict)
+                            for input_name in pattern
+                        }
+                    )
+                else:
+                    driving_count = _json_value(input_switcher.get("size"), 0)
+                    if isinstance(driving_count, bool) or not isinstance(
+                        driving_count, (int, float)
+                    ):
+                        driving_count = 0
             driving_count = min(driving_count, remaining_count)
 
             if driving_count > 0:

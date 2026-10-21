@@ -167,66 +167,81 @@ int inputSwitcherIndexFromJson(
     throw runtime_error("input_switcher.input_index must be a string or legacy integer");
 }
 
-vector<string> inputSwitcherIdsForJson(const json & j, const size_t patternCount)
+vector<string> inputSwitcherPatternIds(const json & input_switcher)
 {
-    vector<string> ids(patternCount);
-    for (size_t i = 0; i < patternCount; ++i)
-        ids[i] = defaultInputSwitcherId(static_cast<int>(i));
+    vector<string> ids;
+    if (input_switcher.contains("patterns"))
+    {
+        const json & patterns = input_switcher.at("patterns");
+        if (!patterns.is_object())
+            throw runtime_error("input_switcher.patterns must be an object");
+        if (input_switcher.contains("pattern_order"))
+        {
+            const json & order = input_switcher.at("pattern_order");
+            if (!order.is_object() || !order.contains("value")
+                || !order.at("value").is_array())
+                throw runtime_error(
+                    "input_switcher.pattern_order.value must be an array");
+            for (const auto & value : order.at("value"))
+            {
+                if (!value.is_string())
+                    throw runtime_error(
+                        "input_switcher.pattern_order values must be strings");
+                const string id = value.get<string>();
+                if (!patterns.contains(id))
+                    throw runtime_error(
+                        "input_switcher.pattern_order contains unknown pattern '"
+                        + id + "'");
+                if (find(ids.begin(), ids.end(), id) != ids.end())
+                    throw runtime_error(
+                        "input_switcher.pattern_order contains duplicate pattern '"
+                        + id + "'");
+                ids.push_back(id);
+            }
+            if (ids.size() != patterns.size())
+                throw runtime_error(
+                    "input_switcher.pattern_order must list every pattern once");
+        }
+        else
+            for (auto it = patterns.begin(); it != patterns.end(); ++it)
+                ids.push_back(it.key());
+        return ids;
+    }
 
-    if (!j.contains("input_switcher")
-        || !j.at("input_switcher").contains("inputs")
-        || !j.at("input_switcher").at("inputs").contains("value")
-        || !j.at("input_switcher").at("inputs").at("value").is_array())
+    if (!input_switcher.contains("inputs")
+        || !input_switcher.at("inputs").contains("value")
+        || !input_switcher.at("inputs").at("value").is_array())
         return ids;
 
-    int sequentialIndex = 0;
-    for (const auto & input : j.at("input_switcher").at("inputs").at("value"))
+    for (const auto & input : input_switcher.at("inputs").at("value"))
     {
         if (!input.contains("input_index")) continue;
-        int patternIndex = sequentialIndex;
-        if (input.at("input_index").is_number_integer())
-            patternIndex = input.at("input_index").get<int>();
-        else if (!input.at("input_index").is_string())
-            throw runtime_error(
-                "input_switcher.input_index must be a string or integer");
-
-        if (patternIndex >= 0 && static_cast<size_t>(patternIndex) < patternCount)
-            ids[patternIndex] = inputSwitcherIdFromJson(input.at("input_index"));
-        sequentialIndex++;
+        ids.push_back(inputSwitcherIdFromJson(input.at("input_index")));
     }
+    return ids;
+}
+
+vector<string> inputSwitcherIdsForJson(const json & j, const size_t patternCount)
+{
+    vector<string> ids;
+    if (j.contains("input_switcher"))
+        ids = inputSwitcherPatternIds(j.at("input_switcher"));
+    ids.resize(patternCount);
+    for (size_t i = 0; i < patternCount; ++i)
+        if (ids[i].empty()) ids[i] = defaultInputSwitcherId(static_cast<int>(i));
     return ids;
 }
 
 map<string, int> inputSwitcherIdMapFromJson(const json & input_switcher)
 {
     map<string, int> idToIndex;
-    if (!input_switcher.contains("inputs")
-        || !input_switcher.at("inputs").contains("value")
-        || !input_switcher.at("inputs").at("value").is_array())
-        return idToIndex;
-
-    int sequentialIndex = 0;
-    for (const auto & input : input_switcher.at("inputs").at("value"))
+    const vector<string> ids = inputSwitcherPatternIds(input_switcher);
+    for (size_t index = 0; index < ids.size(); ++index)
     {
-        if (!input.contains("input_index")) continue;
-        string id;
-        int index = sequentialIndex;
-        if (input.at("input_index").is_string())
-            id = input.at("input_index").get<string>();
-        else if (input.at("input_index").is_number_integer())
-        {
-            index = input.at("input_index").get<int>();
-            if (index < 0)
-                throw runtime_error("input_switcher.input_index must be non-negative");
-            id = defaultInputSwitcherId(index);
-        }
-        else
-            throw runtime_error(
-                "input_switcher.input_index must be a string or integer");
+        const string & id = ids[index];
         if (idToIndex.count(id))
             throw runtime_error("Duplicate input_switcher input_index '" + id + "'");
-        idToIndex[id] = index;
-        sequentialIndex++;
+        idToIndex[id] = static_cast<int>(index);
     }
     return idToIndex;
 }
@@ -3010,28 +3025,6 @@ void InputSwitcher::updateScheduledInput(
   }
 }
 
-void InputSwitcher::setInputOnce(const json & j, const int & ind, vector<double> & externalInputs)
-{
-
-    assert(0 && "unfinished");
-    const json & j2 = j["input_switcher"]["inputs"]["value"];
-    for (auto it = j2.begin(); it != j2.end(); ++it)
-    {
-      //vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
-      //vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
-      const json & j3 = j2["value"];
-      for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
-      {
-        //indvec.push_back(it2->at("ind").get<int>());
-        //valvec.push_back(it2->at("val").get<double>());
-      } 
-
-    }
-
-}
-
-
-
 void InputSwitcher::addParsToJson(json & j) const
 {
     if (inds.size()<=0) return;
@@ -3040,9 +3033,12 @@ void InputSwitcher::addParsToJson(json & j) const
         || !j["input_switcher"].is_object())
       j["input_switcher"] = json::object();
     json & j2 = j["input_switcher"];
+    const vector<string> switcherIds =
+      inputSwitcherIdsForJson(j, inds.size());
     j2.erase("input_index");
+    j2.erase("inputs");
+    j2.erase("size");
     j2["doEvolution"]["value"] = doEvolution;
-    j2["size"]["value"] = inds.size();
     const size_t inputCount =
         j.contains("driving_inputs")
         && j.at("driving_inputs").contains("inputs")
@@ -3052,8 +3048,6 @@ void InputSwitcher::addParsToJson(json & j) const
           : 0;
     const vector<string> inputIds = drivingInputIdsForJson(j, inputCount);
     if (timeperiods.size()>0){
-    const vector<string> switcherIds =
-      inputSwitcherIdsForJson(j, inds.size());
     json scheduledIds = json::array();
     for (const int index : scheduled_input_indices)
       scheduledIds.push_back(
@@ -3069,26 +3063,24 @@ void InputSwitcher::addParsToJson(json & j) const
 
 
     {
-    json arr1 = json::array();
+    json patterns = json::object();
     for (int i=0;i<inds.size();i++)
     {
     const vector<int> & indvec = inds[i];
     const vector<double> & valvec = vals[i];
-    json arr2 = json::array();
+    json pattern = json::object();
     for (int j=0;j<indvec.size();j++)
     {
       const string inputId =
         indvec[j] >= 0 && static_cast<size_t>(indvec[j]) < inputIds.size()
           ? inputIds[indvec[j]]
           : defaultDrivingInputId(indvec[j]);
-      arr2.push_back({{"input_num", inputId}, {"value", valvec[j]}});
+      pattern[inputId] = valvec[j];
     }
-    const vector<string> switcherIds =
-      inputSwitcherIdsForJson(j, inds.size());
-    //arr1.push_back({{"value", arr2},{"ind", i+1}});
-    arr1.push_back({{"value", arr2},{"input_index", switcherIds[i]}});
+    patterns[switcherIds[i]] = pattern;
     }
-    j["input_switcher"]["inputs"]["value"] = arr1;
+    j2["patterns"] = patterns;
+    j2["pattern_order"]["value"] = switcherIds;
 
     }
 
@@ -3110,7 +3102,12 @@ void InputSwitcher::construct(const json & j)
    if (!j.contains("input_switcher")) return;
  
   const json & input_switcher = j["input_switcher"];
-  if (!input_switcher.contains("size") || !input_switcher.contains("inputs")) return;
+  const bool has_patterns = input_switcher.contains("patterns");
+  const bool has_legacy_inputs = input_switcher.contains("inputs");
+  if (!has_patterns && !has_legacy_inputs) return;
+  if (has_patterns && has_legacy_inputs)
+    throw runtime_error(
+        "input_switcher cannot contain both patterns and legacy inputs");
 
   if (input_switcher.contains("doEvolution"))
   {
@@ -3125,8 +3122,20 @@ void InputSwitcher::construct(const json & j)
   }
   scheduleActive = doEvolution;
 
-  int size = input_switcher["size"]["value"].get<int>();
   const map<string, int> inputIdToIndex = drivingInputIdMapFromJson(j);
+  const vector<string> switcherIds = inputSwitcherPatternIds(input_switcher);
+  int size = static_cast<int>(switcherIds.size());
+  if (has_legacy_inputs)
+  {
+    if (!input_switcher.contains("size")
+        || !input_switcher.at("size").contains("value"))
+      throw runtime_error("legacy input_switcher.size.value is required");
+    const int legacySize = input_switcher.at("size").at("value").get<int>();
+    if (legacySize < size)
+      throw runtime_error(
+          "input_switcher.size cannot be smaller than its number of input patterns");
+    size = legacySize;
+  }
   const map<string, int> switcherIdToIndex =
     inputSwitcherIdMapFromJson(input_switcher);
 
@@ -3134,38 +3143,60 @@ void InputSwitcher::construct(const json & j)
   
     vector<vector<int> > inds1(size);
     vector<vector<double> > vals1(size);
-    const json & j2 = input_switcher["inputs"]["value"];
-    bool legacy_zero_based = false;
-    for (auto it = j2.begin(); it != j2.end(); ++it)
-      for (const auto & input : it->at("value"))
-        if (input.at("input_num").is_number_integer()
-            && input.at("input_num").get<int>() == 0)
-          legacy_zero_based = true;
-
-    for (auto it = j2.begin(); it != j2.end(); ++it)
+    if (has_patterns)
     {
-     // vector<int> & indvec = inds1[it->at("ind").get<int>()-1];
-     // vector<double> & valvec = vals1[it->at("ind").get<int>()-1];
-
-    const int switcherIndex =
-      inputSwitcherIndexFromJson(it->at("input_index"), switcherIdToIndex);
-    if (switcherIndex < 0 || switcherIndex >= size)
-      throw runtime_error(
-        "input_switcher.input_index is outside the configured input range");
-    vector<int> & indvec = inds1[switcherIndex];
-    vector<double> & valvec = vals1[switcherIndex];
-
-      const json & j3 = it->at("value");
-      for (auto it2 = j3.begin(); it2 != j3.end(); ++it2)
+      const json & patterns = input_switcher.at("patterns");
+      for (size_t switcherIndex = 0;
+           switcherIndex < switcherIds.size(); ++switcherIndex)
       {
-        const int inputIndex = drivingInputIndexFromJson(
-            it2->at("input_num"), inputIdToIndex, legacy_zero_based);
-        if (inputIndex < 0)
-          throw runtime_error("input_switcher input_num values are invalid");
-        indvec.push_back(inputIndex);
-        valvec.push_back(it2->at("value").get<double>());
-      } 
+        const json & pattern = patterns.at(switcherIds[switcherIndex]);
+        if (!pattern.is_object())
+          throw runtime_error(
+              "Each input_switcher pattern must be an object");
+        vector<int> & indvec = inds1[switcherIndex];
+        vector<double> & valvec = vals1[switcherIndex];
+        for (auto entry = pattern.begin(); entry != pattern.end(); ++entry)
+        {
+          const int inputIndex = drivingInputIndexFromJson(
+              json(entry.key()), inputIdToIndex, false);
+          if (inputIndex < 0)
+            throw runtime_error("input_switcher input names are invalid");
+          if (!entry.value().is_number())
+            throw runtime_error("input_switcher pattern values must be numbers");
+          indvec.push_back(inputIndex);
+          valvec.push_back(entry.value().get<double>());
+        }
+      }
+    }
+    else
+    {
+      const json & j2 = input_switcher.at("inputs").at("value");
+      bool legacy_zero_based = false;
+      for (auto it = j2.begin(); it != j2.end(); ++it)
+        for (const auto & input : it->at("value"))
+          if (input.at("input_num").is_number_integer()
+              && input.at("input_num").get<int>() == 0)
+            legacy_zero_based = true;
 
+      for (auto it = j2.begin(); it != j2.end(); ++it)
+      {
+        const int switcherIndex = inputSwitcherIndexFromJson(
+            it->at("input_index"), switcherIdToIndex);
+        if (switcherIndex < 0 || switcherIndex >= size)
+          throw runtime_error(
+              "input_switcher.input_index is outside the configured input range");
+        vector<int> & indvec = inds1[switcherIndex];
+        vector<double> & valvec = vals1[switcherIndex];
+        for (const auto & input : it->at("value"))
+        {
+          const int inputIndex = drivingInputIndexFromJson(
+              input.at("input_num"), inputIdToIndex, legacy_zero_based);
+          if (inputIndex < 0)
+            throw runtime_error("input_switcher input_num values are invalid");
+          indvec.push_back(inputIndex);
+          valvec.push_back(input.at("value").get<double>());
+        }
+      }
     }
 
     inds.swap(inds1);
