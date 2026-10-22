@@ -528,7 +528,15 @@ void EvoBase::setUp()
     vector<double> col1 = fileGetCol<double>(filename_,4,0);
     evolfile.open(filename_, std::ios_base::app);
     if (col1.empty()) initGenNum = 0;
-    else initGenNum = col1[col1.size()-1] - s->Generation() + 1;
+    else {
+        // A continued evolution advances from the checkpoint before its first
+        // display, so the existing last generation already provides the
+        // required offset. A normal resume displays the restored population
+        // first and therefore still needs the historical +1 offset.
+        const int resumeDisplayOffset = (doResume && contEvol) ? 0 : 1;
+        initGenNum = col1[col1.size()-1] - s->Generation()
+                   + resumeDisplayOffset;
+    }
 
     }
     else 
