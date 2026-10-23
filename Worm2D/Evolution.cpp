@@ -805,10 +805,14 @@ return setPars(cmd,ep1,"");
 evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_)
 {
 ep1.setFromArgs(cmd);
-doCPT = (bool) cmd->getArgValInt("-docpt",1);
+doCPT = (bool) cmd->getArgValInt(
+    "-docpt", cmd->getArgValInt("--doCPT", ep1.doCPT));
 contEvol = (bool) cmd->getArgValInt(
     "--contEvol",
-    cmd->getArgValInt("--cont_evol", cmd->getArgValInt("-contevol", 0)));
+    cmd->getArgValInt(
+        "--cont_evol", cmd->getArgValInt("-contevol", ep1.contEvol)));
+ep1.doCPT = doCPT;
+ep1.contEvol = contEvol;
 
 //cout << "docpt " << doCPT << endl;
 //assert(0);

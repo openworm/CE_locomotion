@@ -13,7 +13,8 @@ class EvolutionRS18 : public Evolution
     EvolutionRS18(int argc, const char* argv[], string modelname_)
     :Evolution(argc,argv, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30,
+        "", "", true, false}, 30, modelname_
     ),doOrigMuscInput(getParameterInt(argc,argv,"--do_orig_musc_input", "0")),
     doOrigSRInput(getParameterInt(argc,argv,"--do_orig_sr_input", "0")),
     speedoutput(getParameterInt(argc,argv,"--speed_output", "0")),
@@ -22,7 +23,8 @@ class EvolutionRS18 : public Evolution
     EvolutionRS18(shared_ptr<const CmdArgs> cmd_, string modelname_)
     :Evolution(cmd_, {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30}, 30, modelname_
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, 30,
+        "", "", true, false}, 30, modelname_
     ),doOrigMuscInput(cmd_->getArgValInt("--do_orig_musc_input", 0)),
     doOrigSRInput(cmd_->getArgValInt("--do_orig_sr_input", 0)),
     speedoutput(cmd_->getArgValInt("--speed_output", 0)),

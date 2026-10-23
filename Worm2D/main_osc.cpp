@@ -75,7 +75,26 @@ int main (int argc, const char* argv[])
     json j;
     
 
-    bool do_evol = cmd->getArgValInt("--doevol", 0);
+    auto evolutionBool = [&j_orig](const string & key, bool defaultValue) {
+        if (!j_orig.contains("evolution") ||
+            !j_orig["evolution"].contains(key)) return defaultValue;
+        const json & parameter = j_orig["evolution"][key];
+        const json & value = parameter.is_object() && parameter.contains("value")
+            ? parameter["value"] : parameter;
+        if (value.is_boolean()) return value.get<bool>();
+        if (value.is_number_integer()) return value.get<int>() != 0;
+        return defaultValue;
+    };
+
+    // Evolution is deliberately opt-in; a stored JSON value must not start it.
+    bool do_evol = cmd->getArgValInt("--doevol", false);
+    bool do_cpt = cmd->getArgValInt(
+        "-docpt", cmd->getArgValInt(
+            "--doCPT", evolutionBool("doCPT", true)));
+    bool cont_evol = cmd->getArgValInt(
+        "--contEvol", cmd->getArgValInt(
+            "--cont_evol", cmd->getArgValInt(
+                "-contevol", evolutionBool("contEvol", false))));
     if (do_evol) 
     {
         
@@ -118,6 +137,9 @@ int main (int argc, const char* argv[])
         string json_filename = rename_file("worm_data_evo.json", directoryName);
         json j_evo = getJsonFromFile(json_filename);
         j_evo["worm"]["main_model_name"]["value"] = model_name;
+        j_evo["evolution"]["doEvol"]["value"] = do_evol;
+        j_evo["evolution"]["doCPT"]["value"] = do_cpt;
+        j_evo["evolution"]["contEvol"]["value"] = cont_evol;
         j_evo.erase("Worm");
         j_evo.erase("Nervous system");
         j_evo.erase("Dorsal NMJ");
@@ -501,6 +523,9 @@ int main (int argc, const char* argv[])
         evo_json.erase("EvolutionType");
     }
     }
+    j["evolution"]["doEvol"]["value"] = do_evol;
+    j["evolution"]["doCPT"]["value"] = do_cpt;
+    j["evolution"]["contEvol"]["value"] = cont_evol;
 
     appendNSCellClassesToJson(j, w2->getSectionNames());
     w2->cleanLegacyParameterKeys(j);

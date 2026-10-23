@@ -554,6 +554,8 @@ struct evoPars{
    int VectSize_temo ;
    string fileprefix  ;
    string evoType ;
+   bool doCPT;
+   bool contEvol;
    
   void addParsToJson(json &j) const;
   const doubIntParamsHead getParams() const;

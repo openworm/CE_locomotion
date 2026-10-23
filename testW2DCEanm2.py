@@ -28,6 +28,7 @@ args = dict(
     RandSeed=900351,
     doOrigMuscInput=True,
     doOrigSRInput=True,
+    avg_speed=0.00022
 )
 
 args["outputFolderName"] = outputFolderName

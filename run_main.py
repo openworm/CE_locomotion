@@ -260,10 +260,17 @@ def process_args():
         "--doCPT",
         action="store_true",
         # metavar="<run NML>",
-        default=DEFAULTS["doCPT"],
+        default=argparse.SUPPRESS,
         help=(
             "Start evolution from checkpoint file if found, default true. Remove checkpoint file if false."
         ),
+    )
+    parser.add_argument(
+        "--no-doCPT",
+        dest="doCPT",
+        action="store_false",
+        default=argparse.SUPPRESS,
+        help="Do not resume from a checkpoint, overriding the JSON value.",
     )
 
     parser.add_argument(
@@ -285,11 +292,18 @@ def process_args():
         "--cont_evol",
         dest="contEvol",
         action="store_true",
-        default=DEFAULTS["contEvol"],
+        default=argparse.SUPPRESS,
         help=(
             "When resuming from search.cpt, generate the next population "
             "immediately from the stored fitness values."
         ),
+    )
+    parser.add_argument(
+        "--no-contEvol",
+        dest="contEvol",
+        action="store_false",
+        default=argparse.SUPPRESS,
+        help="Do not immediately advance a resumed checkpoint population.",
     )
 
     parser.add_argument(
@@ -341,11 +355,18 @@ def process_args():
         "--doEvol",
         action="store_true",
         # metavar="<run optimization>",
-        default=DEFAULTS["doEvol"],
+        default=argparse.SUPPRESS,
         help=(
             "If True both evolution and simulation will be performed. If False (the default)\n"
             "just the simulation will be performed."
         ),
+    )
+    parser.add_argument(
+        "--no-doEvol",
+        dest="doEvol",
+        action="store_false",
+        default=argparse.SUPPRESS,
+        help="Run without optimization (the default).",
     )
 
     parser.add_argument(
@@ -524,6 +545,11 @@ def TFtoInt(val):
 
 
 JSON_CONFIG_FILES = ["worm_data_worm.json", "worm_data_evo.json", "worm_data.json"]
+EVOLUTION_RUN_CONTROL_DEFAULTS = {
+    "doEvol": False,
+    "doCPT": True,
+    "contEvol": False,
+}
 
 
 def _evotag_to_string(evotag):
@@ -571,12 +597,77 @@ def _evolved_used_from_json(json_data):
 
 
 def _get_run_config_json(folder_name):
+    if folder_name is None:
+        return None, None
     for filename in JSON_CONFIG_FILES:
         path = os.path.join(folder_name, filename)
         if os.path.isfile(path):
             with open(path, "r", encoding="utf-8") as f:
                 return json.load(f), path
     return None, None
+
+
+def _json_parameter_value(section, key):
+    value = section.get(key)
+    if isinstance(value, dict):
+        value = value.get("value")
+    return value
+
+
+def _resolve_evolution_run_controls(a):
+    """Resolve run controls, keeping evolution explicitly opt-in."""
+    config_folder = a.inputFolderName
+    if config_folder is None:
+        config_folder = a.outputFolderName
+    config, _ = _get_run_config_json(config_folder)
+    evolution = {}
+    if isinstance(config, dict):
+        evolution = config.get(
+            "evolution", config.get("Evolutionary Optimization Parameters", {})
+        )
+    if not isinstance(evolution, dict):
+        evolution = {}
+
+    resolved = {}
+    for key, default in EVOLUTION_RUN_CONTROL_DEFAULTS.items():
+        if key == "doEvol":
+            value = getattr(a, key) if key in a._provided_args else False
+        elif key in a._provided_args:
+            value = getattr(a, key)
+        else:
+            value = _json_parameter_value(evolution, key)
+            if value is None:
+                value = default
+        value = bool(value)
+        setattr(a, key, value)
+        resolved[key] = value
+    return resolved
+
+
+def _store_evolution_run_controls(folder_name, controls):
+    """Store the effective run controls in every generated configuration."""
+    if folder_name is None:
+        return
+    for filename in JSON_CONFIG_FILES:
+        path = os.path.join(folder_name, filename)
+        if not os.path.isfile(path):
+            continue
+        with open(path, "r", encoding="utf-8") as f:
+            config = json.load(f)
+        evolution = config.get("evolution")
+        if not isinstance(evolution, dict):
+            legacy = config.get("Evolutionary Optimization Parameters")
+            evolution = legacy if isinstance(legacy, dict) else {}
+            config["evolution"] = evolution
+        config.pop("Evolutionary Optimization Parameters", None)
+        for key, value in controls.items():
+            parameter = evolution.setdefault(key, {})
+            if not isinstance(parameter, dict):
+                parameter = {}
+                evolution[key] = parameter
+            parameter["value"] = bool(value)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(config, f, ensure_ascii=False, indent=4)
 
 
 def _same_evotag_set(active_tags, evolved_used_tags):
@@ -626,12 +717,13 @@ def run(a=None, **kwargs):
             a._provided_args.add("RandSeed")
         delattr(a, "rand_seed")
 
+    evolution_run_controls = _resolve_evolution_run_controls(a)
+
     if a.doEvol:
         do_evol = 1
     else:
         do_evol = 0
 
-    outputFolderName = a.outputFolderName
     if a.inputFolderName is not None:
         if not os.path.isdir(a.inputFolderName):
             print("Input folder does not exist!")
@@ -642,14 +734,6 @@ def run(a=None, **kwargs):
             "No output folder name. You need to supply an output folder name, and an optional input folder name."
         )
         sys.exit(1)
-
-    if (
-        not do_evol
-        and not os.path.isdir(outputFolderName)
-        and a.inputFolderName is None
-    ):
-        print("Setting doEvol to True since the output folder will be created.")
-        do_evol = 1
 
     if do_evol:
         str1 = "all the contents"
@@ -752,6 +836,8 @@ def run(a=None, **kwargs):
                     ns_mod["taus"]["value"] = taus
                 with open(json_path_mod, "w", encoding="utf-8") as f:
                     json.dump(network_json_data_mod, f, ensure_ascii=False, indent=4)
+
+    _store_evolution_run_controls(a.outputFolderName, evolution_run_controls)
 
     check_nan_files = ["fitness.dat", "genhistory.dat"]
     for file in check_nan_files:
@@ -1216,8 +1302,7 @@ def run(a=None, **kwargs):
             cmd += ["-sd", str(sim_data["Duration"])]
         if "simtransient" in provided:
             cmd += ["-st", str(sim_data["Transient"])]
-        if "doEvol" in provided:
-            cmd += ["--doevol", str(do_evol)]
+        cmd += ["--doevol", str(do_evol)]
         if "checkPointInterval" in provided:
             cmd += ["--checkpoint_interval", str(evol_data["CheckpointInterval"])]
         if "doRandInit" in provided:
@@ -1231,10 +1316,8 @@ def run(a=None, **kwargs):
 
         if "doMuscSim" in provided:
             cmd += ["--domusc", str(sim_data["doMuscSim"])]
-        if "doCPT" in provided:
-            cmd += ["-docpt", str(TFtoInt(a.doCPT))]
-        if "contEvol" in provided:
-            cmd += ["--contEvol", str(TFtoInt(a.contEvol))]
+        cmd += ["-docpt", str(TFtoInt(a.doCPT))]
+        cmd += ["--contEvol", str(TFtoInt(a.contEvol))]
         if "evo_type" in provided:
             cmd += ["--evo_type", str(a.evo_type)]
     else:
@@ -1293,6 +1376,8 @@ def run(a=None, **kwargs):
 
         if result.returncode != 0:
             sys.exit(result.returncode)
+
+    _store_evolution_run_controls(a.outputFolderName, evolution_run_controls)
 
     # hf.dir_name = a.outputFolderName
 

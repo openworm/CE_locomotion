@@ -35,6 +35,7 @@ args = dict(
     randomInitialState=True,
     SRZeroGainsType=1,
     RandSeed=1233,
+    avg_speed=0.00022
 )
 
 if doOrig:
