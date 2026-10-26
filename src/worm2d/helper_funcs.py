@@ -160,6 +160,114 @@ def _input_switcher_index(input_index):
     )
 
 
+def _normalise_input_switcher_patterns(input_switcher):
+    """Return the mutable patterns dictionary, migrating the legacy list schema."""
+    if not isinstance(input_switcher, dict):
+        raise TypeError("'input_switcher' must be a dictionary")
+
+    patterns = input_switcher.get("patterns")
+    if patterns is not None:
+        if not isinstance(patterns, dict):
+            raise TypeError("'input_switcher.patterns' must be a dictionary")
+        for pattern_name, values in patterns.items():
+            _input_switcher_id(pattern_name)
+            if not isinstance(values, dict):
+                raise TypeError(
+                    "Each input-switcher pattern must be a dictionary"
+                )
+            for input_name, value in values.items():
+                _driving_input_id(input_name)
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(value)
+                ):
+                    raise ValueError(
+                        "Each input-switcher pattern value must be finite"
+                    )
+        order_object = input_switcher.get("pattern_order")
+        if order_object is None:
+            input_switcher["pattern_order"] = {"value": list(patterns)}
+        elif (
+            not isinstance(order_object, dict)
+            or not isinstance(order_object.get("value"), list)
+            or len(order_object["value"]) != len(patterns)
+            or set(order_object["value"]) != set(patterns)
+        ):
+            raise ValueError(
+                "'input_switcher.pattern_order.value' must list every pattern once"
+            )
+        input_switcher.pop("inputs", None)
+        input_switcher.pop("size", None)
+        return patterns
+
+    legacy_inputs = input_switcher.get("inputs")
+    if legacy_inputs is None:
+        patterns = {}
+    else:
+        if not isinstance(legacy_inputs, dict):
+            raise TypeError("'input_switcher.inputs' must be a dictionary")
+        entries = legacy_inputs.get("value")
+        if not isinstance(entries, list):
+            raise TypeError("'input_switcher.inputs.value' must be a list")
+
+        legacy_zero_based = any(
+            isinstance(value_entry, dict) and value_entry.get("input_num") == 0
+            for pattern in entries
+            if isinstance(pattern, dict)
+            for value_entry in (
+                pattern.get("value")
+                if isinstance(pattern.get("value"), list)
+                else []
+            )
+        )
+        patterns = {}
+        for pattern in entries:
+            if not isinstance(pattern, dict):
+                raise TypeError("Each input-switcher pattern must be a dictionary")
+            pattern_id = _input_switcher_id(pattern.get("input_index"))
+            if pattern_id in patterns:
+                raise ValueError(
+                    "Duplicate input pattern identifier {!r}".format(pattern_id)
+                )
+            values = pattern.get("value")
+            if not isinstance(values, list):
+                raise TypeError("Each input-switcher pattern value must be a list")
+            pattern_values = {}
+            for entry in values:
+                if not isinstance(entry, dict):
+                    raise TypeError(
+                        "Each input-switcher pattern entry must be a dictionary"
+                    )
+                input_num = entry.get("input_num")
+                if legacy_zero_based and isinstance(input_num, int):
+                    input_num += 1
+                input_id = _driving_input_id(input_num)
+                if input_id in pattern_values:
+                    raise ValueError(
+                        "Input pattern {!r} contains driving input {!r} more than once".format(
+                            pattern_id, input_id
+                        )
+                    )
+                value = entry.get("value")
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(value)
+                ):
+                    raise ValueError(
+                        "Each input-switcher pattern value must be finite"
+                    )
+                pattern_values[input_id] = float(value)
+            patterns[pattern_id] = pattern_values
+
+    input_switcher["patterns"] = patterns
+    input_switcher["pattern_order"] = {"value": list(patterns)}
+    input_switcher.pop("inputs", None)
+    input_switcher.pop("size", None)
+    return patterns
+
+
 def make_json_tree(obj, title="root"):
     if widgets is None:
         raise ImportError("ipywidgets is required to display JSON trees")
@@ -1158,71 +1266,122 @@ def validate_w2dsr_json(json_data, source_name=None):
     if input_switcher is not None and not isinstance(input_switcher, dict):
         errors.append("'input_switcher' must be an object")
         input_switcher = None
-    if isinstance(input_switcher, dict) and "inputs" in input_switcher:
-        patterns = wrapped_value(input_switcher.get("inputs"), "value")
-        if not isinstance(patterns, list):
-            errors.append("'input_switcher.inputs.value' must be a list")
-            patterns = []
+    if isinstance(input_switcher, dict) and (
+        "patterns" in input_switcher or "inputs" in input_switcher
+    ):
         pattern_ids = set()
-        for pattern_index, pattern in enumerate(patterns):
-            pattern_path = "input_switcher.inputs.value[{}]".format(pattern_index)
-            if not isinstance(pattern, dict):
-                errors.append("'{}' must be an object".format(pattern_path))
-                continue
-            pattern_id = pattern.get("input_index")
-            if not isinstance(pattern_id, str) or not pattern_id:
+        if "patterns" in input_switcher:
+            patterns = input_switcher.get("patterns")
+            if not isinstance(patterns, dict):
+                errors.append("'input_switcher.patterns' must be an object")
+                patterns = {}
+            if "inputs" in input_switcher:
                 errors.append(
-                    "'{}.input_index' must be a non-empty string".format(pattern_path)
+                    "'input_switcher' cannot contain both 'patterns' and legacy 'inputs'"
                 )
-            elif pattern_id in pattern_ids:
-                errors.append(
-                    "Duplicate input pattern identifier {!r}".format(pattern_id)
-                )
-            else:
-                pattern_ids.add(pattern_id)
-            values = pattern.get("value")
-            if not isinstance(values, list):
-                errors.append("'{}.value' must be a list".format(pattern_path))
-                continue
-            pattern_inputs = set()
-            for value_index, input_value in enumerate(values):
-                value_path = "{}.value[{}]".format(pattern_path, value_index)
-                if not isinstance(input_value, dict):
-                    errors.append("'{}' must be an object".format(value_path))
+            for pattern_id, values in patterns.items():
+                pattern_path = "input_switcher.patterns.{}".format(pattern_id)
+                if not isinstance(pattern_id, str) or not pattern_id:
+                    errors.append("Input pattern names must be non-empty strings")
                     continue
-                input_id = input_value.get("input_num")
-                if not isinstance(input_id, str) or not input_id:
+                pattern_ids.add(pattern_id)
+                if not isinstance(values, dict):
+                    errors.append("'{}' must be an object".format(pattern_path))
+                    continue
+                for input_id, value in values.items():
+                    value_path = "{}.{}".format(pattern_path, input_id)
+                    if not isinstance(input_id, str) or not input_id:
+                        errors.append(
+                            "Input names in '{}' must be non-empty strings".format(
+                                pattern_path
+                            )
+                        )
+                    elif input_id not in driving_input_ids:
+                        errors.append(
+                            "'{}' refers to unknown driving input '{}'".format(
+                                value_path, input_id
+                            )
+                        )
+                    if not _is_finite_number(value):
+                        errors.append("'{}' must be a finite number".format(value_path))
+            pattern_order = wrapped_value(input_switcher, "pattern_order")
+            if pattern_order is not None and (
+                not isinstance(pattern_order, list)
+                or len(pattern_order) != len(patterns)
+                or any(not isinstance(name, str) for name in pattern_order)
+                or set(pattern_order) != set(patterns)
+            ):
+                errors.append(
+                    "'input_switcher.pattern_order.value' must list every pattern once"
+                )
+        else:
+            patterns = wrapped_value(input_switcher.get("inputs"), "value")
+            if not isinstance(patterns, list):
+                errors.append("'input_switcher.inputs.value' must be a list")
+                patterns = []
+            for pattern_index, pattern in enumerate(patterns):
+                pattern_path = "input_switcher.inputs.value[{}]".format(pattern_index)
+                if not isinstance(pattern, dict):
+                    errors.append("'{}' must be an object".format(pattern_path))
+                    continue
+                pattern_id = pattern.get("input_index")
+                if not isinstance(pattern_id, str) or not pattern_id:
                     errors.append(
-                        "'{}.input_num' must be a non-empty string".format(value_path)
-                    )
-                elif input_id not in driving_input_ids:
-                    errors.append(
-                        "'{}.input_num' refers to unknown driving input '{}'".format(
-                            value_path, input_id
+                        "'{}.input_index' must be a non-empty string".format(
+                            pattern_path
                         )
                     )
-                elif input_id in pattern_inputs:
+                elif pattern_id in pattern_ids:
                     errors.append(
-                        "Input pattern {!r} contains driving input {!r} more than once".format(
-                            pattern_id, input_id
-                        )
+                        "Duplicate input pattern identifier {!r}".format(pattern_id)
                     )
                 else:
-                    pattern_inputs.add(input_id)
-                if not _is_finite_number(input_value.get("value")):
-                    errors.append(
-                        "'{}.value' must be a finite number".format(value_path)
-                    )
+                    pattern_ids.add(pattern_id)
+                values = pattern.get("value")
+                if not isinstance(values, list):
+                    errors.append("'{}.value' must be a list".format(pattern_path))
+                    continue
+                pattern_inputs = set()
+                for value_index, input_value in enumerate(values):
+                    value_path = "{}.value[{}]".format(pattern_path, value_index)
+                    if not isinstance(input_value, dict):
+                        errors.append("'{}' must be an object".format(value_path))
+                        continue
+                    input_id = input_value.get("input_num")
+                    if not isinstance(input_id, str) or not input_id:
+                        errors.append(
+                            "'{}.input_num' must be a non-empty string".format(
+                                value_path
+                            )
+                        )
+                    elif input_id not in driving_input_ids:
+                        errors.append(
+                            "'{}.input_num' refers to unknown driving input '{}'".format(
+                                value_path, input_id
+                            )
+                        )
+                    elif input_id in pattern_inputs:
+                        errors.append(
+                            "Input pattern {!r} contains driving input {!r} more than once".format(
+                                pattern_id, input_id
+                            )
+                        )
+                    else:
+                        pattern_inputs.add(input_id)
+                    if not _is_finite_number(input_value.get("value")):
+                        errors.append(
+                            "'{}.value' must be a finite number".format(value_path)
+                        )
 
-        configured_size = wrapped_value(input_switcher, "size")
-        if (
-            isinstance(configured_size, bool)
-            or not isinstance(configured_size, int)
-            or configured_size != len(patterns)
-        ):
-            errors.append(
-                "'input_switcher.size.value' must equal the number of input patterns"
-            )
+            configured_size = wrapped_value(input_switcher, "size")
+            if (
+                isinstance(configured_size, bool)
+                or not isinstance(configured_size, int)
+                or configured_size != len(patterns)
+            ):
+                errors.append(
+                    "'input_switcher.size.value' must equal the number of input patterns"
+                )
 
         periods_present = "time_periods" in input_switcher
         indices_present = "input_indices" in input_switcher
@@ -2166,10 +2325,6 @@ def set_input_switcher_input(
     if not isinstance(json_data, dict):
         raise TypeError("json_data must be a dictionary")
     input_index_id = _input_switcher_id(input_index)
-    try:
-        input_index_number = _input_switcher_index(input_index_id)
-    except ValueError:
-        input_index_number = None
     if not isinstance(input_nums, (list, tuple)) or not input_nums:
         raise ValueError("input_nums must be a non-empty list or tuple")
     if not isinstance(values, (list, tuple)) or not values:
@@ -2177,7 +2332,7 @@ def set_input_switcher_input(
     if len(input_nums) != len(values):
         raise ValueError("input_nums and values must have the same length")
 
-    pattern_values = []
+    pattern_values = {}
     seen_input_nums = set()
     for input_num, value in zip(input_nums, values):
         input_id = _driving_input_id(input_num)
@@ -2191,87 +2346,16 @@ def set_input_switcher_input(
             raise TypeError("Each input value must be a number")
         if not math.isfinite(value):
             raise ValueError("Each input value must be finite")
-        pattern_values.append({"input_num": input_id, "value": float(value)})
+        pattern_values[input_id] = float(value)
 
     result = copy.deepcopy(json_data)
     input_switcher = result.setdefault("input_switcher", {})
     if not isinstance(input_switcher, dict):
         raise TypeError("'input_switcher' must be a dictionary")
-    inputs_object = input_switcher.setdefault("inputs", {"value": []})
-    if not isinstance(inputs_object, dict):
-        raise TypeError("'input_switcher.inputs' must be a dictionary")
-    if inputs_object.get("value") is None:
-        inputs_object["value"] = []
-    inputs = inputs_object.get("value")
-    if not isinstance(inputs, list):
-        raise TypeError("'input_switcher.inputs.value' must be a list")
-
-    legacy_zero_based = False
-    for pattern in inputs:
-        if not isinstance(pattern, dict):
-            raise TypeError("Each input-switcher pattern must be a dictionary")
-        pattern_entries = pattern.get("value")
-        if not isinstance(pattern_entries, list):
-            raise TypeError("Each input-switcher pattern value must be a list")
-        for entry in pattern_entries:
-            if not isinstance(entry, dict):
-                raise TypeError(
-                    "Each input-switcher pattern entry must be a dictionary"
-                )
-            existing_input_num = entry.get("input_num")
-            if isinstance(existing_input_num, bool):
-                raise TypeError("Each existing input identifier must be valid")
-            if isinstance(existing_input_num, int) and existing_input_num < 0:
-                raise TypeError(
-                    "Each existing input number must be a non-negative integer"
-                )
-            if not isinstance(existing_input_num, (int, str)):
-                raise TypeError(
-                    "Each existing input identifier must be a string or integer"
-                )
-            if existing_input_num == 0:
-                legacy_zero_based = True
-
-    if legacy_zero_based:
-        for pattern in inputs:
-            for entry in pattern["value"]:
-                entry["input_num"] = _driving_input_id(entry["input_num"] + 1)
-    else:
-        for pattern in inputs:
-            for entry in pattern["value"]:
-                entry["input_num"] = _driving_input_id(entry["input_num"])
-
-    new_pattern = {
-        "input_index": input_index_id,
-        "value": pattern_values,
-    }
-    matching_positions = []
-    for position, pattern in enumerate(inputs):
-        pattern["input_index"] = _input_switcher_id(pattern.get("input_index"))
-        if pattern["input_index"] == input_index_id:
-            matching_positions.append(position)
-
-    if matching_positions:
-        inputs[matching_positions[0]] = new_pattern
-        for position in reversed(matching_positions[1:]):
-            inputs.pop(position)
-    else:
-        inputs.append(new_pattern)
-
-    size_object = input_switcher.setdefault("size", {"value": 0})
-    if not isinstance(size_object, dict):
-        raise TypeError("'input_switcher.size' must be a dictionary")
-    current_size = size_object.get("value", 0)
-    if (
-        isinstance(current_size, bool)
-        or not isinstance(current_size, int)
-        or current_size < 0
-    ):
-        raise TypeError("'input_switcher.size.value' must be a non-negative integer")
-    if input_index_number is None:
-        size_object["value"] = max(current_size, len(inputs))
-    else:
-        size_object["value"] = max(current_size, input_index_number + 1, len(inputs))
+    patterns = _normalise_input_switcher_patterns(input_switcher)
+    if input_index_id not in patterns:
+        input_switcher["pattern_order"]["value"].append(input_index_id)
+    patterns[input_index_id] = pattern_values
     return result
 
 
@@ -2291,14 +2375,8 @@ def _get_driving_input_ids(json_data):
     return input_ids
 
 
-def _next_input_switcher_pattern_name(inputs):
-    used_names = set()
-    for pattern in inputs:
-        if not isinstance(pattern, dict):
-            raise TypeError("Each input-switcher pattern must be a dictionary")
-        if "input_index" in pattern:
-            used_names.add(_input_switcher_id(pattern["input_index"]))
-
+def _next_input_switcher_pattern_name(patterns):
+    used_names = set(patterns)
     pattern_number = 0
     while True:
         pattern_name = "input_pattern_{}".format(pattern_number)
@@ -2328,7 +2406,7 @@ def add_input_switcher_pattern(
         raise ValueError("input_nums and values must have the same length")
 
     allowed_input_ids = _get_driving_input_ids(json_data)
-    pattern_values = []
+    pattern_values = {}
     seen_input_nums = set()
     for input_num, value in zip(input_nums, values):
         input_id = _driving_input_id(input_num)
@@ -2346,45 +2424,22 @@ def add_input_switcher_pattern(
             raise TypeError("Each input value must be a number")
         if not math.isfinite(value):
             raise ValueError("Each input value must be finite")
-        pattern_values.append({"input_num": input_id, "value": float(value)})
+        pattern_values[input_id] = float(value)
 
     result = copy.deepcopy(json_data)
     input_switcher = result.setdefault("input_switcher", {})
     if not isinstance(input_switcher, dict):
         raise TypeError("'input_switcher' must be a dictionary")
-    inputs_object = input_switcher.setdefault("inputs", {"value": []})
-    if not isinstance(inputs_object, dict):
-        raise TypeError("'input_switcher.inputs' must be a dictionary")
-    if inputs_object.get("value") is None:
-        inputs_object["value"] = []
-    inputs = inputs_object.get("value")
-    if not isinstance(inputs, list):
-        raise TypeError("'input_switcher.inputs.value' must be a list")
+    patterns = _normalise_input_switcher_patterns(input_switcher)
 
     if pattern_name is None:
-        pattern_id = _next_input_switcher_pattern_name(inputs)
+        pattern_id = _next_input_switcher_pattern_name(patterns)
     else:
         pattern_id = _input_switcher_id(pattern_name)
 
-    new_pattern = {"input_index": pattern_id, "value": pattern_values}
-    replaced = False
-    kept_inputs = []
-    for pattern in inputs:
-        if not isinstance(pattern, dict):
-            raise TypeError("Each input-switcher pattern must be a dictionary")
-        existing_pattern_id = _input_switcher_id(pattern.get("input_index"))
-        pattern["input_index"] = existing_pattern_id
-        if existing_pattern_id == pattern_id:
-            if not replaced:
-                kept_inputs.append(new_pattern)
-                replaced = True
-            continue
-        kept_inputs.append(pattern)
-    if not replaced:
-        kept_inputs.append(new_pattern)
-
-    inputs_object["value"] = kept_inputs
-    input_switcher["size"] = {"value": len(kept_inputs)}
+    if pattern_id not in patterns:
+        input_switcher["pattern_order"]["value"].append(pattern_id)
+    patterns[pattern_id] = pattern_values
     return result
 
 
@@ -2398,29 +2453,11 @@ def delete_input_switcher_pattern(json_data, pattern_name):
     input_switcher = result.get("input_switcher")
     if not isinstance(input_switcher, dict):
         raise KeyError("JSON does not contain an 'input_switcher' object")
-    inputs_object = input_switcher.get("inputs")
-    if not isinstance(inputs_object, dict):
-        raise KeyError("JSON does not contain 'input_switcher.inputs'")
-    inputs = inputs_object.get("value")
-    if not isinstance(inputs, list):
-        raise TypeError("'input_switcher.inputs.value' must be a list")
-
-    kept_inputs = []
-    found_pattern = False
-    for pattern in inputs:
-        if not isinstance(pattern, dict):
-            raise TypeError("Each input-switcher pattern must be a dictionary")
-        existing_pattern_id = _input_switcher_id(pattern.get("input_index"))
-        pattern["input_index"] = existing_pattern_id
-        if existing_pattern_id == pattern_id:
-            found_pattern = True
-            continue
-        kept_inputs.append(pattern)
-    if not found_pattern:
+    patterns = _normalise_input_switcher_patterns(input_switcher)
+    if pattern_id not in patterns:
         raise KeyError("Input-switcher pattern {!r} does not exist".format(pattern_id))
-
-    inputs_object["value"] = kept_inputs
-    input_switcher["size"] = {"value": len(kept_inputs)}
+    del patterns[pattern_id]
+    input_switcher["pattern_order"]["value"].remove(pattern_id)
 
     scheduled = input_switcher.get("input_indices", {}).get("value")
     periods = input_switcher.get("time_periods", {}).get("value")
@@ -2445,7 +2482,7 @@ def delete_input_switcher_pattern(json_data, pattern_name):
         input_switcher["input_indices"]["value"] = kept_schedule
         input_switcher["time_periods"]["value"] = kept_periods
 
-    if not kept_inputs:
+    if not patterns:
         result.pop("input_switcher", None)
     return result
 
@@ -2477,26 +2514,10 @@ def set_input_switcher_schedule(
     input_switcher = result.get("input_switcher")
     if not isinstance(input_switcher, dict):
         raise KeyError("JSON does not contain an 'input_switcher' object")
-    size_object = input_switcher.get("size")
-    if not isinstance(size_object, dict):
-        raise KeyError("JSON does not contain 'input_switcher.size'")
-    input_count = size_object.get("value")
-    if (
-        isinstance(input_count, bool)
-        or not isinstance(input_count, int)
-        or input_count < 1
-    ):
-        raise TypeError("'input_switcher.size.value' must be a positive integer")
-    inputs = input_switcher.get("inputs", {}).get("value")
-    if not isinstance(inputs, list):
-        raise TypeError("'input_switcher.inputs.value' must be a list")
-    allowed_indices = set()
-    for pattern in inputs:
-        if not isinstance(pattern, dict) or "input_index" not in pattern:
-            raise TypeError("Each input-switcher pattern must contain input_index")
-        pattern_id = _input_switcher_id(pattern["input_index"])
-        pattern["input_index"] = pattern_id
-        allowed_indices.add(pattern_id)
+    patterns = _normalise_input_switcher_patterns(input_switcher)
+    if not patterns:
+        raise ValueError("input_switcher must contain at least one pattern")
+    allowed_indices = set(patterns)
 
     periods = []
     for period in time_periods:
@@ -2511,7 +2532,7 @@ def set_input_switcher_schedule(
         input_index_id = _input_switcher_id(input_index)
         if input_index_id not in allowed_indices:
             raise ValueError(
-                "Input index {} is not one of the configured input_index values".format(
+                "Input index {} is not one of the configured pattern names".format(
                     input_index_id
                 )
             )
@@ -5036,90 +5057,45 @@ def delete_driving_input(json_data, input_num):
 
     input_switcher = result.get("input_switcher")
     if isinstance(input_switcher, dict):
-        switcher_inputs = input_switcher.get("inputs", {}).get("value")
-        if switcher_inputs is not None and not isinstance(switcher_inputs, list):
-            raise TypeError("'input_switcher.inputs.value' must be a list")
-        if isinstance(switcher_inputs, list):
-            legacy_zero_based = False
-            for pattern in switcher_inputs:
-                if not isinstance(pattern, dict):
-                    continue
-                pattern_values = pattern.get("value")
-                if not isinstance(pattern_values, list):
-                    continue
-                for entry in pattern_values:
-                    if isinstance(entry, dict) and entry.get("input_num") == 0:
-                        legacy_zero_based = True
-            kept_patterns = []
-            removed_pattern_ids = set()
-            for pattern in switcher_inputs:
-                if not isinstance(pattern, dict):
-                    raise TypeError("Each input-switcher pattern must be a dictionary")
-                pattern_id = _input_switcher_id(pattern.get("input_index"))
-                pattern_values = pattern.get("value")
-                if pattern_values is None:
-                    kept_patterns.append(pattern)
-                    continue
-                if not isinstance(pattern_values, list):
-                    raise TypeError("Each input-switcher pattern value must be a list")
-                kept_values = []
-                for entry in pattern_values:
-                    if not isinstance(entry, dict):
-                        raise TypeError(
-                            "Each input-switcher pattern entry must be a dictionary"
-                        )
-                    entry_input_num = entry.get("input_num")
-                    if legacy_zero_based and isinstance(entry_input_num, int):
-                        entry_id = _driving_input_id(entry_input_num + 1)
-                    else:
-                        entry_id = _driving_input_id(entry_input_num)
-                    if entry_id == input_id:
-                        _collect_evotags(entry, removed_evotags)
-                        continue
-                    entry["input_num"] = entry_id
-                    kept_values.append(entry)
-                if kept_values:
-                    pattern["input_index"] = pattern_id
-                    pattern["value"] = kept_values
-                    kept_patterns.append(pattern)
-                else:
-                    _collect_evotags(pattern, removed_evotags)
-                    removed_pattern_ids.add(pattern_id)
-            input_switcher["inputs"]["value"] = kept_patterns
-            size_object = input_switcher.setdefault("size", {"value": 0})
-            if not isinstance(size_object, dict):
-                raise TypeError("'input_switcher.size' must be a dictionary")
-            size_object["value"] = len(kept_patterns)
+        patterns = _normalise_input_switcher_patterns(input_switcher)
+        removed_pattern_ids = set()
+        for pattern_id in list(patterns):
+            pattern_values = patterns[pattern_id]
+            pattern_values.pop(input_id, None)
+            if not pattern_values:
+                del patterns[pattern_id]
+                input_switcher["pattern_order"]["value"].remove(pattern_id)
+                removed_pattern_ids.add(pattern_id)
 
-            if removed_pattern_ids:
-                scheduled = input_switcher.get("input_indices", {}).get("value")
-                periods = input_switcher.get("time_periods", {}).get("value")
-                if scheduled is not None or periods is not None:
-                    if not isinstance(scheduled, list):
-                        raise TypeError(
-                            "'input_switcher.input_indices.value' must be a list"
-                        )
-                    if not isinstance(periods, list):
-                        raise TypeError(
-                            "'input_switcher.time_periods.value' must be a list"
-                        )
-                    if len(scheduled) != len(periods):
-                        raise ValueError(
-                            "input_switcher.input_indices and time_periods "
-                            "must have the same length"
-                        )
-                    kept_schedule = []
-                    kept_periods = []
-                    for scheduled_id, period in zip(scheduled, periods):
-                        scheduled_pattern_id = _input_switcher_id(scheduled_id)
-                        if scheduled_pattern_id in removed_pattern_ids:
-                            continue
-                        kept_schedule.append(scheduled_pattern_id)
-                        kept_periods.append(period)
-                    input_switcher["input_indices"]["value"] = kept_schedule
-                    input_switcher["time_periods"]["value"] = kept_periods
-            if not kept_patterns:
-                result.pop("input_switcher", None)
+        if removed_pattern_ids:
+            scheduled = input_switcher.get("input_indices", {}).get("value")
+            periods = input_switcher.get("time_periods", {}).get("value")
+            if scheduled is not None or periods is not None:
+                if not isinstance(scheduled, list):
+                    raise TypeError(
+                        "'input_switcher.input_indices.value' must be a list"
+                    )
+                if not isinstance(periods, list):
+                    raise TypeError(
+                        "'input_switcher.time_periods.value' must be a list"
+                    )
+                if len(scheduled) != len(periods):
+                    raise ValueError(
+                        "input_switcher.input_indices and time_periods "
+                        "must have the same length"
+                    )
+                kept_schedule = []
+                kept_periods = []
+                for scheduled_id, period in zip(scheduled, periods):
+                    scheduled_pattern_id = _input_switcher_id(scheduled_id)
+                    if scheduled_pattern_id in removed_pattern_ids:
+                        continue
+                    kept_schedule.append(scheduled_pattern_id)
+                    kept_periods.append(period)
+                input_switcher["input_indices"]["value"] = kept_schedule
+                input_switcher["time_periods"]["value"] = kept_periods
+        if not patterns:
+            result.pop("input_switcher", None)
 
     if not remaining_inputs and not remaining_weights:
         result.pop("driving_inputs", None)

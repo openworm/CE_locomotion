@@ -1730,6 +1730,9 @@ void evoPars::addParsToJson(json &j) const
       vector<string> vals = {fileprefix, evoType};
        for (int i=0;i<names.size();i++) j[names[i]]["value"]=vals[i];}
 
+      j["doCPT"]["value"] = doCPT;
+      j["contEvol"]["value"] = contEvol;
+
 
   }
 const doubIntParamsHead evoPars::getParams() const

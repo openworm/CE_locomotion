@@ -528,7 +528,15 @@ void EvoBase::setUp()
     vector<double> col1 = fileGetCol<double>(filename_,4,0);
     evolfile.open(filename_, std::ios_base::app);
     if (col1.empty()) initGenNum = 0;
-    else initGenNum = col1[col1.size()-1] - s->Generation() + 1;
+    else {
+        // A continued evolution advances from the checkpoint before its first
+        // display, so the existing last generation already provides the
+        // required offset. A normal resume displays the restored population
+        // first and therefore still needs the historical +1 offset.
+        const int resumeDisplayOffset = (doResume && contEvol) ? 0 : 1;
+        initGenNum = col1[col1.size()-1] - s->Generation()
+                   + resumeDisplayOffset;
+    }
 
     }
     else 
@@ -797,10 +805,14 @@ return setPars(cmd,ep1,"");
 evoPars EvoBase::setPars(shared_ptr<const CmdArgs> cmd, evoPars ep1, string prefix_)
 {
 ep1.setFromArgs(cmd);
-doCPT = (bool) cmd->getArgValInt("-docpt",1);
+doCPT = (bool) cmd->getArgValInt(
+    "-docpt", cmd->getArgValInt("--doCPT", ep1.doCPT));
 contEvol = (bool) cmd->getArgValInt(
     "--contEvol",
-    cmd->getArgValInt("--cont_evol", cmd->getArgValInt("-contevol", 0)));
+    cmd->getArgValInt(
+        "--cont_evol", cmd->getArgValInt("-contevol", ep1.contEvol)));
+ep1.doCPT = doCPT;
+ep1.contEvol = contEvol;
 
 //cout << "docpt " << doCPT << endl;
 //assert(0);

@@ -682,8 +682,6 @@ class InputSwitcher
 
   protected:
 
-  void setInputOnce(const json & j, const int & ind, vector<double> & externalInputs);
-
   void setInputOnce(const int & ind, vector<double> & externalInputs);
   bool hasInputPattern(const int & ind) const
   {

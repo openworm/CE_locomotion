@@ -356,22 +356,22 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(const string & evotype_, shared_ptr<
     if (evotype_=="EvoCO" || evotype_=="EvoCO2")
         return {".", 1749493257, RANK_BASED, GENETIC_ALGORITHM, 
         26, 40, 0.05, 0.5, UNIFORM, 
-        1.1, 0.1, 1, 1, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_};
+        1.1, 0.1, 1, 1, 1, 1, 50, 50, evol1->itsStepSize(), 23, -1 , "", evotype_, true, false};
 
     if (evotype_=="Evo21" || evotype_=="Evo21R")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         100, 2000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.04, 1, 1, 0, 10, 40.0, 10.0, 0.005, 23, -1 , "", evotype_, true, false};
 
     if (evotype_=="Evo18")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 1000, 0.1, 0.5, UNIFORM, 
-        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_ };
+        1.1, 0.04, 1, 1, 1, 4, 50.0, 10.0, 0.01, 23, -1 , "", evotype_, true, false};
     
     if (evotype_== "EvoCE" || evotype_== "EvoCENZ")
         return {".", 42, RANK_BASED, GENETIC_ALGORITHM, 
         96, 10, 0.05, 0.5, UNIFORM, 
-        1.1, 0.02, 1, 1, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_};
+        1.1, 0.02, 1, 1, 0, 10, 24, 8.0, 0.005, 23, -1 , "", evotype_, true, false};
 
     assert(0 && "evotype not implemented");
 
@@ -435,6 +435,8 @@ evoPars Evolvable_ptr<T>::getDefaultEvoPars(shared_ptr<const CmdArgs> cmd_, shar
         getJsonValTF<string>(j_evo, "evo_type", ep1.evoType, true) ||
         getJsonValTF<string>(j_evo, "evoType", ep1.evoType, true) ||
         getJsonValTF<string>(j_evo, "EvolutionType", ep1.evoType, true);
+        getJsonValTF<bool>(j_evo, "doCPT", ep1.doCPT, true);
+        getJsonValTF<bool>(j_evo, "contEvol", ep1.contEvol, true);
     }
     return ep1;    
 }
@@ -1028,7 +1030,7 @@ double Evolvable_ptrB<T>::EvaluationCE(TVector<double> &genotype, RandomState &r
         "sr_zero_gains_type", zeroGainsType, "stretch_receptor"
     );
     int doReverse;
-    w_ptr->getValCJWorm("do_reverse", doReverse);
+    w_ptr->getValCJEvo("do_reverse", doReverse);
 
     
 
@@ -1204,12 +1206,12 @@ double Evolvable_ptrB<T>::EvaluationCEp1(
     //dynamic_pointer_cast<const EvolparametersCE>(this->evopar_ptr);
   
     int fitType; //, doAngleDiff;
-    w_ptr->getValCJWorm("fit_type", fitType);
+    w_ptr->getValCJEvo("fit_type", fitType);
     //w_ptr->getValCJWorm("do_angle_diff", doAngleDiff);
 
  
     double AvgSpeed;
-    w_ptr->getValCJWorm("avg_speed", AvgSpeed);
+    w_ptr->getValCJEvo("avg_speed", AvgSpeed);
 
 
     //const double AvgSpeed = EparsR->AvgSpeed;
