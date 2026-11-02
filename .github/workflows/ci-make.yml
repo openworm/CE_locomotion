@@ -8,7 +8,7 @@ on:
 
 jobs:
   package:
-    runs-on: ubuntu-22.04
+    runs-on: [ubuntu-latest, macos-latest]
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +24,10 @@ jobs:
       - name: Install native build dependency
         run: sudo apt-get update && sudo apt-get install -y nlohmann-json3-dev
 
+      - name: C++ info
+        run: g++ -v
+
+
       - name: Install build and test tools
         run: python -m pip install build ruff==0.16.0
 
@@ -33,6 +37,22 @@ jobs:
       - name: Test pip install
         run: pip install .
 
+      - name: Print info on installed packages and files
+        run: |
+          pip list
+          ls -alth
+
+
+      - name: Test using test_all.sh
+        run: |
+          pip list
+
+          pip install scikit_build_core # Needed for building C++ extensions with scikit-build &  --no-build-isolation
+
+          export NEURON_HOME=$pythonLocation
+          env
+
+          ./test_all.sh 
 
 
   main-osc-regression:
@@ -40,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.10"
 
