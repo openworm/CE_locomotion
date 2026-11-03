@@ -54,23 +54,23 @@ rm -rf \
     testruns/example testruns/2018 testruns/CO testruns/2021
 
 # Isolated legacy-model regressions.
-omv test -V .test.example.omt "${omv_args[@]}"
+omv test -V .test.example.omt
 omv test -V .test.2018.omt "${omv_args[@]}"
-omv test -V .test.CO.omt "${omv_args[@]}"
-omv test -V .test.2021.omt "${omv_args[@]}"
+omv test -V .test.CO.omt 
+omv test -V .test.2021.omt 
 
 # CE-derived models.
-omv test -V .test.W2DCE.omt "${omv_args[@]}"
-omv test -V .test.W2DCEs.omt "${omv_args[@]}"
-omv test -V .test.W2DSR.omt "${omv_args[@]}"
-omv test -V .test.W2DSRE.omt "${omv_args[@]}"
-omv test -V .test.W2DCEE.omt "${omv_args[@]}"
+omv test -V .test.W2DCE.omt 
+omv test -V .test.W2DCEs.omt 
+omv test -V .test.W2DSR.omt 
+omv test -V .test.W2DSRE.omt 
+omv test -V .test.W2DCEE.omt 
 omv test -V .test.W2DCEFR.omt "${omv_args[@]}"
 omv test -V .test.W2DCEFRv2.omt "${omv_args[@]}"
 omv test -V .test.W2DSRFR.omt "${omv_args[@]}"
-omv test -V .test.W2DCEanm.omt "${omv_args[@]}"
-omv test -V .test.W2DCEanm2.omt "${omv_args[@]}"
-omv test -V .test.W2DCEa.omt "${omv_args[@]}"
+omv test -V .test.W2DCEanm.omt 
+omv test -V .test.W2DCEanm2.omt
+omv test -V .test.W2DCEa.omt 
 omv test -V .test.W2DSRFRswitch.omt "${omv_args[@]}"
 
 # 2018-derived models.
