@@ -153,3 +153,6 @@
 /legacy/*/cmake_install.cmake
 /legacy/cmake_install.cmake
 /legacy/*/main
+/CMakeCache.txt
+/CMakeFiles
+/native/CMakeFiles

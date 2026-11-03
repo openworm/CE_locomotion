@@ -20,6 +20,7 @@ notebooks = ["ipython", "ipywidgets", "jupyter"]
 neuroml = ["modelspec", "pyneuroml", "neuron>=8.2"]
 test = ["pytest>=7", "ruff==0.16.0"]
 build = ["build", "scikit-build-core>=0.10"]
+all = ["worm2d[neuroml]", "worm2d[test]", "worm2d[build]"]
 
 [project.scripts]
 worm2d = "worm2d.cli:main"
