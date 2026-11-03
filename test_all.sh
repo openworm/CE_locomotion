@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euox pipefail
 
 quick_test=0
 if [[ $# -eq 1 && $1 == "-q" ]]; then
