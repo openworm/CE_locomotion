@@ -94,11 +94,7 @@ class ConfigurationValidationTests(unittest.TestCase):
     def test_named_input_switcher_patterns_are_valid(self):
         config = minimal_config()
         config["driving_inputs"] = {
-            "inputs": {
-                "value": [
-                    {"input_num": "drive", "strength": {"value": 0.0}}
-                ]
-            },
+            "inputs": {"value": [{"input_num": "drive", "strength": {"value": 0.0}}]},
             "weights": {"value": []},
         }
         config["input_switcher"] = {
