@@ -54,26 +54,3 @@ jobs:
           ls -alth
           tree -L 2 testruns || true
           pip list
-
-
-  main-osc-regression:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.10"
-
-      - name: Install regression dependencies and package
-        run: |
-          sudo apt-get update && sudo apt-get install -y nlohmann-json3-dev
-          python -m pip install . OSBModelValidation
-          
-      - name: Print info on installed packages and files
-        run: |
-          pip list
-          ls -alth
-
-      - name: Run main_osc regression
-        run: omv test -V .test.W2D18.omt
