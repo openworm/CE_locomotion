@@ -23,6 +23,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+        with:
+          # Skip to run brew update command on macOS.
+          macos-skip-brew-update: 'true' # default false
+
       - name: Install native build dependencies (Ubuntu)
         run: sudo apt-get update && sudo apt-get install -y nlohmann-json3-dev cmake tree graphviz openjdk-11-jdk 
         if: ${{ contains(matrix.runs-on, 'ubuntu') }}
