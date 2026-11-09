@@ -82,16 +82,16 @@ omv test -V .test.W2D18genE.omt "${omv_args[@]}"
 omv test -V .test.W2DSR18srm.omt "${omv_args[@]}"
 
 # 2021-derived models. The first test creates the shared source model.
-omv test -V .test.izq_sim_W2D21.omt "${omv_args[@]}"
-omv test -V .test.W2D21.omt "${omv_args[@]}"
-omv test -V .test.W2D21E.omt "${omv_args[@]}"
-omv test -V .test.W2DSRE21.omt "${omv_args[@]}"
-omv test -V .test.W2DSR21.omt "${omv_args[@]}"
+omv test -V .test.izq_sim_W2D21.omt
+omv test -V .test.W2D21.omt 
+omv test -V .test.W2D21E.omt
+omv test -V .test.W2DSRE21.omt 
+omv test -V .test.W2DSR21.omt 
 
 # Additional model and oscillator regressions.
-omv test -V .test.COW2DSR2.omt "${omv_args[@]}"
-omv test -V .test.W2D18L.omt "${omv_args[@]}"
+omv test -V .test.COW2DSR2.omt 
+omv test -V .test.W2D18L.omt 
 omv test -V .test.osc_sim.omt "${omv_args[@]}"
-omv test -V .test.osc_sim_21.omt "${omv_args[@]}"
-omv test -V .test.osc_sim_21all.omt "${omv_args[@]}"
-omv test -V .test.W2DCO.omt "${omv_args[@]}"
+omv test -V .test.osc_sim_21.omt 
+omv test -V .test.osc_sim_21all.omt
+omv test -V .test.W2DCO.omt
