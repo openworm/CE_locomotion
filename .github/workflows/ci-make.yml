@@ -3,7 +3,7 @@ name: C/C++ CI
 on:
   push:
     branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
-  pull_request:
+  pull_request: 
     branches: [ "main", "development", "experimental", "test*", "feat*", "bug*" ]
 
 jobs:
