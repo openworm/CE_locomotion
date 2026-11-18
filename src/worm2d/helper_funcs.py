@@ -4500,6 +4500,17 @@ def add_cell_parameter_evotag(
     return result
 
 
+def _missing_json_path_key_error(key, depth, current):
+    available_keys = sorted(str(available_key) for available_key in current)
+    displayed_keys = available_keys[:30]
+    if len(available_keys) > len(displayed_keys):
+        displayed_keys.append("... ({} more)".format(len(available_keys) - 30))
+    return KeyError(
+        "JSON path does not contain {!r} at position {}. Available keys at "
+        "this location: {}".format(key, depth, ", ".join(displayed_keys))
+    )
+
+
 def set_json_value(json_data, keys, new_value):
     """Return a copy with the value at an existing JSON path replaced.
 
@@ -4517,9 +4528,7 @@ def set_json_value(json_data, keys, new_value):
     for depth, key in enumerate(keys[:-1]):
         if isinstance(current, dict):
             if key not in current:
-                raise KeyError(
-                    "JSON path does not contain {!r} at position {}".format(key, depth)
-                )
+                raise _missing_json_path_key_error(key, depth, current)
             current = current[key]
         elif isinstance(current, list):
             if isinstance(key, bool) or not isinstance(key, int):
@@ -4545,11 +4554,7 @@ def set_json_value(json_data, keys, new_value):
     final_key = keys[-1]
     if isinstance(current, dict):
         if final_key not in current:
-            raise KeyError(
-                "JSON path does not contain {!r} at position {}".format(
-                    final_key, final_position
-                )
-            )
+            raise _missing_json_path_key_error(final_key, final_position, current)
         target = current[final_key]
         if final_key != "value" and isinstance(target, dict) and "value" in target:
             target["value"] = copy.deepcopy(new_value)
@@ -4668,9 +4673,7 @@ def add_mfunc(json_data, keys, f_ind, args=None, **kwargs):
     for depth, key in enumerate(keys):
         if isinstance(current, dict):
             if key not in current:
-                raise KeyError(
-                    "JSON path does not contain {!r} at position {}".format(key, depth)
-                )
+                raise _missing_json_path_key_error(key, depth, current)
             current = current[key]
         elif isinstance(current, list):
             if isinstance(key, bool) or not isinstance(key, int):
@@ -4718,9 +4721,7 @@ def delete_mfunc(json_data, keys):
     for depth, key in enumerate(keys):
         if isinstance(current, dict):
             if key not in current:
-                raise KeyError(
-                    "JSON path does not contain {!r} at position {}".format(key, depth)
-                )
+                raise _missing_json_path_key_error(key, depth, current)
             current = current[key]
         elif isinstance(current, list):
             if isinstance(key, bool) or not isinstance(key, int):
@@ -4773,9 +4774,7 @@ def add_evotag(json_data, keys, evotag_name=None):
     for depth, key in enumerate(keys):
         if isinstance(current, dict):
             if key not in current:
-                raise KeyError(
-                    "JSON path does not contain {!r} at position {}".format(key, depth)
-                )
+                raise _missing_json_path_key_error(key, depth, current)
             current = current[key]
         elif isinstance(current, list):
             if isinstance(key, bool) or not isinstance(key, int):

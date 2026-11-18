@@ -5058,7 +5058,52 @@ def plot_phenonames(
     plt.close(fig3)
 
 
-def _make_plot_args(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
+def _validate_generation_range(generation_range):
+    if generation_range is None:
+        return None
+    if (
+        isinstance(generation_range, (str, bytes))
+        or not isinstance(generation_range, (list, tuple))
+        or len(generation_range) != 2
+    ):
+        raise ValueError("generation_range must be None or a (start, end) pair")
+    start, end = generation_range
+    for name, value in (("start", start), ("end", end)):
+        if value is not None and (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float, np.integer, np.floating))
+        ):
+            raise TypeError(
+                "generation_range {} must be a number or None".format(name)
+            )
+    if start is not None and end is not None and end < start:
+        raise ValueError("generation_range end must not be less than start")
+    return (start, end)
+
+
+def _generation_mask(generation_indices, generation_range):
+    generation_range = _validate_generation_range(generation_range)
+    mask = np.ones(len(generation_indices), dtype=bool)
+    if generation_range is not None:
+        start, end = generation_range
+        if start is not None:
+            mask &= generation_indices >= start
+        if end is not None:
+            mask &= generation_indices <= end
+    if not np.any(mask):
+        raise ValueError(
+            "generation_range does not overlap the available generations"
+        )
+    return mask
+
+
+def _make_plot_args(
+    output_folder,
+    evo_av_len=1,
+    model_name=None,
+    file_prefix=None,
+    generation_range=None,
+):
     class PlotArgs:
         pass
 
@@ -5067,6 +5112,7 @@ def _make_plot_args(output_folder, evo_av_len=1, model_name=None, file_prefix=No
     a.modelName = model_name
     a.evoAvLen = evo_av_len
     a.filePrefix = file_prefix
+    a.generationRange = generation_range
     return a
 
 
@@ -5102,8 +5148,19 @@ def plot_evolution_averages(
         hf.file_prefix = old_file_prefix
 
 
-def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None):
-    """Generate the four-panel EvoHist figures for an output folder."""
+def plot_evohist(
+    output_folder,
+    evo_av_len=1,
+    model_name=None,
+    file_prefix=None,
+    generation_range=None,
+):
+    """Generate EvoHist figures, optionally restricted to generations.
+
+    ``generation_range`` may be a ``(start, end)`` pair. Both bounds are
+    inclusive, and either bound may be ``None``.
+    """
+    generation_range = _validate_generation_range(generation_range)
     old_dir_name = hf.dir_name
     old_file_prefix = hf.file_prefix
 
@@ -5112,6 +5169,7 @@ def plot_evohist(output_folder, evo_av_len=1, model_name=None, file_prefix=None)
         evo_av_len=evo_av_len,
         model_name=model_name,
         file_prefix=file_prefix,
+        generation_range=generation_range,
     )
 
     try:
@@ -5196,14 +5254,21 @@ def plot_behavior(
     return behavior_file
 
 
-def plot_cols_fig_2(axslist, plot_data, titles, gen_indices, phen_names):
-    initial_gen = 0
-    final_gen = 1000
-
+def plot_cols_fig_2(
+    axslist,
+    plot_data,
+    titles,
+    gen_indices,
+    phen_names,
+    generation_range=None,
+):
     for plot_data_1, title, gen_index, axs in zip(
         plot_data, titles, gen_indices, axslist
     ):
-        gen_seg = (gen_index >= initial_gen) & (gen_index < final_gen)
+        if generation_range is None:
+            gen_seg = (gen_index >= 0) & (gen_index < 1000)
+        else:
+            gen_seg = _generation_mask(gen_index, generation_range)
         axs.set_title(title, fontsize=title_font_size)
         for phen, phen_name in enumerate(phen_names):
             axs.plot(
@@ -5366,11 +5431,26 @@ def plot_fit():
     plt.close()
 
 
-def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1, a=None):
+def plot_fig_g(
+    plot_data_3,
+    titles,
+    gen_indices,
+    phen_names,
+    filename1,
+    a=None,
+    generation_range=None,
+):
     fig_g, axs = plt.subplots(2, 2, figsize=(12, 10), squeeze=False)
     plot_axes = list(axs.flat)
 
-    plot_cols_fig_2(plot_axes, plot_data_3, titles, gen_indices, phen_names)
+    plot_cols_fig_2(
+        plot_axes,
+        plot_data_3,
+        titles,
+        gen_indices,
+        phen_names,
+        generation_range=generation_range,
+    )
     axs[1, 0].set_xlabel("Generation", fontsize=label_font_size)
     axs[1, 1].set_xlabel("Generation", fontsize=label_font_size)
 
@@ -5406,20 +5486,21 @@ def plot_fig_g(plot_data_3, titles, gen_indices, phen_names, filename1, a=None):
         save_evohist_legend_figures(handles, labels, legend_fontsize, a=a)
 
 
-def plot_evohist_fitness(fit_data, filename):
+def plot_evohist_fitness(fit_data, filename, generation_range=None):
     fig, ax = plt.subplots(figsize=(6, 4))
     gen_index = fit_data[:, 0]
     log_fitness = np.log(fit_data[:, (1, 2)])
+    gen_seg = _generation_mask(gen_index, generation_range)
     ax.plot(
-        gen_index,
-        log_fitness[:, 0],
+        gen_index[gen_seg],
+        log_fitness[gen_seg, 0],
         label="Best phenotype",
         color="black",
         linestyle="-",
     )
     ax.plot(
-        gen_index,
-        log_fitness[:, 1],
+        gen_index[gen_seg],
+        log_fitness[gen_seg, 1],
         label="Population fitness",
         color="red",
         linestyle="-",
@@ -5457,7 +5538,12 @@ def plot_hist(a=None):
         return
     evol_data = getAvData(file)
     fit_data = getAvData(getFileName("fitness.dat"))
-    plot_evohist_fitness(fit_data, _plot_output_file("EvoHist_fitness.png", a))
+    generation_range = getattr(a, "generationRange", None)
+    plot_evohist_fitness(
+        fit_data,
+        _plot_output_file("EvoHist_fitness.png", a),
+        generation_range=generation_range,
+    )
 
     # evol_data_all = hf.load_nonragged_arrays(hf.rename_file("genhistory.dat"))
     # evol_data_1 = evol_data_all[len(evol_data_all) - 1]  # use only the last array
@@ -5562,6 +5648,7 @@ def plot_hist(a=None):
         phen_tags,
         _plot_output_file("EvoHist.png", a),
         a,
+        generation_range=generation_range,
     )
 
     phen_names_set = sorted(set(phen_names))
@@ -5585,6 +5672,7 @@ def plot_hist(a=None):
         phen_names_set,
         _plot_output_file("EvoHist_av.png", a),
         a,
+        generation_range=generation_range,
     )
 
     if False:
