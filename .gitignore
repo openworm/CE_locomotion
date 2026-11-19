@@ -145,3 +145,15 @@
 /testruns/W2DCEFR/
 /testruns/W2DCEFRv2/
 /testruns/W2DSRFR/
+
+# CMake-generated files in legacy models
+/legacy/CMakeFiles/
+/legacy/Makefile
+/legacy/*/CMakeFiles/
+/legacy/*/cmake_install.cmake
+/legacy/cmake_install.cmake
+/legacy/*/main
+/CMakeCache.txt
+/CMakeFiles
+/native/CMakeFiles
+/main_osc

@@ -413,10 +413,10 @@ void TSearch::RandomizePopulation(void)
 
 void TSearch::UpdatePopulationStatistics(void)
 {
-	register int i;
+	int i;
 	double total = 0;
 	int bestindex = 1;
-	register double perf;
+	double perf;
 
 	// Collect various info about the current population
 	MinPerf = 1E10;

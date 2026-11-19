@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "worm2d"
-version = "0.1.0"
+version = "0.3.0"
 description = "Configurable neuromechanical models of C. elegans locomotion"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -17,9 +17,10 @@ dependencies = [
 
 [project.optional-dependencies]
 notebooks = ["ipython", "ipywidgets", "jupyter"]
-neuroml = ["modelspec", "pyneuroml", "neuron>=8.2"]
+neuroml = ["modelspec", "pyneuroml", "neuron>=8.2,<9.0"]
 test = ["pytest>=7", "ruff==0.16.0"]
 build = ["build", "scikit-build-core>=0.10"]
+all = ["worm2d[neuroml]", "worm2d[test]", "worm2d[build]"]
 
 [project.scripts]
 worm2d = "worm2d.cli:main"
