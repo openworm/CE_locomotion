@@ -55,6 +55,7 @@ jobs:
         pip install pyNeuroML
         pip install numpy matplotlib
         pip install ruff 
+        pip install setuptools==80 # needed for py 3.12 & neuron...
 
     - name: Test directly running main program
       run: |
