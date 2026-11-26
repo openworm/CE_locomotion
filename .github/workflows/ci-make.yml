@@ -2,21 +2,26 @@ name: Worm2D package CI
 
 on:
   push:
-    branches: ["master", "development", "test*", "package/**"]
+    branches: ["main", "development", "experimental", "test*", "feat*", "bug*", "package/**"]
   pull_request:
-    branches: ["master", "development", "test*", "package/**"]
+    branches: ["main", "development", "experimental", "test*", "feat*", "bug*", "package/**"]
 
 jobs:
   package:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
-      matrix:
-        runs-on: [ubuntu-22.04, ubuntu-24.04, macos-latest]
-        python-version: ["3.10", "3.12"]  # Note: 3.14 causes issues with Neuron 8.2.7
+      matrix:        
+        runs-on: [ubuntu-24.04, ubuntu-22.04, macos-latest ]
+        python-version: [ "3.10", "3.12" ]
 
     steps:
-      - uses: actions/checkout@v7
+    - uses: actions/checkout@v7
+    
+    - name: Set up Python  ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version:  ${{ matrix.python-version }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v7
